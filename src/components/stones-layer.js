@@ -39,7 +39,7 @@ export default class StonesLayer {
       function (event) {
         var rect = document.getElementById(this.id).getBoundingClientRect();
         const x = event.clientX - rect.left;
-        const y = event.clientY - rect.top;       
+        const y = event.clientY - rect.top;
         for (let s of gs.stones) {
           if (Math.sqrt((x - s.x) * (x - s.x) + (y - s.y) * (y - s.y)) <= 32) {
             pickedStone = s;
@@ -53,7 +53,7 @@ export default class StonesLayer {
       function (event) {
         var rect = document.getElementById(this.id).getBoundingClientRect();
         const x = event.clientX - rect.left;
-        const y = event.clientY - rect.top; 
+        const y = event.clientY - rect.top;
         if (
           Math.sqrt(
             (x - this.width * 0.38 - 300) * (x - this.width * 0.38 - 300) +
@@ -62,7 +62,7 @@ export default class StonesLayer {
         ) {
           pickedStone.x = -900;
           pickedStone.y = -900;
-          pickedStone = null
+          pickedStone = null;
         }
         if (pickedStone) {
           pickedStone.x = pickedStone.origx;
@@ -86,7 +86,88 @@ export default class StonesLayer {
       false
     );
 
+    document.getElementById(this.id).addEventListener(
+      "touchstart",
+      function (e) {
+        var touch = e.touches[0];
+        var mouseEvent = new MouseEvent("mousedown", {
+          clientX: touch.clientX,
+          clientY: touch.clientY,
+        });
+        document.getElementById(this.id).dispatchEvent(mouseEvent);
+      },
+      false
+    );
+
+    document.getElementById(this.id).addEventListener(
+      "touchmove",
+      function (e) {
+        var touch = e.touches[0];
+        var mouseEvent = new MouseEvent("mousemove", {
+          clientX: touch.clientX,
+          clientY: touch.clientY,
+        });
+        document.getElementById(this.id).dispatchEvent(mouseEvent);
+      },
+      false
+    );
+
+    document.getElementById(this.id).addEventListener(
+      "touchend",
+      function (e) {
+        var touch = e.changedTouches[0];
+        var mouseEvent = new MouseEvent("mouseup", {
+          clientX: touch.clientX,
+          clientY: touch.clientY,
+        });
+        document.getElementById(this.id).dispatchEvent(mouseEvent);
+      },
+      false
+    );
+
+    
     this.createStones();
+  }
+
+  mouseDownFunction(event) {
+    var rect = document.getElementById(this.id).getBoundingClientRect();
+    const x = event.clientX - rect.left;
+    const y = event.clientY - rect.top;
+    for (let s of gs.stones) {
+      if (Math.sqrt((x - s.x) * (x - s.x) + (y - s.y) * (y - s.y)) <= 32) {
+        pickedStone = s;
+      }
+    }
+  }
+
+  mouseUpFunction(event) {
+    var rect = document.getElementById(this.id).getBoundingClientRect();
+    const x = event.clientX - rect.left;
+    const y = event.clientY - rect.top;
+    if (
+      Math.sqrt(
+        (x - this.width * 0.38 - 300) * (x - this.width * 0.38 - 300) +
+          (y - this.height * 0.3 - 200) * (y - this.height * 0.3 - 200)
+      ) <= 150
+    ) {
+      pickedStone.x = -900;
+      pickedStone.y = -900;
+      pickedStone = null;
+    }
+    if (pickedStone) {
+      pickedStone.x = pickedStone.origx;
+      pickedStone.y = pickedStone.origy;
+    }
+    pickedStone = null;
+  }
+  mouseMoveFunction(event) {
+    var rect = document.getElementById(this.id).getBoundingClientRect();
+    const x = event.clientX - rect.left;
+    const y = event.clientY - rect.top;
+    if (pickedStone) {
+      pickedStone.x = x;
+      pickedStone.y = y;
+    }
   }
 
   deleteCanvas() {}
