@@ -54,6 +54,7 @@ export class LevelSelectionScreen {
         this.canvas = canvas;
         this.width = canvas.width;
         this.height = canvas.height;
+        console.log(" thisdataiscoming ", data);
         this.canvasStack = new CanvasStack("canvas");
         self = this;
         this.data = data;

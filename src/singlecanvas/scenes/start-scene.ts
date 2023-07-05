@@ -67,13 +67,15 @@ export class StartScene {
     public imagesLoaded: boolean = false;
     public handler: any;
     public static SceneName: string;
+    public switchSceneToLevelSelection: any;
 
     // public tutorial: Tutorial;
 
     constructor(
         canvas: HTMLCanvasElement,
         data: DataModal,
-        firebase_analytics: { logEvent: any }
+        firebase_analytics: { logEvent: any },
+        switchSceneToLevelSelection
     ) {
         // this = this;
         this.canvas = canvas;
@@ -84,6 +86,7 @@ export class StartScene {
         this.context = this.canavsElement.getContext("2d");
         // this.canvasStack = new CanvasStack("canvas");
         this.monster = new Monster(this.canvas);
+        this.switchSceneToLevelSelection = switchSceneToLevelSelection;
         // this.stoneHandler = new StoneHandler(this.context, this.canvas, 2, this.data.levels[0]);
         // var img = new Image();
         // img.src = "./assets/images/stone_pink_v02.png";
@@ -208,32 +211,32 @@ export class StartScene {
                 // this.pauseMenu.draw();
             }
         }
-        else if (StartScene.SceneName == LevelSelection1) {
-            // this.levelSelectionScene.draw(1);
-            this.levelSelectionScene.testDraw();
+        // else if (StartScene.SceneName == LevelSelection1) {
+        //     // this.levelSelectionScene.draw(1);
+        //     this.levelSelectionScene.testDraw();
 
-        }
-        else {
-            // console.log(" rendering game scene", StartScene.SceneName);
-            // render gameplay screen for now
-        }
-        requestAnimationFrame(this.animation);
+        // }
+        // else {
+        // console.log(" rendering game scene", StartScene.SceneName);
+        // render gameplay screen for now
+        // }
+        // requestAnimationFrame(this.animation);
     }
 
     draw() {
     }
 
-    switchSceneToLevelSelection() {
-        console.log(" checkingthisobj ", this);
-        // dispose previous scene
-        this.dispose();
-        // load in next scene
-        this.levelSelectionScene = new LevelSelectionScreen(this.canvas, this.data, (arg1, arg2) => {
-            StartScene.SceneName = arg2
-            console.log(arg1, arg2, StartScene.SceneName);
-        });
-        StartScene.SceneName = LevelSelection1;
-    }
+    // switchSceneToLevelSelection() {
+    //     console.log(" checkingthisobj ", this);
+    //     // dispose previous scene
+    //     this.dispose();
+    //     // load in next scene
+    //     this.levelSelectionScene = new LevelSelectionScreen(this.canvas, this.data, (arg1, arg2) => {
+    //         StartScene.SceneName = arg2
+    //         console.log(arg1, arg2, StartScene.SceneName);
+    //     });
+    //     StartScene.SceneName = LevelSelection1;
+    // }
 
     createPlayButton() {
         this.playButton = new PlayButton(
@@ -281,9 +284,8 @@ export class StartScene {
 
     }
 
-    dispose(this: any) {
-
-        console.log("Disposing current listner startscene", this);
+    dispose() {
+        console.log("Disposing current listner startscene1", this);
         this.handler.removeEventListener("click", this.handleMouseClick, false);
     }
 }
