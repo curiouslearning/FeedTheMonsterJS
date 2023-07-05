@@ -24,7 +24,6 @@ export class LevelIndicators {
 
         loadImages(this.images, (images) => {
             this.loadedImages = Object.assign({}, images);
-            console.log(" thisisallloadedimages ", this.loadedImages);
             this.imagesLoaded = true;
         });
     }

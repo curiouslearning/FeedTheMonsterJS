@@ -37,7 +37,6 @@ export class Tutorial {
         this.tutorialImg = new Image();
         this.tutorialImg.src = "./assets/images/tutorial_hand.png";
         this.tutorialImg.onload = () => {
-            console.log(" image loaded ", this.tutorialImg);
             this.imagesLoaded = true;
         }
     }

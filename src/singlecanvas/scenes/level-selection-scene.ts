@@ -54,7 +54,6 @@ export class LevelSelectionScreen {
         this.canvas = canvas;
         this.width = canvas.width;
         this.height = canvas.height;
-        console.log(" thisdataiscoming ", data);
         this.canvasStack = new CanvasStack("canvas");
         self = this;
         this.data = data;
@@ -84,7 +83,6 @@ export class LevelSelectionScreen {
 
         loadImages(this.images, (images) => {
             this.loadedImages = Object.assign({}, images);
-            console.log(" thisisallloadedimages ", this.loadedImages);
             this.imagesLoaded = true;
         });
         this.addListeners();
@@ -154,7 +152,6 @@ export class LevelSelectionScreen {
 
         function handleTouchStart(evt) {
             const firstTouch = getTouches(evt)[0];
-            console.log("firstTouch.clientX:>", firstTouch.clientX)
             xDown = firstTouch.clientX;
             yDown = firstTouch.clientY;
         }
@@ -200,7 +197,6 @@ export class LevelSelectionScreen {
 
     handleMouseDown = (event) => {
         // return function (event) {
-        console.log(" levelselection Listner ");
         event.preventDefault();
         var rect = document.getElementById("canvas").getBoundingClientRect();
         const x = event.clientX - rect.left;
@@ -292,10 +288,8 @@ export class LevelSelectionScreen {
         // this.downButton(level);
     }
     draw(level: number) {
-        // console.log("renderingffff", self.levels);
         for (let s of self.levels) {
             this.drawlevel(s, self.canvas);
-            // console.log("rendering1");
         }
     }
 
@@ -349,8 +343,7 @@ export class LevelSelectionScreen {
         this.dispose();
         this.sound.pauseSound();
         // StartScene.SceneName = GameScene1;
-        console.log(StartScene.SceneName, "LevelDatas", self.data);
-        this.callback(this.context, "THISISSO", GameScene1);
+        this.callback(this.context, "THISIS", GameScene1);
         new Game(
             this.canvas.width,
             this.canvas.height,
@@ -435,7 +428,6 @@ export class LevelSelectionScreen {
     }
 
     dispose() {
-        console.log("Disposing current listner");
         // remove listeners
         document.getElementById("canvas").removeEventListener("mousedown", this.handleMouseDown, false);
     }

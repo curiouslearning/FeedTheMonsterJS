@@ -56,7 +56,6 @@ export class SceneHandler {
         data: DataModal,
         firebase_analytics: { logEvent: any }
     ) {
-        console.log(" itscallingsceneHandlerr11 ", data);
         this.canvas = canvas;
         this.data = data;
         // this.width = canvas.width;
@@ -71,7 +70,6 @@ export class SceneHandler {
         // this.devToggle();
         // this.createPlayButton();
         // this.firebase_analytics = firebase_analytics;
-        // console.log(this.data);
         SceneHandler.SceneName = StartScene1;
 
         this.animation(0);
@@ -96,7 +94,6 @@ export class SceneHandler {
     animation = (timeStamp) => {
         let deltaTime = timeStamp - lastTime;
         lastTime = timeStamp;
-        // console.log(this.loadedImages, " <> ", this.imagesLoaded, " ffffggg ", StartScene.SceneName);
 
         this.context.clearRect(0, 0, this.width, this.height);
         if (SceneHandler.SceneName == StartScene1) {
@@ -108,7 +105,6 @@ export class SceneHandler {
 
         }
         else if (SceneHandler.SceneName == GameScene1) {
-            // console.log(" rendering game scene", StartScene.SceneName);
             // render gameplay screen for now
             this.gameplayScene.draw();
         }
@@ -119,7 +115,6 @@ export class SceneHandler {
     // }
 
     switchSceneToGameplay = () => {
-        console.log(" checkingthisobjcomingtogameplay ", this);
         // dispose previous scene
         this.levelSelectionScene.dispose();
         // load in next scene --- gameplaqyscene
@@ -128,13 +123,11 @@ export class SceneHandler {
     }
 
     switchSceneToLevelSelection = () => {
-        console.log(" checkingthisobjcoming ", this);
         // dispose previous scene
         this.startScene.dispose();
         // load in next scene
         this.levelSelectionScene = new LevelSelectionScreen(this.canvas, this.data, (arg1, arg2) => {
-            SceneHandler.SceneName = arg2
-            console.log(arg1, arg2, SceneHandler.SceneName);
+            SceneHandler.SceneName = arg2;
         });
         SceneHandler.SceneName = LevelSelection1;
     }

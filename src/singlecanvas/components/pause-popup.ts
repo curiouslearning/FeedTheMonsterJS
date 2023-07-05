@@ -58,20 +58,16 @@ export default class PausePopUp {
             var rect = selfIdElement.getBoundingClientRect();
             const x = event.clientX - rect.left;
             const y = event.clientY - rect.top;
-            // console.log(" atleast listner is calling");
             if (self.cancelButton.onClick(x, y)) {
-                console.log(" cancelButton atleast listner is calling");
                 // this.levelStart.timerTicking.resumeTimer();
                 // this.levelStart.levelEndCallBack('cancel_button');
                 // this.deleteCanvas(this);
             }
             if (self.retryButton.onClick(x, y)) {
-                console.log(" retryButton atleast listner is calling");
                 // this.levelStart.levelEndCallBack("retry_button");
                 // this.deleteCanvas(this);
             }
             if (self.closeButton.onClick(x, y)) {
-                console.log(" closeButton atleast listner is calling");
                 // this.levelStart.levelEndCallBack("close_button");
                 // this.deleteCanvas(this);
             }

@@ -110,7 +110,6 @@ export class StartScene {
         this.devToggle();
         this.createPlayButton();
         this.firebase_analytics = firebase_analytics;
-        console.log(this.data);
         StartScene.SceneName = StartScene1;
 
         this.animation(0);
@@ -126,16 +125,13 @@ export class StartScene {
 
         loadImages(this.images, (images) => {
             this.loadedImages = Object.assign({}, images);
-            console.log(" thisisallloadedimages ", this.loadedImages);
             this.imagesLoaded = true;
         });
-        console.log(this, "<--thiiiss");
 
     }
 
     // timeOverCallback() {
-    //     // time to load new puzzle
-    //     console.log("timeOver");
+    //     // time to load new puzz
     // }
     devToggle() {
         toggleBtn.addEventListener("click", () => {
@@ -154,7 +150,6 @@ export class StartScene {
     animation = (timeStamp) => {
         let deltaTime = timeStamp - lastTime;
         lastTime = timeStamp;
-        // console.log(this.loadedImages, " <> ", this.imagesLoaded, " ffffggg ", StartScene.SceneName);
 
         this.context.clearRect(0, 0, this.width, this.height);
         if (StartScene.SceneName == StartScene1) {
@@ -217,7 +212,6 @@ export class StartScene {
 
         // }
         // else {
-        // console.log(" rendering game scene", StartScene.SceneName);
         // render gameplay screen for now
         // }
         // requestAnimationFrame(this.animation);
@@ -227,13 +221,11 @@ export class StartScene {
     }
 
     // switchSceneToLevelSelection() {
-    //     console.log(" checkingthisobj ", this);
     //     // dispose previous scene
     //     this.dispose();
     //     // load in next scene
     //     this.levelSelectionScene = new LevelSelectionScreen(this.canvas, this.data, (arg1, arg2) => {
     //         StartScene.SceneName = arg2
-    //         console.log(arg1, arg2, StartScene.SceneName);
     //     });
     //     StartScene.SceneName = LevelSelection1;
     // }
@@ -259,16 +251,13 @@ export class StartScene {
 
     handleMouseClick = (event) => {
         let self = this;
-        console.log(" startScene Listner ", this);
         // this.levelIndicator.setIndicators(1);
         const selfElement = <HTMLElement>document.getElementById("canvas");
         event.preventDefault();
         var rect = selfElement.getBoundingClientRect();
         const x = event.clientX - rect.left;
         const y = event.clientY - rect.top;
-        // console.log(self, "thiiiss->>>", this);
         if (self.playButton.onClick(x, y)) {
-            console.log(" booomer inside");
             self.firebase_analytics
                 ? self.firebase_analytics.logEvent(FirebaseUserClicked, "click")
                 : null;
@@ -285,7 +274,6 @@ export class StartScene {
     }
 
     dispose() {
-        console.log("Disposing current listner startscene1", this);
         this.handler.removeEventListener("click", this.handleMouseClick, false);
     }
 }

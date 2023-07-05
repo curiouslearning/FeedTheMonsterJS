@@ -61,7 +61,6 @@ export class Monster {
 
         loadImages(this.images, (images) => {
             this.loadedImages = Object.assign({}, images);
-            console.log(" thisisallloadedimages ", this.loadedImages);
             this.imagesLoaded = true;
         });
     }
@@ -80,7 +79,6 @@ export class Monster {
 
     update(deltaTime) {
         if (this.frameTimer >= this.frameInterval) {
-            // console.log(deltaTime," bb ",this.frameTimer);
             this.frameTimer = 0;
             if (this.frameX < this.maxFrame) {
                 this.frameX++;
@@ -121,7 +119,6 @@ export class Monster {
         this.image.src = src;
     }
     changePhaseNumber(monsterPhaseNum) {
-        console.log("monster changing");
         // eatImg = new Image();
         // eatImg.src = "./assets/images/eat1" + monsterPhaseNum + ".png";
         // idleImg = new Image();

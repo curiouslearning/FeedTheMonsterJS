@@ -71,7 +71,6 @@ export default class StoneHandler {
         this.puzzleNumber = puzzleNumber;
         this.levelData = levelData;
         // this.feedBackTexts = feedBackTexts;
-        console.log(" levelData: ", levelData);
         this.currentPuzzleData = this.levelData.puzzles[this.puzzleNumber];
         this.targetStones = [...this.currentPuzzleData.targetStones];
         // this.monster = monster;

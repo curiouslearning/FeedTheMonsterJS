@@ -132,7 +132,6 @@ export class GameplayScene {
         // this.canvasStack = new CanvasStack("canvas");
         this.monsterPhaseNumber = monsterPhaseNumber || 1;
         this.levelData = levelData;
-        console.log(" leveldatacomingtogame ", this.levelData);
         // this.levelStartCallBack = levelStartCallBack;
         // this.timerTicking = new TimerTicking(game, this);
         // this.promptText = new PromptText(
@@ -473,7 +472,6 @@ export class GameplayScene {
         score = 0;
     }
     draw() {
-        // console.log(this.allImagesLoaded, "its drawing", this.context);
         // this.context.clearRect(0, 0, this.width, this.height);
         // this.context.drawImage(this.bgImg, 0, 0, this.width, this.height);
         if (this.allImagesLoaded) {
@@ -600,7 +598,6 @@ export class GameplayScene {
         var width = this.width;
         var height = this.height;
 
-        console.log(" Background1 ", availableBackgroundTypes[backgroundType]);
 
         loadImages(images, function (image) {
             switch (availableBackgroundTypes[backgroundType]) {
@@ -726,7 +723,6 @@ export class GameplayScene {
             // self.promptText.createBackground();
             loadingScreen(false);
             self.loadedImages = Object.assign({}, image)
-            console.log(self.loadedImages, " imagesareher ", image);
             self.allImagesLoaded = true;
         });
     }
@@ -740,7 +736,6 @@ export class GameplayScene {
         foils,
         response_time
     ) {
-        console.log("User_id", pseudoId);
         var puzzleEndTime = new Date();
         FirebaseIntegration.customEvents("puzzle_completed", {
             cr_user_id: pseudoId,

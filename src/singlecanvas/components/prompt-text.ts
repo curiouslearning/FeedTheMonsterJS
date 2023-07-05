@@ -24,7 +24,6 @@ export class PromptText {
     constructor(width, height, currentPuzzleData, levelData, rightToLeft) {
         this.width = width;
         this.height = height;
-        console.log(levelData, " currentPuzzleData ", currentPuzzleData);
         this.levelData = levelData;
         this.rightToLeft = rightToLeft;
         this.sound = new Sound();
@@ -57,9 +56,7 @@ export class PromptText {
         var rect = selfElement.getBoundingClientRect();
         const x = event.clientX - rect.left;
         const y = event.clientY - rect.top;
-        console.log(self, "prompttext->>>", this);
         if (self.onClick(x, y)) {
-            console.log(" iclickedInside ");
             self.sound.playSound(
                 self.currentPuzzleData.prompt.promptAudio,
                 PromptAudio
@@ -93,7 +90,6 @@ export class PromptText {
     }
 
     drawArabic(droppedStones = 0) {
-        console.log("Prompt", this.currentPromptText);
         var x = this.width / 2;
         const y = this.height * 0.26;
         this.context.textAlign = "center";
