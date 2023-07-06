@@ -50,7 +50,7 @@ function findMissingLetter(obj, path = "", paths = []) {
           key === "StoneText" &&
           obj[key] != ""
         ) {
-          if (!uniqueLetters.includes(obj[key]) && uniqueLetters.length <= 14) {
+          if (!uniqueLetters.includes(obj[key]) && uniqueLetters.length <= 30) {
             console.log(obj[key]);
             uniqueLetters.push(obj[key]);
           }
