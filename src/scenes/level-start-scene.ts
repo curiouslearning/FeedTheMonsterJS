@@ -74,6 +74,7 @@ var word_dropped_stones = 0;
 var isGamePause = false;
 var noMoreTarget = false;
 var isLevelEnded = false;
+let lastFrameTime: number = 0;
 export class LevelStartScene {
   public game: any;
   public width: number;
@@ -522,11 +523,13 @@ export class LevelStartScene {
     this.levelIndicators.draw();
     this.promptText.createBackground();
   }
-  update() {
-    self.timerTicking ? self.timerTicking.update() : null;
+  update(deltaTime: number) {
+    self.timerTicking ? self.timerTicking.update(deltaTime) : null;
+    lastFrameTime = 0;
   }
 
   changePuzzle() {
+    lastFrameTime = performance.now();
     if (self.timerTicking.isTimerEnded) {
       self.stones.isTimerEnded();
       word_dropped_stones = 0;

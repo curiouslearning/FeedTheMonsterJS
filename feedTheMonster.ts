@@ -88,12 +88,12 @@ Sentry.init({
   // We recommend adjusting this value in production
   tracesSampleRate: 1.0,
 });
-function registerWorkbox(): void {
+async function registerWorkbox(): Promise<void> {
   if ("serviceWorker" in navigator) {
     let wb = new Workbox("./sw.js", {});
-    wb.register().then(handleServiceWorkerRegistration);
+    await wb.register().then(handleServiceWorkerRegistration);
     if (!is_cached.has(lang)) {
-      channel.postMessage({ command: "Cache", data: lang });
+      await channel.postMessage({ command: "Cache", data: lang });
     }
     navigator.serviceWorker.addEventListener(
       "message",
@@ -133,7 +133,6 @@ function handleLoadingMessage(data): void {
 }
 function handleUpdateFoundMessage(): void {
   let text = "Update Found\nPress ok to update.";
-  console.log("Called the Update method");
   if (confirm(text) == true) {
     // localStorage.removeItem(IsCached);
     // setTimeout(()=>{

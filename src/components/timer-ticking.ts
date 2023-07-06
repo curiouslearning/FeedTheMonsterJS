@@ -3,11 +3,13 @@ import { CanvasStack } from "../utility/canvas-stack.js";
 import { Game } from "../scenes/game.js";
 import { LevelStartScene } from "../scenes/level-start-scene.js";
 import { Tutorial } from "./tutorial.js";
+
 declare global {
   interface Window {
     Android?: any;
   }
 }
+
 export class TimerTicking {
   public game: Game;
   public width: number;
@@ -25,6 +27,7 @@ export class TimerTicking {
   public pauseButtonClicked: boolean;
   public canvasStack: any;
   public id: string;
+  private lastFrameTime: number;
 
   constructor(game: Game, levelStart: LevelStartScene) {
     this.game = game;
@@ -38,9 +41,10 @@ export class TimerTicking {
     this.isTimerEnded = false;
     this.levelStart = levelStart;
     this.isTimerRunningOut = false;
-    var self = this;
     this.createCanvas();
+    this.lastFrameTime = performance.now();
   }
+
   createCanvas() {
     this.id = this.canvasStack.createLayer(
       this.height,
@@ -50,14 +54,14 @@ export class TimerTicking {
     this.canavsElement = document.getElementById(this.id) as HTMLCanvasElement;
     this.context = this.canavsElement.getContext("2d");
     this.canavsElement.style.zIndex = "4";
-    // this.animation(0);
   }
+
   deleteCanvas() {
     this.canvasStack.deleteLayer(this.id);
   }
 
   createBackgroud() {
-    var self = this;
+    const self = this;
     this.timer_full = new Image();
     this.timer_full.src = "./assets/images/timer_full.png";
     this.timer_full.onload = function (e) {
@@ -65,14 +69,12 @@ export class TimerTicking {
       self.beginTimerOnStart();
     };
   }
-  update() {
-    if (this.isTimerStarted) {
-      if (window.Android) {
-        this.timer += 0.2;
-      } else {
-        this.timer += 0.06;
-      }
 
+  update(deltaTime: number) {
+    if (this.isTimerStarted) {
+      // const timerSpeed = 0.06; // Adjust the timer speed as needed
+
+      this.timer += deltaTime * 0.004;
       if (this.game.width * 1.3 - this.widthToClear - 10 * this.timer > 55) {
         this.context.clearRect(
           this.game.width * 1.3 - this.widthToClear - 10 * this.timer,
@@ -81,6 +83,7 @@ export class TimerTicking {
           this.height
         );
       }
+
       if (
         this.game.width * 1.3 - this.widthToClear - 10 * this.timer < 100 &&
         this.game.width * 1.3 - this.widthToClear - 10 * this.timer > 54 &&
@@ -92,6 +95,7 @@ export class TimerTicking {
           TimeOver
         );
       }
+
       if (
         this.game.width * 1.3 - this.widthToClear - 10 * this.timer < 55 &&
         this.game.width * 1.3 - this.widthToClear - 10 * this.timer > 54
@@ -103,8 +107,9 @@ export class TimerTicking {
       }
     }
   }
+
   beginTimerOnStart() {
-    var self = this;
+    const self = this;
 
     setTimeout(() => {
       if (!this.pauseButtonClicked) {
@@ -115,18 +120,22 @@ export class TimerTicking {
       }
     }, 3000);
   }
+
   stopTimer() {
     this.isTimerStarted = false;
     console.log("Timer Stopped");
   }
+
   pauseTimer() {
     this.isTimerStarted = false;
     this.pauseButtonClicked = true;
   }
+
   resumeTimer() {
     this.isTimerStarted = true;
     this.pauseButtonClicked = false;
   }
+
   draw() {
     this.isTimerStarted = false;
     this.context.clearRect(0, 0, this.width, this.height);

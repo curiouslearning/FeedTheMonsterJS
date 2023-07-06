@@ -1,8 +1,10 @@
 
 import requests
 import json
-url = "https://devcuriousreader.wpcomstaging.com/container_check/arabic.json" 
-file_path = "arabic_output.txt"
+language = input("Enter the language :")
+audio_urls = []
+url = "https://feedthemonsterdev.curiouscontent.org/lang/"+language+"/ftm_"+language+".json" 
+file_path = "output.txt"
 response = requests.get(url)
 file =open(file_path, 'w',encoding='utf-8')
 if response.status_code == 200:
@@ -17,6 +19,9 @@ for level  in data['Levels']:
             print(f"Successful")
         else:
             print(f"Failed")
-            file.write(prompt_audio+"\n") 
+            audio_urls.append(prompt_audio) 
+unique_urls = set(audio_urls)
+for element in unique_urls:
+     file.write(element+"\n")
 
             
