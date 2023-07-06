@@ -6,7 +6,7 @@ const ffmpeg = require("fluent-ffmpeg");
 const { get } = require("http");
 
 // Configure your GitHub personal access token and repository details
-const accessToken = "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";
+const accessToken = "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";
 const owner = "curiouslearning";
 const repo = "ftm-languagepacks";
 let currentDirectory = ""; // Path to the current directory
@@ -16,6 +16,7 @@ let mp3outputDirectory;
 let selectedLanguageDirectory;
 let language;
 let promptTexts;
+let jsonPromptTexts;
 // Create an interface for user input
 const rl = readline.createInterface({
   input: process.stdin,
@@ -28,7 +29,7 @@ const scriptDirectory = path.join(__dirname, "..", "lang");
 async function main() {
   language = await promptForLanguageSelection();
   const uniquePromptTexts = await processModule(language);
-
+  jsonPromptTexts = uniquePromptTexts;
   selectedLanguageDirectory = path.join(scriptDirectory, `${language}`);
   if (!fs.existsSync(selectedLanguageDirectory)) {
     fs.mkdirSync(selectedLanguageDirectory);
@@ -216,15 +217,9 @@ async function downloadAudioFiles(uniquePromptTexts) {
         mp3outputDirectory,
         `${path.basename(file.name, path.extname(file.name))}.mp3`
       );
-      console.log(
-        ">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>" +
-          file.name.slice(0, file.name.lastIndexOf("."))
-      );
       if (
         !fs.existsSync(mp3FilePath) &&
-        uniquePromptTexts.includes(
-          file.name.slice(0, file.name.lastIndexOf("."))
-        )
+        jsonPromptTexts.includes(file.name.slice(0, file.name.lastIndexOf(".")))
       ) {
         const extension = path.extname(file.name).toLowerCase();
         if (extension === "wav") {
@@ -293,7 +288,7 @@ async function selectFolder() {
 
 // Function to handle language selection
 async function selectLanguage(uniquePromptTexts) {
-  // console.log(promptTexts);
+  console.log(jsonPromptTexts);
   try {
     const languages = await getDirectoryFolders("");
 
