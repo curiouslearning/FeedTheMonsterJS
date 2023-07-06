@@ -42,15 +42,24 @@ function findMissingLetter(obj, path = "", paths = []) {
     for (let key in obj) {
       if (obj.hasOwnProperty(key)) {
         const newPath = path ? `${path}.${key}` : key;
-
+        if (
+          key === "StoneText" &&
+          obj[key] != "MagnetLetter" &&
+          key === "StoneText" &&
+          obj[key] != null &&
+          key === "StoneText" &&
+          obj[key] != ""
+        ) {
+          if (!uniqueLetters.includes(obj[key]) && uniqueLetters.length <= 30) {
+            console.log(obj[key]);
+            uniqueLetters.push(obj[key]);
+          }
+        }
         if (
           !(key === "StoneText" && obj[key] === "MagnetLetter") &&
           !(key === "StoneText" && obj[key] === null) &&
           !(key === "StoneText" && obj[key] === "")
         ) {
-          if (!uniqueLetters.includes(obj[key]) && uniqueLetters.length <= 14) {
-            uniqueLetters.push(obj[key]);
-          }
         } else {
           const randomIndex = Math.floor(Math.random() * uniqueLetters.length);
           obj[key] = uniqueLetters[randomIndex];
