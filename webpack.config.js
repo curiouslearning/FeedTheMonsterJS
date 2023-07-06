@@ -6,9 +6,7 @@ const CopyPlugin = require("copy-webpack-plugin");
 var config = {
   mode: 'development',
   watch: true,
-  entry: {
-    dist: './feedTheMonster.js'
-  },
+  entry: './feedTheMonster.ts',
   module: {
     rules: [
       {
@@ -30,7 +28,6 @@ var config = {
       patterns: [
         { from: "./index.html", to: "./" },
         { from: "./index.css", to: "./" },
-        // { from: "./ftm_english.json", to: "./" },
         { from: "./assets", to: "./assets" },
         { from: "./lang", to: "./lang" },
       ],
