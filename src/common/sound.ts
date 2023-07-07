@@ -1,5 +1,5 @@
-import { lang } from "../../global-variables.js";
-import { IsCached, IntroMusic, loadingScreen, PromptAudio } from "./common.js";
+import { lang } from "../../global-variables";
+import { IsCached, IntroMusic, loadingScreen, PromptAudio } from "./common";
 let is_cached = localStorage.getItem(IsCached)
   ? new Map(JSON.parse(localStorage.getItem(IsCached)))
   : new Map();

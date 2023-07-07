@@ -1,6 +1,6 @@
-import { Debugger, lang } from "../../global-variables.js";
-import { MonsterLayer, StoreMonsterPhaseNumber } from "../common/common.js";
-import { CanvasStack } from "../utility/canvas-stack.js";
+import { Debugger, lang } from "../../global-variables";
+import { MonsterLayer, StoreMonsterPhaseNumber } from "../common/common";
+import { CanvasStack } from "../utility/canvas-stack";
 var lastTime = 0;
 var self;
 var animationFrame;

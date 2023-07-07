@@ -1,7 +1,7 @@
-import { PromptTextLayer } from "../common/common.js";
-import { CanvasStack } from "../utility/canvas-stack.js";
-import { Game } from "../scenes/game.js";
-import { lang } from "../../global-variables.js";
+import { PromptTextLayer } from "../common/common";
+import { CanvasStack } from "../utility/canvas-stack";
+import { Game } from "../scenes/game";
+import { lang } from "../../global-variables";
 var self;
 export class PromptText {
   public game: Game;

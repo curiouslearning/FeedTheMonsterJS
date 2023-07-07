@@ -3,16 +3,16 @@ import {
   PromptAudio,
   StoneLayer,
   UrlSubstring,
-} from "../common/common.js";
-import Sound from "../common/sound.js";
-import { StoneConfig } from "../common/stones-config.js";
-import { LevelStartScene } from "../scenes/level-start-scene.js";
-import { CanvasStack } from "../utility/canvas-stack.js";
-import PauseButton from "./buttons/pause_button.js";
-import PausePopUp from "./pause-popup.js";
-import { Tutorial } from "../components/tutorial.js";
-import { getDatafromStorage } from "../data/profile-data.js";
-import { Debugger } from "../../global-variables.js";
+} from "../common/common";
+import Sound from "../common/sound";
+import { StoneConfig } from "../common/stones-config";
+import { LevelStartScene } from "../scenes/level-start-scene";
+import { CanvasStack } from "../utility/canvas-stack";
+import PauseButton from "./buttons/pause_button";
+import PausePopUp from "./pause-popup";
+import { Tutorial } from "../components/tutorial";
+import { getDatafromStorage } from "../data/profile-data";
+import { Debugger } from "../../global-variables";
 
 var gs: any = {
   mode: "gameplay",

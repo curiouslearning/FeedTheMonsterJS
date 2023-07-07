@@ -1,5 +1,5 @@
-import { TutorialLayer } from "../common/common.js";
-import { CanvasStack } from "../utility/canvas-stack.js";
+import { TutorialLayer } from "../common/common";
+import { CanvasStack } from "../utility/canvas-stack";
 var self;
 var tutorialImg = new Image();
 tutorialImg.src = "./assets/images/tutorial_hand.png";

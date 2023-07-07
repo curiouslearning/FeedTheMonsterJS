@@ -12,14 +12,14 @@ import {
   LevelSelection1,
   GameScene1
 } from "../common/common";
-import Sound from "../common/sound.js";
-import InstallButton from "../components/buttons/install_button.js";
-import PlayButton from "../components/buttons/play_butoon.js";
-import { Monster } from "../components/monster.js";
-import { DataModal } from "../data/data-modal.js";
+import Sound from "../common/sound";
+import InstallButton from "../components/buttons/install_button";
+import PlayButton from "../components/buttons/play_butoon";
+import { Monster } from "../components/monster";
+import { DataModal } from "../data/data-modal";
 import { CanvasStack } from "../utility/canvas-stack";
-import { LevelSelectionScreen } from "./level-selection-scene.js";
-import { Debugger, lang } from "../../global-variables.js";
+import { LevelSelectionScreen } from "./level-selection-scene";
+import { Debugger, lang } from "../../global-variables";
 
 var bgImg = new Image();
 bgImg.src = "./assets/images/bg_v01.jpg";

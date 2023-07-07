@@ -1,5 +1,5 @@
-import { CanvasStack } from "../utility/canvas-stack.js";
-import { lang } from "../../global-variables.js";
+import { CanvasStack } from "../utility/canvas-stack";
+import { lang } from "../../global-variables";
 
 export function loadImages(sources: any, callback: any) {
   var images = {};

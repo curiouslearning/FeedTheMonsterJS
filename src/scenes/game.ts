@@ -1,6 +1,6 @@
-import { Debugger, lang } from "../../global-variables.js";
-import { StoreMonsterPhaseNumber } from "../common/common.js";
-import { LevelStartScene } from "./level-start-scene.js";
+import { Debugger, lang } from "../../global-variables";
+import { StoreMonsterPhaseNumber } from "../common/common";
+import { LevelStartScene } from "./level-start-scene";
 
 var animationFrame: number;
 var self: any;

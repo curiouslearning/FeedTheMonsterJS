@@ -1,18 +1,18 @@
-import { LevelStartScene } from "./level-start-scene.js";
+import { LevelStartScene } from "./level-start-scene";
 import { StartScene } from "./start-scene"
-import { CanvasStack } from "../utility/canvas-stack.js";
-import { LevelConfig } from "../common/level-config.js";
-import { Game } from "./game.js";
+import { CanvasStack } from "../utility/canvas-stack";
+import { LevelConfig } from "../common/level-config";
+import { Game } from "./game";
 import {
   ButtonClick,
   IntroMusic,
   LevelSelectionLayer,
   PreviousPlayedLevel,
   GameScene1
-} from "../common/common.js";
-import Sound from "../common/sound.js";
-import { getDatafromStorage } from "../data/profile-data.js";
-import { Debugger, lang } from "../../global-variables.js";
+} from "../common/common";
+import Sound from "../common/sound";
+import { getDatafromStorage } from "../data/profile-data";
+import { Debugger, lang } from "../../global-variables";
 
 var mapIcon = new Image();
 mapIcon.src = "./assets/images/mapIcon.png";

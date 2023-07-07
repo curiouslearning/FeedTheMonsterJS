@@ -1,8 +1,8 @@
-import { TimeOver, TimetickerLayer } from "../common/common.js";
-import { CanvasStack } from "../utility/canvas-stack.js";
-import { Game } from "../scenes/game.js";
-import { LevelStartScene } from "../scenes/level-start-scene.js";
-import { Tutorial } from "./tutorial.js";
+import { TimeOver, TimetickerLayer } from "../common/common";
+import { CanvasStack } from "../utility/canvas-stack";
+import { Game } from "../scenes/game";
+import { LevelStartScene } from "../scenes/level-start-scene";
+import { Tutorial } from "./tutorial";
 declare global {
   interface Window {
     Android?: any;

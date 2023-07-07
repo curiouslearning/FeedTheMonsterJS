@@ -1,5 +1,5 @@
-import { DataModal } from "./data-modal.js";
-import { lang } from "../../global-variables.js";
+import { DataModal } from "./data-modal";
+import { lang } from "../../global-variables";
 
 const URL = "./lang/" + lang + "/ftm_" + lang + ".json";
 

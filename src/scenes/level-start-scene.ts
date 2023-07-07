@@ -1,10 +1,10 @@
-import { Monster } from "../components/monster.js";
-import { TimerTicking } from "../components/timer-ticking.js";
-import { CanvasStack } from "../utility/canvas-stack.js";
-import StonesLayer from "../components/stones-layer.js";
-import { PromptText } from "../components/prompt-text.js";
-import PauseButton from "../components/buttons/pause_button.js";
-import { LevelIndicators } from "../components/level-indicators.js";
+import { Monster } from "../components/monster";
+import { TimerTicking } from "../components/timer-ticking";
+import { CanvasStack } from "../utility/canvas-stack";
+import StonesLayer from "../components/stones-layer";
+import { PromptText } from "../components/prompt-text";
+import PauseButton from "../components/buttons/pause_button";
+import { LevelIndicators } from "../components/level-indicators";
 import {
   LevelEndButtonsLayer,
   LevelEndLayer,
@@ -19,15 +19,15 @@ import {
   FeedbackAudio,
   PhraseAudio,
   TutorialLayer,
-} from "../common/common.js";
-import { LevelStartLayer } from "../common/common.js";
-import { GameEndScene } from "./game-end-scene.js";
-import Sound from "../common/sound.js";
-import { LevelEndScene } from "./level-end-scene.js";
+} from "../common/common";
+import { LevelStartLayer } from "../common/common";
+import { GameEndScene } from "./game-end-scene";
+import Sound from "../common/sound";
+import { LevelEndScene } from "./level-end-scene";
 import { Game } from "./game";
-import { getDatafromStorage, getTotalStarCount } from "../data/profile-data.js";
-import { Debugger, lang, pseudoId } from "../../global-variables.js";
-import { FirebaseIntegration } from "../firebase/firebase_integration.js";
+import { getDatafromStorage, getTotalStarCount } from "../data/profile-data";
+import { Debugger, lang, pseudoId } from "../../global-variables";
+import { FirebaseIntegration } from "../firebase/firebase_integration";
 
 var images = {
   bgImg: "./assets/images/bg_v01.jpg",

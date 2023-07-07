@@ -1,9 +1,9 @@
-import { CanvasStack } from "../utility/canvas-stack.js";
+import { CanvasStack } from "../utility/canvas-stack";
 import {
   GameEndLayer,
   loadImages
-} from "../common/common.js";
-import { Game } from "./game.js";
+} from "../common/common";
+import { Game } from "./game";
 
 var images = {
   bgImg: "./assets/images/bg_v01.jpg",
