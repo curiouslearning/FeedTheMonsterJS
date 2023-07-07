@@ -4,6 +4,7 @@ import {
   GameSceneLayer,
   PromptAudio,
   StoneLayer,
+  UrlSubstring,
 } from "../common/common.js";
 import PromptText from "../components/prompt_text.js";
 import { CanvasStack } from "../utility/canvas-stack.js";
@@ -17,6 +18,7 @@ import Monster from "../components/animation/monster.js";
 import { LevelEndScene } from "./level-end-scene.js";
 import { TextEffects } from "../components/animation/text_effects.js";
 import Sound from "../common/sound.js";
+import { Debugger } from "../../global-variables.js";
 let previousTimestamp = performance.now();
 let deltaTime = 0;
 let lastTime;
@@ -115,7 +117,20 @@ export class GameScene {
       false
     );
     this.audio.playSound(
-      this.levelData.puzzles[this.puzzleNumber].prompt.promptAudio,
+      Debugger.DevelopmentLink
+        ? this.levelData.puzzles[this.puzzleNumber].prompt.promptAudio.slice(
+            0,
+            this.levelData.puzzles[
+              this.puzzleNumber
+            ].prompt.promptAudio.indexOf(UrlSubstring) + UrlSubstring.length
+          ) +
+            "dev" +
+            this.levelData.puzzles[this.puzzleNumber].prompt.promptAudio.slice(
+              this.levelData.puzzles[
+                this.puzzleNumber
+              ].prompt.promptAudio.indexOf(UrlSubstring) + UrlSubstring.length
+            )
+        : this.levelData.puzzles[this.puzzleNumber].prompt.promptAudio,
       PromptAudio
     );
     this.promptButton = new PromptText(
@@ -182,7 +197,25 @@ export class GameScene {
       const y = event.clientY - rect.top;
       if (self.promptButton.onClick(x, y)) {
         self.audio.playSound(
-          self.levelData.puzzles[self.puzzleNumber].prompt.promptAudio,
+          Debugger.DevelopmentLink
+            ? self.levelData.puzzles[
+                self.puzzleNumber
+              ].prompt.promptAudio.slice(
+                0,
+                self.levelData.puzzles[
+                  self.puzzleNumber
+                ].prompt.promptAudio.indexOf(UrlSubstring) + UrlSubstring.length
+              ) +
+                "dev" +
+                self.levelData.puzzles[
+                  self.puzzleNumber
+                ].prompt.promptAudio.slice(
+                  self.levelData.puzzles[
+                    self.puzzleNumber
+                  ].prompt.promptAudio.indexOf(UrlSubstring) +
+                    UrlSubstring.length
+                )
+            : this.levelData.puzzles[self.puzzleNumber].prompt.promptAudio,
           PromptAudio
         );
         //  self.timerTicking.resetTimer();
