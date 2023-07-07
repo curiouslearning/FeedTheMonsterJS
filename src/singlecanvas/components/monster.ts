@@ -110,7 +110,7 @@ export class Monster {
     }
 
     changeImage(src) {
-        this.animation(0);
+        // this.animation(0);
         // if (this.frameY == 1) {
         //   this.frameY = 0;
         // } else {
@@ -154,10 +154,10 @@ export class Monster {
             this.changeToIdleAnimation();
         }, 2000);
     }
-    animation(timeStamp) {
-        let deltaTime = timeStamp - lastTime;
-        lastTime = timeStamp;
+    animation(deltaTime) {
+        // let deltaTime = timeStamp - lastTime;
+        // lastTime = timeStamp;
         self.update(deltaTime);
-        animationFrame = requestAnimationFrame(self.animation);
+        // animationFrame = requestAnimationFrame(self.animation);
     }
 }

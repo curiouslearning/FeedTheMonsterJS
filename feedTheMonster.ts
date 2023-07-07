@@ -3,6 +3,7 @@ import { LevelSelectionScreen } from "./src/scenes/level-selection-scene.js";
 import { getData } from "./src/data/api-data";
 import { DataModal } from "./src/data/data-modal";
 import { StartScene } from "./src/singlecanvas/scenes/start-scene";
+import { SceneHandler } from "./src/singlecanvas/sceneHandler/scene-handler"
 import { CanvasStack } from "./src/utility/canvas-stack";
 import { firebaseConfig } from "./src/firebase/firebase_config";
 import {
@@ -63,8 +64,8 @@ window.addEventListener("load", async function () {
       canvas.width = window.screen.width > 420 ? 420 : window.innerWidth;
       delete this.monster;
       new CanvasStack("canvas").deleteAllLayers();
-      delete this.startScene;
-      this.startScene = new StartScene(canvas, d, this.analytics);
+      delete this.sceneHandler;
+      this.sceneHandler = new SceneHandler(canvas, d, this.analytics);
       passingDataToContainer();
     }
   });
@@ -75,7 +76,7 @@ window.addEventListener("load", async function () {
     Debugger.DevelopmentLink
       ? (document.getElementById("toggle-btn").style.display = "block")
       : null;
-    this.startScene = new StartScene(canvas, d, this.analytics);
+    this.sceneHandler = new SceneHandler(canvas, d, this.analytics);
     passingDataToContainer();
   }
 });

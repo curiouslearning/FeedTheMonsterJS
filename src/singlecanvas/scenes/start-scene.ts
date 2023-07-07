@@ -112,7 +112,7 @@ export class StartScene {
         this.firebase_analytics = firebase_analytics;
         StartScene.SceneName = StartScene1;
 
-        this.animation(0);
+        // this.animation(0);
 
         this.images = {
             pillerImg: "./assets/images/Totem_v02_v01.png",
@@ -147,9 +147,11 @@ export class StartScene {
         });
     }
 
-    animation = (timeStamp) => {
-        let deltaTime = timeStamp - lastTime;
-        lastTime = timeStamp;
+    animation = (deltaTime) => {
+        // let deltaTime = timeStamp - lastTime;
+        // lastTime = timeStamp;
+
+        // console.log("this is startscene");
 
         this.context.clearRect(0, 0, this.width, this.height);
         if (StartScene.SceneName == StartScene1) {
