@@ -58,8 +58,8 @@ export class SceneHandler {
     ) {
         this.canvas = canvas;
         this.data = data;
-        // this.width = canvas.width;
-        // this.height = canvas.height;
+        this.width = canvas.width;
+        this.height = canvas.height;
         this.canavsElement = document.getElementById("canvas") as HTMLCanvasElement;
         this.context = this.canavsElement.getContext("2d");
         this.startScene = new StartScene(canvas, data, firebase_analytics, this.switchSceneToLevelSelection);
