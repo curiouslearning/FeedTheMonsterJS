@@ -14,6 +14,7 @@ import PlayButton from "../../singlecanvas/components/play-button";
 import { Monster } from "../components/monster";
 import { StartScene } from "../scenes/start-scene";
 import { DataModal } from "../../data/data-modal";
+import { TestGameplayScene } from "../scenes/test-gameplay-scene";
 import { LevelSelectionScreen } from "../scenes/level-selection-scene";
 import { Debugger, lang } from "../../../global-variables";
 import { GameplayScene } from "../scenes/gameplay-scene"
@@ -34,6 +35,7 @@ export class SceneHandler {
     public startScene: StartScene;
     public levelSelectionScene: any;
     public gameplayScene: any;
+    public testGameplayScene: TestGameplayScene;
     // public monster: Monster;
     // public pickedStone: StoneConfig;
     // public pwa_status: string;
@@ -62,7 +64,8 @@ export class SceneHandler {
         this.height = canvas.height;
         this.canavsElement = document.getElementById("canvas") as HTMLCanvasElement;
         this.context = this.canavsElement.getContext("2d");
-        this.startScene = new StartScene(canvas, data, firebase_analytics, this.switchSceneToLevelSelection);
+        // this.startScene = new StartScene(canvas, data, firebase_analytics, this.switchSceneToLevelSelection);
+        this.testGameplayScene = new TestGameplayScene(canvas, data, firebase_analytics, this.switchSceneToLevelSelection);
         // this.gameplayScene = new GameplayScene(this.canvas, this.context, this.data.levels[0], 1, "text", false);
         // this.monster = new Monster(this.canvas);
         // this.pwa_status = localStorage.getItem(PWAInstallStatus);
@@ -70,7 +73,7 @@ export class SceneHandler {
         // this.devToggle();
         // this.createPlayButton();
         // this.firebase_analytics = firebase_analytics;
-        SceneHandler.SceneName = StartScene1;
+        SceneHandler.SceneName = GameScene1;
 
         this.animation(0);
 
@@ -106,7 +109,8 @@ export class SceneHandler {
         }
         else if (SceneHandler.SceneName == GameScene1) {
             // render gameplay screen for now
-            this.gameplayScene.draw();
+            // this.gameplayScene.draw();
+            this.testGameplayScene.animation(deltaTime);
         }
         requestAnimationFrame(this.animation);
     }
