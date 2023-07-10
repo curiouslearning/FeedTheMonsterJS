@@ -1,5 +1,5 @@
 import * as Sentry from "@sentry/browser";
-import { LevelSelectionScreen } from "./src/scenes/level-selection-scene.js";
+import { LevelSelectionScreen } from "./src/scenes/level-selection-scene";
 import { getData } from "./src/data/api-data";
 import { DataModal } from "./src/data/data-modal";
 import { StartScene } from "./src/singlecanvas/scenes/start-scene";

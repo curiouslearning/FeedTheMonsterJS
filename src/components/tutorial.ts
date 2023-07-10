@@ -87,8 +87,8 @@ export class Tutorial {
     let y = startY;
     const dx = (this.endx - this.startx) / 60;
     const dy = (this.endy - this.starty) / 60;
-    let absdx = (this.isMobile())?Math.abs(dx)*3:Math.abs(dx);
-    let absdy = (this.isMobile())?Math.abs(dy)*3:Math.abs(dy);
+    let absdx = Math.abs(dx);
+    let absdy = Math.abs(dy);
 
     function between(x, min, max) {
       return x >= min && x <= max;

@@ -64,8 +64,8 @@ export class SceneHandler {
         this.height = canvas.height;
         this.canavsElement = document.getElementById("canvas") as HTMLCanvasElement;
         this.context = this.canavsElement.getContext("2d");
-        // this.startScene = new StartScene(canvas, data, firebase_analytics, this.switchSceneToLevelSelection);
-        this.testGameplayScene = new TestGameplayScene(canvas, data, firebase_analytics, this.switchSceneToLevelSelection);
+        this.startScene = new StartScene(canvas, data, firebase_analytics, this.switchSceneToLevelSelection);
+        // this.testGameplayScene = new TestGameplayScene(canvas, data, firebase_analytics, this.switchSceneToLevelSelection);
         // this.gameplayScene = new GameplayScene(this.canvas, this.context, this.data.levels[0], 1, "text", false);
         // this.monster = new Monster(this.canvas);
         // this.pwa_status = localStorage.getItem(PWAInstallStatus);
@@ -73,7 +73,7 @@ export class SceneHandler {
         // this.devToggle();
         // this.createPlayButton();
         // this.firebase_analytics = firebase_analytics;
-        SceneHandler.SceneName = GameScene1;
+        SceneHandler.SceneName = StartScene1;
 
         this.animation(0);
 
@@ -109,8 +109,8 @@ export class SceneHandler {
         }
         else if (SceneHandler.SceneName == GameScene1) {
             // render gameplay screen for now
-            // this.gameplayScene.draw();
-            this.testGameplayScene.animation(deltaTime);
+            this.gameplayScene.draw(deltaTime);
+            // this.testGameplayScene.animation(deltaTime);
         }
         requestAnimationFrame(this.animation);
     }
@@ -130,8 +130,9 @@ export class SceneHandler {
         // dispose previous scene
         this.startScene.dispose();
         // load in next scene
-        this.levelSelectionScene = new LevelSelectionScreen(this.canvas, this.data, (arg1, arg2) => {
-            SceneHandler.SceneName = arg2;
+        this.levelSelectionScene = new LevelSelectionScreen(this.canvas, this.data, (gamePlayData) => {
+            this.gameplayScene = new GameplayScene(this.canvas, gamePlayData.currentLevelData, 1,  this.data.feedBackTexts, this.data.rightToLeft);
+            SceneHandler.SceneName = gamePlayData.sceneName;
         });
         SceneHandler.SceneName = LevelSelection1;
     }

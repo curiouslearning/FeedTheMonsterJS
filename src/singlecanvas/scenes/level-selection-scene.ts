@@ -343,15 +343,11 @@ export class LevelSelectionScreen {
         this.dispose();
         this.sound.pauseSound();
         // StartScene.SceneName = GameScene1;
-        this.callback(this.context, "THISIS", GameScene1);
-        new Game(
-            this.canvas.width,
-            this.canvas.height,
-            self.data.levels[level_number],
-            self.gameSceneCallBack,
-            self.data.FeedbackTexts,
-            self.data.rightToLeft
-        );
+        let gamePlayData = {
+            "currentLevelData": self.data.levels[level_number],
+            "sceneName": GameScene1
+        }
+        this.callback(gamePlayData);
     }
 
     // draw stars on top of level number

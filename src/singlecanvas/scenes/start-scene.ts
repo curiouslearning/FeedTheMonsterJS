@@ -85,7 +85,7 @@ export class StartScene {
         this.canavsElement = document.getElementById("canvas") as HTMLCanvasElement;
         this.context = this.canavsElement.getContext("2d");
         // this.canvasStack = new CanvasStack("canvas");
-        this.monster = new Monster(this.canvas);
+        this.monster = new Monster(this.canvas, 4);
         this.switchSceneToLevelSelection = switchSceneToLevelSelection;
         // this.stoneHandler = new StoneHandler(this.context, this.canvas, 2, this.data.levels[0]);
         // var img = new Image();

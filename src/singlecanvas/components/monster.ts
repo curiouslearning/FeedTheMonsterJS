@@ -30,16 +30,19 @@ export class Monster {
     public images: Object;
     public loadedImages: any;
     public imagesLoaded: boolean = false;
+    public monsterPhase: number;
 
-    constructor(game, zindex?) {
+    constructor(game, monsterPhase) {
         this.game = game;
         self = this;
-        this.zindex = zindex;
+        // this.zindex = zindex;
+        this.monsterPhase = monsterPhase;
         this.width = this.game.width;
         this.height = this.game.height;
         this.canavsElement = document.getElementById("canvas") as HTMLCanvasElement;
         this.context = this.canavsElement.getContext("2d");
         this.image = document.getElementById("monster") as HTMLImageElement;
+
         this.frameX = 0;
         this.frameY = 0;
         this.maxFrame = 6;
@@ -49,14 +52,14 @@ export class Monster {
         this.countFrame = 0;
         this.frameInterval = 1000 / this.fps;
         this.frameTimer = 0;
-        this.canvasStack = new CanvasStack("canvas");
+        // this.canvasStack = new CanvasStack("canvas");
 
         //////////loading images
         this.images = {
-            eatImg: "./assets/images/eat1" + monsterPhaseNumber + ".png",
-            idleImg: "./assets/images/idle1" + monsterPhaseNumber + ".png",
-            spitImg: "./assets/images/spit1" + monsterPhaseNumber + ".png",
-            dragImg: "./assets/images/drag1" + monsterPhaseNumber + ".png"
+            eatImg: "./assets/images/eat1" + monsterPhase + ".png",
+            idleImg: "./assets/images/idle1" + monsterPhase + ".png",
+            spitImg: "./assets/images/spit1" + monsterPhase + ".png",
+            dragImg: "./assets/images/drag1" + monsterPhase + ".png"
         }
 
         loadImages(this.images, (images) => {

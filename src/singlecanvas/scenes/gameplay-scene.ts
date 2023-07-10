@@ -28,6 +28,9 @@ import { Game } from "../../scenes/game";
 import { getDatafromStorage, getTotalStarCount } from "../../data/profile-data";
 import { Debugger, lang, pseudoId } from "../../../global-variables";
 import { FirebaseIntegration } from "../../firebase/firebase_integration";
+import StoneHandler from "../components/stone-handler";
+import { Tutorial } from "../components/tutorial";
+import { StoneConfig } from "../common/stone-config";
 
 var images = {
     bgImg: "./assets/images/bg_v01.jpg",
@@ -38,8 +41,6 @@ var images = {
     rotating_clock: "./assets/images/timer.png",
     fenchImg: "./assets/images/fence_v01.png",
     promptImg: "./assets/images/promptTextBg.png",
-    // fantastic: "./lang/" + lang + "/images/fantastic_01.png",
-    // great: "./lang/" + lang + "/images/great_01.png",
     autumnBgImg: "./assets/images/Autumn_bg_v01.jpg",
     autumnHillImg: "./assets/images/Autumn_hill_v01.png",
     autumnSignImg: "./assets/images/Autumn_sign_v01.png",
@@ -103,17 +104,22 @@ export class GameplayScene {
     public rotating_clock: any;
     public monsterPhaseNumber: any;
     public levelStartTime: number;
+    public pickedStone: StoneConfig;
     public puzzleStartTime: number;
     public showTutorial: boolean;
     public feedBackTexts: any;
     public isPuzzleCompleted: boolean;
     public rightToLeft: boolean;
-    public allImagesLoaded: boolean = false;
+    public imagesLoaded: boolean = false;
     loadedImages: any;
+    stoneHandler: StoneHandler;
+    public counter: number = 0;
+    tutorial: Tutorial;
+    images: { pillerImg: string; bgImg: string; hillImg: string; grassImg: string; fenchImg: string; profileMonster: string; };
+    handler: HTMLElement;
 
     constructor(
         canvas,
-        context,
         // game,
         levelData,
         // levelStartCallBack,
@@ -121,14 +127,14 @@ export class GameplayScene {
         feedBackTexts,
         rightToLeft) {
         // this.game = game;
-        // this.width = game.width;
-        // this.height = game.height;
+        this.width = canvas.width;
+        this.height = canvas.height;
         // self = this;
         // this.monster = new Monster(game);
         this.rightToLeft = rightToLeft;
         // this.audio = new Sound();
         this.canvas = canvas;
-        this.context = context;
+        this.context = this.canvas.getContext("2d");
         // this.canvasStack = new CanvasStack("canvas");
         this.monsterPhaseNumber = monsterPhaseNumber || 1;
         this.levelData = levelData;
@@ -144,6 +150,14 @@ export class GameplayScene {
 
         this.pauseButton = new PauseButton(this.context, this.canvas);
 
+        this.stoneHandler = new StoneHandler(this.context, this.canvas, this.counter, this.levelData);
+        this.promptText = new PromptText(this.width, this.height, this.levelData.puzzles[this.counter], this.levelData, false);
+        this.timerTicking = new TimerTicking(this.width, this.height, this.timeOverCallback);
+        this.levelIndicators = new LevelIndicators(this.context, this.canvas, 0);
+        this.tutorial = new Tutorial(this.context, this.width, this.height);
+        this.levelIndicators.setIndicators(this.counter);
+        this.monster = new Monster(this.canvas, 4);
+        this.handler = document.getElementById("canvas");
         // this.stones = new StonesLayer(
         //     game,
         //     levelData.puzzles[current_puzzle_index],
@@ -156,6 +170,23 @@ export class GameplayScene {
         this.feedBackTexts = feedBackTexts;
         // this.isPuzzleCompleted = false;
         // this.createBackgroud();
+
+        this.images = {
+            pillerImg: "./assets/images/Totem_v02_v01.png",
+            bgImg: "./assets/images/bg_v01.jpg",
+            hillImg: "./assets/images/hill_v01.png",
+            grassImg: "./assets/images/FG_a_v01.png",
+            fenchImg: "./assets/images/fence_v01.png",
+            profileMonster: "./assets/images/idle4.png"
+        }
+
+        loadImages(this.images, (images) => {
+            this.loadedImages = Object.assign({}, images);
+            this.imagesLoaded = true;
+        });
+
+        this.addEventListeners()
+
     }
 
     levelEndCallBack(button_name?: string) {
@@ -220,6 +251,18 @@ export class GameplayScene {
         min = Math.ceil(min);
         max = Math.floor(max);
         return Math.floor(Math.random() * (max - min + 1)) + min;
+    }
+
+    timeOverCallback = () => {
+        // time to load new puzzle
+        console.log("timeOver");
+        this.timerTicking.readyTimer();
+        this.timerTicking.startTimer();
+        this.timerTicking.isMyTimerOver = false;
+        if (this.counter == 5)
+            this.counter = 0;
+        // this.counter += 1;
+        this.levelIndicators.setIndicators(this.counter++);
     }
 
     redrawOfStones(
@@ -392,6 +435,99 @@ export class GameplayScene {
         }
         isLevelEnded = true;
     }
+
+    handleMouseUp = (event) => {
+        console.log(" upping mouse like a pro ");
+        let self = this;
+        const selfElement = <HTMLElement>document.getElementById("canvas");
+        var rect = selfElement.getBoundingClientRect();
+        const x = event.clientX - rect.left;
+        const y = event.clientY - rect.top;
+        // event.preventDefault();
+        if (
+            Math.sqrt(
+                (x - self.monster.x - self.canvas.width / 4) *
+                (x - self.monster.x - self.canvas.width / 4) +
+                (y - self.monster.y - self.canvas.height / 2.7) *
+                (y - self.monster.y - self.canvas.height / 2.7)
+            ) <= 60
+        ) {
+            // self.checkDraggedOption();
+            console.log(" drooped iniside moooooonster");
+            this.stoneDropToMonster();
+
+        } else {
+            self.monster.changeToIdleAnimation();
+        }
+
+        self.pickedStone = null;
+        console.log(" self.pickedStone : ", self.pickedStone);
+
+    }
+
+    handleMouseDown = (event) => {
+
+        let self = this;
+        console.log(" downing mouse like a pro ");
+        const selfElement = <HTMLElement>document.getElementById("canvas");
+        var rect = selfElement.getBoundingClientRect();
+        const x = event.clientX - rect.left;
+        const y = event.clientY - rect.top;
+        for (let sc of self.stoneHandler.foilStones) {
+            if (
+                Math.sqrt((x - sc.x) * (x - sc.x) + (y - sc.y) * (y - sc.y)) <= 40
+            ) {
+                console.log(" clickkedon stone", sc);
+                this.pickedStone = sc;
+            }
+        }
+    }
+
+    handleMouseMove = (event) => {
+        let self = this;
+        console.log(" mmoving mouse like a pro ");
+        // this.levelIndicator.setIndicators(1);
+        const selfElement = <HTMLElement>document.getElementById("canvas");
+        // event.preventDefault();
+        var rect = selfElement.getBoundingClientRect();
+        const x = event.clientX - rect.left;
+        const y = event.clientY - rect.top;
+        if (self.pickedStone) {
+            self.monster.changeToDragAnimation();
+            self.pickedStone.x = x;
+            self.pickedStone.y = y;
+        }
+    }
+
+    handleTouchStart = (event) => {
+        var touch = event.touches[0];
+        var mouseEvent = new MouseEvent("mousedown", {
+            clientX: touch.clientX,
+            clientY: touch.clientY,
+        });
+        document.getElementById("canvas").dispatchEvent(mouseEvent);
+    };
+    
+    handleTouchMove = (event) => {
+        console.log("itstouchmove");
+        var touch = event.touches[0];
+        var mouseEvent = new MouseEvent("mousemove", {
+            clientX: touch.clientX,
+            clientY: touch.clientY,
+        });
+        document.getElementById("canvas").dispatchEvent(mouseEvent);
+    };
+    
+    handleTouchEnd = (event) => {
+        var touch = event.changedTouches[0];
+        var mouseEvent = new MouseEvent("mouseup", {
+            clientX: touch.clientX,
+            clientY: touch.clientY,
+        });
+        document.getElementById("canvas").dispatchEvent(mouseEvent);
+    };
+    
+
     createCanvas() {
         this.levelStartTime = new Date().getTime();
         this.puzzleStartTime = new Date().getTime();
@@ -471,11 +607,11 @@ export class GameplayScene {
 
         score = 0;
     }
-    draw() {
+    draw(deltaTime) {
         // this.context.clearRect(0, 0, this.width, this.height);
         // this.context.drawImage(this.bgImg, 0, 0, this.width, this.height);
-        if (this.allImagesLoaded) {
-            this.context.fillText("lol", 100, 150);
+        if (this.imagesLoaded) {
+            this.context.drawImage(this.loadedImages.bgImg, 0, 0, this.width, this.height);
             this.context.drawImage(
                 this.loadedImages.pillerImg,
                 this.width * 0.6,
@@ -505,30 +641,36 @@ export class GameplayScene {
                 this.width * 1.5,
                 this.height / 2
             );
-            this.context.drawImage(
-                this.loadedImages.timer_empty,
-                0,
-                this.height * 0.1,
-                this.width,
-                this.height * 0.05
-            );
-            this.context.drawImage(
-                this.loadedImages.rotating_clock,
-                5,
-                this.height * 0.09,
-                this.width * 0.12,
-                this.height * 0.06
-            );
         }
         // this.timerTicking.createBackgroud();
 
         this.pauseButton.draw();
-        // this.levelIndicators.draw();
-        // this.promptText.draw();
+        this.levelIndicators.draw();
+        this.timerTicking.update(deltaTime)
+        this.promptText.draw();
+        this.monster.animation(deltaTime);
+        this.stoneHandler.draw();
     }
     update(deltaTime: number) {
         self.timerTicking ? self.timerTicking.update(deltaTime) : null;
         lastFrameTime = 0;
+    }
+
+    stoneDropToMonster() {
+        this. pickedStone.x = -900;
+        this.pickedStone.y = -900;
+        this.timerTicking.isAnswerDropped = true;
+        this.monster.changeToEatAnimation();
+        this.removeEventListeners();
+        setTimeout(() => {
+
+            this.stoneHandler.currentPuzzleData = [];
+            this.stoneHandler.foilStones = [];
+            this.counter++;
+            
+
+        }, 3000)
+
     }
 
     changePuzzle() {
@@ -582,6 +724,50 @@ export class GameplayScene {
 
             self.timerTicking ? (self.timerTicking.isTimerEnded = false) : null;
         }
+    }
+
+    addEventListeners() {
+        this.handler.addEventListener(
+            "mouseup",
+            this.handleMouseUp,
+            false
+        );
+        this.handler.addEventListener(
+            "mousemove",
+            this.handleMouseMove,
+            false
+        );
+        this.handler.addEventListener(
+            "mousedown",
+            this.handleMouseDown,
+            false
+        );
+
+        this.handler.addEventListener(
+            "touchstart",
+            this.handleTouchStart,
+            false
+        );
+        this.handler.addEventListener(
+            "touchmove",
+            this.handleMouseMove,
+            false
+        );
+        this.handler.addEventListener(
+            "touchend",
+                this.handleTouchEnd,
+              false
+        );
+    }
+
+    removeEventListeners() {
+        // Remove event listeners using the defined functions
+        this.handler.removeEventListener("mouseup", this.handleMouseUp, false);
+        this.handler.removeEventListener("mousemove", this.handleMouseMove, false);
+        this.handler.removeEventListener("mousedown", this.handleMouseDown, false);
+        this.handler.removeEventListener("touchstart", this.handleTouchStart, false);
+        this.handler.removeEventListener("touchmove", this.handleTouchMove, false);
+        this.handler.removeEventListener("touchend", this.handleTouchEnd, false);
     }
 
     createBackgroud() {
@@ -723,7 +909,7 @@ export class GameplayScene {
             // self.promptText.createBackground();
             loadingScreen(false);
             self.loadedImages = Object.assign({}, image)
-            self.allImagesLoaded = true;
+            // self.allImagesLoaded = true;
         });
     }
 

@@ -28,6 +28,7 @@ import { DataModal } from "../../data/data-modal";
 // import { CanvasStack } from "../../utility/canvas-stack";
 import { LevelSelectionScreen } from "../scenes/level-selection-scene";
 import { Debugger, lang } from "../../../global-variables";
+import { Tutorial } from "../components/tutorial";
 // var this: any;
 let lastTime = 0;
 let pwa_install_status: any;
@@ -70,6 +71,7 @@ export class TestGameplayScene {
     public static SceneName: string;
     public switchSceneToLevelSelection: any;
     public counter: any = 0;
+    tutorial: Tutorial;
 
     // public tutorial: Tutorial;
 
@@ -87,7 +89,7 @@ export class TestGameplayScene {
         this.canavsElement = document.getElementById("canvas") as HTMLCanvasElement;
         this.context = this.canavsElement.getContext("2d");
         // this.canvasStack = new CanvasStack("canvas");
-        this.monster = new Monster(this.canvas);
+        this.monster = new Monster(this.canvas, 0);
         // this.monster2 = new Monster(this.canvas);
         console.log(Date.now, " ::: ", performance.now);
         // this.monster2.x = 100;
@@ -105,9 +107,10 @@ export class TestGameplayScene {
         // this.pauseMenu = new PausePopUp(this.canavsElement);
         //////////////////////end
         this.levelIndicator = new LevelIndicators(this.context, this.canvas, 0);
+        this.tutorial = new Tutorial(this.context, this.width, this.height);
         this.levelIndicator.setIndicators(3);
         // this.tutorial = new Tutorial(this.context, this.width, this.height);
-        // this.tutorial.updateTargetStonePositions([100, 100]);
+        this.tutorial.updateTargetStonePositions([100, 100]);
 
 
         this.pwa_status = localStorage.getItem(PWAInstallStatus);
@@ -288,6 +291,7 @@ export class TestGameplayScene {
             // this.levelIndicator.update(deltaTime);
             // this.tutorial.draw(deltaTime);
             this.timerTicking.update(deltaTime);
+            this.tutorial.draw(deltaTime);
             // this.pauseMenu.draw();
         }
         // }
@@ -344,6 +348,44 @@ export class TestGameplayScene {
             "mousedown",
             this.handleMouseDown,
             false
+        );
+
+        this.handler.addEventListener(
+            "touchstart",
+      function (e) {
+        var touch = e.touches[0];
+        var mouseEvent = new MouseEvent("mousedown", {
+          clientX: touch.clientX,
+          clientY: touch.clientY,
+        });
+        document.getElementById("canvas").dispatchEvent(mouseEvent);
+      },
+      false
+        );
+        this.handler.addEventListener(
+            "touchmove",
+            function (e) {
+                console.log(" itstouchmove ");
+                var touch = e.touches[0];
+                var mouseEvent = new MouseEvent("mousemove", {
+                  clientX: touch.clientX,
+                  clientY: touch.clientY,
+                });
+                document.getElementById("canvas").dispatchEvent(mouseEvent);
+              },
+              false
+        );
+        this.handler.addEventListener(
+            "touchend",
+            function (e) {
+                var touch = e.changedTouches[0];
+                var mouseEvent = new MouseEvent("mouseup", {
+                  clientX: touch.clientX,
+                  clientY: touch.clientY,
+                });
+                document.getElementById("canvas").dispatchEvent(mouseEvent);
+              },
+              false
         );
     }
 
