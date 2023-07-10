@@ -1,7 +1,7 @@
 const readline = require("readline");
 const checkInDrive = require("./check_in_drive.js");
 // const urls = [
-//   "https://feedthemonster.curiouscontent.org/lang/punjabi/audios/ਘ.mp3",
+//   "https://feedthemonster.curiouscontent.org/lang/punjabi/audios/ਖ.mp3",
 //   "https://feedthemonster.curiouscontent.org/lang/punjabi/audios/ਛੁੱਟੀ.mp3",
 //   "https://feedthemonster.curiouscontent.org/lang/punjabi/audios/ਢਿੱਡ.mp3",
 //   "https://feedthemonster.curiouscontent.org/lang/punjabi/audios/ਢਹਿ.mp3",
@@ -27,23 +27,23 @@ async function getMissingAudios(urls) {
       const audioName = fileName.substring(0, fileName.lastIndexOf(".")); // Extract the audio name without extension
       return audioName;
     });
+    checkInDrive(missingAudios);
+    // const rl = readline.createInterface({
+    //   input: process.stdin,
+    //   output: process.stdout,
+    // });
 
-    const rl = readline.createInterface({
-      input: process.stdin,
-      output: process.stdout,
-    });
+    // rl.question(
+    //   "Enter your desired audio format (e.g., mp3, wav): ",
+    //   (format) => {
+    //     const formattedUrls = urls.map((url) =>
+    //       getAudioNameWithFormat(url, format)
+    //     );
 
-    rl.question(
-      "Enter your desired audio format (e.g., mp3, wav): ",
-      (format) => {
-        const formattedUrls = urls.map((url) =>
-          getAudioNameWithFormat(url, format)
-        );
-
-        checkInDrive(formattedUrls);
-        rl.close();
-      }
-    );
+    //     checkInDrive(formattedUrls);
+    //     rl.close();
+    //   }
+    // );
   } catch (error) {}
 }
 module.exports = getMissingAudios;
