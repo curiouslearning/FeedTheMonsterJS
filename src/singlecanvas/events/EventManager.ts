@@ -25,11 +25,11 @@ export class EventManager {
 
     private handleStoneDroppedEvent(event: Event) {
         console.log("stoneeeeeeeeee Droppppppp like Pro")
-        this.stoneDropCallbackHandler();
+        this.stoneDropCallbackHandler(event);
     }
 
     private handleLoadPuzzleEvent(event: Event) {
-        this.loadPuzzleCallbackHandler();
+        this.loadPuzzleCallbackHandler(event);
     }
 
     public unregisterEventListener() {

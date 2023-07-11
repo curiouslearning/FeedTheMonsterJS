@@ -12,8 +12,8 @@ export class LevelIndicators extends EventManager{
 
     constructor(context, canvas, activeIndicators) {
         super({
-            stoneDropCallbackHandler: () => this.handleStoneDrop(),
-            loadPuzzleCallbackHandler: () => this.handleLoadPuzzle()
+            stoneDropCallbackHandler: (event) => this.handleStoneDrop(event),
+            loadPuzzleCallbackHandler: (event) => this.handleLoadPuzzle(event)
         })
         this.context = context;
         this.canvas = canvas;
@@ -82,11 +82,11 @@ export class LevelIndicators extends EventManager{
         this.unregisterEventListener();
     }
 
-    public handleStoneDrop() {
+    public handleStoneDrop(event) {
         // this.isStoneDropped = true;
     }
-    public handleLoadPuzzle() {
-        // this.isStoneDropped = false;
-        this.setIndicators(2);
+
+    public handleLoadPuzzle(event) {
+        this.setIndicators(event.detail.counter);
     }
 }

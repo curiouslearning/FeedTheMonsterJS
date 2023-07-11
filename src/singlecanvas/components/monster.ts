@@ -1,6 +1,7 @@
 import { Debugger, lang } from "../../../global-variables";
 import { MonsterLayer, StoreMonsterPhaseNumber, loadImages } from "../../common/common";
 import { CanvasStack } from "../../utility/canvas-stack";
+import { EventManager } from "../events/EventManager";
 var lastTime = 0;
 var self;
 var animationFrame;
@@ -8,7 +9,7 @@ var monsterPhaseNumber = Debugger.DebugMode
     ? localStorage.getItem(StoreMonsterPhaseNumber + lang + "Debug") || 1
     : localStorage.getItem(StoreMonsterPhaseNumber + lang) || 1;
 
-export class Monster {
+export class Monster extends EventManager {
     public zindex: number;
     public width: number;
     public height: number;
@@ -33,6 +34,10 @@ export class Monster {
     public monsterPhase: number;
 
     constructor(game, monsterPhase) {
+        super({
+            stoneDropCallbackHandler: (event) => this.handleStoneDrop(event),
+            loadPuzzleCallbackHandler: (event) => this.handleLoadPuzzle(event)
+        })
         this.game = game;
         self = this;
         // this.zindex = zindex;
@@ -162,5 +167,17 @@ export class Monster {
         // lastTime = timeStamp;
         self.update(deltaTime);
         // animationFrame = requestAnimationFrame(self.animation);
+    }
+
+    public handleStoneDrop(event) {
+        console.log("callback from eventManager")
+    }
+    public handleLoadPuzzle(event) {
+        
+
+    }
+
+    public dispose() {
+        this.unregisterEventListener();
     }
 }

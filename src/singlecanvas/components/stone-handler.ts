@@ -23,7 +23,7 @@ var audioUrl = {
     monsterSad: "./assets/audios/Disapointed-05.mp3",
     ondragStart: "./assets/audios/onDrag.mp3",
 };
-export default class StoneHandler extends EventManager{
+export default class StoneHandler extends EventManager {
     public context: CanvasRenderingContext2D;
     public canvas: { width: any; height?: number };
     public currentPuzzleData: any;
@@ -50,6 +50,8 @@ export default class StoneHandler extends EventManager{
     public feedBackTexts: any;
 
     public image: any;
+    correctTargetStone: any;
+    stonebg: HTMLImageElement;
     constructor(
         context: CanvasRenderingContext2D,
         canvas: { width: number; height?: number },
@@ -66,8 +68,8 @@ export default class StoneHandler extends EventManager{
         // callbackFuntion
     ) {
         super({
-            stoneDropCallbackHandler: () => this.handleStoneDrop(),
-            loadPuzzleCallbackHandler: () => this.handleLoadPuzzle()
+            stoneDropCallbackHandler: (event) => this.handleStoneDrop(event),
+            loadPuzzleCallbackHandler: (event) => this.handleLoadPuzzle(event)
         })
         self = this;
         this.context = context;
@@ -76,12 +78,11 @@ export default class StoneHandler extends EventManager{
         this.puzzleNumber = puzzleNumber;
         this.levelData = levelData;
         // this.feedBackTexts = feedBackTexts;
-        this.currentPuzzleData = this.levelData.puzzles[this.puzzleNumber];
-        this.targetStones = [...this.currentPuzzleData.targetStones];
+        this.setTargetStone(this.puzzleNumber)
         // this.monster = monster;
         // this.levelIndicators = levelIndicators;
         // this.callbackFuntion = callbackFuntion;
-        this.correctAnswer = this.targetStones.join("");
+        // this.correctAnswer = this.targetStones.join("");
         this.initializeStonePos();
         // this.feedbackEffects = feedbackEffects;
         // this.feedbackTextCanvasElement = feedbackTextCanvasElement;
@@ -93,10 +94,10 @@ export default class StoneHandler extends EventManager{
         // this.eventListners();
         this.puzzleStartTime = new Date();
 
-        let stonebg = new Image();
-        stonebg.src = "./assets/images/stone_pink_v02.png";
-        stonebg.onload = (e) => {
-            this.createStones(stonebg)
+        this.stonebg = new Image();
+        this.stonebg.src = "./assets/images/stone_pink_v02.png";
+        this.stonebg.onload = (e) => {
+            this.createStones(this.stonebg)
             // this.stoneConfig = new StoneConfig(this.context, this.height, this.width, "text", 100, 100, img);
         }
     }
@@ -210,12 +211,22 @@ export default class StoneHandler extends EventManager{
         });
     }
 
-    public handleStoneDrop() {
+    public setTargetStone(puzzleNumber) {
+        this.currentPuzzleData = this.levelData.puzzles[puzzleNumber];
+        this.targetStones = [...this.currentPuzzleData.targetStones];
+        this.correctTargetStone = this.targetStones.join("");
+    }
+
+
+    public handleStoneDrop(event) {
         // this.isStoneDropped = true;
         this.foilStones = []
     }
-    public handleLoadPuzzle() {
-        // this.isStoneDropped = false;
+    public handleLoadPuzzle(event) {
+        this.puzzleNumber = event.detail.counter;
+        this.setTargetStone(this.puzzleNumber);
+        this.initializeStonePos();
+        this.createStones(this.stonebg);
     }
 
     public dispose() {

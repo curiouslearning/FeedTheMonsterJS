@@ -4,6 +4,7 @@ import Sound from "../../common/sound";
 import { PromptAudio } from "../../common/common"
 import { EventManager } from "../events/EventManager";
 
+
 var self;
 export class PromptText extends EventManager {
     public width: number;
@@ -25,8 +26,8 @@ export class PromptText extends EventManager {
 
     constructor(width, height, currentPuzzleData, levelData, rightToLeft) {
         super({
-            stoneDropCallbackHandler: () => this.handleStoneDrop(),
-            loadPuzzleCallbackHandler: () => this.handleLoadPuzzle()
+            stoneDropCallbackHandler: (event) => this.handleStoneDrop(event),
+            loadPuzzleCallbackHandler: (event) => this.handleLoadPuzzle(event)
         })
         this.width = width;
         this.height = height;
@@ -215,10 +216,11 @@ export class PromptText extends EventManager {
         }
     }
 
-    public handleStoneDrop() {
+    public handleStoneDrop(event) {
         this.isStoneDropped = true;
     }
-    public handleLoadPuzzle() {
+
+    public handleLoadPuzzle(event) {
         this.isStoneDropped = false;
     }
 

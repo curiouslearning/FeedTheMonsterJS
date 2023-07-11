@@ -454,12 +454,12 @@ export class GameplayScene {
         ) {
            console.log("dropppp stoneEvent");
             let loadPuzzleData = {'counter':this.counter}
-            const dropStoneEvent = new CustomEvent("stonesdropped", {detail: "He this pro"});
+            const dropStoneEvent = new CustomEvent("stonesdropped", {detail: loadPuzzleData});
             document.dispatchEvent(dropStoneEvent);
             setTimeout(()=>{
                 const loadPuzzleEvent = new CustomEvent("loadpuzzle", {detail: loadPuzzleData});
                 document.dispatchEvent(loadPuzzleEvent);
-            },2000)
+            }, 4000)
 
         } else {
             self.monster.changeToIdleAnimation();

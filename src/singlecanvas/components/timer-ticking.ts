@@ -35,8 +35,8 @@ export class TimerTicking extends EventManager {
 
     constructor(width: any, height: any, callback: any) {
         super({
-            stoneDropCallbackHandler: () => this.handleStoneDrop(),
-            loadPuzzleCallbackHandler: () => this.handleLoadPuzzle()
+            stoneDropCallbackHandler: (event) => this.handleStoneDrop(event),
+            loadPuzzleCallbackHandler: (event) => this.handleLoadPuzzle(event)
         })
         this.width = width;
         this.height = height;
@@ -126,11 +126,12 @@ export class TimerTicking extends EventManager {
         this.timer = 0;
     }
 
-    public handleStoneDrop() {
+    public handleStoneDrop(event) {
+        console.log(event, "<--------------")
         console.log("callback from eventManager")
         this.isStoneDropped = true;
     }
-    public handleLoadPuzzle() {
+    public handleLoadPuzzle(event) {
         this.isStoneDropped = false;
         this.startTimer();
 
