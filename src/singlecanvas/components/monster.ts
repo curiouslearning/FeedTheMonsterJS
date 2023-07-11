@@ -37,7 +37,7 @@ export class Monster extends EventManager {
         super({
             stoneDropCallbackHandler: (event) => this.handleStoneDrop(event),
             loadPuzzleCallbackHandler: (event) => this.handleLoadPuzzle(event)
-        })
+        });
         this.game = game;
         self = this;
         // this.zindex = zindex;
@@ -147,9 +147,9 @@ export class Monster extends EventManager {
 
     changeToEatAnimation() {
         this.image = this.loadedImages.eatImg;
-        setTimeout(() => {
-            this.changeToIdleAnimation();
-        }, 2000);
+        // setTimeout(() => {
+        //     this.changeToIdleAnimation();
+        // }, 2000);
     }
 
     changeToIdleAnimation() {
@@ -171,6 +171,7 @@ export class Monster extends EventManager {
 
     public handleStoneDrop(event) {
         console.log("callback from eventManager")
+        
     }
     public handleLoadPuzzle(event) {
         

@@ -453,6 +453,10 @@ export class GameplayScene {
             ) <= 60
         ) {
            console.log("dropppp stoneEvent");
+           console.log('Current Target',self.stoneHandler.correctTargetStone)
+           console.log(" self.pickedStone : ", self.pickedStone);
+           this.counter++;
+
             let loadPuzzleData = {'counter':this.counter}
             const dropStoneEvent = new CustomEvent("stonesdropped", {detail: loadPuzzleData});
             document.dispatchEvent(dropStoneEvent);
@@ -464,9 +468,9 @@ export class GameplayScene {
         } else {
             self.monster.changeToIdleAnimation();
         }
-
+        
         self.pickedStone = null;
-        console.log(" self.pickedStone : ", self.pickedStone);
+       
 
     }
 

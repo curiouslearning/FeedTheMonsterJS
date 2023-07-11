@@ -221,6 +221,9 @@ export class PromptText extends EventManager {
     }
 
     public handleLoadPuzzle(event) {
+        this.currentPuzzleData = this.levelData.puzzles[event.detail.counter]
+        this.currentPromptText = this.currentPuzzleData.prompt.promptText;
+        this.targetStones = this.currentPuzzleData.targetStones;
         this.isStoneDropped = false;
     }
 
