@@ -5,9 +5,9 @@
   "RightToLeft": false,
   "FeedbackTexts": ["शानदार", "महान", "आश्चर्यजनक"],
   "FeedbackAudios": [
-    "https://feedthemonster.curiouscontent.org/nepali/sounds/fantastic.wav",
-    "https://feedthemonster.curiouscontent.org/nepali/sounds/great.wav",
-    "https://feedthemonster.curiouscontent.org/nepali/sounds/amazing.wav"
+    "https://feedthemonster.curiouscontent.org/lang/nepali/audios/fantastic.wav",
+    "https://feedthemonster.curiouscontent.org/lang/nepali/audios/great.wav",
+    "https://feedthemonster.curiouscontent.org/lang/nepali/audios/amazing.wav"
   ],
   "OtherAudios": {
     "Select your player": "https://feedthemonster.curiouscontent.org/nepali/sounds/other/Select-your-player.wav",
