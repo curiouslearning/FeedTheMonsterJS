@@ -5,11 +5,15 @@ const path = require("path");
 const ffmpegPath = require("@ffmpeg-installer/ffmpeg").path;
 const ffmpeg = require("fluent-ffmpeg");
 const { spawn } = require("child_process");
-const langFolderPath = path.join(__dirname, "..", "lang");
+const langFolderPath = path.join(__dirname, "..", "OptimizedLanguages");
+if (!fs.existsSync(langFolderPath)) {
+  fs.mkdirSync(langFolderPath);
+}
 let languageFolderPath;
+let currentFolderPath = langFolderPath;
 let audiosFolderPath;
-let isRightToLeft = false;
 let jsonPromptTexts;
+let isRightToLeft = true;
 const SCOPES = ["https://www.googleapis.com/auth/drive"];
 const credentials = require("./credentials.json");
 ffmpeg.setFfmpegPath(ffmpegPath);
@@ -127,6 +131,11 @@ async function listFilesAndFolders(auth, parentFolderId) {
     }
 
     const selectedFolder = filesAndFolders[selectedIndex];
+    audiosFolderPath = path.join(currentFolderPath, `${selectedFolder.name}`);
+    if (!fs.existsSync(audiosFolderPath)) {
+      fs.mkdirSync(audiosFolderPath);
+    }
+    currentFolderPath = audiosFolderPath;
     console.log(`Selected item: ${selectedFolder.name} (${selectedFolder.id})`);
 
     const downloadConfirmation = await new Promise((resolve) => {
@@ -167,6 +176,7 @@ async function downloadFile(auth, fileId, name, destinationPath) {
   isRightToLeft
     ? (fileName = name.split(".")[0] + fileExtension)
     : (fileName = name.split("_")[0 + fileExtension]);
+
   const filePath = path.join(destinationPath, fileName);
   if (fs.existsSync(filePath)) {
     console.log("Skipping");
@@ -184,20 +194,16 @@ async function downloadFile(auth, fileId, name, destinationPath) {
 
   const contentType = response.headers["content-type"];
   if (contentType === "audio/mp3") {
-    if (
-      jsonPromptTexts.includes(fileName.slice(0, fileName.lastIndexOf(".")))
-    ) {
-      const dest = fs.createWriteStream(filePath);
+    const dest = fs.createWriteStream(filePath);
 
-      response.data
-        .on("end", () => {
-          console.log(`MP3 file downloaded: ${filePath}`);
-        })
-        .on("error", (err) => {
-          console.error("Error downloading MP3 file:", err);
-        })
-        .pipe(dest);
-    }
+    response.data
+      .on("end", () => {
+        console.log(`MP3 file downloaded: ${filePath}`);
+      })
+      .on("error", (err) => {
+        console.error("Error downloading MP3 file:", err);
+      })
+      .pipe(dest);
   } else if (contentType === "audio/wav") {
     const wavFolderPath = path.join(__dirname, "wav");
     if (!fs.existsSync(wavFolderPath)) {
@@ -212,19 +218,15 @@ async function downloadFile(auth, fileId, name, destinationPath) {
           destinationPath,
           fileName.replace(".wav", ".mp3")
         );
-        if (
-          jsonPromptTexts.includes(fileName.slice(0, fileName.lastIndexOf(".")))
-        ) {
-          convertWavToMp3(wavFilePath, mp3FilePath)
-            .then(() => {
-              console.log(`MP3 file converted: ${mp3FilePath}`);
-              fs.unlinkSync(wavFilePath); // Remove the original WAV file
-              fs.rmdirSync(wavFolderPath); // Remove the temporary WAV folder
-            })
-            .catch((error) => {
-              console.error("Error converting WAV to MP3:", error);
-            });
-        }
+        convertWavToMp3(wavFilePath, mp3FilePath)
+          .then(() => {
+            console.log(`MP3 file converted: ${mp3FilePath}`);
+            fs.unlinkSync(wavFilePath); // Remove the original WAV file
+            fs.rmdirSync(wavFolderPath); // Remove the temporary WAV folder
+          })
+          .catch((error) => {
+            console.error("Error converting WAV to MP3:", error);
+          });
       })
       .on("error", (err) => {
         console.error("Error downloading WAV file:", err);
@@ -275,41 +277,6 @@ async function downloadFolderContents(auth, folderId, destinationPath) {
     console.error("Error downloading folder contents:", error);
   }
 }
-
-// Function to prompt the user for language selection
-function promptForLanguageSelection() {
-  return new Promise((resolve) => {
-    rl.question("Enter your language: ", (answer) => {
-      resolve(answer.toLowerCase());
-    });
-  });
-}
-function processModule(language) {
-  try {
-    const modulePath = `../lang/${language}/ftm_${language}.json`;
-    const module = require(modulePath);
-    const promptTexts = findUniquePromptTexts(module);
-    return promptTexts;
-  } catch (error) {
-    console.error("Error occurred while importing module:", error);
-  }
-}
-function findUniquePromptTexts(obj, uniquePromptTexts = []) {
-  if (typeof obj === "object" && obj !== null) {
-    for (let key in obj) {
-      if (obj.hasOwnProperty(key)) {
-        if (key === "PromptText") {
-          const promptText = obj[key];
-          if (!uniquePromptTexts.includes(promptText)) {
-            uniquePromptTexts.push(promptText);
-          }
-        }
-        findUniquePromptTexts(obj[key], uniquePromptTexts);
-      }
-    }
-  }
-  return uniquePromptTexts;
-}
 async function languageDirection() {
   return new Promise((resolve) => {
     rl.question("Is language Right to left:(True/False) ", (answer) => {
@@ -319,19 +286,8 @@ async function languageDirection() {
 }
 async function main() {
   try {
-    language = await promptForLanguageSelection();
-    const uniquePromptTexts = await processModule(language);
-    jsonPromptTexts = uniquePromptTexts;
-    isRightToLeft = await languageDirection();
     const authClient = await authenticate();
-    languageFolderPath = path.join(langFolderPath, language);
-    if (!fs.existsSync(languageFolderPath)) {
-      fs.mkdirSync(languageFolderPath);
-    }
-    audiosFolderPath = path.join(languageFolderPath, "audios");
-    if (!fs.existsSync(audiosFolderPath)) {
-      fs.mkdirSync(audiosFolderPath);
-    }
+    isRightToLeft = await languageDirection();
     const parentFolderId = "1tj6wcvLQCcVyglSQ0hcCRZD1KaOCWOkk";
 
     await listFilesAndFolders(authClient, parentFolderId);
