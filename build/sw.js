@@ -50,42 +50,42 @@ self.registration.addEventListener("updatefound", function (e) {
     });
   });
 });
-async function cacheAudiosFiles(file, cacheName, length) {
-  ///awt
-  await caches.open(cacheName).then(function (cache) {
-    cache
-      .add(
-        self.location.href.includes("https://feedthemonsterdev.curiouscontent.org")
-          ? file.slice(
-              0,
-              file.indexOf("/feedthemonster") + "/feedthemonster".length
-            ) +
-              "dev" +
-              file.slice(
-                file.indexOf("/feedthemonster") + "/feedthemonster".length
-              )
-          : file
-      )
-      .finally(() => {
-        number = number + 1;
-        self.clients.matchAll().then((clients) => {
-          clients.forEach((client) => {
-            if ((number / (length * 5)) * 100 < 101) {
-              client.postMessage({
-                msg: "Loading",
-                data: Math.round((number / (length * 5)) * 100),
-              });
-            } else {
-              client.postMessage({
-                msg: "Loading",
-                data: Math.round(100),
-              });
-            }
-          });
-        });
-      });
-  });
-}
+// async function cacheAudiosFiles(file, cacheName, length) {
+//   ///awt
+//   await caches.open(cacheName).then(function (cache) {
+//     cache
+//       .add(
+//         self.location.href.includes("https://feedthemonsterdev.curiouscontent.org")
+//           ? file.slice(
+//               0,
+//               file.indexOf("/feedthemonster") + "/feedthemonster".length
+//             ) +
+//               "dev" +
+//               file.slice(
+//                 file.indexOf("/feedthemonster") + "/feedthemonster".length
+//               )
+//           : file
+//       )
+//       .finally(() => {
+//         number = number + 1;
+//         self.clients.matchAll().then((clients) => {
+//           clients.forEach((client) => {
+//             if ((number / (length * 5)) * 100 < 101) {
+//               client.postMessage({
+//                 msg: "Loading",
+//                 data: Math.round((number / (length * 5)) * 100),
+//               });
+//             } else {
+//               client.postMessage({
+//                 msg: "Loading",
+//                 data: Math.round(100),
+//               });
+//             }
+//           });
+//         });
+//       });
+//   });
+// }
 function cacheLangAssets(file, cacheName) {
   caches.open(cacheName).then((cache) => {
     cache.add(file);
@@ -120,31 +120,32 @@ async function getALLAudioUrls(cacheName, language) {
         //   );
         });
       }
-    cacheAudiosFiles2(audioList,language);
+    cacheAudiosFiles(audioList,language);
     })
   );
 }
 
-async function cacheAudiosFiles2(audioList,language){
+async function cacheAudiosFiles(audioList,language){
+  let percentageInterval = 10;
   const uniqueAudioURLs = [...new Set(audioList)];
-  const partSize = Math.ceil(uniqueAudioURLs.length / 10);
+  const partSize = Math.ceil(uniqueAudioURLs.length / percentageInterval);
   
 
-  for(let i=0;i<10;i++){
+  for(let i=0;i<percentageInterval;i++){
       const startIndex = i * partSize;
       let endIndex = startIndex + partSize;
-      if (i == 9) {
+      if (i == percentageInterval-1) {
         endIndex = uniqueAudioURLs.length;
       }
       const part = uniqueAudioURLs.slice(startIndex, endIndex);
       const cache = await caches.open(workbox.core.cacheNames.precache + language);
-      await cache.addAll(part).finally(()=>{
-        channel.postMessage({
+      await cache.addAll(part).finally(async ()=>{
+        await channel.postMessage({
           msg: "Loading",
-          data: (i + 1) * 10
+          data: (i + 1) * percentageInterval
         });
-      }).catch((e)=>{
-        console.log('Couldnt add audios');
+      }).catch(async (e)=>{
+        await console.log('Couldnt add audios');
       });
       
   }
