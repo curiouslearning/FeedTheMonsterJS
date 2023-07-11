@@ -180,7 +180,7 @@ async function downloadFile(auth, fileId, name, destinationPath) {
   const contentType = response.headers["content-type"];
   if (contentType === "audio/mp3") {
     if (
-      jsonPromptTexts.includes(fileName.slice(0, fileName.lastIndexOf(".")))
+      jsonPromptTexts.includes(file.name.slice(0, file.name.lastIndexOf(".")))
     ) {
       const dest = fs.createWriteStream(filePath);
 
@@ -208,7 +208,9 @@ async function downloadFile(auth, fileId, name, destinationPath) {
           fileName.replace(".wav", ".mp3")
         );
         if (
-          jsonPromptTexts.includes(fileName.slice(0, fileName.lastIndexOf(".")))
+          jsonPromptTexts.includes(
+            file.name.slice(0, file.name.lastIndexOf("."))
+          )
         ) {
           convertWavToMp3(wavFilePath, mp3FilePath)
             .then(() => {
