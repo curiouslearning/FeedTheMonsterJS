@@ -59,6 +59,17 @@ export class TimerTicking {
             this.loadedImages = Object.assign({}, images);
             this.imagesLoaded = true;
         });
+
+        this.addDropStoneEvent();
+    }
+
+    addDropStoneEvent() {
+        document.addEventListener('dropstone', (event) => {
+            console.log(event)
+            console.log("Yeee recived from timer");
+            this.setIsAnswerDropped(true);
+
+        });
     }
 
     setIsAnswerDropped(droppedStatus: boolean) {

@@ -87,6 +87,7 @@ export default class StoneHandler {
         // this.draw(0);
         // this.eventListners();
         this.puzzleStartTime = new Date();
+        this.addDropStoneEvent();
 
         let stonebg = new Image();
         stonebg.src = "./assets/images/stone_pink_v02.png";
@@ -94,6 +95,14 @@ export default class StoneHandler {
             this.createStones(stonebg)
             // this.stoneConfig = new StoneConfig(this.context, this.height, this.width, "text", 100, 100, img);
         }
+    }
+
+    addDropStoneEvent() {
+        document.addEventListener('dropstone', (event) => {
+            console.log("Yeee recived from stoneHandler");
+           this.foilStones = [];
+
+        });
     }
 
     createStones(img) {

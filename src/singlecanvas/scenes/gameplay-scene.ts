@@ -452,9 +452,10 @@ export class GameplayScene {
                 (y - self.monster.y - self.canvas.height / 2.7)
             ) <= 60
         ) {
-            // self.checkDraggedOption();
-            console.log(" drooped iniside moooooonster");
-            this.stoneDropToMonster();
+           
+            const cutomeEvent = new CustomEvent("dropstone", {detail: "He this pro"});
+            document.dispatchEvent(cutomeEvent);
+            // this.stoneDropToMonster();
 
         } else {
             self.monster.changeToIdleAnimation();

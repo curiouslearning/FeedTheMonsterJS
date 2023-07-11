@@ -13,6 +13,7 @@ export class LevelIndicators {
         this.context = context;
         this.canvas = canvas;
         this.activeIndicators = activeIndicators;
+        this.addDropStoneEvent();
         // this.draw();
 
         // loading images
@@ -30,6 +31,14 @@ export class LevelIndicators {
     setIndicators(indicatorCount) {
         this.activeIndicators = indicatorCount;
         this.update(this);
+    }
+
+    addDropStoneEvent() {
+        document.addEventListener('dropstone', (event) => {
+            console.log("Yeee recived from level-indicator");
+            this.setIndicators(2);
+
+        });
     }
     draw() {
         if (this.imagesLoaded) {
