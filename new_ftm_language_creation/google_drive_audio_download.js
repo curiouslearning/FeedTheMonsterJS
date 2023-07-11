@@ -8,7 +8,6 @@ const { spawn } = require("child_process");
 const langFolderPath = path.join(__dirname, "..", "lang");
 let languageFolderPath;
 let audiosFolderPath;
-let jsonPromptTexts;
 const SCOPES = ["https://www.googleapis.com/auth/drive"];
 const credentials = require("./credentials.json");
 ffmpeg.setFfmpegPath(ffmpegPath);
@@ -179,20 +178,16 @@ async function downloadFile(auth, fileId, name, destinationPath) {
 
   const contentType = response.headers["content-type"];
   if (contentType === "audio/mp3") {
-    if (
-      jsonPromptTexts.includes(file.name.slice(0, file.name.lastIndexOf(".")))
-    ) {
-      const dest = fs.createWriteStream(filePath);
+    const dest = fs.createWriteStream(filePath);
 
-      response.data
-        .on("end", () => {
-          console.log(`MP3 file downloaded: ${filePath}`);
-        })
-        .on("error", (err) => {
-          console.error("Error downloading MP3 file:", err);
-        })
-        .pipe(dest);
-    }
+    response.data
+      .on("end", () => {
+        console.log(`MP3 file downloaded: ${filePath}`);
+      })
+      .on("error", (err) => {
+        console.error("Error downloading MP3 file:", err);
+      })
+      .pipe(dest);
   } else if (contentType === "audio/wav") {
     const wavFolderPath = path.join(__dirname, "wav");
     if (!fs.existsSync(wavFolderPath)) {
@@ -207,21 +202,15 @@ async function downloadFile(auth, fileId, name, destinationPath) {
           destinationPath,
           fileName.replace(".wav", ".mp3")
         );
-        if (
-          jsonPromptTexts.includes(
-            file.name.slice(0, file.name.lastIndexOf("."))
-          )
-        ) {
-          convertWavToMp3(wavFilePath, mp3FilePath)
-            .then(() => {
-              console.log(`MP3 file converted: ${mp3FilePath}`);
-              fs.unlinkSync(wavFilePath); // Remove the original WAV file
-              fs.rmdirSync(wavFolderPath); // Remove the temporary WAV folder
-            })
-            .catch((error) => {
-              console.error("Error converting WAV to MP3:", error);
-            });
-        }
+        convertWavToMp3(wavFilePath, mp3FilePath)
+          .then(() => {
+            console.log(`MP3 file converted: ${mp3FilePath}`);
+            fs.unlinkSync(wavFilePath); // Remove the original WAV file
+            fs.rmdirSync(wavFolderPath); // Remove the temporary WAV folder
+          })
+          .catch((error) => {
+            console.error("Error converting WAV to MP3:", error);
+          });
       })
       .on("error", (err) => {
         console.error("Error downloading WAV file:", err);
@@ -281,37 +270,10 @@ function promptForLanguageSelection() {
     });
   });
 }
-function processModule(language) {
-  try {
-    const modulePath = `../lang/${language}/ftm_${language}.json`;
-    const module = require(modulePath);
-    const promptTexts = findUniquePromptTexts(module);
-    return promptTexts;
-  } catch (error) {
-    console.error("Error occurred while importing module:", error);
-  }
-}
-function findUniquePromptTexts(obj, uniquePromptTexts = []) {
-  if (typeof obj === "object" && obj !== null) {
-    for (let key in obj) {
-      if (obj.hasOwnProperty(key)) {
-        if (key === "PromptText") {
-          const promptText = obj[key];
-          if (!uniquePromptTexts.includes(promptText)) {
-            uniquePromptTexts.push(promptText);
-          }
-        }
-        findUniquePromptTexts(obj[key], uniquePromptTexts);
-      }
-    }
-  }
-  return uniquePromptTexts;
-}
+
 async function main() {
   try {
     language = await promptForLanguageSelection();
-    const uniquePromptTexts = await processModule(language);
-    jsonPromptTexts = uniquePromptTexts;
     const authClient = await authenticate();
     languageFolderPath = path.join(langFolderPath, language);
     if (!fs.existsSync(languageFolderPath)) {
