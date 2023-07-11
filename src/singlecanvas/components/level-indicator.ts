@@ -1,7 +1,8 @@
 import { loadImages } from "../../common/common";
+import { EventManager } from "../events/EventManager";
 
 
-export class LevelIndicators {
+export class LevelIndicators extends EventManager{
     public context: CanvasRenderingContext2D;
     public canvas: HTMLCanvasElement;
     public activeIndicators: number;
@@ -10,10 +11,13 @@ export class LevelIndicators {
     public imagesLoaded: boolean = false;
 
     constructor(context, canvas, activeIndicators) {
+        super({
+            stoneDropCallbackHandler: () => this.handleStoneDrop(),
+            loadPuzzleCallbackHandler: () => this.handleLoadPuzzle()
+        })
         this.context = context;
         this.canvas = canvas;
         this.activeIndicators = activeIndicators;
-        this.addDropStoneEvent();
         // this.draw();
 
         // loading images
@@ -72,5 +76,17 @@ export class LevelIndicators {
     }
     update(deltaTime) {
 
+    }
+
+    public dispose() {
+        this.unregisterEventListener();
+    }
+
+    public handleStoneDrop() {
+        // this.isStoneDropped = true;
+    }
+    public handleLoadPuzzle() {
+        // this.isStoneDropped = false;
+        this.setIndicators(2);
     }
 }

@@ -1,11 +1,12 @@
 import { loadImages } from "../../common/common";
+import { EventManager } from "../events/EventManager";
 
 declare global {
     interface Window {
         Android?: any;
     }
 }
-export class TimerTicking {
+export class TimerTicking extends EventManager {
     public width: number;
     public height: number;
     public timerWidth: number;
@@ -29,9 +30,14 @@ export class TimerTicking {
     public imagesLoaded: boolean = false;
     public startMyTimer: boolean = true;
     public isMyTimerOver: boolean = false;
-    public isAnswerDropped: boolean = false;
+    // public isAnswerDropped: boolean = false;
+    public isStoneDropped: boolean = false;
 
     constructor(width: any, height: any, callback: any) {
+        super({
+            stoneDropCallbackHandler: () => this.handleStoneDrop(),
+            loadPuzzleCallbackHandler: () => this.handleLoadPuzzle()
+        })
         this.width = width;
         this.height = height;
         this.widthToClear = this.width / 3.4;
@@ -59,21 +65,6 @@ export class TimerTicking {
             this.loadedImages = Object.assign({}, images);
             this.imagesLoaded = true;
         });
-
-        this.addDropStoneEvent();
-    }
-
-    addDropStoneEvent() {
-        document.addEventListener('dropstone', (event) => {
-            console.log(event)
-            console.log("Yeee recived from timer");
-            this.setIsAnswerDropped(true);
-
-        });
-    }
-
-    setIsAnswerDropped(droppedStatus: boolean) {
-        this.isAnswerDropped = droppedStatus;
     }
 
     startTimer() {
@@ -87,7 +78,7 @@ export class TimerTicking {
         this.timer = 0;
     }
     update(deltaTime) {
-        if (this.startMyTimer && !this.isAnswerDropped) {
+        if (this.startMyTimer && !this.isStoneDropped) {
             this.timer += deltaTime * 0.004;
         }
         if ((this.width * 0.87 - (this.width * 0.87 * this.timer * 0.01)) < 0 && !this.isMyTimerOver) {
@@ -133,5 +124,19 @@ export class TimerTicking {
             this.height * 0.05
         );
         this.timer = 0;
+    }
+
+    public handleStoneDrop() {
+        console.log("callback from eventManager")
+        this.isStoneDropped = true;
+    }
+    public handleLoadPuzzle() {
+        this.isStoneDropped = false;
+        this.startTimer();
+
+    }
+
+    public dispose() {
+        this.unregisterEventListener();
     }
 }

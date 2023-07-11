@@ -2,9 +2,10 @@
 import { Game } from "../../scenes/game";
 import Sound from "../../common/sound";
 import { PromptAudio } from "../../common/common"
+import { EventManager } from "../events/EventManager";
 
 var self;
-export class PromptText {
+export class PromptText extends EventManager {
     public width: number;
     public height: number;
     public levelData: any;
@@ -20,8 +21,13 @@ export class PromptText {
     public imagesLoaded: boolean = false;
     public handler: any;
     public sound: Sound;
+    public isStoneDropped: boolean = false;
 
     constructor(width, height, currentPuzzleData, levelData, rightToLeft) {
+        super({
+            stoneDropCallbackHandler: () => this.handleStoneDrop(),
+            loadPuzzleCallbackHandler: () => this.handleLoadPuzzle()
+        })
         this.width = width;
         this.height = height;
         this.levelData = levelData;
@@ -192,19 +198,32 @@ export class PromptText {
         }
     }
     draw(droppedStones = 0) {
-        this.context.drawImage(
-            this.prompt_image,
-            this.width / 2 - (this.width * 0.5) / 2,
-            // this.width / 2 - (this.width * 0.5),
-            this.height * 0.15,
-            this.width * 0.5,
-            this.height * 0.25
-        );
-        this.context.fillStyle = "black";
-        this.context.font = 30 + "px Arial";
-        this.rightToLeft
-            ? this.drawArabic(droppedStones)
-            : this.drawOthers(droppedStones);
+        if (!this.isStoneDropped) {
+            this.context.drawImage(
+                this.prompt_image,
+                this.width / 2 - (this.width * 0.5) / 2,
+                // this.width / 2 - (this.width * 0.5),
+                this.height * 0.15,
+                this.width * 0.5,
+                this.height * 0.25
+            );
+            this.context.fillStyle = "black";
+            this.context.font = 30 + "px Arial";
+            this.rightToLeft
+                ? this.drawArabic(droppedStones)
+                : this.drawOthers(droppedStones);
+        }
+    }
+
+    public handleStoneDrop() {
+        this.isStoneDropped = true;
+    }
+    public handleLoadPuzzle() {
+        this.isStoneDropped = false;
+    }
+
+    public dispose() {
+        this.unregisterEventListener();
     }
 
     update() {

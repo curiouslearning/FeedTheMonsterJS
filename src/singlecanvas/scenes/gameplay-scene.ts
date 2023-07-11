@@ -452,10 +452,14 @@ export class GameplayScene {
                 (y - self.monster.y - self.canvas.height / 2.7)
             ) <= 60
         ) {
-           
-            const cutomeEvent = new CustomEvent("dropstone", {detail: "He this pro"});
-            document.dispatchEvent(cutomeEvent);
-            // this.stoneDropToMonster();
+           console.log("dropppp stoneEvent");
+            let loadPuzzleData = {'counter':this.counter}
+            const dropStoneEvent = new CustomEvent("stonesdropped", {detail: "He this pro"});
+            document.dispatchEvent(dropStoneEvent);
+            setTimeout(()=>{
+                const loadPuzzleEvent = new CustomEvent("loadpuzzle", {detail: loadPuzzleData});
+                document.dispatchEvent(loadPuzzleEvent);
+            },2000)
 
         } else {
             self.monster.changeToIdleAnimation();
@@ -469,7 +473,6 @@ export class GameplayScene {
     handleMouseDown = (event) => {
 
         let self = this;
-        console.log(" downing mouse like a pro ");
         const selfElement = <HTMLElement>document.getElementById("canvas");
         var rect = selfElement.getBoundingClientRect();
         const x = event.clientX - rect.left;
@@ -486,10 +489,7 @@ export class GameplayScene {
 
     handleMouseMove = (event) => {
         let self = this;
-        console.log(" mmoving mouse like a pro ");
-        // this.levelIndicator.setIndicators(1);
         const selfElement = <HTMLElement>document.getElementById("canvas");
-        // event.preventDefault();
         var rect = selfElement.getBoundingClientRect();
         const x = event.clientX - rect.left;
         const y = event.clientY - rect.top;
@@ -657,75 +657,75 @@ export class GameplayScene {
         lastFrameTime = 0;
     }
 
-    stoneDropToMonster() {
-        this. pickedStone.x = -900;
-        this.pickedStone.y = -900;
-        this.timerTicking.isAnswerDropped = true;
-        this.monster.changeToEatAnimation();
-        this.removeEventListeners();
-        setTimeout(() => {
+    // stoneDropToMonster() {
+    //     this. pickedStone.x = -900;
+    //     this.pickedStone.y = -900;
+    //     this.timerTicking.isAnswerDropped = true;
+    //     this.monster.changeToEatAnimation();
+    //     this.removeEventListeners();
+    //     setTimeout(() => {
 
-            this.stoneHandler.currentPuzzleData = [];
-            this.stoneHandler.foilStones = [];
-            this.counter++;
+    //         this.stoneHandler.currentPuzzleData = [];
+    //         this.stoneHandler.foilStones = [];
+    //         this.counter++;
             
 
-        }, 3000)
+    //     }, 3000)
 
-    }
+    // }
 
-    changePuzzle() {
-        lastFrameTime = performance.now();
-        if (self.timerTicking.isTimerEnded) {
-            self.stones.isTimerEnded();
-            word_dropped_stones = 0;
-            current_puzzle_index += 1;
-            self.stones.makeStoneArrayEmpty();
-            self.stones.setTimeoutRunning(true);
-            // self.stones.clearCanvas();
-            self.stones.canvas.scene.levelIndicators.setIndicators(
-                current_puzzle_index
-            );
-            if (current_puzzle_index == self.puzzleData.length) {
-                setTimeout(() => {
-                    isLevelEnded = true;
-                    self.levelStartCallBack();
-                    delete self.timerTicking;
-                    new LevelEndScene(
-                        self.game,
-                        score,
-                        self.monster,
-                        self.levelEndCallBack,
-                        self.levelData,
-                        isGamePause,
-                        this.monsterPhaseNumber,
-                        this.levelStartTime
-                    );
-                }, 1000);
-            } else {
-                self.stones.makeStoneArrayEmpty();
-                // for (let i = 0; i <= 3; i++) {
-                // setTimeout(() => {
+    // changePuzzle() {
+    //     lastFrameTime = performance.now();
+    //     if (self.timerTicking.isTimerEnded) {
+    //         self.stones.isTimerEnded();
+    //         word_dropped_stones = 0;
+    //         current_puzzle_index += 1;
+    //         self.stones.makeStoneArrayEmpty();
+    //         self.stones.setTimeoutRunning(true);
+    //         // self.stones.clearCanvas();
+    //         self.stones.canvas.scene.levelIndicators.setIndicators(
+    //             current_puzzle_index
+    //         );
+    //         if (current_puzzle_index == self.puzzleData.length) {
+    //             setTimeout(() => {
+    //                 isLevelEnded = true;
+    //                 self.levelStartCallBack();
+    //                 delete self.timerTicking;
+    //                 new LevelEndScene(
+    //                     self.game,
+    //                     score,
+    //                     self.monster,
+    //                     self.levelEndCallBack,
+    //                     self.levelData,
+    //                     isGamePause,
+    //                     this.monsterPhaseNumber,
+    //                     this.levelStartTime
+    //                 );
+    //             }, 1000);
+    //         } else {
+    //             self.stones.makeStoneArrayEmpty();
+    //             // for (let i = 0; i <= 3; i++) {
+    //             // setTimeout(() => {
 
-                // if (i == 3 && !isGamePause) {
-                if (!isGamePause) {
-                    self.stones.setNewPuzzle(self.puzzleData[current_puzzle_index]);
-                    self.puzzleStartTime = new Date().getTime();
-                    self.promptText.setCurrrentPuzzleData(
-                        self.puzzleData[current_puzzle_index]
-                    );
-                    self.timerTicking.draw();
-                    self.promptText.draw();
-                    self.stones.setNewPuzzle(self.puzzleData[current_puzzle_index]);
-                    self.stones.setTimeoutRunning(true);
-                }
-                // }, i * 1300.66);
-                // }
-            }
+    //             // if (i == 3 && !isGamePause) {
+    //             if (!isGamePause) {
+    //                 self.stones.setNewPuzzle(self.puzzleData[current_puzzle_index]);
+    //                 self.puzzleStartTime = new Date().getTime();
+    //                 self.promptText.setCurrrentPuzzleData(
+    //                     self.puzzleData[current_puzzle_index]
+    //                 );
+    //                 self.timerTicking.draw();
+    //                 self.promptText.draw();
+    //                 self.stones.setNewPuzzle(self.puzzleData[current_puzzle_index]);
+    //                 self.stones.setTimeoutRunning(true);
+    //             }
+    //             // }, i * 1300.66);
+    //             // }
+    //         }
 
-            self.timerTicking ? (self.timerTicking.isTimerEnded = false) : null;
-        }
-    }
+    //         self.timerTicking ? (self.timerTicking.isTimerEnded = false) : null;
+    //     }
+    // }
 
     addEventListeners() {
         this.handler.addEventListener(

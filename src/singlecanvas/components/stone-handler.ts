@@ -4,6 +4,7 @@ import Sound from "../../common/sound";
 import { StoneConfig } from "../common/stone-config";
 import { getDatafromStorage } from "../../data/profile-data";
 import { FirebaseIntegration } from "../../firebase/firebase_integration";
+import { EventManager } from "../events/EventManager";
 // import { LevelIndicators } from "./level-indicators.js";
 // import { Tutorial } from "./tutorial.js";
 // import Monster from "./animation/monster.js";
@@ -22,7 +23,7 @@ var audioUrl = {
     monsterSad: "./assets/audios/Disapointed-05.mp3",
     ondragStart: "./assets/audios/onDrag.mp3",
 };
-export default class StoneHandler {
+export default class StoneHandler extends EventManager{
     public context: CanvasRenderingContext2D;
     public canvas: { width: any; height?: number };
     public currentPuzzleData: any;
@@ -64,6 +65,10 @@ export default class StoneHandler {
         // feedbackTextCanvasElement
         // callbackFuntion
     ) {
+        super({
+            stoneDropCallbackHandler: () => this.handleStoneDrop(),
+            loadPuzzleCallbackHandler: () => this.handleLoadPuzzle()
+        })
         self = this;
         this.context = context;
         this.canvas = canvas;
@@ -87,7 +92,6 @@ export default class StoneHandler {
         // this.draw(0);
         // this.eventListners();
         this.puzzleStartTime = new Date();
-        this.addDropStoneEvent();
 
         let stonebg = new Image();
         stonebg.src = "./assets/images/stone_pink_v02.png";
@@ -95,14 +99,6 @@ export default class StoneHandler {
             this.createStones(stonebg)
             // this.stoneConfig = new StoneConfig(this.context, this.height, this.width, "text", 100, 100, img);
         }
-    }
-
-    addDropStoneEvent() {
-        document.addEventListener('dropstone', (event) => {
-            console.log("Yeee recived from stoneHandler");
-           this.foilStones = [];
-
-        });
     }
 
     createStones(img) {
@@ -212,5 +208,17 @@ export default class StoneHandler {
             version_number: document.getElementById("version-info-id").innerHTML,
             response_time: (puzzleEndTime.getTime() - response_time) / 1000,
         });
+    }
+
+    public handleStoneDrop() {
+        // this.isStoneDropped = true;
+        this.foilStones = []
+    }
+    public handleLoadPuzzle() {
+        // this.isStoneDropped = false;
+    }
+
+    public dispose() {
+        this.unregisterEventListener();
     }
 }
