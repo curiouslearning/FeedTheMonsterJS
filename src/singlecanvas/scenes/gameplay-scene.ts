@@ -111,6 +111,8 @@ export class GameplayScene {
     public isPuzzleCompleted: boolean;
     public rightToLeft: boolean;
     public imagesLoaded: boolean = false;
+    public callBack: Function;
+    public levelNumber: Function;
     loadedImages: any;
     stoneHandler: StoneHandler;
     public counter: number = 0;
@@ -125,7 +127,11 @@ export class GameplayScene {
         // levelStartCallBack,
         monsterPhaseNumber,
         feedBackTexts,
-        rightToLeft) {
+        rightToLeft,
+        callback,
+        levelNumber
+        
+        ) {
         // this.game = game;
         this.width = canvas.width;
         this.height = canvas.height;
@@ -138,6 +144,8 @@ export class GameplayScene {
         // this.canvasStack = new CanvasStack("canvas");
         this.monsterPhaseNumber = monsterPhaseNumber || 1;
         this.levelData = levelData;
+        this.callBack = callback;
+        this.levelNumber = levelNumber;
         // this.levelStartCallBack = levelStartCallBack;
         // this.timerTicking = new TimerTicking(game, this);
         // this.promptText = new PromptText(
@@ -455,9 +463,16 @@ export class GameplayScene {
            console.log("dropppp stoneEvent");
            console.log('Current Target',self.stoneHandler.correctTargetStone)
            console.log(" self.pickedStone : ", self.pickedStone);
+           const isCorrect = this.stoneHandler.isDroppedStoneCorrect(self.pickedStone.text)
+           console.log('isCorrect->',isCorrect);
            this.counter++;
-
-            let loadPuzzleData = {'counter':this.counter}
+           console.log('LevelData->',this.levelData)
+           if(this.counter == this.levelData.puzzles.length){
+             this.callBack();
+           }
+          
+            
+            let loadPuzzleData = {'counter':this.counter,'isCorrect': isCorrect}
             const dropStoneEvent = new CustomEvent("stonesdropped", {detail: loadPuzzleData});
             document.dispatchEvent(dropStoneEvent);
             setTimeout(()=>{

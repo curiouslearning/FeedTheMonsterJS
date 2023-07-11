@@ -158,9 +158,9 @@ export class Monster extends EventManager {
 
     changeToSpitAnimation() {
         this.image = this.loadedImages.spitImg;
-        setTimeout(() => {
-            this.changeToIdleAnimation();
-        }, 2000);
+        // setTimeout(() => {
+        //     this.changeToIdleAnimation();
+        // }, 2000);
     }
     animation(deltaTime) {
         // let deltaTime = timeStamp - lastTime;
@@ -171,10 +171,17 @@ export class Monster extends EventManager {
 
     public handleStoneDrop(event) {
         console.log("callback from eventManager")
+        console.log('monsterevent->',event)
+        if(event.detail.isCorrect){
+            this.changeToEatAnimation();
+        }
+        else{
+            this.changeToSpitAnimation();
+        }
         
     }
     public handleLoadPuzzle(event) {
-        
+        this.changeToIdleAnimation();
 
     }
 

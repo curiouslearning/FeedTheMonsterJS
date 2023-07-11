@@ -73,3 +73,4 @@ export const DevelopmentServer = "https://feedthemonsterdev.curiouscontent.org";
 export const StartScene1 = "StartScene1";
 export const LevelSelection1 = "LevelSelection1";
 export const GameScene1 = "GameScene1";
+export const EndScene1 = "EndScene1";

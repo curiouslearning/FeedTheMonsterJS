@@ -5,7 +5,8 @@ import {
     StartScene1,
     LevelSelection1,
     GameScene1,
-    loadImages
+    loadImages,
+    EndScene1
 } from "../../common/common";
 import { StoneConfig } from "../common/stone-config"
 import Sound from "../../common/sound";
@@ -112,17 +113,34 @@ export class SceneHandler {
             this.gameplayScene.draw(deltaTime);
             // this.testGameplayScene.animation(deltaTime);
         }
+        else if (SceneHandler.SceneName == EndScene1) {
+            // render gameplay screen for now
+            // this.gameplayScene.draw(deltaTime);
+            console.log('Move to levelend scene');
+            // this.testGameplayScene.animation(deltaTime);
+        }
         requestAnimationFrame(this.animation);
     }
 
     // draw() {
     // }
-
-    switchSceneToGameplay = () => {
+   
+    switchSceneToGameplay = (gamePlayData) => {
         // dispose previous scene
         this.levelSelectionScene.dispose();
         // load in next scene --- gameplaqyscene
+        this.gameplayScene = new GameplayScene(this.canvas, gamePlayData.currentLevelData, 1,  this.data.feedBackTexts, this.data.rightToLeft,this.switchSceneToEndLevel,gamePlayData.selectedLevelNumber);
 
+        SceneHandler.SceneName = GameScene1;
+    }
+    switchSceneToEndLevel = (gamePlayData) => {
+        // dispose previous scene
+        this.gameplayScene.dispose();
+        this.gameplayScene = new GameplayScene(this.canvas, gamePlayData.currentLevelData, 1,  this.data.feedBackTexts, this.data.rightToLeft,this.switchSceneToEndLevel,gamePlayData.selectedLevelNumber);
+        // load in next scene
+        // this.levelSelectionScene = new LevelSelectionScreen(this.canvas, this.data,this.switchSceneToGameplay)
+
+        
         SceneHandler.SceneName = GameScene1;
     }
 
@@ -130,10 +148,9 @@ export class SceneHandler {
         // dispose previous scene
         this.startScene.dispose();
         // load in next scene
-        this.levelSelectionScene = new LevelSelectionScreen(this.canvas, this.data, (gamePlayData) => {
-            this.gameplayScene = new GameplayScene(this.canvas, gamePlayData.currentLevelData, 1,  this.data.feedBackTexts, this.data.rightToLeft);
-            SceneHandler.SceneName = gamePlayData.sceneName;
-        });
+        this.levelSelectionScene = new LevelSelectionScreen(this.canvas, this.data,this.switchSceneToGameplay)
+
+        
         SceneHandler.SceneName = LevelSelection1;
     }
 

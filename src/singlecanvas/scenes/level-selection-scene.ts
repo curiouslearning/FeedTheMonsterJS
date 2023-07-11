@@ -49,6 +49,7 @@ export class LevelSelectionScreen {
     public images: Object;
     public loadedImages: any;
     public imagesLoaded: boolean = false;
+    public levelNumber: number;
 
     constructor(canvas: HTMLCanvasElement, data: any, callback: any) {
         this.canvas = canvas;
@@ -88,6 +89,8 @@ export class LevelSelectionScreen {
         this.addListeners();
     }
 
+
+
     private initialiseButtonPos() {
         this.levelButtonpos = [
             [
@@ -113,7 +116,7 @@ export class LevelSelectionScreen {
             ],
         ];
     }
-
+   
     addListeners() {
         // next prev button listner #1
         document.getElementById("canvas").addEventListener(
@@ -345,7 +348,8 @@ export class LevelSelectionScreen {
         // StartScene.SceneName = GameScene1;
         let gamePlayData = {
             "currentLevelData": self.data.levels[level_number],
-            "sceneName": GameScene1
+            "sceneName": GameScene1,
+            "selectedLevelNumber": level_number
         }
         this.callback(gamePlayData);
     }
