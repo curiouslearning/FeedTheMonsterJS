@@ -102,6 +102,7 @@ async function getCacheName(language) {
 
 async function getALLAudioUrls(cacheName, language) {
   await cacheCommonAssets(language);
+  let audioList = [];
   fetch("./lang/" + language + "/ftm_" + language + ".json", {
     method: "GET",
     headers: {
@@ -111,16 +112,44 @@ async function getALLAudioUrls(cacheName, language) {
     res.json().then((data) => {
       for (var i = 0; i < data.Levels.length; i++) {
         data.Levels[i].Puzzles.forEach(async (element) => {
-         await cacheAudiosFiles(
-            element.prompt.PromptAudio,
-            workbox.core.cacheNames.precache + language,
-            data.Levels.length
-          );
+          audioList.push(element.prompt.PromptAudio)
+        //  await cacheAudiosFiles(
+        //     element.prompt.PromptAudio,
+        //     workbox.core.cacheNames.precache + language,
+        //     data.Levels.length
+        //   );
         });
       }
+    cacheAudiosFiles2(audioList,language);
     })
   );
 }
+
+async function cacheAudiosFiles2(audioList,language){
+  const uniqueAudioURLs = [...new Set(audioList)];
+  const partSize = Math.ceil(uniqueAudioURLs.length / 10);
+  
+
+  for(let i=0;i<10;i++){
+      const startIndex = i * partSize;
+      let endIndex = startIndex + partSize;
+      if (i == 9) {
+        endIndex = uniqueAudioURLs.length;
+      }
+      const part = uniqueAudioURLs.slice(startIndex, endIndex);
+      const cache = await caches.open(workbox.core.cacheNames.precache + language);
+      await cache.addAll(part).finally(()=>{
+        channel.postMessage({
+          msg: "Loading",
+          data: (i + 1) * 10
+        });
+      }).catch((e)=>{
+        console.log('Couldnt add audios');
+      });
+      
+  }
+
+};
 
 function cacheCommonAssets(language) {
   [
