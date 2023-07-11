@@ -8,7 +8,6 @@ const { spawn } = require("child_process");
 const langFolderPath = path.join(__dirname, "..", "lang");
 let languageFolderPath;
 let audiosFolderPath;
-let isRightToLeft = false;
 let jsonPromptTexts;
 const SCOPES = ["https://www.googleapis.com/auth/drive"];
 const credentials = require("./credentials.json");
@@ -161,12 +160,8 @@ async function listFilesAndFolders(auth, parentFolderId) {
 // Function to download a file
 async function downloadFile(auth, fileId, name, destinationPath) {
   const drive = google.drive({ version: "v3", auth });
-  const { ext } = path.parse(name);
-  let fileExtension = ext.toLowerCase();
-  let fileName;
-  isRightToLeft
-    ? (fileName = name.split(".")[0] + fileExtension)
-    : (fileName = name.split("_")[0 + fileExtension]);
+  let fileExtension = path.parse(name).ext;
+  let fileName = name.split("_")[0] + fileExtension;
   const filePath = path.join(destinationPath, fileName);
   if (fs.existsSync(filePath)) {
     console.log("Skipping");
@@ -310,19 +305,11 @@ function findUniquePromptTexts(obj, uniquePromptTexts = []) {
   }
   return uniquePromptTexts;
 }
-async function languageDirection() {
-  return new Promise((resolve) => {
-    rl.question("Is language Right to left:(True/False) ", (answer) => {
-      resolve(answer.toLowerCase());
-    });
-  });
-}
 async function main() {
   try {
     language = await promptForLanguageSelection();
     const uniquePromptTexts = await processModule(language);
     jsonPromptTexts = uniquePromptTexts;
-    isRightToLeft = await languageDirection();
     const authClient = await authenticate();
     languageFolderPath = path.join(langFolderPath, language);
     if (!fs.existsSync(languageFolderPath)) {
