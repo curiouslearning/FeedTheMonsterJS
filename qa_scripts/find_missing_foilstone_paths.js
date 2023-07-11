@@ -48,7 +48,9 @@ function findMissingLetter(obj, path = "", paths = []) {
           key === "StoneText" &&
           obj[key] != null &&
           key === "StoneText" &&
-          obj[key] != ""
+          obj[key] != "" &&
+          key === "StoneText" &&
+          obj[key] != "FireWrongLetter"
         ) {
           if (!uniqueLetters.includes(obj[key]) && uniqueLetters.length <= 30) {
             console.log(obj[key]);
@@ -58,7 +60,8 @@ function findMissingLetter(obj, path = "", paths = []) {
         if (
           !(key === "StoneText" && obj[key] === "MagnetLetter") &&
           !(key === "StoneText" && obj[key] === null) &&
-          !(key === "StoneText" && obj[key] === "")
+          !(key === "StoneText" && obj[key] === "") &&
+          !(key === "StoneText" && obj[key] === "FireWrongLetter")
         ) {
         } else {
           const randomIndex = Math.floor(Math.random() * uniqueLetters.length);
