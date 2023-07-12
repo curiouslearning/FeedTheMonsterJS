@@ -48,7 +48,10 @@ function findMissingLetter(obj, path = "", paths = []) {
               // Handle array of URLs
               const urlList = obj[key];
               const transformedUrls = urlList.map((url) => {
-                const word = extractWordFromUrl(url);
+                let word = extractWordFromUrl(url);
+                if (word === "great") {
+                  word = word + "1";
+                }
                 return createTransformedUrl(word);
               });
               obj[key] = transformedUrls;
@@ -58,7 +61,10 @@ function findMissingLetter(obj, path = "", paths = []) {
               for (let audioKey in audioObject) {
                 if (audioObject.hasOwnProperty(audioKey)) {
                   const url = audioObject[audioKey];
-                  const word = extractWordFromUrl(url);
+                  let word = extractWordFromUrl(url);
+                  if (word === "great") {
+                    word = word + "1";
+                  }
                   const transformedUrl = createTransformedUrl(word);
                   audioObject[audioKey] = transformedUrl;
                 }
