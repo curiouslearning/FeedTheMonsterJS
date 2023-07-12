@@ -3,7 +3,11 @@
   "version": 2.1,
   "variant": "a",
   "RightToLeft": false,
-  "FeedbackTexts": ["афсонавӣ", "бузург", "Аҷиб"],
+  "FeedbackTexts": [
+    "афсонавӣ",
+    "бузург",
+    "Аҷиб"
+  ],
   "FeedbackAudios": [
     "https://feedthemonster.curiouscontent.org/lang/tajik/audios/fantastic.wav",
     "https://feedthemonster.curiouscontent.org/lang/tajik/audios/great.wav",

@@ -3,7 +3,11 @@
   "version": 2.1,
   "variant": "a",
   "RightToLeft": false,
-  "FeedbackTexts": ["Fantastic!", "Great!", "Amazing!"],
+  "FeedbackTexts": [
+    "Fantastic!",
+    "Great!",
+    "Amazing!"
+  ],
   "FeedbackAudios": [
     "https://feedthemonster.curiouscontent.org/lang/siswati/audios/fantastic.wav",
     "https://feedthemonster.curiouscontent.org/lang/siswati/audios/great.wav",
@@ -1833,10 +1837,10 @@
               "StoneText": "t"
             },
             {
-              "StoneText": "FireWrongLetter"
+              "StoneText": "j"
             },
             {
-              "StoneText": "FireWrongLetter"
+              "StoneText": "c"
             }
           ]
         }
@@ -1967,10 +1971,10 @@
               "StoneText": "k"
             },
             {
-              "StoneText": "FireWrongLetter"
+              "StoneText": "k"
             },
             {
-              "StoneText": "FireWrongLetter"
+              "StoneText": "k"
             }
           ]
         },
@@ -2089,10 +2093,10 @@
               "StoneText": "t"
             },
             {
-              "StoneText": "FireWrongLetter"
+              "StoneText": "t"
             },
             {
-              "StoneText": "FireWrongLetter"
+              "StoneText": "k"
             }
           ]
         },
@@ -2292,10 +2296,10 @@
               "StoneText": "l"
             },
             {
-              "StoneText": "FireWrongLetter"
+              "StoneText": "t"
             },
             {
-              "StoneText": "FireWrongLetter"
+              "StoneText": "s"
             }
           ]
         }

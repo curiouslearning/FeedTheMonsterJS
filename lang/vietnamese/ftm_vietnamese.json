@@ -3,7 +3,11 @@
   "version": 2.1,
   "variant": "a",
   "RightToLeft": false,
-  "FeedbackTexts": ["Tuyệt vời", "Tuyệt", "Tuyệt vời"],
+  "FeedbackTexts": [
+    "Tuyệt vời",
+    "Tuyệt",
+    "Tuyệt vời"
+  ],
   "FeedbackAudios": [
     "https://feedthemonster.curiouscontent.org/lang/vietnamese/audios/fantastic.wav",
     "https://feedthemonster.curiouscontent.org/lang/vietnamese/audios/great.wav",
