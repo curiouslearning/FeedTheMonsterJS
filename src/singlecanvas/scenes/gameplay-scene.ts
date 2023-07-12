@@ -119,6 +119,7 @@ export class GameplayScene {
     tutorial: Tutorial;
     images: { pillerImg: string; bgImg: string; hillImg: string; grassImg: string; fenchImg: string; profileMonster: string; };
     handler: HTMLElement;
+    pickedStoneObject: any;
 
     constructor(
         canvas,
@@ -174,6 +175,7 @@ export class GameplayScene {
         //     this,
         //     current_puzzle_index
         // );
+        this.pickedStoneObject;
         this.puzzleData = levelData.puzzles;
         this.feedBackTexts = feedBackTexts;
         // this.isPuzzleCompleted = false;
@@ -469,7 +471,9 @@ export class GameplayScene {
             this.loadPuzzle();
 
         } else {
-            self.monster.changeToIdleAnimation();
+            this.pickedStone.x = this.pickedStoneObject.origx;
+            this.pickedStone.y = this.pickedStoneObject.origy;
+            this.monster.changeToIdleAnimation();
         }
         self.pickedStone = null;
     }
@@ -486,6 +490,7 @@ export class GameplayScene {
                 Math.sqrt((x - sc.x) * (x - sc.x) + (y - sc.y) * (y - sc.y)) <= 40
             ) {
                 console.log(" clickkedon stone", sc);
+                this.pickedStoneObject = sc;
                 this.pickedStone = sc;
             }
         }
