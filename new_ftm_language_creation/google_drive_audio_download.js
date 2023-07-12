@@ -2,10 +2,23 @@ const { google } = require("googleapis");
 const readline = require("readline");
 const fs = require("fs");
 const path = require("path");
+const ffmpegPath = require("@ffmpeg-installer/ffmpeg").path;
+const ffmpeg = require("fluent-ffmpeg");
 const { spawn } = require("child_process");
-
+const langFolderPath = path.join(__dirname, "..", "lang");
+let languageFolderPath;
+let audiosFolderPath;
+let isRightToLeft = false;
+let jsonPromptTexts;
 const SCOPES = ["https://www.googleapis.com/auth/drive"];
 const credentials = require("./credentials.json");
+ffmpeg.setFfmpegPath(ffmpegPath);
+let languageFolderId = [];
+const rl = readline.createInterface({
+  input: process.stdin,
+  output: process.stdout,
+});
+let language;
 
 function authenticate() {
   return new Promise((resolve, reject) => {
@@ -39,11 +52,6 @@ function getAccessToken(oAuth2Client) {
     console.log("Authorize this app by visiting the following URL:");
     console.log(authUrl);
 
-    const rl = readline.createInterface({
-      input: process.stdin,
-      output: process.stdout,
-    });
-
     rl.question("Enter the authorization code: ", (code) => {
       rl.close();
 
@@ -68,10 +76,102 @@ function getAccessToken(oAuth2Client) {
   });
 }
 
-async function downloadFile(auth, fileId, filePath, destinationPath) {
+async function listFilesAndFolders(auth, parentFolderId) {
   const drive = google.drive({ version: "v3", auth });
+  languageFolderId.push(parentFolderId);
+  const folderOptions = {
+    q: `'${parentFolderId}' in parents and trashed=false`,
+    fields: "files(id, name, mimeType)",
+  };
 
-  const dest = fs.createWriteStream(filePath);
+  try {
+    const response = await drive.files.list(folderOptions);
+    const filesAndFolders = response.data.files;
+
+    console.log("Files and folders in the parent folder:");
+    let count = 1;
+    for (const item of filesAndFolders) {
+      const { id, name, mimeType } = item;
+
+      if (mimeType === "application/vnd.google-apps.folder") {
+        console.log(`[${count}] ${name} (${id})`);
+      } else {
+        console.log(`[${count}] ${name} (${id})`);
+      }
+      count++;
+    }
+
+    const selectedFolderNumber = await new Promise((resolve) => {
+      rl.question(
+        "Enter the number of the selected folder or file (or 'back' to go back): ",
+        (answer) => {
+          resolve(answer);
+        }
+      );
+    });
+
+    if (selectedFolderNumber.toLowerCase() === "back") {
+      let folderId = languageFolderId[languageFolderId.length - 2];
+      languageFolderId.pop();
+      await listFilesAndFolders(auth, folderId);
+    }
+
+    const selectedIndex = parseInt(selectedFolderNumber) - 1;
+    if (
+      isNaN(selectedIndex) ||
+      selectedIndex < 0 ||
+      selectedIndex >= filesAndFolders.length
+    ) {
+      console.error("Invalid folder number. Please try again.");
+      return;
+    }
+
+    const selectedFolder = filesAndFolders[selectedIndex];
+    console.log(`Selected item: ${selectedFolder.name} (${selectedFolder.id})`);
+
+    const downloadConfirmation = await new Promise((resolve) => {
+      rl.question(
+        "Do you want to download the contents of this folder? (yes/no): ",
+        (answer) => {
+          resolve(answer.toLowerCase());
+        }
+      );
+    });
+
+    if (downloadConfirmation === "yes") {
+      if (selectedFolder.mimeType === "application/vnd.google-apps.folder") {
+        await downloadFolderContents(auth, selectedFolder.id, audiosFolderPath);
+      } else {
+        await downloadFile(
+          auth,
+          selectedFolder.id,
+          selectedFolder.name,
+          audiosFolderPath
+        );
+      }
+    } else {
+      console.log("Download canceled.");
+    }
+    await listFilesAndFolders(auth, selectedFolder.id);
+  } catch (error) {
+    console.error("Error listing files and folders:", error);
+  }
+}
+
+// Function to download a file
+async function downloadFile(auth, fileId, name, destinationPath) {
+  const drive = google.drive({ version: "v3", auth });
+  const { ext } = path.parse(name);
+  let fileExtension = ext.toLowerCase();
+  let fileName;
+  isRightToLeft
+    ? (fileName = name.split(".")[0] + fileExtension)
+    : (fileName = name.split("_")[0 + fileExtension]);
+  const filePath = path.join(destinationPath, fileName);
+  if (fs.existsSync(filePath)) {
+    console.log("Skipping");
+    return;
+  }
 
   const fileOptions = {
     fileId,
@@ -82,114 +182,161 @@ async function downloadFile(auth, fileId, filePath, destinationPath) {
     responseType: "stream",
   });
 
-  response.data
-    .on("end", async () => {
-      console.log(`File downloaded: ${filePath}`);
-      const fileName = path.basename(filePath);
+  const contentType = response.headers["content-type"];
+  if (contentType === "audio/mp3") {
+    if (
+      jsonPromptTexts.includes(fileName.slice(0, fileName.lastIndexOf(".")))
+    ) {
+      const dest = fs.createWriteStream(filePath);
 
-      if (fileName.endsWith(".wav")) {
-        const wavFolder = path.join(destinationPath, "WAV");
-        fs.mkdirSync(wavFolder, { recursive: true });
-        const newFilePath = path.join(wavFolder, fileName);
-        fs.renameSync(filePath, newFilePath);
-        console.log(`WAV file moved to folder: ${wavFolder}`);
+      response.data
+        .on("end", () => {
+          console.log(`MP3 file downloaded: ${filePath}`);
+        })
+        .on("error", (err) => {
+          console.error("Error downloading MP3 file:", err);
+        })
+        .pipe(dest);
+    }
+  } else if (contentType === "audio/wav") {
+    const wavFolderPath = path.join(__dirname, "wav");
+    if (!fs.existsSync(wavFolderPath)) {
+      fs.mkdirSync(wavFolderPath);
+    }
+    const wavFilePath = path.join(wavFolderPath, fileName);
 
-        const mp3Folder = path.join(destinationPath, "MP3");
-        fs.mkdirSync(mp3Folder, { recursive: true });
+    response.data
+      .on("end", () => {
+        console.log(`WAV file downloaded: ${wavFilePath}`);
         const mp3FilePath = path.join(
-          mp3Folder,
+          destinationPath,
           fileName.replace(".wav", ".mp3")
         );
-
-        try {
-          const ffmpegProcess = spawn("ffmpeg", [
-            "-i",
-            newFilePath,
-            mp3FilePath,
-          ]);
-          ffmpegProcess.on("close", (code) => {
-            if (code === 0) {
-              console.log(
-                `WAV file converted and saved as MP3: ${mp3FilePath}`
-              );
-            } else {
-              console.error(
-                "Error converting WAV to MP3. FFmpeg process exited with code:",
-                code
-              );
-            }
-          });
-        } catch (error) {
-          console.error("Error converting WAV to MP3:", error);
+        if (
+          jsonPromptTexts.includes(fileName.slice(0, fileName.lastIndexOf(".")))
+        ) {
+          convertWavToMp3(wavFilePath, mp3FilePath)
+            .then(() => {
+              console.log(`MP3 file converted: ${mp3FilePath}`);
+              fs.unlinkSync(wavFilePath); // Remove the original WAV file
+              fs.rmdirSync(wavFolderPath); // Remove the temporary WAV folder
+            })
+            .catch((error) => {
+              console.error("Error converting WAV to MP3:", error);
+            });
         }
-      }
-    })
-    .on("error", (err) => {
-      console.error("Error downloading file:", err);
-    })
-    .pipe(dest);
-}
-
-async function downloadFolderContents(auth, folderId, destinationPath) {
-  const drive = google.drive({ version: "v3", auth });
-
-  const folderOptions = {
-    q: `'${folderId}' in parents and trashed=false`,
-    fields: "files(id, name, mimeType)",
-  };
-
-  const response = await drive.files.list(folderOptions);
-  const files = response.data.files;
-
-  for (const file of files) {
-    const { id, name, mimeType } = file;
-    const filePath = path.join(destinationPath, name);
-
-    if (mimeType === "application/vnd.google-apps.folder") {
-      fs.mkdirSync(filePath);
-      await downloadFolderContents(auth, id, filePath);
-    } else {
-      await downloadFile(auth, id, filePath, destinationPath);
-    }
+      })
+      .on("error", (err) => {
+        console.error("Error downloading WAV file:", err);
+      })
+      .pipe(fs.createWriteStream(wavFilePath));
+  } else {
+    console.log(`Skipping file: ${fileName} (unsupported file type)`);
   }
 }
-
-async function askQuestion(question) {
+function convertWavToMp3(inputFilePath, outputFilePath) {
   return new Promise((resolve, reject) => {
-    const rl = readline.createInterface({
-      input: process.stdin,
-      output: process.stdout,
-    });
-
-    rl.question(question, (answer) => {
-      rl.close();
-      resolve(answer);
-    });
+    ffmpeg(inputFilePath)
+      .noVideo()
+      .audioCodec("libmp3lame")
+      .outputOptions("-qscale:a", "2")
+      .save(outputFilePath)
+      .on("end", () => {
+        console.log(`WAV file converted and saved as MP3: ${outputFilePath}`);
+        fs.unlinkSync(inputFilePath); // Delete the original WAV file
+        resolve();
+      })
+      .on("error", (err) => {
+        console.error("Error converting WAV to MP3:", err);
+        reject(err);
+      });
   });
 }
 
+async function downloadFolderContents(auth, folderId, destinationPath) {
+  try {
+    const drive = google.drive({ version: "v3", auth });
+    const folderOptions = {
+      q: `'${folderId}' in parents and trashed=false`,
+      fields: "files(id, name)",
+    };
+
+    const response = await drive.files.list(folderOptions);
+    const files = response.data.files;
+
+    console.log(`Downloading files in folder (${folderId}):`);
+
+    for (const file of files) {
+      await downloadFile(auth, file.id, file.name, destinationPath);
+    }
+
+    console.log("Folder download complete.");
+  } catch (error) {
+    console.error("Error downloading folder contents:", error);
+  }
+}
+
+// Function to prompt the user for language selection
+function promptForLanguageSelection() {
+  return new Promise((resolve) => {
+    rl.question("Enter your language: ", (answer) => {
+      resolve(answer.toLowerCase());
+    });
+  });
+}
+function processModule(language) {
+  try {
+    const modulePath = `../lang/${language}/ftm_${language}.json`;
+    const module = require(modulePath);
+    const promptTexts = findUniquePromptTexts(module);
+    return promptTexts;
+  } catch (error) {
+    console.error("Error occurred while importing module:", error);
+  }
+}
+function findUniquePromptTexts(obj, uniquePromptTexts = []) {
+  if (typeof obj === "object" && obj !== null) {
+    for (let key in obj) {
+      if (obj.hasOwnProperty(key)) {
+        if (key === "PromptText") {
+          const promptText = obj[key];
+          if (!uniquePromptTexts.includes(promptText)) {
+            uniquePromptTexts.push(promptText);
+          }
+        }
+        findUniquePromptTexts(obj[key], uniquePromptTexts);
+      }
+    }
+  }
+  return uniquePromptTexts;
+}
+async function languageDirection() {
+  return new Promise((resolve) => {
+    rl.question("Is language Right to left:(True/False) ", (answer) => {
+      resolve(answer.toLowerCase());
+    });
+  });
+}
 async function main() {
   try {
+    language = await promptForLanguageSelection();
+    const uniquePromptTexts = await processModule(language);
+    jsonPromptTexts = uniquePromptTexts;
+    isRightToLeft = await languageDirection();
     const authClient = await authenticate();
-    const rl = readline.createInterface({
-      input: process.stdin,
-      output: process.stdout,
-    });
+    languageFolderPath = path.join(langFolderPath, language);
+    if (!fs.existsSync(languageFolderPath)) {
+      fs.mkdirSync(languageFolderPath);
+    }
+    audiosFolderPath = path.join(languageFolderPath, "audios");
+    if (!fs.existsSync(audiosFolderPath)) {
+      fs.mkdirSync(audiosFolderPath);
+    }
+    const parentFolderId = "1tj6wcvLQCcVyglSQ0hcCRZD1KaOCWOkk";
 
-    rl.question("Enter the folder ID: ", async (folderId) => {
-      try {
-        const destinationPath = path.join(__dirname, "downloads");
-        fs.mkdirSync(destinationPath, { recursive: true });
-        await downloadFolderContents(authClient, folderId, destinationPath);
-        console.log("Folder contents downloaded successfully.");
-      } catch (error) {
-        console.error("Error downloading folder contents:", error);
-      }
-
-      rl.close();
-    });
+    await listFilesAndFolders(authClient, parentFolderId);
   } catch (error) {
-    console.error("Authentication error:", error);
+    console.error("Error:", error);
   }
 }
 
