@@ -6,7 +6,9 @@ const ffmpeg = require("fluent-ffmpeg");
 const { get } = require("http");
 
 // Configure your GitHub personal access token and repository details
+
 const accessToken = "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";
+
 const owner = "curiouslearning";
 const repo = "ftm-languagepacks";
 let currentDirectory = ""; // Path to the current directory
