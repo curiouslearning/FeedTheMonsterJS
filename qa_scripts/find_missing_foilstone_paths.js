@@ -42,6 +42,36 @@ function findMissingLetter(obj, path = "", paths = []) {
     for (let key in obj) {
       if (obj.hasOwnProperty(key)) {
         const newPath = path ? `${path}.${key}` : key;
+        if (key === "FeedbackAudios" || key === "OtherAudios") {
+          if (key === "FeedbackAudios" || key === "OtherAudios") {
+            if (Array.isArray(obj[key])) {
+              // Handle array of URLs
+              const urlList = obj[key];
+              const transformedUrls = urlList.map((url) => {
+                const word = extractWordFromUrl(url);
+                return createTransformedUrl(word);
+              });
+              obj[key] = transformedUrls;
+            } else if (typeof obj[key] === "object" && obj[key] !== null) {
+              // Handle key-value pairs of strings and URLs
+              const audioObject = obj[key];
+              for (let audioKey in audioObject) {
+                if (audioObject.hasOwnProperty(audioKey)) {
+                  const url = audioObject[audioKey];
+                  const word = extractWordFromUrl(url);
+                  const transformedUrl = createTransformedUrl(word);
+                  audioObject[audioKey] = transformedUrl;
+                }
+              }
+            }
+          }
+        }
+        if (key === "PromptAudio") {
+          const parts = obj[key].split("/");
+          const fileName = parts[parts.length - 1];
+          const character = fileName.substring(0, fileName.lastIndexOf("."));
+          obj[key] = createTransformedUrl(character);
+        }
         if (
           key === "StoneText" &&
           obj[key] != "MagnetLetter" &&
@@ -74,7 +104,13 @@ function findMissingLetter(obj, path = "", paths = []) {
   }
   return paths;
 }
+function extractWordFromUrl(url) {
+  return url.substring(url.lastIndexOf("/") + 1, url.lastIndexOf(".wav"));
+}
 
+function createTransformedUrl(word) {
+  return `https://feedthemonster.curiouscontent.org/lang/${language}/audios/${word}.mp3`;
+}
 // Function to prompt the user for language selection
 function promptForLanguageSelection() {
   return new Promise((resolve) => {
