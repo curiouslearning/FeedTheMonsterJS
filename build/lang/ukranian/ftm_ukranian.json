@@ -9,9 +9,10 @@
     "Дивовижний"
   ],
   "FeedbackAudios": [
-    "https://feedthemonster.curiouscontent.org/ukranian/sounds/fantastic1.mp3",
-    "https://feedthemonster.curiouscontent.org/ukranian/sounds/great1.mp3",
-    "https://feedthemonster.curiouscontent.org/ukranian/sounds/amazing.mp3"
+
+    "https://feedthemonster.curiouscontent.org/lang/ukranian/audios/fantastic.mp3",
+    "https://feedthemonster.curiouscontent.org/lang/ukranian/audios/great.mp3",
+    "https://feedthemonster.curiouscontent.org/lang/ukranian/audios/amazing.mp3"
   ],
   "OtherAudios": {
     "Select your player": "https://feedthemonster.curiouscontent.org/ukranian/sounds/other/Select-your-player.wav",
