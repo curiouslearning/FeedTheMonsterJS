@@ -111,7 +111,7 @@ export class GameplayScene {
     public isPuzzleCompleted: boolean;
     public rightToLeft: boolean;
     public imagesLoaded: boolean = false;
-    public callBack: Function;
+    public switchSceneToEnd: Function;
     public levelNumber: Function;
     loadedImages: any;
     stoneHandler: StoneHandler;
@@ -128,7 +128,7 @@ export class GameplayScene {
         monsterPhaseNumber,
         feedBackTexts,
         rightToLeft,
-        callback,
+        switchSceneToEnd,
         levelNumber
         
         ) {
@@ -144,7 +144,7 @@ export class GameplayScene {
         // this.canvasStack = new CanvasStack("canvas");
         this.monsterPhaseNumber = monsterPhaseNumber || 1;
         this.levelData = levelData;
-        this.callBack = callback;
+        this.switchSceneToEnd = switchSceneToEnd;
         this.levelNumber = levelNumber;
         // this.levelStartCallBack = levelStartCallBack;
         // this.timerTicking = new TimerTicking(game, this);
@@ -460,25 +460,18 @@ export class GameplayScene {
                 (y - self.monster.y - self.canvas.height / 2.7)
             ) <= 60
         ) {
-           console.log("dropppp stoneEvent");
-           console.log('Current Target',self.stoneHandler.correctTargetStone)
-           console.log(" self.pickedStone : ", self.pickedStone);
+           
            const isCorrect = this.stoneHandler.isDroppedStoneCorrect(self.pickedStone.text)
-           console.log('isCorrect->',isCorrect);
            this.counter++;
            console.log('LevelData->',this.levelData)
            if(this.counter == this.levelData.puzzles.length){
-             this.callBack();
-           }
-          
-            
-            let loadPuzzleData = {'counter':this.counter,'isCorrect': isCorrect}
-            const dropStoneEvent = new CustomEvent("stonesdropped", {detail: loadPuzzleData});
-            document.dispatchEvent(dropStoneEvent);
-            setTimeout(()=>{
-                const loadPuzzleEvent = new CustomEvent("loadpuzzle", {detail: loadPuzzleData});
-                document.dispatchEvent(loadPuzzleEvent);
-            }, 4000)
+              this.switchSceneToEnd(this.levelData);
+           } else {
+                let loadPuzzleData = {'counter':this.counter,'isCorrect': isCorrect}
+                const dropStoneEvent = new CustomEvent("stonesdropped", {detail: loadPuzzleData});
+                document.dispatchEvent(dropStoneEvent);
+                this.loadPuzzle(this.counter);
+           }  
 
         } else {
             self.monster.changeToIdleAnimation();
@@ -956,5 +949,24 @@ export class GameplayScene {
             version_number: document.getElementById("version-info-id").innerHTML,
             response_time: (puzzleEndTime.getTime() - response_time) / 1000,
         });
+    }
+
+    public loadPuzzle(currentPuzzleNumber: number) {
+        const loadPuzzleData = {
+            "counter": currentPuzzleNumber
+        }
+        const loadPuzzleEvent = new CustomEvent("loadpuzzle", {detail: loadPuzzleData});
+        setTimeout(()=>{
+            document.dispatchEvent(loadPuzzleEvent);
+        }, 4000)
+    }
+
+    public dispose() {
+        this.removeEventListeners();
+        this.monster.unregisterEventListener();
+        this.timerTicking.unregisterEventListener();
+        this.levelIndicators.unregisterEventListener();
+        this.stoneHandler.unregisterEventListener();
+        this.promptText.unregisterEventListener();
     }
 }

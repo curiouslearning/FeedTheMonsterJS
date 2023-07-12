@@ -8,7 +8,6 @@ export class EventManager {
             loadPuzzleCallbackHandler: Function;
         }
     ) {
-        console.log(handler, "<---------------------")
         this.stoneDropCallbackHandler = handler.stoneDropCallbackHandler;
         this.loadPuzzleCallbackHandler = handler.loadPuzzleCallbackHandler;
         document.addEventListener(

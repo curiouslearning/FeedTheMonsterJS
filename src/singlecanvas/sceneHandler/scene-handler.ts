@@ -65,6 +65,7 @@ export class SceneHandler {
         this.height = canvas.height;
         this.canavsElement = document.getElementById("canvas") as HTMLCanvasElement;
         this.context = this.canavsElement.getContext("2d");
+        console.log(this.data.levels[2]);
         this.startScene = new StartScene(canvas, data, firebase_analytics, this.switchSceneToLevelSelection);
         // this.testGameplayScene = new TestGameplayScene(canvas, data, firebase_analytics, this.switchSceneToLevelSelection);
         // this.gameplayScene = new GameplayScene(this.canvas, this.context, this.data.levels[0], 1, "text", false);
@@ -133,14 +134,14 @@ export class SceneHandler {
 
         SceneHandler.SceneName = GameScene1;
     }
-    switchSceneToEndLevel = (gamePlayData) => {
-        // dispose previous scene
+    switchSceneToEndLevel = (currentlevelPlayed) => {
+        const nextLevelNumber = parseInt(currentlevelPlayed.levelNumber) + 1;
+        const nextLevel = this.data.levels[nextLevelNumber];
         this.gameplayScene.dispose();
-        this.gameplayScene = new GameplayScene(this.canvas, gamePlayData.currentLevelData, 1,  this.data.feedBackTexts, this.data.rightToLeft,this.switchSceneToEndLevel,gamePlayData.selectedLevelNumber);
-        // load in next scene
-        // this.levelSelectionScene = new LevelSelectionScreen(this.canvas, this.data,this.switchSceneToGameplay)
+        setTimeout(() => {
+            this.gameplayScene = new GameplayScene(this.canvas, nextLevel, 1,  this.data.feedBackTexts, this.data.rightToLeft,this.switchSceneToEndLevel, nextLevelNumber);
+        }, 4000)
 
-        
         SceneHandler.SceneName = GameScene1;
     }
 

@@ -348,7 +348,6 @@ export class LevelSelectionScreen {
         // StartScene.SceneName = GameScene1;
         let gamePlayData = {
             "currentLevelData": self.data.levels[level_number],
-            "sceneName": GameScene1,
             "selectedLevelNumber": level_number
         }
         this.callback(gamePlayData);
