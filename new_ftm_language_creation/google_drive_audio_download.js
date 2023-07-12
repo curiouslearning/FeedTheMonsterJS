@@ -312,6 +312,40 @@ function findUniquePromptTexts(obj, uniquePromptTexts = []) {
             uniquePromptTexts.push(promptText);
           }
         }
+        if (key === "FeedbackAudios" || key === "OtherAudios") {
+          if (key === "FeedbackAudios" || key === "OtherAudios") {
+            if (Array.isArray(obj[key])) {
+              // Handle array of URLs
+              const urlList = obj[key];
+              const transformedUrls = urlList.map((url) => {
+                let word = url.substring(
+                  url.lastIndexOf("/") + 1,
+                  url.lastIndexOf(".mp3")
+                );
+                if (!uniquePromptTexts.includes(word)) {
+                  console.log(">>>>>>>>>>>>>>>>>>>>>>>>>>>>" + word);
+                  uniquePromptTexts.push(word);
+                }
+              });
+            } else if (typeof obj[key] === "object" && obj[key] !== null) {
+              // Handle key-value pairs of strings and URLs
+              const audioObject = obj[key];
+              for (let audioKey in audioObject) {
+                if (audioObject.hasOwnProperty(audioKey)) {
+                  const url = audioObject[audioKey];
+                  let word = url.substring(
+                    url.lastIndexOf("/") + 1,
+                    url.lastIndexOf(".mp3")
+                  );
+                  if (!uniquePromptTexts.includes(word)) {
+                    console.log(">>>>>>>>>>>>>>>>>>>>>>>>>>>>" + word);
+                    uniquePromptTexts.push(word);
+                  }
+                }
+              }
+            }
+          }
+        }
         findUniquePromptTexts(obj[key], uniquePromptTexts);
       }
     }
