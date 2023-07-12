@@ -71,6 +71,7 @@ export class TimerTicking extends EventManager {
         // it will start timer immediatly
         this.readyTimer();
         this.startMyTimer = true;
+        this.isMyTimerOver = false
     }
 
     readyTimer() {
@@ -79,7 +80,7 @@ export class TimerTicking extends EventManager {
     }
     update(deltaTime) {
         if (this.startMyTimer && !this.isStoneDropped) {
-            this.timer += deltaTime * 0.004;
+            this.timer += deltaTime * 0.08;
         }
         if ((this.width * 0.87 - (this.width * 0.87 * this.timer * 0.01)) < 0 && !this.isMyTimerOver) {
             this.isMyTimerOver = true;
@@ -127,8 +128,6 @@ export class TimerTicking extends EventManager {
     }
 
     public handleStoneDrop(event) {
-        console.log(event, "<--------------")
-        console.log("callback from eventManager")
         this.isStoneDropped = true;
     }
     public handleLoadPuzzle(event) {

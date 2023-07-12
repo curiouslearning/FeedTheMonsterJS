@@ -87,7 +87,6 @@ export class LevelIndicators extends EventManager{
     }
 
     public handleLoadPuzzle(event) {
-        console.log('Counter=>',event.detail.counter)
         this.setIndicators(event.detail.counter);
     }
 }

@@ -233,6 +233,7 @@ export default class StoneHandler extends EventManager {
         
     }
     public handleLoadPuzzle(event) {
+        this.foilStones = []
         this.puzzleNumber = event.detail.counter;
         this.setTargetStone(this.puzzleNumber);
         this.initializeStonePos();

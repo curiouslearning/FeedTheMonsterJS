@@ -130,12 +130,12 @@ export class GameplayScene {
         rightToLeft,
         switchSceneToEnd,
         levelNumber
-        
-        ) {
+
+    ) {
         // this.game = game;
         this.width = canvas.width;
         this.height = canvas.height;
-        // self = this;
+        self = this;
         // this.monster = new Monster(game);
         this.rightToLeft = rightToLeft;
         // this.audio = new Sound();
@@ -160,7 +160,7 @@ export class GameplayScene {
 
         this.stoneHandler = new StoneHandler(this.context, this.canvas, this.counter, this.levelData);
         this.promptText = new PromptText(this.width, this.height, this.levelData.puzzles[this.counter], this.levelData, false);
-        this.timerTicking = new TimerTicking(this.width, this.height, this.timeOverCallback);
+        this.timerTicking = new TimerTicking(this.width, this.height, this.loadPuzzle);
         this.levelIndicators = new LevelIndicators(this.context, this.canvas, 0);
         this.tutorial = new Tutorial(this.context, this.width, this.height);
         this.levelIndicators.setIndicators(this.counter);
@@ -460,26 +460,18 @@ export class GameplayScene {
                 (y - self.monster.y - self.canvas.height / 2.7)
             ) <= 60
         ) {
-           
-           const isCorrect = this.stoneHandler.isDroppedStoneCorrect(self.pickedStone.text)
-           this.counter++;
-           console.log('LevelData->',this.levelData)
-           if(this.counter == this.levelData.puzzles.length){
-              this.switchSceneToEnd(this.levelData);
-           } else {
-                let loadPuzzleData = {'counter':this.counter,'isCorrect': isCorrect}
-                const dropStoneEvent = new CustomEvent("stonesdropped", {detail: loadPuzzleData});
-                document.dispatchEvent(dropStoneEvent);
-                this.loadPuzzle(this.counter);
-           }  
+
+            const isCorrect = this.stoneHandler.isDroppedStoneCorrect(self.pickedStone.text)
+            console.log('LevelData->', this.levelData)
+            let loadPuzzleData = { 'isCorrect': isCorrect }
+            const dropStoneEvent = new CustomEvent("stonesdropped", { detail: loadPuzzleData });
+            document.dispatchEvent(dropStoneEvent);
+            this.loadPuzzle();
 
         } else {
             self.monster.changeToIdleAnimation();
         }
-        
         self.pickedStone = null;
-       
-
     }
 
     handleMouseDown = (event) => {
@@ -520,7 +512,7 @@ export class GameplayScene {
         });
         document.getElementById("canvas").dispatchEvent(mouseEvent);
     };
-    
+
     handleTouchMove = (event) => {
         console.log("itstouchmove");
         var touch = event.touches[0];
@@ -530,7 +522,7 @@ export class GameplayScene {
         });
         document.getElementById("canvas").dispatchEvent(mouseEvent);
     };
-    
+
     handleTouchEnd = (event) => {
         var touch = event.changedTouches[0];
         var mouseEvent = new MouseEvent("mouseup", {
@@ -539,7 +531,7 @@ export class GameplayScene {
         });
         document.getElementById("canvas").dispatchEvent(mouseEvent);
     };
-    
+
 
     createCanvas() {
         this.levelStartTime = new Date().getTime();
@@ -680,7 +672,7 @@ export class GameplayScene {
     //         this.stoneHandler.currentPuzzleData = [];
     //         this.stoneHandler.foilStones = [];
     //         this.counter++;
-            
+
 
     //     }, 3000)
 
@@ -768,8 +760,8 @@ export class GameplayScene {
         );
         this.handler.addEventListener(
             "touchend",
-                this.handleTouchEnd,
-              false
+            this.handleTouchEnd,
+            false
         );
     }
 
@@ -951,14 +943,20 @@ export class GameplayScene {
         });
     }
 
-    public loadPuzzle(currentPuzzleNumber: number) {
-        const loadPuzzleData = {
-            "counter": currentPuzzleNumber
+    loadPuzzle = () => {
+        this.counter++;
+
+        if (this.counter == this.levelData.puzzles.length) {
+            this.switchSceneToEnd(this.levelData);
+        } else {
+            const loadPuzzleData = {
+                "counter": this.counter
+            }
+            const loadPuzzleEvent = new CustomEvent("loadpuzzle", { detail: loadPuzzleData });
+            setTimeout(() => {
+                document.dispatchEvent(loadPuzzleEvent);
+            }, 4000)
         }
-        const loadPuzzleEvent = new CustomEvent("loadpuzzle", {detail: loadPuzzleData});
-        setTimeout(()=>{
-            document.dispatchEvent(loadPuzzleEvent);
-        }, 4000)
     }
 
     public dispose() {
