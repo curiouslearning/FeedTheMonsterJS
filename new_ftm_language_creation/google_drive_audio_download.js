@@ -8,7 +8,7 @@ const { spawn } = require("child_process");
 const langFolderPath = path.join(__dirname, "..", "lang");
 let languageFolderPath;
 let audiosFolderPath;
-let textCharacter = "_";
+let textCharacter;
 let jsonPromptTexts;
 const SCOPES = ["https://www.googleapis.com/auth/drive"];
 const credentials = require("./credentials.json");
