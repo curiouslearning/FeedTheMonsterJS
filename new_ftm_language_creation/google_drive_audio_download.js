@@ -302,8 +302,12 @@ function findUniquePromptTexts(obj, uniquePromptTexts = []) {
   if (typeof obj === "object" && obj !== null) {
     for (let key in obj) {
       if (obj.hasOwnProperty(key)) {
-        if (key === "PromptText") {
-          const promptText = obj[key];
+        if (key === "PromptAudio") {
+          const parts = obj[key].split("/");
+          const fileName = parts[parts.length - 1];
+          const character = fileName.substring(0, fileName.lastIndexOf("."));
+
+          const promptText = character;
           if (!uniquePromptTexts.includes(promptText)) {
             uniquePromptTexts.push(promptText);
           }

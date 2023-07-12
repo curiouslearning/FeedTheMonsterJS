@@ -6,7 +6,7 @@ const ffmpeg = require("fluent-ffmpeg");
 const { get } = require("http");
 
 // Configure your GitHub personal access token and repository details
-const accessToken = "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";
+const accessToken = "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";
 const owner = "curiouslearning";
 const repo = "ftm-languagepacks";
 let currentDirectory = ""; // Path to the current directory
@@ -51,8 +51,12 @@ function findUniquePromptTexts(obj, uniquePromptTexts = []) {
   if (typeof obj === "object" && obj !== null) {
     for (let key in obj) {
       if (obj.hasOwnProperty(key)) {
-        if (key === "PromptText") {
-          const promptText = obj[key];
+        if (key === "PromptAudio") {
+          const parts = obj[key].split("/");
+          const fileName = parts[parts.length - 1];
+          const character = fileName.substring(0, fileName.lastIndexOf("."));
+
+          const promptText = character;
           if (!uniquePromptTexts.includes(promptText)) {
             uniquePromptTexts.push(promptText);
           }
