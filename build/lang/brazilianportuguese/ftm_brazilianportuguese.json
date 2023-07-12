@@ -1757,10 +1757,10 @@
               "StoneText": "z"
             },
             {
-              "StoneText": "FireWrongLetter"
+              "StoneText": "i"
             },
             {
-              "StoneText": "FireWrongLetter"
+              "StoneText": "r"
             }
           ]
         }
@@ -1891,10 +1891,10 @@
               "StoneText": "d"
             },
             {
-              "StoneText": "FireWrongLetter"
+              "StoneText": "x"
             },
             {
-              "StoneText": "FireWrongLetter"
+              "StoneText": "r"
             }
           ]
         },
@@ -2013,10 +2013,10 @@
               "StoneText": "z"
             },
             {
-              "StoneText": "FireWrongLetter"
+              "StoneText": "v"
             },
             {
-              "StoneText": "FireWrongLetter"
+              "StoneText": "e"
             }
           ]
         },
@@ -2216,10 +2216,10 @@
               "StoneText": "r"
             },
             {
-              "StoneText": "FireWrongLetter"
+              "StoneText": "o"
             },
             {
-              "StoneText": "FireWrongLetter"
+              "StoneText": "s"
             }
           ]
         }
@@ -12804,7 +12804,7 @@
     "Watch me grow": "https://feedthemonster.curiouscontent.org/lang/brazilianportuguese/audios/watch-me-grow.mp3"
   },
   "FeedbackAudios": [
-    "https://feedthemonster.curiouscontent.org/lang/brazilianportuguese/audios/fantastic1.mp3",
+    "https://feedthemonster.curiouscontent.org/lang/brazilianportuguese/audios/fantastic.mp3",
     "https://feedthemonster.curiouscontent.org/lang/brazilianportuguese/audios/great.mp3",
     "https://feedthemonster.curiouscontent.org/lang/brazilianportuguese/audios/amazing.mp3"
   ],
