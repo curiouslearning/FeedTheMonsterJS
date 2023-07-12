@@ -6,6 +6,7 @@ const path = require("path");
 const SCOPES = ["https://www.googleapis.com/auth/drive"];
 const credentials = require("./credentials.json");
 let languageFolderId = [];
+let textCharacter;
 const rl = readline.createInterface({
   input: process.stdin,
   output: process.stdout,
@@ -197,13 +198,23 @@ async function downloadFile(auth, fileId, filePath) {
     })
     .pipe(dest);
 }
-
+async function TextBreakerCharacter() {
+  return new Promise((resolve) => {
+    rl.question(
+      "enter the character in the text from where you want to slice (put no if you don't want any):- ",
+      (answer) => {
+        resolve(answer);
+      }
+    );
+  });
+}
 async function checkInDrive(urls) {
   try {
     const authClient = await authenticate();
 
     const folderId = "1tj6wcvLQCcVyglSQ0hcCRZD1KaOCWOkk";
     const files = await getFolderContents(authClient, folderId);
+    textCharacter = await TextBreakerCharacter();
     console.log("Folder contents retrieved successfully.");
 
     console.log("Files:");
@@ -211,7 +222,13 @@ async function checkInDrive(urls) {
       console.log(`- ${file.name}`);
       const fileExtension = path.parse(file.name).ext;
       console.log("File extension:", fileExtension);
-      let fileName = file.name.split("_")[0];
+
+      let fileName;
+      if (textCharacter === "no") {
+        fileName == file.name.split(".")[0];
+      } else {
+        fileName = file.name.split(textCharacter)[0];
+      }
       console.log("Modified fileName:", fileName);
       const matchingUrl = urls.find((url) => url === fileName);
 

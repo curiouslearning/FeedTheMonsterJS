@@ -13,7 +13,7 @@ let languageFolderPath;
 let currentFolderPath = langFolderPath;
 let audiosFolderPath;
 let jsonPromptTexts;
-let isRightToLeft = true;
+let textCharacter;
 const SCOPES = ["https://www.googleapis.com/auth/drive"];
 const credentials = require("./credentials.json");
 ffmpeg.setFfmpegPath(ffmpegPath);
@@ -148,6 +148,7 @@ async function listFilesAndFolders(auth, parentFolderId) {
     });
 
     if (downloadConfirmation === "yes") {
+      textCharacter = await TextBreakerCharacter();
       if (selectedFolder.mimeType === "application/vnd.google-apps.folder") {
         await downloadFolderContents(auth, selectedFolder.id, audiosFolderPath);
       } else {
@@ -173,9 +174,11 @@ async function downloadFile(auth, fileId, name, destinationPath) {
   const { ext } = path.parse(name);
   let fileExtension = ext.toLowerCase();
   let fileName;
-  isRightToLeft
-    ? (fileName = name.split(".")[0] + fileExtension)
-    : (fileName = name.split("_")[0 + fileExtension]);
+  if (textCharacter != "no") {
+    fileName = name.split(textCharacter)[0] + fileExtension;
+  } else {
+    filename = name;
+  }
 
   const filePath = path.join(destinationPath, fileName);
   if (fs.existsSync(filePath)) {
@@ -277,11 +280,14 @@ async function downloadFolderContents(auth, folderId, destinationPath) {
     console.error("Error downloading folder contents:", error);
   }
 }
-async function languageDirection() {
+async function TextBreakerCharacter() {
   return new Promise((resolve) => {
-    rl.question("Is language Right to left:(True/False) ", (answer) => {
-      resolve(answer.toLowerCase());
-    });
+    rl.question(
+      "enter the character in the text from where you want to slice (put no if you don't want any):- ",
+      (answer) => {
+        resolve(answer);
+      }
+    );
   });
 }
 async function main() {

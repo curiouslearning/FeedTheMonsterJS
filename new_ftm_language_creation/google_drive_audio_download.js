@@ -8,7 +8,7 @@ const { spawn } = require("child_process");
 const langFolderPath = path.join(__dirname, "..", "lang");
 let languageFolderPath;
 let audiosFolderPath;
-let isRightToLeft = false;
+let textCharacter;
 let jsonPromptTexts;
 const SCOPES = ["https://www.googleapis.com/auth/drive"];
 const credentials = require("./credentials.json");
@@ -139,6 +139,7 @@ async function listFilesAndFolders(auth, parentFolderId) {
     });
 
     if (downloadConfirmation === "yes") {
+      textCharacter = await TextBreakerCharacter();
       if (selectedFolder.mimeType === "application/vnd.google-apps.folder") {
         await downloadFolderContents(auth, selectedFolder.id, audiosFolderPath);
       } else {
@@ -164,9 +165,12 @@ async function downloadFile(auth, fileId, name, destinationPath) {
   const { ext } = path.parse(name);
   let fileExtension = ext.toLowerCase();
   let fileName;
-  isRightToLeft
-    ? (fileName = name.split(".")[0] + fileExtension)
-    : (fileName = name.split("_")[0 + fileExtension]);
+  if (textCharacter != "no") {
+    fileName = name.split(textCharacter)[0] + fileExtension;
+  } else {
+    filename = name;
+  }
+
   const filePath = path.join(destinationPath, fileName);
   if (fs.existsSync(filePath)) {
     console.log("Skipping");
@@ -310,11 +314,14 @@ function findUniquePromptTexts(obj, uniquePromptTexts = []) {
   }
   return uniquePromptTexts;
 }
-async function languageDirection() {
+async function TextBreakerCharacter() {
   return new Promise((resolve) => {
-    rl.question("Is language Right to left:(True/False) ", (answer) => {
-      resolve(answer.toLowerCase());
-    });
+    rl.question(
+      "enter the character in the text from where you want to slice (put no if you don't want any):- ",
+      (answer) => {
+        resolve(answer);
+      }
+    );
   });
 }
 async function main() {
@@ -322,7 +329,6 @@ async function main() {
     language = await promptForLanguageSelection();
     const uniquePromptTexts = await processModule(language);
     jsonPromptTexts = uniquePromptTexts;
-    isRightToLeft = await languageDirection();
     const authClient = await authenticate();
     languageFolderPath = path.join(langFolderPath, language);
     if (!fs.existsSync(languageFolderPath)) {
