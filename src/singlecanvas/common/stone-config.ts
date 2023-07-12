@@ -14,6 +14,8 @@ export class StoneConfig {
     public imageCenterOffsetY: number;
     public context: CanvasRenderingContext2D;
 
+    public frame: any = 0;
+
     constructor(context, canvasWidth, canvasHeight, stoneLetter, xPos, yPos, img) {
         this.x = xPos;
         this.y = yPos;
@@ -47,6 +49,27 @@ export class StoneConfig {
         }
     }
 
+
+    getEase = (currentProgress, start, distance, steps) => {
+        return -distance / 2 * (Math.cos(Math.PI * currentProgress / steps) - 1) + start;
+    };
+
+
+    getX = () => {
+        // this.x is the final stone position
+        let distance = this.x - 0;
+        let steps = 100;
+        let currentProgress = this.frame;
+        return this.getEase(currentProgress, 0, distance, steps);
+    }
+
+    getY = () => {
+        let distance = this.y - 0;
+        let steps = 100;
+        let currentProgress = this.frame;
+        return this.getEase(currentProgress, 0, distance, steps);
+    }
+
     draw() {
         this.context.drawImage(
             this.img,
@@ -66,5 +89,8 @@ export class StoneConfig {
 
     update() {
         // update stone apearing animation
+        if (this.frame < 100) {
+            this.frame = this.frame + 1;
+        }
     }
 }
