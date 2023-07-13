@@ -3,11 +3,17 @@ const readline = require("readline");
 const fs = require("fs");
 const { google } = require("googleapis");
 const path = require("path");
+const ffmpegPath = require("@ffmpeg-installer/ffmpeg").path;
+const ffmpeg = require("fluent-ffmpeg");
 
 const SCOPES = ["https://www.googleapis.com/auth/drive"];
 const credentials = require("./credentials.json");
 let languageFolderId = [];
 let textCharacter;
+const langFolderPath = path.join(__dirname, "..", "lang");
+let languageFolderPath;
+let audiosFolderPath;
+
 async function checkPromptAudioAvailability(language) {
   const jsonUrl = `https://feedthemonsterdev.curiouscontent.org/lang/${language}/ftm_${language}.json`;
 
@@ -62,6 +68,14 @@ const rl = readline.createInterface({
 });
 
 rl.question("Enter the language: ", (language) => {
+  languageFolderPath = path.join(langFolderPath, language);
+  if (!fs.existsSync(languageFolderPath)) {
+    fs.mkdirSync(languageFolderPath);
+  }
+  audiosFolderPath = path.join(languageFolderPath, "audios");
+  if (!fs.existsSync(audiosFolderPath)) {
+    fs.mkdirSync(audiosFolderPath);
+  }
   checkPromptAudioAvailability(language);
 });
 async function getMissingAudios(urls) {
@@ -233,12 +247,23 @@ async function askQuestion(question) {
   });
 }
 
-async function downloadFile(auth, fileId, filePath) {
+// Function to download a file
+async function downloadFile(auth, fileId, name, destinationPath) {
   const drive = google.drive({ version: "v3", auth });
+  const { ext } = path.parse(name);
+  let fileExtension = ext.toLowerCase();
+  let fileName;
+  if (textCharacter != "no") {
+    fileName = name.split(textCharacter)[0] + fileExtension;
+  } else {
+    fileName = name;
+  }
+
+  const filePath = path.join(audiosFolderPath, fileName);
   if (fs.existsSync(filePath)) {
+    console.log("Skipping");
     return;
   }
-  const dest = fs.createWriteStream(filePath);
 
   const fileOptions = {
     fileId,
@@ -249,14 +274,67 @@ async function downloadFile(auth, fileId, filePath) {
     responseType: "stream",
   });
 
-  response.data
-    .on("end", () => {
-      console.log(`File downloaded: ${filePath}`);
-    })
-    .on("error", (err) => {
-      console.error("Error downloading file:", err);
-    })
-    .pipe(dest);
+  const contentType = response.headers["content-type"];
+  if (contentType === "audio/mp3" || contentType === "audio/mpeg") {
+    const dest = fs.createWriteStream(filePath);
+
+    response.data
+      .on("end", () => {
+        console.log(`MP3 file downloaded: ${filePath}`);
+      })
+      .on("error", (err) => {
+        console.error("Error downloading MP3 file:", err);
+      })
+      .pipe(dest);
+  } else if (contentType === "audio/wav" || contentType === "audio/x-wav") {
+    const wavFolderPath = path.join(__dirname, "wav");
+    if (!fs.existsSync(wavFolderPath)) {
+      fs.mkdirSync(wavFolderPath);
+    }
+    const wavFilePath = path.join(wavFolderPath, fileName);
+
+    response.data
+      .on("end", () => {
+        console.log(`WAV file downloaded: ${wavFilePath}`);
+        const mp3FilePath = path.join(
+          audiosFolderPath,
+          fileName.replace(".wav", ".mp3")
+        );
+        convertWavToMp3(wavFilePath, mp3FilePath)
+          .then(() => {
+            console.log(`MP3 file converted: ${mp3FilePath}`);
+            fs.unlinkSync(wavFilePath); // Remove the original WAV file
+            fs.rmdirSync(wavFolderPath); // Remove the temporary WAV folder
+          })
+          .catch((error) => {
+            console.error("Error converting WAV to MP3:", error);
+          });
+      })
+      .on("error", (err) => {
+        console.error("Error downloading WAV file:", err);
+      })
+      .pipe(fs.createWriteStream(wavFilePath));
+  } else {
+    console.log(`Skipping file: ${fileName} (unsupported file type)`);
+  }
+}
+function convertWavToMp3(inputFilePath, outputFilePath) {
+  return new Promise((resolve, reject) => {
+    ffmpeg(inputFilePath)
+      .noVideo()
+      .audioCodec("libmp3lame")
+      .outputOptions("-qscale:a", "2")
+      .save(outputFilePath)
+      .on("end", () => {
+        console.log(`WAV file converted and saved as MP3: ${outputFilePath}`);
+        fs.unlinkSync(inputFilePath); // Delete the original WAV file
+        resolve();
+      })
+      .on("error", (err) => {
+        console.error("Error converting WAV to MP3:", err);
+        reject(err);
+      });
+  });
 }
 async function TextBreakerCharacter() {
   return new Promise((resolve) => {
@@ -296,8 +374,9 @@ async function checkInDrive(urls) {
         console.log(`File "${fileName}" found in Google Drive.`);
         fileName = fileName + fileExtension;
         console.log(fileName + ">>>>>>>>>>>>>>");
+        console.log(audiosFolderPath);
         const filePath = path.join(__dirname, fileName);
-        await downloadFile(authClient, file.id, filePath);
+        await downloadFile(authClient, file.id, file.name, audiosFolderPath);
         // Perform any additional actions for matching files
       } else {
         console.log(`File "${fileName}" not found in Google Drive.`);
