@@ -3,7 +3,11 @@
   "version": 2.1,
   "variant": "a",
   "RightToLeft": false,
-  "FeedbackTexts": ["Fantastic!", "Great!", "Amazing!"],
+  "FeedbackTexts": [
+    "Fantastic!",
+    "Great!",
+    "Amazing!"
+  ],
   "FeedbackAudios": [
     "https://feedthemonster.curiouscontent.org/lang/wolof/audios/fantastic.wav",
     "https://feedthemonster.curiouscontent.org/lang/wolof/audios/great.wav",

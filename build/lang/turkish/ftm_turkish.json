@@ -3,7 +3,11 @@
   "version": 2.1,
   "variant": "a",
   "RightToLeft": false,
-  "FeedbackTexts": ["Fantastik", "Harika", "İnanılmaz"],
+  "FeedbackTexts": [
+    "Fantastik",
+    "Harika",
+    "İnanılmaz"
+  ],
   "FeedbackAudios": [
     "https://feedthemonster.curiouscontent.org/lang/turkish/audios/fantastic.wav",
     "https://feedthemonster.curiouscontent.org/lang/turkish/audios/great.wav",
@@ -1788,10 +1792,10 @@
               "StoneText": "v"
             },
             {
-              "StoneText": "FireWrongLetter"
+              "StoneText": "m"
             },
             {
-              "StoneText": "FireWrongLetter"
+              "StoneText": "p"
             }
           ]
         }
@@ -1922,10 +1926,10 @@
               "StoneText": "e"
             },
             {
-              "StoneText": "FireWrongLetter"
+              "StoneText": "l"
             },
             {
-              "StoneText": "FireWrongLetter"
+              "StoneText": "k"
             }
           ]
         },
@@ -2044,10 +2048,10 @@
               "StoneText": "g"
             },
             {
-              "StoneText": "FireWrongLetter"
+              "StoneText": "b"
             },
             {
-              "StoneText": "FireWrongLetter"
+              "StoneText": "t"
             }
           ]
         },
@@ -2247,10 +2251,10 @@
               "StoneText": "g"
             },
             {
-              "StoneText": "FireWrongLetter"
+              "StoneText": "j"
             },
             {
-              "StoneText": "FireWrongLetter"
+              "StoneText": "ç"
             }
           ]
         }
