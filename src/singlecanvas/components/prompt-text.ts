@@ -71,6 +71,13 @@ export class PromptText extends EventManager {
         }
     }
 
+    playSound = () => {
+        this.sound.playSound(
+            this.currentPuzzleData.prompt.promptAudio,
+            PromptAudio
+        );
+    }
+
     onClick(xClick, yClick) {
         if (
             Math.sqrt(xClick - this.width / 3) < 12 &&

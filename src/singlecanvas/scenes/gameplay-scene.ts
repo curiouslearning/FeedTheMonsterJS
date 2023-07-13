@@ -528,6 +528,11 @@ export class GameplayScene {
             new Sound().playSound("./assets/audios/ButtonClick.mp3", ButtonClick);
         }
 
+        // send click to play prompt
+        if (this.promptText.onClick(x, y)) {
+            this.promptText.playSound();
+        }
+
         // if (!this.isPauseButtonClicked && this.pausePopup.cancelButton.onClick(x, y)) {
         //     console.log("shsjsksk")
         //     this.isPauseButtonClicked = false;
@@ -679,7 +684,7 @@ export class GameplayScene {
             );
         }
 
-        if(this.isPauseButtonClicked) {
+        if (this.isPauseButtonClicked) {
             this.pauseButton.draw();
             this.levelIndicators.draw();
             this.promptText.draw();
@@ -697,7 +702,7 @@ export class GameplayScene {
             this.timerTicking.draw()
         }
 
-       
+
 
     }
     update(deltaTime: number) {
