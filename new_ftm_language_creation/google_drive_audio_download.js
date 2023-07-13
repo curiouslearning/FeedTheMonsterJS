@@ -168,7 +168,7 @@ async function downloadFile(auth, fileId, name, destinationPath) {
   if (textCharacter != "no") {
     fileName = name.split(textCharacter)[0] + fileExtension;
   } else {
-    filename = name;
+    fileName = name;
   }
 
   const filePath = path.join(destinationPath, fileName);
@@ -187,7 +187,7 @@ async function downloadFile(auth, fileId, name, destinationPath) {
   });
 
   const contentType = response.headers["content-type"];
-  if (contentType === "audio/mp3") {
+  if (contentType === "audio/mp3" || contentType === "audio/mpeg") {
     if (
       jsonPromptTexts.includes(fileName.slice(0, fileName.lastIndexOf(".")))
     ) {
@@ -202,7 +202,7 @@ async function downloadFile(auth, fileId, name, destinationPath) {
         })
         .pipe(dest);
     }
-  } else if (contentType === "audio/wav") {
+  } else if (contentType === "audio/wav" || contentType === "audio/x-wav") {
     const wavFolderPath = path.join(__dirname, "wav");
     if (!fs.existsSync(wavFolderPath)) {
       fs.mkdirSync(wavFolderPath);
@@ -302,10 +302,48 @@ function findUniquePromptTexts(obj, uniquePromptTexts = []) {
   if (typeof obj === "object" && obj !== null) {
     for (let key in obj) {
       if (obj.hasOwnProperty(key)) {
-        if (key === "PromptText") {
-          const promptText = obj[key];
+        if (key === "PromptAudio") {
+          const parts = obj[key].split("/");
+          const fileName = parts[parts.length - 1];
+          const character = fileName.substring(0, fileName.lastIndexOf("."));
+
+          const promptText = character;
           if (!uniquePromptTexts.includes(promptText)) {
             uniquePromptTexts.push(promptText);
+          }
+        }
+        if (key === "FeedbackAudios" || key === "OtherAudios") {
+          if (key === "FeedbackAudios" || key === "OtherAudios") {
+            if (Array.isArray(obj[key])) {
+              // Handle array of URLs
+              const urlList = obj[key];
+              const transformedUrls = urlList.map((url) => {
+                let word = url.substring(
+                  url.lastIndexOf("/") + 1,
+                  url.lastIndexOf(".mp3")
+                );
+                if (!uniquePromptTexts.includes(word)) {
+                  console.log(">>>>>>>>>>>>>>>>>>>>>>>>>>>>" + word);
+                  uniquePromptTexts.push(word);
+                }
+              });
+            } else if (typeof obj[key] === "object" && obj[key] !== null) {
+              // Handle key-value pairs of strings and URLs
+              const audioObject = obj[key];
+              for (let audioKey in audioObject) {
+                if (audioObject.hasOwnProperty(audioKey)) {
+                  const url = audioObject[audioKey];
+                  let word = url.substring(
+                    url.lastIndexOf("/") + 1,
+                    url.lastIndexOf(".mp3")
+                  );
+                  if (!uniquePromptTexts.includes(word)) {
+                    console.log(">>>>>>>>>>>>>>>>>>>>>>>>>>>>" + word);
+                    uniquePromptTexts.push(word);
+                  }
+                }
+              }
+            }
           }
         }
         findUniquePromptTexts(obj[key], uniquePromptTexts);

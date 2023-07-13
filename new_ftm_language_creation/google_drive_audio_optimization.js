@@ -18,6 +18,7 @@ const SCOPES = ["https://www.googleapis.com/auth/drive"];
 const credentials = require("./credentials.json");
 ffmpeg.setFfmpegPath(ffmpegPath);
 let languageFolderId = [];
+let currentFolderPathName = [];
 const rl = readline.createInterface({
   input: process.stdin,
   output: process.stdout,
@@ -117,6 +118,9 @@ async function listFilesAndFolders(auth, parentFolderId) {
     if (selectedFolderNumber.toLowerCase() === "back") {
       let folderId = languageFolderId[languageFolderId.length - 2];
       languageFolderId.pop();
+      currentFolderPath =
+        currentFolderPathName[currentFolderPathName.length - 2];
+      currentFolderPathName.pop();
       await listFilesAndFolders(auth, folderId);
     }
 
@@ -136,6 +140,7 @@ async function listFilesAndFolders(auth, parentFolderId) {
       fs.mkdirSync(audiosFolderPath);
     }
     currentFolderPath = audiosFolderPath;
+    currentFolderPathName.push(currentFolderPath);
     console.log(`Selected item: ${selectedFolder.name} (${selectedFolder.id})`);
 
     const downloadConfirmation = await new Promise((resolve) => {
@@ -149,14 +154,19 @@ async function listFilesAndFolders(auth, parentFolderId) {
 
     if (downloadConfirmation === "yes") {
       textCharacter = await TextBreakerCharacter();
+      console.log("<<<<<<<<<<<<<<<<<<<<<<<<<<<" + textCharacter);
       if (selectedFolder.mimeType === "application/vnd.google-apps.folder") {
-        await downloadFolderContents(auth, selectedFolder.id, audiosFolderPath);
+        await downloadFolderContents(
+          auth,
+          selectedFolder.id,
+          currentFolderPath
+        );
       } else {
         await downloadFile(
           auth,
           selectedFolder.id,
           selectedFolder.name,
-          audiosFolderPath
+          currentFolderPath
         );
       }
     } else {
@@ -174,10 +184,10 @@ async function downloadFile(auth, fileId, name, destinationPath) {
   const { ext } = path.parse(name);
   let fileExtension = ext.toLowerCase();
   let fileName;
-  if (textCharacter != "no") {
-    fileName = name.split(textCharacter)[0] + fileExtension;
+  if (textCharacter === "no") {
+    fileName = name;
   } else {
-    filename = name;
+    fileName = name.split(textCharacter)[0] + fileExtension;
   }
 
   const filePath = path.join(destinationPath, fileName);
@@ -196,7 +206,8 @@ async function downloadFile(auth, fileId, name, destinationPath) {
   });
 
   const contentType = response.headers["content-type"];
-  if (contentType === "audio/mp3") {
+  console.log(">>>>>>>>>>>>>>>>>>>>>>>" + contentType);
+  if (contentType === "audio/mp3" || contentType === "audio/mpeg") {
     const dest = fs.createWriteStream(filePath);
 
     response.data
@@ -207,7 +218,7 @@ async function downloadFile(auth, fileId, name, destinationPath) {
         console.error("Error downloading MP3 file:", err);
       })
       .pipe(dest);
-  } else if (contentType === "audio/wav") {
+  } else if (contentType === "audio/wav" || contentType === "audio/x-wav") {
     const wavFolderPath = path.join(__dirname, "wav");
     if (!fs.existsSync(wavFolderPath)) {
       fs.mkdirSync(wavFolderPath);
@@ -293,7 +304,6 @@ async function TextBreakerCharacter() {
 async function main() {
   try {
     const authClient = await authenticate();
-    isRightToLeft = await languageDirection();
     const parentFolderId = "1tj6wcvLQCcVyglSQ0hcCRZD1KaOCWOkk";
 
     await listFilesAndFolders(authClient, parentFolderId);

@@ -7,7 +7,9 @@ const { get } = require("http");
 
 // Configure your GitHub personal access token and repository details
 
-const accessToken = "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";
+const accessToken = "";
+
+
 
 const owner = "curiouslearning";
 const repo = "ftm-languagepacks";
@@ -53,10 +55,48 @@ function findUniquePromptTexts(obj, uniquePromptTexts = []) {
   if (typeof obj === "object" && obj !== null) {
     for (let key in obj) {
       if (obj.hasOwnProperty(key)) {
-        if (key === "PromptText") {
-          const promptText = obj[key];
+        if (key === "PromptAudio") {
+          const parts = obj[key].split("/");
+          const fileName = parts[parts.length - 1];
+          const character = fileName.substring(0, fileName.lastIndexOf("."));
+
+          const promptText = character;
           if (!uniquePromptTexts.includes(promptText)) {
             uniquePromptTexts.push(promptText);
+          }
+        }
+        if (key === "FeedbackAudios" || key === "OtherAudios") {
+          if (key === "FeedbackAudios" || key === "OtherAudios") {
+            if (Array.isArray(obj[key])) {
+              // Handle array of URLs
+              const urlList = obj[key];
+              const transformedUrls = urlList.map((url) => {
+                let word = url.substring(
+                  url.lastIndexOf("/") + 1,
+                  url.lastIndexOf(".mp3")
+                );
+                if (!uniquePromptTexts.includes(word)) {
+                  console.log(">>>>>>>>>>>>>>>>>>>>>>>>>>>>" + word);
+                  uniquePromptTexts.push(word);
+                }
+              });
+            } else if (typeof obj[key] === "object" && obj[key] !== null) {
+              // Handle key-value pairs of strings and URLs
+              const audioObject = obj[key];
+              for (let audioKey in audioObject) {
+                if (audioObject.hasOwnProperty(audioKey)) {
+                  const url = audioObject[audioKey];
+                  let word = url.substring(
+                    url.lastIndexOf("/") + 1,
+                    url.lastIndexOf(".mp3")
+                  );
+                  if (!uniquePromptTexts.includes(word)) {
+                    console.log(">>>>>>>>>>>>>>>>>>>>>>>>>>>>" + word);
+                    uniquePromptTexts.push(word);
+                  }
+                }
+              }
+            }
           }
         }
         findUniquePromptTexts(obj[key], uniquePromptTexts);
