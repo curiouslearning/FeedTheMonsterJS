@@ -168,7 +168,7 @@ async function downloadFile(auth, fileId, name, destinationPath) {
   if (textCharacter != "no") {
     fileName = name.split(textCharacter)[0] + fileExtension;
   } else {
-    filename = name;
+    fileName = name;
   }
 
   const filePath = path.join(destinationPath, fileName);
