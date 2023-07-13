@@ -187,7 +187,7 @@ async function downloadFile(auth, fileId, name, destinationPath) {
   });
 
   const contentType = response.headers["content-type"];
-  if (contentType === "audio/mp3") {
+  if (contentType === "audio/mp3" || contentType === "audio/mpeg") {
     if (
       jsonPromptTexts.includes(fileName.slice(0, fileName.lastIndexOf(".")))
     ) {
