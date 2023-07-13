@@ -9,16 +9,27 @@ promptUrls = []
 letters = []
 folder_index = 0
 selected_folder = sys.argv[1]
+feedback_words = ['amazing', 'fantastic1', 'great1','amazing!']
 
 
-def download_and_convert_audio(url, output_dir):
+def download_and_convert_audio(url, output_dir, feedback_audios):
     converted_url = url.replace(
         "https://raw.githubusercontent.com/curiouslearning/ftm-languagepacks/master/", "https://cdn.jsdelivr.net/gh/curiouslearning/ftm-languagepacks@master/")
     response = requests.get(converted_url)
     file_name = converted_url.split('/')[-1]
+    if feedback_audios:
+        print(file_name.split('.')[0])
     try:
-        promptUrls.index(unicodedata.normalize("NFC", file_name.split('.')[0]))
-        output_path = os.path.join(output_dir, file_name)
+        if feedback_audios:
+            feedback_words.index(unicodedata.normalize(
+                "NFC", file_name.split('.')[0]))
+            file_name = file_name.split('.')[0][:-1]+'.wav'
+            output_path = os.path.join(output_dir, file_name)
+
+        else:
+            promptUrls.index(unicodedata.normalize(
+                "NFC", file_name.split('.')[0]))
+            output_path = os.path.join(output_dir, file_name)
         downloaded_file_path = os.path.join(output_dir, file_name)
         with open(output_path, 'wb') as file:
             file.write(response.content)
@@ -34,11 +45,10 @@ def download_and_convert_audio(url, output_dir):
         return None
 
 
-def download_and_convert_folder(repo_owner, repo_name, folder_path, output_dir):
+def download_and_convert_folder(repo_owner, repo_name, folder_path, output_dir, feedback_audios=False):
     base_url = f"https://api.github.com/repos/{repo_owner}/{repo_name}/contents"
     folder_path = folder_path.strip('/')
     folder_url = f"{base_url}/{folder_path}"
-
     try:
         response = requests.get(folder_url)
         print("Network operation successful!")
@@ -52,45 +62,17 @@ def download_and_convert_folder(repo_owner, repo_name, folder_path, output_dir):
             if item['type'] == 'file':
                 file_url = item['download_url']
                 converted_file_path = download_and_convert_audio(
-                    unquote(file_url), output_dir)
+                    unquote(file_url), output_dir, feedback_audios)
                 if converted_file_path is not None:
                     print(
                         f"File downloaded and converted: {converted_file_path}")
             elif item['type'] == 'dir':
                 subfolder_path = f"{folder_path}/{item['name']}"
                 download_and_convert_folder(
-                    repo_owner, repo_name, subfolder_path, output_dir)
+                    repo_owner, repo_name, subfolder_path, output_dir, feedback_audios)
     else:
         print(f"Failed to retrieve folder: {folder_path}")
 
-def download_feedbacks_and_convert_folder(repo_owner, repo_name, folder_path, output_dir):
-    base_url = f"https://api.github.com/repos/{repo_owner}/{repo_name}/contents"
-    folder_path = folder_path.strip('/')
-    folder_url = f"{base_url}/{folder_path}"
-
-    try:
-        response = requests.get(folder_url)
-        print("Network operation successful!")
-    except requests.exceptions.RequestException as e:
-        print(f"Network operation failed: {e}")
-    if response.status_code == 200:
-        folder_contents = response.json()
-        os.makedirs(output_dir, exist_ok=True)
-
-        for item in folder_contents:
-            if item['type'] == 'file':
-                file_url = item['download_url']
-                converted_file_path = download_and_convert_audio(
-                    unquote(file_url), output_dir)
-                if converted_file_path is not None:
-                    print(
-                        f"File downloaded and converted: {converted_file_path}")
-            elif item['type'] == 'dir':
-                subfolder_path = f"{folder_path}/{item['name']}"
-                download_and_convert_folder(
-                    repo_owner, repo_name, subfolder_path, output_dir)
-    else:
-        print(f"Failed to retrieve folder: {folder_path}")
 
 repo_owner = 'curiouslearning'
 repo_name = 'ftm-languagepacks'
@@ -121,5 +103,5 @@ print("Total required audios = ", len(set(promptUrls)))
 items = os.listdir(output_directory)
 print("Required audios = ", len(set(promptUrls)),
       "---Total Downloaded audios = ", len(items))
-download_feedbacks_and_convert_folder(repo_owner, repo_name,
-                                f'{selected_folder}/sounds/feedbacks', output_directory)
+download_and_convert_folder(repo_owner, repo_name,
+                            f'{selected_folder}/sounds/feedbacks', output_directory, True)
