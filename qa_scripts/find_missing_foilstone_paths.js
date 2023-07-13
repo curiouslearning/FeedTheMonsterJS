@@ -1,6 +1,7 @@
 const fs = require("fs");
 const readline = require("readline");
-const language = process.argv[2].toLowerCase();
+
+let language;
 let outputFilePath;
 const uniqueLetters = [];
 // Create a readline interface for user input
@@ -10,7 +11,7 @@ const rl = readline.createInterface({
 });
 
 async function main() {
-   
+  language = await promptForLanguageSelection();
   const json = await processModule(language);
   const missingLetterPaths = findMissingLetter(json);
   outputFilePath = `${__dirname}/missing_foilstones_paths.txt`;
@@ -52,6 +53,7 @@ function findMissingLetter(obj, path = "", paths = []) {
           obj[key] != "FireWrongLetter"
         ) {
           if (!uniqueLetters.includes(obj[key]) && uniqueLetters.length <= 30) {
+            console.log(obj[key]);
             uniqueLetters.push(obj[key]);
           }
         }
