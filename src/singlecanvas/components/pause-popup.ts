@@ -48,31 +48,31 @@ export default class PausePopUp {
             this.imagesLoaded = true;
         }
 
-        this.createCanvas();
+        // this.createCanvas();
     }
 
-    createCanvas() {
-        var self = this;
-        const selfIdElement = document.getElementById("canvas") as HTMLCanvasElement;
-        selfIdElement.addEventListener("click", function (event) {
-            var rect = selfIdElement.getBoundingClientRect();
-            const x = event.clientX - rect.left;
-            const y = event.clientY - rect.top;
-            if (self.cancelButton.onClick(x, y)) {
-                // this.levelStart.timerTicking.resumeTimer();
-                // this.levelStart.levelEndCallBack('cancel_button');
-                // this.deleteCanvas(this);
-            }
-            if (self.retryButton.onClick(x, y)) {
-                // this.levelStart.levelEndCallBack("retry_button");
-                // this.deleteCanvas(this);
-            }
-            if (self.closeButton.onClick(x, y)) {
-                // this.levelStart.levelEndCallBack("close_button");
-                // this.deleteCanvas(this);
-            }
-        }, false);
-    }
+    // createCanvas() {
+    //     var self = this;
+    //     const selfIdElement = document.getElementById("canvas") as HTMLCanvasElement;
+    //     selfIdElement.addEventListener("click", function (event) {
+    //         var rect = selfIdElement.getBoundingClientRect();
+    //         const x = event.clientX - rect.left;
+    //         const y = event.clientY - rect.top;
+    //         if (self.cancelButton.onClick(x, y)) {
+    //             // this.levelStart.timerTicking.resumeTimer();
+    //             // this.levelStart.levelEndCallBack('cancel_button');
+    //             // this.deleteCanvas(this);
+    //         }
+    //         if (self.retryButton.onClick(x, y)) {
+    //             // this.levelStart.levelEndCallBack("retry_button");
+    //             // this.deleteCanvas(this);
+    //         }
+    //         if (self.closeButton.onClick(x, y)) {
+    //             // this.levelStart.levelEndCallBack("close_button");
+    //             // this.deleteCanvas(this);
+    //         }
+    //     }, false);
+    // }
 
     deleteCanvas(this) {
     }

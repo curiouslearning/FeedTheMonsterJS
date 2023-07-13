@@ -31,6 +31,8 @@ import { FirebaseIntegration } from "../../firebase/firebase_integration";
 import StoneHandler from "../components/stone-handler";
 import { Tutorial } from "../components/tutorial";
 import { StoneConfig } from "../common/stone-config";
+import PausePopUp from "../components/pause-popup";
+import { CLICK, LOADPUZZLE, MOUSEDOWN, MOUSEMOVE, MOUSEUP, STONEDROP, TOUCHEND, TOUCHMOVE, TOUCHSTART } from "../common/event-names";
 
 var images = {
     bgImg: "./assets/images/bg_v01.jpg",
@@ -120,6 +122,8 @@ export class GameplayScene {
     images: { pillerImg: string; bgImg: string; hillImg: string; grassImg: string; fenchImg: string; profileMonster: string; };
     handler: HTMLElement;
     pickedStoneObject: any;
+    pausePopup: PausePopUp;
+    isPauseButtonClicked: boolean = false;
 
     constructor(
         canvas,
@@ -166,6 +170,7 @@ export class GameplayScene {
         this.tutorial = new Tutorial(this.context, this.width, this.height);
         this.levelIndicators.setIndicators(this.counter);
         this.monster = new Monster(this.canvas, 4);
+        this.pausePopup = new PausePopUp(this.canvas);
         this.handler = document.getElementById("canvas");
         // this.stones = new StonesLayer(
         //     game,
@@ -175,7 +180,6 @@ export class GameplayScene {
         //     this,
         //     current_puzzle_index
         // );
-        this.pickedStoneObject;
         this.puzzleData = levelData.puzzles;
         this.feedBackTexts = feedBackTexts;
         // this.isPuzzleCompleted = false;
@@ -466,16 +470,18 @@ export class GameplayScene {
             const isCorrect = this.stoneHandler.isDroppedStoneCorrect(self.pickedStone.text)
             console.log('LevelData->', this.levelData)
             let loadPuzzleData = { 'isCorrect': isCorrect }
-            const dropStoneEvent = new CustomEvent("stonesdropped", { detail: loadPuzzleData });
+            const dropStoneEvent = new CustomEvent(STONEDROP, { detail: loadPuzzleData });
             document.dispatchEvent(dropStoneEvent);
             this.loadPuzzle();
 
         } else {
-            this.pickedStone.x = this.pickedStoneObject.origx;
-            this.pickedStone.y = this.pickedStoneObject.origy;
-            this.monster.changeToIdleAnimation();
+            if (this.pickedStoneObject != null) {
+                this.pickedStone.x = this.pickedStoneObject.origx;
+                this.pickedStone.y = this.pickedStoneObject.origy;
+                this.monster.changeToIdleAnimation();
+            }
         }
-        self.pickedStone = null;
+        this.pickedStone = null;
     }
 
     handleMouseDown = (event) => {
@@ -507,6 +513,26 @@ export class GameplayScene {
             self.pickedStone.x = x;
             self.pickedStone.y = y;
         }
+    }
+
+    handleMouseClick = (event) => {
+        const selfElement = <HTMLElement>document.getElementById("canvas");
+        event.preventDefault();
+        var rect = selfElement.getBoundingClientRect();
+        const x = event.clientX - rect.left;
+        const y = event.clientY - rect.top;
+        console.log("hdhdhdh");
+        if (this.pauseButton.onClick(x, y) && !this.isPauseButtonClicked) {
+            this.isPauseButtonClicked = true;
+            this.removeEventListeners();
+            new Sound().playSound("./assets/audios/ButtonClick.mp3", ButtonClick);
+        }
+
+        // if (!this.isPauseButtonClicked && this.pausePopup.cancelButton.onClick(x, y)) {
+        //     console.log("shsjsksk")
+        //     this.isPauseButtonClicked = false;
+        //     this.addEventListeners();
+        // }
     }
 
     handleTouchStart = (event) => {
@@ -652,14 +678,27 @@ export class GameplayScene {
                 this.height / 2
             );
         }
-        // this.timerTicking.createBackgroud();
 
-        this.pauseButton.draw();
-        this.levelIndicators.draw();
-        this.timerTicking.update(deltaTime)
-        this.promptText.draw();
-        this.monster.animation(deltaTime);
-        this.stoneHandler.draw();
+        if(this.isPauseButtonClicked) {
+            this.pauseButton.draw();
+            this.levelIndicators.draw();
+            this.promptText.draw();
+            this.timerTicking.draw();
+            this.monster.animation(deltaTime);
+            this.stoneHandler.draw();
+            this.pausePopup.draw();
+        } else {
+            this.pauseButton.draw();
+            this.levelIndicators.draw();
+            this.promptText.draw();
+            this.monster.animation(deltaTime);
+            this.stoneHandler.draw();
+            this.timerTicking.update(deltaTime);
+            this.timerTicking.draw()
+        }
+
+       
+
     }
     update(deltaTime: number) {
         self.timerTicking ? self.timerTicking.update(deltaTime) : null;
@@ -738,36 +777,37 @@ export class GameplayScene {
 
     addEventListeners() {
         this.handler.addEventListener(
-            "mouseup",
+            MOUSEUP,
             this.handleMouseUp,
             false
         );
         this.handler.addEventListener(
-            "mousemove",
+            MOUSEMOVE,
             this.handleMouseMove,
             false
         );
         this.handler.addEventListener(
-            "mousedown",
+            MOUSEDOWN,
             this.handleMouseDown,
             false
         );
 
         this.handler.addEventListener(
-            "touchstart",
+            TOUCHSTART,
             this.handleTouchStart,
             false
         );
         this.handler.addEventListener(
-            "touchmove",
+            TOUCHMOVE,
             this.handleMouseMove,
             false
         );
         this.handler.addEventListener(
-            "touchend",
+            TOUCHEND,
             this.handleTouchEnd,
             false
         );
+        this.handler.addEventListener(CLICK, this.handleMouseClick, false);
     }
 
     removeEventListeners() {
@@ -957,7 +997,7 @@ export class GameplayScene {
             const loadPuzzleData = {
                 "counter": this.counter
             }
-            const loadPuzzleEvent = new CustomEvent("loadpuzzle", { detail: loadPuzzleData });
+            const loadPuzzleEvent = new CustomEvent(LOADPUZZLE, { detail: loadPuzzleData });
             setTimeout(() => {
                 document.dispatchEvent(loadPuzzleEvent);
             }, 4000)

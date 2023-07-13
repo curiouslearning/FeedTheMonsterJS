@@ -1,4 +1,5 @@
 import { loadImages } from "../../common/common";
+import { PUASEBUTTON } from "../common/constants";
 import { EventManager } from "../events/EventManager";
 
 declare global {
@@ -80,12 +81,15 @@ export class TimerTicking extends EventManager {
     }
     update(deltaTime) {
         if (this.startMyTimer && !this.isStoneDropped) {
-            this.timer += deltaTime * 0.08;
+            this.timer += deltaTime * 0.008;
         }
         if ((this.width * 0.87 - (this.width * 0.87 * this.timer * 0.01)) < 0 && !this.isMyTimerOver) {
             this.isMyTimerOver = true;
             this.callback();
         }
+    }
+
+    draw() {
         if (this.imagesLoaded) {
             this.context.drawImage(
                 this.loadedImages.timer_empty,
@@ -115,18 +119,6 @@ export class TimerTicking extends EventManager {
         }
     }
 
-    draw() {
-        this.isTimerStarted = false;
-        this.context.drawImage(
-            this.timer_full,
-            this.width * 0.12,
-            this.height * 0.099,
-            this.width - 50,
-            this.height * 0.05
-        );
-        this.timer = 0;
-    }
-
     public handleStoneDrop(event) {
         this.isStoneDropped = true;
     }
@@ -139,4 +131,5 @@ export class TimerTicking extends EventManager {
     public dispose() {
         this.unregisterEventListener();
     }
+
 }

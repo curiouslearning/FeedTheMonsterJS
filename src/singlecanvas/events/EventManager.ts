@@ -1,29 +1,30 @@
+import { LOADPUZZLE, STONEDROP } from "../common/event-names";
+
 export class EventManager {
     private stoneDropCallbackHandler: Function;
     private loadPuzzleCallbackHandler: Function;
 
     constructor(
         protected handler: {
-            stoneDropCallbackHandler: Function;
-            loadPuzzleCallbackHandler: Function;
+            stoneDropCallbackHandler?: Function;
+            loadPuzzleCallbackHandler?: Function;
         }
     ) {
         this.stoneDropCallbackHandler = handler.stoneDropCallbackHandler;
         this.loadPuzzleCallbackHandler = handler.loadPuzzleCallbackHandler;
         document.addEventListener(
-            "stonesdropped",
+            STONEDROP,
             this.handleStoneDroppedEvent.bind(this),
             false
         );
         document.addEventListener(
-            "loadpuzzle",
+            LOADPUZZLE,
             this.handleLoadPuzzleEvent.bind(this),
             false
         );
     }
 
     private handleStoneDroppedEvent(event: Event) {
-        console.log("stoneeeeeeeeee Droppppppp like Pro")
         this.stoneDropCallbackHandler(event);
     }
 
@@ -33,12 +34,12 @@ export class EventManager {
 
     public unregisterEventListener() {
         document.removeEventListener(
-            "stonesdropped",
+            STONEDROP,
             this.handleStoneDroppedEvent.bind(this),
             false
         );
         document.removeEventListener(
-            "loadpuzzle",
+            LOADPUZZLE,
             this.handleLoadPuzzleEvent.bind(this),
             false
         );
