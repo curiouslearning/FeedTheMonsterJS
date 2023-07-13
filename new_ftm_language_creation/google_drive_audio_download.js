@@ -53,8 +53,6 @@ function getAccessToken(oAuth2Client) {
     console.log(authUrl);
 
     rl.question("Enter the authorization code: ", (code) => {
-      rl.close();
-
       oAuth2Client.getToken(code, (err, token) => {
         if (err) {
           reject("Error retrieving access token:", err);
