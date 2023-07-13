@@ -202,7 +202,7 @@ async function downloadFile(auth, fileId, name, destinationPath) {
         })
         .pipe(dest);
     }
-  } else if (contentType === "audio/wav") {
+  } else if (contentType === "audio/wav" || contentType === "audio/x-wav") {
     const wavFolderPath = path.join(__dirname, "wav");
     if (!fs.existsSync(wavFolderPath)) {
       fs.mkdirSync(wavFolderPath);
