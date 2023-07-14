@@ -172,18 +172,8 @@ export class GameplayScene {
         this.monster = new Monster(this.canvas, 4);
         this.pausePopup = new PausePopUp(this.canvas, this.resumeGame);
         this.handler = document.getElementById("canvas");
-        // this.stones = new StonesLayer(
-        //     game,
-        //     levelData.puzzles[current_puzzle_index],
-        //     this.pauseButton,
-        //     this.redrawOfStones,
-        //     this,
-        //     current_puzzle_index
-        // );
         this.puzzleData = levelData.puzzles;
         this.feedBackTexts = feedBackTexts;
-        // this.isPuzzleCompleted = false;
-        // this.createBackgroud();
 
         this.images = {
             pillerImg: "./assets/images/Totem_v02_v01.png",
@@ -209,58 +199,58 @@ export class GameplayScene {
         this.pausePopup.dispose();
     }
 
-    levelEndCallBack(button_name?: string) {
-        if (!isGamePause) {
-            isGamePause = true;
-            if (isLevelEnded) {
-                isLevelEnded = false;
-                isGamePause = false;
-            }
-        } else {
-            if (current_puzzle_index == self.puzzleData.length) {
-                if (noMoreTarget) {
-                    self.levelEnded();
-                    current_puzzle_index = 0;
-                }
-            } else {
-                isGamePause = false;
+    // levelEndCallBack(button_name?: string) {
+    //     if (!isGamePause) {
+    //         isGamePause = true;
+    //         if (isLevelEnded) {
+    //             isLevelEnded = false;
+    //             isGamePause = false;
+    //         }
+    //     } else {
+    //         if (current_puzzle_index == self.puzzleData.length) {
+    //             if (noMoreTarget) {
+    //                 self.levelEnded();
+    //                 current_puzzle_index = 0;
+    //             }
+    //         } else {
+    //             isGamePause = false;
 
-                if (self.isPuzzleCompleted && button_name == "cancel_button") {
-                    self.timerTicking.stopTimer();
-                    setTimeout(() => {
-                        self.stones.setNewPuzzle(self.puzzleData[current_puzzle_index]);
-                        self.promptText.setCurrrentPuzzleData(
-                            self.puzzleData[current_puzzle_index]
-                        );
-                        self.timerTicking.draw();
-                        self.promptText.draw();
-                        self.isPuzzleCompleted = false;
-                    }, 1000);
-                } else if (button_name == "cancel_button") {
-                    self.timerTicking.resumeTimer();
-                }
-            }
-        }
-        self.audio.playSound(audioUrl.buttonClick, ButtonClick);
-        switch (button_name) {
-            case "next_button": {
-                self.exitAllScreens();
-                self.levelStartCallBack(button_name);
-                break;
-            }
-            case "retry_button": {
-                self.exitAllScreens();
-                self.levelStartCallBack(button_name);
-                break;
-            }
-            case "close_button": {
-                isGamePause = false;
-                self.exitAllScreens();
-                self.levelStartCallBack(button_name);
-                break;
-            }
-        }
-    }
+    //             if (self.isPuzzleCompleted && button_name == "cancel_button") {
+    //                 self.timerTicking.stopTimer();
+    //                 setTimeout(() => {
+    //                     self.stones.setNewPuzzle(self.puzzleData[current_puzzle_index]);
+    //                     self.promptText.setCurrrentPuzzleData(
+    //                         self.puzzleData[current_puzzle_index]
+    //                     );
+    //                     self.timerTicking.draw();
+    //                     self.promptText.draw();
+    //                     self.isPuzzleCompleted = false;
+    //                 }, 1000);
+    //             } else if (button_name == "cancel_button") {
+    //                 self.timerTicking.resumeTimer();
+    //             }
+    //         }
+    //     }
+    //     self.audio.playSound(audioUrl.buttonClick, ButtonClick);
+    //     switch (button_name) {
+    //         case "next_button": {
+    //             self.exitAllScreens();
+    //             self.levelStartCallBack(button_name);
+    //             break;
+    //         }
+    //         case "retry_button": {
+    //             self.exitAllScreens();
+    //             self.levelStartCallBack(button_name);
+    //             break;
+    //         }
+    //         case "close_button": {
+    //             isGamePause = false;
+    //             self.exitAllScreens();
+    //             self.levelStartCallBack(button_name);
+    //             break;
+    //         }
+    //     }
+    // }
 
     getRandomFeedBackText(randomIndex) {
         const keys = Object.keys(this.feedBackTexts);
@@ -273,188 +263,188 @@ export class GameplayScene {
         return Math.floor(Math.random() * (max - min + 1)) + min;
     }
 
-    timeOverCallback = () => {
-        // time to load new puzzle
-        console.log("timeOver");
-        this.timerTicking.readyTimer();
-        this.timerTicking.startTimer();
-        this.timerTicking.isMyTimerOver = false;
-        if (this.counter == 5)
-            this.counter = 0;
-        // this.counter += 1;
-        this.levelIndicators.setIndicators(this.counter++);
-    }
+    // timeOverCallback = () => {
+    //     // time to load new puzzle
+    //     console.log("timeOver");
+    //     this.timerTicking.readyTimer();
+    //     this.timerTicking.startTimer();
+    //     this.timerTicking.isMyTimerOver = false;
+    //     if (this.counter == 5)
+    //         this.counter = 0;
+    //     // this.counter += 1;
+    //     this.levelIndicators.setIndicators(this.counter++);
+    // }
 
-    redrawOfStones(
-        dragAnimation: string,
-        status: boolean,
-        emptyTarget: boolean,
-        picked_stone: string,
-        picked_stones: Array<string>
-    ) {
-        if (dragAnimation != undefined) {
-            switch (dragAnimation) {
-                case "dragMonsterAnimation": {
-                    self.monster.changeToDragAnimation();
-                    break;
-                }
-                case "stopDragMonsterAnimation": {
-                    self.monster.changeToIdleAnimation();
-                    break;
-                }
-                default: {
-                    self.monster.changeToIdleAnimation();
-                }
-            }
-        } else {
-            noMoreTarget = emptyTarget;
-            var fntsticOrGrtIndex = self.getRandomInt(0, 1);
-            if (status) {
-                self.isPuzzleCompleted = true;
-                self.monster.changeToEatAnimation();
-                self.audio.playSound(audioUrl.monsterEat, PhraseAudio);
-                setTimeout(() => {
-                    self.audio.playSound(audioUrl.monsterHappy, PhraseAudio);
-                }, 300);
-                if (emptyTarget) {
-                    if (navigator.onLine) {
-                        self.puzzleEndFirebaseEvents(
-                            "success",
-                            current_puzzle_index,
-                            picked_stones,
-                            self.levelData.puzzles[current_puzzle_index].targetStones,
-                            self.levelData.puzzles[current_puzzle_index].foilStones,
-                            self.puzzleStartTime
-                        );
-                    }
-                    setTimeout(() => {
-                        self.audio.playSound(
-                            audioUrl.phraseAudios[fntsticOrGrtIndex],
-                            FeedbackAudio
-                        );
-                        self.promptText.showFantasticOrGreat(
-                            self.getRandomFeedBackText(fntsticOrGrtIndex)
-                        );
-                    }, 1000);
-                    self.promptText.draw(
-                        (word_dropped_stones += self.rightToLeft ? 1 : picked_stone.length)
-                    );
-                    self.timerTicking.stopTimer();
-                    score += 100;
-                    word_dropped_stones = 0;
-                    current_puzzle_index += 1;
-                } else {
-                    self.promptText.draw(
-                        (word_dropped_stones += self.rightToLeft ? 1 : picked_stone.length)
-                    );
-                }
-            } else {
-                self.isPuzzleCompleted = true;
-                self.timerTicking.stopTimer();
-                self.monster.changeToSpitAnimation();
-                self.audio.playSound(audioUrl.monsterSad, PhraseAudio);
-                if (navigator.onLine) {
-                    self.puzzleEndFirebaseEvents(
-                        "failure",
-                        current_puzzle_index,
-                        picked_stones,
-                        self.levelData.puzzles[current_puzzle_index].targetStones,
-                        self.levelData.puzzles[current_puzzle_index].foilStones,
-                        self.puzzleStartTime
-                    );
-                }
-                setTimeout(() => {
-                    self.audio.playSound(audioUrl.monsterSplit, PhraseAudio);
-                }, 1000);
+    // redrawOfStones(
+    //     dragAnimation: string,
+    //     status: boolean,
+    //     emptyTarget: boolean,
+    //     picked_stone: string,
+    //     picked_stones: Array<string>
+    // ) {
+    //     if (dragAnimation != undefined) {
+    //         switch (dragAnimation) {
+    //             case "dragMonsterAnimation": {
+    //                 self.monster.changeToDragAnimation();
+    //                 break;
+    //             }
+    //             case "stopDragMonsterAnimation": {
+    //                 self.monster.changeToIdleAnimation();
+    //                 break;
+    //             }
+    //             default: {
+    //                 self.monster.changeToIdleAnimation();
+    //             }
+    //         }
+    //     } else {
+    //         noMoreTarget = emptyTarget;
+    //         var fntsticOrGrtIndex = self.getRandomInt(0, 1);
+    //         if (status) {
+    //             self.isPuzzleCompleted = true;
+    //             self.monster.changeToEatAnimation();
+    //             self.audio.playSound(audioUrl.monsterEat, PhraseAudio);
+    //             setTimeout(() => {
+    //                 self.audio.playSound(audioUrl.monsterHappy, PhraseAudio);
+    //             }, 300);
+    //             if (emptyTarget) {
+    //                 if (navigator.onLine) {
+    //                     self.puzzleEndFirebaseEvents(
+    //                         "success",
+    //                         current_puzzle_index,
+    //                         picked_stones,
+    //                         self.levelData.puzzles[current_puzzle_index].targetStones,
+    //                         self.levelData.puzzles[current_puzzle_index].foilStones,
+    //                         self.puzzleStartTime
+    //                     );
+    //                 }
+    //                 setTimeout(() => {
+    //                     self.audio.playSound(
+    //                         audioUrl.phraseAudios[fntsticOrGrtIndex],
+    //                         FeedbackAudio
+    //                     );
+    //                     self.promptText.showFantasticOrGreat(
+    //                         self.getRandomFeedBackText(fntsticOrGrtIndex)
+    //                     );
+    //                 }, 1000);
+    //                 self.promptText.draw(
+    //                     (word_dropped_stones += self.rightToLeft ? 1 : picked_stone.length)
+    //                 );
+    //                 self.timerTicking.stopTimer();
+    //                 score += 100;
+    //                 word_dropped_stones = 0;
+    //                 current_puzzle_index += 1;
+    //             } else {
+    //                 self.promptText.draw(
+    //                     (word_dropped_stones += self.rightToLeft ? 1 : picked_stone.length)
+    //                 );
+    //             }
+    //         } else {
+    //             self.isPuzzleCompleted = true;
+    //             self.timerTicking.stopTimer();
+    //             self.monster.changeToSpitAnimation();
+    //             self.audio.playSound(audioUrl.monsterSad, PhraseAudio);
+    //             if (navigator.onLine) {
+    //                 self.puzzleEndFirebaseEvents(
+    //                     "failure",
+    //                     current_puzzle_index,
+    //                     picked_stones,
+    //                     self.levelData.puzzles[current_puzzle_index].targetStones,
+    //                     self.levelData.puzzles[current_puzzle_index].foilStones,
+    //                     self.puzzleStartTime
+    //                 );
+    //             }
+    //             setTimeout(() => {
+    //                 self.audio.playSound(audioUrl.monsterSplit, PhraseAudio);
+    //             }, 1000);
 
-                current_puzzle_index += 1;
-            }
-            if (current_puzzle_index == self.puzzleData.length) {
-                self.levelIndicators.setIndicators(current_puzzle_index);
-                self.stones.setTimeoutRunning(false);
-                self.stones.makeStoneArrayEmpty();
-                for (let i = 0; i <= 3; i++) {
-                    setTimeout(() => {
-                        if (i == 3 && !isGamePause) {
-                            self.levelEnded();
-                            self.stones.setTimeoutRunning(true);
-                        }
-                    }, i * 1300.66);
-                }
-            } else {
-                if (emptyTarget) {
-                    self.levelIndicators.setIndicators(current_puzzle_index);
-                    for (let i = 0; i <= 3; i++) {
-                        self.stones.setTimeoutRunning(false);
-                        self.stones.makeStoneArrayEmpty();
-                        setTimeout(() => {
-                            if (i == 3 && !isGamePause) {
-                                self.stones.setNewPuzzle(self.puzzleData[current_puzzle_index]);
-                                self.puzzleStartTime = new Date().getTime();
-                                self.promptText.setCurrrentPuzzleData(
-                                    self.puzzleData[current_puzzle_index]
-                                );
-                                self.timerTicking.draw();
-                                self.promptText.draw();
-                                self.stones.setTimeoutRunning(true);
-                            }
-                        }, i * 1300.66);
-                    }
-                }
-            }
-        }
-    }
-    levelEnded() {
-        let totalStarsCount = getTotalStarCount();
-        let monsterPhaseNumber = self.monsterPhaseNumber || 1;
-        var gameLevelData = getDatafromStorage();
-        this.showTutorial = gameLevelData.length == undefined ? true : false;
-        if (gameLevelData != null) {
-            // for (let i = 0; i < gameLevelData.length; i++) {
-            //   totalStarsCount = totalStarsCount + gameLevelData[i].levelStar;
-            // }
-            monsterPhaseNumber = Math.floor(totalStarsCount / 12) + 1 || 1;
-            if (self.monsterPhaseNumber < monsterPhaseNumber) {
-                if (monsterPhaseNumber <= 4) {
-                    self.monsterPhaseNumber = monsterPhaseNumber;
-                    Debugger.DebugMode
-                        ? localStorage.setItem(
-                            StoreMonsterPhaseNumber + lang + "Debug",
-                            monsterPhaseNumber
-                        )
-                        : localStorage.setItem(
-                            StoreMonsterPhaseNumber + lang,
-                            monsterPhaseNumber
-                        );
-                    self.monster.changePhaseNumber(monsterPhaseNumber);
-                    // self.monster.changeImage(
-                    //   "./assets/images/idle1" + self.monsterPhaseNumber + ".png"
-                    // );
-                } else {
-                    self.monsterPhaseNumber = 4;
-                }
-            }
-        }
-        self.levelStartCallBack();
-        if (self.levelData.levelNumber == 149) {
-            self.exitAllScreens();
-            new GameEndScene(self.game);
-        } else {
-            setTimeout(() => {
-                new LevelEndScene(
-                    self.game,
-                    score,
-                    self.monster,
-                    self.levelEndCallBack,
-                    self.levelData,
-                    isGamePause,
-                    self.monsterPhaseNumber,
-                    this.levelStartTime
-                );
-            }, 1000);
-        }
-        isLevelEnded = true;
-    }
+    //             current_puzzle_index += 1;
+    //         }
+    //         if (current_puzzle_index == self.puzzleData.length) {
+    //             self.levelIndicators.setIndicators(current_puzzle_index);
+    //             self.stones.setTimeoutRunning(false);
+    //             self.stones.makeStoneArrayEmpty();
+    //             for (let i = 0; i <= 3; i++) {
+    //                 setTimeout(() => {
+    //                     if (i == 3 && !isGamePause) {
+    //                         self.levelEnded();
+    //                         self.stones.setTimeoutRunning(true);
+    //                     }
+    //                 }, i * 1300.66);
+    //             }
+    //         } else {
+    //             if (emptyTarget) {
+    //                 self.levelIndicators.setIndicators(current_puzzle_index);
+    //                 for (let i = 0; i <= 3; i++) {
+    //                     self.stones.setTimeoutRunning(false);
+    //                     self.stones.makeStoneArrayEmpty();
+    //                     setTimeout(() => {
+    //                         if (i == 3 && !isGamePause) {
+    //                             self.stones.setNewPuzzle(self.puzzleData[current_puzzle_index]);
+    //                             self.puzzleStartTime = new Date().getTime();
+    //                             self.promptText.setCurrrentPuzzleData(
+    //                                 self.puzzleData[current_puzzle_index]
+    //                             );
+    //                             self.timerTicking.draw();
+    //                             self.promptText.draw();
+    //                             self.stones.setTimeoutRunning(true);
+    //                         }
+    //                     }, i * 1300.66);
+    //                 }
+    //             }
+    //         }
+    //     }
+    // }
+    // levelEnded() {
+    //     let totalStarsCount = getTotalStarCount();
+    //     let monsterPhaseNumber = self.monsterPhaseNumber || 1;
+    //     var gameLevelData = getDatafromStorage();
+    //     this.showTutorial = gameLevelData.length == undefined ? true : false;
+    //     if (gameLevelData != null) {
+    //         // for (let i = 0; i < gameLevelData.length; i++) {
+    //         //   totalStarsCount = totalStarsCount + gameLevelData[i].levelStar;
+    //         // }
+    //         monsterPhaseNumber = Math.floor(totalStarsCount / 12) + 1 || 1;
+    //         if (self.monsterPhaseNumber < monsterPhaseNumber) {
+    //             if (monsterPhaseNumber <= 4) {
+    //                 self.monsterPhaseNumber = monsterPhaseNumber;
+    //                 Debugger.DebugMode
+    //                     ? localStorage.setItem(
+    //                         StoreMonsterPhaseNumber + lang + "Debug",
+    //                         monsterPhaseNumber
+    //                     )
+    //                     : localStorage.setItem(
+    //                         StoreMonsterPhaseNumber + lang,
+    //                         monsterPhaseNumber
+    //                     );
+    //                 self.monster.changePhaseNumber(monsterPhaseNumber);
+    //                 // self.monster.changeImage(
+    //                 //   "./assets/images/idle1" + self.monsterPhaseNumber + ".png"
+    //                 // );
+    //             } else {
+    //                 self.monsterPhaseNumber = 4;
+    //             }
+    //         }
+    //     }
+    //     self.levelStartCallBack();
+    //     if (self.levelData.levelNumber == 149) {
+    //         self.exitAllScreens();
+    //         new GameEndScene(self.game);
+    //     } else {
+    //         setTimeout(() => {
+    //             new LevelEndScene(
+    //                 self.game,
+    //                 score,
+    //                 self.monster,
+    //                 self.levelEndCallBack,
+    //                 self.levelData,
+    //                 isGamePause,
+    //                 self.monsterPhaseNumber,
+    //                 this.levelStartTime
+    //             );
+    //         }, 1000);
+    //     }
+    //     isLevelEnded = true;
+    // }
 
     handleMouseUp = (event) => {
         console.log(" upping mouse like a pro ");
@@ -473,13 +463,15 @@ export class GameplayScene {
             ) <= 60
         ) {
 
-            const isCorrect = this.stoneHandler.isDroppedStoneCorrect(self.pickedStone.text)
-            console.log('LevelData->', this.levelData)
-            let loadPuzzleData = { 'isCorrect': isCorrect }
-            const dropStoneEvent = new CustomEvent(STONEDROP, { detail: loadPuzzleData });
-            document.dispatchEvent(dropStoneEvent);
-            this.loadPuzzle();
-
+            if (this.pickedStone != null || this.pickedStone.origx != undefined) {
+                const isCorrect = this.stoneHandler.isDroppedStoneCorrect(self.pickedStone.text)
+                console.log('LevelData->', this.levelData)
+                let loadPuzzleData = { 'isCorrect': isCorrect }
+                const dropStoneEvent = new CustomEvent(STONEDROP, { detail: loadPuzzleData });
+                document.dispatchEvent(dropStoneEvent);
+                this.loadPuzzle();
+            }
+            
         } else {
             if (this.pickedStoneObject != null) {
                 this.pickedStone.x = this.pickedStoneObject.origx;
@@ -527,12 +519,6 @@ export class GameplayScene {
         var rect = selfElement.getBoundingClientRect();
         const x = event.clientX - rect.left;
         const y = event.clientY - rect.top;
-        console.log("hdhdhdh");
-        // if (this.pauseButton.onClick(x, y) && !this.isPauseButtonClicked) {
-        //     this.isPauseButtonClicked = true;
-        //     this.removeEventListeners();
-        //     new Sound().playSound("./assets/audios/ButtonClick.mp3", ButtonClick);
-        // }
 
         if (this.pauseButton.onClick(x, y)) {
             console.log(" pause button getting click from gameplay");
@@ -545,12 +531,6 @@ export class GameplayScene {
         if (this.promptText.onClick(x, y)) {
             this.promptText.playSound();
         }
-
-        // if (!this.isPauseButtonClicked && this.pausePopup.cancelButton.onClick(x, y)) {
-        //     console.log("shsjsksk")
-        //     this.isPauseButtonClicked = false;
-        //     this.addEventListeners();
-        // }
     }
 
     handleTouchStart = (event) => {
@@ -582,85 +562,85 @@ export class GameplayScene {
     };
 
 
-    createCanvas() {
-        this.levelStartTime = new Date().getTime();
-        this.puzzleStartTime = new Date().getTime();
-        var monsterPhaseNumber = this.monsterPhaseNumber || 1;
-        this.monster.changeImage(
-            "./assets/images/idle1" + monsterPhaseNumber + ".png"
-        );
-        window.addEventListener("resize", async () => {
-            self.deleteObjects();
-        });
+    // createCanvas() {
+    //     this.levelStartTime = new Date().getTime();
+    //     this.puzzleStartTime = new Date().getTime();
+    //     var monsterPhaseNumber = this.monsterPhaseNumber || 1;
+    //     this.monster.changeImage(
+    //         "./assets/images/idle1" + monsterPhaseNumber + ".png"
+    //     );
+    //     window.addEventListener("resize", async () => {
+    //         self.deleteObjects();
+    //     });
 
-        // this.id = this.canvasStack.createLayer(
-        //     this.height,
-        //     this.width,
-        //     "canvas"
-        // );
-        this.canavsElement = document.getElementById(this.id);
-        this.context = this.canavsElement.getContext(
-            "2d"
-        ) as CanvasRenderingContext2D;
-        // this.canavsElement.style.zIndex = 3;
-        this.pauseButton = new PauseButton(this.context, this.canavsElement);
-        this.levelIndicators = new LevelIndicators(
-            this.context,
-            this.canavsElement,
-            0
-        );
-        var self = this;
-        const selfElement = <HTMLElement>document.getElementById(self.id);
-        document.addEventListener("selectstart", function (e) {
-            e.preventDefault();
-        });
-        this.canavsElement.addEventListener("click", function (event) {
-            var rect = selfElement.getBoundingClientRect();
-            const x = event.clientX - rect.left;
-            const y = event.clientY - rect.top;
-        });
-        var previousPlayedLevel: string = this.levelData.levelMeta.levelNumber;
-        Debugger.DebugMode
-            ? localStorage.setItem(
-                PreviousPlayedLevel + lang + "Debug",
-                previousPlayedLevel
-            )
-            : localStorage.setItem(PreviousPlayedLevel + lang, previousPlayedLevel);
-    }
+    //     // this.id = this.canvasStack.createLayer(
+    //     //     this.height,
+    //     //     this.width,
+    //     //     "canvas"
+    //     // );
+    //     this.canavsElement = document.getElementById(this.id);
+    //     this.context = this.canavsElement.getContext(
+    //         "2d"
+    //     ) as CanvasRenderingContext2D;
+    //     // this.canavsElement.style.zIndex = 3;
+    //     this.pauseButton = new PauseButton(this.context, this.canavsElement);
+    //     this.levelIndicators = new LevelIndicators(
+    //         this.context,
+    //         this.canavsElement,
+    //         0
+    //     );
+    //     var self = this;
+    //     const selfElement = <HTMLElement>document.getElementById(self.id);
+    //     document.addEventListener("selectstart", function (e) {
+    //         e.preventDefault();
+    //     });
+    //     this.canavsElement.addEventListener("click", function (event) {
+    //         var rect = selfElement.getBoundingClientRect();
+    //         const x = event.clientX - rect.left;
+    //         const y = event.clientY - rect.top;
+    //     });
+    //     var previousPlayedLevel: string = this.levelData.levelMeta.levelNumber;
+    //     Debugger.DebugMode
+    //         ? localStorage.setItem(
+    //             PreviousPlayedLevel + lang + "Debug",
+    //             previousPlayedLevel
+    //         )
+    //         : localStorage.setItem(PreviousPlayedLevel + lang, previousPlayedLevel);
+    // }
 
-    deleteCanvas() {
-        // this.canvasStack.deleteLayer(this.id);
-    }
-    exitAllScreens() {
-        self.canvasStack.deleteLayer(LevelEndLayer);
-        self.canvasStack.deleteLayer(LevelEndButtonsLayer);
-        self.canvasStack.deleteLayer(LevelStartLayer);
-        self.canvasStack.deleteLayer(StoneLayer);
-        self.canvasStack.deleteLayer(TimetickerLayer);
-        self.canvasStack.deleteLayer(PromptTextLayer);
-        self.canvasStack.deleteLayer(TutorialLayer);
-        // self.monster.changeImage("./assets/images/idle4.png");
-        self.monster.changeImage(
-            "./assets/images/idle1" + self.monsterPhaseNumber + ".png"
-        );
-        self.monster.deleteCanvas();
-        self.deleteObjects();
-        word_dropped_stones = 0;
-    }
-    deleteObjects() {
-        delete self.monster;
-        delete self.audio;
-        delete self.levelIndicators;
-        delete self.pauseButton;
-        delete self.stones;
-        delete self.timerTicking;
-        delete self.canvasStack;
-        delete self.monster;
-        delete self.promptText;
-        current_puzzle_index = 0;
+    // deleteCanvas() {
+    //     // this.canvasStack.deleteLayer(this.id);
+    // }
+    // exitAllScreens() {
+    //     self.canvasStack.deleteLayer(LevelEndLayer);
+    //     self.canvasStack.deleteLayer(LevelEndButtonsLayer);
+    //     self.canvasStack.deleteLayer(LevelStartLayer);
+    //     self.canvasStack.deleteLayer(StoneLayer);
+    //     self.canvasStack.deleteLayer(TimetickerLayer);
+    //     self.canvasStack.deleteLayer(PromptTextLayer);
+    //     self.canvasStack.deleteLayer(TutorialLayer);
+    //     // self.monster.changeImage("./assets/images/idle4.png");
+    //     self.monster.changeImage(
+    //         "./assets/images/idle1" + self.monsterPhaseNumber + ".png"
+    //     );
+    //     self.monster.deleteCanvas();
+    //     self.deleteObjects();
+    //     word_dropped_stones = 0;
+    // }
+    // deleteObjects() {
+    //     delete self.monster;
+    //     delete self.audio;
+    //     delete self.levelIndicators;
+    //     delete self.pauseButton;
+    //     delete self.stones;
+    //     delete self.timerTicking;
+    //     delete self.canvasStack;
+    //     delete self.monster;
+    //     delete self.promptText;
+    //     current_puzzle_index = 0;
 
-        score = 0;
-    }
+    //     score = 0;
+    // }
     draw(deltaTime) {
         // this.context.clearRect(0, 0, this.width, this.height);
         // this.context.drawImage(this.bgImg, 0, 0, this.width, this.height);
@@ -718,26 +698,9 @@ export class GameplayScene {
 
 
     }
-    update(deltaTime: number) {
-        self.timerTicking ? self.timerTicking.update(deltaTime) : null;
-        lastFrameTime = 0;
-    }
-
-    // stoneDropToMonster() {
-    //     this. pickedStone.x = -900;
-    //     this.pickedStone.y = -900;
-    //     this.timerTicking.isAnswerDropped = true;
-    //     this.monster.changeToEatAnimation();
-    //     this.removeEventListeners();
-    //     setTimeout(() => {
-
-    //         this.stoneHandler.currentPuzzleData = [];
-    //         this.stoneHandler.foilStones = [];
-    //         this.counter++;
-
-
-    //     }, 3000)
-
+    // update(deltaTime: number) {
+    //     self.timerTicking ? self.timerTicking.update(deltaTime) : null;
+    //     lastFrameTime = 0;
     // }
 
     // changePuzzle() {
