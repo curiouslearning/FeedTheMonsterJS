@@ -477,7 +477,6 @@ export class GameplayScene {
                     this.feedbackTextEffects.wrapText(this.getRandomFeedBackText(this.getRandomInt(0, 1)));
                     this.feedBackTextCanavsElement.style.zIndex = "10";
                 }
-                console.log('LevelData->', this.levelData)
                 let loadPuzzleData = { 'isCorrect': isCorrect }
                 const dropStoneEvent = new CustomEvent(STONEDROP, { detail: loadPuzzleData });
                 document.dispatchEvent(dropStoneEvent);
@@ -995,6 +994,7 @@ export class GameplayScene {
             }
             const loadPuzzleEvent = new CustomEvent(LOADPUZZLE, { detail: loadPuzzleData });
             setTimeout(() => {
+                this.feedbackTextEffects.clearParticle();
                 this.feedBackTextCanavsElement.style.zIndex = "-10";
                 document.dispatchEvent(loadPuzzleEvent);
             }, 4000)
