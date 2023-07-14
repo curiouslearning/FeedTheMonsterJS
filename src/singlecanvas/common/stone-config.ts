@@ -56,7 +56,11 @@ export class StoneConfig {
 
 
     getX = () => {
-        // this.x is the final stone position
+        if (this.frame >= 100) {
+            // Animation has ended, return the final stone position
+            return this.x;
+        }
+    
         let distance = this.x - 0;
         let steps = 100;
         let currentProgress = this.frame;
@@ -64,6 +68,11 @@ export class StoneConfig {
     }
 
     getY = () => {
+        if (this.frame >= 100) {
+            // Animation has ended, return the final stone position
+            return this.y;
+        }
+    
         let distance = this.y - 0;
         let steps = 100;
         let currentProgress = this.frame;
@@ -71,10 +80,16 @@ export class StoneConfig {
     }
 
     draw() {
+        if (this.frame < 100) {
+            this.frame = this.frame + 1;
+        }
+        else{
+            console.log('Animation ended');
+        }
         this.context.drawImage(
             this.img,
-            this.x - this.imageCenterOffsetX,
-            this.y - this.imageCenterOffsetY,
+            this.getX() - this.imageCenterOffsetX,
+            this.getY()- this.imageCenterOffsetY,
             this.imageSize,
             this.imageSize
         );
@@ -84,13 +99,14 @@ export class StoneConfig {
         this.context.fillStyle = "white";
         this.context.font = this.textFontSize + "px Arial";
         this.context.textAlign = "center";
-        this.context.fillText(this.text, this.x, this.y);
+        this.context.fillText(this.text, this.getX(), this.getY());
     }
 
     update() {
         // update stone apearing animation
-        if (this.frame < 100) {
-            this.frame = this.frame + 1;
-        }
+        // if (this.frame < 100) {
+        //     this.frame = this.frame + 1;
+        // }
+       
     }
 }

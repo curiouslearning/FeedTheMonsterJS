@@ -1,5 +1,4 @@
 import { loadImages } from "../../common/common";
-import { PUASEBUTTON } from "../common/constants";
 import { EventManager } from "../events/EventManager";
 
 declare global {
