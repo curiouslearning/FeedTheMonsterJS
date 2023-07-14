@@ -34,6 +34,7 @@ import { StoneConfig } from "../common/stone-config";
 import PausePopUp from "../components/pause-popup";
 import { CLICK, LOADPUZZLE, MOUSEDOWN, MOUSEMOVE, MOUSEUP, STONEDROP, TOUCHEND, TOUCHMOVE, TOUCHSTART } from "../common/event-names";
 import { Background } from "../components/background";
+import { FeedbackTextEffects } from "../components/feedback-particle-effect/feedback-text-effects";
 
 var images = {
     bgImg: "./assets/images/bg_v01.jpg",
@@ -126,6 +127,8 @@ export class GameplayScene {
     pausePopup: PausePopUp;
     isPauseButtonClicked: boolean = false;
     public background1: Background;
+    feedBackTextCanavsElement: HTMLCanvasElement;
+    feedbackTextEffects: FeedbackTextEffects;
 
     constructor(
         canvas,
@@ -174,6 +177,8 @@ export class GameplayScene {
         this.monster = new Monster(this.canvas, 4);
         this.pausePopup = new PausePopUp(this.canvas, this.resumeGame);
         this.background1 = new Background(this.context, this.width, this.height, this.levelData.levelNumber);
+        this.feedBackTextCanavsElement = this.createFeedbackTextCanvas(this.height, this.width);
+        this.feedbackTextEffects = new FeedbackTextEffects(this.feedBackTextCanavsElement.getContext('2d'), this.width, this.height);
         this.handler = document.getElementById("canvas");
         this.puzzleData = levelData.puzzles;
         this.feedBackTexts = feedBackTexts;
@@ -467,7 +472,11 @@ export class GameplayScene {
         ) {
 
             if (this.pickedStone != null || this.pickedStone.origx != undefined) {
-                const isCorrect = this.stoneHandler.isDroppedStoneCorrect(self.pickedStone.text)
+                const isCorrect = this.stoneHandler.isDroppedStoneCorrect(self.pickedStone.text);
+                if (isCorrect) {
+                    this.feedbackTextEffects.wrapText(this.getRandomFeedBackText(this.getRandomInt(0, 1)));
+                    this.feedBackTextCanavsElement.style.zIndex = "10";
+                }
                 console.log('LevelData->', this.levelData)
                 let loadPuzzleData = { 'isCorrect': isCorrect }
                 const dropStoneEvent = new CustomEvent(STONEDROP, { detail: loadPuzzleData });
@@ -694,6 +703,7 @@ export class GameplayScene {
             this.levelIndicators.draw();
             this.promptText.draw();
             this.monster.animation(deltaTime);
+            this.feedbackTextEffects.render()
             this.stoneHandler.draw();
             this.timerTicking.update(deltaTime);
             this.timerTicking.draw()
@@ -985,17 +995,42 @@ export class GameplayScene {
             }
             const loadPuzzleEvent = new CustomEvent(LOADPUZZLE, { detail: loadPuzzleData });
             setTimeout(() => {
+                this.feedBackTextCanavsElement.style.zIndex = "-10";
                 document.dispatchEvent(loadPuzzleEvent);
             }, 4000)
         }
     }
 
     public dispose() {
+        this.deleteFeedbackTextCanvas();
         this.removeEventListeners();
         this.monster.unregisterEventListener();
         this.timerTicking.unregisterEventListener();
         this.levelIndicators.unregisterEventListener();
         this.stoneHandler.unregisterEventListener();
         this.promptText.unregisterEventListener();
+    }
+
+    public createFeedbackTextCanvas(height: number, width: number): HTMLCanvasElement {
+        const canvas = document.createElement('canvas');
+      
+        canvas.id = 'feedback-text';
+        canvas.style.position = 'absolute';
+        canvas.style.left = '50%';
+        canvas.style.top = '0%';
+        canvas.style.zIndex = "-10";
+        canvas.style.transform = 'translate(-50%, 0%)';
+      
+        document.body.appendChild(canvas);
+        canvas.height = this.height;
+        canvas.width = this.width;
+        return document.getElementById('feedback-text') as HTMLCanvasElement;
+    }
+
+    public deleteFeedbackTextCanvas() {
+        var canvas = document.getElementById('feedback-text');
+        if (canvas) {
+            canvas.parentNode.removeChild(canvas);
+        }
     }
 }
