@@ -33,6 +33,7 @@ import { Tutorial } from "../components/tutorial";
 import { StoneConfig } from "../common/stone-config";
 import PausePopUp from "../components/pause-popup";
 import { CLICK, LOADPUZZLE, MOUSEDOWN, MOUSEMOVE, MOUSEUP, STONEDROP, TOUCHEND, TOUCHMOVE, TOUCHSTART } from "../common/event-names";
+import { Background } from "../components/background";
 
 var images = {
     bgImg: "./assets/images/bg_v01.jpg",
@@ -124,6 +125,7 @@ export class GameplayScene {
     pickedStoneObject: any;
     pausePopup: PausePopUp;
     isPauseButtonClicked: boolean = false;
+    public background1: Background;
 
     constructor(
         canvas,
@@ -171,6 +173,7 @@ export class GameplayScene {
         this.levelIndicators.setIndicators(this.counter);
         this.monster = new Monster(this.canvas, 4);
         this.pausePopup = new PausePopUp(this.canvas, this.resumeGame);
+        this.background1 = new Background(this.context, this.width, this.height, this.levelData.levelNumber);
         this.handler = document.getElementById("canvas");
         this.puzzleData = levelData.puzzles;
         this.feedBackTexts = feedBackTexts;
@@ -471,7 +474,7 @@ export class GameplayScene {
                 document.dispatchEvent(dropStoneEvent);
                 this.loadPuzzle();
             }
-            
+
         } else {
             if (this.pickedStoneObject != null) {
                 this.pickedStone.x = this.pickedStoneObject.origx;
@@ -645,36 +648,37 @@ export class GameplayScene {
         // this.context.clearRect(0, 0, this.width, this.height);
         // this.context.drawImage(this.bgImg, 0, 0, this.width, this.height);
         if (this.imagesLoaded) {
-            this.context.drawImage(this.loadedImages.bgImg, 0, 0, this.width, this.height);
-            this.context.drawImage(
-                this.loadedImages.pillerImg,
-                this.width * 0.6,
-                this.height / 6,
-                this.width,
-                this.height / 2
-            );
-            this.context.drawImage(
-                this.loadedImages.fenchImg,
-                -this.width * 0.4,
-                this.height / 3,
-                this.width,
-                this.height / 3
-            );
-            this.context.drawImage(
-                // dummyImage,
-                this.loadedImages.hillImg,
-                -this.width * 0.25,
-                this.height / 2,
-                this.width * 1.5,
-                this.height / 2
-            );
-            this.context.drawImage(
-                this.loadedImages.grassImg,
-                -this.width * 0.25,
-                this.height / 2 + (this.height / 2) * 0.1,
-                this.width * 1.5,
-                this.height / 2
-            );
+            // this.context.drawImage(this.loadedImages.bgImg, 0, 0, this.width, this.height);
+            // this.context.drawImage(
+            //     this.loadedImages.pillerImg,
+            //     this.width * 0.6,
+            //     this.height / 6,
+            //     this.width,
+            //     this.height / 2
+            // );
+            // this.context.drawImage(
+            //     this.loadedImages.fenchImg,
+            //     -this.width * 0.4,
+            //     this.height / 3,
+            //     this.width,
+            //     this.height / 3
+            // );
+            // this.context.drawImage(
+            //     // dummyImage,
+            //     this.loadedImages.hillImg,
+            //     -this.width * 0.25,
+            //     this.height / 2,
+            //     this.width * 1.5,
+            //     this.height / 2
+            // );
+            // this.context.drawImage(
+            //     this.loadedImages.grassImg,
+            //     -this.width * 0.25,
+            //     this.height / 2 + (this.height / 2) * 0.1,
+            //     this.width * 1.5,
+            //     this.height / 2
+            // );
+            this.background1.draw();
         }
 
         if (this.isPauseButtonClicked) {

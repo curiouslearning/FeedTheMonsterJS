@@ -28,6 +28,7 @@ import { DataModal } from "../../data/data-modal";
 // import { CanvasStack } from "../../utility/canvas-stack";
 import { LevelSelectionScreen } from "../scenes/level-selection-scene";
 import { Debugger, lang } from "../../../global-variables";
+import { Background } from "../components/background"
 // var this: any;
 let lastTime = 0;
 let pwa_install_status: any;
@@ -69,6 +70,8 @@ export class StartScene {
     public static SceneName: string;
     public switchSceneToLevelSelection: any;
 
+    public background1: Background;
+
     // public tutorial: Tutorial;
 
     constructor(
@@ -87,6 +90,8 @@ export class StartScene {
         // this.canvasStack = new CanvasStack("canvas");
         this.monster = new Monster(this.canvas, 4);
         this.switchSceneToLevelSelection = switchSceneToLevelSelection;
+        // passing level as 1 bcz here its fixed (assumption)
+        this.background1 = new Background(this.context, this.width, this.height, 1);
         // this.stoneHandler = new StoneHandler(this.context, this.canvas, 2, this.data.levels[0]);
         // var img = new Image();
         // img.src = "./assets/images/stone_pink_v02.png";
@@ -156,36 +161,37 @@ export class StartScene {
         this.context.clearRect(0, 0, this.width, this.height);
         if (StartScene.SceneName == StartScene1) {
             if (this.imagesLoaded) {
-                this.context.drawImage(this.loadedImages.bgImg, 0, 0, this.width, this.height);
-                this.context.drawImage(
-                    this.loadedImages.pillerImg,
-                    this.width * 0.6,
-                    this.height / 6,
-                    // this.height / 3,
-                    this.width,
-                    this.height / 2
-                );
-                this.context.drawImage(
-                    this.loadedImages.fenchImg,
-                    -this.width * 0.4,
-                    this.height / 3,
-                    this.width,
-                    this.height / 3
-                );
-                this.context.drawImage(
-                    this.loadedImages.hillImg,
-                    -this.width * 0.25,
-                    this.height / 2,
-                    this.width * 1.5,
-                    this.height / 2
-                );
-                this.context.drawImage(
-                    this.loadedImages.grassImg,
-                    -this.width * 0.25,
-                    this.height / 2 + (this.height / 2) * 0.1,
-                    this.width * 1.5,
-                    this.height / 2
-                );
+                // this.context.drawImage(this.loadedImages.bgImg, 0, 0, this.width, this.height);
+                // this.context.drawImage(
+                //     this.loadedImages.pillerImg,
+                //     this.width * 0.6,
+                //     this.height / 6,
+                //     // this.height / 3,
+                //     this.width,
+                //     this.height / 2
+                // );
+                // this.context.drawImage(
+                //     this.loadedImages.fenchImg,
+                //     -this.width * 0.4,
+                //     this.height / 3,
+                //     this.width,
+                //     this.height / 3
+                // );
+                // this.context.drawImage(
+                //     this.loadedImages.hillImg,
+                //     -this.width * 0.25,
+                //     this.height / 2,
+                //     this.width * 1.5,
+                //     this.height / 2
+                // );
+                // this.context.drawImage(
+                //     this.loadedImages.grassImg,
+                //     -this.width * 0.25,
+                //     this.height / 2 + (this.height / 2) * 0.1,
+                //     this.width * 1.5,
+                //     this.height / 2
+                // );
+                this.background1.draw();
 
                 this.context.font = "bold 40px Arial";
                 this.context.fillStyle = "white";
