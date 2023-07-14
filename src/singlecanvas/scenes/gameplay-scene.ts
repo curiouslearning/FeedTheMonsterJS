@@ -170,7 +170,7 @@ export class GameplayScene {
         this.tutorial = new Tutorial(this.context, this.width, this.height);
         this.levelIndicators.setIndicators(this.counter);
         this.monster = new Monster(this.canvas, 4);
-        this.pausePopup = new PausePopUp(this.canvas);
+        this.pausePopup = new PausePopUp(this.canvas, this.resumeGame);
         this.handler = document.getElementById("canvas");
         // this.stones = new StonesLayer(
         //     game,
@@ -201,6 +201,12 @@ export class GameplayScene {
 
         this.addEventListeners()
 
+    }
+
+    resumeGame = () => {
+        this.addEventListeners();
+        this.isPauseButtonClicked = false;
+        this.pausePopup.dispose();
     }
 
     levelEndCallBack(button_name?: string) {
@@ -522,10 +528,17 @@ export class GameplayScene {
         const x = event.clientX - rect.left;
         const y = event.clientY - rect.top;
         console.log("hdhdhdh");
-        if (this.pauseButton.onClick(x, y) && !this.isPauseButtonClicked) {
+        // if (this.pauseButton.onClick(x, y) && !this.isPauseButtonClicked) {
+        //     this.isPauseButtonClicked = true;
+        //     this.removeEventListeners();
+        //     new Sound().playSound("./assets/audios/ButtonClick.mp3", ButtonClick);
+        // }
+
+        if (this.pauseButton.onClick(x, y)) {
+            console.log(" pause button getting click from gameplay");
             this.isPauseButtonClicked = true;
             this.removeEventListeners();
-            new Sound().playSound("./assets/audios/ButtonClick.mp3", ButtonClick);
+            this.pausePopup.addListner();
         }
 
         // send click to play prompt
@@ -817,6 +830,7 @@ export class GameplayScene {
 
     removeEventListeners() {
         // Remove event listeners using the defined functions
+        this.handler.removeEventListener(CLICK, this.handleMouseClick, false);
         this.handler.removeEventListener("mouseup", this.handleMouseUp, false);
         this.handler.removeEventListener("mousemove", this.handleMouseMove, false);
         this.handler.removeEventListener("mousedown", this.handleMouseDown, false);

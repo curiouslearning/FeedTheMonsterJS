@@ -4,6 +4,7 @@ import CancelButton from "../components/buttons/cancel-button";
 import CloseButton from "../components/buttons/close-button";
 import RetryButton from "../components/buttons/retry-button";
 import { Game } from "../../scenes/game";
+import { CLICK } from "../common/event-names";
 
 export default class PausePopUp {
     public canvas: Game;
@@ -15,9 +16,11 @@ export default class PausePopUp {
     public pop_up_image: any;
 
     public id: any;
+    public callback: any;
 
-    constructor(canvas) {
+    constructor(canvas, callback) {
         this.canvas = canvas;
+        this.callback = callback;
         // this.levelStart = levelStart;
         // this.canvasStack = new CanvasStack("canvas");
         // this.createCanvas();
@@ -49,6 +52,33 @@ export default class PausePopUp {
         }
 
         // this.createCanvas();
+    }
+
+    addListner = () => {
+        document.getElementById("canvas").addEventListener(
+            CLICK,
+            this.handleMouseClick,
+            false
+        );
+    }
+
+    handleMouseClick = (event) => {
+        const selfElement = <HTMLElement>document.getElementById("canvas");
+        event.preventDefault();
+        var rect = selfElement.getBoundingClientRect();
+        const x = event.clientX - rect.left;
+        const y = event.clientY - rect.top;
+
+        if (this.cancelButton.onClick(x, y)) {
+            console.log(" cancel button clicked");
+            this.callback();
+        }
+        if (this.retryButton.onClick(x, y)) {
+            console.log(" retry button clicked");
+        }
+        if (this.closeButton.onClick(x, y)) {
+            console.log(" close button clicked");
+        }
     }
 
     // createCanvas() {
@@ -95,4 +125,12 @@ export default class PausePopUp {
     }
 
     update() { }
+
+    dispose() {
+        document.getElementById("canvas").removeEventListener(
+            CLICK,
+            this.handleMouseClick,
+            false
+        );
+    }
 }
