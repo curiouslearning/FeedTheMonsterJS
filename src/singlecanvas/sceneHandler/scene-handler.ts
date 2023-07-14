@@ -135,14 +135,8 @@ export class SceneHandler {
         SceneHandler.SceneName = GameScene1;
     }
     switchSceneToEndLevel = (currentlevelPlayed) => {
-        const nextLevelNumber = parseInt(currentlevelPlayed.levelNumber) + 1;
-        const nextLevel = this.data.levels[nextLevelNumber];
-        this.gameplayScene.dispose();
-        setTimeout(() => {
-            this.gameplayScene = new GameplayScene(this.canvas, nextLevel, 1,  this.data.feedBackTexts, this.data.rightToLeft,this.switchSceneToEndLevel, nextLevelNumber);
-        }, 4000)
-
-        SceneHandler.SceneName = GameScene1;
+       
+        
     }
 
     switchSceneToLevelSelection = () => {
