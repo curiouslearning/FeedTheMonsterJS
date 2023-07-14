@@ -1,4 +1,5 @@
 import { loadImages } from "../../common/common";
+import { CLICK, MOUSEUP } from "../common/event-names";
 import CloseButton from "../components/buttons/close-button";
 import NextButton from "../components/buttons/next-button";
 import RetryButton from "../components/buttons/retry-button";
@@ -45,7 +46,8 @@ export class LevelEndScene {
     );
     this.nextButton = new NextButton(
       this.context,
-      this.canvas,
+      this.width,
+      this.height,
       this.width * 0.8 - (this.width * 0.19) / 2,
       this.height * 0.7
     );
@@ -61,7 +63,7 @@ export class LevelEndScene {
       this.loadedImages = Object.assign({}, images);
       this.imagesLoaded = true;
     });
-    this.draw(16.45);
+    // this.draw(16.45);
     this.addEventListener();
   }
   draw(deltaTime: number) {
@@ -111,19 +113,37 @@ export class LevelEndScene {
     }
   }
   addEventListener() {
-    var self = this;
-    const selfElement = document.getElementById(self.id);
-    document.addEventListener("click", function (event) {
-      var rect = selfElement.getBoundingClientRect();
-      const x = event.clientX - rect.left;
-      const y = event.clientY - rect.top;
-      if (self.closeButton.onClick(x, y)) {
-        console.log("<<<<<<<<<<<<<<<<<<<<<<<<<< Close Button");
-      }
-      if (self.retryButton.onClick(x, y)) {
-      }
-      if (self.nextButton.onClick(x, y)) {
-      }
-    });
+    document.getElementById("canvas").addEventListener(
+      CLICK,
+      this.handleMouseClick,
+      false
+    );
+  }
+
+  handleMouseClick = (event) => {
+    console.log(" levelend mouseclick ");
+    const selfElement = <HTMLElement>document.getElementById("canvas");
+    var rect = selfElement.getBoundingClientRect();
+    const x = event.clientX - rect.left;
+    const y = event.clientY - rect.top;
+
+    if (this.closeButton.onClick(x, y)) {
+      console.log(" close button clicked");
+    }
+    if (this.retryButton.onClick(x, y)) {
+      console.log(" retry button clicked");
+    }
+    if (this.nextButton.onClick(x, y)) {
+      console.log(" next button clicked");
+    }
+  }
+
+
+  dispose = () => {
+    document.getElementById("canvas").removeEventListener(
+      CLICK,
+      this.handleMouseClick,
+      false
+    );
   }
 }
