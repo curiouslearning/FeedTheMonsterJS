@@ -188,4 +188,32 @@ export class Monster extends EventManager {
     public dispose() {
         this.unregisterEventListener();
     }
+
+    onClick(xClick: number, yClick: number) {
+        // const distance = Math.sqrt(
+        //     (xClick - this.x/2) *
+        //     (xClick - this.x/2) +
+        //     (yClick - this.y/2) *
+        //     (yClick - this.y/ 2)
+        // );
+        const distance = Math.sqrt(
+            (xClick -
+              this.x -
+              this.width / 4) *
+            (xClick -
+              this.x -
+              this.width / 4) +
+            (yClick -
+              this.y-
+              this.height / 2.7) *
+            (yClick -
+             this.y -
+             this.height / 2.7)
+          ) 
+        if (distance <= 60) {
+            return true;
+            // return true;
+        }
+    }
+
 }

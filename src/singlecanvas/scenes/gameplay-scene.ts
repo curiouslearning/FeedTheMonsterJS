@@ -129,6 +129,8 @@ export class GameplayScene {
     public background1: Background;
     feedBackTextCanavsElement: HTMLCanvasElement;
     feedbackTextEffects: FeedbackTextEffects;
+    public isGameStarted: boolean = false;
+    public time: number = 0;
 
     constructor(
         canvas,
@@ -480,6 +482,7 @@ export class GameplayScene {
                 let loadPuzzleData = { 'isCorrect': isCorrect }
                 const dropStoneEvent = new CustomEvent(STONEDROP, { detail: loadPuzzleData });
                 document.dispatchEvent(dropStoneEvent);
+                // this.removeEventListeners();
                 this.loadPuzzle();
             }
 
@@ -494,7 +497,6 @@ export class GameplayScene {
     }
 
     handleMouseDown = (event) => {
-
         let self = this;
         const selfElement = <HTMLElement>document.getElementById("canvas");
         var rect = selfElement.getBoundingClientRect();
@@ -525,11 +527,18 @@ export class GameplayScene {
     }
 
     handleMouseClick = (event) => {
+
         const selfElement = <HTMLElement>document.getElementById("canvas");
         event.preventDefault();
         var rect = selfElement.getBoundingClientRect();
         const x = event.clientX - rect.left;
         const y = event.clientY - rect.top;
+         
+        if(this.monster.onClick(x,y))
+        {
+            this.isGameStarted = true;
+            this.time = 0;
+        }
 
         if (this.pauseButton.onClick(x, y)) {
             console.log(" pause button getting click from gameplay");
@@ -653,6 +662,15 @@ export class GameplayScene {
     //     score = 0;
     // }
     draw(deltaTime) {
+       
+        if(!this.isGameStarted && !this.isPauseButtonClicked){
+            this.time = this.time+ deltaTime;
+            if(this.time>=5000){
+                this.isGameStarted = true;
+                this.time = 0;
+            }
+
+        }
         // this.context.clearRect(0, 0, this.width, this.height);
         // this.context.drawImage(this.bgImg, 0, 0, this.width, this.height);
         if (this.imagesLoaded) {
@@ -688,28 +706,48 @@ export class GameplayScene {
             // );
             this.background1.draw();
         }
-
-        if (this.isPauseButtonClicked) {
+        if(this.isPauseButtonClicked && this.isGameStarted){
             this.pauseButton.draw();
             this.levelIndicators.draw();
             this.promptText.draw();
-            this.timerTicking.draw();
             this.monster.animation(deltaTime);
+            this.timerTicking.draw();
             this.stoneHandler.draw(deltaTime);
             this.pausePopup.draw();
-        } else {
+        }
+        if(!this.isPauseButtonClicked && !this.isGameStarted)
+        {
             this.pauseButton.draw();
             this.levelIndicators.draw();
             this.promptText.draw();
             this.monster.animation(deltaTime);
-            this.stoneHandler.draw(deltaTime);
-            // this.stoneHandler.displayTutorial(deltaTime);
+            this.timerTicking.draw();
             this.feedbackTextEffects.render();
-            this.timerTicking.update(deltaTime);
-            this.timerTicking.draw()
-           
-        }
+         
 
+        }
+        if(this.isPauseButtonClicked && !this.isGameStarted){
+             
+            this.pauseButton.draw();
+            this.levelIndicators.draw();
+            this.promptText.draw();
+            this.monster.animation(deltaTime);
+            this.timerTicking.draw();
+            this.pausePopup.draw();
+            
+        }
+        if(!this.isPauseButtonClicked && this.isGameStarted){
+            this.pauseButton.draw();
+            this.levelIndicators.draw();
+            this.promptText.draw();
+            this.monster.animation(deltaTime);
+            this.timerTicking.update(deltaTime);
+            this.timerTicking.draw();
+            this.stoneHandler.draw(deltaTime);
+           
+            
+        }
+        
 
 
     }
@@ -986,8 +1024,10 @@ export class GameplayScene {
     }
 
     loadPuzzle = () => {
+        this.removeEventListeners();
         this.counter++;
-
+        this.isGameStarted = false;
+        this.time = -4000;
         if (this.counter == this.levelData.puzzles.length) {
             this.switchSceneToEnd(this.levelData);
         } else {
@@ -999,6 +1039,7 @@ export class GameplayScene {
                 this.feedbackTextEffects.clearParticle();
                 this.feedBackTextCanavsElement.style.zIndex = "-10";
                 document.dispatchEvent(loadPuzzleEvent);
+                this.addEventListeners();
             }, 4000)
         }
     }
