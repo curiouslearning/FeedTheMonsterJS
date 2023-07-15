@@ -703,16 +703,18 @@ export class GameplayScene {
             this.promptText.draw();
             this.timerTicking.draw();
             this.monster.animation(deltaTime);
-            this.stoneHandler.draw();
+            this.stoneHandler.draw(deltaTime);
             this.pausePopup.draw();
         } else {
             this.pauseButton.draw();
             this.levelIndicators.draw();
             this.promptText.draw();
             this.monster.animation(deltaTime);
-            this.stoneHandler.draw();
+            this.stoneHandler.draw(deltaTime);
+            // this.stoneHandler.displayTutorial(deltaTime);
             this.timerTicking.update(deltaTime);
             this.timerTicking.draw()
+           
         }
 
 

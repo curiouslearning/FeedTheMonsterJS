@@ -5,6 +5,7 @@ import { StoneConfig } from "../common/stone-config";
 import { getDatafromStorage } from "../../data/profile-data";
 import { FirebaseIntegration } from "../../firebase/firebase_integration";
 import { EventManager } from "../events/EventManager";
+import { Tutorial } from "./tutorial";
 // import { LevelIndicators } from "./level-indicators.js";
 // import { Tutorial } from "./tutorial.js";
 // import Monster from "./animation/monster.js";
@@ -48,8 +49,8 @@ export default class StoneHandler extends EventManager {
     public showTutorial: boolean = getDatafromStorage().length == undefined ? true : false;
     // feedbackTextCanvasElement: any;
     public feedBackTexts: any;
-
     public image: any;
+    public tutorial: Tutorial;
     correctTargetStone: any;
     stonebg: HTMLImageElement;
     constructor(
@@ -93,7 +94,7 @@ export default class StoneHandler extends EventManager {
         // this.draw(0);
         // this.eventListners();
         this.puzzleStartTime = new Date();
-
+        this.tutorial = new Tutorial(context,canvas.width,canvas.height)
         this.stonebg = new Image();
         this.stonebg.src = "./assets/images/stone_pink_v02.png";
         this.stonebg.onload = (e) => {
@@ -103,9 +104,14 @@ export default class StoneHandler extends EventManager {
     }
 
     createStones(img) {
-        var i = 0;
         for (var i = 0; i < this.currentPuzzleData.foilStones.length; i++) {
+            if(this.currentPuzzleData.foilStones[i]==this.correctTargetStone)
+        {
+            this.tutorial.updateTargetStonePositions(this.stonePos[i]);
+        }
+
             this.foilStones.push(
+                
                 new StoneConfig(
                     this.context,
                     this.canvas.width,
@@ -113,10 +119,15 @@ export default class StoneHandler extends EventManager {
                     this.currentPuzzleData.foilStones[i],
                     this.stonePos[i][0],
                     this.stonePos[i][1],
-                    img
+                    img,
+                    (i==this.currentPuzzleData.foilStones.length-1)?this.tutorial:null,
                 )
             );
+
         }
+        
+        
+       
         // this.foilStones.forEach((stone) => {
         //     if (stone.text == this.targetStones[0]) {
         //         // this.tutorialPosition = [stone.targetX, stone.targetY];
@@ -134,10 +145,11 @@ export default class StoneHandler extends EventManager {
         // }
     }
 
-    draw() {
+    draw(deltaTime) {
         for (var i = 0; i < this.foilStones.length; i++) {
-            this.foilStones[i].draw();
+            this.foilStones[i].draw(deltaTime);
         }
+        
     }
 
 

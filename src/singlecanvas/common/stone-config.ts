@@ -1,3 +1,5 @@
+import { Tutorial } from "../components/tutorial";
+
 export class StoneConfig {
     public x: number;
     public y: number;
@@ -13,18 +15,19 @@ export class StoneConfig {
     public imageCenterOffsetX: number;
     public imageCenterOffsetY: number;
     public context: CanvasRenderingContext2D;
+    public tutorialInstance: Tutorial;
 
     public frame: any = 0;
 
-    constructor(context, canvasWidth, canvasHeight, stoneLetter, xPos, yPos, img) {
+    constructor(context, canvasWidth, canvasHeight, stoneLetter, xPos, yPos, img,tutorialInstance?) {
         this.x = xPos;
         this.y = yPos;
         this.origx = xPos;
         this.origy = yPos;
+         // this.drawready = false;
         this.canvasWidth = canvasWidth;
         this.canvasHeight = canvasHeight;
-
-        // this.drawready = false;
+        this.tutorialInstance = tutorialInstance;
         this.text = stoneLetter;
         this.img = img;
         this.context = context;
@@ -79,12 +82,15 @@ export class StoneConfig {
         return this.getEase(currentProgress, 0, distance, steps);
     }
 
-    draw() {
+    draw(deltaTime) {
         if (this.frame < 100) {
             this.frame = this.frame + 1;
         }
         else{
-            console.log('Animation ended');
+            if(this.tutorialInstance!=null || this.tutorialInstance!=undefined)
+            {
+                this.tutorialInstance.draw(deltaTime);
+            }
         }
         this.context.drawImage(
             this.img,

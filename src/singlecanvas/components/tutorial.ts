@@ -16,6 +16,7 @@ export class Tutorial {
     public starty: number;
     public endx: number;
     public endy: number;
+    public endTutorial: boolean = false;
     x: number;
     y: number;
     dx: number;
@@ -32,7 +33,7 @@ export class Tutorial {
         this.startx = startX;
         this.starty = startY;
         this.endx = this.width / 2;
-        this.endy = this.height / 2;
+        this.endy = this.height / 2-30;
 
         this.tutorialImg = new Image();
         this.tutorialImg.src = "./assets/images/tutorial_hand.png";
@@ -55,6 +56,11 @@ export class Tutorial {
         );
     }
 
+    setTutorialEnd(endTutorial){
+        this.endTutorial = endTutorial;
+
+    }
+
     animateImage() {
         this.x = startX;
         this.y = startY;
@@ -62,26 +68,29 @@ export class Tutorial {
         this.dy = (this.endy - this.starty) / 5000;
         this.absdx = this.isMobile() ? Math.abs(this.dx) * 3 : Math.abs(this.dx);
         this.absdy = this.isMobile() ? Math.abs(this.dy) * 3 : Math.abs(this.dy);
+        this.setTutorialEnd(false);
     }
 
     draw(deltaTime) {
-        if (this.imagesLoaded) {
-            this.x =
+        if (this.imagesLoaded && !this.endTutorial) {
+                this.x =
                 this.dx >= 0
-                    ? this.x + this.absdx * deltaTime
-                    : this.x - this.absdx * deltaTime;
-            this.y =
-                this.dy >= 0
-                    ? this.y + this.absdy * deltaTime
-                    : this.y - this.absdy * deltaTime;
-            const disx = this.x - this.endx + this.absdx;
-            const disy = this.y - this.endy + this.absdy;
-            const distance = Math.sqrt(disx * disx + disy * disy);
-            if (distance < 10) {
-                // GameFields.tutorialStatus = true;
-                console.log(" stop animation");
-            }
-            this.context.drawImage(this.tutorialImg, this.x, this.y);
+                    ? this.x + this.absdx * (deltaTime) 
+                    : this.x - this.absdx * (deltaTime) ;
+                this.y =
+                    this.dy >= 0
+                        ? this.y + this.absdy * deltaTime
+                        : this.y - this.absdy * deltaTime ;
+                const disx = this.x - this.endx + this.absdx;
+                const disy = this.y - this.endy + this.absdy;
+                const distance = Math.sqrt(disx * disx + disy * disy);
+                if (distance < 1) {
+                    this.endTutorial = true;
+                    // GameFields.tutorialStatus = true;
+                
+                }
+                this.context.drawImage(this.tutorialImg, this.x, this.y);
+          
         }
     }
 }

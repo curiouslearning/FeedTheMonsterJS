@@ -282,7 +282,7 @@ export class TestGameplayScene {
             // this.context.setTransform(1, 0, 0, 0, 0, 0);
             // this.playButton.draw();
             this.promptText.draw();
-            this.stoneHandler.draw();
+            this.stoneHandler.draw(deltaTime);
             // if (this.stoneConfig != undefined)
             //     this.stoneConfig.draw();
             //if(pause)
