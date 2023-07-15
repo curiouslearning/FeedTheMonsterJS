@@ -130,7 +130,7 @@ export class SceneHandler {
         // dispose previous scene
         this.levelSelectionScene.dispose();
         // load in next scene --- gameplaqyscene
-        this.gameplayScene = new GameplayScene(this.canvas, gamePlayData.currentLevelData, 1,  this.data.feedBackTexts, this.data.rightToLeft,this.switchSceneToEndLevel,gamePlayData.selectedLevelNumber);
+        this.gameplayScene = new GameplayScene(this.canvas, gamePlayData.currentLevelData, 1,  this.data.FeedbackTexts, this.data.rightToLeft,this.switchSceneToEndLevel,gamePlayData.selectedLevelNumber);
 
         SceneHandler.SceneName = GameScene1;
     }
