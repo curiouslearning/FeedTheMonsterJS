@@ -8,7 +8,7 @@ export class GameScore {
       levelName: currentLevelInfo.levelMeta.levelType,
       levelNumber: currentLevelInfo.levelMeta.levelNumber,
       score: score,
-      starCount: this.calculateStarCount(score),
+      starCount: this.getStarCount(score),
     };
     let allGamelevelInfo: any[] = this.getAllGameLevelInfo();
     allGamelevelInfo.push(levelPlayedInfo);
@@ -20,7 +20,7 @@ export class GameScore {
     return data == undefined ? [] : JSON.parse(data);
   }
   
-  public static calculateStarCount(score: number): number {
+  public static getStarCount(score: number): number {
     return score == 200
       ? 1
       : score == 300
