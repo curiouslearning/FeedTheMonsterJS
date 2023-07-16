@@ -35,6 +35,7 @@ import PausePopUp from "../components/pause-popup";
 import { CLICK, LOADPUZZLE, MOUSEDOWN, MOUSEMOVE, MOUSEUP, STONEDROP, TOUCHEND, TOUCHMOVE, TOUCHSTART } from "../common/event-names";
 import { Background } from "../components/background";
 import { FeedbackTextEffects } from "../components/feedback-particle-effect/feedback-text-effects";
+import { GameScore } from "../data/game-score";
 
 var images = {
     bgImg: "./assets/images/bg_v01.jpg",
@@ -131,6 +132,7 @@ export class GameplayScene {
     feedbackTextEffects: FeedbackTextEffects;
     public isGameStarted: boolean = false;
     public time: number = 0;
+    public score: number = 0;
 
     constructor(
         canvas,
@@ -476,6 +478,7 @@ export class GameplayScene {
             if (this.pickedStone != null || this.pickedStone.origx != undefined) {
                 const isCorrect = this.stoneHandler.isDroppedStoneCorrect(self.pickedStone.text);
                 if (isCorrect) {
+                    this.score = this.score + 100;
                     this.feedbackTextEffects.wrapText(this.getRandomFeedBackText(this.getRandomInt(0, 1)));
                     this.feedBackTextCanavsElement.style.zIndex = "10";
                 }
@@ -1029,6 +1032,7 @@ export class GameplayScene {
         this.isGameStarted = false;
         this.time = -4000;
         if (this.counter == this.levelData.puzzles.length) {
+            GameScore.setGameLevelScore(this.levelData, this.score);
             this.switchSceneToEnd(this.levelData);
         } else {
             const loadPuzzleData = {
