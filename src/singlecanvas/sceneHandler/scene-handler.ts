@@ -19,6 +19,7 @@ import { TestGameplayScene } from "../scenes/test-gameplay-scene";
 import { LevelSelectionScreen } from "../scenes/level-selection-scene";
 import { Debugger, lang } from "../../../global-variables";
 import { GameplayScene } from "../scenes/gameplay-scene"
+import { GameScore } from "../data/game-score";
 let lastTime = 0;
 let pwa_install_status: any;
 const toggleBtn = document.getElementById("toggle-btn") as HTMLElement;
@@ -94,7 +95,12 @@ export class SceneHandler {
             }
         });
     }
-
+    
+    public checkMonsterPhaseUpdation():number{
+        let totalStarCount = GameScore.getTotalStarCount();
+        let monsterPhaseNumber = Math.floor(totalStarCount /12) + 1 || 1;
+        return (monsterPhaseNumber<=4)?monsterPhaseNumber:4;
+    }
 
     animation = (timeStamp) => {
         let deltaTime = timeStamp - lastTime;
@@ -130,7 +136,7 @@ export class SceneHandler {
         // dispose previous scene
         this.levelSelectionScene.dispose();
         // load in next scene --- gameplaqyscene
-        this.gameplayScene = new GameplayScene(this.canvas, gamePlayData.currentLevelData, 1,  this.data.FeedbackTexts, this.data.rightToLeft,this.switchSceneToEndLevel,gamePlayData.selectedLevelNumber);
+        this.gameplayScene = new GameplayScene(this.canvas, gamePlayData.currentLevelData, this.checkMonsterPhaseUpdation(),  this.data.FeedbackTexts, this.data.rightToLeft,this.switchSceneToEndLevel,gamePlayData.selectedLevelNumber);
 
         SceneHandler.SceneName = GameScene1;
     }

@@ -179,7 +179,7 @@ export class GameplayScene {
         this.levelIndicators = new LevelIndicators(this.context, this.canvas, 0);
         this.tutorial = new Tutorial(this.context, this.width, this.height);
         this.levelIndicators.setIndicators(this.counter);
-        this.monster = new Monster(this.canvas, 4);
+        this.monster = new Monster(this.canvas, this.monsterPhaseNumber);
         this.pausePopup = new PausePopUp(this.canvas, this.resumeGame);
         this.background1 = new Background(this.context, this.width, this.height, this.levelData.levelNumber);
         this.feedBackTextCanavsElement = this.createFeedbackTextCanvas(this.height, this.width);
@@ -724,6 +724,7 @@ export class GameplayScene {
             // );
             this.background1.draw();
         }
+
         if(this.isPauseButtonClicked && this.isGameStarted){
             this.pauseButton.draw();
             this.levelIndicators.draw();

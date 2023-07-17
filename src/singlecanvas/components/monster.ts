@@ -1,6 +1,7 @@
 import { Debugger, lang } from "../../../global-variables";
 import { MonsterLayer, StoreMonsterPhaseNumber, loadImages } from "../../common/common";
 import { CanvasStack } from "../../utility/canvas-stack";
+import { GameScore } from "../data/game-score";
 import { EventManager } from "../events/EventManager";
 var lastTime = 0;
 var self;
@@ -33,7 +34,7 @@ export class Monster extends EventManager {
     public imagesLoaded: boolean = false;
     public monsterPhase: number;
 
-    constructor(game, monsterPhase) {
+    constructor(game,monsterPhase) {
         super({
             stoneDropCallbackHandler: (event) => this.handleStoneDrop(event),
             loadPuzzleCallbackHandler: (event) => this.handleLoadPuzzle(event)
@@ -58,17 +59,17 @@ export class Monster extends EventManager {
         this.frameInterval = 1000 / this.fps;
         this.frameTimer = 0;
         // this.canvasStack = new CanvasStack("canvas");
-
         //////////loading images
         this.images = {
-            eatImg: "./assets/images/eat1" + monsterPhase + ".png",
-            idleImg: "./assets/images/idle1" + monsterPhase + ".png",
-            spitImg: "./assets/images/spit1" + monsterPhase + ".png",
-            dragImg: "./assets/images/drag1" + monsterPhase + ".png"
+            eatImg: "./assets/images/eat1" + this.monsterPhase + ".png",
+            idleImg: "./assets/images/idle1" + this.monsterPhase + ".png",
+            spitImg: "./assets/images/spit1" + this.monsterPhase + ".png",
+            dragImg: "./assets/images/drag1" + this.monsterPhase + ".png"
         }
-
+        
         loadImages(this.images, (images) => {
             this.loadedImages = Object.assign({}, images);
+            this.changeToIdleAnimation();
             this.imagesLoaded = true;
         });
     }
@@ -188,7 +189,8 @@ export class Monster extends EventManager {
     public dispose() {
         this.unregisterEventListener();
     }
-
+    
+    
     onClick(xClick: number, yClick: number) {
         // const distance = Math.sqrt(
         //     (xClick - this.x/2) *
