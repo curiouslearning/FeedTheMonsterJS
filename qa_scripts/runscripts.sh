@@ -2,7 +2,8 @@
 
 owner="curiouslearning"
 repo="ftm-languagepacks"
-token="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"
+# provide your access token 
+token=""
 response=$(curl -s -H "Authorization: token $token" "https://api.github.com/repos/$owner/$repo/contents")
 folders=($(echo "$response" | jq -r '.[] | select(.type == "dir") | .name'))
 
