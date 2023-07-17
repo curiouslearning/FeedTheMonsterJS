@@ -1,0 +1,47 @@
+{
+  "name": "feedthemonsterjs",
+  "version": "1.0.0",
+  "description": "education app",
+  "main": "feedTheMonster.js",
+  "scripts": {
+    "dev": "webpack"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/curiouslearning/FeedTheMonsterJS.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/curiouslearning/FeedTheMonsterJS/issues"
+  },
+  "homepage": "https://github.com/curiouslearning/FeedTheMonsterJS#readme",
+  "dependencies": {
+    "@capacitor/android": "^4.4.0",
+    "@capacitor/core": "^4.4.0",
+    "@ffmpeg-installer/ffmpeg": "^1.1.0",
+    "@octokit/rest": "^19.0.13",
+    "@sentry/browser": "^7.47.0",
+    "@types/workbox-window": "^4.3.4",
+    "axios": "^1.4.0",
+    "copy-webpack-plugin": "^11.0.0",
+    "dotenv": "^16.3.1",
+    "fluent-ffmpeg": "^2.1.2",
+    "fs": "^0.0.1-security",
+    "googleapis": "^118.0.0",
+    "howler": "^2.2.3",
+    "https": "^1.0.0",
+    "node-fetch": "^3.3.1",
+    "path": "^0.12.7",
+    "simple-git": "^3.19.1",
+    "webpack": "^5.74.0",
+    "workbox-cli": "^6.5.4",
+    "workbox-window": "^4.3.1"
+  },
+  "devDependencies": {
+    "@capacitor/cli": "^4.4.0",
+    "@types/howler": "^2.2.7",
+    "typescript": "^4.9.5",
+    "webpack-cli": "^4.10.0"
+  }
+}
