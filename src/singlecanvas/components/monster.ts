@@ -182,7 +182,7 @@ export class Monster extends EventManager {
         
     }
     public handleLoadPuzzle(event) {
-        this.changeToIdleAnimation();
+        // this.changeToIdleAnimation();
 
     }
 

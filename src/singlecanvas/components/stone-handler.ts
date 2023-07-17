@@ -277,7 +277,6 @@ export default class StoneHandler extends EventManager {
     }
 
     public isStonDroppedCorrectForWord(droppedStone: string): boolean {
-        console.log(this.correctTargetStone.substring(0, droppedStone.length))
         if (droppedStone == this.correctTargetStone.substring(0, droppedStone.length)) {
             return true;
         } else {
@@ -286,7 +285,6 @@ export default class StoneHandler extends EventManager {
     }
 
     public getCorrectTargetStone(): string {
-        console.log(this.correctTargetStone, "<------------------");
         return this.correctTargetStone;
     }
  }
