@@ -9,14 +9,14 @@
     "Amazing!"
   ],
   "FeedbackAudios": [
-    "https://feedthemonster.curiouscontent.org/lang/wolof/audios/fantastic.wav",
-    "https://feedthemonster.curiouscontent.org/lang/wolof/audios/great.wav",
-    "https://feedthemonster.curiouscontent.org/lang/wolof/audios/amazing.wav"
+    "https://feedthemonster.curiouscontent.org/lang/wolof/audios/fantastic.mp3",
+    "https://feedthemonster.curiouscontent.org/lang/wolof/audios/great1.mp3",
+    "https://feedthemonster.curiouscontent.org/lang/wolof/audios/amazing.mp3"
   ],
   "OtherAudios": {
-    "Select your player": "https://feedthemonster.curiouscontent.org/wolof/sounds/other/Select-your-player.wav",
-    "Watch me grow": "https://feedthemonster.curiouscontent.org/wolof/sounds/other/watch-me-grow.wav",
-    "Are you sure": "https://feedthemonster.curiouscontent.org/wolof/sounds/other/are-you-sure.wav"
+    "Select your player": "https://feedthemonster.curiouscontent.org/lang/wolof/audios/Select-your-player.mp3",
+    "Watch me grow": "https://feedthemonster.curiouscontent.org/lang/wolof/audios/watch-me-grow.mp3",
+    "Are you sure": "https://feedthemonster.curiouscontent.org/lang/wolof/audios/are-you-sure.mp3"
   },
   "Levels": [
     {
