@@ -17,10 +17,16 @@ export default class PausePopUp {
 
     public id: any;
     public callback: any;
+    public switchToLevelSelection: any;
+    public reloadScene: any;
+    public gameplayData: any;
 
-    constructor(canvas, callback) {
+    constructor(canvas, callback, switchToLevelSelection, reloadScene, gameplayData) {
         this.canvas = canvas;
         this.callback = callback;
+        this.gameplayData = gameplayData;
+        this.switchToLevelSelection = switchToLevelSelection;
+        this.reloadScene = reloadScene;
         // this.levelStart = levelStart;
         // this.canvasStack = new CanvasStack("canvas");
         // this.createCanvas();
@@ -75,9 +81,11 @@ export default class PausePopUp {
         }
         if (this.retryButton.onClick(x, y)) {
             console.log(" retry button clicked");
+            this.reloadScene(this.gameplayData);
         }
         if (this.closeButton.onClick(x, y)) {
             console.log(" close button clicked");
+            this.switchToLevelSelection();
         }
     }
 

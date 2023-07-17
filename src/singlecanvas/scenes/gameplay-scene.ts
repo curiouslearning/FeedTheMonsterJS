@@ -135,6 +135,9 @@ export class GameplayScene {
     public score: number = 0;
     tempWordforWordPuzzle: string = "";
 
+    public switchToLevelSelection: any;
+    public reloadScene: any;
+
     constructor(
         canvas,
         // game,
@@ -144,8 +147,9 @@ export class GameplayScene {
         feedBackTexts,
         rightToLeft,
         switchSceneToEnd,
-        levelNumber
-
+        levelNumber,
+        switchToLevelSelection,
+        reloadScene
     ) {
         // this.game = game;
         this.width = canvas.width;
@@ -161,6 +165,8 @@ export class GameplayScene {
         this.levelData = levelData;
         this.switchSceneToEnd = switchSceneToEnd;
         this.levelNumber = levelNumber;
+        this.switchToLevelSelection = switchToLevelSelection;
+        this.reloadScene = reloadScene;
         // this.levelStartCallBack = levelStartCallBack;
         // this.timerTicking = new TimerTicking(game, this);
         // this.promptText = new PromptText(
@@ -180,7 +186,12 @@ export class GameplayScene {
         this.tutorial = new Tutorial(this.context, this.width, this.height);
         this.levelIndicators.setIndicators(this.counter);
         this.monster = new Monster(this.canvas, this.monsterPhaseNumber);
-        this.pausePopup = new PausePopUp(this.canvas, this.resumeGame);
+        let gamePlayData = {
+            "currentLevelData": levelData,
+            "selectedLevelNumber": levelNumber
+        }
+        this.pausePopup = new PausePopUp(this.canvas, this.resumeGame, this.switchToLevelSelection, this.reloadScene, gamePlayData);
+        // this.switchToLevelSelection = switchToLevelSelection
         this.background1 = new Background(this.context, this.width, this.height, this.levelData.levelNumber);
         this.feedBackTextCanavsElement = this.createFeedbackTextCanvas(this.height, this.width);
         this.feedbackTextEffects = new FeedbackTextEffects(this.feedBackTextCanavsElement.getContext('2d'), this.width, this.height);
@@ -538,9 +549,8 @@ export class GameplayScene {
         var rect = selfElement.getBoundingClientRect();
         const x = event.clientX - rect.left;
         const y = event.clientY - rect.top;
-         
-        if(this.monster.onClick(x,y))
-        {
+
+        if (this.monster.onClick(x, y)) {
             this.isGameStarted = true;
             this.time = 0;
         }
@@ -667,10 +677,10 @@ export class GameplayScene {
     //     score = 0;
     // }
     draw(deltaTime) {
-       
-        if(!this.isGameStarted && !this.isPauseButtonClicked){
-            this.time = this.time+ deltaTime;
-            if(this.time>=5000){
+
+        if (!this.isGameStarted && !this.isPauseButtonClicked) {
+            this.time = this.time + deltaTime;
+            if (this.time >= 5000) {
                 this.isGameStarted = true;
                 this.time = 0;
             }
@@ -712,7 +722,7 @@ export class GameplayScene {
             this.background1.draw();
         }
 
-        if(this.isPauseButtonClicked && this.isGameStarted){
+        if (this.isPauseButtonClicked && this.isGameStarted) {
             this.pauseButton.draw();
             this.levelIndicators.draw();
             this.promptText.draw();
@@ -721,28 +731,27 @@ export class GameplayScene {
             this.stoneHandler.draw(deltaTime);
             this.pausePopup.draw();
         }
-        if(!this.isPauseButtonClicked && !this.isGameStarted)
-        {
+        if (!this.isPauseButtonClicked && !this.isGameStarted) {
             this.pauseButton.draw();
             this.levelIndicators.draw();
             this.promptText.draw();
             this.monster.animation(deltaTime);
             this.timerTicking.draw();
             this.feedbackTextEffects.render();
-         
+
 
         }
-        if(this.isPauseButtonClicked && !this.isGameStarted){
-             
+        if (this.isPauseButtonClicked && !this.isGameStarted) {
+
             this.pauseButton.draw();
             this.levelIndicators.draw();
             this.promptText.draw();
             this.monster.animation(deltaTime);
             this.timerTicking.draw();
             this.pausePopup.draw();
-            
+
         }
-        if(!this.isPauseButtonClicked && this.isGameStarted){
+        if (!this.isPauseButtonClicked && this.isGameStarted) {
             this.pauseButton.draw();
             this.levelIndicators.draw();
             this.promptText.draw();
@@ -750,10 +759,10 @@ export class GameplayScene {
             this.timerTicking.update(deltaTime);
             this.timerTicking.draw();
             this.stoneHandler.draw(deltaTime);
-           
-            
+
+
         }
-        
+
 
 
     }
@@ -1066,14 +1075,14 @@ export class GameplayScene {
 
     public createFeedbackTextCanvas(height: number, width: number): HTMLCanvasElement {
         const canvas = document.createElement('canvas');
-      
+
         canvas.id = 'feedback-text';
         canvas.style.position = 'absolute';
         canvas.style.left = '50%';
         canvas.style.top = '0%';
         canvas.style.zIndex = "-10";
         canvas.style.transform = 'translate(-50%, 0%)';
-      
+
         document.body.appendChild(canvas);
         canvas.height = this.height;
         canvas.width = this.width;
@@ -1089,30 +1098,30 @@ export class GameplayScene {
 
     public letterInWordPuzzle(droppedStone: string) {
         const isCorrect = this.stoneHandler.isStoneDroppedCorrectForLetterInWord(droppedStone);
-                if (isCorrect) {
-                    this.score = this.score + 100;
-                    this.feedbackTextEffects.wrapText(this.getRandomFeedBackText(this.getRandomInt(0, 1)));
-                    this.feedBackTextCanavsElement.style.zIndex = "10";
-                }
-                let loadPuzzleData = { 'isCorrect': isCorrect }
-                const dropStoneEvent = new CustomEvent(STONEDROP, { detail: loadPuzzleData });
-                document.dispatchEvent(dropStoneEvent);
-                // this.removeEventListeners();
-                this.loadPuzzle();
+        if (isCorrect) {
+            this.score = this.score + 100;
+            this.feedbackTextEffects.wrapText(this.getRandomFeedBackText(this.getRandomInt(0, 1)));
+            this.feedBackTextCanavsElement.style.zIndex = "10";
+        }
+        let loadPuzzleData = { 'isCorrect': isCorrect }
+        const dropStoneEvent = new CustomEvent(STONEDROP, { detail: loadPuzzleData });
+        document.dispatchEvent(dropStoneEvent);
+        // this.removeEventListeners();
+        this.loadPuzzle();
     }
 
     public letterOnlyPuzzle(droppedStone: string) {
         const isCorrect = this.stoneHandler.isStoneDroppedCorrectForLetterOnly(droppedStone);
-                if (isCorrect) {
-                    this.score = this.score + 100;
-                    this.feedbackTextEffects.wrapText(this.getRandomFeedBackText(this.getRandomInt(0, 1)));
-                    this.feedBackTextCanavsElement.style.zIndex = "10";
-                }
-                let loadPuzzleData = { 'isCorrect': isCorrect }
-                const dropStoneEvent = new CustomEvent(STONEDROP, { detail: loadPuzzleData });
-                document.dispatchEvent(dropStoneEvent);
-                // this.removeEventListeners();
-                this.loadPuzzle();
+        if (isCorrect) {
+            this.score = this.score + 100;
+            this.feedbackTextEffects.wrapText(this.getRandomFeedBackText(this.getRandomInt(0, 1)));
+            this.feedBackTextCanavsElement.style.zIndex = "10";
+        }
+        let loadPuzzleData = { 'isCorrect': isCorrect }
+        const dropStoneEvent = new CustomEvent(STONEDROP, { detail: loadPuzzleData });
+        document.dispatchEvent(dropStoneEvent);
+        // this.removeEventListeners();
+        this.loadPuzzle();
     }
 
     public wordPuzzle(droppedStone: string, droppedStoneInstance: StoneConfig) {
@@ -1135,8 +1144,8 @@ export class GameplayScene {
         if (isCorrect) {
             this.monster.changeToEatAnimation();
             setTimeout(() => {
-                this.monster.changeToIdleAnimation();   
-            }, 1500);  
+                this.monster.changeToIdleAnimation();
+            }, 1500);
         } else {
             let loadPuzzleData = { 'isCorrect': isCorrect }
             const dropStoneEvent = new CustomEvent(STONEDROP, { detail: loadPuzzleData });

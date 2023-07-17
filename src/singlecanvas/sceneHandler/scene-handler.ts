@@ -139,7 +139,25 @@ export class SceneHandler {
         // dispose previous scene
         this.levelSelectionScene.dispose();
         // load in next scene --- gameplaqyscene
-        this.gameplayScene = new GameplayScene(this.canvas, gamePlayData.currentLevelData, this.checkMonsterPhaseUpdation(), this.data.FeedbackTexts, this.data.rightToLeft, this.switchSceneToEndLevel, gamePlayData.selectedLevelNumber);
+        this.gameplayScene = new GameplayScene(this.canvas, gamePlayData.currentLevelData, this.checkMonsterPhaseUpdation(), this.data.FeedbackTexts, this.data.rightToLeft, this.switchSceneToEndLevel, gamePlayData.selectedLevelNumber, this.switchToLevelSelection, this.reloadScene);
+
+        SceneHandler.SceneName = GameScene1;
+    }
+
+    switchToLevelSelection = () => {
+        // this is coming from gameplay
+        this.gameplayScene.dispose();
+
+        // switch to levelselection
+        this.levelSelectionScene = new LevelSelectionScreen(this.canvas, this.data, this.switchSceneToGameplay)
+        SceneHandler.SceneName = LevelSelection1;
+    }
+    reloadScene = (gamePlayData) => {
+        // this is coming from gameplay
+        this.gameplayScene.dispose();
+
+        // reload gameplayscene again with samedata
+        this.gameplayScene = new GameplayScene(this.canvas, gamePlayData.currentLevelData, this.checkMonsterPhaseUpdation(), this.data.FeedbackTexts, this.data.rightToLeft, this.switchSceneToEndLevel, gamePlayData.selectedLevelNumber, this.switchToLevelSelection, this.reloadScene);
 
         SceneHandler.SceneName = GameScene1;
     }
