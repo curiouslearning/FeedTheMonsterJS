@@ -255,4 +255,38 @@ export default class StoneHandler extends EventManager {
     public dispose() {
         this.unregisterEventListener();
     }
-}
+
+    public isStoneDroppedCorrectForLetterOnly(droppedStone: string): boolean {
+        if(droppedStone == this.correctTargetStone)
+        {
+            return true;
+        }
+        else{
+            return false;
+        }
+    }
+
+    public isStoneDroppedCorrectForLetterInWord(droppedStone: string): boolean {
+        if(droppedStone == this.correctTargetStone)
+        {
+            return true;
+        }
+        else{
+            return false;
+        }
+    }
+
+    public isStonDroppedCorrectForWord(droppedStone: string): boolean {
+        console.log(this.correctTargetStone.substring(0, droppedStone.length))
+        if (droppedStone == this.correctTargetStone.substring(0, droppedStone.length)) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    public getCorrectTargetStone(): string {
+        console.log(this.correctTargetStone, "<------------------");
+        return this.correctTargetStone;
+    }
+ }
