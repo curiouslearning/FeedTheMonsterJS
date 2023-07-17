@@ -14,12 +14,12 @@ export class GameScore {
     this.setTotalStarCount(starsGained);
     let allGamelevelInfo: any[] = this.getAllGameLevelInfo();
     allGamelevelInfo.push(levelPlayedInfo);
-    localStorage.setItem("gamePlayedInfo", JSON.stringify(allGamelevelInfo));
+    localStorage.setItem(this.currentlanguage +"gamePlayedInfo", JSON.stringify(allGamelevelInfo));
   }
 
-  public static getAllGameLevelInfo(): any[] {
+  public static getAllGameLevelInfo(): Map<string, any>[] {
     const data = localStorage.getItem(this.currentlanguage + "gamePlayedInfo");
-    return data == undefined ? [] : JSON.parse(data);
+    return data == undefined ? [] : JSON.parse(data) as Map<string, any>[];
   }
 
   public static setTotalStarCount(starsGained){
