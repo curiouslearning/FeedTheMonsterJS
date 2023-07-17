@@ -125,7 +125,7 @@ export class SceneHandler {
         else if (SceneHandler.SceneName == EndScene1) {
             // render gameplay screen for now
             // this.gameplayScene.draw(deltaTime);
-            console.log('Move to levelend scene');
+            // console.log('Move to levelend scene');
             this.levelEndScene.draw(deltaTime);
             // this.testGameplayScene.animation(deltaTime);
         }
@@ -166,9 +166,26 @@ export class SceneHandler {
         console.log(" currentlevelPlayed: ", currentlevelPlayed);
         this.gameplayScene.dispose();
 
-        this.levelEndScene = new LevelEndScene(this.canvas, this.height, this.width, this.context, 1, currentlevelPlayed.levelNumber);
+        this.levelEndScene = new LevelEndScene(this.canvas, this.height, this.width, this.context, 1, currentlevelPlayed.levelNumber, this.switchToGameplayFLES, this.switchtoLevelSelectionFLES, this.data);
 
         SceneHandler.SceneName = EndScene1;
+    }
+    switchToGameplayFLES = (gamePlayData) => {
+
+        // dispose level end scene 
+        this.levelEndScene.dispose();
+        // load gameplay scene
+        this.gameplayScene = new GameplayScene(this.canvas, gamePlayData.currentLevelData, this.checkMonsterPhaseUpdation(), this.data.FeedbackTexts, this.data.rightToLeft, this.switchSceneToEndLevel, gamePlayData.selectedLevelNumber, this.switchToLevelSelection, this.reloadScene);
+
+        SceneHandler.SceneName = GameScene1;
+
+    }
+    switchtoLevelSelectionFLES = (gamePlayData) => {
+        // dispose level end scene 
+        this.levelEndScene.dispose();
+        // load levelselection scene
+        this.levelSelectionScene = new LevelSelectionScreen(this.canvas, this.data, this.switchSceneToGameplay)
+        SceneHandler.SceneName = LevelSelection1;
     }
 
     switchSceneToLevelSelection = () => {

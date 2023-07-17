@@ -19,19 +19,31 @@ export class LevelEndScene {
   public nextButton: any;
   public starCount: number;
   public nextLevel: number;
+  public switchToGameplayCB: any;
+  public switchToLevelSelectionCB: any;
+  public data: any;
+
   constructor(
     canvas: any,
     height: number,
     width: number,
     context: CanvasRenderingContext2D,
     starCount: number,
-    nextLevel: number
+    nextLevel: number,
+    switchToGameplayCB,
+    switchToLevelSelectionCB,
+    data
   ) {
     this.canvas = canvas;
     this.height = height;
     this.width = width;
     this.context = context;
     this.monster = new Monster(this.canvas, 4);
+    // console.log(" currentlevelPlayed in levelenEEd: ", currentlevelPlayed.levelNumber);
+    this.switchToGameplayCB = switchToGameplayCB;
+    this.switchToLevelSelectionCB = switchToLevelSelectionCB;
+    this.data = data;
+
     this.closeButton = new CloseButton(
       context,
       canvas,
@@ -129,12 +141,27 @@ export class LevelEndScene {
 
     if (this.closeButton.onClick(x, y)) {
       console.log(" close button clicked");
+
+      this.switchToLevelSelectionCB();
     }
     if (this.retryButton.onClick(x, y)) {
       console.log(" retry button clicked");
+      let gamePlayData = {
+        "currentLevelData": this.data.levels[this.nextLevel],
+        "selectedLevelNumber": this.nextLevel
+      }
+      // pass same data as level is same
+      this.switchToGameplayCB(gamePlayData)
     }
     if (this.nextButton.onClick(x, y)) {
-      console.log(" next button clicked");
+      let next = Number(this.nextLevel) + 1;
+      console.log(typeof (next), " next button clicked", next);
+      let gamePlayData = {
+        "currentLevelData": this.data.levels[next],
+        "selectedLevelNumber": next
+      }
+
+      this.switchToGameplayCB(gamePlayData)
     }
   }
 
