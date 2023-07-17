@@ -852,7 +852,7 @@ export class GameplayScene {
         );
         this.handler.addEventListener(
             TOUCHMOVE,
-            this.handleMouseMove,
+            this.handleTouchMove,
             false
         );
         this.handler.addEventListener(
