@@ -24,8 +24,6 @@ var previousPlayedLevel: number =
       ? localStorage.getItem(PreviousPlayedLevel + lang + "Debug")
       : localStorage.getItem(PreviousPlayedLevel + lang)
   ) | 0;
-console.log(previousPlayedLevel);
-console.log("<<<<<<<<<<<<<<<<<<<<<");
 var level: number;
 if (previousPlayedLevel != null) {
   level = 10 * Math.floor(previousPlayedLevel / 10);

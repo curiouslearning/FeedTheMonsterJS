@@ -32,13 +32,14 @@ export class LevelEndScene {
     nextLevel: number,
     switchToGameplayCB,
     switchToLevelSelectionCB,
-    data
+    data,
+    monsterPhaseNumber: number
   ) {
     this.canvas = canvas;
     this.height = height;
     this.width = width;
     this.context = context;
-    this.monster = new Monster(this.canvas, 4);
+    this.monster = new Monster(this.canvas, monsterPhaseNumber);
     // console.log(" currentlevelPlayed in levelenEEd: ", currentlevelPlayed.levelNumber);
     this.switchToGameplayCB = switchToGameplayCB;
     this.switchToLevelSelectionCB = switchToLevelSelectionCB;
@@ -125,11 +126,9 @@ export class LevelEndScene {
     }
   }
   addEventListener() {
-    document.getElementById("canvas").addEventListener(
-      CLICK,
-      this.handleMouseClick,
-      false
-    );
+    document
+      .getElementById("canvas")
+      .addEventListener(CLICK, this.handleMouseClick, false);
   }
 
   handleMouseClick = (event) => {
@@ -147,30 +146,27 @@ export class LevelEndScene {
     if (this.retryButton.onClick(x, y)) {
       console.log(" retry button clicked");
       let gamePlayData = {
-        "currentLevelData": this.data.levels[this.nextLevel],
-        "selectedLevelNumber": this.nextLevel
-      }
+        currentLevelData: this.data.levels[this.nextLevel],
+        selectedLevelNumber: this.nextLevel,
+      };
       // pass same data as level is same
-      this.switchToGameplayCB(gamePlayData)
+      this.switchToGameplayCB(gamePlayData);
     }
     if (this.nextButton.onClick(x, y)) {
       let next = Number(this.nextLevel) + 1;
-      console.log(typeof (next), " next button clicked", next);
+      console.log(typeof next, " next button clicked", next);
       let gamePlayData = {
-        "currentLevelData": this.data.levels[next],
-        "selectedLevelNumber": next
-      }
+        currentLevelData: this.data.levels[next],
+        selectedLevelNumber: next,
+      };
 
-      this.switchToGameplayCB(gamePlayData)
+      this.switchToGameplayCB(gamePlayData);
     }
-  }
-
+  };
 
   dispose = () => {
-    document.getElementById("canvas").removeEventListener(
-      CLICK,
-      this.handleMouseClick,
-      false
-    );
-  }
+    document
+      .getElementById("canvas")
+      .removeEventListener(CLICK, this.handleMouseClick, false);
+  };
 }
