@@ -16,10 +16,10 @@ feedback_words = ['amazing', 'fantastic1', 'great1', 'amazing!']
 
 
 def download_and_convert_audio(url, output_dir, feedback_audios):
-    converted_url = url.replace(
-        "https://raw.githubusercontent.com/curiouslearning/ftm-languagepacks/master/", "https://cdn.jsdelivr.net/gh/curiouslearning/ftm-languagepacks@master/")
-    response = requests.get(converted_url)
-    file_name = converted_url.split('/')[-1]
+    # converted_url = url.replace(
+    #     "https://raw.githubusercontent.com/curiouslearning/ftm-languagepacks/master/", "https://cdn.jsdelivr.net/gh/curiouslearning/ftm-languagepacks@master/")
+    response = requests.get(url)
+    file_name = url.split('/')[-1]
     try:
         if feedback_audios:
             feedback_words.index(unicodedata.normalize(
