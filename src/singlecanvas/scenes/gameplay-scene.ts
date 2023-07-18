@@ -1059,7 +1059,6 @@ export class GameplayScene {
     this.isGameStarted = false;
     this.time = -4000;
     this.tempWordforWordPuzzle = "";
-    this.monster.changeToIdleAnimation();
     if (this.counter == this.levelData.puzzles.length) {
       GameScore.setGameLevelScore(this.levelData, this.score);
       this.switchSceneToEnd(
