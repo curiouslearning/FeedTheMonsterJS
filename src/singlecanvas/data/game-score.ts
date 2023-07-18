@@ -13,9 +13,21 @@ export class GameScore {
     };
     this.setTotalStarCount(starsGained);
     let allGamelevelInfo: any[] = this.getAllGameLevelInfo();
-    allGamelevelInfo.push(levelPlayedInfo);
-    localStorage.setItem(this.currentlanguage +"gamePlayedInfo", JSON.stringify(allGamelevelInfo));
+    let index = -1;
+    for (let i = 0; i < allGamelevelInfo.length; i++) {
+      if (allGamelevelInfo[i].levelNumber === levelPlayedInfo.levelNumber) {
+        index = i;
+        break;
+      }
+    }
+    if (index !== -1 && levelPlayedInfo.score > allGamelevelInfo[index].score) {
+      allGamelevelInfo[index] = levelPlayedInfo;
+    } else {
+      allGamelevelInfo.push(levelPlayedInfo);
+    }
+    localStorage.setItem(this.currentlanguage + "gamePlayedInfo", JSON.stringify(allGamelevelInfo));
   }
+
 
   public static getAllGameLevelInfo(): Map<string, any>[] {
     const data = localStorage.getItem(this.currentlanguage + "gamePlayedInfo");
