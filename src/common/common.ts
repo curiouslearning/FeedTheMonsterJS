@@ -1,5 +1,5 @@
-import { CanvasStack } from "../utility/canvas-stack.js";
-import { lang } from "../../global-variables.js";
+import { CanvasStack } from "../utility/canvas-stack";
+import { lang } from "../../global-variables";
 
 export function loadImages(sources: any, callback: any) {
   var images = {};
@@ -69,3 +69,7 @@ export const PhraseAudio = "phrase_audio";
 export const LevelEndAudio = "level_end_audio";
 export const UrlSubstring = "/feedthemonster";
 export const DevelopmentServer = "https://feedthemonsterdev.curiouscontent.org";
+export const StartScene1 = "StartScene1";
+export const LevelSelection1 = "LevelSelection1";
+export const GameScene1 = "GameScene1";
+export const EndScene1 = "EndScene1";

@@ -1,6 +1,6 @@
-import { Debugger, lang } from "../../global-variables.js";
-import { StoreMonsterPhaseNumber } from "../common/common.js";
-import { LevelStartScene } from "./level-start-scene.js";
+import { Debugger, lang } from "../../global-variables";
+import { StoreMonsterPhaseNumber } from "../common/common";
+import { LevelStartScene } from "./level-start-scene";
 
 var animationFrame: number;
 var self: any;
@@ -27,6 +27,7 @@ export class Game {
     this.monsterPhaseNumber = Debugger.DebugMode
       ? localStorage.getItem(StoreMonsterPhaseNumber + lang + "Debug") || 1
       : localStorage.getItem(StoreMonsterPhaseNumber + lang) || 1;
+    console.log(" puzzledatacoming ", puzzleData);
     this.scene = new LevelStartScene({
       game: this,
       levelData: puzzleData,
@@ -36,7 +37,7 @@ export class Game {
       rightToLeft: rightToLeft,
     });
     this.gameSceneCallBack = gameSceneCallBack;
-    this.render();
+    // this.render();
     self = this;
     this.animation(0);
   }
@@ -69,6 +70,7 @@ export class Game {
 
   render() {
     cancelAnimationFrame(animationFrame);
+    console.log(" itsalsorunning! ");
     this.scene.createBackgroud();
   }
   animation(timestamp_1) {

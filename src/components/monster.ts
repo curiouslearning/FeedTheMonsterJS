@@ -1,11 +1,11 @@
-import { Debugger, lang } from "../../global-variables.js";
-import { MonsterLayer, StoreMonsterPhaseNumber } from "../common/common.js";
-import { CanvasStack } from "../utility/canvas-stack.js";
+import { Debugger, lang } from "../../global-variables";
+import { MonsterLayer, StoreMonsterPhaseNumber } from "../common/common";
+import { CanvasStack } from "../utility/canvas-stack";
 var lastTime = 0;
 var self;
 var animationFrame;
 var monsterPhaseNumber = Debugger.DebugMode
-  ? localStorage.getItem(StoreMonsterPhaseNumber + lang+"Debug") || 1
+  ? localStorage.getItem(StoreMonsterPhaseNumber + lang + "Debug") || 1
   : localStorage.getItem(StoreMonsterPhaseNumber + lang) || 1;
 var eatImg = new Image();
 eatImg.src = "./assets/images/eat1" + monsterPhaseNumber + ".png";
@@ -15,6 +15,10 @@ var spitImg = new Image();
 spitImg.src = "./assets/images/spit1" + monsterPhaseNumber + ".png";
 var dragImg = new Image();
 dragImg.src = "./assets/images/drag1" + monsterPhaseNumber + ".png";
+dragImg.onload =
+  function () {
+    console.log("loadeded1");
+  };
 console.log("monsterexecuting");
 export class Monster {
   public zindex: number;
@@ -27,6 +31,7 @@ export class Monster {
   public x: number;
   public y: number;
   public fps: number;
+  public countFrame: number;
   public frameInterval: number;
   public frameTimer: number;
   public canvasStack: any;
@@ -36,6 +41,7 @@ export class Monster {
   public game: any;
 
   constructor(game, zindex?) {
+    console.log(" originalcanvas ", game);
     this.game = game;
     self = this;
     this.zindex = zindex;
@@ -48,6 +54,7 @@ export class Monster {
     this.x = this.game.width / 2 - this.game.width * 0.243;
     this.y = this.game.width / 3;
     this.fps = 10;
+    this.countFrame = 0;
     this.frameInterval = 1000 / this.fps;
     this.frameTimer = 0;
     this.canvasStack = new CanvasStack("canvas");
@@ -58,14 +65,19 @@ export class Monster {
     this.id = this.canvasStack.createLayer(
       this.height,
       this.width,
-      MonsterLayer
+      "canvas"
     );
     this.canavsElement = document.getElementById(this.id) as HTMLCanvasElement;
     this.context = this.canavsElement.getContext("2d");
-    this.canavsElement.style.zIndex = "6";
+    // this.canavsElement.style.zIndex = "6";
     this.canavsElement.style.bottom = "0";
-    this.draw();
-    this.animation(0);
+    // dragImg = new Image();
+    // dragImg.src = "./assets/images/drag1" + 1 + ".png";
+    // dragImg.onload = function () {
+    //   console.log(" Image is loaded ");
+    // }
+    // this.draw();
+    // this.animation(0);
   }
 
   changeZindex(index) {
@@ -78,7 +90,8 @@ export class Monster {
   }
 
   update(deltaTime) {
-    if (this.frameTimer > this.frameInterval) {
+    if (this.frameTimer >= this.frameInterval) {
+      // console.log(deltaTime," bb ",this.frameTimer);
       this.frameTimer = 0;
       if (this.frameX < this.maxFrame) {
         this.frameX++;
@@ -93,7 +106,7 @@ export class Monster {
   }
 
   draw() {
-    this.context.clearRect(0, 0, this.width, this.height);
+    // this.context.clearRect(0, 0, 100, 100);
     this.context.drawImage(
       this.image,
       770 * this.frameX,
@@ -131,6 +144,7 @@ export class Monster {
     console.log(spitImg.src);
     console.log(monsterPhaseNumber);
   }
+
   changeToDragAnimation() {
     this.image = dragImg;
   }
@@ -155,7 +169,6 @@ export class Monster {
   animation(timeStamp) {
     let deltaTime = timeStamp - lastTime;
     lastTime = timeStamp;
-
     self.update(deltaTime);
     animationFrame = requestAnimationFrame(self.animation);
   }

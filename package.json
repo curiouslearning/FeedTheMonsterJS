@@ -17,6 +17,7 @@
   },
   "homepage": "https://github.com/curiouslearning/FeedTheMonsterJS#readme",
   "dependencies": {
+    "ts-loader": "^9.4.1",
     "@capacitor/android": "^4.4.0",
     "@capacitor/core": "^4.4.0",
     "@octokit/rest": "^20.0.1",
