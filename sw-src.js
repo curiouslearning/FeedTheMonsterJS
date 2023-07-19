@@ -55,16 +55,16 @@ self.registration.addEventListener("updatefound", function (e) {
 //   await caches.open(cacheName).then(function (cache) {
 //     cache
 //       .add(
-//         self.location.href.includes("https://feedthemonsterdev.curiouscontent.org")
-//           ? file.slice(
-//               0,
-//               file.indexOf("/feedthemonster") + "/feedthemonster".length
-//             ) +
-//               "dev" +
-//               file.slice(
-//                 file.indexOf("/feedthemonster") + "/feedthemonster".length
-//               )
-//           : file
+        // self.location.href.includes("https://feedthemonsterdev.curiouscontent.org")
+        //   ? file.slice(
+        //       0,
+        //       file.indexOf("/feedthemonster") + "/feedthemonster".length
+        //     ) +
+        //       "dev" +
+        //       file.slice(
+        //         file.indexOf("/feedthemonster") + "/feedthemonster".length
+        //       )
+        //   : file
 //       )
 //       .finally(() => {
 //         number = number + 1;
@@ -86,8 +86,8 @@ self.registration.addEventListener("updatefound", function (e) {
 //       });
 //   });
 // }
-function cacheLangAssets(file, cacheName) {
-  caches.open(cacheName).then((cache) => {
+async function cacheLangAssets(file, cacheName) {
+  await caches.open(cacheName).then((cache) => {
     cache.add(file);
   });
 }
@@ -111,8 +111,22 @@ async function getALLAudioUrls(cacheName, language) {
   }).then((res) =>
     res.json().then((data) => {
       for (var i = 0; i < data.Levels.length; i++) {
+        
+
         data.Levels[i].Puzzles.forEach(async (element) => {
-          audioList.push(element.prompt.PromptAudio)
+          let file = element.prompt.PromptAudio;
+          // audioList.push(element.prompt.PromptAudio)
+          audioList.push(
+          self.location.href.includes("https://feedthemonsterdev.curiouscontent.org")
+          ? file.slice(
+              0,
+              file.indexOf("/feedthemonster") + "/feedthemonster".length
+            ) +
+              "dev" +
+              file.slice(
+                file.indexOf("/feedthemonster") + "/feedthemonster".length
+              )
+          : file);
         //  await cacheAudiosFiles(
         //     element.prompt.PromptAudio,
         //     workbox.core.cacheNames.precache + language,
@@ -139,14 +153,24 @@ async function cacheAudiosFiles(audioList,language){
       }
       const part = uniqueAudioURLs.slice(startIndex, endIndex);
       const cache = await caches.open(workbox.core.cacheNames.precache + language);
-      await cache.addAll(part).finally(()=>{
-        channel.postMessage({
+      try {
+        await cache.addAll(part);
+      } catch (e) {
+        console.log('Could not add audios:', e);
+      } finally {
+        await channel.postMessage({
           msg: "Loading",
-          data: (i + 1) * percentageInterval
+          data: (i + 1) * percentageInterval,
         });
-      }).catch(async (e)=>{
-        await console.log('Couldnt add audios');
-      });
+      }
+      // await cache.addAll(part).finally(()=>{
+      //   channel.postMessage({
+      //     msg: "Loading",
+      //     data: (i + 1) * percentageInterval
+      //   });
+      // }).catch(async (e)=>{
+      //   await console.log('Couldnt add audios');
+      // });
       
   }
 
@@ -159,8 +183,8 @@ function cacheCommonAssets(language) {
     "./lang/" + language + "/images/fantastic_01.png",
     "./lang/" + language + "/images/great_01.png",
     "./lang/" + language + "/images/title.png",
-  ].forEach((res) => {
-    cacheLangAssets(res, workbox.core.cacheNames.precache + language);
+  ].forEach(async (res) => {
+    await cacheLangAssets(res, workbox.core.cacheNames.precache + language);
   });
 }
 
