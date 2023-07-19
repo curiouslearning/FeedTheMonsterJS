@@ -15102,7 +15102,7 @@ class FeedbackTextEffects {
             x: 0,
             y: 0,
         };
-        this.textWorker = new Worker('./build/workers/feedback-text-worker.js');
+        this.textWorker = new Worker('./workers/feedback-text-worker.js');
         this.textWorker.addEventListener("message", this.handleTextWorkerMessage.bind(this));
     }
     wrapText(text) {
