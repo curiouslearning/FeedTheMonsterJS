@@ -3,6 +3,7 @@ import { Game } from "../../scenes/game";
 import Sound from "../../common/sound";
 import { PromptAudio } from "../../common/common"
 import { EventManager } from "../events/EventManager";
+import { Debugger } from "../../../global-variables";
 
 
 var self;
@@ -23,6 +24,7 @@ export class PromptText extends EventManager {
     public handler: any;
     public sound: Sound;
     public isStoneDropped: boolean = false;
+    public UrlSubstring: string = '/feedthemonster'
 
     constructor(width, height, currentPuzzleData, levelData, rightToLeft) {
         super({
@@ -72,8 +74,9 @@ export class PromptText extends EventManager {
     }
 
     playSound = () => {
+        console.log('PromptAudio',  this.getConvertedPromptURL());
         this.sound.playSound(
-            this.currentPuzzleData.prompt.promptAudio,
+            this.getConvertedPromptURL(),
             PromptAudio
         );
     }
@@ -240,5 +243,20 @@ export class PromptText extends EventManager {
 
     update() {
 
+    }
+
+    getConvertedPromptURL() {
+        return Debugger.DevelopmentLink
+            ? this.currentPuzzleData.prompt.promptAudio.slice(
+                0,
+                this.currentPuzzleData.prompt.promptAudio.indexOf(this.UrlSubstring) +
+                this.UrlSubstring.length
+            ) +
+            "dev" +
+            this.currentPuzzleData.prompt.promptAudio.slice(
+                this.currentPuzzleData.prompt.promptAudio.indexOf(this.UrlSubstring) +
+                this.UrlSubstring.length
+            )
+            : this.currentPuzzleData.prompt.promptAudio;
     }
 }
