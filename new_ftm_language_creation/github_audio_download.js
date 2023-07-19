@@ -237,8 +237,12 @@ async function downloadAudioFiles(uniquePromptTexts) {
 
     for (const file of files) {
       let fileName;
-      if (file.name === "fantastic1") {
-        fileName = "fantastic";
+
+      if (file.name === "fantastic1.wav") {
+        console.log(">>>>>>>>>..", file.name);
+        fileName = "fantastic.wav";
+      } else if (file.name === "great1.wav") {
+        fileName = "great.wav";
       } else {
         fileName = file.name;
       }
