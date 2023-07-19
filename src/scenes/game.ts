@@ -5,9 +5,6 @@ import { LevelStartScene } from "./level-start-scene";
 var animationFrame: number;
 var self: any;
 let lastTime = 0;
-let fps = 60;
-let frameInterval = 1000 / fps;
-let frameTimer = 0;
 export class Game {
   public width: number;
   public height: number;
@@ -15,7 +12,7 @@ export class Game {
   public gameSceneCallBack: any;
   public monsterPhaseNumber: any;
   public feedBackTexts: any;
-  public rightToLeft: boolean
+  public rightToLeft: boolean;
 
   constructor(
     width: number,
@@ -37,7 +34,7 @@ export class Game {
       levelStartCallBack: this.levelStartCallBack,
       monsterPhaseNumber: this.monsterPhaseNumber,
       feedBackTexts: feedBackTexts,
-      rightToLeft: rightToLeft
+      rightToLeft: rightToLeft,
     });
     this.gameSceneCallBack = gameSceneCallBack;
     // this.render();
@@ -62,9 +59,12 @@ export class Game {
       }
     }
   }
-  update(deltaTime) {
-    // console.log("LevelStartScene : ", self.scene);
-    self.scene ? (self.scene.stones ? self.scene.stones.update() : null) : null;
+  update(deltaTime: number) {
+    self.scene
+      ? self.scene.stones
+        ? self.scene.stones.update(deltaTime)
+        : null
+      : null;
     self.scene ? self.scene.update(deltaTime) : null;
   }
 
@@ -73,15 +73,10 @@ export class Game {
     console.log(" itsalsorunning! ");
     this.scene.createBackgroud();
   }
-
-
-  animation(timestamp) {
-    const deltaTime = timestamp - lastTime;
-    // console.log("deltaTime", deltaTime);
-    lastTime = timestamp;
-    self.scene.draw()
+  animation(timestamp_1) {
+    const deltaTime = timestamp_1 - lastTime;
+    lastTime = timestamp_1;
     self.update(deltaTime);
-
     animationFrame = requestAnimationFrame(self.animation);
   }
 }

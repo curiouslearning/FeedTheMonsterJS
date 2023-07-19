@@ -92,7 +92,8 @@ Sentry.init({
 async function registerWorkbox(): Promise<void> {
   if ("serviceWorker" in navigator) {
     let wb = new Workbox("./sw.js", {});
-    await wb.register().then(handleServiceWorkerRegistration);
+    await wb.register();
+    await navigator.serviceWorker.ready;
     if (!is_cached.has(lang)) {
       await channel.postMessage({ command: "Cache", data: lang });
     }
@@ -102,6 +103,9 @@ async function registerWorkbox(): Promise<void> {
     );
   }
 }
+
+channel.addEventListener('message',handleServiceWorkerMessage)
+
 function handleServiceWorkerRegistration(registration): void {
   if (registration.installing) {
     registration.installing.postMessage({

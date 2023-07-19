@@ -74,10 +74,7 @@ var word_dropped_stones = 0;
 var isGamePause = false;
 var noMoreTarget = false;
 var isLevelEnded = false;
-
-
-var dummyImage = new Image();
-dummyImage.src = "./assets/images/mapIcon.png";
+let lastFrameTime: number = 0;
 export class LevelStartScene {
   public game: any;
   public width: number;
@@ -532,13 +529,13 @@ export class LevelStartScene {
     this.levelIndicators.draw();
     this.promptText.draw();
   }
-  update(deltaTime) {
+  update(deltaTime: number) {
     self.timerTicking ? self.timerTicking.update(deltaTime) : null;
-    this.monster.animation(deltaTime);
-    this.stones.draw(deltaTime);
+    lastFrameTime = 0;
   }
 
   changePuzzle() {
+    lastFrameTime = performance.now();
     if (self.timerTicking.isTimerEnded) {
       self.stones.isTimerEnded();
       word_dropped_stones = 0;
