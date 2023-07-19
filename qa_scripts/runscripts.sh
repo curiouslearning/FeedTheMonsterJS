@@ -5,7 +5,7 @@ repo="ftm-languagepacks"
 options=("Yes" "No")
 build=true
 # provide your access token 
-token="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"
+token=""
 response=$(curl -s -H "Authorization: token $token" "https://api.github.com/repos/$owner/$repo/contents")
 folders=($(echo "$response" | jq -r '.[] | select(.type == "dir") | .name'))
 echo "Folders in the GitHub repository '$owner/$repo':"
