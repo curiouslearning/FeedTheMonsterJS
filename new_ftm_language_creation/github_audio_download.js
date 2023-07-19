@@ -4,13 +4,8 @@ const path = require("path");
 const readline = require("readline");
 const ffmpeg = require("fluent-ffmpeg");
 const { get } = require("http");
-
-// Configure your GitHub personal access token and repository details
-
-const accessToken = "";
-
-
-
+const { Octokit } = require("octokit");
+const octokit = new Octokit();
 const owner = "curiouslearning";
 const repo = "ftm-languagepacks";
 let currentDirectory = ""; // Path to the current directory
@@ -150,61 +145,48 @@ function downloadFile(url, filePath) {
 }
 
 // Function to retrieve the list of folders in a directory
-function getDirectoryFolders(directory) {
-  const apiUrl = `https://api.github.com/repos/${owner}/${repo}/contents/${directory}`;
-  const options = {
-    headers: {
-      Authorization: `Bearer ${accessToken}`,
-      "User-Agent": "DownloadScript",
-    },
-  };
+async function getDirectoryFolders(directory) {
+  try {
+    // Make a request to retrieve the contents of the directory
+    const response = await octokit.request(
+      "GET /repos/{owner}/{repo}/contents/{directory}",
+      {
+        owner: owner,
+        repo: repo,
+        directory: directory,
+      }
+    );
 
-  return new Promise((resolve, reject) => {
-    https
-      .get(apiUrl, options, (response) => {
-        let data = "";
-        response.on("data", (chunk) => {
-          data += chunk;
-        });
-        response.on("end", () => {
-          const contents = JSON.parse(data);
-          const folders = contents.filter((item) => item.type === "dir");
-          resolve(folders);
-        });
-      })
-      .on("error", (err) => {
-        reject(err);
-      });
-  });
+    // Filter the response to retrieve only the folders
+    const folders = response.data.filter((item) => item.type === "dir");
+
+    return folders;
+  } catch (error) {
+    console.error("Error:", error);
+    throw error;
+  }
 }
 
-// Function to retrieve the list of files in a directory
-function getDirectoryFiles(directory) {
-  const apiUrl = `https://api.github.com/repos/${owner}/${repo}/contents/${directory}`;
-  const options = {
-    headers: {
-      Authorization: `Bearer ${accessToken}`,
-      "User-Agent": "DownloadScript",
-    },
-  };
+async function getDirectoryFiles(directory) {
+  try {
+    // Make a request to retrieve the contents of the directory
+    const response = await octokit.request(
+      "GET /repos/{owner}/{repo}/contents/{directory}",
+      {
+        owner: owner,
+        repo: repo,
+        directory: directory,
+      }
+    );
 
-  return new Promise((resolve, reject) => {
-    https
-      .get(apiUrl, options, (response) => {
-        let data = "";
-        response.on("data", (chunk) => {
-          data += chunk;
-        });
-        response.on("end", () => {
-          const contents = JSON.parse(data);
-          const files = contents.filter((item) => item.type === "file");
-          resolve(files);
-        });
-      })
-      .on("error", (err) => {
-        reject(err);
-      });
-  });
+    // Filter the response to retrieve only the files
+    const files = response.data.filter((item) => item.type === "file");
+
+    return files;
+  } catch (error) {
+    console.error("Error:", error);
+    throw error;
+  }
 }
 
 // Function to prompt the user for folder selection
@@ -254,21 +236,27 @@ async function downloadAudioFiles(uniquePromptTexts) {
     }
 
     for (const file of files) {
+      let fileName;
+      if (file.name === "fantastic1") {
+        fileName = "fantastic";
+      } else {
+        fileName = file.name;
+      }
       const downloadUrl = file.download_url;
       const mp3FilePath = path.join(
         mp3outputDirectory,
-        `${path.basename(file.name, path.extname(file.name))}.mp3`
+        `${path.basename(fileName, path.extname(fileName))}.mp3`
       );
       if (
         !fs.existsSync(mp3FilePath) &&
-        jsonPromptTexts.includes(file.name.slice(0, file.name.lastIndexOf(".")))
+        jsonPromptTexts.includes(fileName.slice(0, fileName.lastIndexOf(".")))
       ) {
-        const extension = path.extname(file.name).toLowerCase();
+        const extension = path.extname(fileName).toLowerCase();
         if (extension === "wav") {
-          console.log(`Converting to MP3: ${file.name}`);
+          console.log(`Converting to MP3: ${fileName}`);
           await convertToMP3(downloadUrl, mp3FilePath);
           console.log(
-            `Converted to MP3: ${path.basename(file.name, ".wav")}.mp3`
+            `Converted to MP3: ${path.basename(fileName, ".wav")}.mp3`
           );
         } else {
           await downloadFile(downloadUrl, mp3FilePath);

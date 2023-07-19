@@ -5,6 +5,7 @@ const path = require("path");
 const ffmpegPath = require("@ffmpeg-installer/ffmpeg").path;
 const ffmpeg = require("fluent-ffmpeg");
 const { spawn } = require("child_process");
+const folderIdToUpload = "1LWoHDMSWqF34aSbx2eBeffC8fiQm1KTr";
 const langFolderPath = path.join(__dirname, "..", "OptimizedLanguages");
 if (!fs.existsSync(langFolderPath)) {
   fs.mkdirSync(langFolderPath);
@@ -116,6 +117,7 @@ async function listFilesAndFolders(auth, parentFolderId) {
     });
 
     if (selectedFolderNumber.toLowerCase() === "back") {
+      rl.close();
       let folderId = languageFolderId[languageFolderId.length - 2];
       languageFolderId.pop();
       currentFolderPath =
@@ -287,6 +289,7 @@ async function downloadFolderContents(auth, folderId, destinationPath) {
     }
 
     console.log("Folder download complete.");
+    await uploadFilesToDrive(authClient, folderIdToUpload);
   } catch (error) {
     console.error("Error downloading folder contents:", error);
   }
@@ -300,6 +303,44 @@ async function TextBreakerCharacter() {
       }
     );
   });
+}
+async function uploadFile(auth, filePath, folderId) {
+  const drive = google.drive({ version: "v3", auth });
+
+  const fileMetadata = {
+    name: path.basename(filePath),
+    parents: [folderId],
+  };
+
+  const media = {
+    mimeType: "audio/mpeg",
+    body: fs.createReadStream(filePath),
+  };
+
+  try {
+    const response = await drive.files.create({
+      resource: fileMetadata,
+      media: media,
+      fields: "id",
+    });
+
+    console.log(
+      `File uploaded: ${fileMetadata.name} (ID: ${response.data.id})`
+    );
+  } catch (error) {
+    console.error("Error uploading file:", error.message);
+  }
+}
+async function uploadFilesToDrive(auth, folderId) {
+  const langFolderPath = path.join(__dirname, "..", "OptimizedLanguages");
+  const audioFiles = fs.readdirSync(langFolderPath);
+
+  for (const file of audioFiles) {
+    const filePath = path.join(langFolderPath, file);
+    await uploadFile(auth, filePath, folderId);
+  }
+
+  console.log("All files uploaded!");
 }
 async function main() {
   try {
