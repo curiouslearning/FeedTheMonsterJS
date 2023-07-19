@@ -49,8 +49,8 @@ function findMissingLetter(obj, path = "", paths = []) {
               const urlList = obj[key];
               const transformedUrls = urlList.map((url) => {
                 let word = extractWordFromUrl(url);
-                if (word === "great") {
-                  word = word + "1";
+                if (word === "fantastic1") {
+                  word = word.replace("1", "");
                 }
                 return createTransformedUrl(word);
               });
