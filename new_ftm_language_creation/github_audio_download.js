@@ -241,6 +241,10 @@ async function downloadAudioFiles(uniquePromptTexts) {
       if (file.name === "fantastic1.wav") {
         console.log(">>>>>>>>>..", file.name);
         fileName = "fantastic.wav";
+      } else if (file.name === "fantastic1.mp3") {
+        fileName = "fantastic.mp3";
+      } else if (fileName === "great1.mp3") {
+        fileName = "great.mp3";
       } else if (file.name === "great1.wav") {
         fileName = "great.wav";
       } else {
