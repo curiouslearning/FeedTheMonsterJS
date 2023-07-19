@@ -84,7 +84,7 @@ export class TimerTicking extends EventManager {
         }
         if ((this.width * 0.87 - (this.width * 0.87 * this.timer * 0.01)) < 0 && !this.isMyTimerOver) {
             this.isMyTimerOver = true;
-            this.callback();
+            this.callback(true);
         }
     }
 

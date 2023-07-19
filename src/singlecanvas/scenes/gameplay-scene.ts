@@ -1053,13 +1053,15 @@ export class GameplayScene {
     });
   }
 
-  loadPuzzle = () => {
+  loadPuzzle = (isTimerEnded?:boolean) => {
+    let timerEnded = (isTimerEnded == undefined)?false:true;
     this.removeEventListeners();
     this.counter++;
     this.isGameStarted = false;
     this.time = -4000;
     this.tempWordforWordPuzzle = "";
     if (this.counter == this.levelData.puzzles.length) {
+      this.levelIndicators.setIndicators(this.counter);
       GameScore.setGameLevelScore(this.levelData, this.score);
       this.switchSceneToEnd(
         this.levelData,
@@ -1073,15 +1075,31 @@ export class GameplayScene {
       const loadPuzzleEvent = new CustomEvent(LOADPUZZLE, {
         detail: loadPuzzleData,
       });
-      setTimeout(() => {
+      if(timerEnded)
+      {
+        // this.monster.changeToIdleAnimation();
         this.pickedStone = null;
         this.feedbackTextEffects.clearParticle();
         this.feedBackTextCanavsElement.style.zIndex = "-10";
         document.dispatchEvent(loadPuzzleEvent);
         this.addEventListeners();
-      }, 4000);
+
+      }
+      else{
+        setTimeout(() => {
+            // this.changeToNextPuzzle();  
+            this.pickedStone = null;
+            this.feedbackTextEffects.clearParticle();
+            this.feedBackTextCanavsElement.style.zIndex = "-10";
+            document.dispatchEvent(loadPuzzleEvent);
+            this.addEventListeners();
+          }, 4000);
+
+      }
+      
     }
   };
+
 
   public dispose() {
     this.deleteFeedbackTextCanvas();
@@ -1091,6 +1109,7 @@ export class GameplayScene {
     this.levelIndicators.unregisterEventListener();
     this.stoneHandler.unregisterEventListener();
     this.promptText.unregisterEventListener();
+   
   }
 
   public createFeedbackTextCanvas(
