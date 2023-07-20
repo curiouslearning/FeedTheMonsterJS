@@ -8,15 +8,18 @@ import {
   PWAInstallStatus,
   StartSceneLayer,
   UserCancelled,
-} from "../common/common.js";
-import Sound from "../common/sound.js";
-import InstallButton from "../components/buttons/install_button.js";
-import PlayButton from "../components/buttons/play_butoon.js";
-import { Monster } from "../components/monster.js";
-import { DataModal } from "../data/data-modal.js";
-import { CanvasStack } from "../utility/canvas-stack.js";
-import { LevelSelectionScreen } from "./level-selection-scene.js";
-import { Debugger, lang } from "../../global-variables.js";
+  StartScene1,
+  LevelSelection1,
+  GameScene1
+} from "../common/common";
+import Sound from "../common/sound";
+import InstallButton from "../components/buttons/install_button";
+import PlayButton from "../components/buttons/play_butoon";
+import { Monster } from "../components/monster";
+import { DataModal } from "../data/data-modal";
+import { CanvasStack } from "../utility/canvas-stack";
+import { LevelSelectionScreen } from "./level-selection-scene";
+import { Debugger, lang } from "../../global-variables";
 
 var bgImg = new Image();
 bgImg.src = "./assets/images/bg_v01.jpg";
@@ -33,16 +36,16 @@ fenchImg.src = "./assets/images/fence_v01.png";
 var profileMonster = new Image();
 profileMonster.src = "./assets/images/idle4.png";
 var self: any;
+let lastTime = 0;
 let pwa_install_status: any;
-// const aboutCompanyElement = <HTMLElement>(
-//   document.getElementById("about-company")
-// );
 const toggleBtn = document.getElementById("toggle-btn") as HTMLElement;
 window.addEventListener("beforeinstallprompt", (e) => {
   e.preventDefault();
   pwa_install_status = e;
   localStorage.setItem(PWAInstallStatus, "false");
 });
+
+// let SceneName = StartScene1;
 export class StartScene {
   public canvas: HTMLCanvasElement;
   public data: any;
@@ -53,11 +56,13 @@ export class StartScene {
   public pwa_status: string;
   public firebase_analytics: { logEvent: any };
   public id: string;
-  public canavsElement: any;
+  public canavsElement: HTMLCanvasElement;
   public context: CanvasRenderingContext2D;
   public buttonContext: CanvasRenderingContext2D;
   public outcome: any;
   public playButton: PlayButton | InstallButton;
+  public levelSelectionScene: any;
+  public static SceneName: string;
 
   constructor(
     canvas: HTMLCanvasElement,
@@ -72,10 +77,17 @@ export class StartScene {
     this.canvasStack = new CanvasStack("canvas");
     this.monster = new Monster(this.canvas);
     this.pwa_status = localStorage.getItem(PWAInstallStatus);
+    this.levelSelectionScene = new LevelSelectionScreen(this.canvas, data, (arg1, arg2) => {
+      StartScene.SceneName = arg2
+      console.log(arg1, arg2, StartScene.SceneName);
+    });
     this.createCanvas();
     this.createPlayButton();
     this.firebase_analytics = firebase_analytics;
     console.log(this.data);
+    StartScene.SceneName = StartScene1;
+    this.animation(0);
+
   }
   createCanvas() {
     toggleBtn.addEventListener("click", () => {
@@ -92,71 +104,102 @@ export class StartScene {
     this.id = this.canvasStack.createLayer(
       this.height,
       this.width,
-      StartSceneLayer
+      "canvas"
     );
     // aboutCompanyElement.style.display = "block";
     // aboutCompanyElement.innerHTML = globalThis.aboutCompany;
-    this.canavsElement = document.getElementById(this.id);
+    this.canavsElement = document.getElementById(this.id) as HTMLCanvasElement;
     this.context = this.canavsElement.getContext("2d");
-    this.canavsElement.style.zIndex = 2;
-    this.canavsElement.style.bottom = 0;
-    var id = this.id;
-    this.context.clearRect(0, 0, this.width, this.height);
-    this.context.drawImage(bgImg, 0, 0, this.width, this.height);
-    this.context.drawImage(
-      pillerImg,
-      this.width * 0.6,
-      this.height / 6,
-      this.width,
-      this.height / 2
-    );
-    this.context.drawImage(
-      fenchImg,
-      -this.width * 0.4,
-      this.height / 3,
-      this.width,
-      this.height / 3
-    );
-    this.context.drawImage(
-      hillImg,
-      -this.width * 0.25,
-      this.height / 2,
-      this.width * 1.5,
-      this.height / 2
-    );
-    this.context.drawImage(
-      grassImg,
-      -this.width * 0.25,
-      this.height / 2 + (this.height / 2) * 0.1,
-      this.width * 1.5,
-      this.height / 2
-    );
 
-    this.context.font = "bold 40px Arial";
-    this.context.fillStyle = "white";
-    this.context.textAlign = "center";
-    this.context.fillText(self.data.title, this.width * 0.5, this.height / 10);
+    // this.canavsElement.style.zIndex = 2;
+    // this.canavsElement.style.bottom = 0;
+    var id = this.id;
+
+    // this.draw();
+
     // loadingScreen(false);
     //  document.getElementById("loading-screen").style.display = "none";
   }
 
+  animation = (timeStamp) => {
+    let deltaTime = timeStamp - lastTime;
+    lastTime = timeStamp;
+    // console.log(" ffffggg ", StartScene.SceneName);
+    this.context.clearRect(0, 0, this.width, this.height);
+    if (StartScene.SceneName == StartScene1) {
+      this.context.drawImage(bgImg, 0, 0, this.width, this.height);
+      this.context.drawImage(
+        pillerImg,
+        this.width * 0.6,
+        this.height / 6,
+        this.width,
+        this.height / 2
+      );
+      this.context.drawImage(
+        fenchImg,
+        -this.width * 0.4,
+        this.height / 3,
+        this.width,
+        this.height / 3
+      );
+      this.context.drawImage(
+        hillImg,
+        -this.width * 0.25,
+        this.height / 2,
+        this.width * 1.5,
+        this.height / 2
+      );
+      this.context.drawImage(
+        grassImg,
+        -this.width * 0.25,
+        this.height / 2 + (this.height / 2) * 0.1,
+        this.width * 1.5,
+        this.height / 2
+      );
+
+      this.context.font = "bold 40px Arial";
+      this.context.fillStyle = "white";
+      this.context.textAlign = "center";
+      this.context.fillText(self.data.title, this.width * 0.5, this.height / 10);
+      // self.update(deltaTime);
+      this.monster.animation(deltaTime);
+      this.playButton.draw();
+    }
+    else if (StartScene.SceneName == LevelSelection1) {
+      // this.levelSelectionScene.draw(1);
+      this.levelSelectionScene.testDraw();
+
+    }
+    else {
+      // console.log(" rendering game scene", StartScene.SceneName);
+      // render gameplay screen for now
+    }
+    requestAnimationFrame(self.animation);
+  }
+
+  draw() {
+    // this.context.clearRect(0, 0, this.width, this.height);
+  }
+
   createPlayButton() {
+    /// not getting used ---delete it
     const playButtonLayerElement = <HTMLElement>(
-      document.getElementById(PlayButtonLayer)
+      document.getElementById("canvas")
     );
+    // console.log("  ggggg ",this.context);
     var self = this;
     var data = this.data;
     var playButtonId = this.canvasStack.createLayer(
       this.height,
       this.width,
-      PlayButtonLayer
+      "canvas"
     );
-    this.canavsElement = document.getElementById(playButtonId);
+    this.canavsElement = document.getElementById(playButtonId) as HTMLCanvasElement;
     this.buttonContext = this.canavsElement.getContext("2d");
-    this.canavsElement.style.zIndex = 7;
+    // this.canavsElement.style.zIndex = 7;
     if (true) {
       self.playButton = new PlayButton(
-        self.buttonContext,
+        this.context,
         self.canvas,
         self.canvas.width * 0.35,
         self.canvas.height / 7
@@ -172,7 +215,7 @@ export class StartScene {
     document.addEventListener("selectstart", function (e) {
       e.preventDefault();
     });
-    document.getElementById(PlayButtonLayer).addEventListener(
+    document.getElementById("canvas").addEventListener(
       "click",
       async function (event) {
         const selfElement = <HTMLElement>document.getElementById(self.id);
@@ -190,12 +233,13 @@ export class StartScene {
           toggleBtn.style.display = "none";
           // aboutCompanyElement.style.display = "none";
           new Sound().playSound("./assets/audios/ButtonClick.mp3", ButtonClick);
-          self.context.clearRect(0, 0, self.canvas.width, self.canvas.height);
-          new LevelSelectionScreen(self.canvas, data);
-          self.canvasStack.deleteLayer(PlayButtonLayer);
-          self.monster.deleteCanvas();
-          delete self.monster;
-          self.canvasStack.deleteLayer(StartSceneLayer);
+          // self.context.clearRect(0, 0, self.canvas.width, self.canvas.height);
+          StartScene.SceneName = LevelSelection1;
+          // new LevelSelectionScreen(self.canvas, data);
+          // self.canvasStack.deleteLayer(PlayButtonLayer);
+          // self.monster.deleteCanvas();
+          // delete self.monster;
+          // self.canvasStack.deleteLayer(StartSceneLayer);
           // if (self.pwa_status == "false" || !self.pwa_status) {
           //   pwa_install_status.prompt();
           //   const { outcome } = await pwa_install_status.userChoice;

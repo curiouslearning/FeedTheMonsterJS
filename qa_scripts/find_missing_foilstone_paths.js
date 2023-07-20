@@ -1,7 +1,9 @@
 const fs = require("fs");
 const readline = require("readline");
 
-let language;
+const language = process.argv[2].toLowerCase();
+const build_lang = process.argv.length == 4 ? true : false;
+
 let outputFilePath;
 const uniqueLetters = [];
 // Create a readline interface for user input
@@ -9,21 +11,47 @@ const rl = readline.createInterface({
   input: process.stdin,
   output: process.stdout,
 });
-
 async function main() {
-  language = await promptForLanguageSelection();
+  // language = await promptForLanguageSelection();
   const json = await processModule(language);
   const missingLetterPaths = findMissingLetter(json);
-  outputFilePath = `${__dirname}/missing_foilstones_paths.txt`;
-
-  fs.writeFile(outputFilePath, missingLetterPaths.join("\n"), "utf8", (err) => {
-    if (err) {
-      console.error(`Error writing to file: ${err.message}`);
+  outputFilePath = `${__dirname}/language_report.txt`;
+  if (!build_lang) {
+    fs.appendFile(
+      outputFilePath,
+      "----------->  " + language.toUpperCase() + "  <----------" + "\n\n\n",
+      "utf8",
+      (err) => {}
+    );
+    if (missingLetterPaths.length == 0) {
+      fs.appendFile(
+        outputFilePath,
+        "==  No JSON issues  ==" + "\n\n",
+        "utf8",
+        (err) => {}
+      );
     } else {
-      console.log(`Missing Foilstone paths written to ${outputFilePath}`);
+      fs.appendFile(
+        outputFilePath,
+        "==  JSON issues in " + language + " language ==" + "\n\n",
+        "utf8",
+        (err) => {}
+      );
     }
-    rl.close();
-  });
+    fs.appendFile(
+      outputFilePath,
+      missingLetterPaths.join("\n") + "\n\n",
+      "utf8",
+      (err) => {
+        if (err) {
+          console.error(`Error writing to file: ${err.message}`);
+        } else {
+          // console.log(`Missing Foilstone paths written to ${outputFilePath}`);
+        }
+        rl.close();
+      }
+    );
+  }
 
   // Write the modified JSON back to the file
   const modifiedJSON = JSON.stringify(json, null, 2);
@@ -32,7 +60,8 @@ async function main() {
     if (err) {
       console.error(`Error writing modified JSON: ${err.message}`);
     } else {
-      console.log("Modified JSON written to file.");
+      console.log("Modified JSON written to file.-------First script");
+      process.exit(0);
     }
   });
 }
@@ -89,7 +118,6 @@ function findMissingLetter(obj, path = "", paths = []) {
           obj[key] != "FireWrongLetter"
         ) {
           if (!uniqueLetters.includes(obj[key]) && uniqueLetters.length <= 30) {
-            console.log(obj[key]);
             uniqueLetters.push(obj[key]);
           }
         }
@@ -101,7 +129,7 @@ function findMissingLetter(obj, path = "", paths = []) {
         ) {
         } else {
           const randomIndex = Math.floor(Math.random() * uniqueLetters.length);
-          obj[key] = uniqueLetters[randomIndex];
+          build_lang ? (obj[key] = uniqueLetters[randomIndex]) : null;
           paths.push(newPath);
         }
         findMissingLetter(obj[key], newPath, paths);

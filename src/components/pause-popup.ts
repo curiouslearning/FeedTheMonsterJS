@@ -1,10 +1,10 @@
-import { PausePopupLayer } from "../common/common.js";
-import { CanvasStack } from "../utility/canvas-stack.js";
-import CancelButton from "./buttons/cancel_button.js";
-import CloseButton from "./buttons/close_button.js";
-import RetryButton from "./buttons/retry_button.js";
-import { LevelStartScene } from "../scenes/level-start-scene.js";
-import { Game } from "../scenes/game.js";
+import { PausePopupLayer } from "../common/common";
+import { CanvasStack } from "../utility/canvas-stack";
+import CancelButton from "./buttons/cancel_button";
+import CloseButton from "./buttons/close_button";
+import RetryButton from "./buttons/retry_button";
+import { LevelStartScene } from "../scenes/level-start-scene";
+import { Game } from "../scenes/game";
 
 export default class PausePopUp {
   public canvas: Game;
@@ -29,7 +29,7 @@ export default class PausePopUp {
     this.id = this.canvasStack.createLayer(
       this.canvas.height,
       this.canvas.width,
-      PausePopupLayer
+      "canvas"
     );
     const selfIdElement = document.getElementById(this.id) as HTMLCanvasElement;
     this.context = selfIdElement.getContext("2d");
