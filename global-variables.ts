@@ -20,3 +20,7 @@ declare global {
 
 window.feedbackTextWorkerPath = './workers/feedback-text-worker.js';
 
+export interface Window {
+  webkitAudioContext?: typeof AudioContext;
+}
+

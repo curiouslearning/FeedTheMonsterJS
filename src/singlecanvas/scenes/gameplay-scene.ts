@@ -46,6 +46,7 @@ import {
 import { Background } from "../components/background";
 import { FeedbackTextEffects } from "../components/feedback-particle-effect/feedback-text-effects";
 import { GameScore } from "../data/game-score";
+import { AudioPlayer } from "../components/audio-player";
 
 var images = {
   bgImg: "./assets/images/bg_v01.jpg",
@@ -154,6 +155,7 @@ export class GameplayScene {
 
   public switchToLevelSelection: any;
   public reloadScene: any;
+  audioPlayer: AudioPlayer;
 
   constructor(
     canvas,
@@ -245,6 +247,8 @@ export class GameplayScene {
       this.width,
       this.height
     );
+
+    this.audioPlayer = new AudioPlayer();
     this.handler = document.getElementById("canvas");
     this.puzzleData = levelData.puzzles;
     this.feedBackTexts = feedBackTexts;
@@ -575,6 +579,7 @@ export class GameplayScene {
         console.log(" clickkedon stone", sc);
         this.pickedStoneObject = sc;
         this.pickedStone = sc;
+        this.audioPlayer.playAudio(false, "./assets/audios/onDrag.mp3");
       }
     }
   };
@@ -1093,6 +1098,7 @@ export class GameplayScene {
             this.feedBackTextCanavsElement.style.zIndex = "-10";
             document.dispatchEvent(loadPuzzleEvent);
             this.addEventListeners();
+            this.audioPlayer.stopAudio();
           }, 4000);
 
       }
@@ -1109,7 +1115,6 @@ export class GameplayScene {
     this.levelIndicators.unregisterEventListener();
     this.stoneHandler.unregisterEventListener();
     this.promptText.unregisterEventListener();
-   
   }
 
   public createFeedbackTextCanvas(
@@ -1143,8 +1148,10 @@ export class GameplayScene {
       this.stoneHandler.isStoneDroppedCorrectForLetterInWord(droppedStone);
     if (isCorrect) {
       this.score = this.score + 100;
+      const feedBackIndex = this.getRandomInt(0, 1);
+      this.audioPlayer.playAudio(false, "./assets/audios/Eat.mp3","./assets/audios/Cheering-02.mp3", "./assets/audios/fantastic.WAV");
       this.feedbackTextEffects.wrapText(
-        this.getRandomFeedBackText(this.getRandomInt(0, 1))
+        this.getRandomFeedBackText(feedBackIndex)
       );
       this.feedBackTextCanavsElement.style.zIndex = "10";
     }
@@ -1162,8 +1169,10 @@ export class GameplayScene {
       this.stoneHandler.isStoneDroppedCorrectForLetterOnly(droppedStone);
     if (isCorrect) {
       this.score = this.score + 100;
+      const feedBackIndex = this.getRandomInt(0, 1);
+      this.audioPlayer.playAudio(false, "./assets/audios/Eat.mp3","./assets/audios/Cheering-02.mp3", "./assets/audios/fantastic.WAV");
       this.feedbackTextEffects.wrapText(
-        this.getRandomFeedBackText(this.getRandomInt(0, 1))
+        this.getRandomFeedBackText(feedBackIndex)
       );
       this.feedBackTextCanavsElement.style.zIndex = "10";
     }
@@ -1187,8 +1196,11 @@ export class GameplayScene {
       this.stoneHandler.getCorrectTargetStone() == this.tempWordforWordPuzzle &&
       isCorrect
     ) {
+      this.score = this.score + 100;
+      const feedBackIndex = this.getRandomInt(0, 1);
+      this.audioPlayer.playAudio(false, "./assets/audios/Eat.mp3","./assets/audios/Cheering-02.mp3", "./assets/audios/fantastic.WAV");
       this.feedbackTextEffects.wrapText(
-        this.getRandomFeedBackText(this.getRandomInt(0, 1))
+        this.getRandomFeedBackText(feedBackIndex)
       );
       this.feedBackTextCanavsElement.style.zIndex = "10";
       let loadPuzzleData = { isCorrect: isCorrect };
