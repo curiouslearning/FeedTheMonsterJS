@@ -165,6 +165,16 @@ async function downloadFile(auth, fileId, name, destinationPath) {
   let fileName;
   if (textCharacter != "no") {
     fileName = name.split(textCharacter)[0] + fileExtension;
+    if (fileName === "fantastic1.wav") {
+      console.log(">>>>>>>>>..", fileName);
+      fileName = "fantastic.wav";
+    } else if (fileName === "fantastic1.mp3") {
+      fileName = "fantastic.mp3";
+    } else if (fileName === "great1.mp3") {
+      fileName = "great.mp3";
+    } else if (fileName === "great1.wav") {
+      fileName = "great.wav";
+    }
   } else {
     fileName = name;
   }
