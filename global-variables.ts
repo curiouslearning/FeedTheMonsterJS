@@ -12,3 +12,11 @@ export const Debugger = {
     : false,
   DebugMode: false,
 };
+declare global {
+  interface Window {
+    feedbackTextWorkerPath: string;
+  }
+}
+
+window.feedbackTextWorkerPath = './workers/feedback-text-worker.js';
+
