@@ -37,7 +37,7 @@ export class FeedbackTextEffects {
       x: 0,
       y: 0,
     };
-    this.textWorker = new Worker('../../../../build/workers/feedback-text-worker.js')
+    this.textWorker = new Worker(window.feedbackTextWorkerPath)
     this.textWorker.addEventListener(
       "message",
       this.handleTextWorkerMessage.bind(this)
