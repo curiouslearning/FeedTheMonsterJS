@@ -29,6 +29,7 @@ import { DataModal } from "../../data/data-modal";
 import { LevelSelectionScreen } from "../scenes/level-selection-scene";
 import { Debugger, lang } from "../../../global-variables";
 import { Background } from "../components/background"
+import { AudioPlayer } from "../components/audio-player";
 // var this: any;
 let lastTime = 0;
 let pwa_install_status: any;
@@ -71,6 +72,7 @@ export class StartScene {
     public switchSceneToLevelSelection: any;
 
     public background1: Background;
+    audioPlayer: AudioPlayer;
 
     // public tutorial: Tutorial;
 
@@ -92,6 +94,7 @@ export class StartScene {
         this.switchSceneToLevelSelection = switchSceneToLevelSelection;
         // passing level as 1 bcz here its fixed (assumption)
         this.background1 = new Background(this.context, this.width, this.height, 1);
+        this.audioPlayer = new AudioPlayer();
         // this.stoneHandler = new StoneHandler(this.context, this.canvas, 2, this.data.levels[0]);
         // var img = new Image();
         // img.src = "./assets/images/stone_pink_v02.png";
@@ -274,7 +277,7 @@ export class StartScene {
                 event: "click",
             });
             toggleBtn.style.display = "none";
-            new Sound().playSound("./assets/audios/ButtonClick.mp3", ButtonClick);
+            this.audioPlayer.playAudio(false, "./assets/audios/ButtonClick.mp3");
             self.switchSceneToLevelSelection();
         }
 
@@ -282,6 +285,7 @@ export class StartScene {
     }
 
     dispose() {
+        this.audioPlayer.stopAudio();
         this.handler.removeEventListener("click", this.handleMouseClick, false);
     }
 }

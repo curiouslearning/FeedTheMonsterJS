@@ -14,6 +14,7 @@ import Sound from "../../common/sound";
 import { getDatafromStorage } from "../../data/profile-data";
 import { Debugger, lang } from "../../../global-variables";
 import { GameScore } from "../data/game-score";
+import { AudioPlayer } from "../components/audio-player";
 
 var levelNumber: number;
 var self: any;
@@ -50,6 +51,7 @@ export class LevelSelectionScreen {
   public loadedImages: any;
   public imagesLoaded: boolean = false;
   public levelNumber: number;
+  audioPlayer: AudioPlayer;
 
   constructor(canvas: HTMLCanvasElement, data: any, callback: any) {
     this.canvas = canvas;
@@ -68,7 +70,7 @@ export class LevelSelectionScreen {
     this.canavsElement = document.getElementById("canvas") as HTMLCanvasElement;
     this.context = this.canavsElement.getContext("2d");
     this.createLevelButtons(this.levelButtonpos);
-
+    this.audioPlayer = new AudioPlayer();
     this.gameLevelData = GameScore.getAllGameLevelInfo();
     this.callback = callback;
 
@@ -85,6 +87,7 @@ export class LevelSelectionScreen {
     loadImages(this.images, (images) => {
       this.loadedImages = Object.assign({}, images);
       this.imagesLoaded = true;
+      this.audioPlayer.playAudio(true, "./assets/audios/intro.mp3");
     });
     this.addListeners();
   }
@@ -233,13 +236,13 @@ export class LevelSelectionScreen {
         ) < 45
       ) {
         if (Debugger.DebugMode) {
-          self.sound.playSound("./assets/audios/ButtonClick.mp3", ButtonClick);
-          self.sound.pauseSound();
+          this.audioPlayer.playAudio(false, "./assets/audios/ButtonClick.mp3");
+          // self.sound.pauseSound();
           levelNumber = s.index + level - 1;
           self.startGame(levelNumber);
         } else if (s.index + level - 1 <= unlockLevelIndex + 1) {
-          self.sound.playSound("./assets/audios/ButtonClick.mp3", ButtonClick);
-          self.sound.pauseSound();
+          this.audioPlayer.playAudio(false, "./assets/audios/ButtonClick.mp3");
+          // self.sound.pauseSound();
           levelNumber = s.index + level - 1;
           self.startGame(levelNumber);
         }
@@ -433,6 +436,7 @@ export class LevelSelectionScreen {
 
   dispose() {
     // remove listeners
+    this.audioPlayer.stopAudio();
     document
       .getElementById("canvas")
       .removeEventListener("mousedown", this.handleMouseDown, false);
