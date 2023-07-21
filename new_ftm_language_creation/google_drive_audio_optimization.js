@@ -109,7 +109,7 @@ async function listFilesAndFolders(auth, parentFolderId) {
 
     const selectedFolderNumber = await new Promise((resolve) => {
       rl.question(
-        "Enter the number of the selected folder or file (or 'back' to go back): ",
+        "Enter the number of the selected folder or file (or 'back' to go back also upload if you want to upload): ",
         (answer) => {
           resolve(answer);
         }
@@ -125,7 +125,9 @@ async function listFilesAndFolders(auth, parentFolderId) {
       currentFolderPathName.pop();
       await listFilesAndFolders(auth, folderId);
     }
-
+    if (selectedFolderNumber.toLowerCase() === "upload") {
+      await uploadFolder(auth, langFolderPath, folderIdToUpload);
+    }
     const selectedIndex = parseInt(selectedFolderNumber) - 1;
     if (
       isNaN(selectedIndex) ||
@@ -287,9 +289,8 @@ async function downloadFolderContents(auth, folderId, destinationPath) {
     for (const file of files) {
       await downloadFile(auth, file.id, file.name, destinationPath);
     }
-
+    await uploadFolder(authClient, langFolderPath, folderIdToUpload);
     console.log("Folder download complete.");
-    await uploadFilesToDrive(authClient, folderIdToUpload);
   } catch (error) {
     console.error("Error downloading folder contents:", error);
   }
@@ -304,16 +305,48 @@ async function TextBreakerCharacter() {
     );
   });
 }
-async function uploadFile(auth, filePath, folderId) {
+async function uploadFolder(auth, folderPath, parentFolderId) {
   const drive = google.drive({ version: "v3", auth });
 
+  // Get the list of files in the folder
+  const files = fs.readdirSync(folderPath);
+
+  for (const file of files) {
+    const filePath = path.join(folderPath, file);
+    const stats = fs.statSync(filePath);
+
+    if (stats.isFile()) {
+      // If it's a file, upload it to Google Drive
+      await uploadFile(auth, filePath, parentFolderId, drive);
+    } else if (stats.isDirectory()) {
+      // If it's a directory, recursively upload its contents
+      const folderName = path.basename(filePath);
+      const folderMetadata = {
+        name: folderName,
+        parents: [parentFolderId],
+        mimeType: "application/vnd.google-apps.folder",
+      };
+      const response = await drive.files.create({
+        resource: folderMetadata,
+        fields: "id",
+      });
+      const subfolderId = response.data.id;
+      await uploadFolder(auth, filePath, subfolderId); // Use auth object instead of subfolderId
+    }
+  }
+}
+
+async function uploadFile(auth, filePath, folderId, drive) {
+  const fileName = path.basename(filePath);
+
+  // Upload the file to the specified folder
   const fileMetadata = {
-    name: path.basename(filePath),
+    name: fileName,
     parents: [folderId],
   };
 
   const media = {
-    mimeType: "audio/mpeg",
+    mimeType: "application/octet-stream",
     body: fs.createReadStream(filePath),
   };
 
@@ -324,23 +357,10 @@ async function uploadFile(auth, filePath, folderId) {
       fields: "id",
     });
 
-    console.log(
-      `File uploaded: ${fileMetadata.name} (ID: ${response.data.id})`
-    );
+    console.log(`File uploaded: ${fileName} (ID: ${response.data.id})`);
   } catch (error) {
-    console.error("Error uploading file:", error.message);
+    console.error("Error uploading file:", error);
   }
-}
-async function uploadFilesToDrive(auth, folderId) {
-  const langFolderPath = path.join(__dirname, "..", "OptimizedLanguages");
-  const audioFiles = fs.readdirSync(langFolderPath);
-
-  for (const file of audioFiles) {
-    const filePath = path.join(langFolderPath, file);
-    await uploadFile(auth, filePath, folderId);
-  }
-
-  console.log("All files uploaded!");
 }
 async function main() {
   try {
