@@ -14,33 +14,33 @@ export class EventManager {
         this.loadPuzzleCallbackHandler = handler.loadPuzzleCallbackHandler;
         document.addEventListener(
             STONEDROP,
-            this.handleStoneDroppedEvent.bind(this),
+            this.handleStoneDroppedEvent,
             false
         );
         document.addEventListener(
             LOADPUZZLE,
-            this.handleLoadPuzzleEvent.bind(this),
+            this.handleLoadPuzzleEvent,
             false
         );
     }
 
-    private handleStoneDroppedEvent(event: Event) {
+    private handleStoneDroppedEvent = (event: Event) => {
         this.stoneDropCallbackHandler(event);
     }
 
-    private handleLoadPuzzleEvent(event: Event) {
+    private handleLoadPuzzleEvent = (event: Event) => {
         this.loadPuzzleCallbackHandler(event);
     }
 
-    public unregisterEventListener() {
+    public unregisterEventListener = () => {
         document.removeEventListener(
             STONEDROP,
-            this.handleStoneDroppedEvent.bind(this),
+            this.handleStoneDroppedEvent,
             false
         );
         document.removeEventListener(
             LOADPUZZLE,
-            this.handleLoadPuzzleEvent.bind(this),
+            this.handleLoadPuzzleEvent,
             false
         );
     }
