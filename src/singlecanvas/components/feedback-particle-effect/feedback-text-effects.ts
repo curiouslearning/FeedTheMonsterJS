@@ -143,4 +143,8 @@ export class FeedbackTextEffects {
   public clearParticle(): void {
     this.particles = [];
   }
+
+  public unregisterEventListener = () => {
+    this.textWorker.removeEventListener("message", this.handleTextWorkerMessage);
+  }
 }
