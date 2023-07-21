@@ -1,9 +1,11 @@
 import { loadImages } from "../../common/common";
 import { CLICK, MOUSEUP } from "../common/event-names";
+import { Background } from "../components/background";
 import CloseButton from "../components/buttons/close-button";
 import NextButton from "../components/buttons/next-button";
 import RetryButton from "../components/buttons/retry-button";
 import { Monster } from "../components/monster";
+var self;
 export class LevelEndScene {
   public canvas: any;
   public height: number;
@@ -18,10 +20,11 @@ export class LevelEndScene {
   public retryButton: any;
   public nextButton: any;
   public starCount: number;
-  public nextLevel: number;
+  public currentLevel: number;
   public switchToGameplayCB: any;
   public switchToLevelSelectionCB: any;
   public data: any;
+  public background: any;
 
   constructor(
     canvas: any,
@@ -29,7 +32,7 @@ export class LevelEndScene {
     width: number,
     context: CanvasRenderingContext2D,
     starCount: number,
-    nextLevel: number,
+    currentLevel: number,
     switchToGameplayCB,
     switchToLevelSelectionCB,
     data,
@@ -39,12 +42,21 @@ export class LevelEndScene {
     this.height = height;
     this.width = width;
     this.context = context;
-    this.monster = new Monster(this.canvas, monsterPhaseNumber);
+    this.monster = new Monster(
+      this.canvas,
+      monsterPhaseNumber,
+      this.switchToReactionAnimation
+    );
+    this.background = new Background(
+      this.context,
+      this.width,
+      this.height,
+      currentLevel
+    );
     // console.log(" currentlevelPlayed in levelenEEd: ", currentlevelPlayed.levelNumber);
     this.switchToGameplayCB = switchToGameplayCB;
     this.switchToLevelSelectionCB = switchToLevelSelectionCB;
     this.data = data;
-
     this.closeButton = new CloseButton(
       context,
       canvas,
@@ -65,12 +77,13 @@ export class LevelEndScene {
       this.height * 0.7
     );
     this.starCount = starCount;
-    this.nextLevel = nextLevel;
+    this.currentLevel = currentLevel;
     this.images = {
-      backgroundImg: "../../../assets/images/WIN_screen_bg.png",
-      star1Img: "../../../assets/images/pinStar1.png",
-      star2Img: "../../../assets/images/pinStar2.png",
-      star3Img: "../../../assets/images/pinStar3.png",
+      backgroundImg: "./assets/images/WIN_screen_bg.png",
+      star1Img: "./assets/images/pinStar1.png",
+      star2Img: "./assets/images/pinStar2.png",
+      star3Img: "./assets/images/pinStar3.png",
+      winBackgroundImg: "./assets/images/bg_v01.jpg",
     };
     loadImages(this.images, (images) => {
       this.loadedImages = Object.assign({}, images);
@@ -78,8 +91,15 @@ export class LevelEndScene {
     });
     // this.draw(16.45);
     this.addEventListener();
+    self = this;
+  }
+  switchToReactionAnimation() {
+    self.starCount <= 1
+      ? self.monster.changeToSpitAnimation()
+      : self.monster.changeToEatAnimation();
   }
   draw(deltaTime: number) {
+    this.background.draw();
     if (this.imagesLoaded) {
       this.context.drawImage(
         this.loadedImages.backgroundImg,
@@ -146,14 +166,14 @@ export class LevelEndScene {
     if (this.retryButton.onClick(x, y)) {
       console.log(" retry button clicked");
       let gamePlayData = {
-        currentLevelData: this.data.levels[this.nextLevel],
-        selectedLevelNumber: this.nextLevel,
+        currentLevelData: this.data.levels[this.currentLevel],
+        selectedLevelNumber: this.currentLevel,
       };
       // pass same data as level is same
       this.switchToGameplayCB(gamePlayData);
     }
     if (this.nextButton.onClick(x, y)) {
-      let next = Number(this.nextLevel) + 1;
+      let next = Number(this.currentLevel) + 1;
       console.log(typeof next, " next button clicked", next);
       let gamePlayData = {
         currentLevelData: this.data.levels[next],
