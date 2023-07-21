@@ -36,6 +36,14 @@ img {
   transform: translate(-50%, 0%);
   z-index: 100;
 }
+
+#feedback-text {
+  position: absolute;
+  left: 50%;
+  top: 0%;
+  z-index: 0;
+  transform: translate(-50%, 0%);
+}
 /* #about-company {
   position: absolute;
   display: none;
@@ -69,7 +77,7 @@ img {
   transform: translate(-50%, 0%);
   /* aspect-ratio: 2/3; */
   max-height: -webkit-fill-available;
-  z-index: 2;
+  z-index: 1;
   background-repeat: no-repeat;
   background-size: cover;
 }

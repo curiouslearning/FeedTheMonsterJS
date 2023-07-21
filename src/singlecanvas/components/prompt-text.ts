@@ -4,6 +4,8 @@ import Sound from "../../common/sound";
 import { PromptAudio } from "../../common/common"
 import { EventManager } from "../events/EventManager";
 import { Debugger } from "../../../global-variables";
+import { AudioPlayer } from "./audio-player";
+import { Utils } from "../common/utils";
 
 
 var self;
@@ -24,7 +26,7 @@ export class PromptText extends EventManager {
     public handler: any;
     public sound: Sound;
     public isStoneDropped: boolean = false;
-    public UrlSubstring: string = '/feedthemonster'
+    audioPlayer: AudioPlayer;
 
     constructor(width, height, currentPuzzleData, levelData, rightToLeft) {
         super({
@@ -36,6 +38,7 @@ export class PromptText extends EventManager {
         this.levelData = levelData;
         this.rightToLeft = rightToLeft;
         this.sound = new Sound();
+        this.audioPlayer = new AudioPlayer();
         self = this;
         this.currentPromptText = currentPuzzleData.prompt.promptText;
         this.currentPuzzleData = currentPuzzleData;
@@ -47,8 +50,9 @@ export class PromptText extends EventManager {
 
         this.prompt_image = new Image();
         this.prompt_image.src = "./assets/images/promptTextBg.png";
-        this.prompt_image.onload = function (e) {
+        this.prompt_image.onload = () => {
             this.imagesLoaded = true;
+            this.playSound()
         };
         // this.handler = document.getElementById("canvas");
         // this.handler.addEventListener(
@@ -66,18 +70,16 @@ export class PromptText extends EventManager {
         const x = event.clientX - rect.left;
         const y = event.clientY - rect.top;
         if (self.onClick(x, y)) {
-            self.sound.playSound(
-                self.currentPuzzleData.prompt.promptAudio,
-                PromptAudio
-            );
+            // self.sound.playSound(
+            //     self.currentPuzzleData.prompt.promptAudio,
+            //     PromptAudio
+            // );
         }
     }
 
     playSound = () => {
-        console.log('PromptAudio',  this.getConvertedPromptURL());
-        this.sound.playSound(
-            this.getConvertedPromptURL(),
-            PromptAudio
+        console.log('PromptAudio',  Utils.getConvertedDevProdURL(this.currentPuzzleData.prompt.promptAudio));
+        this.audioPlayer.playAudio(false, Utils.getConvertedDevProdURL(this.currentPuzzleData.prompt.promptAudio)
         );
     }
 
@@ -243,20 +245,5 @@ export class PromptText extends EventManager {
 
     update() {
 
-    }
-
-    getConvertedPromptURL() {
-        return Debugger.DevelopmentLink
-            ? this.currentPuzzleData.prompt.promptAudio.slice(
-                0,
-                this.currentPuzzleData.prompt.promptAudio.indexOf(this.UrlSubstring) +
-                this.UrlSubstring.length
-            ) +
-            "dev" +
-            this.currentPuzzleData.prompt.promptAudio.slice(
-                this.currentPuzzleData.prompt.promptAudio.indexOf(this.UrlSubstring) +
-                this.UrlSubstring.length
-            )
-            : this.currentPuzzleData.prompt.promptAudio;
     }
 }
