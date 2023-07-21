@@ -194,7 +194,7 @@ export class SceneHandler {
     console.log(" currentlevelPlayed: ", currentlevelPlayed);
     setTimeout(() => {
       this.gameplayScene.dispose();
-
+      document.getElementById("feedback-text").style.zIndex = "0";
       this.levelEndScene = new LevelEndScene(
         this.canvas,
         this.height,
