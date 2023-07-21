@@ -236,10 +236,10 @@ export class GameplayScene {
       this.height,
       this.levelData.levelNumber
     );
-    this.feedBackTextCanavsElement = this.createFeedbackTextCanvas(
-      this.height,
-      this.width
-    );
+    this.feedBackTextCanavsElement = document.getElementById("feedback-text") as HTMLCanvasElement;
+    this.feedBackTextCanavsElement.height = this.height;
+    this.feedBackTextCanavsElement.width = this.width;
+
     this.feedbackTextEffects = new FeedbackTextEffects(
       this.feedBackTextCanavsElement.getContext("2d"),
       this.width,
@@ -1080,7 +1080,7 @@ export class GameplayScene {
         // this.monster.changeToIdleAnimation();
         this.pickedStone = null;
         this.feedbackTextEffects.clearParticle();
-        this.feedBackTextCanavsElement.style.zIndex = "-10";
+        this.feedBackTextCanavsElement.style.zIndex = "0";
         document.dispatchEvent(loadPuzzleEvent);
         this.addEventListeners();
 
@@ -1090,7 +1090,7 @@ export class GameplayScene {
             // this.changeToNextPuzzle();  
             this.pickedStone = null;
             this.feedbackTextEffects.clearParticle();
-            this.feedBackTextCanavsElement.style.zIndex = "-10";
+            this.feedBackTextCanavsElement.style.zIndex = "0";
             document.dispatchEvent(loadPuzzleEvent);
             this.addEventListeners();
           }, 4000);
@@ -1102,40 +1102,14 @@ export class GameplayScene {
 
 
   public dispose() {
-    this.deleteFeedbackTextCanvas();
     this.removeEventListeners();
+    this.feedbackTextEffects.unregisterEventListener();
     this.monster.unregisterEventListener();
     this.timerTicking.unregisterEventListener();
     this.levelIndicators.unregisterEventListener();
     this.stoneHandler.unregisterEventListener();
     this.promptText.unregisterEventListener();
    
-  }
-
-  public createFeedbackTextCanvas(
-    height: number,
-    width: number
-  ): HTMLCanvasElement {
-    const canvas = document.createElement("canvas");
-
-    canvas.id = "feedback-text";
-    canvas.style.position = "absolute";
-    canvas.style.left = "50%";
-    canvas.style.top = "0%";
-    canvas.style.zIndex = "-10";
-    canvas.style.transform = "translate(-50%, 0%)";
-
-    document.body.appendChild(canvas);
-    canvas.height = this.height;
-    canvas.width = this.width;
-    return document.getElementById("feedback-text") as HTMLCanvasElement;
-  }
-
-  public deleteFeedbackTextCanvas() {
-    var canvas = document.getElementById("feedback-text");
-    if (canvas) {
-      canvas.parentNode.removeChild(canvas);
-    }
   }
 
   public letterInWordPuzzle(droppedStone: string) {
@@ -1146,7 +1120,7 @@ export class GameplayScene {
       this.feedbackTextEffects.wrapText(
         this.getRandomFeedBackText(this.getRandomInt(0, 1))
       );
-      this.feedBackTextCanavsElement.style.zIndex = "10";
+      this.feedBackTextCanavsElement.style.zIndex = "2";
     }
     let loadPuzzleData = { isCorrect: isCorrect };
     const dropStoneEvent = new CustomEvent(STONEDROP, {
@@ -1165,7 +1139,7 @@ export class GameplayScene {
       this.feedbackTextEffects.wrapText(
         this.getRandomFeedBackText(this.getRandomInt(0, 1))
       );
-      this.feedBackTextCanavsElement.style.zIndex = "10";
+      this.feedBackTextCanavsElement.style.zIndex = "2";
     }
     let loadPuzzleData = { isCorrect: isCorrect };
     const dropStoneEvent = new CustomEvent(STONEDROP, {
@@ -1190,7 +1164,7 @@ export class GameplayScene {
       this.feedbackTextEffects.wrapText(
         this.getRandomFeedBackText(this.getRandomInt(0, 1))
       );
-      this.feedBackTextCanavsElement.style.zIndex = "10";
+      this.feedBackTextCanavsElement.style.zIndex = "2";
       let loadPuzzleData = { isCorrect: isCorrect };
       const dropStoneEvent = new CustomEvent(STONEDROP, {
         detail: loadPuzzleData,
