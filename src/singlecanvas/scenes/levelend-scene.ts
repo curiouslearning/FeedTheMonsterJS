@@ -1,5 +1,7 @@
 import { loadImages } from "../../common/common";
+import Sound from "../../common/sound";
 import { CLICK, MOUSEUP } from "../common/event-names";
+import { AudioPlayer } from "../components/audio-player";
 import { Background } from "../components/background";
 import CloseButton from "../components/buttons/close-button";
 import NextButton from "../components/buttons/next-button";
@@ -25,7 +27,7 @@ export class LevelEndScene {
   public switchToLevelSelectionCB: any;
   public data: any;
   public background: any;
-
+  public audioPlayer: any;
   constructor(
     canvas: any,
     height: number,
@@ -92,11 +94,20 @@ export class LevelEndScene {
     // this.draw(16.45);
     this.addEventListener();
     self = this;
+    this.audioPlayer = new AudioPlayer();
   }
   switchToReactionAnimation() {
-    self.starCount <= 1
-      ? self.monster.changeToSpitAnimation()
-      : self.monster.changeToEatAnimation();
+    if (self.starCount <= 1) {
+      self.audioPlayer.playAudio(
+        false,
+        "../../../assets/audios/Disapointed-05.mp3"
+      );
+
+      self.monster.changeToSpitAnimation();
+    } else {
+      self.audioPlayer.playAudio(false, "./assets/audios/Cheering-02.mp3");
+      self.monster.changeToEatAnimation();
+    }
   }
   draw(deltaTime: number) {
     this.background.draw();
@@ -159,11 +170,13 @@ export class LevelEndScene {
     const y = event.clientY - rect.top;
 
     if (this.closeButton.onClick(x, y)) {
+      this.audioPlayer.playAudio(false, "./assets/audios/ButtonClick.mp3");
       console.log(" close button clicked");
 
       this.switchToLevelSelectionCB();
     }
     if (this.retryButton.onClick(x, y)) {
+      this.audioPlayer.playAudio(false, "./assets/audios/ButtonClick.mp3");
       console.log(" retry button clicked");
       let gamePlayData = {
         currentLevelData: this.data.levels[this.currentLevel],
@@ -173,6 +186,7 @@ export class LevelEndScene {
       this.switchToGameplayCB(gamePlayData);
     }
     if (this.nextButton.onClick(x, y)) {
+      this.audioPlayer.playAudio(false, "./assets/audios/ButtonClick.mp3");
       let next = Number(this.currentLevel) + 1;
       console.log(typeof next, " next button clicked", next);
       let gamePlayData = {
@@ -185,6 +199,7 @@ export class LevelEndScene {
   };
 
   dispose = () => {
+    self.audioPlayer.stopAudio();
     document
       .getElementById("canvas")
       .removeEventListener(CLICK, this.handleMouseClick, false);
