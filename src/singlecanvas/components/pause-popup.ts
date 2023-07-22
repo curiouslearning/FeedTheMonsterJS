@@ -45,16 +45,16 @@ export default class PausePopUp {
       this.canvas,
       this.canvas.width * 0.55,
       this.canvas.height * 0.2 +
-        this.canvas.width * 0.4 -
-        (this.canvas.width * 0.19) / 2
+      this.canvas.width * 0.4 -
+      (this.canvas.width * 0.19) / 2
     );
     this.closeButton = new CloseButton(
       this.context,
       this.canvas,
       this.canvas.width * 0.25,
       this.canvas.height * 0.2 +
-        this.canvas.width * 0.4 -
-        (this.canvas.width * 0.19) / 2
+      this.canvas.width * 0.4 -
+      (this.canvas.width * 0.19) / 2
     );
     var pop_up_image = new Image();
     pop_up_image.src = "./assets/images/popup_bg_v01.png";
@@ -84,10 +84,12 @@ export default class PausePopUp {
       this.callback();
     }
     if (this.retryButton.onClick(x, y)) {
+      this.dispose();
       console.log(" retry button clicked");
       this.reloadScene(this.gameplayData);
     }
     if (this.closeButton.onClick(x, y)) {
+      this.dispose();
       console.log(" close button clicked");
       this.switchToLevelSelection();
     }
@@ -116,7 +118,7 @@ export default class PausePopUp {
   //     }, false);
   // }
 
-  deleteCanvas(this) {}
+  deleteCanvas(this) { }
 
   draw() {
     if (this.imagesLoaded) {
@@ -135,7 +137,7 @@ export default class PausePopUp {
     }
   }
 
-  update() {}
+  update() { }
 
   dispose() {
     document
