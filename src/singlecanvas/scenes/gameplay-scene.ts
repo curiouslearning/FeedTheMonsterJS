@@ -1109,12 +1109,13 @@ export class GameplayScene {
 
   public dispose() {
     this.removeEventListeners();
-    this.feedbackTextEffects.unregisterEventListener();
-    this.monster.unregisterEventListener();
-    this.timerTicking.unregisterEventListener();
-    this.levelIndicators.unregisterEventListener();
-    this.stoneHandler.unregisterEventListener();
-    this.promptText.unregisterEventListener();
+      this.feedbackTextEffects.unregisterEventListener();
+      this.monster.unregisterEventListener();
+      this.timerTicking.unregisterEventListener();
+      this.levelIndicators.unregisterEventListener();
+      this.stoneHandler.unregisterEventListener();
+      this.promptText.unregisterEventListener();
+      // this.deleteComponentInstances();
   }
 
   public letterInWordPuzzle(droppedStone: string) {
@@ -1203,5 +1204,14 @@ export class GameplayScene {
       // this.removeEventListeners();
       this.loadPuzzle();
     }
+  }
+
+  private deleteComponentInstances = ():void => {
+    delete this.monster;
+    delete this.levelIndicators;
+    delete this.timerTicking;
+    delete this.stoneHandler;
+    delete this.promptText;
+    delete this.feedBackTexts;
   }
 }

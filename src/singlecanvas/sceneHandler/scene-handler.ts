@@ -21,6 +21,7 @@ import { Debugger, lang } from "../../../global-variables";
 import { GameplayScene } from "../scenes/gameplay-scene";
 import { LevelEndScene } from "../scenes/levelend-scene";
 import { GameScore } from "../data/game-score";
+import { LoadingScene } from "../scenes/loading-scene";
 let lastTime = 0;
 let pwa_install_status: any;
 const toggleBtn = document.getElementById("toggle-btn") as HTMLElement;
@@ -56,6 +57,8 @@ export class SceneHandler {
   // public imagesLoaded: boolean = false;
   // public handler: any;
   public static SceneName: string;
+  public loadingScreen: LoadingScene;
+  public loading: boolean = false;
 
   constructor(
     canvas: HTMLCanvasElement,
@@ -84,6 +87,7 @@ export class SceneHandler {
     // this.createPlayButton();
     // this.firebase_analytics = firebase_analytics;
     SceneHandler.SceneName = StartScene1;
+    this.loadingScreen = new LoadingScene(this.width, this.height);
 
     this.animation(0);
   }
@@ -115,11 +119,15 @@ export class SceneHandler {
     this.context.clearRect(0, 0, this.width, this.height);
     if (SceneHandler.SceneName == StartScene1) {
       this.startScene.animation(deltaTime);
+      this.loading ? this.loadingScreen.draw(deltaTime) : null;
     } else if (SceneHandler.SceneName == LevelSelection1) {
       // this.levelSelectionScene.draw(1);
+      this.loading ? this.loadingScreen.draw(deltaTime) : null;
       this.levelSelectionScene.testDraw();
+      // this.levelSelectionScene.testDraw();
     } else if (SceneHandler.SceneName == GameScene1) {
       // render gameplay screen for now
+      this.loading ? this.loadingScreen.draw(deltaTime) : null;
       this.gameplayScene.draw(deltaTime);
       // this.testGameplayScene.animation(deltaTime);
     } else if (SceneHandler.SceneName == EndScene1) {
@@ -132,60 +140,29 @@ export class SceneHandler {
     requestAnimationFrame(this.animation);
   };
 
-  // draw() {
-  // }
-
-  switchSceneToGameplay = (gamePlayData) => {
-    let gamData = GameScore.getAllGameLevelInfo();
-    // dispose previous scene
-    this.levelSelectionScene.dispose();
+  switchSceneToGameplay = (gamePlayData, changeSceneRequestFrom?: string) => {
+    this.showLoading();
+    this.dispose(changeSceneRequestFrom, "GamePlay");
     // load in next scene --- gameplaqyscene
-    this.gameplayScene = new GameplayScene(
-      this.canvas,
-      gamePlayData.currentLevelData,
-      this.checkMonsterPhaseUpdation(),
-      this.data.FeedbackTexts,
-      this.data.rightToLeft,
-      this.switchSceneToEndLevel,
-      gamePlayData.selectedLevelNumber,
-      this.switchToLevelSelection,
-      this.reloadScene
-    );
-
-    SceneHandler.SceneName = GameScene1;
+    setTimeout(() => {
+      this.gameplayScene = new GameplayScene(
+        this.canvas,
+        gamePlayData.currentLevelData,
+        this.checkMonsterPhaseUpdation(),
+        this.data.FeedbackTexts,
+        this.data.rightToLeft,
+        this.switchSceneToEndLevel,
+        gamePlayData.selectedLevelNumber,
+        this.switchSceneToLevelSelection,
+        this.switchSceneToGameplay
+      );
+      SceneHandler.SceneName = GameScene1;
+    }, 2000);
+    setTimeout(() => {
+      this.removeLoading();
+    }, 5000);
   };
 
-  switchToLevelSelection = () => {
-    // this is coming from gameplay
-    this.gameplayScene.dispose();
-
-    // switch to levelselection
-    this.levelSelectionScene = new LevelSelectionScreen(
-      this.canvas,
-      this.data,
-      this.switchSceneToGameplay
-    );
-    SceneHandler.SceneName = LevelSelection1;
-  };
-  reloadScene = (gamePlayData) => {
-    // this is coming from gameplay
-    this.gameplayScene.dispose();
-
-    // reload gameplayscene again with samedata
-    this.gameplayScene = new GameplayScene(
-      this.canvas,
-      gamePlayData.currentLevelData,
-      this.checkMonsterPhaseUpdation(),
-      this.data.FeedbackTexts,
-      this.data.rightToLeft,
-      this.switchSceneToEndLevel,
-      gamePlayData.selectedLevelNumber,
-      this.switchToLevelSelection,
-      this.reloadScene
-    );
-
-    SceneHandler.SceneName = GameScene1;
-  };
   switchSceneToEndLevel = (
     currentlevelPlayed,
     starCount: number,
@@ -202,8 +179,8 @@ export class SceneHandler {
         this.context,
         starCount,
         currentlevelPlayed.levelNumber,
-        this.switchToGameplayFLES,
-        this.switchtoLevelSelectionFLES,
+        this.switchSceneToGameplay,
+        this.switchSceneToLevelSelection,
         this.data,
         monsterPhaseNumber
       );
@@ -211,46 +188,58 @@ export class SceneHandler {
       SceneHandler.SceneName = EndScene1;
     }, 4000);
   };
-  switchToGameplayFLES = (gamePlayData) => {
-    // dispose level end scene
-    this.levelEndScene.dispose();
-    // load gameplay scene
-    this.gameplayScene = new GameplayScene(
-      this.canvas,
-      gamePlayData.currentLevelData,
-      this.checkMonsterPhaseUpdation(),
-      this.data.FeedbackTexts,
-      this.data.rightToLeft,
-      this.switchSceneToEndLevel,
-      gamePlayData.selectedLevelNumber,
-      this.switchToLevelSelection,
-      this.reloadScene
-    );
 
-    SceneHandler.SceneName = GameScene1;
-  };
-  switchtoLevelSelectionFLES = (gamePlayData) => {
-    // dispose level end scene
-    this.levelEndScene.dispose();
-    // load levelselection scene
-    this.levelSelectionScene = new LevelSelectionScreen(
-      this.canvas,
-      this.data,
-      this.switchSceneToGameplay
-    );
-    SceneHandler.SceneName = LevelSelection1;
+  switchSceneToLevelSelection = (changeSceneRequestFrom?: string) => {
+    this.showLoading();
+    this.dispose(changeSceneRequestFrom, "LevelSelection");
+    setTimeout(() => {
+      this.levelSelectionScene = new LevelSelectionScreen(
+        this.canvas,
+        this.data,
+        this.switchSceneToGameplay
+      );
+      SceneHandler.SceneName = LevelSelection1;
+    }, 2000);
+    setTimeout(() => {
+      this.removeLoading();
+    }, 5000);
   };
 
-  switchSceneToLevelSelection = () => {
-    // dispose previous scene
-    this.startScene.dispose();
-    // load in next scene
-    this.levelSelectionScene = new LevelSelectionScreen(
-      this.canvas,
-      this.data,
-      this.switchSceneToGameplay
-    );
+  private dispose = (lastSceneName: string, nextSceneName: string): void => {
+    if (lastSceneName == "LevelSelection" && nextSceneName == "GamePlay") {
+      this.levelSelectionScene.dispose();
+      return;
+    }
+    if (lastSceneName == "GamePlay" && nextSceneName == "GamePlay") {
+      this.gameplayScene.dispose();
+      return;
+    }
+    if (lastSceneName == "GamePlay" && nextSceneName == "LevelSelection") {
+      this.gameplayScene.dispose();
+      return;
+    }
+    if (lastSceneName == "StartScene" && nextSceneName == "LevelSelection") {
+      this.startScene.dispose();
+      return;
+    }
+    if (lastSceneName == "LevelEnd" && nextSceneName == "LevelSelection") {
+      this.levelEndScene.dispose();
+      return;
+    }
+    if (lastSceneName == "LevelEnd" && nextSceneName == "GamePlay") {
+      this.levelEndScene.dispose();
+      return;
+    }
+  };
 
-    SceneHandler.SceneName = LevelSelection1;
+  private showLoading = (): void => {
+    this.loadingScreen.initCloud();
+    this.loading = true;
+    document.getElementById("loading").style.zIndex = "3";
+  };
+
+  private removeLoading = (): void => {
+    document.getElementById("loading").style.zIndex = "-1";
+    this.loading = false;
   };
 }

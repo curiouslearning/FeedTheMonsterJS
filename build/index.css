@@ -44,6 +44,14 @@ img {
   z-index: 0;
   transform: translate(-50%, 0%);
 }
+
+#loading {
+  position: absolute;
+  left: 50%;
+  top: 0%;
+  z-index: -1;
+  transform: translate(-50%, 0%);
+}
 /* #about-company {
   position: absolute;
   display: none;
