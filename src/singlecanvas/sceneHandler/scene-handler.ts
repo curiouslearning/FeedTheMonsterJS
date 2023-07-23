@@ -134,6 +134,7 @@ export class SceneHandler {
       // render gameplay screen for now
       // this.gameplayScene.draw(deltaTime);
       // console.log('Move to levelend scene');
+      this.loading ? this.loadingScreen.draw(deltaTime) : null;
       this.levelEndScene.draw(deltaTime);
       // this.testGameplayScene.animation(deltaTime);
     }
