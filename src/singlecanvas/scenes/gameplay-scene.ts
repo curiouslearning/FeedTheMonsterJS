@@ -249,6 +249,7 @@ export class GameplayScene {
     );
 
     this.audioPlayer = new AudioPlayer();
+    this.audioPlayer.stopAudio();
     this.handler = document.getElementById("canvas");
     this.puzzleData = levelData.puzzles;
     this.feedBackTexts = feedBackTexts;
@@ -618,7 +619,7 @@ export class GameplayScene {
 
     // send click to play prompt
     if (this.promptText.onClick(x, y)) {
-      this.promptText.playSound();
+      this.audioPlayer.playAudio(false, this.promptText.getPromptAudioUrl());
     }
   };
 

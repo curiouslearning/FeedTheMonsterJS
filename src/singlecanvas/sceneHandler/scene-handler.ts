@@ -161,7 +161,7 @@ export class SceneHandler {
     }, 2000);
     setTimeout(() => {
       this.removeLoading();
-    }, 5000);
+    }, 4000);
   };
 
   switchSceneToEndLevel = (
@@ -203,7 +203,7 @@ export class SceneHandler {
     }, 2000);
     setTimeout(() => {
       this.removeLoading();
-    }, 5000);
+    }, 4000);
   };
 
   private dispose = (lastSceneName: string, nextSceneName: string): void => {

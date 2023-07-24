@@ -1,10 +1,6 @@
 
-import { Game } from "../../scenes/game";
 import Sound from "../../common/sound";
-import { PromptAudio } from "../../common/common"
 import { EventManager } from "../events/EventManager";
-import { Debugger } from "../../../global-variables";
-import { AudioPlayer } from "./audio-player";
 import { Utils } from "../common/utils";
 
 
@@ -26,7 +22,6 @@ export class PromptText extends EventManager {
     public handler: any;
     public sound: Sound;
     public isStoneDropped: boolean = false;
-    audioPlayer: AudioPlayer;
 
     constructor(width, height, currentPuzzleData, levelData, rightToLeft) {
         super({
@@ -37,8 +32,6 @@ export class PromptText extends EventManager {
         this.height = height;
         this.levelData = levelData;
         this.rightToLeft = rightToLeft;
-        this.sound = new Sound();
-        this.audioPlayer = new AudioPlayer();
         self = this;
         this.currentPromptText = currentPuzzleData.prompt.promptText;
         this.currentPuzzleData = currentPuzzleData;
@@ -52,7 +45,6 @@ export class PromptText extends EventManager {
         this.prompt_image.src = "./assets/images/promptTextBg.png";
         this.prompt_image.onload = () => {
             this.imagesLoaded = true;
-            this.playSound()
         };
         // this.handler = document.getElementById("canvas");
         // this.handler.addEventListener(
@@ -77,11 +69,15 @@ export class PromptText extends EventManager {
         }
     }
 
-    playSound = () => {
-        console.log('PromptAudio',  Utils.getConvertedDevProdURL(this.currentPuzzleData.prompt.promptAudio));
-        this.audioPlayer.playAudio(false, Utils.getConvertedDevProdURL(this.currentPuzzleData.prompt.promptAudio)
-        );
+    public getPromptAudioUrl = (): string => {
+        return Utils.getConvertedDevProdURL(this.currentPuzzleData.prompt.promptAudio);
     }
+
+    // playSound = () => {
+    //     console.log('PromptAudio',  Utils.getConvertedDevProdURL(this.currentPuzzleData.prompt.promptAudio));
+    //     this.audioPlayer.playAudio(false, Utils.getConvertedDevProdURL(this.currentPuzzleData.prompt.promptAudio)
+    //     );
+    // }
 
     onClick(xClick, yClick) {
         if (
