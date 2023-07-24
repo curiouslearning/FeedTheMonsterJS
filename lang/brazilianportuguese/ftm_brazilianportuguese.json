@@ -12810,7 +12810,11 @@
   ],
   "version": 1.3,
   "variant": "a",
-  "FeedbackTexts": ["Fantástico!", "Uau!", "Incrível!"],
+  "FeedbackTexts": [
+    "Fantástico!",
+    "Uau!",
+    "Incrível!"
+  ],
   "RightToLeft": false,
   "aboutCompany": "<p>Feed The Monster ensina seu filho os fundamentos da leitura.<br/>Colete ovos de monstros e alimente-os com letras para que<br/>eles possam crescer e se tornar novos amigos! <br/>Suportado por Curious Learning.</p>",
   "descriptionText": "<p>Obrigado por experimentar a versão web do Feed The Monster!<br/>Para jogar o jogo completo, visite-nos na <a href='https://play.google.com/store/apps/details?id=com.eduapp4syria.feedthemonsterENGLISH'>Google Play Store.</a></p>",
