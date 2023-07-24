@@ -1061,7 +1061,8 @@ export class GameplayScene {
   loadPuzzle = (isTimerEnded?:boolean) => {
     let timerEnded = (isTimerEnded == undefined)?false:true;
     this.removeEventListeners();
-    this.incrementPuzzle()
+    this.incrementPuzzle();
+    this.isGameStarted = false;
     
     if (this.counter == this.levelData.puzzles.length) {
       this.levelIndicators.setIndicators(this.counter);
@@ -1173,7 +1174,7 @@ export class GameplayScene {
     }
   }
 
-  private handleCorrectStoneDrop(feedbackIndex: number): void {
+  private handleCorrectStoneDrop = (feedbackIndex: number): void => {
     this.score += 100;
     this.audioPlayer.playAudio(false, "./assets/audios/Eat.mp3","./assets/audios/Cheering-02.mp3", "./assets/audios/fantastic.WAV");
     this.feedbackTextEffects.wrapText(this.getRandomFeedBackText(feedbackIndex));
