@@ -1061,10 +1061,8 @@ export class GameplayScene {
   loadPuzzle = (isTimerEnded?:boolean) => {
     let timerEnded = (isTimerEnded == undefined)?false:true;
     this.removeEventListeners();
-    this.counter++;
+    this.incrementPuzzle();
     this.isGameStarted = false;
-    this.time = -4000;
-    this.tempWordforWordPuzzle = "";
     if (this.counter == this.levelData.puzzles.length) {
       this.levelIndicators.setIndicators(this.counter);
       GameScore.setGameLevelScore(this.levelData, this.score);
@@ -1073,7 +1071,8 @@ export class GameplayScene {
         GameScore.calculateStarCount(this.score),
         this.monsterPhaseNumber
       );
-    } else {
+    }
+    else {
       const loadPuzzleData = {
         counter: this.counter,
       };
@@ -1083,29 +1082,16 @@ export class GameplayScene {
       if(timerEnded)
       {
         // this.monster.changeToIdleAnimation();
-        this.pickedStone = null;
-        this.feedbackTextEffects.clearParticle();
-        this.feedBackTextCanavsElement.style.zIndex = "0";
-        document.dispatchEvent(loadPuzzleEvent);
-        this.addEventListeners();
-
+        this.initNewPuzzle(loadPuzzleEvent);
       }
       else{
         setTimeout(() => {
-            // this.changeToNextPuzzle();  
-            this.pickedStone = null;
-            this.feedbackTextEffects.clearParticle();
-            this.feedBackTextCanavsElement.style.zIndex = "0";
-            document.dispatchEvent(loadPuzzleEvent);
-            this.addEventListeners();
-            this.audioPlayer.stopAudio();
+            // this.changeToNextPuzzle();
+            this.initNewPuzzle(loadPuzzleEvent);
           }, 4000);
-
       }
-      
     }
   };
-
 
   public dispose() {
     this.removeEventListeners();
@@ -1118,44 +1104,20 @@ export class GameplayScene {
   }
 
   public letterInWordPuzzle(droppedStone: string) {
-    const isCorrect =
-      this.stoneHandler.isStoneDroppedCorrectForLetterInWord(droppedStone);
+    const isCorrect = this.stoneHandler.isStoneDroppedCorrectForLetterInWord(droppedStone);
     if (isCorrect) {
-      this.score = this.score + 100;
-      const feedBackIndex = this.getRandomInt(0, 1);
-      // this.audioPlayer.playAudio(false, "./assets/audios/Eat.mp3","./assets/audios/Cheering-02.mp3", "./assets/audios/fantastic.WAV");
-      this.feedbackTextEffects.wrapText(
-        this.getRandomFeedBackText(feedBackIndex)
-      );
-      this.feedBackTextCanavsElement.style.zIndex = "2";
+      this.handleCorrectStoneDrop(this.getRandomInt(0, 1));
     }
-    let loadPuzzleData = { isCorrect: isCorrect };
-    const dropStoneEvent = new CustomEvent(STONEDROP, {
-      detail: loadPuzzleData,
-    });
-    document.dispatchEvent(dropStoneEvent);
-    // this.removeEventListeners();
+    this.dispatchStoneDropEvent(isCorrect);
     this.loadPuzzle();
   }
 
   public letterOnlyPuzzle(droppedStone: string) {
-    const isCorrect =
-      this.stoneHandler.isStoneDroppedCorrectForLetterOnly(droppedStone);
+    const isCorrect = this.stoneHandler.isStoneDroppedCorrectForLetterOnly(droppedStone);
     if (isCorrect) {
-      this.score = this.score + 100;
-      const feedBackIndex = this.getRandomInt(0, 1);
-      // this.audioPlayer.playAudio(false, "./assets/audios/Eat.mp3","./assets/audios/Cheering-02.mp3", "./assets/audios/fantastic.WAV");
-      this.feedbackTextEffects.wrapText(
-        this.getRandomFeedBackText(feedBackIndex)
-      );
-      this.feedBackTextCanavsElement.style.zIndex = "2";
+      this.handleCorrectStoneDrop(this.getRandomInt(0, 1));
     }
-    let loadPuzzleData = { isCorrect: isCorrect };
-    const dropStoneEvent = new CustomEvent(STONEDROP, {
-      detail: loadPuzzleData,
-    });
-    document.dispatchEvent(dropStoneEvent);
-    // this.removeEventListeners();
+    this.dispatchStoneDropEvent(isCorrect);
     this.loadPuzzle();
   }
 
@@ -1203,5 +1165,37 @@ export class GameplayScene {
       // this.removeEventListeners();
       this.loadPuzzle();
     }
+  }
+
+  
+  private handleCorrectStoneDrop = (feedbackIndex: number): void => {
+    this.score += 100;
+    // this.audioPlayer.playAudio(false, "./assets/audios/Eat.mp3","./assets/audios/Cheering-02.mp3", "./assets/audios/fantastic.WAV");
+    this.feedbackTextEffects.wrapText(this.getRandomFeedBackText(feedbackIndex));
+    this.feedBackTextCanavsElement.style.zIndex = "2";
+  }
+
+  private dispatchStoneDropEvent(isCorrect: boolean): void {
+    const loadPuzzleData = { isCorrect: isCorrect };
+    const dropStoneEvent = new CustomEvent(STONEDROP, {
+      detail: loadPuzzleData,
+    });
+    document.dispatchEvent(dropStoneEvent);
+  }
+
+  private initNewPuzzle(loadPuzzleEvent){
+        this.isGameStarted = false;
+        this.time = 0;
+        this.tempWordforWordPuzzle = "";
+        this.pickedStone = null;
+        this.feedbackTextEffects.clearParticle();
+        this.feedBackTextCanavsElement.style.zIndex = "0";
+        document.dispatchEvent(loadPuzzleEvent);
+        this.addEventListeners();
+        this.audioPlayer.stopAudio();
+  }
+
+  private incrementPuzzle(){
+    this.counter += 1;
   }
 }
