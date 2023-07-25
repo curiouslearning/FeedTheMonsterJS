@@ -27,6 +27,7 @@ export class PromptText extends EventManager {
     public sound: Sound;
     public isStoneDropped: boolean = false;
     audioPlayer: AudioPlayer;
+    droppedStones: number = 0;
 
     constructor(width, height, currentPuzzleData, levelData, rightToLeft) {
         super({
@@ -108,7 +109,7 @@ export class PromptText extends EventManager {
         );
     }
 
-    drawArabic(droppedStones = 0) {
+    drawArabic() {
         var x = this.width / 2;
         const y = this.height * 0.26;
         this.context.textAlign = "center";
@@ -133,7 +134,7 @@ export class PromptText extends EventManager {
             x = x - this.context.measureText(this.currentPromptText).width * 0.8;
             for (let i = this.targetStones.length - 1; i >= 0; i--) {
                 x = x + this.context.measureText(this.targetStones[i]).width + 5;
-                if (droppedStones > i || droppedStones == undefined) {
+                if (this.droppedStones > i || this.droppedStones == undefined) {
                     this.context.fillStyle = "black";
                     this.context.fillText(this.targetStones[i], x, y);
                 } else {
@@ -146,7 +147,7 @@ export class PromptText extends EventManager {
             this.context.fillText(this.currentPromptText, x, y);
         }
     }
-    drawOthers(droppedStones = 0) {
+    drawOthers() {
         const promptTextLetters = this.currentPromptText.split("");
         const x = this.width / 2;
         const y = this.height * 0.26;
@@ -179,7 +180,7 @@ export class PromptText extends EventManager {
                     break;
                 }
                 case "Word": {
-                    if (droppedStones > i || droppedStones == undefined) {
+                    if (this.droppedStones > i || this.droppedStones == undefined) {
                         this.context.fillStyle = "black";
                         this.context.fillText(
                             promptTextLetters[i],
@@ -210,7 +211,7 @@ export class PromptText extends EventManager {
             ).width;
         }
     }
-    draw(droppedStones = 0) {
+    draw() {
         if (!this.isStoneDropped) {
             this.context.drawImage(
                 this.prompt_image,
@@ -223,8 +224,8 @@ export class PromptText extends EventManager {
             this.context.fillStyle = "black";
             this.context.font = 30 + "px Arial";
             this.rightToLeft
-                ? this.drawArabic(droppedStones)
-                : this.drawOthers(droppedStones);
+                ? this.drawArabic()
+                : this.drawOthers();
         }
     }
 
@@ -233,6 +234,7 @@ export class PromptText extends EventManager {
     }
 
     public handleLoadPuzzle(event) {
+        this.droppedStones = 0;
         this.currentPuzzleData = this.levelData.puzzles[event.detail.counter]
         this.currentPromptText = this.currentPuzzleData.prompt.promptText;
         this.targetStones = this.currentPuzzleData.targetStones;
@@ -246,5 +248,8 @@ export class PromptText extends EventManager {
 
     update() {
 
+    }
+    droppedStoneIndex(index:number){
+        this.droppedStones = index;
     }
 }
