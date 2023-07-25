@@ -14,6 +14,7 @@ const rl = readline.createInterface({
 async function main() {
   // language = await promptForLanguageSelection();
   const json = await processModule(language);
+  json["title"] = "Feed The Monster";
   const missingLetterPaths = findMissingLetter(json);
   outputFilePath = `${__dirname}/language_report.txt`;
   if (!build_lang) {
@@ -26,7 +27,7 @@ async function main() {
     if (missingLetterPaths.length == 0) {
       fs.appendFile(
         outputFilePath,
-        "==  No JSON issues  ==" + "\n\n",
+        "==  No JSON issues  in " + language + " language ==" + "\n\n",
         "utf8",
         (err) => {}
       );
@@ -70,37 +71,65 @@ function findMissingLetter(obj, path = "", paths = []) {
   if (typeof obj === "object" && obj !== null) {
     for (let key in obj) {
       if (obj.hasOwnProperty(key)) {
-        const newPath = path ? `${path}.${key}` : key;
-        if (key === "FeedbackAudios" || key === "OtherAudios") {
-          if (key === "FeedbackAudios" || key === "OtherAudios") {
-            if (Array.isArray(obj[key])) {
-              // Handle array of URLs
-              const urlList = obj[key];
-              const transformedUrls = urlList.map((url) => {
-                let word = extractWordFromUrl(url);
-                if (word === "fantastic1") {
-                  word = word.replace("1", "");
-                }
-                return createTransformedUrl(word);
-              });
-              obj[key] = transformedUrls;
-            } else if (typeof obj[key] === "object" && obj[key] !== null) {
-              // Handle key-value pairs of strings and URLs
-              const audioObject = obj[key];
-              for (let audioKey in audioObject) {
-                if (audioObject.hasOwnProperty(audioKey)) {
-                  const url = audioObject[audioKey];
-                  let word = extractWordFromUrl(url);
-                  if (word === "great") {
-                    word = word + "1";
-                  }
-                  const transformedUrl = createTransformedUrl(word);
-                  audioObject[audioKey] = transformedUrl;
-                }
-              }
-            }
+        var newPath = path ? `${path}.${key}` : key;
+        if (key === "FeedbackAudios") {
+          for (fd_url in obj[key]) {
+            obj[key][fd_url] =
+              "https://feedthemonster.curiouscontent.org/lang/" +
+              language +
+              "/audios/" +
+              obj[key][fd_url]
+                .substring(
+                  obj[key][fd_url].lastIndexOf("/") + 1,
+                  obj[key][fd_url].lastIndexOf(".")
+                )
+                .replace(/[^a-zA-Z]/g, "") +
+              ".mp3".toLowerCase();
           }
         }
+        if (key === "OtherAudios") {
+          for (fd_url in obj[key]) {
+            obj[key][fd_url] =
+              "https://feedthemonster.curiouscontent.org/lang/" +
+              language +
+              "/audios/" +
+              obj[key][fd_url].substring(
+                obj[key][fd_url].lastIndexOf("/") + 1,
+                obj[key][fd_url].lastIndexOf(".")
+              ) +
+              ".mp3".toLowerCase();
+          }
+        }
+        // if (key === "FeedbackAudios" || key === "OtherAudios") {
+        //   if (key === "FeedbackAudios" || key === "OtherAudios") {
+        //     if (Array.isArray(obj[key])) {
+        //       // Handle array of URLs
+        //       const urlList = obj[key];
+        //       const transformedUrls = urlList.map((url) => {
+        //         let word = extractWordFromUrl(url);
+        //         if (word === "great") {
+        //           word = word + "1";
+        //         }
+        //         return createTransformedUrl(word);
+        //       });
+        //       obj[key] = transformedUrls;
+        //     } else if (typeof obj[key] === "object" && obj[key] !== null) {
+        //       // Handle key-value pairs of strings and URLs
+        //       const audioObject = obj[key];
+        //       for (let audioKey in audioObject) {
+        //         if (audioObject.hasOwnProperty(audioKey)) {
+        //           const url = audioObject[audioKey];
+        //           let word = extractWordFromUrl(url);
+        //           if (word === "great") {
+        //             word = word + "1";
+        //           }
+        //           const transformedUrl = createTransformedUrl(word);
+        //           audioObject[audioKey] = transformedUrl;
+        //         }
+        //       }
+        //     }
+        //   }
+        // }
         if (key === "PromptAudio") {
           const parts = obj[key].split("/");
           const fileName = parts[parts.length - 1];
@@ -129,7 +158,9 @@ function findMissingLetter(obj, path = "", paths = []) {
         ) {
         } else {
           const randomIndex = Math.floor(Math.random() * uniqueLetters.length);
-          build_lang ? (obj[key] = uniqueLetters[randomIndex]) : null;
+          var randomchar = uniqueLetters[randomIndex];
+          obj[key] = uniqueLetters[randomIndex];
+          newPath = newPath + " / Replaced with = '" + randomchar + "'";
           paths.push(newPath);
         }
         findMissingLetter(obj[key], newPath, paths);

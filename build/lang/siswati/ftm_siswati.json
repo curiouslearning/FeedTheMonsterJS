@@ -9,14 +9,14 @@
     "Amazing!"
   ],
   "FeedbackAudios": [
-    "https://feedthemonster.curiouscontent.org/lang/siswati/audios/fantastic.wav",
-    "https://feedthemonster.curiouscontent.org/lang/siswati/audios/great.wav",
-    "https://feedthemonster.curiouscontent.org/lang/siswati/audios/amazing.wav"
+    "https://feedthemonster.curiouscontent.org/lang/siswati/audios/fantastic.mp3",
+    "https://feedthemonster.curiouscontent.org/lang/siswati/audios/great.mp3",
+    "https://feedthemonster.curiouscontent.org/lang/siswati/audios/amazing.mp3"
   ],
   "OtherAudios": {
-    "Select your player": "https://feedthemonster.curiouscontent.org/siswati/sounds/other/Select-your-player.wav",
-    "Watch me grow": "https://feedthemonster.curiouscontent.org/siswati/sounds/other/watch-me-grow.wav",
-    "Are you sure": "https://feedthemonster.curiouscontent.org/siswati/sounds/other/are-you-sure.wav"
+    "Select your player": "https://feedthemonster.curiouscontent.org/lang/siswati/audios/Select-your-player.mp3",
+    "Watch me grow": "https://feedthemonster.curiouscontent.org/lang/siswati/audios/watch-me-grow.mp3",
+    "Are you sure": "https://feedthemonster.curiouscontent.org/lang/siswati/audios/are-you-sure.mp3"
   },
   "Levels": [
     {
