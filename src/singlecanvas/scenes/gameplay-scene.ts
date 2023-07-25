@@ -1190,6 +1190,7 @@ export class GameplayScene {
 
     if (isCorrect) {
       this.monster.changeToEatAnimation();
+      this.promptText.droppedStoneIndex(this.tempWordforWordPuzzle.length);
       setTimeout(() => {
         this.monster.changeToIdleAnimation();
       }, 1500);
