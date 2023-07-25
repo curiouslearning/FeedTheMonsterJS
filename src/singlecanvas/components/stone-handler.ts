@@ -6,6 +6,7 @@ import { getDatafromStorage } from "../../data/profile-data";
 import { FirebaseIntegration } from "../../firebase/firebase_integration";
 import { EventManager } from "../events/EventManager";
 import { Tutorial } from "./tutorial";
+import { AudioPlayer } from "./audio-player";
 // import { LevelIndicators } from "./level-indicators.js";
 // import { Tutorial } from "./tutorial.js";
 // import Monster from "./animation/monster.js";
@@ -53,6 +54,7 @@ export default class StoneHandler extends EventManager {
     public tutorial: Tutorial;
     correctTargetStone: any;
     stonebg: HTMLImageElement;
+    public audioPlayer: AudioPlayer;
     constructor(
         context: CanvasRenderingContext2D,
         canvas: { width: number; height?: number },
@@ -101,6 +103,7 @@ export default class StoneHandler extends EventManager {
             this.createStones(this.stonebg)
             // this.stoneConfig = new StoneConfig(this.context, this.height, this.width, "text", 100, 100, img);
         }
+        this.audioPlayer = new AudioPlayer();
     }
 
     createStones(img) {
@@ -259,6 +262,7 @@ export default class StoneHandler extends EventManager {
     public isStoneDroppedCorrectForLetterOnly(droppedStone: string): boolean {
         if(droppedStone == this.correctTargetStone)
         {
+            this.audioPlayer.playAudio(false, "./assets/audios/Eat.mp3","./assets/audios/Cheering-02.mp3", "./assets/audios/fantastic.WAV");
             return true;
         }
         else{
@@ -269,6 +273,7 @@ export default class StoneHandler extends EventManager {
     public isStoneDroppedCorrectForLetterInWord(droppedStone: string): boolean {
         if(droppedStone == this.correctTargetStone)
         {
+            this.audioPlayer.playAudio(false, "./assets/audios/Eat.mp3","./assets/audios/Cheering-02.mp3", "./assets/audios/fantastic.WAV");
             return true;
         }
         else{
@@ -278,6 +283,7 @@ export default class StoneHandler extends EventManager {
 
     public isStonDroppedCorrectForWord(droppedStone: string): boolean {
         if (droppedStone == this.correctTargetStone.substring(0, droppedStone.length)) {
+            this.audioPlayer.playAudio(false, "./assets/audios/Eat.mp3","./assets/audios/Cheering-02.mp3", "./assets/audios/fantastic.WAV");
             return true;
         } else {
             return false;

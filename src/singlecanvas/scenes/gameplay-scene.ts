@@ -1177,7 +1177,8 @@ export class GameplayScene {
 
   private handleCorrectStoneDrop = (feedbackIndex: number): void => {
     this.score += 100;
-    this.audioPlayer.playAudio(false, "./assets/audios/Eat.mp3","./assets/audios/Cheering-02.mp3", "./assets/audios/fantastic.WAV");
+    console.log('handleCorrectStone->');
+    // this.audioPlayer.playAudio(false, "./assets/audios/Eat.mp3","./assets/audios/Cheering-02.mp3", "./assets/audios/fantastic.WAV");
     this.feedbackTextEffects.wrapText(this.getRandomFeedBackText(feedbackIndex));
     this.feedBackTextCanavsElement.style.zIndex = "2";
   }
