@@ -59,8 +59,6 @@ function getAccessToken(oAuth2Client) {
     console.log(authUrl);
 
     rl.question("Enter the authorization code: ", (code) => {
-      rl.close();
-
       oAuth2Client.getToken(code, (err, token) => {
         if (err) {
           reject("Error retrieving access token:", err);
@@ -117,7 +115,6 @@ async function listFilesAndFolders(auth, parentFolderId) {
     });
 
     if (selectedFolderNumber.toLowerCase() === "back") {
-      rl.close();
       let folderId = languageFolderId[languageFolderId.length - 2];
       languageFolderId.pop();
       currentFolderPath =

@@ -98,14 +98,15 @@ export class LevelEndScene {
   }
   switchToReactionAnimation() {
     if (self.starCount <= 1) {
-      self.audioPlayer.playAudio(
-        false,
-        "../../../assets/audios/Disapointed-05.mp3"
-      );
+      self.audioPlayer.playAudio(false, "./assets/audios/LevelLoseFanfare.mp3");
 
       self.monster.changeToSpitAnimation();
     } else {
-      self.audioPlayer.playAudio(false, "./assets/audios/Cheering-02.mp3");
+      self.audioPlayer.playAudio(
+        false,
+        "./assets/audios/LevelWinFanfare.mp3",
+        "./assets/audios/intro.mp3"
+      );
       self.monster.changeToEatAnimation();
     }
   }
