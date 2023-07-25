@@ -3,16 +3,20 @@
   "version": 2.1,
   "variant": "a",
   "RightToLeft": false,
-  "FeedbackTexts": ["शानदार", "महान", "आश्चर्यजनक"],
+  "FeedbackTexts": [
+    "शानदार",
+    "महान",
+    "आश्चर्यजनक"
+  ],
   "FeedbackAudios": [
-    "https://feedthemonster.curiouscontent.org/lang/nepali/audios/fantastic.wav",
-    "https://feedthemonster.curiouscontent.org/lang/nepali/audios/great.wav",
-    "https://feedthemonster.curiouscontent.org/lang/nepali/audios/amazing.wav"
+    "https://feedthemonster.curiouscontent.org/lang/nepali/audios/fantastic.mp3",
+    "https://feedthemonster.curiouscontent.org/lang/nepali/audios/great.mp3",
+    "https://feedthemonster.curiouscontent.org/lang/nepali/audios/amazing.mp3"
   ],
   "OtherAudios": {
-    "Select your player": "https://feedthemonster.curiouscontent.org/nepali/sounds/other/Select-your-player.wav",
-    "Watch me grow": "https://feedthemonster.curiouscontent.org/nepali/sounds/other/watch-me-grow.wav",
-    "Are you sure": "https://feedthemonster.curiouscontent.org/nepali/sounds/other/are-you-sure.wav"
+    "Select your player": "https://feedthemonster.curiouscontent.org/lang/nepali/audios/Select-your-player.mp3",
+    "Watch me grow": "https://feedthemonster.curiouscontent.org/lang/nepali/audios/watch-me-grow.mp3",
+    "Are you sure": "https://feedthemonster.curiouscontent.org/lang/nepali/audios/are-you-sure.mp3"
   },
   "Levels": [
     {

@@ -9,14 +9,14 @@
     "İnanılmaz"
   ],
   "FeedbackAudios": [
-    "https://feedthemonster.curiouscontent.org/lang/turkish/audios/fantastic.wav",
-    "https://feedthemonster.curiouscontent.org/lang/turkish/audios/great.wav",
-    "https://feedthemonster.curiouscontent.org/lang/turkish/audios/amazing.wav"
+    "https://feedthemonster.curiouscontent.org/lang/turkish/audios/fantastic.mp3",
+    "https://feedthemonster.curiouscontent.org/lang/turkish/audios/great.mp3",
+    "https://feedthemonster.curiouscontent.org/lang/turkish/audios/amazing.mp3"
   ],
   "OtherAudios": {
-    "Select your player": "https://feedthemonster.curiouscontent.org/turkish/sounds/other/Select-your-player.wav",
-    "Watch me grow": "https://feedthemonster.curiouscontent.org/turkish/sounds/other/watch-me-grow.wav",
-    "Are you sure": "https://feedthemonster.curiouscontent.org/turkish/sounds/other/are-you-sure.wav"
+    "Select your player": "https://feedthemonster.curiouscontent.org/lang/turkish/audios/Select-your-player.mp3",
+    "Watch me grow": "https://feedthemonster.curiouscontent.org/lang/turkish/audios/watch-me-grow.mp3",
+    "Are you sure": "https://feedthemonster.curiouscontent.org/lang/turkish/audios/are-you-sure.mp3"
   },
   "Levels": [
     {

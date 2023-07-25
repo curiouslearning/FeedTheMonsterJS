@@ -10,13 +10,13 @@
   ],
   "FeedbackAudios": [
     "https://feedthemonster.curiouscontent.org/lang/georgian/audios/fantastic.mp3",
-    "https://feedthemonster.curiouscontent.org/lang/georgian/audio/great.mp3",
-    "https://feedthemonster.curiouscontent.org/lang/georgian/audio/amazing.mp3"
+    "https://feedthemonster.curiouscontent.org/lang/georgian/audios/great.mp3",
+    "https://feedthemonster.curiouscontent.org/lang/georgian/audios/amazing.mp3"
   ],
   "OtherAudios": {
-    "Select your player": "https://feedthemonster.curiouscontent.org/georgian/sounds/other/Select-your-player.wav",
-    "Watch me grow": "https://feedthemonster.curiouscontent.org/georgian/sounds/other/watch-me-grow.wav",
-    "Are you sure": "https://feedthemonster.curiouscontent.org/georgian/sounds/other/are-you-sure.wav"
+    "Select your player": "https://feedthemonster.curiouscontent.org/lang/georgian/audios/Select-your-player.mp3",
+    "Watch me grow": "https://feedthemonster.curiouscontent.org/lang/georgian/audios/watch-me-grow.mp3",
+    "Are you sure": "https://feedthemonster.curiouscontent.org/lang/georgian/audios/are-you-sure.mp3"
   },
   "Levels": [
     {
@@ -1684,10 +1684,10 @@
               "StoneText": "დ"
             },
             {
-              "StoneText": "FireWrongLetter"
+              "StoneText": "ზ"
             },
             {
-              "StoneText": "FireWrongLetter"
+              "StoneText": "ბ"
             }
           ]
         }
@@ -1818,10 +1818,10 @@
               "StoneText": "ზ"
             },
             {
-              "StoneText": "FireWrongLetter"
+              "StoneText": "ც"
             },
             {
-              "StoneText": "FireWrongLetter"
+              "StoneText": "უ"
             }
           ]
         },
@@ -1940,10 +1940,10 @@
               "StoneText": "დ"
             },
             {
-              "StoneText": "FireWrongLetter"
+              "StoneText": "კ"
             },
             {
-              "StoneText": "FireWrongLetter"
+              "StoneText": "ჰ"
             }
           ]
         },
@@ -2062,7 +2062,7 @@
               "StoneText": "ტ"
             },
             {
-              "StoneText": "FireWrongLetter"
+              "StoneText": "შ"
             }
           ]
         },
@@ -2143,10 +2143,10 @@
               "StoneText": "ე"
             },
             {
-              "StoneText": "FireWrongLetter"
+              "StoneText": "მ"
             },
             {
-              "StoneText": "FireWrongLetter"
+              "StoneText": "კ"
             }
           ]
         }
