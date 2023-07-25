@@ -9,7 +9,7 @@ const accessToken = process.env.ACCESS_TOKEN;
 const owner = process.env.REPO_OWNER;
 const repo = process.env.REPO;
 const branch = process.env.BRANCH_NAME;
-const repoPath = dirname(require.main.filename) + process.env.CLONE_REPO_PATH;
+const repoPath = dirname(require.main.filename) + process.env.REPO_PATH;
 const repositoryUrl = process.env.REPO_URL;
 
 const octokit = new Octokit({
@@ -101,7 +101,7 @@ async function commitAndPushChanges(filePaths) {
     ref: `heads/${branch}`,
     sha: commitData.sha,
   });
-
+  console.log("All file changes commited successfully.");
   await discardAllChanges();
 }
 
@@ -110,7 +110,6 @@ async function discardAllChanges() {
 
   try {
     await git.reset('hard', ['HEAD']);
-    console.log("All file changes discarded successfully.");
     await updateCurrentBranch();
   } catch (error) {
     console.error("Error occurred while discarding changes:", error);
