@@ -278,7 +278,7 @@ export class StartScene {
             });
             toggleBtn.style.display = "none";
             this.audioPlayer.playAudio(false, "./assets/audios/ButtonClick.mp3");
-            self.switchSceneToLevelSelection();
+            self.switchSceneToLevelSelection('StartScene');
         }
 
 
