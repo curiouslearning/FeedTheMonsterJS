@@ -2,17 +2,21 @@
   "version": 2.1,
   "variant": "a",
   "RightToLeft": true,
-  "FeedbackTexts": ["!خیلی عالی", "!خیلی خوب", "!عالی"],
+  "FeedbackTexts": [
+    "!خیلی عالی",
+    "!خیلی خوب",
+    "!عالی"
+  ],
   "title": "غذا به هیولا بده",
   "FeedbackAudios": [
-    "https://feedthemonster.curiouscontent.org/lang/farsi/audios/feedbacks/fantastic.mp3",
-    "https://feedthemonster.curiouscontent.org/lang/farsi/audios/feedbacks/great.mp3",
-    "https://feedthemonster.curiouscontent.org/lang/farsi/audios/feedbacks/amazing.mp3"
+    "https://feedthemonster.curiouscontent.org/lang/farsi/audios/fantastic.mp3",
+    "https://feedthemonster.curiouscontent.org/lang/farsi/audios/great.mp3",
+    "https://feedthemonster.curiouscontent.org/lang/farsi/audios/amazing.mp3"
   ],
   "OtherAudios": {
-    "Select your player": "https://feedthemonster.curiouscontent.org/lang/farsi/audios/other/Select-your-player.mp3",
-    "Watch me grow": "https://feedthemonster.curiouscontent.org/lang/farsi/audios/other/watch-me-grow.mp3",
-    "Are you sure": "https://feedthemonster.curiouscontent.org/lang/farsi/audios/other/are-you-sure.mp3"
+    "Select your player": "https://feedthemonster.curiouscontent.org/lang/farsi/audios/Select-your-player.mp3",
+    "Watch me grow": "https://feedthemonster.curiouscontent.org/lang/farsi/audios/watch-me-grow.mp3",
+    "Are you sure": "https://feedthemonster.curiouscontent.org/lang/farsi/audios/are-you-sure.mp3"
   },
   "Levels": [
     {
@@ -1773,10 +1777,10 @@
               "StoneText": "ر"
             },
             {
-              "StoneText": "FireWrongLetter"
+              "StoneText": "م"
             },
             {
-              "StoneText": "FireWrongLetter"
+              "StoneText": "م"
             }
           ]
         }
@@ -1907,10 +1911,10 @@
               "StoneText": "ر"
             },
             {
-              "StoneText": "FireWrongLetter"
+              "StoneText": "د"
             },
             {
-              "StoneText": "FireWrongLetter"
+              "StoneText": "ب"
             }
           ]
         },
@@ -2029,10 +2033,10 @@
               "StoneText": "ف"
             },
             {
-              "StoneText": "FireWrongLetter"
+              "StoneText": "ر"
             },
             {
-              "StoneText": "FireWrongLetter"
+              "StoneText": "ش"
             }
           ]
         },
@@ -2232,10 +2236,10 @@
               "StoneText": "ن"
             },
             {
-              "StoneText": "FireWrongLetter"
+              "StoneText": "د"
             },
             {
-              "StoneText": "FireWrongLetter"
+              "StoneText": "ی"
             }
           ]
         }
@@ -5769,7 +5773,7 @@
               "StoneText": "چ"
             },
             {
-              "StoneText": "FireWrongLetter"
+              "StoneText": "ُ"
             }
           ]
         }

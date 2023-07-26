@@ -2,17 +2,21 @@
   "version": 2.1,
   "variant": "a",
   "RightToLeft": false,
-  "FeedbackTexts": ["Fantastic!", "Ibyiza cyane!", "amazing!"],
+  "FeedbackTexts": [
+    "Fantastic!",
+    "Ibyiza cyane!",
+    "amazing!"
+  ],
   "title": "Gusa umutego",
   "FeedbackAudios": [
-    "https://feedthemonster.curiouscontent.org/lang/kinyarwanda/audios/feedbacks/fantastic.mp3",
-    "https://feedthemonster.curiouscontent.org/lang/kinyarwanda/audios/feedbacks/great.mp3",
-    "https://feedthemonster.curiouscontent.org/lang/kinyarwanda/audios/feedbacks/amazing.mp3"
+    "https://feedthemonster.curiouscontent.org/lang/kinyarwanda/audios/fantastic.mp3",
+    "https://feedthemonster.curiouscontent.org/lang/kinyarwanda/audios/great.mp3",
+    "https://feedthemonster.curiouscontent.org/lang/kinyarwanda/audios/amazing.mp3"
   ],
   "OtherAudios": {
-    "Select your player": "https://feedthemonster.curiouscontent.org/lang/kinyarwanda/audios/other/Select-your-player.mp3",
-    "Watch me grow": "https://feedthemonster.curiouscontent.org/lang/kinyarwanda/audios/other/watch-me-grow.mp3",
-    "Are you sure": "https://feedthemonster.curiouscontent.org/lang/kinyarwanda/audios/other/are-you-sure.mp3"
+    "Select your player": "https://feedthemonster.curiouscontent.org/lang/kinyarwanda/audios/Select-your-player.mp3",
+    "Watch me grow": "https://feedthemonster.curiouscontent.org/lang/kinyarwanda/audios/watch-me-grow.mp3",
+    "Are you sure": "https://feedthemonster.curiouscontent.org/lang/kinyarwanda/audios/are-you-sure.mp3"
   },
   "Levels": [
     {

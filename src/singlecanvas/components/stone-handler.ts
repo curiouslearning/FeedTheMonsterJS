@@ -99,6 +99,7 @@ export default class StoneHandler extends EventManager {
         this.tutorial = new Tutorial(context,canvas.width,canvas.height)
         this.stonebg = new Image();
         this.stonebg.src = "./assets/images/stone_pink_v02.png";
+        this.audioPlayer = new AudioPlayer();
         this.stonebg.onload = (e) => {
             this.createStones(this.stonebg)
             // this.stoneConfig = new StoneConfig(this.context, this.height, this.width, "text", 100, 100, img);

@@ -87,7 +87,8 @@ export class LevelSelectionScreen {
     loadImages(this.images, (images) => {
       this.loadedImages = Object.assign({}, images);
       this.imagesLoaded = true;
-      this.audioPlayer.playAudio(true, "./assets/audios/intro.mp3");
+      // this.audioPlayer.playAudio(false, "./assets/audios/intro.mp3");
+      this.sound.playSound("./assets/audios/intro.mp3", IntroMusic);
     });
     this.addListeners();
   }

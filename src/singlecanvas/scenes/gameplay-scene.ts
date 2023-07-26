@@ -1142,7 +1142,7 @@ export class GameplayScene {
     ) {
       this.score = this.score + 100;
       const feedBackIndex = this.getRandomInt(0, 1);
-      this.audioPlayer.playAudio(false, "./assets/audios/Eat.mp3","./assets/audios/Cheering-02.mp3", "./assets/audios/fantastic.WAV");
+      // this.audioPlayer.playAudio(false, "./assets/audios/Eat.mp3","./assets/audios/Cheering-02.mp3", "./assets/audios/fantastic.WAV");
       this.feedbackTextEffects.wrapText(
         this.getRandomFeedBackText(feedBackIndex)
       );
@@ -1160,6 +1160,7 @@ export class GameplayScene {
 
     if (isCorrect) {
       this.monster.changeToEatAnimation();
+      this.promptText.droppedStoneIndex(this.tempWordforWordPuzzle.length);
       setTimeout(() => {
         this.monster.changeToIdleAnimation();
       }, 1500);

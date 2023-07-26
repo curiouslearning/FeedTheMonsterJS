@@ -6,8 +6,7 @@ export class AudioPlayer {
   private audioQueue: string[];
 
   constructor() {
-    this.audioContext = new (window.AudioContext ||
-      (window as Window).webkitAudioContext)();
+    this.audioContext = AudioContextManager.getAudioContext();
     this.sourceNode = null;
     this.audioQueue = [];
   }
@@ -60,4 +59,14 @@ export class AudioPlayer {
   // public unregisterEvents() {
   //   this.sourceNode.removeEventListener("ended", this.handleAudioEnded, false);
   // }
+}
+
+class AudioContextManager {
+  private static instance: AudioContext | null = null;
+  static getAudioContext(): AudioContext {
+    if (!AudioContextManager.instance) {
+      AudioContextManager.instance = new (window.AudioContext || (window as Window).webkitAudioContext)();
+    }
+    return AudioContextManager.instance;
+  }
 }

@@ -9,7 +9,7 @@ token=""
 response=$(curl -s -H "Authorization: token $token" "https://api.github.com/repos/$owner/$repo/contents")
 folders=($(echo "$response" | jq -r '.[] | select(.type == "dir") | .name'))
 echo "Folders in the GitHub repository '$owner/$repo':"
-#echo "response$response"
+# echo "response$response"
 PS3="Select a language number: "
 select folder in "${folders[@]}"; do
     if [[ -n $folder ]]; then
@@ -30,8 +30,8 @@ select option in "${options[@]}"; do
   case $option in
     "Yes")
       echo "You selected yes."
-      node find_missing_foilstone_paths.js "$folder" "$build" 
-      echo "Done"
+      # node find_missing_foilstone_paths.js "$folder" "$build" 
+      # echo "Done"
       python3 download_audio_files.py "$folder" "$build"
       break
       ;;

@@ -130,7 +130,7 @@ download_and_convert_folder(repo_owner, repo_name,
 missing_elements = list(set(promptUrls) - set(githubSounds))
 if not build_lang:
     if len(missing_elements) == 0:
-        write_to_file(output_path, {}, "==  No Audio issues  ==" + "\n\n")
+        write_to_file(output_path, {}, f"==  No Audio issues in {selected_folder.lower()} language  ==" + "\n\n")
     else:
         write_to_file(output_path, {
         }, f"==  Missing audios in {selected_folder.lower()} language ==" + "\n\n")
