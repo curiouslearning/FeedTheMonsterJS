@@ -1119,9 +1119,17 @@ export class GameplayScene {
   }
 
   public letterInWordPuzzle(droppedStone: string) {
-    const isCorrect = this.stoneHandler.isStoneDroppedCorrectForLetterInWord(droppedStone);
+    const feedBackIndex = this.getRandomInt(0, 1);
+    const isCorrect =
+      this.stoneHandler.isStoneDroppedCorrectForLetterInWord(droppedStone,feedBackIndex);
     if (isCorrect) {
-      this.handleCorrectStoneDrop(this.getRandomInt(0, 1));
+      this.score = this.score + 100;
+      
+      // this.audioPlayer.playAudio(false, "./assets/audios/Eat.mp3","./assets/audios/Cheering-02.mp3", "./assets/audios/fantastic.WAV");
+      this.feedbackTextEffects.wrapText(
+        this.getRandomFeedBackText(feedBackIndex)
+      );
+      this.feedBackTextCanavsElement.style.zIndex = "2";
     }
     this.logPuzzleEndFirebaseEvent(isCorrect);
     this.dispatchStoneDropEvent(isCorrect);
@@ -1129,9 +1137,17 @@ export class GameplayScene {
   }
 
   public letterOnlyPuzzle(droppedStone: string) {
-    const isCorrect = this.stoneHandler.isStoneDroppedCorrectForLetterOnly(droppedStone);
+    const feedBackIndex = this.getRandomInt(0, 1);
+    const isCorrect =
+      this.stoneHandler.isStoneDroppedCorrectForLetterOnly(droppedStone,feedBackIndex);
     if (isCorrect) {
-      this.handleCorrectStoneDrop(this.getRandomInt(0, 1));
+      this.score = this.score + 100;
+      
+      // this.audioPlayer.playAudio(false, "./assets/audios/Eat.mp3","./assets/audios/Cheering-02.mp3", "./assets/audios/fantastic.WAV");
+      this.feedbackTextEffects.wrapText(
+        this.getRandomFeedBackText(feedBackIndex)
+      );
+      this.feedBackTextCanavsElement.style.zIndex = "2";
     }
     this.logPuzzleEndFirebaseEvent(isCorrect);
     this.dispatchStoneDropEvent(isCorrect);
@@ -1141,16 +1157,17 @@ export class GameplayScene {
   public wordPuzzle(droppedStone: string, droppedStoneInstance: StoneConfig) {
     droppedStoneInstance.x = -999;
     droppedStoneInstance.y = -999;
+    const feedBackIndex = this.getRandomInt(0, 1);
     this.tempWordforWordPuzzle = this.tempWordforWordPuzzle + droppedStone;
     const isCorrect = this.stoneHandler.isStonDroppedCorrectForWord(
-      this.tempWordforWordPuzzle
+      this.tempWordforWordPuzzle,feedBackIndex
     );
     if (
       this.stoneHandler.getCorrectTargetStone() == this.tempWordforWordPuzzle &&
       isCorrect
     ) {
       this.score = this.score + 100;
-      const feedBackIndex = this.getRandomInt(0, 1);
+      
       // this.audioPlayer.playAudio(false, "./assets/audios/Eat.mp3","./assets/audios/Cheering-02.mp3", "./assets/audios/fantastic.WAV");
       this.feedbackTextEffects.wrapText(
         this.getRandomFeedBackText(feedBackIndex)
