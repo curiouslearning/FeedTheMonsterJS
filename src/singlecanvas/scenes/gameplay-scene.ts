@@ -1123,9 +1123,11 @@ export class GameplayScene {
   }
 
   public letterInWordPuzzle(droppedStone: string) {
-    const isCorrect = this.stoneHandler.isStoneDroppedCorrectForLetterInWord(droppedStone);
+    const feedBackIndex = this.getRandomInt(0, 1);
+    const isCorrect =
+      this.stoneHandler.isStoneDroppedCorrectForLetterInWord(droppedStone,feedBackIndex);
     if (isCorrect) {
-      this.handleCorrectStoneDrop(this.getRandomInt(0, 1));
+      this.handleCorrectStoneDrop(feedBackIndex);
     }
     this.logPuzzleEndFirebaseEvent(isCorrect);
     this.dispatchStoneDropEvent(isCorrect);
@@ -1133,9 +1135,11 @@ export class GameplayScene {
   }
 
   public letterOnlyPuzzle(droppedStone: string) {
-    const isCorrect = this.stoneHandler.isStoneDroppedCorrectForLetterOnly(droppedStone);
+    const feedBackIndex = this.getRandomInt(0, 1);
+    const isCorrect =
+      this.stoneHandler.isStoneDroppedCorrectForLetterOnly(droppedStone,feedBackIndex);
     if (isCorrect) {
-      this.handleCorrectStoneDrop(this.getRandomInt(0, 1));
+     this.handleCorrectStoneDrop(feedBackIndex);
     }
     this.logPuzzleEndFirebaseEvent(isCorrect);
     this.dispatchStoneDropEvent(isCorrect);
@@ -1145,29 +1149,18 @@ export class GameplayScene {
   public wordPuzzle(droppedStone: string, droppedStoneInstance: StoneConfig) {
     droppedStoneInstance.x = -999;
     droppedStoneInstance.y = -999;
+    const feedBackIndex = this.getRandomInt(0, 1);
     this.tempWordforWordPuzzle = this.tempWordforWordPuzzle + droppedStone;
     const isCorrect = this.stoneHandler.isStonDroppedCorrectForWord(
-      this.tempWordforWordPuzzle
+      this.tempWordforWordPuzzle,feedBackIndex
     );
     if (
       this.stoneHandler.getCorrectTargetStone() == this.tempWordforWordPuzzle &&
       isCorrect
     ) {
-      this.score = this.score + 100;
-      const feedBackIndex = this.getRandomInt(0, 1);
-      // this.audioPlayer.playAudio(false, "./assets/audios/Eat.mp3","./assets/audios/Cheering-02.mp3", "./assets/audios/fantastic.WAV");
-      this.feedbackTextEffects.wrapText(
-        this.getRandomFeedBackText(feedBackIndex)
-      );
-      this.feedBackTextCanavsElement.style.zIndex = "2";
-      let loadPuzzleData = { isCorrect: isCorrect };
-      const dropStoneEvent = new CustomEvent(STONEDROP, {
-        detail: loadPuzzleData,
-      });
-      this.tempWordforWordPuzzle = "";
-      this.logPuzzleEndFirebaseEvent(isCorrect);
-      document.dispatchEvent(dropStoneEvent);
-      // this.removeEventListeners();
+      this.handleCorrectStoneDrop(feedBackIndex);
+      this.logPuzzleEndFirebaseEvent(isCorrect,'Word');
+      this.dispatchStoneDropEvent(isCorrect);
       this.loadPuzzle();
       return;
     }
@@ -1179,14 +1172,11 @@ export class GameplayScene {
         this.monster.changeToIdleAnimation();
       }, 1500);
     } else {
-      let loadPuzzleData = { isCorrect: isCorrect };
-      const dropStoneEvent = new CustomEvent(STONEDROP, {
-        detail: loadPuzzleData,
-      });
-      this.tempWordforWordPuzzle = "";
-      document.dispatchEvent(dropStoneEvent);
-      // this.removeEventListeners();
+      this.audioPlayer.playAudio(false,'./assets/audios/MonsterSpit.mp3')
+      this.logPuzzleEndFirebaseEvent(isCorrect,'Word');
+      this.dispatchStoneDropEvent(isCorrect);
       this.loadPuzzle();
+     
     }
   }
 
@@ -1222,7 +1212,7 @@ export class GameplayScene {
     this.counter += 1;
   }
 
-  public logPuzzleEndFirebaseEvent(isCorrect:boolean){
+  public logPuzzleEndFirebaseEvent(isCorrect:boolean,puzzleType?:string){
     let endTime = Date.now();
     const puzzleCompletedData: PuzzleCompletedEvent = {
       cr_user_id: pseudoId,
@@ -1232,7 +1222,7 @@ export class GameplayScene {
       success_or_failure: isCorrect?'success':'failure',
       level_number: this.levelData.levelNumber,
       puzzle_number: this.counter,
-      item_selected: this.pickedStone?.text,
+      item_selected: (puzzleType == 'Word')?this.tempWordforWordPuzzle:this.pickedStone?.text,
       target: this.stoneHandler.getCorrectTargetStone(),
       foils: this.stoneHandler.getFoilStones(),
       response_time: (endTime - this.puzzleTime) / 1000,
