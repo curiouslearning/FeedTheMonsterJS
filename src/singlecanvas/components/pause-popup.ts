@@ -86,12 +86,12 @@ export default class PausePopUp {
     if (this.retryButton.onClick(x, y)) {
       this.dispose();
       console.log(" retry button clicked");
-      this.reloadScene(this.gameplayData);
+      this.reloadScene(this.gameplayData,'GamePlay');
     }
     if (this.closeButton.onClick(x, y)) {
       this.dispose();
       console.log(" close button clicked");
-      this.switchToLevelSelection();
+      this.switchToLevelSelection('GamePlay');
     }
   };
 

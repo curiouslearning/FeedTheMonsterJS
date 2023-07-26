@@ -293,4 +293,8 @@ export default class StoneHandler extends EventManager {
     public getCorrectTargetStone(): string {
         return this.correctTargetStone;
     }
+
+    public getFoilStones(){
+        return this.currentPuzzleData.foilStones;
+    }
  }
