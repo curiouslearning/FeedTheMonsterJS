@@ -185,7 +185,6 @@ export class SceneHandler {
         this.data,
         monsterPhaseNumber
       );
-
       SceneHandler.SceneName = EndScene1;
     }, 4000);
   };
