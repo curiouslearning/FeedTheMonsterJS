@@ -27,7 +27,6 @@ import { LevelEndScene } from "../../scenes/level-end-scene";
 import { Game } from "../../scenes/game";
 import { getDatafromStorage, getTotalStarCount } from "../../data/profile-data";
 import { Debugger, lang, pseudoId } from "../../../global-variables";
-import { FirebaseIntegration } from "../../firebase/firebase_integration";
 import StoneHandler from "../components/stone-handler";
 import { Tutorial } from "../components/tutorial";
 import { StoneConfig } from "../common/stone-config";
@@ -47,6 +46,8 @@ import { Background } from "../components/background";
 import { FeedbackTextEffects } from "../components/feedback-particle-effect/feedback-text-effects";
 import { GameScore } from "../data/game-score";
 import { AudioPlayer } from "../components/audio-player";
+import { LevelCompletedEvent, PuzzleCompletedEvent } from "../Firebase/firebase-event-interface";
+import { FirebaseIntegration } from "../Firebase/firebase-integration";
 
 var images = {
   bgImg: "./assets/images/bg_v01.jpg",
@@ -156,6 +157,9 @@ export class GameplayScene {
   public switchToLevelSelection: any;
   public reloadScene: any;
   audioPlayer: AudioPlayer;
+  firebaseIntegration: FirebaseIntegration;
+  startTime: number;
+  puzzleTime: number;
 
   constructor(
     canvas,
@@ -186,6 +190,8 @@ export class GameplayScene {
     this.levelNumber = levelNumber;
     this.switchToLevelSelection = switchToLevelSelection;
     this.reloadScene = reloadScene;
+    this.startGameTime();
+    this.startPuzzleTime();
     // this.levelStartCallBack = levelStartCallBack;
     // this.timerTicking = new TimerTicking(game, this);
     // this.promptText = new PromptText(
@@ -238,6 +244,7 @@ export class GameplayScene {
       this.height,
       this.levelData.levelNumber
     );
+    this.firebaseIntegration = new FirebaseIntegration();
     this.feedBackTextCanavsElement = document.getElementById("feedback-text") as HTMLCanvasElement;
     this.feedBackTextCanavsElement.height = this.height;
     this.feedBackTextCanavsElement.width = this.width;
@@ -274,6 +281,7 @@ export class GameplayScene {
         )
       : localStorage.setItem(PreviousPlayedLevel + lang, previousPlayedLevel);
     this.addEventListeners();
+
   }
 
   resumeGame = () => {
@@ -1034,37 +1042,42 @@ export class GameplayScene {
     });
   }
 
-  puzzleEndFirebaseEvents(
-    success_or_failure,
-    puzzle_number,
-    item_selected,
-    target,
-    foils,
-    response_time
-  ) {
-    var puzzleEndTime = new Date();
-    FirebaseIntegration.customEvents("puzzle_completed", {
-      cr_user_id: pseudoId,
-      success_or_failure: success_or_failure,
-      level_number: this.levelData.levelNumber,
-      puzzle_number: puzzle_number,
-      item_selected: item_selected,
-      target: target,
-      foils: foils,
-      profile_number: 0,
-      ftm_language: lang,
-      version_number: document.getElementById("version-info-id").innerHTML,
-      response_time: (puzzleEndTime.getTime() - response_time) / 1000,
-    });
-  }
+  // puzzleEndFirebaseEvents(
+  //   success_or_failure,
+  //   puzzle_number,
+  //   item_selected,
+  //   target,
+  //   foils,
+  //   response_time
+  // ) {
+  //   var puzzleEndTime = new Date();
+  //   FirebaseIntegration.customEvents("puzzle_completed", {
+  //     cr_user_id: pseudoId,
+  //     success_or_failure: success_or_failure,
+  //     level_number: this.levelData.levelNumber,
+  //     puzzle_number: puzzle_number,
+  //     item_selected: item_selected,
+  //     target: target,
+  //     foils: foils,
+  //     profile_number: 0,
+  //     ftm_language: lang,
+  //     version_number: document.getElementById("version-info-id").innerHTML,
+  //     response_time: (puzzleEndTime.getTime() - response_time) / 1000,
+  //   });
+  // }
 
   loadPuzzle = (isTimerEnded?:boolean) => {
     let timerEnded = (isTimerEnded == undefined)?false:true;
+    if(timerEnded)
+    {
+      this.logPuzzleEndFirebaseEvent(false);
+    }
     this.removeEventListeners();
     this.incrementPuzzle();
     this.isGameStarted = false;
     if (this.counter == this.levelData.puzzles.length) {
       this.levelIndicators.setIndicators(this.counter);
+      this.logLevelEndFirebaseEvent();
       GameScore.setGameLevelScore(this.levelData, this.score);
       this.switchSceneToEnd(
         this.levelData,
@@ -1073,12 +1086,14 @@ export class GameplayScene {
       );
     }
     else {
+      
       const loadPuzzleData = {
         counter: this.counter,
       };
       const loadPuzzleEvent = new CustomEvent(LOADPUZZLE, {
         detail: loadPuzzleData,
       });
+     
       if(timerEnded)
       {
         // this.monster.changeToIdleAnimation();
@@ -1108,6 +1123,7 @@ export class GameplayScene {
     if (isCorrect) {
       this.handleCorrectStoneDrop(this.getRandomInt(0, 1));
     }
+    this.logPuzzleEndFirebaseEvent(isCorrect);
     this.dispatchStoneDropEvent(isCorrect);
     this.loadPuzzle();
   }
@@ -1117,6 +1133,7 @@ export class GameplayScene {
     if (isCorrect) {
       this.handleCorrectStoneDrop(this.getRandomInt(0, 1));
     }
+    this.logPuzzleEndFirebaseEvent(isCorrect);
     this.dispatchStoneDropEvent(isCorrect);
     this.loadPuzzle();
   }
@@ -1144,6 +1161,7 @@ export class GameplayScene {
         detail: loadPuzzleData,
       });
       this.tempWordforWordPuzzle = "";
+      this.logPuzzleEndFirebaseEvent(isCorrect);
       document.dispatchEvent(dropStoneEvent);
       // this.removeEventListeners();
       this.loadPuzzle();
@@ -1194,9 +1212,51 @@ export class GameplayScene {
         document.dispatchEvent(loadPuzzleEvent);
         this.addEventListeners();
         this.audioPlayer.stopAudio();
+        this.startPuzzleTime();
+        
   }
 
   private incrementPuzzle(){
     this.counter += 1;
+  }
+
+  public logPuzzleEndFirebaseEvent(isCorrect:boolean){
+    let endTime = Date.now();
+    const puzzleCompletedData: PuzzleCompletedEvent = {
+      cr_user_id: pseudoId,
+      ftm_language: lang,
+      profile_number: 0,
+      version_number: document.getElementById("version-info-id").innerHTML,
+      success_or_failure: isCorrect?'success':'failure',
+      level_number: this.levelData.levelNumber,
+      puzzle_number: this.counter,
+      item_selected: this.pickedStone?.text,
+      target: this.stoneHandler.getCorrectTargetStone(),
+      foils: this.stoneHandler.getFoilStones(),
+      response_time: (endTime - this.puzzleTime) / 1000,
+    };
+    this.firebaseIntegration.sendPuzzleCompletedEvent(puzzleCompletedData);
+  }
+
+  public logLevelEndFirebaseEvent(){
+    let endTime = Date.now();
+    const levelCompletedData: LevelCompletedEvent = {
+      cr_user_id: pseudoId,
+      ftm_language: lang,
+      profile_number: 0,
+      version_number: document.getElementById("version-info-id").innerHTML,
+      success_or_failure: GameScore.calculateStarCount(this.score)>=3?'success':'failure',
+      number_of_successful_puzzles: this.score/100,
+      level_number: this.levelData.levelNumber,
+      duration: (endTime - this.startTime) / 1000,
+    };
+    this.firebaseIntegration.sendLevelCompletedEvent(levelCompletedData);
+  }
+
+  public startGameTime(){
+     this.startTime = Date.now();
+  }
+  public startPuzzleTime(){
+    this.puzzleTime = Date.now();
   }
 }

@@ -30,6 +30,7 @@ import { LevelSelectionScreen } from "../scenes/level-selection-scene";
 import { Debugger, lang } from "../../../global-variables";
 import { Background } from "../components/background"
 import { AudioPlayer } from "../components/audio-player";
+import { FirebaseIntegration } from "../Firebase/firebase-integration";
 // var this: any;
 let lastTime = 0;
 let pwa_install_status: any;
@@ -269,10 +270,7 @@ export class StartScene {
         const x = event.clientX - rect.left;
         const y = event.clientY - rect.top;
         if (self.playButton.onClick(x, y)) {
-            self.firebase_analytics
-                ? self.firebase_analytics.logEvent(FirebaseUserClicked, "click")
-                : null;
-            // @ts-ignore
+            FirebaseIntegration.getInstance().sendUserClickedOnPlayEvent();
             fbq("trackCustom", FirebaseUserClicked, {
                 event: "click",
             });

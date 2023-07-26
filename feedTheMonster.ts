@@ -14,7 +14,7 @@ import {
 import { IsCached, PWAInstallStatus } from "./src/common/common";
 import { Workbox } from "workbox-window";
 import { Debugger, lang } from "./global-variables";
-import { FirebaseIntegration } from "./src/firebase/firebase_integration";
+import { FirebaseIntegration } from "./src/singlecanvas/Firebase/firebase-integration";
 declare const window: any;
 declare const app: any;
 let jsonData;
@@ -27,7 +27,8 @@ let is_cached = localStorage.getItem(IsCached)
   ? new Map(JSON.parse(localStorage.getItem(IsCached)))
   : new Map();
 window.addEventListener("beforeunload", (event) => {
-  FirebaseIntegration.sessionEnd();
+  // FirebaseIntegration.sessionEnd();
+  FirebaseIntegration.getInstance().sendSessionEndEvent();
 });
 window.addEventListener("load", async function () {
   registerWorkbox();
@@ -57,9 +58,9 @@ window.addEventListener("load", async function () {
       Debugger.DevelopmentLink
         ? (document.getElementById("toggle-btn").style.display = "block")
         : null;
-      if (navigator.onLine) {
-        FirebaseIntegration.initializeFirebase();
-      }
+      // if (navigator.onLine) {
+      //   FirebaseIntegration.initializeFirebase();
+      // }
       canvas.height = window.innerHeight;
       canvas.width = window.screen.width > 420 ? 420 : window.innerWidth;
       delete this.monster;
@@ -70,9 +71,9 @@ window.addEventListener("load", async function () {
     }
   });
   if (is_cached.has(lang)) {
-    if (navigator.onLine) {
-      FirebaseIntegration.initializeFirebase();
-    }
+    // if (navigator.onLine) {
+    //   FirebaseIntegration.initializeFirebase();
+    // }
     Debugger.DevelopmentLink
       ? (document.getElementById("toggle-btn").style.display = "block")
       : null;
