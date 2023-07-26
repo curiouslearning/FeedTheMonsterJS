@@ -238,9 +238,7 @@ export class GameplayScene {
       this.height,
       this.levelData.levelNumber
     );
-    this.feedBackTextCanavsElement = document.getElementById(
-      "feedback-text"
-    ) as HTMLCanvasElement;
+    this.feedBackTextCanavsElement = document.getElementById("feedback-text") as HTMLCanvasElement;
     this.feedBackTextCanavsElement.height = this.height;
     this.feedBackTextCanavsElement.width = this.width;
 
@@ -1060,8 +1058,8 @@ export class GameplayScene {
     });
   }
 
-  loadPuzzle = (isTimerEnded?: boolean) => {
-    let timerEnded = isTimerEnded == undefined ? false : true;
+  loadPuzzle = (isTimerEnded?:boolean) => {
+    let timerEnded = (isTimerEnded == undefined)?false:true;
     this.removeEventListeners();
     this.counter++;
     this.isGameStarted = false;
@@ -1082,26 +1080,32 @@ export class GameplayScene {
       const loadPuzzleEvent = new CustomEvent(LOADPUZZLE, {
         detail: loadPuzzleData,
       });
-      if (timerEnded) {
+      if(timerEnded)
+      {
         // this.monster.changeToIdleAnimation();
         this.pickedStone = null;
         this.feedbackTextEffects.clearParticle();
         this.feedBackTextCanavsElement.style.zIndex = "0";
         document.dispatchEvent(loadPuzzleEvent);
         this.addEventListeners();
-      } else {
-        setTimeout(() => {
-          // this.changeToNextPuzzle();
-          this.pickedStone = null;
-          this.feedbackTextEffects.clearParticle();
-          this.feedBackTextCanavsElement.style.zIndex = "0";
-          document.dispatchEvent(loadPuzzleEvent);
-          this.addEventListeners();
-          this.audioPlayer.stopAudio();
-        }, 4000);
+
       }
+      else{
+        setTimeout(() => {
+            // this.changeToNextPuzzle();  
+            this.pickedStone = null;
+            this.feedbackTextEffects.clearParticle();
+            this.feedBackTextCanavsElement.style.zIndex = "0";
+            document.dispatchEvent(loadPuzzleEvent);
+            this.addEventListeners();
+            this.audioPlayer.stopAudio();
+          }, 4000);
+
+      }
+      
     }
   };
+
 
   public dispose() {
     this.removeEventListeners();
@@ -1114,14 +1118,11 @@ export class GameplayScene {
   }
 
   public letterInWordPuzzle(droppedStone: string) {
-    const feedBackIndex = this.getRandomInt(0, 1);
-    const isCorrect = this.stoneHandler.isStoneDroppedCorrectForLetterInWord(
-      droppedStone,
-      feedBackIndex
-    );
+    const isCorrect =
+      this.stoneHandler.isStoneDroppedCorrectForLetterInWord(droppedStone);
     if (isCorrect) {
       this.score = this.score + 100;
-
+      const feedBackIndex = this.getRandomInt(0, 1);
       // this.audioPlayer.playAudio(false, "./assets/audios/Eat.mp3","./assets/audios/Cheering-02.mp3", "./assets/audios/fantastic.WAV");
       this.feedbackTextEffects.wrapText(
         this.getRandomFeedBackText(feedBackIndex)
@@ -1138,14 +1139,11 @@ export class GameplayScene {
   }
 
   public letterOnlyPuzzle(droppedStone: string) {
-    const feedBackIndex = this.getRandomInt(0, 1);
-    const isCorrect = this.stoneHandler.isStoneDroppedCorrectForLetterOnly(
-      droppedStone,
-      feedBackIndex
-    );
+    const isCorrect =
+      this.stoneHandler.isStoneDroppedCorrectForLetterOnly(droppedStone);
     if (isCorrect) {
       this.score = this.score + 100;
-
+      const feedBackIndex = this.getRandomInt(0, 1);
       // this.audioPlayer.playAudio(false, "./assets/audios/Eat.mp3","./assets/audios/Cheering-02.mp3", "./assets/audios/fantastic.WAV");
       this.feedbackTextEffects.wrapText(
         this.getRandomFeedBackText(feedBackIndex)
@@ -1164,20 +1162,17 @@ export class GameplayScene {
   public wordPuzzle(droppedStone: string, droppedStoneInstance: StoneConfig) {
     droppedStoneInstance.x = -999;
     droppedStoneInstance.y = -999;
-    const feedBackIndex = this.getRandomInt(0, 1);
     this.tempWordforWordPuzzle = this.tempWordforWordPuzzle + droppedStone;
     const isCorrect = this.stoneHandler.isStonDroppedCorrectForWord(
-      this.tempWordforWordPuzzle,
-      this.stoneHandler.getCorrectTargetStone(),
-      this.tempWordforWordPuzzle,
-      feedBackIndex
+      this.tempWordforWordPuzzle
     );
     if (
       this.stoneHandler.getCorrectTargetStone() == this.tempWordforWordPuzzle &&
       isCorrect
     ) {
       this.score = this.score + 100;
-
+      const feedBackIndex = this.getRandomInt(0, 1);
+      // this.audioPlayer.playAudio(false, "./assets/audios/Eat.mp3","./assets/audios/Cheering-02.mp3", "./assets/audios/fantastic.WAV");
       this.feedbackTextEffects.wrapText(
         this.getRandomFeedBackText(feedBackIndex)
       );
