@@ -1160,7 +1160,7 @@ export class GameplayScene {
     const feedBackIndex = this.getRandomInt(0, 1);
     this.tempWordforWordPuzzle = this.tempWordforWordPuzzle + droppedStone;
     const isCorrect = this.stoneHandler.isStonDroppedCorrectForWord(
-      this.tempWordforWordPuzzle,this.stoneHandler.getCorrectTargetStone(),feedBackIndex
+      this.tempWordforWordPuzzle,feedBackIndex
     );
     if (
       this.stoneHandler.getCorrectTargetStone() == this.tempWordforWordPuzzle &&

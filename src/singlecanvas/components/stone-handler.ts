@@ -286,9 +286,9 @@ export default class StoneHandler extends EventManager {
         }
     }
 
-    public isStonDroppedCorrectForWord(droppedStone: string,targetStone:string,feedBackIndex:number): boolean {
+    public isStonDroppedCorrectForWord(droppedStone: string,feedBackIndex:number): boolean {
         if (droppedStone == this.correctTargetStone.substring(0, droppedStone.length)) {
-            if(droppedStone== targetStone){
+            if(droppedStone== this.getCorrectTargetStone()){
                 this.audioPlayer.playAudio(false, "./assets/audios/Eat.mp3","./assets/audios/Cheering-02.mp3", feedBackAudiosUrls[feedBackIndex]);
             }else{
                 this.audioPlayer.playAudio(false, "./assets/audios/Eat.mp3","./assets/audios/Cheering-02.mp3");
