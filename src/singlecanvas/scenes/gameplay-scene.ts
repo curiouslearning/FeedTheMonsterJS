@@ -1118,11 +1118,12 @@ export class GameplayScene {
   }
 
   public letterInWordPuzzle(droppedStone: string) {
+    const feedBackIndex = this.getRandomInt(0, 1);
     const isCorrect =
-      this.stoneHandler.isStoneDroppedCorrectForLetterInWord(droppedStone);
+      this.stoneHandler.isStoneDroppedCorrectForLetterInWord(droppedStone,feedBackIndex);
     if (isCorrect) {
       this.score = this.score + 100;
-      const feedBackIndex = this.getRandomInt(0, 1);
+      
       // this.audioPlayer.playAudio(false, "./assets/audios/Eat.mp3","./assets/audios/Cheering-02.mp3", "./assets/audios/fantastic.WAV");
       this.feedbackTextEffects.wrapText(
         this.getRandomFeedBackText(feedBackIndex)
@@ -1139,11 +1140,12 @@ export class GameplayScene {
   }
 
   public letterOnlyPuzzle(droppedStone: string) {
+    const feedBackIndex = this.getRandomInt(0, 1);
     const isCorrect =
-      this.stoneHandler.isStoneDroppedCorrectForLetterOnly(droppedStone);
+      this.stoneHandler.isStoneDroppedCorrectForLetterOnly(droppedStone,feedBackIndex);
     if (isCorrect) {
       this.score = this.score + 100;
-      const feedBackIndex = this.getRandomInt(0, 1);
+      
       // this.audioPlayer.playAudio(false, "./assets/audios/Eat.mp3","./assets/audios/Cheering-02.mp3", "./assets/audios/fantastic.WAV");
       this.feedbackTextEffects.wrapText(
         this.getRandomFeedBackText(feedBackIndex)
@@ -1162,16 +1164,17 @@ export class GameplayScene {
   public wordPuzzle(droppedStone: string, droppedStoneInstance: StoneConfig) {
     droppedStoneInstance.x = -999;
     droppedStoneInstance.y = -999;
+    const feedBackIndex = this.getRandomInt(0, 1);
     this.tempWordforWordPuzzle = this.tempWordforWordPuzzle + droppedStone;
     const isCorrect = this.stoneHandler.isStonDroppedCorrectForWord(
-      this.tempWordforWordPuzzle
+      this.tempWordforWordPuzzle,this.stoneHandler.getCorrectTargetStone(),feedBackIndex
     );
     if (
       this.stoneHandler.getCorrectTargetStone() == this.tempWordforWordPuzzle &&
       isCorrect
     ) {
       this.score = this.score + 100;
-      const feedBackIndex = this.getRandomInt(0, 1);
+      
       // this.audioPlayer.playAudio(false, "./assets/audios/Eat.mp3","./assets/audios/Cheering-02.mp3", "./assets/audios/fantastic.WAV");
       this.feedbackTextEffects.wrapText(
         this.getRandomFeedBackText(feedBackIndex)

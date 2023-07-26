@@ -25,6 +25,10 @@ var audioUrl = {
     monsterSad: "./assets/audios/Disapointed-05.mp3",
     ondragStart: "./assets/audios/onDrag.mp3",
 };
+const feedBackAudiosUrls = [
+    "./lang/" + lang + "/audios/fantastic.mp3",
+    "./lang/" + lang + "/audios/great.mp3",
+  ];
 export default class StoneHandler extends EventManager {
     public context: CanvasRenderingContext2D;
     public canvas: { width: any; height?: number };
@@ -259,10 +263,10 @@ export default class StoneHandler extends EventManager {
         this.unregisterEventListener();
     }
 
-    public isStoneDroppedCorrectForLetterOnly(droppedStone: string): boolean {
+    public isStoneDroppedCorrectForLetterOnly(droppedStone: string,feedBackIndex:number): boolean {
         if(droppedStone == this.correctTargetStone)
         {
-            this.audioPlayer.playAudio(false, "./assets/audios/Eat.mp3","./assets/audios/Cheering-02.mp3", "./assets/audios/fantastic.WAV");
+            this.audioPlayer.playAudio(false, "./assets/audios/Eat.mp3","./assets/audios/Cheering-02.mp3", feedBackAudiosUrls[feedBackIndex]);
             return true;
         }
         else{
@@ -270,10 +274,11 @@ export default class StoneHandler extends EventManager {
         }
     }
 
-    public isStoneDroppedCorrectForLetterInWord(droppedStone: string): boolean {
+    public isStoneDroppedCorrectForLetterInWord(droppedStone: string,feedBackIndex:number): boolean {
         if(droppedStone == this.correctTargetStone)
         {
-            this.audioPlayer.playAudio(false, "./assets/audios/Eat.mp3","./assets/audios/Cheering-02.mp3", "./assets/audios/fantastic.WAV");
+            this.audioPlayer.playAudio(false, "./assets/audios/Eat.mp3","./assets/audios/Cheering-02.mp3", feedBackAudiosUrls[feedBackIndex]);
+           
             return true;
         }
         else{
@@ -281,9 +286,13 @@ export default class StoneHandler extends EventManager {
         }
     }
 
-    public isStonDroppedCorrectForWord(droppedStone: string): boolean {
+    public isStonDroppedCorrectForWord(droppedStone: string,targetStone:string,feedBackIndex:number): boolean {
         if (droppedStone == this.correctTargetStone.substring(0, droppedStone.length)) {
-            this.audioPlayer.playAudio(false, "./assets/audios/Eat.mp3","./assets/audios/Cheering-02.mp3", "./assets/audios/fantastic.WAV");
+            if(droppedStone== targetStone){
+                this.audioPlayer.playAudio(false, "./assets/audios/Eat.mp3","./assets/audios/Cheering-02.mp3", feedBackAudiosUrls[feedBackIndex]);
+            }else{
+                this.audioPlayer.playAudio(false, "./assets/audios/Eat.mp3","./assets/audios/Cheering-02.mp3");
+            }
             return true;
         } else {
             return false;
