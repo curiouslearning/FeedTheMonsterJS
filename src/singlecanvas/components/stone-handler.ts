@@ -270,6 +270,7 @@ export default class StoneHandler extends EventManager {
             return true;
         }
         else{
+            this.audioPlayer.playAudio(false, "./assets/audios/MonsterSpit.mp3");
             return false;
         }
     }
@@ -282,6 +283,7 @@ export default class StoneHandler extends EventManager {
             return true;
         }
         else{
+            this.audioPlayer.playAudio(false, "./assets/audios/MonsterSpit.mp3");
             return false;
         }
     }
