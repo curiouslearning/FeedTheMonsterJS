@@ -170,6 +170,7 @@ export class SceneHandler {
     monsterPhaseNumber: number
   ) => {
     console.log(" currentlevelPlayed: ", currentlevelPlayed);
+    this.removeLoading();
     setTimeout(() => {
       this.gameplayScene.dispose();
       document.getElementById("feedback-text").style.zIndex = "0";

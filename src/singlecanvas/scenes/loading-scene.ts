@@ -32,8 +32,6 @@ export class LoadingScene {
     this.cloudXPosition += deltaTime * 0.55;
 
     if (this.cloudXPosition >= this.width * 0.5 && !this.stopCloudMoving) {
-      console.log("stopping distance->", this.cloudXPosition);
-      console.log(this.width * 0.5);
       this.cloudMovingTimeOut += deltaTime;
       if (this.cloudMovingTimeOut > 2000) {
         this.stopCloudMoving = true;
