@@ -37,7 +37,6 @@
     <li><a href="#compile-and-build-the-new-version">Compile and build the new version</a></li>
     <li><a href="#export-and-upload-to-a-wordpress-server">Export and upload to a Wordpress server</a></li>
     <li><a href="#creating-a-new-gameplay-feature">Creating a new gameplay feature</a></li>
-    <li><a href="#data-collection">Data Collection</a></li>
     </ul></li>
     <li><a href="#contributing">Contributing</a></li>
     <li><a href="#contact">Contact</a></li>
@@ -321,17 +320,7 @@ this.context.fillText(this.score, this.width / 2.25, this.height / 15);
 
 <p align="right">(<a href="#top">back to top</a>)</p>
 
-### Data Collection
 
-Feed The Monster uses Firebase to collect some statistics for internal analysis such events which we collect are:
-
-* Number of users played the Feed The Monster.
-* The amount of time spend on Feed The Monster.
-
-
-Also In order to exclude firebase from the build you can just remove firebase logEvent code and you are good to go.
-
-<p align="right">(<a href="#top">back to top</a>)</p>
 <!-- CONTRIBUTING -->
 
 ## Contributing
