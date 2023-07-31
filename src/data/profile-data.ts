@@ -1,4 +1,4 @@
-import { lang } from "../../global-variables.js";
+import { Debugger, lang } from "../../global-variables.js";
 
 export class ProfileData {
   public levelName: string;
@@ -28,9 +28,28 @@ export function setDataToStorage(profileData) {
   });
   const data: any = JSON.stringify(existingData);
   if (data) {
-    localStorage.setItem(lang+"Profile", data);
+    Debugger.DebugMode
+      ? localStorage.setItem(lang + "ProfileDebug", data)
+      : localStorage.setItem(lang + "Profile", data);
   }
 }
+
+export function setTotalStarCount(starCount) {
+  let totalStarCount = getTotalStarCount();
+  totalStarCount = totalStarCount + starCount;
+  localStorage.setItem(lang+"totalStarCount", totalStarCount.toString());
+}
+
+export function getTotalStarCount() {
+  let totalStarCount;
+  totalStarCount = localStorage.getItem(lang+"totalStarCount");
+  return totalStarCount
+    ? typeof totalStarCount == "string"
+      ? parseInt(totalStarCount)
+      : totalStarCount
+    : 0;
+}
+
 function jsonToArray(json) {
   var data: any = [];
   for (var i in json) {
@@ -56,6 +75,8 @@ function dataPushToArray(jsonData, profileData) {
   return jsonData;
 }
 export function getDatafromStorage() {
-  const data = JSON.parse(localStorage.getItem(lang+"Profile") || "{}");
+  const data = Debugger.DebugMode
+    ? JSON.parse(localStorage.getItem(lang + "ProfileDebug") || "{}")
+    : JSON.parse(localStorage.getItem(lang + "Profile") || "{}");
   return data;
 }

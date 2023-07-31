@@ -24,7 +24,7 @@ export class LevelIndicators {
     level_indicator.onload = function (e) {
       self.context.drawImage(
         level_indicator,
-        0,
+        self.canvas.width * 0.15,
         0,
         self.canvas.width * 0.35,
         self.canvas.height * 0.09
@@ -33,7 +33,8 @@ export class LevelIndicators {
         for (var i = 0; i < 5; i++) {
           self.context.drawImage(
             bar_empty,
-            ((self.canvas.width * 0.35) / 7) * (i + 1),
+            ((self.canvas.width * 0.35) / 7) * (i + 1) +
+              self.canvas.width * 0.15,
             (self.canvas.height * 0.09) / 2 - (self.canvas.height * 0.09) / 6,
             (self.canvas.width * 0.35) / 10,
             (self.canvas.height * 0.09) / 3
@@ -50,7 +51,7 @@ export class LevelIndicators {
       for (var i = 0; i < self.activeIndicators; i++) {
         self.context.drawImage(
           bar_full,
-          ((self.canvas.width * 0.35) / 7) * (i + 1),
+          ((self.canvas.width * 0.35) / 7) * (i + 1) + self.canvas.width * 0.15,
           (self.canvas.height * 0.09) / 2 - (self.canvas.height * 0.09) / 6,
           (self.canvas.width * 0.35) / 10,
           (self.canvas.height * 0.09) / 3

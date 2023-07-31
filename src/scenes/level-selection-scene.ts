@@ -1,11 +1,17 @@
 import { LevelStartScene } from "./level-start-scene.js";
 import { CanvasStack } from "../utility/canvas-stack.js";
-import { gameData } from "../../data.js";
 import { LevelConfig } from "../common/level-config.js";
 import { Game } from "./game.js";
-import { LevelSelectionLayer, PreviousPlayedLevel } from "../common/common.js";
+import {
+  ButtonClick,
+  IntroMusic,
+  LevelSelectionLayer,
+  PreviousPlayedLevel,
+} from "../common/common.js";
 import Sound from "../common/sound.js";
 import { getDatafromStorage } from "../data/profile-data.js";
+import { Debugger, lang } from "../../global-variables.js";
+
 var mapIcon = new Image();
 mapIcon.src = "./assets/images/mapIcon.png";
 var mapLock = new Image();
@@ -22,7 +28,12 @@ var levelNumber: number;
 var self: any;
 var unlockLevelIndex = -1;
 var previousPlayedLevel: number =
-  parseInt(localStorage.getItem(PreviousPlayedLevel)) | 0;
+  parseInt(
+    Debugger.DebugMode
+      ? localStorage.getItem(PreviousPlayedLevel + lang + "Debug")
+      : localStorage.getItem(PreviousPlayedLevel + lang)
+  ) | 0;
+
 var level: number;
 if (previousPlayedLevel != null) {
   level = 10 * Math.floor(previousPlayedLevel / 10);
@@ -70,11 +81,13 @@ export class LevelSelectionScreen {
         break;
       }
       case "close_button": {
+        self.sound.playSound("./assets/audios/intro.mp3", IntroMusic);
         self.drawStars();
       }
     }
   }
   createCanvas() {
+    this.sound.playSound("./assets/audios/intro.mp3", IntroMusic);
     document.addEventListener(
       "visibilitychange",
       function () {
@@ -264,8 +277,19 @@ export class LevelSelectionScreen {
                   (y - s.y - self.canvas.height / 20)
             ) < 45
           ) {
-            if (s.index + level - 1 <= unlockLevelIndex + 1) {
-              self.sound.changeSourse("./assets/audios/ButtonClick.wav");
+            if (Debugger.DebugMode) {
+              self.sound.playSound(
+                "./assets/audios/ButtonClick.mp3",
+                ButtonClick
+              );
+              self.sound.pauseSound();
+              levelNumber = s.index + level - 1;
+              self.startGame(levelNumber);
+            } else if (s.index + level - 1 <= unlockLevelIndex + 1) {
+              self.sound.playSound(
+                "./assets/audios/ButtonClick.mp3",
+                ButtonClick
+              );
               self.sound.pauseSound();
               levelNumber = s.index + level - 1;
               self.startGame(levelNumber);
@@ -336,23 +360,28 @@ export class LevelSelectionScreen {
         s.y + imageSize / 3
       );
       this.context.font = textFontSize - imageSize / 30 + "px Arial";
-      this.context.fillText(
-        this.data.levels[s.index + level - 1].levelMeta.levelType,
-        s.x + imageSize / 3.5,
-        s.y + imageSize / 1.3
-      );
+      Debugger.DebugMode
+        ? this.context.fillText(
+            this.data.levels[s.index + level - 1].levelMeta.levelType,
+            s.x + imageSize / 3.5,
+            s.y + imageSize / 1.3
+          )
+        : null;
     }
   }
   startGame(level_number: string | number) {
+    console.log("LevelDatas", self.data);
+    this.sound.pauseSound();
     new Game(
       this.canvas.width,
       this.canvas.height,
       self.data.levels[level_number],
-      self.gameSceneCallBack
+      self.gameSceneCallBack,
+      self.data.FeedbackTexts,
+      self.data.rightToLeft
     );
   }
   drawStars() {
-    this.sound.changeSourse("./assets/audios/intro.wav");
     let gameLevelData = getDatafromStorage();
     let canvas = document.getElementById("canvas");
     var canavsElement = <HTMLCanvasElement>(
@@ -372,15 +401,17 @@ export class LevelSelectionScreen {
       }
       for (let s of self.levels) {
         if (s.index + level <= self.data.levels.length) {
-          s.index + level - 1 > unlockLevelIndex + 1
-            ? context.drawImage(
-                mapLock,
-                s.x,
-                s.y,
-                this.canvas.height / 13,
-                this.canvas.height / 13
-              )
-            : null;
+          if (!Debugger.DebugMode) {
+            s.index + level - 1 > unlockLevelIndex + 1
+              ? context.drawImage(
+                  mapLock,
+                  s.x,
+                  s.y,
+                  this.canvas.height / 13,
+                  this.canvas.height / 13
+                )
+              : null;
+          }
           for (let i = 0; i < gameLevelData.length; i++) {
             if (s.index - 1 + level == parseInt(gameLevelData[i].levelNumber)) {
               this.drawStar(s, canvas, gameLevelData[i].levelStar, context);

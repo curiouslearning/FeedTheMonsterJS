@@ -1,6 +1,8 @@
 import {
+  ButtonClick,
   FirebaseUserClicked,
   FirebaseUserInstall,
+  loadingScreen,
   MonsterLayer,
   PlayButtonLayer,
   PWAInstallStatus,
@@ -14,7 +16,7 @@ import { Monster } from "../components/monster.js";
 import { DataModal } from "../data/data-modal.js";
 import { CanvasStack } from "../utility/canvas-stack.js";
 import { LevelSelectionScreen } from "./level-selection-scene.js";
-import { lang } from "../../global-variables.js";
+import { Debugger, lang } from "../../global-variables.js";
 
 var bgImg = new Image();
 bgImg.src = "./assets/images/bg_v01.jpg";
@@ -26,15 +28,16 @@ var grassImg = new Image();
 grassImg.src = "./assets/images/FG_a_v01.png";
 var fenchImg = new Image();
 fenchImg.src = "./assets/images/fence_v01.png";
-var title = new Image();
-title.src = "./lang/" + lang + "/images/title.png";
+// var title = new Image();
+// title.src = "./lang/" + lang + "/images/title.png";
 var profileMonster = new Image();
 profileMonster.src = "./assets/images/idle4.png";
 var self: any;
 let pwa_install_status: any;
-const aboutCompanyElement = <HTMLElement>(
-  document.getElementById("about-company")
-);
+// const aboutCompanyElement = <HTMLElement>(
+//   document.getElementById("about-company")
+// );
+const toggleBtn = document.getElementById("toggle-btn") as HTMLElement;
 window.addEventListener("beforeinstallprompt", (e) => {
   e.preventDefault();
   pwa_install_status = e;
@@ -72,15 +75,27 @@ export class StartScene {
     this.createCanvas();
     this.createPlayButton();
     this.firebase_analytics = firebase_analytics;
+    console.log(this.data);
   }
   createCanvas() {
+    toggleBtn.addEventListener("click", () => {
+      toggleBtn.classList.toggle("on");
+
+      if (toggleBtn.classList.contains("on")) {
+        Debugger.DebugMode = true;
+        toggleBtn.innerText = "Dev";
+      } else {
+        Debugger.DebugMode = false;
+        toggleBtn.innerText = "Dev";
+      }
+    });
     this.id = this.canvasStack.createLayer(
       this.height,
       this.width,
       StartSceneLayer
     );
-    aboutCompanyElement.style.display = "block";
-    aboutCompanyElement.innerHTML = globalThis.aboutCompany;
+    // aboutCompanyElement.style.display = "block";
+    // aboutCompanyElement.innerHTML = globalThis.aboutCompany;
     this.canavsElement = document.getElementById(this.id);
     this.context = this.canavsElement.getContext("2d");
     this.canavsElement.style.zIndex = 2;
@@ -117,14 +132,12 @@ export class StartScene {
       this.height / 2
     );
 
-    this.context.drawImage(
-      title,
-      this.width * 0,
-      this.height / 50,
-      this.width,
-      this.height / 6
-    );
-    document.getElementById("loading-screen").style.display = "none";
+    this.context.font = "bold 40px Arial";
+    this.context.fillStyle = "white";
+    this.context.textAlign = "center";
+    this.context.fillText(self.data.title, this.width * 0.5, this.height / 10);
+    // loadingScreen(false);
+    //  document.getElementById("loading-screen").style.display = "none";
   }
 
   createPlayButton() {
@@ -156,7 +169,9 @@ export class StartScene {
         self.canvas.height / 5
       );
     }
-
+    document.addEventListener("selectstart", function (e) {
+      e.preventDefault();
+    });
     document.getElementById(PlayButtonLayer).addEventListener(
       "click",
       async function (event) {
@@ -172,9 +187,9 @@ export class StartScene {
           fbq("trackCustom", FirebaseUserClicked, {
             event: "click",
           });
-
-          aboutCompanyElement.style.display = "none";
-          new Sound().changeSourse("./assets/audios/ButtonClick.wav");
+          toggleBtn.style.display = "none";
+          // aboutCompanyElement.style.display = "none";
+          new Sound().playSound("./assets/audios/ButtonClick.mp3", ButtonClick);
           self.context.clearRect(0, 0, self.canvas.width, self.canvas.height);
           new LevelSelectionScreen(self.canvas, data);
           self.canvasStack.deleteLayer(PlayButtonLayer);

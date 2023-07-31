@@ -70,7 +70,7 @@ export default class PausePopUp {
       const y = event.clientY - rect.top;
       if (self.cancelButton.onClick(x, y)) {
         self.levelStart.timerTicking.resumeTimer();
-        self.levelStart.levelEndCallBack();
+        self.levelStart.levelEndCallBack('cancel_button');
         self.deleteCanvas(self);
       }
       if (self.retryButton.onClick(x, y)) {

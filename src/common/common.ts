@@ -37,8 +37,8 @@ export function loadingScreen(loading: boolean) {
     });
   }
 }
-
 export const MonsterLayer = "monsterCanvas";
+export const TutorialLayer = "tutorialCanvas";
 export const PausePopupLayer = "pausepopupCanvas";
 export const StoneLayer = "stoneCanvas";
 export const TimetickerLayer = "timetickCanvas";
@@ -55,5 +55,17 @@ export const PromptTextLayer = "promptTextCanvas";
 export const PWAInstallStatus = "pwa_installed_status";
 export const UserCancelled = "user_cancel_installation";
 export const NativePlayButton = "native_playbutton_clicked";
-export const PreviousPlayedLevel = "storePreviousPlayedLevel" + lang;
-export const StoreMonsterPhaseNumber = "storeMonsterPhaseNumber" + lang;
+export const PreviousPlayedLevel = "storePreviousPlayedLevel";
+export const StoreMonsterPhaseNumber = "storeMonsterPhaseNumber";
+export const IsCached = "is_cached";
+export const MonsterAudio = "monster_audio";
+export const FeedbackAudio = "feedback_audio";
+export const IntroMusic = "intro_music";
+export const PromptAudio = "prompt_audio";
+export const ButtonClick = "button_click";
+export const TimeOver = "time_over";
+export const StoneMusic = "stone_music";
+export const PhraseAudio = "phrase_audio";
+export const LevelEndAudio = "level_end_audio";
+export const DevelopmentServer =
+  "https://feedthemonsterdev.curiouscontent.org/";

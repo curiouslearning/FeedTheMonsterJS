@@ -1,7 +1,13 @@
-import { TimetickerLayer } from "../common/common.js";
+import { TimeOver, TimetickerLayer } from "../common/common.js";
 import { CanvasStack } from "../utility/canvas-stack.js";
 import { Game } from "../scenes/game.js";
 import { LevelStartScene } from "../scenes/level-start-scene.js";
+import { Tutorial } from "./tutorial.js";
+declare global {
+  interface Window {
+    Android?: any;
+  }
+}
 export class TimerTicking {
   public game: Game;
   public width: number;
@@ -49,17 +55,7 @@ export class TimerTicking {
   deleteCanvas() {
     this.canvasStack.deleteLayer(this.id);
   }
-  draw() {
-    this.context.clearRect(0, 0, this.width, this.height);
-    this.context.drawImage(
-      this.timer_full,
-      this.game.width * 0.12,
-      this.height * 0.099,
-      this.game.width - 50,
-      this.height * 0.05
-    );
-    this.beginTimerOnStart();
-  }
+
   createBackgroud() {
     var self = this;
     this.timer_full = new Image();
@@ -71,7 +67,12 @@ export class TimerTicking {
   }
   update() {
     if (this.isTimerStarted) {
-      this.timer += 0.06;
+      if (window.Android) {
+        this.timer += 0.2;
+      } else {
+        this.timer += 0.06;
+      }
+
       if (this.game.width * 1.3 - this.widthToClear - 10 * this.timer > 55) {
         this.context.clearRect(
           this.game.width * 1.3 - this.widthToClear - 10 * this.timer,
@@ -86,7 +87,10 @@ export class TimerTicking {
         !this.isTimerRunningOut
       ) {
         this.isTimerRunningOut = true;
-        this.levelStart.audio.changeSourse("./assets/audios/timeout.mp3");
+        this.levelStart.audio.playSound(
+          "./assets/audios/timeout.mp3",
+          TimeOver
+        );
       }
       if (
         this.game.width * 1.3 - this.widthToClear - 10 * this.timer < 55 &&
@@ -101,6 +105,7 @@ export class TimerTicking {
   }
   beginTimerOnStart() {
     var self = this;
+
     setTimeout(() => {
       if (!this.pauseButtonClicked) {
         if (!self.isTimerStarted && self.timer == 0) {
@@ -108,14 +113,11 @@ export class TimerTicking {
           self.isTimerStarted = true;
         }
       }
-    }, 6000);
+    }, 3000);
   }
   stopTimer() {
     this.isTimerStarted = false;
-    setTimeout(() => {
-      this.timer = 0;
-    }, 3000);
-    this.timer = 0;
+    console.log("Timer Stopped");
   }
   pauseTimer() {
     this.isTimerStarted = false;
@@ -124,5 +126,18 @@ export class TimerTicking {
   resumeTimer() {
     this.isTimerStarted = true;
     this.pauseButtonClicked = false;
+  }
+  draw() {
+    this.isTimerStarted = false;
+    this.context.clearRect(0, 0, this.width, this.height);
+    this.context.drawImage(
+      this.timer_full,
+      this.game.width * 0.12,
+      this.height * 0.099,
+      this.game.width - 50,
+      this.height * 0.05
+    );
+    this.timer = 0;
+    this.beginTimerOnStart();
   }
 }

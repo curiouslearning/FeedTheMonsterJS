@@ -1,4 +1,5 @@
 export class DataModal {
+  public title: string
   public otherAudios: OtherAudios;
   public levels: number;
   public FeedbackTexts: FeedbackTexts;
@@ -6,12 +7,14 @@ export class DataModal {
   public rightToLeft: any;
 
   constructor(
+    title: string,
     otherAudios: { [x: string]: any },
     levels: number,
     feedbackTexts: string,
     rightToLeft: any,
     feedbackAudios: any
   ) {
+    this.title = title;
     this.otherAudios = new OtherAudios(otherAudios);
     this.levels = this.getLevels(levels);
     this.FeedbackTexts = new FeedbackTexts(feedbackTexts);

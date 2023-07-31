@@ -1,17 +1,20 @@
+import { Debugger, lang } from "../../global-variables.js";
 import { MonsterLayer, StoreMonsterPhaseNumber } from "../common/common.js";
 import { CanvasStack } from "../utility/canvas-stack.js";
 var lastTime = 0;
 var self;
 var animationFrame;
-var monsterPhaseNumber = localStorage.getItem(StoreMonsterPhaseNumber) || 1;
-console.log(">>>>>>>>>.");
-console.log(monsterPhaseNumber);
+var monsterPhaseNumber = Debugger.DebugMode
+  ? localStorage.getItem(StoreMonsterPhaseNumber + lang+"Debug") || 1
+  : localStorage.getItem(StoreMonsterPhaseNumber + lang) || 1;
 var eatImg = new Image();
 eatImg.src = "./assets/images/eat1" + monsterPhaseNumber + ".png";
 var idleImg = new Image();
 idleImg.src = "./assets/images/idle1" + monsterPhaseNumber + ".png";
 var spitImg = new Image();
 spitImg.src = "./assets/images/spit1" + monsterPhaseNumber + ".png";
+var dragImg = new Image();
+dragImg.src = "./assets/images/drag1" + monsterPhaseNumber + ".png";
 console.log("monsterexecuting");
 export class Monster {
   public zindex: number;
@@ -121,11 +124,17 @@ export class Monster {
     idleImg.src = "./assets/images/idle1" + monsterPhaseNum + ".png";
     spitImg = new Image();
     spitImg.src = "./assets/images/spit1" + monsterPhaseNum + ".png";
+    dragImg = new Image();
+    dragImg.src = "./assets/images/drag1" + monsterPhaseNum + ".png";
     console.log(eatImg.src);
     console.log(idleImg.src);
     console.log(spitImg.src);
     console.log(monsterPhaseNumber);
   }
+  changeToDragAnimation() {
+    this.image = dragImg;
+  }
+
   changeToEatAnimation() {
     this.image = eatImg;
     setTimeout(() => {

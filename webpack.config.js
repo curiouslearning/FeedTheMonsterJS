@@ -21,7 +21,7 @@ var config = {
       patterns: [
         { from: "./index.html", to: "./" },
         { from: "./index.css", to: "./" },
-        { from: "./ftm_english.json", to: "./" },
+       // { from: "./ftm_english.json", to: "./" },
         { from: "./assets", to: "./assets" },
         { from: "./lang", to: "./lang" },
       ],

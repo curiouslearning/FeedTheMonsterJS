@@ -36,7 +36,7 @@ img {
   transform: translate(-50%, 0%);
   z-index: 100;
 }
-#about-company {
+/* #about-company {
   position: absolute;
   display: none;
   left: 50%;
@@ -44,10 +44,10 @@ img {
   width: 100%;
   max-width: 420px;
   height: 30%;
-  background-color: rgba(0, 0, 0, 0.5);
+  /* background-color: rgba(0, 0, 0, 0.5); */
   transform: translate(-50%, 0%);
   z-index: 100;
-}
+} */
 
 #about-company p {
   margin-top: 10%;
@@ -61,11 +61,6 @@ img {
   color: white;
   text-align: center;
 }
-a {
-  text-decoration: none;
-  color: #66ff99;
-}
-
 #canvas {
   position: absolute;
   /* background-color: white; */
@@ -119,8 +114,7 @@ a {
   border-top: 4px solid #3498db; /* color of spinning part */
   border-radius: 50%;
   position: absolute;
-  left: auto;
-  right: auto;
+  left: calc(50% - 25px);
   top: 40%;
   animation: spin 0.8s linear infinite;
 }
@@ -137,15 +131,37 @@ a {
 
 /* Apply the animation to the ball element */
 
-
-
 #version-info-id {
   position: absolute;
   height: 10px;
   width: 10%;
-  left: 50%;
+  left: 60%;
   top: 2%;
   color: white;
   font-size: small;
   z-index: 9;
+}
+#toggle-btn {
+  position: absolute;
+  left: 30%;
+  top: 5px;
+  width: 80px;
+  height: 40px;
+  border-radius: 20px;
+  border: none;
+  background-color: #bbb;
+  color: #fff;
+  font-size: 16px;
+  cursor: pointer;
+  outline: none;
+  z-index: 9;
+  display: none;
+}
+
+#toggle-btn.on {
+  background-color: #4caf50 !important;
+}
+
+#toggle-btn.off {
+  background-color: #bbb;
 }

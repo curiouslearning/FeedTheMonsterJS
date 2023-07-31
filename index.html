@@ -1,22 +1,6 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <script>
-      (function (h, o, t, j, a, r) {
-        h.hj =
-          h.hj ||
-          function () {
-            (h.hj.q = h.hj.q || []).push(arguments);
-          };
-        h._hjSettings = { hjid: 2877035, hjsv: 6 };
-        a = o.getElementsByTagName("head")[0];
-        r = o.createElement("script");
-        r.async = 1;
-        r.src = t + h._hjSettings.hjid + j + h._hjSettings.hjsv;
-        a.appendChild(r);
-      })(window, document, "https://static.hotjar.com/c/hotjar-", ".js?sv=");
-    </script>
-
     <!-- Facebook Pixel Code -->
     <meta
       name="facebook-domain-verification"
@@ -71,7 +55,8 @@
 
   <body>
     <div class="game-scene">
-      <h1 id="version-info-id">version:"1.0.2"</h1>
+      <h1 id="version-info-id">v1.0.14</h1>
+      <button id="toggle-btn" class="off">Dev</button>
       <!--Keep the server url in href-->
       <a
         href="https://devcuriousreader.wpcomstaging.com/FeedTheMonsterJS2.2/"
@@ -80,9 +65,20 @@
       ></a>
       <div id="loading-screen">
         <div class="loading-spinner"></div>
-        <p id="loading_text">Please wait, loading...</p>
+        <p id="loading_text">Please wait,</p>
+        <p id="loading_number">loading...</p>
       </div>
       <img id="monster" src="./assets/images/idle4.png" alt="loading" />
+      <audio id="monster_audio" src=""></audio>
+      <audio id="feedback_audio" src=""></audio>
+      <audio id="intro_music" src=""></audio>
+      <audio id="prompt_audio" src=""></audio>
+      <audio id="button_click" src=""></audio>
+      <audio id="time_over" src=""></audio>
+      <audio id="stone_music" src=""></audio>
+      <audio id="phrase_audio" src=""></audio>
+      <audio id="level_end_audio" src=""></audio>
+
       <div id="discription-text">
         <p>
           Thanks for trying our Feed The Monster web version!<br />To play the
@@ -93,15 +89,13 @@
           >
         </p>
       </div>
-      <div id="about-company">
+      <!-- <div id="about-company">
         <p>
           Feed The Monster teaches your child the fundamentals of reading.<br />Collect
           monster eggs and feed them letters so they<br />can grow into new
-          friends! <br />Supported by
-
-          <a href="https://curiouslearning.org/">Curious Learning.</a>
+          friends! <br />Supported by Curious Learning.
         </p>
-      </div>
+      </div> -->
       <canvas id="canvas"></canvas>
     </div>
     <!-- <script defer type="module" src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>

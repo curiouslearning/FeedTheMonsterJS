@@ -1,10 +1,10 @@
-
 export const firebaseConfig = {
-    apiKey: "AIzaSyCl6CcquG4FlwPUtfmTY16-R5czxOnTtPE",
-    authDomain: "feedthemonsterjs.firebaseapp.com",
-    projectId: "feedthemonsterjs",
-    storageBucket: "feedthemonsterjs.appspot.com",
-    messagingSenderId: "69001268201",
-    appId: "1:69001268201:web:2bfe4d5395d1602662d978",
-    measurementId: "G-N6VQE5GWQH"
-  };
+  apiKey: "AIzaSyB8c2lBVi26u7YRL9sxOP97Uaq3yN8hTl4",
+  authDomain: "ftm-b9d99.firebaseapp.com",
+  databaseURL: "https://ftm-b9d99.firebaseio.com",
+  projectId: "ftm-b9d99",
+  storageBucket: "ftm-b9d99.appspot.com",
+  messagingSenderId: "602402387941",
+  appId: "1:602402387941:web:a63f4eaddc949f539de10c",
+  measurementId: "G-FVLSN7D7NM",
+};
