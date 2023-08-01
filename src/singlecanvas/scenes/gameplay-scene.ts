@@ -256,6 +256,7 @@ export class GameplayScene {
     );
 
     this.audioPlayer = new AudioPlayer();
+    this.audioPlayer.stopAudio();
     this.handler = document.getElementById("canvas");
     this.puzzleData = levelData.puzzles;
     this.feedBackTexts = feedBackTexts;
@@ -627,6 +628,7 @@ export class GameplayScene {
     // send click to play prompt
     if (this.promptText.onClick(x, y)) {
       this.promptText.playSound();
+      // this.audioPlayer.playAudio(false, this.promptText.getPromptAudioUrl());
     }
   };
 
@@ -784,7 +786,7 @@ export class GameplayScene {
     if (this.isPauseButtonClicked && this.isGameStarted) {
       this.pauseButton.draw();
       this.levelIndicators.draw();
-      this.promptText.draw();
+      this.promptText.draw(deltaTime);
       this.monster.animation(deltaTime);
       this.timerTicking.draw();
       this.stoneHandler.draw(deltaTime);
@@ -793,7 +795,7 @@ export class GameplayScene {
     if (!this.isPauseButtonClicked && !this.isGameStarted) {
       this.pauseButton.draw();
       this.levelIndicators.draw();
-      this.promptText.draw();
+      this.promptText.draw(deltaTime);
       this.monster.animation(deltaTime);
       this.timerTicking.draw();
       this.feedbackTextEffects.render();
@@ -801,7 +803,7 @@ export class GameplayScene {
     if (this.isPauseButtonClicked && !this.isGameStarted) {
       this.pauseButton.draw();
       this.levelIndicators.draw();
-      this.promptText.draw();
+      this.promptText.draw(deltaTime);
       this.monster.animation(deltaTime);
       this.timerTicking.draw();
       this.pausePopup.draw();
@@ -809,7 +811,7 @@ export class GameplayScene {
     if (!this.isPauseButtonClicked && this.isGameStarted) {
       this.pauseButton.draw();
       this.levelIndicators.draw();
-      this.promptText.draw();
+      this.promptText.draw(deltaTime);
       this.monster.animation(deltaTime);
       this.timerTicking.update(deltaTime);
       this.timerTicking.draw();
@@ -1075,6 +1077,7 @@ export class GameplayScene {
     this.removeEventListeners();
     this.incrementPuzzle();
     this.isGameStarted = false;
+    
     if (this.counter == this.levelData.puzzles.length) {
       this.levelIndicators.setIndicators(this.counter);
       this.logLevelEndFirebaseEvent();
@@ -1084,9 +1087,8 @@ export class GameplayScene {
         GameScore.calculateStarCount(this.score),
         this.monsterPhaseNumber
       );
-    }
+    } 
     else {
-      
       const loadPuzzleData = {
         counter: this.counter,
       };
@@ -1098,11 +1100,13 @@ export class GameplayScene {
       {
         // this.monster.changeToIdleAnimation();
         this.initNewPuzzle(loadPuzzleEvent);
+       
       }
       else{
         setTimeout(() => {
-            // this.changeToNextPuzzle();
+            // this.changeToNextPuzzle();  
             this.initNewPuzzle(loadPuzzleEvent);
+           
           }, 4000);
       }
     }
@@ -1110,12 +1114,13 @@ export class GameplayScene {
 
   public dispose() {
     this.removeEventListeners();
-    this.feedbackTextEffects.unregisterEventListener();
-    this.monster.unregisterEventListener();
-    this.timerTicking.unregisterEventListener();
-    this.levelIndicators.unregisterEventListener();
-    this.stoneHandler.unregisterEventListener();
-    this.promptText.unregisterEventListener();
+      this.feedbackTextEffects.unregisterEventListener();
+      this.monster.unregisterEventListener();
+      this.timerTicking.unregisterEventListener();
+      this.levelIndicators.unregisterEventListener();
+      this.stoneHandler.unregisterEventListener();
+      this.promptText.unregisterEventListener();
+      // this.deleteComponentInstances();
   }
 
   public letterInWordPuzzle(droppedStone: string) {
@@ -1176,9 +1181,9 @@ export class GameplayScene {
     }
   }
 
-  
   private handleCorrectStoneDrop = (feedbackIndex: number): void => {
     this.score += 100;
+    console.log('handleCorrectStone->');
     // this.audioPlayer.playAudio(false, "./assets/audios/Eat.mp3","./assets/audios/Cheering-02.mp3", "./assets/audios/fantastic.WAV");
     this.feedbackTextEffects.wrapText(this.getRandomFeedBackText(feedbackIndex));
     this.feedBackTextCanavsElement.style.zIndex = "2";
@@ -1202,8 +1207,6 @@ export class GameplayScene {
         document.dispatchEvent(loadPuzzleEvent);
         this.addEventListeners();
         this.audioPlayer.stopAudio();
-        this.startPuzzleTime();
-        
   }
 
   private incrementPuzzle(){

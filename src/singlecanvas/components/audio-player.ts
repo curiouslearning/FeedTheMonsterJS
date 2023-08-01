@@ -11,14 +11,14 @@ export class AudioPlayer {
     this.audioQueue = [];
   }
 
-  playAudio(loop: boolean = false, ...fileUrl: string[]): void {
+  playAudio = (loop: boolean = false, ...fileUrl: string[]): void => {
     this.audioQueue = fileUrl;
     if (this.audioQueue.length > 0) {
       this.playFetch(0, loop);
     }
   }
 
-  private playFetch(index: number, loop: boolean) {
+  private playFetch = (index: number, loop: boolean) => {
     if (index >= this.audioQueue.length) {
       this.stopAudio();
       return;
@@ -37,13 +37,18 @@ export class AudioPlayer {
       });
   }
 
-  private handleAudioEnded(index: number, loop: boolean): void {
-    // this.sourceNode.removeEventListener("ended", () => this.handleAudioEnded(index), false);
-    this.sourceNode = null;
+  private handleAudioEnded = (index: number, loop: boolean): void => {
+    // this.sourceNode.removeEventListener("ended", this.handleAudioEnded, false);
+    if (this.sourceNode) {
+      this.sourceNode.onended = null;
+      this.sourceNode.stop();
+      this.sourceNode.disconnect();
+      this.sourceNode = null;
+    }
     this.playFetch(index + 1, loop);
   }
 
-  stopAudio(): void {
+  stopAudio = (): void => {
     if (this.sourceNode) {
       this.sourceNode.stop();
       this.sourceNode = null;

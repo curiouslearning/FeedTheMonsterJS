@@ -362,7 +362,7 @@ export class LevelSelectionScreen {
       currentLevelData: self.data.levels[level_number],
       selectedLevelNumber: level_number,
     };
-    this.callback(gamePlayData);
+    this.callback(gamePlayData,'LevelSelection');
   }
 
   // draw stars on top of level number

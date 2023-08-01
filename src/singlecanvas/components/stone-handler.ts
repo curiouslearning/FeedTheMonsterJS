@@ -58,7 +58,7 @@ export default class StoneHandler extends EventManager {
     public tutorial: Tutorial;
     correctTargetStone: any;
     stonebg: HTMLImageElement;
-    audioPlayer: AudioPlayer;
+    public audioPlayer: AudioPlayer;
     constructor(
         context: CanvasRenderingContext2D,
         canvas: { width: number; height?: number },
@@ -108,6 +108,7 @@ export default class StoneHandler extends EventManager {
             this.createStones(this.stonebg)
             // this.stoneConfig = new StoneConfig(this.context, this.height, this.width, "text", 100, 100, img);
         }
+        this.audioPlayer = new AudioPlayer();
     }
 
     createStones(img) {

@@ -90,7 +90,7 @@ export class FeedbackTextEffects {
     });
     this.convertToParticle();
   }
-  public handleTextWorkerMessage(event: MessageEvent): void {
+  public handleTextWorkerMessage = (event: MessageEvent): void => {
     const particles = event.data;
     this.particles = particles.map(
       ({ x, y, color }) => new TextParticle(this, x, y, color)
