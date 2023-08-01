@@ -1,3 +1,4 @@
+import { GameScore } from "../data/game-score";
 
 var self;
 let startX = 0;
@@ -17,6 +18,7 @@ export class Tutorial {
     public endx: number;
     public endy: number;
     public endTutorial: boolean = false;
+    public puzzleNumber: any;
     x: number;
     y: number;
     dx: number;
@@ -24,7 +26,7 @@ export class Tutorial {
     absdx: number;
     absdy: number;
 
-    constructor(context, width, height) {
+    constructor(context, width, height, puzzleNumber) {
         // this.game = game;
         self = this;
         this.width = width;
@@ -33,13 +35,14 @@ export class Tutorial {
         this.startx = startX;
         this.starty = startY;
         this.endx = this.width / 2;
-        this.endy = this.height / 2-30;
-
+        this.endy = this.height / 2 - 30;
+        this.puzzleNumber = puzzleNumber;
         this.tutorialImg = new Image();
         this.tutorialImg.src = "./assets/images/tutorial_hand.png";
         this.tutorialImg.onload = () => {
             this.imagesLoaded = true;
         }
+
     }
 
     updateTargetStonePositions(targetStonePosition) {
@@ -56,7 +59,7 @@ export class Tutorial {
         );
     }
 
-    setTutorialEnd(endTutorial){
+    setTutorialEnd(endTutorial) {
         this.endTutorial = endTutorial;
 
     }
@@ -72,25 +75,35 @@ export class Tutorial {
     }
 
     draw(deltaTime) {
-        if (this.imagesLoaded && !this.endTutorial) {
-                this.x =
+        if (this.imagesLoaded && !this.endTutorial && this.shouldPlayTutorial()) {
+            this.x =
                 this.dx >= 0
-                    ? this.x + this.absdx * (deltaTime) 
-                    : this.x - this.absdx * (deltaTime) ;
-                this.y =
-                    this.dy >= 0
-                        ? this.y + this.absdy * deltaTime
-                        : this.y - this.absdy * deltaTime ;
-                const disx = this.x - this.endx + this.absdx;
-                const disy = this.y - this.endy + this.absdy;
-                const distance = Math.sqrt(disx * disx + disy * disy);
-                if (distance < 1) {
-                    this.endTutorial = true;
-                    // GameFields.tutorialStatus = true;
-                
-                }
-                this.context.drawImage(this.tutorialImg, this.x, this.y);
-          
+                    ? this.x + this.absdx * (deltaTime)
+                    : this.x - this.absdx * (deltaTime);
+            this.y =
+                this.dy >= 0
+                    ? this.y + this.absdy * deltaTime
+                    : this.y - this.absdy * deltaTime;
+            const disx = this.x - this.endx + this.absdx;
+            const disy = this.y - this.endy + this.absdy;
+            const distance = Math.sqrt(disx * disx + disy * disy);
+            if (distance < 1) {
+                this.endTutorial = true;
+                // GameFields.tutorialStatus = true;
+
+            }
+            this.context.drawImage(this.tutorialImg, this.x, this.y);
+
         }
+    }
+
+    shouldPlayTutorial(): boolean {
+        let playDragAnimationForFirstPuzzle = GameScore.getAllGameLevelInfo().length <= 0 && this.puzzleNumber == 0;
+        return playDragAnimationForFirstPuzzle;
+
+    }
+
+    setPuzzleNumber(puzzleNumer: number) {
+        this.puzzleNumber = puzzleNumer;
     }
 }
