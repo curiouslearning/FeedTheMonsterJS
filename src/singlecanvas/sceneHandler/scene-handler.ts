@@ -170,6 +170,7 @@ export class SceneHandler {
     monsterPhaseNumber: number
   ) => {
     console.log(" currentlevelPlayed: ", currentlevelPlayed);
+    this.loadingScreen.initCloud();
     this.removeLoading();
     setTimeout(() => {
       this.gameplayScene.dispose();

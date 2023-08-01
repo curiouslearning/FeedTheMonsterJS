@@ -281,7 +281,7 @@ export class TestGameplayScene {
             // this.monster2.animation(deltaTime);
             // this.context.setTransform(1, 0, 0, 0, 0, 0);
             // this.playButton.draw();
-            this.promptText.draw();
+            this.promptText.draw(deltaTime);
             this.stoneHandler.draw(deltaTime);
             // if (this.stoneConfig != undefined)
             //     this.stoneConfig.draw();

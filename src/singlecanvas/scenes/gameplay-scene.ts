@@ -627,7 +627,8 @@ export class GameplayScene {
 
     // send click to play prompt
     if (this.promptText.onClick(x, y)) {
-      this.audioPlayer.playAudio(false, this.promptText.getPromptAudioUrl());
+      this.promptText.playSound();
+      // this.audioPlayer.playAudio(false, this.promptText.getPromptAudioUrl());
     }
   };
 
@@ -785,7 +786,7 @@ export class GameplayScene {
     if (this.isPauseButtonClicked && this.isGameStarted) {
       this.pauseButton.draw();
       this.levelIndicators.draw();
-      this.promptText.draw();
+      this.promptText.draw(deltaTime);
       this.monster.animation(deltaTime);
       this.timerTicking.draw();
       this.stoneHandler.draw(deltaTime);
@@ -794,7 +795,7 @@ export class GameplayScene {
     if (!this.isPauseButtonClicked && !this.isGameStarted) {
       this.pauseButton.draw();
       this.levelIndicators.draw();
-      this.promptText.draw();
+      this.promptText.draw(deltaTime);
       this.monster.animation(deltaTime);
       this.timerTicking.draw();
       this.feedbackTextEffects.render();
@@ -802,7 +803,7 @@ export class GameplayScene {
     if (this.isPauseButtonClicked && !this.isGameStarted) {
       this.pauseButton.draw();
       this.levelIndicators.draw();
-      this.promptText.draw();
+      this.promptText.draw(deltaTime);
       this.monster.animation(deltaTime);
       this.timerTicking.draw();
       this.pausePopup.draw();
@@ -810,7 +811,7 @@ export class GameplayScene {
     if (!this.isPauseButtonClicked && this.isGameStarted) {
       this.pauseButton.draw();
       this.levelIndicators.draw();
-      this.promptText.draw();
+      this.promptText.draw(deltaTime);
       this.monster.animation(deltaTime);
       this.timerTicking.update(deltaTime);
       this.timerTicking.draw();

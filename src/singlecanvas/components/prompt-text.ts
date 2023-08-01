@@ -25,6 +25,7 @@ export class PromptText extends EventManager {
     public isStoneDropped: boolean = false;
     audioPlayer: AudioPlayer;
     droppedStones: number = 0;
+    public time: number = 0;
 
     constructor(width, height, currentPuzzleData, levelData, rightToLeft) {
         super({
@@ -42,13 +43,14 @@ export class PromptText extends EventManager {
         this.fntstOrGrtImgArr = [];
         this.canavsElement = document.getElementById("canvas");
         this.context = this.canavsElement.getContext("2d");
-
+        this.audioPlayer = new AudioPlayer();
 
         this.prompt_image = new Image();
         this.prompt_image.src = "./assets/images/promptTextBg.png";
         this.prompt_image.onload = () => {
             this.imagesLoaded = true;
         };
+        
         // this.handler = document.getElementById("canvas");
         // this.handler.addEventListener(
         //     "click",
@@ -65,6 +67,9 @@ export class PromptText extends EventManager {
         const x = event.clientX - rect.left;
         const y = event.clientY - rect.top;
         if (self.onClick(x, y)) {
+            console.log('Clicked on Play prompt audio');
+
+            this.playSound();
             // self.sound.playSound(
             //     self.currentPuzzleData.prompt.promptAudio,
             //     PromptAudio
@@ -209,7 +214,14 @@ export class PromptText extends EventManager {
             ).width;
         }
     }
-    draw() {
+    draw(deltaTime) {
+      this.time +=deltaTime;
+      if(Math.ceil(this.time)== 1917){
+        this.playSound();
+        // this.audioPlayer.playAudio(false, Utils.getConvertedDevProdURL(this.currentPuzzleData.prompt.promptAudio)
+        // );
+      }
+
         if (!this.isStoneDropped) {
             this.context.drawImage(
                 this.prompt_image,
@@ -237,6 +249,7 @@ export class PromptText extends EventManager {
         this.currentPromptText = this.currentPuzzleData.prompt.promptText;
         this.targetStones = this.currentPuzzleData.targetStones;
         this.isStoneDropped = false;
+        // this.time = 0;
         this.playSound()
     }
 
