@@ -107,7 +107,7 @@ export class TestGameplayScene {
         // this.pauseMenu = new PausePopUp(this.canavsElement);
         //////////////////////end
         this.levelIndicator = new LevelIndicators(this.context, this.canvas, 0);
-        this.tutorial = new Tutorial(this.context, this.width, this.height);
+        // this.tutorial = new Tutorial(this.context, this.width, this.height);
         this.levelIndicator.setIndicators(3);
         // this.tutorial = new Tutorial(this.context, this.width, this.height);
         this.tutorial.updateTargetStonePositions([100, 100]);
@@ -281,7 +281,7 @@ export class TestGameplayScene {
             // this.monster2.animation(deltaTime);
             // this.context.setTransform(1, 0, 0, 0, 0, 0);
             // this.playButton.draw();
-            this.promptText.draw();
+            this.promptText.draw(deltaTime);
             this.stoneHandler.draw(deltaTime);
             // if (this.stoneConfig != undefined)
             //     this.stoneConfig.draw();

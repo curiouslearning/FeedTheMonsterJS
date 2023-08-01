@@ -174,7 +174,7 @@ export class LevelEndScene {
       this.audioPlayer.playAudio(false, "./assets/audios/ButtonClick.mp3");
       console.log(" close button clicked");
 
-      this.switchToLevelSelectionCB('LevelEnd');
+      this.switchToLevelSelectionCB("LevelEnd");
     }
     if (this.retryButton.onClick(x, y)) {
       this.audioPlayer.playAudio(false, "./assets/audios/ButtonClick.mp3");
@@ -184,7 +184,7 @@ export class LevelEndScene {
         selectedLevelNumber: this.currentLevel,
       };
       // pass same data as level is same
-      this.switchToGameplayCB(gamePlayData,'LevelEnd');
+      this.switchToGameplayCB(gamePlayData, "LevelEnd");
     }
     if (this.nextButton.onClick(x, y)) {
       this.audioPlayer.playAudio(false, "./assets/audios/ButtonClick.mp3");
@@ -195,7 +195,7 @@ export class LevelEndScene {
         selectedLevelNumber: next,
       };
 
-      this.switchToGameplayCB(gamePlayData,'LevelEnd');
+      this.switchToGameplayCB(gamePlayData, "LevelEnd");
     }
   };
 
