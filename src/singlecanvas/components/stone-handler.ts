@@ -100,7 +100,7 @@ export default class StoneHandler extends EventManager {
         // this.draw(0);
         // this.eventListners();
         this.puzzleStartTime = new Date();
-        this.tutorial = new Tutorial(context,canvas.width,canvas.height)
+        this.tutorial = new Tutorial(context,canvas.width,canvas.height,puzzleNumber)
         this.stonebg = new Image();
         this.stonebg.src = "./assets/images/stone_pink_v02.png";
         this.audioPlayer = new AudioPlayer();
@@ -254,6 +254,7 @@ export default class StoneHandler extends EventManager {
     }
     public handleLoadPuzzle(event) {
         this.foilStones = []
+        this.tutorial.setPuzzleNumber(event.detail.counter);
         this.puzzleNumber = event.detail.counter;
         this.setTargetStone(this.puzzleNumber);
         this.initializeStonePos();

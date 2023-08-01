@@ -107,7 +107,7 @@ export class TestGameplayScene {
         // this.pauseMenu = new PausePopUp(this.canavsElement);
         //////////////////////end
         this.levelIndicator = new LevelIndicators(this.context, this.canvas, 0);
-        this.tutorial = new Tutorial(this.context, this.width, this.height);
+        // this.tutorial = new Tutorial(this.context, this.width, this.height);
         this.levelIndicator.setIndicators(3);
         // this.tutorial = new Tutorial(this.context, this.width, this.height);
         this.tutorial.updateTargetStonePositions([100, 100]);

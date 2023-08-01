@@ -223,7 +223,7 @@ export class GameplayScene {
       this.loadPuzzle
     );
     this.levelIndicators = new LevelIndicators(this.context, this.canvas, 0);
-    this.tutorial = new Tutorial(this.context, this.width, this.height);
+    // this.tutorial = new Tutorial(this.context, this.width, this.height);
     this.levelIndicators.setIndicators(this.counter);
     this.monster = new Monster(this.canvas, this.monsterPhaseNumber);
     let gamePlayData = {
