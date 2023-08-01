@@ -51,7 +51,9 @@ export class LevelSelectionScreen {
   public loadedImages: any;
   public imagesLoaded: boolean = false;
   public levelNumber: number;
-  audioPlayer: AudioPlayer;
+  public xDown: number;
+  public yDown: number;
+  public audioPlayer: AudioPlayer;
 
   constructor(canvas: HTMLCanvasElement, data: any, callback: any) {
     this.canvas = canvas;
@@ -87,8 +89,7 @@ export class LevelSelectionScreen {
     loadImages(this.images, (images) => {
       this.loadedImages = Object.assign({}, images);
       this.imagesLoaded = true;
-      // this.audioPlayer.playAudio(false, "./assets/audios/intro.mp3");
-      this.sound.playSound("./assets/audios/intro.mp3", IntroMusic);
+      this.audioPlayer.playAudio(false, "./assets/audios/intro.mp3");
     });
     this.addListeners();
   }
@@ -126,77 +127,76 @@ export class LevelSelectionScreen {
       .addEventListener("mousedown", this.handleMouseDown, false);
 
     // when app goes background #2
-    document.addEventListener(
-      "visibilitychange",
-      function () {
-        self.sound.activeScreen();
-      },
-      false
-    );
+    document.addEventListener("visibilitychange", this.pausePlayAudios, false);
 
     /// swipe listener #3
     document
       .getElementById("canvas")
-      .addEventListener("touchstart", handleTouchStart, false);
+      .addEventListener("touchstart", this.handleTouchStart, false);
     // #4
     document
       .getElementById("canvas")
-      .addEventListener("touchmove", handleTouchMove, false);
-
-    var xDown = null;
-    var yDown = null;
-
-    function getTouches(evt) {
-      return (
-        evt.touches || // browser API
-        evt.originalEvent.touches
-      ); // jQuery
-    }
-
-    function handleTouchStart(evt) {
-      const firstTouch = getTouches(evt)[0];
-      xDown = firstTouch.clientX;
-      yDown = firstTouch.clientY;
-    }
-
-    function handleTouchMove(evt) {
-      if (!xDown || !yDown) {
-        return;
-      }
-
-      var xUp = evt.touches[0].clientX;
-      var yUp = evt.touches[0].clientY;
-
-      var xDiff = xDown - xUp;
-      var yDiff = yDown - yUp;
-
-      if (Math.abs(xDiff) > Math.abs(yDiff)) {
-        /*most significant*/
-        if (xDiff > 0) {
-          if (level != self.levelsSectionCount * 10 - 10) {
-            level = level + 10;
-            self.downButton(level);
-          }
-          /* right swipe */
-        } else {
-          if (level != 0) {
-            level = level - 10;
-          }
-          self.downButton(level);
-          /* left swipe */
-        }
-      } else {
-        if (yDiff > 0) {
-          /* down swipe */
-        } else {
-          /* up swipe */
-        }
-      }
-      /* reset values */
-      xDown = null;
-      yDown = null;
-    }
+      .addEventListener("touchmove", this.handleTouchMove, false);
   }
+
+  pausePlayAudios = () => {
+    if (document.visibilityState === "visible") {
+      this.audioPlayer.playAudio(false, "./assets/audios/intro.mp3");
+    } else {
+      this.audioPlayer.stopAudio();
+    }
+  };
+
+  getTouches(evt) {
+    return (
+      evt.touches || // browser API
+      evt.originalEvent.touches
+    ); // jQuery
+  }
+
+  handleTouchStart = (evt) => {
+    const firstTouch = this.getTouches(evt)[0];
+    this.xDown = firstTouch.clientX;
+    this.yDown = firstTouch.clientY;
+  };
+
+  handleTouchMove = (evt) => {
+    if (!this.xDown || !this.yDown) {
+      return;
+    }
+
+    var xUp = evt.touches[0].clientX;
+    var yUp = evt.touches[0].clientY;
+
+    var xDiff = this.xDown - xUp;
+    var yDiff = this.yDown - yUp;
+
+    if (Math.abs(xDiff) > Math.abs(yDiff)) {
+      /*most significant*/
+      if (xDiff > 0) {
+        if (level != self.levelsSectionCount * 10 - 10) {
+          level = level + 10;
+          self.downButton(level);
+        }
+        /* right swipe */
+      } else {
+        if (level != 0) {
+          level = level - 10;
+        }
+        self.downButton(level);
+        /* left swipe */
+      }
+    } else {
+      if (yDiff > 0) {
+        /* down swipe */
+      } else {
+        /* up swipe */
+      }
+    }
+    /* reset values */
+    this.xDown = null;
+    this.yDown = null;
+  };
 
   handleMouseDown = (event) => {
     // return function (event) {
@@ -277,13 +277,13 @@ export class LevelSelectionScreen {
         break;
       }
       case "close_button": {
-        self.sound.playSound("./assets/audios/intro.mp3", IntroMusic);
+        this.audioPlayer.playAudio(false, "./assets/audios/intro.mp3");
         self.drawStars();
       }
     }
   }
   createCanvas() {
-    this.sound.playSound("./assets/audios/intro.mp3", IntroMusic);
+    this.audioPlayer.playAudio(false, "./assets/audios/intro.mp3");
   }
   createLevelButtons(levelButtonpos: any) {
     var poss = levelButtonpos[0];
@@ -435,11 +435,18 @@ export class LevelSelectionScreen {
     }
   }
 
-  dispose() {
+  dispose = () => {
     // remove listeners
     this.audioPlayer.stopAudio();
-    document
-      .getElementById("canvas")
-      .removeEventListener("mousedown", this.handleMouseDown, false);
-  }
+
+    const canvas = document.getElementById("canvas");
+    canvas.removeEventListener("mousedown", this.handleMouseDown, false);
+    canvas.removeEventListener("touchstart", this.handleTouchStart, false);
+    canvas.removeEventListener("touchmove", this.handleTouchMove, false);
+    document.removeEventListener(
+      "visibilitychange",
+      this.pausePlayAudios,
+      false
+    );
+  };
 }
