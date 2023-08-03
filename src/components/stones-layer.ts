@@ -1,12 +1,18 @@
-import { MonsterAudio, PromptAudio, StoneLayer } from "../common/common.js";
-import Sound from "../common/sound.js";
-import { StoneConfig } from "../common/stones-config.js";
-import { LevelStartScene } from "../scenes/level-start-scene.js";
-import { CanvasStack } from "../utility/canvas-stack.js";
-import PauseButton from "./buttons/pause_button.js";
-import PausePopUp from "./pause-popup.js";
-import { Tutorial } from "../components/tutorial.js";
-import { getDatafromStorage } from "../data/profile-data.js";
+import {
+  MonsterAudio,
+  PromptAudio,
+  StoneLayer,
+  UrlSubstring,
+} from "../common/common";
+import Sound from "../common/sound";
+import { StoneConfig } from "../common/stones-config";
+import { LevelStartScene } from "../scenes/level-start-scene";
+import { CanvasStack } from "../utility/canvas-stack";
+import PauseButton from "./buttons/pause_button";
+import PausePopUp from "./pause-popup";
+import { Tutorial } from "../components/tutorial";
+import { getDatafromStorage } from "../data/profile-data";
+import { Debugger } from "../../global-variables";
 
 var gs: any = {
   mode: "gameplay",
@@ -42,7 +48,10 @@ export default class StonesLayer {
   callBack: any;
   id: string;
   puzzleIndex: number;
-  targetStonePositions:Promise<any[]>;
+  public fps: number;
+  public frameTimer: number;
+  public frameInterval: number;
+  targetStonePositions: Promise<any[]>;
   context: CanvasRenderingContext2D;
   public tutorial: Tutorial;
   public showTutorial: Boolean;
@@ -53,7 +62,7 @@ export default class StonesLayer {
     pausebutton: PauseButton,
     callBack: any,
     levelStart: LevelStartScene,
-    puzzleIndex:number
+    puzzleIndex: number
   ) {
     this.canvas = canvas;
     this.levelStart = levelStart;
@@ -66,33 +75,44 @@ export default class StonesLayer {
     this.levelStart = levelStart;
     this.callBack = callBack;
     this.puzzleIndex = puzzleIndex;
+    this.fps = 144;
+    this.frameInterval = 1000 / this.fps;
+    this.frameTimer = 0;
     // this.targetStonePositions = this.getTargetStonePosition(gs.stones);
     this.tutorial = new Tutorial(canvas);
-    this.showTutorial = (getDatafromStorage().length==undefined)?true:false;
+    this.showTutorial = getDatafromStorage().length == undefined ? true : false;
     this.createCanvas();
-    this.tutorial.updateTargetStonePositions(this.getTargetStonePosition(gs.stones));
+    this.tutorial.updateTargetStonePositions(
+      this.getTargetStonePosition(gs.stones)
+    );
     timeoutRunning = true;
     this.tutorial.createCanvas();
-    
-    
-    
   }
 
   setNewPuzzle(currentPuzzle: any) {
     this.puzzleData = currentPuzzle;
     this.setCurrentPuzzle();
-    timeout = setTimeout(() => {
-      this.createStones(<any>this.stonepos);
-      
-    }, 3000);
-    
+    // timeout = setTimeout(() => {
+    this.createStones(<any>this.stonepos);
+    // }, 3000);
   }
   stonepos(stonepos: any) {
     throw new Error("Method not implemented.");
   }
   setCurrentPuzzle() {
     this.levelStart.audio.playSound(
-      this.puzzleData.prompt.promptAudio,
+      Debugger.DevelopmentLink
+        ? this.puzzleData.prompt.promptAudio.slice(
+          0,
+          this.puzzleData.prompt.promptAudio.indexOf(UrlSubstring) +
+          UrlSubstring.length
+        ) +
+        "dev" +
+        this.puzzleData.prompt.promptAudio.slice(
+          this.puzzleData.prompt.promptAudio.indexOf(UrlSubstring) +
+          UrlSubstring.length
+        )
+        : this.puzzleData.prompt.promptAudio,
       PromptAudio
     );
     gs.puzzle.stones = [];
@@ -123,7 +143,7 @@ export default class StonesLayer {
   }
   createCanvas() {
     var self = this;
-    this.id = this.canvasStack.createLayer(this.height, this.width, StoneLayer);
+    this.id = this.canvasStack.createLayer(this.height, this.width, "canvas");
     const selfElelementId = document.getElementById(
       this.id
     ) as HTMLCanvasElement;
@@ -142,8 +162,8 @@ export default class StonesLayer {
         ],
         [
           this.canvas.width / 3.5 +
-            this.canvas.width / 2 -
-            offsetCoordinateValue,
+          this.canvas.width / 2 -
+          offsetCoordinateValue,
           this.canvas.height / 1.2 - offsetCoordinateValue,
         ],
         [
@@ -156,14 +176,14 @@ export default class StonesLayer {
         ],
         [
           this.canvas.width / 2.3 +
-            this.canvas.width / 2.1 -
-            offsetCoordinateValue,
+          this.canvas.width / 2.1 -
+          offsetCoordinateValue,
           this.canvas.height / 1.9 - offsetCoordinateValue,
         ],
         [
           this.canvas.width / 2.3 +
-            this.canvas.width / 2.1 -
-            offsetCoordinateValue,
+          this.canvas.width / 2.1 -
+          offsetCoordinateValue,
           this.canvas.height / 1.42 - offsetCoordinateValue,
         ],
         [
@@ -181,46 +201,55 @@ export default class StonesLayer {
           (x -
             self.canvas.scene.monster.x -
             self.canvas.scene.monster.width / 4) *
-            (x -
-              self.canvas.scene.monster.x -
-              self.canvas.scene.monster.width / 4) +
-            (y -
-              self.canvas.scene.monster.y -
-              self.canvas.scene.monster.height / 2.7) *
-              (y -
-                self.canvas.scene.monster.y -
-                self.canvas.scene.monster.height / 2.7)
+          (x -
+            self.canvas.scene.monster.x -
+            self.canvas.scene.monster.width / 4) +
+          (y -
+            self.canvas.scene.monster.y -
+            self.canvas.scene.monster.height / 2.7) *
+          (y -
+            self.canvas.scene.monster.y -
+            self.canvas.scene.monster.height / 2.7)
         ) <= 100
-      )
-      {
-        if(timeoutRunning){
-          clearTimeout(timeout);
-          clearTimeout(timeout2);
+      ) {
+        console.log(" itsactuallyhere ");
+        if (timeoutRunning) {
+          // clearTimeout(timeout);
+          // clearTimeout(timeout2);
           self.createStones(<any>self.stonepos);
           self.levelStart.timerTicking.resumeTimer();
           timeoutRunning = false;
-            // timeoutRunning = false
+          // timeoutRunning = false
         }
-
       }
-      
 
-     
       if (
         Math.sqrt(x - this.width / 3) < 12 &&
         Math.sqrt(y - this.height / 5.5) < 10
       ) {
+        console.log(" iamclickingandplaying ");
         self.levelStart.audio.playSound(
-          self.puzzleData.prompt.promptAudio,
+          Debugger.DevelopmentLink
+            ? self.puzzleData.prompt.promptAudio.slice(
+              0,
+              self.puzzleData.prompt.promptAudio.indexOf(UrlSubstring) +
+              UrlSubstring.length
+            ) +
+            "dev" +
+            self.puzzleData.prompt.promptAudio.slice(
+              self.puzzleData.prompt.promptAudio.indexOf(UrlSubstring) +
+              UrlSubstring.length
+            )
+            : self.puzzleData.prompt.promptAudio,
           PromptAudio
         );
       }
       if (
         Math.sqrt(
           (x - this.width / 2 - (this.width * 0.3) / 2) *
-            (x - this.width / 2 - (this.width * 0.3) / 2)
+          (x - this.width / 2 - (this.width * 0.3) / 2)
         ) +
-          (y - this.height * 0.15) * (y - this.height * 0.15) <=
+        (y - this.height * 0.15) * (y - this.height * 0.15) <=
         1000
       ) {
         console.log("prompt");
@@ -230,10 +259,11 @@ export default class StonesLayer {
     selfElelementId.addEventListener(
       "mousedown",
       function (event) {
+        console.log(" mousedownhere ");
         var rect = selfElelementId.getBoundingClientRect();
         const x = event.clientX - rect.left;
         const y = event.clientY - rect.top;
-        
+
         if (self.pausebutton.onClick(x, y)) {
           self.levelStart.timerTicking.pauseTimer();
           self.levelStart.levelEndCallBack();
@@ -244,7 +274,8 @@ export default class StonesLayer {
             dragAudio.currentTime = 0;
             dragAudio.play();
             pickedStone = s;
-            self.callBack('dragMonsterAnimation');
+            console.log(" this is picked stone : ", pickedStone);
+            self.callBack("dragMonsterAnimation");
           }
         }
       },
@@ -261,47 +292,67 @@ export default class StonesLayer {
             (x -
               self.canvas.scene.monster.x -
               self.canvas.scene.monster.width / 4) *
-              (x -
-                self.canvas.scene.monster.x -
-                self.canvas.scene.monster.width / 4) +
-              (y -
-                self.canvas.scene.monster.y -
-                self.canvas.scene.monster.height / 2.7) *
-                (y -
-                  self.canvas.scene.monster.y -
-                  self.canvas.scene.monster.height / 2.7)
+            (x -
+              self.canvas.scene.monster.x -
+              self.canvas.scene.monster.width / 4) +
+            (y -
+              self.canvas.scene.monster.y -
+              self.canvas.scene.monster.height / 2.7) *
+            (y -
+              self.canvas.scene.monster.y -
+              self.canvas.scene.monster.height / 2.7)
           ) <= 60
         ) {
+          console.log(" beemer ");
           if (pickedStone) {
             pickedStone.x = -900;
             pickedStone.y = -900;
             if (pickedStone.text == gs.puzzle.target[0]) {
+              console.log(" beemer1 ");
               self.pickedStones.push(pickedStone.text);
-             
+
               gs.puzzle.target.shift();
               if (gs.puzzle.target.length == 0) {
                 gs.stones = [];
-               
-                self.callBack(undefined,true, true, pickedStone.text, self.pickedStones);
-                self.pickedStones = [];
 
+                self.callBack(
+                  undefined,
+                  true,
+                  true,
+                  pickedStone.text,
+                  self.pickedStones
+                );
+                self.pickedStones = [];
               } else {
-                
-                self.callBack(undefined,true, false, pickedStone.text, self.pickedStones);
+                self.callBack(
+                  undefined,
+                  true,
+                  false,
+                  pickedStone.text,
+                  self.pickedStones
+                );
               }
             } else {
+              console.log(" beemer2 ");
               self.pickedStones.push(pickedStone.text);
               gs.stones = [];
-              self.callBack(undefined,false, true, pickedStone.text, self.pickedStones);
+              self.callBack(
+                undefined,
+                false,
+                true,
+                pickedStone.text,
+                self.pickedStones
+              );
               self.pickedStones = [];
             }
           }
           pickedStone = null;
         }
         if (pickedStone) {
+          console.log(" beemer3 ");
           pickedStone.x = pickedStone.origx;
           pickedStone.y = pickedStone.origy;
-          self.callBack('stopDragMonsterAnimation');
+          self.callBack("stopDragMonsterAnimation");
         }
         pickedStone = null;
       },
@@ -310,6 +361,7 @@ export default class StonesLayer {
     selfElelementId.addEventListener(
       "mousemove",
       function (event) {
+        console.log(" mousemove ");
         var rect = selfElelementId.getBoundingClientRect();
         const x = event.clientX - rect.left;
         const y = event.clientY - rect.top;
@@ -337,6 +389,7 @@ export default class StonesLayer {
     selfElelementId.addEventListener(
       "touchmove",
       function (e) {
+        console.log(" itstouchmove ");
         var touch = e.touches[0];
         var mouseEvent = new MouseEvent("mousemove", {
           clientX: touch.clientX,
@@ -359,30 +412,28 @@ export default class StonesLayer {
       },
       false
     );
-   
-    timeout2 = setTimeout(() => {
-      this.createStones(<any>this.stonepos);
-      timeoutRunning = false;
-    }, 3400);
-    
+
+    // timeout2 = setTimeout(() => {
+    this.createStones(<any>this.stonepos);
+    timeoutRunning = false;
+    // }, 3400);
   }
 
-  setTimeoutRunning(value){
-      timeoutRunning = value;
+  setTimeoutRunning(value) {
+    timeoutRunning = value;
   }
-  makeStoneArrayEmpty(){
+  makeStoneArrayEmpty() {
     gs.stones.splice(0, gs.stones.length);
   }
-  getTargetStonePosition(stones){
-    let targetPositions = []
-    for(let i=0;i<gs.stones.length;i++){
-      if(gs.stones[i].text == gs.puzzle.target[0])
-      {
+  getTargetStonePosition(stones) {
+    let targetPositions = [];
+    for (let i = 0; i < gs.stones.length; i++) {
+      if (gs.stones[i].text == gs.puzzle.target[0]) {
         targetPositions.push(gs.stones[i].origx);
         targetPositions.push(gs.stones[i].origy);
         break;
-       }
-  }
+      }
+    }
     return targetPositions;
   }
   setPrompt() {
@@ -395,15 +446,24 @@ export default class StonesLayer {
     this.canvasStack.deleteLayer(this.id);
   }
 
-  draw() {
-    this.context.clearRect(0, 0, this.canvas.width, this.canvas.height);
-    for (let s of gs.stones) {
-      this.drawstone(s, this.canvas);
+  draw(deltaTime) {
+
+    if (this.frameTimer >= this.frameInterval) {
+      // console.log(deltaTime," bb ",this.frameTimer);
+      this.frameTimer = 0;
+      // this.context.clearRect(0, 0, this.canvas.width, this.canvas.height);
+      for (let s of gs.stones) {
+        this.drawstone(s, this.canvas);
+      }
+    } else {
+      this.frameTimer += 16.9;
     }
+
+
   }
 
-  clearCanvas(){
-    this.context.clearRect(0, 0, this.canvas.width, this.canvas.height);
+  clearCanvas() {
+    // this.context.clearRect(0, 0, this.canvas.width, this.canvas.height);
   }
 
   drawstone(
@@ -412,7 +472,7 @@ export default class StonesLayer {
   ) {
     var imageSize;
     var textFontSize;
-    if (this.context.measureText(s.text).width*1.4 > canvas.height / 13) {
+    if (this.context.measureText(s.text).width * 1.4 > canvas.height / 13) {
       imageSize = this.context.measureText(s.text).width * 1.1;
       textFontSize = canvas.height / 25;
     } else {
@@ -437,9 +497,8 @@ export default class StonesLayer {
     this.context.fillText(s.text, s.x, s.y);
   }
   createStones(stonepos: any[]) {
-
     var poss = stonepos[0];
-    var i = 0; 
+    var i = 0;
     gs.stones.splice(0, gs.stones.length);
     for (let s of gs.puzzle.stones) {
       var ns = new StoneConfig(s, poss[i][0], poss[i][1]);
@@ -447,14 +506,18 @@ export default class StonesLayer {
       i += 1;
     }
     // setTimeout(() => {
-      this.tutorial.updateTargetStonePositions(this.getTargetStonePosition(gs.stones));
-      (this.showTutorial && this.puzzleIndex==0)?this.tutorial.animateImage():()=>{};
+    this.tutorial.updateTargetStonePositions(
+      this.getTargetStonePosition(gs.stones)
+    );
+    this.showTutorial && this.puzzleIndex == 0
+      ? this.tutorial.animateImage()
+      : () => { };
     // }, 500);
-    
-    this.draw();
+
+    // this.draw(deltaTime);
   }
 
-  update() {
-    this.draw();
+  update(deltaTime) {
+    // this.draw();
   }
 }

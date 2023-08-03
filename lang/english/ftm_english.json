@@ -24672,11 +24672,11 @@
     }
   ],
   "FeedbackAudios": [
-    "https://feedthemonster.curiouscontent.org/lang/english/audios/fantastic1.mp3",
+    "https://feedthemonster.curiouscontent.org/lang/english/audios/fantastic.mp3",
     "https://feedthemonster.curiouscontent.org/lang/english/audios/great.mp3",
     "https://feedthemonster.curiouscontent.org/lang/english/audios/amazing.mp3"
   ],
-  "version": 1.2,
+  "version": 1.4,
   "aboutCompany": "",
   "descriptionText": "<p>Thanks for trying our Feed The Monster web version!<br />To play the whole game, visit us on the <a href='https://play.google.com/store/apps/details?id=com.eduapp4syria.feedthemonsterENGLISH'>Google Play Store.</a></p>",
   "RightToLeft": false

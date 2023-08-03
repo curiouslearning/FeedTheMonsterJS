@@ -1,5 +1,5 @@
-import { TutorialLayer } from "../common/common.js";
-import { CanvasStack } from "../utility/canvas-stack.js";
+import { TutorialLayer } from "../common/common";
+import { CanvasStack } from "../utility/canvas-stack";
 var self;
 var tutorialImg = new Image();
 tutorialImg.src = "./assets/images/tutorial_hand.png";
@@ -43,14 +43,14 @@ export class Tutorial {
     this.id = this.canvasStack.createLayer(
       this.height,
       this.width,
-      TutorialLayer
+      "canvas"
     );
     this.elementId = document.getElementById(
         this.id
       ) as HTMLCanvasElement;
     this.canavsElement = document.getElementById(this.id) as HTMLCanvasElement;
     this.context = this.canavsElement.getContext("2d");
-    this.canavsElement.style.zIndex = "6";
+    // this.canavsElement.style.zIndex = "6";
     this.canavsElement.style.bottom = "0";
    
     endX = this.width/2;
@@ -87,8 +87,8 @@ export class Tutorial {
     let y = startY;
     const dx = (this.endx - this.startx) / 60;
     const dy = (this.endy - this.starty) / 60;
-    let absdx = (this.isMobile())?Math.abs(dx)*3:Math.abs(dx);
-    let absdy = (this.isMobile())?Math.abs(dy)*3:Math.abs(dy);
+    let absdx = Math.abs(dx);
+    let absdy = Math.abs(dy);
 
     function between(x, min, max) {
       return x >= min && x <= max;
@@ -141,7 +141,7 @@ export class Tutorial {
   }
 
   draw(x: number, y: number) {
-     this.context.clearRect(0, 0, this.width, this.height); // Clear the canvas
+    //  this.context.clearRect(0, 0, this.width, this.height); // Clear the canvas
      this.context.drawImage(tutorialImg, x, y); 
   }
 }
