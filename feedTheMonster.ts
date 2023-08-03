@@ -1,25 +1,25 @@
 import * as Sentry from "@sentry/browser";
-import { LevelSelectionScreen } from "./src/scenes/level-selection-scene.js";
-import { getData } from "./src/data/api-data.js";
-import { DataModal } from "./src/data/data-modal.js";
-import { StartScene } from "./src/scenes/start-scene.js";
-import { CanvasStack } from "./src/utility/canvas-stack.js";
-import { firebaseConfig } from "./src/firebase/firebase_config.js";
+import { LevelSelectionScreen } from "./src/scenes/level-selection-scene";
+import { getData } from "./src/data/api-data";
+import { DataModal } from "./src/data/data-modal";
+import { StartScene } from "./src/singlecanvas/scenes/start-scene";
+import { SceneHandler } from "./src/singlecanvas/sceneHandler/scene-handler"
+import { CanvasStack } from "./src/utility/canvas-stack";
+import { firebaseConfig } from "./src/firebase/firebase_config";
 import {
   getDatafromStorage,
   ProfileData,
   setDataToStorage,
-} from "./src/data/profile-data.js";
-import { IsCached, PWAInstallStatus } from "./src/common/common.js";
+} from "./src/data/profile-data";
+import { IsCached, PWAInstallStatus } from "./src/common/common";
 import { Workbox } from "workbox-window";
-import { Debugger, lang } from "./global-variables.js";
-import { FirebaseIntegration } from "./src/firebase/firebase_integration.js";
+import { Debugger, lang } from "./global-variables";
+import { FirebaseIntegration } from "./src/singlecanvas/Firebase/firebase-integration";
 declare const window: any;
 declare const app: any;
 let jsonData;
 
 declare global {
-  var aboutCompany: string;
   var descriptionText: string;
 }
 const channel = new BroadcastChannel("my-channel");
@@ -27,23 +27,22 @@ let is_cached = localStorage.getItem(IsCached)
   ? new Map(JSON.parse(localStorage.getItem(IsCached)))
   : new Map();
 window.addEventListener("beforeunload", (event) => {
-  FirebaseIntegration.sessionEnd();
+  // FirebaseIntegration.sessionEnd();
+  FirebaseIntegration.getInstance().sendSessionEndEvent();
 });
 window.addEventListener("load", async function () {
   registerWorkbox();
   const canvas: any = <HTMLElement>document.getElementById("canvas");
   canvas.height = window.innerHeight;
   canvas.width = window.screen.width > 420 ? 420 : window.innerWidth;
-  jsonData = await getData();
-  console.log(jsonData);
-  console.log(jsonData.title + "<-------");
+  let data = await getData();
   let d = new DataModal(
-    jsonData.title,
-    jsonData.OtherAudios,
-    jsonData.Levels,
-    jsonData.FeedbackTexts,
-    jsonData.RightToLeft,
-    jsonData.FeedbackAudios
+    data.title,
+    data.OtherAudios,
+    data.Levels,
+    data.FeedbackTexts,
+    data.RightToLeft,
+    data.FeedbackAudios
   );
 
   // if (window.Android) {
@@ -51,34 +50,34 @@ window.addEventListener("load", async function () {
   //     is_cached.has(lang) ? is_cached.get(lang) : null
   //   );
   // }
-  globalThis.aboutCompany = jsonData.aboutCompany;
-  globalThis.descriptionText = jsonData.descriptionText;
+  globalThis.aboutCompany = data.aboutCompany;
+  globalThis.descriptionText = data.descriptionText;
 
   window.addEventListener("resize", async () => {
     if (is_cached.has(lang)) {
       Debugger.DevelopmentLink
         ? (document.getElementById("toggle-btn").style.display = "block")
         : null;
-      if (navigator.onLine) {
-        FirebaseIntegration.initializeFirebase();
-      }
+      // if (navigator.onLine) {
+      //   FirebaseIntegration.initializeFirebase();
+      // }
       canvas.height = window.innerHeight;
       canvas.width = window.screen.width > 420 ? 420 : window.innerWidth;
       delete this.monster;
       new CanvasStack("canvas").deleteAllLayers();
-      delete this.startScene;
-      this.startScene = new StartScene(canvas, d, this.analytics);
+      delete this.sceneHandler;
+      this.sceneHandler = new SceneHandler(canvas, d, this.analytics);
       passingDataToContainer();
     }
   });
   if (is_cached.has(lang)) {
-    if (navigator.onLine) {
-      FirebaseIntegration.initializeFirebase();
-    }
+    // if (navigator.onLine) {
+    //   FirebaseIntegration.initializeFirebase();
+    // }
     Debugger.DevelopmentLink
       ? (document.getElementById("toggle-btn").style.display = "block")
       : null;
-    this.startScene = new StartScene(canvas, d, this.analytics);
+    this.sceneHandler = new SceneHandler(canvas, d, this.analytics);
     passingDataToContainer();
   }
 });
@@ -91,12 +90,13 @@ Sentry.init({
   // We recommend adjusting this value in production
   tracesSampleRate: 1.0,
 });
-function registerWorkbox(): void {
+async function registerWorkbox(): Promise<void> {
   if ("serviceWorker" in navigator) {
     let wb = new Workbox("./sw.js", {});
-    wb.register().then(handleServiceWorkerRegistration);
+    await wb.register();
+    await navigator.serviceWorker.ready;
     if (!is_cached.has(lang)) {
-      channel.postMessage({ command: "Cache", data: lang });
+      await channel.postMessage({ command: "Cache", data: lang });
     }
     navigator.serviceWorker.addEventListener(
       "message",
@@ -104,6 +104,9 @@ function registerWorkbox(): void {
     );
   }
 }
+
+channel.addEventListener('message',handleServiceWorkerMessage)
+
 function handleServiceWorkerRegistration(registration): void {
   if (registration.installing) {
     registration.installing.postMessage({
@@ -113,10 +116,6 @@ function handleServiceWorkerRegistration(registration): void {
   }
 }
 function handleServiceWorkerMessage(event): void {
-  if (event.data.msg == "Recache") {
-    console.log("*******!!*");
-    handleVersionUpdate(event.data);
-  }
   if (event.data.msg == "Loading") {
     handleLoadingMessage(event.data);
   }
@@ -124,19 +123,7 @@ function handleServiceWorkerMessage(event): void {
     handleUpdateFoundMessage();
   }
 }
-function handleVersionUpdate(data) {
-  if (data.data == "versionUpdated") {
-    localStorage.removeItem("version" + lang);
-    if (is_cached.has(lang)) {
-      is_cached.delete(lang);
-    }
-    localStorage.setItem(
-      IsCached,
-      JSON.stringify(Array.from(is_cached.entries()))
-    );
-    window.location.reload();
-  }
-}
+
 function handleLoadingMessage(data): void {
   document.getElementById("loading_number").innerHTML =
     " " + " downloading... " + data.data + "%";
@@ -146,7 +133,7 @@ function handleLoadingMessage(data): void {
       IsCached,
       JSON.stringify(Array.from(is_cached.entries()))
     );
-    localStorage.setItem("version" + lang, jsonData.version);
+    localStorage.setItem("version" + lang, data.version);
     window.location.reload();
   }
 }
@@ -154,7 +141,9 @@ function handleUpdateFoundMessage(): void {
   let text = "Update Found\nPress ok to update.";
   if (confirm(text) == true) {
     // localStorage.removeItem(IsCached);
+    // setTimeout(()=>{
     window.location.reload();
+    // },3000)
   } else {
     text = "You canceled!";
   }

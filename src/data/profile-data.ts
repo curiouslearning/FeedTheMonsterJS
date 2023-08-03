@@ -1,4 +1,4 @@
-import { Debugger, lang } from "../../global-variables.js";
+import { Debugger, lang } from "../../global-variables";
 
 export class ProfileData {
   public levelName: string;

@@ -1,23 +1,23 @@
-import { lang, pseudoId } from "../../global-variables.js";
+import { lang, pseudoId } from "../../global-variables";
 import {
   IntroMusic,
   LevelEndAudio,
   LevelEndButtonsLayer,
   LevelEndLayer,
-} from "../common/common.js";
-import Sound from "../common/sound.js";
-import CloseButton from "../components/buttons/close_button.js";
-import NextButton from "../components/buttons/next_button.js";
-import RetryButton from "../components/buttons/retry_button.js";
-import { Monster } from "../components/monster.js";
+} from "../common/common";
+import Sound from "../common/sound";
+import CloseButton from "../components/buttons/close_button";
+import NextButton from "../components/buttons/next_button";
+import RetryButton from "../components/buttons/retry_button";
+import { Monster } from "../components/monster";
 import {
   ProfileData,
   setDataToStorage,
   setTotalStarCount,
-} from "../data/profile-data.js";
-import { FirebaseIntegration } from "../firebase/firebase_integration.js";
-import { CanvasStack } from "../utility/canvas-stack.js";
-import { Game } from "./game.js";
+} from "../data/profile-data";
+import { FirebaseIntegration } from "../firebase/firebase_integration";
+import { CanvasStack } from "../utility/canvas-stack";
+import { Game } from "./game";
 var audioUrl = {
   levelWin: "./assets/audios/LevelWinFanfare.mp3",
   levelLose: "./assets/audios/LevelLoseFanfare.mp3",
@@ -122,7 +122,7 @@ export class LevelEndScene {
     this.id = this.canvasStack.createLayer(
       this.canvas.height,
       this.canvas.width,
-      LevelEndLayer
+      "canvas"
     );
     this.context = (
       document.getElementById(this.id) as HTMLCanvasElement
@@ -131,7 +131,7 @@ export class LevelEndScene {
     this.bottonLayer = this.canvasStack.createLayer(
       this.canvas.height,
       this.canvas.width,
-      LevelEndButtonsLayer
+      "canvas"
     );
     this.bottonContext = (
       document.getElementById(this.bottonLayer) as HTMLCanvasElement

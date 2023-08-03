@@ -1,6 +1,6 @@
 const urlParams = new URLSearchParams(window.location.search);
 
-import { DevelopmentServer } from "./src/common/common.js";
+import { DevelopmentServer } from "./src/common/common";
 
 export var pseudoId = urlParams.get("cr_user_id");
 
@@ -12,3 +12,15 @@ export const Debugger = {
     : false,
   DebugMode: false,
 };
+declare global {
+  interface Window {
+    feedbackTextWorkerPath: string;
+  }
+}
+
+window.feedbackTextWorkerPath = './workers/feedback-text-worker.js';
+
+export interface Window {
+  webkitAudioContext?: typeof AudioContext;
+}
+
