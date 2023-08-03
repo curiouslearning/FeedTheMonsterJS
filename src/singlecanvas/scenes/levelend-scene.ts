@@ -28,6 +28,7 @@ export class LevelEndScene {
   public data: any;
   public background: any;
   public audioPlayer: any;
+  public sound: Sound;
   constructor(
     canvas: any,
     height: number,
@@ -44,6 +45,7 @@ export class LevelEndScene {
     this.height = height;
     this.width = width;
     this.context = context;
+    this.sound = new Sound();
     this.monster = new Monster(
       this.canvas,
       monsterPhaseNumber,
@@ -98,15 +100,12 @@ export class LevelEndScene {
   }
   switchToReactionAnimation() {
     if (self.starCount <= 1) {
-      self.audioPlayer.playAudio(
-        false,
-        "./assets/audios/LevelLoseFanfare.mp3"
-      );
+      self.sound.playSound("./assets/audios/LevelLoseFanfare.mp3");
 
       self.monster.changeToSpitAnimation();
     } else {
-      self.audioPlayer.playAudio(false, "./assets/audios/LevelWinFanfare.mp3",
-      "./assets/audios/intro.mp3");
+      self.sound.playSound("./assets/audios/LevelWinFanfare.mp3");
+      self.sound.playSound("./assets/audios/intro.mp3");
       self.monster.changeToEatAnimation();
     }
   }
@@ -200,6 +199,7 @@ export class LevelEndScene {
   };
 
   dispose = () => {
+    this.sound.pauseSound();
     self.audioPlayer.stopAudio();
     document
       .getElementById("canvas")
