@@ -5,6 +5,7 @@ module.exports = {
     
     "lang/**/*.json"
   ],
+  maximumFileSizeToCacheInBytes: 10 * 1024 * 1024,
   swDest: "build/sw.js",
   swSrc: "sw-src.js",
   globIgnores: [

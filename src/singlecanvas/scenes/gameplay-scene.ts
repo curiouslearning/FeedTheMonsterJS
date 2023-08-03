@@ -1207,6 +1207,7 @@ export class GameplayScene {
         document.dispatchEvent(loadPuzzleEvent);
         this.addEventListeners();
         this.audioPlayer.stopAudio();
+        this.startPuzzleTime()
   }
 
   private incrementPuzzle(){
