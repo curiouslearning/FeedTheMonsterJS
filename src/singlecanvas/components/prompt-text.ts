@@ -50,6 +50,7 @@ export class PromptText extends EventManager {
         this.prompt_image.onload = () => {
             this.imagesLoaded = true;
         };
+        this.time = 0;
         
         // this.handler = document.getElementById("canvas");
         // this.handler.addEventListener(
