@@ -215,11 +215,10 @@ export class PromptText extends EventManager {
         }
     }
     draw(deltaTime) {
-      this.time +=deltaTime;
-      if(Math.ceil(this.time)== 1917){
+    //   this.time +=deltaTime;
+    this.time = (deltaTime<17)?this.time+Math.ceil(deltaTime):this.time+16;
+      if (Math.floor(this.time) >= 1910 && Math.floor(this.time) <= 1918) {
         this.playSound();
-        // this.audioPlayer.playAudio(false, Utils.getConvertedDevProdURL(this.currentPuzzleData.prompt.promptAudio)
-        // );
       }
 
         if (!this.isStoneDropped) {
