@@ -1,10 +1,10 @@
-import { Monster } from "../components/monster.js";
-import { TimerTicking } from "../components/timer-ticking.js";
-import { CanvasStack } from "../utility/canvas-stack.js";
-import StonesLayer from "../components/stones-layer.js";
-import { PromptText } from "../components/prompt-text.js";
-import PauseButton from "../components/buttons/pause_button.js";
-import { LevelIndicators } from "../components/level-indicators.js";
+import { Monster } from "../components/monster";
+import { TimerTicking } from "../components/timer-ticking";
+import { CanvasStack } from "../utility/canvas-stack";
+import StonesLayer from "../components/stones-layer";
+import { PromptText } from "../components/prompt-text";
+import PauseButton from "../components/buttons/pause_button";
+import { LevelIndicators } from "../components/level-indicators";
 import {
   LevelEndButtonsLayer,
   LevelEndLayer,
@@ -19,15 +19,15 @@ import {
   FeedbackAudio,
   PhraseAudio,
   TutorialLayer,
-} from "../common/common.js";
-import { LevelStartLayer } from "../common/common.js";
-import { GameEndScene } from "./game-end-scene.js";
-import Sound from "../common/sound.js";
-import { LevelEndScene } from "./level-end-scene.js";
+} from "../common/common";
+import { LevelStartLayer } from "../common/common";
+import { GameEndScene } from "./game-end-scene";
+import Sound from "../common/sound";
+import { LevelEndScene } from "./level-end-scene";
 import { Game } from "./game";
-import { getDatafromStorage, getTotalStarCount } from "../data/profile-data.js";
-import { Debugger, lang, pseudoId } from "../../global-variables.js";
-import { FirebaseIntegration } from "../firebase/firebase_integration.js";
+import { getDatafromStorage, getTotalStarCount } from "../data/profile-data";
+import { Debugger, lang, pseudoId } from "../../global-variables";
+import { FirebaseIntegration } from "../firebase/firebase_integration";
 
 var images = {
   bgImg: "./assets/images/bg_v01.jpg",
@@ -108,6 +108,9 @@ export class LevelStartScene {
   public feedBackTexts: any;
   public isPuzzleCompleted: boolean;
   public rightToLeft: boolean;
+  public allImagesLoaded: boolean = false;
+  loadedImages:any;
+
   constructor({
     game,
     levelData,
@@ -137,7 +140,6 @@ export class LevelStartScene {
     this.timerTicking = new TimerTicking(game, this);
     this.promptText = new PromptText(
       game,
-      this,
       levelData.puzzles[current_puzzle_index],
       levelData,
       rightToLeft
@@ -155,6 +157,7 @@ export class LevelStartScene {
     this.puzzleData = levelData.puzzles;
     this.feedBackTexts = feedBackTexts;
     this.isPuzzleCompleted = false;
+    this.createBackgroud();
   }
 
   levelEndCallBack(button_name?: string) {
@@ -276,7 +279,6 @@ export class LevelStartScene {
             (word_dropped_stones += self.rightToLeft ? 1 : picked_stone.length)
           );
           self.timerTicking.stopTimer();
-          // self.promptText.draw((word_dropped_stones += 1));
           score += 100;
           word_dropped_stones = 0;
           current_puzzle_index += 1;
@@ -356,13 +358,13 @@ export class LevelStartScene {
           self.monsterPhaseNumber = monsterPhaseNumber;
           Debugger.DebugMode
             ? localStorage.setItem(
-                StoreMonsterPhaseNumber + lang + "Debug",
-                monsterPhaseNumber
-              )
+              StoreMonsterPhaseNumber + lang + "Debug",
+              monsterPhaseNumber
+            )
             : localStorage.setItem(
-                StoreMonsterPhaseNumber + lang,
-                monsterPhaseNumber
-              );
+              StoreMonsterPhaseNumber + lang,
+              monsterPhaseNumber
+            );
           self.monster.changePhaseNumber(monsterPhaseNumber);
           // self.monster.changeImage(
           //   "./assets/images/idle1" + self.monsterPhaseNumber + ".png"
@@ -406,13 +408,13 @@ export class LevelStartScene {
     this.id = this.canvasStack.createLayer(
       this.height,
       this.width,
-      LevelStartLayer
+      "canvas"
     );
     this.canavsElement = document.getElementById(this.id);
     this.context = this.canavsElement.getContext(
       "2d"
     ) as CanvasRenderingContext2D;
-    this.canavsElement.style.zIndex = 3;
+    // this.canavsElement.style.zIndex = 3;
     this.pauseButton = new PauseButton(this.context, this.canavsElement);
     this.levelIndicators = new LevelIndicators(
       this.context,
@@ -429,12 +431,12 @@ export class LevelStartScene {
       const x = event.clientX - rect.left;
       const y = event.clientY - rect.top;
     });
-    var previousPlayedLevel: string = self.levelData.levelMeta.levelNumber;
+    var previousPlayedLevel: string = this.levelData.levelMeta.levelNumber;
     Debugger.DebugMode
       ? localStorage.setItem(
-          PreviousPlayedLevel + lang + "Debug",
-          previousPlayedLevel
-        )
+        PreviousPlayedLevel + lang + "Debug",
+        previousPlayedLevel
+      )
       : localStorage.setItem(PreviousPlayedLevel + lang, previousPlayedLevel);
   }
 
@@ -472,56 +474,60 @@ export class LevelStartScene {
     score = 0;
   }
   draw() {
-    this.context.clearRect(0, 0, this.width, this.height);
-    this.context.drawImage(this.bgImg, 0, 0, this.width, this.height);
-    this.context.drawImage(
-      this.pillerImg,
-      this.width * 0.6,
-      this.height / 6,
-      this.width,
-      this.height / 2
-    );
-    this.context.drawImage(
-      this.fenchImg,
-      -this.width * 0.4,
-      this.height / 3,
-      this.width,
-      this.height / 3
-    );
-    this.context.drawImage(
-      this.hillImg,
-      -this.width * 0.25,
-      this.height / 2,
-      this.width * 1.5,
-      this.height / 2
-    );
-    this.context.drawImage(
-      this.grassImg,
-      -this.width * 0.25,
-      this.height / 2 + (this.height / 2) * 0.1,
-      this.width * 1.5,
-      this.height / 2
-    );
-    this.context.drawImage(
-      this.timer_empty,
-      0,
-      this.height * 0.1,
-      this.width,
-      this.height * 0.05
-    );
-    this.context.drawImage(
-      this.rotating_clock,
-      5,
-      this.height * 0.09,
-      this.width * 0.12,
-      this.height * 0.06
-    );
-
+    // console.log(this.allImagesLoaded, "its drawing", this.context);
+    // this.context.clearRect(0, 0, this.width, this.height);
+    // this.context.drawImage(this.bgImg, 0, 0, this.width, this.height);
+    if (this.allImagesLoaded) {
+      this.context.fillText("lol", 100, 150);
+      this.context.drawImage(
+        this.loadedImages.pillerImg,
+        this.width * 0.6,
+        this.height / 6,
+        this.width,
+        this.height / 2
+      );
+      this.context.drawImage(
+        this.loadedImages.fenchImg,
+        -this.width * 0.4,
+        this.height / 3,
+        this.width,
+        this.height / 3
+      );
+      this.context.drawImage(
+        // dummyImage,
+        this.loadedImages.hillImg,
+        -this.width * 0.25,
+        this.height / 2,
+        this.width * 1.5,
+        this.height / 2
+      );
+      this.context.drawImage(
+        this.loadedImages.grassImg,
+        -this.width * 0.25,
+        this.height / 2 + (this.height / 2) * 0.1,
+        this.width * 1.5,
+        this.height / 2
+      );
+      this.context.drawImage(
+        this.loadedImages.timer_empty,
+        0,
+        this.height * 0.1,
+        this.width,
+        this.height * 0.05
+      );
+      this.context.drawImage(
+        this.loadedImages.rotating_clock,
+        5,
+        this.height * 0.09,
+        this.width * 0.12,
+        this.height * 0.06
+      );
+    }
     this.timerTicking.createBackgroud();
-    this.stones.draw();
+
     this.pauseButton.draw();
     this.levelIndicators.draw();
-    this.promptText.createBackground();
+    this.promptText.draw();
   }
   update(deltaTime: number) {
     self.timerTicking ? self.timerTicking.update(deltaTime) : null;
@@ -557,25 +563,24 @@ export class LevelStartScene {
           );
         }, 1000);
       } else {
-        // self.promptText.setCurrrentPromptText(
-        //   self.puzzleData[current_puzzle_index].prompt.promptText
-        // );
         self.stones.makeStoneArrayEmpty();
-        for (let i = 0; i <= 3; i++) {
-          setTimeout(() => {
-            if (i == 3 && !isGamePause) {
-              self.stones.setNewPuzzle(self.puzzleData[current_puzzle_index]);
-              self.puzzleStartTime = new Date().getTime();
-              self.promptText.setCurrrentPuzzleData(
-                self.puzzleData[current_puzzle_index]
-              );
-              self.timerTicking.draw();
-              self.promptText.draw();
-              self.stones.setNewPuzzle(self.puzzleData[current_puzzle_index]);
-              self.stones.setTimeoutRunning(true);
-            }
-          }, i * 1300.66);
+        // for (let i = 0; i <= 3; i++) {
+        // setTimeout(() => {
+
+        // if (i == 3 && !isGamePause) {
+        if (!isGamePause) {
+          self.stones.setNewPuzzle(self.puzzleData[current_puzzle_index]);
+          self.puzzleStartTime = new Date().getTime();
+          self.promptText.setCurrrentPuzzleData(
+            self.puzzleData[current_puzzle_index]
+          );
+          self.timerTicking.draw();
+          self.promptText.draw();
+          self.stones.setNewPuzzle(self.puzzleData[current_puzzle_index]);
+          self.stones.setTimeoutRunning(true);
         }
+        // }, i * 1300.66);
+        // }
       }
 
       self.timerTicking ? (self.timerTicking.isTimerEnded = false) : null;
@@ -595,6 +600,8 @@ export class LevelStartScene {
     var context = this.context;
     var width = this.width;
     var height = this.height;
+
+    console.log(" Background1 ", availableBackgroundTypes[backgroundType]);
 
     loadImages(images, function (image) {
       switch (availableBackgroundTypes[backgroundType]) {
@@ -714,13 +721,18 @@ export class LevelStartScene {
         height * 0.06
       );
       self.timerTicking.createBackgroud();
-      self.stones.draw();
+      // self.stones.draw(deltaTime);
       self.pauseButton.draw();
       self.levelIndicators.draw();
       self.promptText.createBackground();
       loadingScreen(false);
+      self.loadedImages = Object.assign({}, image)
+      console.log(self.loadedImages," imagesareher ",image);
+      self.allImagesLoaded = true;
     });
   }
+
+  
   puzzleEndFirebaseEvents(
     success_or_failure,
     puzzle_number,

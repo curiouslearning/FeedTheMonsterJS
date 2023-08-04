@@ -11,5 +11,8 @@ export class LevelConfig {
     this.drawready = false;
     this.img = new Image();
     this.img.src = "./assets/images/mapIcon.png";
+    this.img.onload = function(){
+      console.log("mapIcon loadededed");
+    }
   }
 }

@@ -1,19 +1,20 @@
 import * as Sentry from "@sentry/browser";
-import { LevelSelectionScreen } from "./src/scenes/level-selection-scene.js";
-import { getData } from "./src/data/api-data.js";
-import { DataModal } from "./src/data/data-modal.js";
-import { StartScene } from "./src/scenes/start-scene.js";
-import { CanvasStack } from "./src/utility/canvas-stack.js";
-import { firebaseConfig } from "./src/firebase/firebase_config.js";
+import { LevelSelectionScreen } from "./src/scenes/level-selection-scene";
+import { getData } from "./src/data/api-data";
+import { DataModal } from "./src/data/data-modal";
+import { StartScene } from "./src/singlecanvas/scenes/start-scene";
+import { SceneHandler } from "./src/singlecanvas/sceneHandler/scene-handler"
+import { CanvasStack } from "./src/utility/canvas-stack";
+import { firebaseConfig } from "./src/firebase/firebase_config";
 import {
   getDatafromStorage,
   ProfileData,
   setDataToStorage,
-} from "./src/data/profile-data.js";
-import { IsCached, PWAInstallStatus } from "./src/common/common.js";
+} from "./src/data/profile-data";
+import { IsCached, PWAInstallStatus } from "./src/common/common";
 import { Workbox } from "workbox-window";
-import { Debugger, lang } from "./global-variables.js";
-import { FirebaseIntegration } from "./src/firebase/firebase_integration.js";
+import { Debugger, lang } from "./global-variables";
+import { FirebaseIntegration } from "./src/singlecanvas/Firebase/firebase-integration";
 declare const window: any;
 declare const app: any;
 let jsonData;
@@ -26,7 +27,8 @@ let is_cached = localStorage.getItem(IsCached)
   ? new Map(JSON.parse(localStorage.getItem(IsCached)))
   : new Map();
 window.addEventListener("beforeunload", (event) => {
-  FirebaseIntegration.sessionEnd();
+  // FirebaseIntegration.sessionEnd();
+  FirebaseIntegration.getInstance().sendSessionEndEvent();
 });
 window.addEventListener("load", async function () {
   registerWorkbox();
@@ -56,26 +58,26 @@ window.addEventListener("load", async function () {
       Debugger.DevelopmentLink
         ? (document.getElementById("toggle-btn").style.display = "block")
         : null;
-      if (navigator.onLine) {
-        FirebaseIntegration.initializeFirebase();
-      }
+      // if (navigator.onLine) {
+      //   FirebaseIntegration.initializeFirebase();
+      // }
       canvas.height = window.innerHeight;
       canvas.width = window.screen.width > 420 ? 420 : window.innerWidth;
       delete this.monster;
       new CanvasStack("canvas").deleteAllLayers();
-      delete this.startScene;
-      this.startScene = new StartScene(canvas, d, this.analytics);
+      delete this.sceneHandler;
+      this.sceneHandler = new SceneHandler(canvas, d, this.analytics);
       passingDataToContainer();
     }
   });
   if (is_cached.has(lang)) {
-    if (navigator.onLine) {
-      FirebaseIntegration.initializeFirebase();
-    }
+    // if (navigator.onLine) {
+    //   FirebaseIntegration.initializeFirebase();
+    // }
     Debugger.DevelopmentLink
       ? (document.getElementById("toggle-btn").style.display = "block")
       : null;
-    this.startScene = new StartScene(canvas, d, this.analytics);
+    this.sceneHandler = new SceneHandler(canvas, d, this.analytics);
     passingDataToContainer();
   }
 });

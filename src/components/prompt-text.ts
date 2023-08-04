@@ -1,23 +1,17 @@
-import { PromptTextLayer } from "../common/common.js";
-import { CanvasStack } from "../utility/canvas-stack.js";
-import { Game } from "../scenes/game.js";
-import { LevelStartScene } from "../scenes/level-start-scene.js";
-import { lang } from "../../global-variables.js";
+import { PromptTextLayer } from "../common/common";
+import { CanvasStack } from "../utility/canvas-stack";
+import { Game } from "../scenes/game";
+import { lang } from "../../global-variables";
 var self;
 export class PromptText {
   public game: Game;
   public width: number;
   public height: number;
-  public levelStart: LevelStartScene;
-
   public canvasStack: any;
-
   public levelData: any;
   public currentPromptText: any;
   public currentPuzzleData: any;
   public fntstOrGrtImgArr: any;
-  // public fantastic_image: any;
-  // public great_image: any;
   public id: any;
   public canavsElement: any;
   public context: any;
@@ -25,12 +19,11 @@ export class PromptText {
   public targetStones: any;
   public rightToLeft: boolean;
 
-  constructor(game, levelStart, currentPuzzleData, levelData, rightToLeft) {
+  constructor(game, currentPuzzleData, levelData, rightToLeft) {
     this.game = game;
     this.width = game.width;
     this.height = game.height;
     this.canvasStack = new CanvasStack("canvas");
-    this.levelStart = levelStart;
     this.levelData = levelData;
     this.rightToLeft = rightToLeft;
     self = this;
@@ -38,31 +31,18 @@ export class PromptText {
     this.currentPuzzleData = currentPuzzleData;
     this.targetStones = this.currentPuzzleData.targetStones;
     this.fntstOrGrtImgArr = [];
-    this.createCanvas();
+    this.canavsElement = document.getElementById("canvas");
+    this.context = this.canavsElement.getContext("2d");
+    // this.createCanvas();
     this.loadFantasticAndGreatImage();
+    this.createBackground();
   }
 
   loadFantasticAndGreatImage() {
     var self = this;
-    // this.fantastic_image = new Image();
-    // this.fantastic_image.src = "./lang/" + lang + "/images/fantastic_01.png";
-
-    // this.fntstOrGrtImgArr.push(this.fantastic_image);
-    // this.great_image = new Image();
-    // this.great_image.src = "./lang/" + lang + "/images/great_01.png";
-    // this.fntstOrGrtImgArr.push(this.great_image);
   }
 
   createCanvas() {
-    console.log("LevelData", this.rightToLeft);
-    this.id = this.canvasStack.createLayer(
-      this.height,
-      this.width,
-      PromptTextLayer
-    );
-    this.canavsElement = document.getElementById(this.id);
-    this.context = this.canavsElement.getContext("2d");
-    this.canavsElement.style.zIndex = 5;
   }
 
   setCurrrentPuzzleData(data) {
@@ -72,27 +52,11 @@ export class PromptText {
   }
 
   showFantasticOrGreat(feedBackText) {
-    var self = this;
-
-    this.context.clearRect(
-      this.game.width / 2 - (this.game.width * 0.5) / 2,
-      this.height * 0.15,
-      this.game.width * 0.5,
-      this.height * 0.25
-    );
-    // this.context.drawImage(
-    //   self.fntstOrGrtImgArr[imageIndex],
-    //   this.game.width - this.game.width * 0.75,
-    //   this.height * 0.2,
-    //   this.game.width * 0.5,
-    //   this.height * 0.1
-    // );
     this.context.font = "bold 24px Arial";
     this.context.fillStyle = "white";
-    // this.context.textAlign = "center";
     this.context.fillText(
       feedBackText,
-      this.game.width / 2 - this.context.measureText(feedBackText).width / 2,
+      this.game.width / 2 - this.context.measureText("feedBackText").width / 2,
       this.height * 0.25
     );
   }
@@ -212,7 +176,7 @@ export class PromptText {
     }
   }
   draw(droppedStones = 0) {
-    this.context.clearRect(0, 0, this.width, this.height);
+    // this.context.clearRect(0, 0, this.width, this.height);
     this.context.drawImage(
       this.prompt_image,
       this.game.width / 2 - (this.game.width * 0.5) / 2,

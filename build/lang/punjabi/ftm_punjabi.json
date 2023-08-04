@@ -1823,10 +1823,10 @@
               "StoneText": "ੜ"
             },
             {
-              "StoneText": "FireWrongLetter"
+              "StoneText": "ਲ"
             },
             {
-              "StoneText": "FireWrongLetter"
+              "StoneText": "ਬ"
             }
           ]
         }
@@ -1957,10 +1957,10 @@
               "StoneText": "ਗ"
             },
             {
-              "StoneText": "FireWrongLetter"
+              "StoneText": "ਤ"
             },
             {
-              "StoneText": "FireWrongLetter"
+              "StoneText": "ਞ"
             }
           ]
         },
@@ -2079,10 +2079,10 @@
               "StoneText": "ਞ"
             },
             {
-              "StoneText": "FireWrongLetter"
+              "StoneText": "ਅ"
             },
             {
-              "StoneText": "FireWrongLetter"
+              "StoneText": "ਸ਼"
             }
           ]
         },
@@ -2306,10 +2306,10 @@
               "StoneText": "ਸ"
             },
             {
-              "StoneText": "FireWrongLetter"
+              "StoneText": "ਰ"
             },
             {
-              "StoneText": "FireWrongLetter"
+              "StoneText": "ਹ"
             }
           ]
         }
@@ -13794,13 +13794,17 @@
     "Watch me grow": "https://feedthemonster.curiouscontent.org/lang/punjabi/audios/watch-me-grow.mp3"
   },
   "FeedbackAudios": [
-    "https://feedthemonster.curiouscontent.org/lang/punjabi/audios/fantastic1.mp3",
+    "https://feedthemonster.curiouscontent.org/lang/punjabi/audios/fantastic.mp3",
     "https://feedthemonster.curiouscontent.org/lang/punjabi/audios/great.mp3",
     "https://feedthemonster.curiouscontent.org/lang/punjabi/audios/amazing.mp3"
   ],
   "version": 1.3,
   "variant": "a",
-  "FeedbackTexts": ["ਸ਼ਾਨਦਾਰ!", "ਬਹੁਤ ਵਧੀਆ!", "ਵਾਹ!"],
+  "FeedbackTexts": [
+    "ਸ਼ਾਨਦਾਰ!",
+    "ਬਹੁਤ ਵਧੀਆ!",
+    "ਵਾਹ!"
+  ],
   "aboutCompany": "<p>Feed The Monster ਤੁਸੀਂ ਆਪਣੇ ਬੱਚੇ ਨੂੰ ਪੜਾਈ ਦੇ ਮੂਲ ਤੱਤਾਂ ਸਿੱਖਦੇ ਹੋ। <br/>ਮੌਨਸਟਰ ਅੰਡੇ ਇਕੱਠੇ ਕਰੋ ਅਤੇ ਉਨ੍ਹਾਂ ਨੂੰ ਅੱਖਰ ਖਿਲਾਓ ਤਾਂ ਉਹ ਨਵੇਂ ਮਿੱਤਰ ਬਣ ਸਕਣ! <br />Curious Learning ਦੁਆਰਾ ਸਹਿਯੋਗ ਦਿੱਤਾ ਗਿਆ। </p>",
   "descriptionText": "<p>ਸਾਡੇ Feed The Monster ਵੈੱਬ ਵਰਜਨ ਨੂੰ ਕੋਸ਼ਿਸ਼ ਕਰਨ ਲਈ ਧੰਨਵਾਦ!<br />ਪੂਰਾ ਗੇਮ ਖੇਡਣ ਲਈ, ਸਾਡੇ ਨਾਲ ਜਰੂਰ ਸੰਪਰਕ ਕਰੋ। <a href='https://play.google.com/store/apps/details?id=com.eduapp4syria.feedthemonsterEnglishIndian'>Google Play Store.</a></p>",
   "title": "ਰਾਖਸ ਨੂੰ ਖਾਣਾ ਖਵਾਓ!",

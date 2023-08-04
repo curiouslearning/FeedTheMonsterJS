@@ -2,17 +2,21 @@
   "version": 2.1,
   "variant": "a",
   "RightToLeft": false,
-  "FeedbackTexts": ["চমত্কার!", "দারুন!", "সুন্দর!"],
+  "FeedbackTexts": [
+    "চমত্কার!",
+    "দারুন!",
+    "সুন্দর!"
+  ],
   "title": "দ্য মনস্টারকে খাওয়ানো",
   "FeedbackAudios": [
-    "https://feedthemonster.curiouscontent.org/lang/bangla/audios/sounds/feedbacks/fantastic.mp3",
-    "https://feedthemonster.curiouscontent.org/lang/bangla/audios/sounds/feedbacks/great.mp3",
-    "https://feedthemonster.curiouscontent.org/lang/bangla/audios/sounds/feedbacks/amazing.mp3"
+    "https://feedthemonster.curiouscontent.org/lang/bangla/audios/fantastic.mp3",
+    "https://feedthemonster.curiouscontent.org/lang/bangla/audios/great.mp3",
+    "https://feedthemonster.curiouscontent.org/lang/bangla/audios/amazing.mp3"
   ],
   "OtherAudios": {
-    "Select your player": "https://feedthemonster.curiouscontent.org/lang/bangla/audios/sounds/other/Select-your-player.mp3",
-    "Watch me grow": "https://feedthemonster.curiouscontent.org/lang/bangla/audios/sounds/other/watch-me-grow.mp3",
-    "Are you sure": "https://feedthemonster.curiouscontent.org/lang/bangla/audios/sounds/other/are-you-sure.mp3"
+    "Select your player": "https://feedthemonster.curiouscontent.org/lang/bangla/audios/Select-your-player.mp3",
+    "Watch me grow": "https://feedthemonster.curiouscontent.org/lang/bangla/audios/watch-me-grow.mp3",
+    "Are you sure": "https://feedthemonster.curiouscontent.org/lang/bangla/audios/are-you-sure.mp3"
   },
   "Levels": [
     {
@@ -1791,10 +1795,10 @@
               "StoneText": "ষ"
             },
             {
-              "StoneText": "FireWrongLetter"
+              "StoneText": "আ"
             },
             {
-              "StoneText": "FireWrongLetter"
+              "StoneText": "ত"
             }
           ]
         }
@@ -1925,10 +1929,10 @@
               "StoneText": "ল"
             },
             {
-              "StoneText": "FireWrongLetter"
+              "StoneText": "্"
             },
             {
-              "StoneText": "FireWrongLetter"
+              "StoneText": "ঢ়"
             }
           ]
         },
@@ -2047,10 +2051,10 @@
               "StoneText": "ঢ়"
             },
             {
-              "StoneText": "FireWrongLetter"
+              "StoneText": "ক"
             },
             {
-              "StoneText": "FireWrongLetter"
+              "StoneText": "ক্ষ"
             }
           ]
         },
@@ -2250,10 +2254,10 @@
               "StoneText": "র"
             },
             {
-              "StoneText": "FireWrongLetter"
+              "StoneText": "প"
             },
             {
-              "StoneText": "FireWrongLetter"
+              "StoneText": "ঔ"
             }
           ]
         }

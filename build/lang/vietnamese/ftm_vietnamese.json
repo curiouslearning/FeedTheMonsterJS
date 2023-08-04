@@ -9,14 +9,14 @@
     "Tuyệt vời"
   ],
   "FeedbackAudios": [
-    "https://feedthemonster.curiouscontent.org/lang/vietnamese/audios/fantastic.wav",
-    "https://feedthemonster.curiouscontent.org/lang/vietnamese/audios/great.wav",
-    "https://feedthemonster.curiouscontent.org/lang/vietnamese/audios/amazing.wav"
+    "https://feedthemonster.curiouscontent.org/lang/vietnamese/audios/fantastic.mp3",
+    "https://feedthemonster.curiouscontent.org/lang/vietnamese/audios/great.mp3",
+    "https://feedthemonster.curiouscontent.org/lang/vietnamese/audios/amazing.mp3"
   ],
   "OtherAudios": {
-    "Select your player": "https://feedthemonster.curiouscontent.org/vietnamese/sounds/other/Select-your-player.wav",
-    "Watch me grow": "https://feedthemonster.curiouscontent.org/vietnamese/sounds/other/watch-me-grow.wav",
-    "Are you sure": "https://feedthemonster.curiouscontent.org/vietnamese/sounds/other/are-you-sure.wav"
+    "Select your player": "https://feedthemonster.curiouscontent.org/lang/vietnamese/audios/Select-your-player.mp3",
+    "Watch me grow": "https://feedthemonster.curiouscontent.org/lang/vietnamese/audios/watch-me-grow.mp3",
+    "Are you sure": "https://feedthemonster.curiouscontent.org/lang/vietnamese/audios/are-you-sure.mp3"
   },
   "Levels": [
     {
