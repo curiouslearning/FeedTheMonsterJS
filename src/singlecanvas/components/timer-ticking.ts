@@ -1,5 +1,6 @@
 import { loadImages } from "../../common/common";
 import { EventManager } from "../events/EventManager";
+import { AudioPlayer } from "./audio-player";
 
 declare global {
     interface Window {
@@ -32,6 +33,8 @@ export class TimerTicking extends EventManager {
     public isMyTimerOver: boolean = false;
     // public isAnswerDropped: boolean = false;
     public isStoneDropped: boolean = false;
+    public audioPlayer: AudioPlayer;
+    public playLevelEndAudioOnce: boolean = true;
 
     constructor(width: any, height: any, callback: any) {
         super({
@@ -54,7 +57,8 @@ export class TimerTicking extends EventManager {
         this.fps = 60;
         this.frameInterval = 1000 / this.fps;
         this.frameTimer = 0;
-
+        this.audioPlayer = new AudioPlayer();
+        this.playLevelEndAudioOnce = true;
         this.images = {
             timer_empty: "./assets/images/timer_empty.png",
             rotating_clock: "./assets/images/timer.png",
@@ -81,6 +85,10 @@ export class TimerTicking extends EventManager {
     update(deltaTime) {
         if (this.startMyTimer && !this.isStoneDropped) {
             this.timer += deltaTime * 0.008;
+        }
+        if (Math.floor(this.width * 0.87 - (this.width * 0.87 * this.timer * 0.01)) == 40 && !this.isMyTimerOver) {
+            this.playLevelEndAudioOnce?this.audioPlayer.playAudio(false,'./assets/audios/timeout.mp3'):null;
+            this.playLevelEndAudioOnce = false;
         }
         if ((this.width * 0.87 - (this.width * 0.87 * this.timer * 0.01)) < 0 && !this.isMyTimerOver) {
             this.isMyTimerOver = true;
@@ -122,6 +130,7 @@ export class TimerTicking extends EventManager {
         this.isStoneDropped = true;
     }
     public handleLoadPuzzle(event) {
+        this.playLevelEndAudioOnce = true;
         this.isStoneDropped = false;
         this.startTimer();
 
