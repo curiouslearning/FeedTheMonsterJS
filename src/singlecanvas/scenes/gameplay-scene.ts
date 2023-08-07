@@ -41,6 +41,7 @@ import {
   TOUCHEND,
   TOUCHMOVE,
   TOUCHSTART,
+  VISIBILITY_CHANGE,
 } from "../common/event-names";
 import { Background } from "../components/background";
 import { FeedbackTextEffects } from "../components/feedback-particle-effect/feedback-text-effects";
@@ -620,9 +621,7 @@ export class GameplayScene {
 
     if (this.pauseButton.onClick(x, y)) {
       console.log(" pause button getting click from gameplay");
-      this.isPauseButtonClicked = true;
-      this.removeEventListeners();
-      this.pausePopup.addListner();
+      this.pauseGamePlay();
     }
 
     // send click to play prompt
@@ -885,6 +884,7 @@ export class GameplayScene {
     this.handler.addEventListener(TOUCHMOVE, this.handleTouchMove, false);
     this.handler.addEventListener(TOUCHEND, this.handleTouchEnd, false);
     this.handler.addEventListener(CLICK, this.handleMouseClick, false);
+    document.addEventListener(VISIBILITY_CHANGE, this.handleVisibilityChnage, false);
   }
 
   removeEventListeners() {
@@ -1120,6 +1120,7 @@ export class GameplayScene {
       this.levelIndicators.unregisterEventListener();
       this.stoneHandler.unregisterEventListener();
       this.promptText.unregisterEventListener();
+      document.removeEventListener(VISIBILITY_CHANGE, this.handleVisibilityChnage, false);
       // this.deleteComponentInstances();
   }
 
@@ -1252,5 +1253,16 @@ export class GameplayScene {
   }
   public startPuzzleTime(){
     this.puzzleTime = Date.now();
+  }
+
+  public pauseGamePlay = () => {
+    this.isPauseButtonClicked = true;
+    this.removeEventListeners();
+    this.pausePopup.addListner();
+    this.audioPlayer.stopAudio();
+  }
+
+  handleVisibilityChnage = () => {
+    this.pauseGamePlay();
   }
 }
