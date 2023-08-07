@@ -105,7 +105,7 @@ export class LevelEndScene {
       self.monster.changeToSpitAnimation();
     } else {
       self.sound.playSound("./assets/audios/LevelWinFanfare.mp3");
-      self.sound.playSound("../../../assets/audios/intro.mp3");
+      self.sound.playSound("./assets/audios/intro.mp3");
       self.monster.changeToEatAnimation();
     }
   }
@@ -199,8 +199,8 @@ export class LevelEndScene {
   };
 
   dispose = () => {
-    this.audioPlayer.stopAudio();
     this.sound.pauseSound();
+    self.audioPlayer.stopAudio();
     document
       .getElementById("canvas")
       .removeEventListener(CLICK, this.handleMouseClick, false);
