@@ -71,7 +71,7 @@ export class SceneHandler {
     this.height = canvas.height;
     this.canavsElement = document.getElementById("canvas") as HTMLCanvasElement;
     this.context = this.canavsElement.getContext("2d");
-    console.log(this.data.levels[2]);
+    console.log(this.data.FeedbackAudios);
     this.startScene = new StartScene(
       canvas,
       data,
@@ -167,7 +167,8 @@ export class SceneHandler {
   switchSceneToEndLevel = (
     currentlevelPlayed,
     starCount: number,
-    monsterPhaseNumber: number
+    monsterPhaseNumber: number,
+    currentLevelNumber
   ) => {
     console.log(" currentlevelPlayed: ", currentlevelPlayed);
     this.loadingScreen.initCloud();
@@ -181,7 +182,7 @@ export class SceneHandler {
         this.width,
         this.context,
         starCount,
-        currentlevelPlayed.levelNumber,
+        currentLevelNumber,
         this.switchSceneToGameplay,
         this.switchSceneToLevelSelection,
         this.data,
