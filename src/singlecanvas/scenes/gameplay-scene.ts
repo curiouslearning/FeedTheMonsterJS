@@ -351,6 +351,10 @@ export class GameplayScene {
     return this.feedBackTexts[selectedKey];
   }
   getRandomInt(min: number, max: number) {
+    const keys = Object.keys(this.feedBackTexts).filter(key => this.feedBackTexts[key] !== undefined);
+    if (keys.length == 1) {
+      return 0;
+    }
     min = Math.ceil(min);
     max = Math.floor(max);
     return Math.floor(Math.random() * (max - min + 1)) + min;
@@ -621,6 +625,7 @@ export class GameplayScene {
 
     if (this.pauseButton.onClick(x, y)) {
       console.log(" pause button getting click from gameplay");
+      this.audioPlayer.playAudio(false, "./assets/audios/ButtonClick.mp3");
       this.pauseGamePlay();
     }
 
@@ -1112,7 +1117,8 @@ export class GameplayScene {
     }
   };
 
-  public dispose() {
+  public dispose = () => {
+    this.audioPlayer.stopAudio();
     this.removeEventListeners();
       this.feedbackTextEffects.unregisterEventListener();
       this.monster.unregisterEventListener();
