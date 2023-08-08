@@ -112,8 +112,9 @@ export default class StoneHandler extends EventManager {
     }
 
     createStones(img) {
-        for (var i = 0; i < this.currentPuzzleData.foilStones.length; i++) {
-            if(this.currentPuzzleData.foilStones[i]==this.correctTargetStone)
+        const foilStones=this.getFoilStones();
+        for (var i = 0; i < foilStones.length; i++) {
+            if(foilStones[i]==this.correctTargetStone)
         {
             this.tutorial.updateTargetStonePositions(this.stonePos[i]);
         }
@@ -124,11 +125,11 @@ export default class StoneHandler extends EventManager {
                     this.context,
                     this.canvas.width,
                     this.canvas.height,
-                    this.currentPuzzleData.foilStones[i],
+                    foilStones[i],
                     this.stonePos[i][0],
                     this.stonePos[i][1],
                     img,
-                    (i==this.currentPuzzleData.foilStones.length-1)?this.tutorial:null,
+                    (i==foilStones.length-1)?this.tutorial:null,
                 )
             );
 
@@ -308,6 +309,14 @@ export default class StoneHandler extends EventManager {
     }
 
     public getFoilStones(){
-        return this.currentPuzzleData.foilStones;
+        this.currentPuzzleData.targetStones.forEach((e) => {
+            this.currentPuzzleData.foilStones.indexOf(e) != -1
+              ? this.currentPuzzleData.foilStones.splice(this.currentPuzzleData.foilStones.indexOf(e), 1)
+              : null;
+          });
+          this.currentPuzzleData.targetStones.forEach((e) => {
+            this.currentPuzzleData.foilStones.push(e);
+          });
+          return this.currentPuzzleData.foilStones.sort(() => Math.random() - 0.5);
     }
  }

@@ -351,6 +351,9 @@ export class GameplayScene {
     return this.feedBackTexts[selectedKey];
   }
   getRandomInt(min: number, max: number) {
+    if(Object.keys(this.feedBackTexts).length==1){
+      return min;
+    }
     min = Math.ceil(min);
     max = Math.floor(max);
     return Math.floor(Math.random() * (max - min + 1)) + min;
@@ -1085,7 +1088,8 @@ export class GameplayScene {
       this.switchSceneToEnd(
         this.levelData,
         GameScore.calculateStarCount(this.score),
-        this.monsterPhaseNumber
+        this.monsterPhaseNumber,
+        this.levelNumber
       );
     } 
     else {
