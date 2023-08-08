@@ -154,8 +154,10 @@ export class PromptText extends EventManager {
     drawOthers() {
         const promptTextLetters = this.currentPromptText.split("");
         const x = this.width / 2;
-        const y = this.height * 0.26;
-        var fontSize = 20;
+        const y = this.height * 0.28;
+        
+        var fontSize = this.calculateFont();
+        this.context.font = fontSize+'px Consolas, monospace';
         const startPrompttextX =
             this.width / 2 -
             this.context.measureText(this.currentPromptText).width / 2;
@@ -226,11 +228,11 @@ export class PromptText extends EventManager {
         if (!this.isStoneDropped) {
             this.context.drawImage(
                 this.prompt_image,
-                this.width / 2 - (this.width * 0.5) / 2,
+                this.width / 2 - (this.width * 0.68) / 2,
                 // this.width / 2 - (this.width * 0.5),
                 this.height * 0.15,
-                this.width * 0.5,
-                this.height * 0.25
+                this.width * 0.65,
+                this.height * 0.3
             );
             this.context.fillStyle = "black";
             this.context.font = 30 + "px Arial";
@@ -263,5 +265,8 @@ export class PromptText extends EventManager {
     }
     droppedStoneIndex(index:number){
         this.droppedStones = index;
+    }
+    calculateFont():number{
+        return (this.width * 0.65/this.currentPromptText.length>35)?35:this.width * 0.65/this.currentPromptText.length
     }
 }
