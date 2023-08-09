@@ -309,14 +309,31 @@ export default class StoneHandler extends EventManager {
     }
 
     public getFoilStones(){
-        this.currentPuzzleData.targetStones.forEach((e) => {
-            this.currentPuzzleData.foilStones.indexOf(e) != -1
-              ? this.currentPuzzleData.foilStones.splice(this.currentPuzzleData.foilStones.indexOf(e), 1)
-              : null;
-          });
-          this.currentPuzzleData.targetStones.forEach((e) => {
-            this.currentPuzzleData.foilStones.push(e);
-          });
-          return this.currentPuzzleData.foilStones.sort(() => Math.random() - 0.5);
+       
+    this.currentPuzzleData.targetStones.forEach((e) => {
+    const index = this.currentPuzzleData.foilStones.indexOf(e);
+    if (index !== -1) {
+    this.currentPuzzleData.foilStones.splice(index, 1);
+  }
+});
+
+
+const totalStonesCount =
+  this.currentPuzzleData.targetStones.length +
+  this.currentPuzzleData.foilStones.length;
+
+if (totalStonesCount > 8) {
+  
+  const extraStonesCount = totalStonesCount - 8;
+
+  
+  this.currentPuzzleData.foilStones.splice(0, extraStonesCount);
+}
+
+
+this.currentPuzzleData.targetStones.forEach((e) => {
+  this.currentPuzzleData.foilStones.push(e);
+});
+  return this.currentPuzzleData.foilStones.sort(() => Math.random() - 0.5);
     }
  }
