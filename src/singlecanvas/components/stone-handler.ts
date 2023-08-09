@@ -104,11 +104,13 @@ export default class StoneHandler extends EventManager {
         this.tutorial = new Tutorial(context,canvas.width,canvas.height,puzzleNumber)
         this.stonebg = new Image();
         this.stonebg.src = "./assets/images/stone_pink_v02.png";
-        this.audioPlayer = AudioPlayer.getInstance();
+        this.audioPlayer = new AudioPlayer();
         this.stonebg.onload = (e) => {
             this.createStones(this.stonebg)
             // this.stoneConfig = new StoneConfig(this.context, this.height, this.width, "text", 100, 100, img);
         }
+        this.audioPlayer = new AudioPlayer();
+        document.addEventListener(VISIBILITY_CHANGE, this.handleVisibilityChange, false);
     }
 
     createStones(img) {
@@ -263,6 +265,7 @@ export default class StoneHandler extends EventManager {
     }
 
     public dispose() {
+        document.removeEventListener(VISIBILITY_CHANGE, this.handleVisibilityChange, false);
         this.unregisterEventListener();
     }
 
@@ -335,5 +338,9 @@ this.currentPuzzleData.targetStones.forEach((e) => {
   this.currentPuzzleData.foilStones.push(e);
 });
   return this.currentPuzzleData.foilStones.sort(() => Math.random() - 0.5);
+    }
+
+    handleVisibilityChange = () => {
+        this.audioPlayer.stopAudio();
     }
  }
