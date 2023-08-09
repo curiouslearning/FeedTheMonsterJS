@@ -124,7 +124,9 @@ export class LevelEndScene {
       this.monster.animation(deltaTime);
       this.closeButton.draw();
       this.retryButton.draw();
+      if(this.starCount>=2){
       this.nextButton.draw();
+      }
     }
   }
   drawStars() {
@@ -160,6 +162,7 @@ export class LevelEndScene {
     document
       .getElementById("canvas")
       .addEventListener(CLICK, this.handleMouseClick, false);
+      document.addEventListener("visibilitychange", this.pauseAudios, false);
   }
 
   handleMouseClick = (event) => {
@@ -197,12 +200,25 @@ export class LevelEndScene {
       this.switchToGameplayCB(gamePlayData, "LevelEnd");
     }
   };
-
+  pauseAudios(){
+    if (document.visibilityState === "visible") {
+      if(self.starCount >=2){
+        self.sound.playSound("./assets/audios/intro.mp3");
+      }
+    }else{
+      self.sound.pauseSound();
+    }
+  }
   dispose = () => {
     this.sound.pauseSound();
     self.audioPlayer.stopAudio();
     document
       .getElementById("canvas")
       .removeEventListener(CLICK, this.handleMouseClick, false);
+      document.removeEventListener(
+        "visibilitychange",
+        this.pauseAudios,
+        false
+      );
   };
 }

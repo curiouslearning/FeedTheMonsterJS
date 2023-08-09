@@ -351,6 +351,9 @@ export class GameplayScene {
     return this.feedBackTexts[selectedKey];
   }
   getRandomInt(min: number, max: number) {
+    if(Object.keys(this.feedBackTexts).length==1){
+      return min;
+    }
     min = Math.ceil(min);
     max = Math.floor(max);
     return Math.floor(Math.random() * (max - min + 1)) + min;
@@ -621,6 +624,7 @@ export class GameplayScene {
 
     if (this.pauseButton.onClick(x, y)) {
       console.log(" pause button getting click from gameplay");
+      this.audioPlayer.playAudio(false, "./assets/audios/ButtonClick.mp3");
       this.pauseGamePlay();
     }
 
@@ -884,7 +888,7 @@ export class GameplayScene {
     this.handler.addEventListener(TOUCHMOVE, this.handleTouchMove, false);
     this.handler.addEventListener(TOUCHEND, this.handleTouchEnd, false);
     this.handler.addEventListener(CLICK, this.handleMouseClick, false);
-    document.addEventListener(VISIBILITY_CHANGE, this.handleVisibilityChnage, false);
+    document.addEventListener(VISIBILITY_CHANGE, this.handleVisibilityChange, false);
   }
 
   removeEventListeners() {
@@ -1085,7 +1089,8 @@ export class GameplayScene {
       this.switchSceneToEnd(
         this.levelData,
         GameScore.calculateStarCount(this.score),
-        this.monsterPhaseNumber
+        this.monsterPhaseNumber,
+        this.levelNumber
       );
     } 
     else {
@@ -1112,7 +1117,8 @@ export class GameplayScene {
     }
   };
 
-  public dispose() {
+  public dispose = () => {
+    this.audioPlayer.stopAudio();
     this.removeEventListeners();
       this.feedbackTextEffects.unregisterEventListener();
       this.monster.unregisterEventListener();
@@ -1120,7 +1126,7 @@ export class GameplayScene {
       this.levelIndicators.unregisterEventListener();
       this.stoneHandler.unregisterEventListener();
       this.promptText.unregisterEventListener();
-      document.removeEventListener(VISIBILITY_CHANGE, this.handleVisibilityChnage, false);
+      document.removeEventListener(VISIBILITY_CHANGE, this.handleVisibilityChange, false);
       // this.deleteComponentInstances();
   }
 
@@ -1262,7 +1268,8 @@ export class GameplayScene {
     this.audioPlayer.stopAudio();
   }
 
-  handleVisibilityChnage = () => {
+  handleVisibilityChange = () => {
+    this.audioPlayer.stopAudio();
     this.pauseGamePlay();
   }
 }
