@@ -7,6 +7,7 @@ import { FirebaseIntegration } from "../../firebase/firebase_integration";
 import { EventManager } from "../events/EventManager";
 import { Tutorial } from "./tutorial";
 import { AudioPlayer } from "./audio-player";
+import { VISIBILITY_CHANGE } from "../common/event-names";
 // import { LevelIndicators } from "./level-indicators.js";
 // import { Tutorial } from "./tutorial.js";
 // import Monster from "./animation/monster.js";
@@ -109,6 +110,7 @@ export default class StoneHandler extends EventManager {
             // this.stoneConfig = new StoneConfig(this.context, this.height, this.width, "text", 100, 100, img);
         }
         this.audioPlayer = new AudioPlayer();
+        document.addEventListener(VISIBILITY_CHANGE, this.handleVisibilityChange, false);
     }
 
     createStones(img) {
@@ -263,6 +265,7 @@ export default class StoneHandler extends EventManager {
     }
 
     public dispose() {
+        document.removeEventListener(VISIBILITY_CHANGE, this.handleVisibilityChange, false);
         this.unregisterEventListener();
     }
 
@@ -335,5 +338,9 @@ this.currentPuzzleData.targetStones.forEach((e) => {
   this.currentPuzzleData.foilStones.push(e);
 });
   return this.currentPuzzleData.foilStones.sort(() => Math.random() - 0.5);
+    }
+
+    handleVisibilityChange = () => {
+        this.audioPlayer.stopAudio();
     }
  }

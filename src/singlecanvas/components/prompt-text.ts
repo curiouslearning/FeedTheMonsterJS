@@ -3,6 +3,7 @@ import Sound from "../../common/sound";
 import { EventManager } from "../events/EventManager";
 import { Utils } from "../common/utils";
 import { AudioPlayer } from "./audio-player";
+import { VISIBILITY_CHANGE } from "../common/event-names";
 
 
 var self;
@@ -27,6 +28,12 @@ export class PromptText extends EventManager {
     droppedStones: number = 0;
     public time: number = 0;
     public promptImageWidth: number = 0;
+    public isAppForeground: boolean = true;
+
+    public scale:number = 1;
+    public isScalingUp:boolean = true;
+    public scaleFactor:number = 0.00050;
+    public promptImageHeight: number = 0;
 
     constructor(width, height, currentPuzzleData, levelData, rightToLeft) {
         super({
@@ -54,6 +61,7 @@ export class PromptText extends EventManager {
         this.time = 0;
         this.promptImageWidth = this.width * 0.65;
         
+        document.addEventListener(VISIBILITY_CHANGE, this.handleVisibilityChange, false);
         // this.handler = document.getElementById("canvas");
         // this.handler.addEventListener(
         //     "click",
@@ -86,8 +94,10 @@ export class PromptText extends EventManager {
 
     playSound = () => {
         console.log('PromptAudio',  Utils.getConvertedDevProdURL(this.currentPuzzleData.prompt.promptAudio));
-        this.audioPlayer.playAudio(false, Utils.getConvertedDevProdURL(this.currentPuzzleData.prompt.promptAudio)
-        );
+        if (this.isAppForeground) {
+            this.audioPlayer.playAudio(false, Utils.getConvertedDevProdURL(this.currentPuzzleData.prompt.promptAudio)
+            );
+        }
     }
 
     onClick(xClick, yClick) {
@@ -259,6 +269,7 @@ export class PromptText extends EventManager {
     }
 
     public dispose() {
+        document.removeEventListener(VISIBILITY_CHANGE, this.handleVisibilityChange, false);
         this.unregisterEventListener();
     }
 
@@ -270,5 +281,31 @@ export class PromptText extends EventManager {
     }
     calculateFont():number{
         return (this.promptImageWidth/this.currentPromptText.length>35)?35:this.width * 0.65/this.currentPromptText.length
+    }
+
+    updateScaling() {
+        if (this.isScalingUp) {
+          this.scale += this.scaleFactor;
+          if (this.scale >= 1.05) {
+            this.isScalingUp = false;
+          }
+        } else {
+          this.scale -= this.scaleFactor;
+          if (this.scale <= 1) {
+            this.scale = 1;
+            this.isScalingUp = true;
+          }
+        }
+    }
+
+    handleVisibilityChange = () => {
+        if (document.visibilityState == "hidden") {
+            this.audioPlayer.stopAudio();
+            this.isAppForeground = false
+        }
+
+        if (document.visibilityState == "visible") {
+            this.isAppForeground = true
+        }
     }
 }

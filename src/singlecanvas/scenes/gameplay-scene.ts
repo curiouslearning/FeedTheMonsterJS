@@ -888,7 +888,7 @@ export class GameplayScene {
     this.handler.addEventListener(TOUCHMOVE, this.handleTouchMove, false);
     this.handler.addEventListener(TOUCHEND, this.handleTouchEnd, false);
     this.handler.addEventListener(CLICK, this.handleMouseClick, false);
-    document.addEventListener(VISIBILITY_CHANGE, this.handleVisibilityChnage, false);
+    document.addEventListener(VISIBILITY_CHANGE, this.handleVisibilityChange, false);
   }
 
   removeEventListeners() {
@@ -1126,7 +1126,7 @@ export class GameplayScene {
       this.levelIndicators.unregisterEventListener();
       this.stoneHandler.unregisterEventListener();
       this.promptText.unregisterEventListener();
-      document.removeEventListener(VISIBILITY_CHANGE, this.handleVisibilityChnage, false);
+      document.removeEventListener(VISIBILITY_CHANGE, this.handleVisibilityChange, false);
       // this.deleteComponentInstances();
   }
 
@@ -1268,7 +1268,8 @@ export class GameplayScene {
     this.audioPlayer.stopAudio();
   }
 
-  handleVisibilityChnage = () => {
+  handleVisibilityChange = () => {
+    this.audioPlayer.stopAudio();
     this.pauseGamePlay();
   }
 }
