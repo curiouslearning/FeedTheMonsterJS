@@ -14,7 +14,6 @@ const rl = readline.createInterface({
 async function main() {
   // language = await promptForLanguageSelection();
   const json = await processModule(language);
-  json["title"] = "Feed The Monster";
   const missingLetterPaths = findMissingLetter(json);
   outputFilePath = `${__dirname}/language_report.txt`;
   if (!build_lang) {
