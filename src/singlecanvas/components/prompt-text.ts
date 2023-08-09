@@ -28,11 +28,6 @@ export class PromptText extends EventManager {
     public time: number = 0;
     public promptImageWidth: number = 0;
 
-    public scale:number = 1;
-    public isScalingUp:boolean = true;
-    public scaleFactor:number = 0.00050;
-    public promptImageHeight: number = 0;
-
     constructor(width, height, currentPuzzleData, levelData, rightToLeft) {
         super({
             stoneDropCallbackHandler: (event) => this.handleStoneDrop(event),
@@ -58,7 +53,6 @@ export class PromptText extends EventManager {
         };
         this.time = 0;
         this.promptImageWidth = this.width * 0.65;
-        this.promptImageHeight = this.height * 0.3;
         
         // this.handler = document.getElementById("canvas");
         // this.handler.addEventListener(
@@ -227,23 +221,20 @@ export class PromptText extends EventManager {
     }
     draw(deltaTime) {
     //   this.time +=deltaTime;
-    this.updateScaling();
+    
     this.time = (deltaTime<17)?this.time+Math.floor(deltaTime):this.time+16;
       if (Math.floor(this.time) >= 1910 && Math.floor(this.time) <= 1926) {
         this.playSound();
       }
 
         if (!this.isStoneDropped) {
-            const scaledWidth = this.promptImageWidth * this.scale;
-            const scaledHeight = this.promptImageHeight * this.scale;
-            const offsetX = (this.width - scaledWidth) / 2;
-            const offsetY = (this.height - scaledHeight) / 5;
             this.context.drawImage(
                 this.prompt_image,
-               offsetX,
-               offsetY,
-               scaledWidth,
-               scaledHeight
+                this.width / 2 - (this.width * 0.68) / 2,
+                // this.width / 2 - (this.width * 0.5),
+                this.height * 0.15,
+                this.promptImageWidth,
+                this.height * 0.3
             );
             this.context.fillStyle = "black";
             this.context.font = 30 + "px Arial";
@@ -279,20 +270,5 @@ export class PromptText extends EventManager {
     }
     calculateFont():number{
         return (this.promptImageWidth/this.currentPromptText.length>35)?35:this.width * 0.65/this.currentPromptText.length
-    }
-
-    updateScaling() {
-        if (this.isScalingUp) {
-          this.scale += this.scaleFactor;
-          if (this.scale >= 1.05) {
-            this.isScalingUp = false;
-          }
-        } else {
-          this.scale -= this.scaleFactor;
-          if (this.scale <= 1) {
-            this.scale = 1;
-            this.isScalingUp = true;
-          }
-        }
     }
 }
