@@ -1,6 +1,7 @@
 import { Window } from "../../../global-variables";
 
 export class AudioPlayer {
+  private static instance: AudioPlayer | null = null;
   private audioContext: AudioContext | null;
   private sourceNode: AudioBufferSourceNode | null;
   private audioQueue: string[];
@@ -9,6 +10,13 @@ export class AudioPlayer {
     this.audioContext = AudioContextManager.getAudioContext();
     this.sourceNode = null;
     this.audioQueue = [];
+  }
+
+  public static getInstance(): AudioPlayer {
+    if (!AudioPlayer.instance) {
+      AudioPlayer.instance = new AudioPlayer();
+    }
+    return AudioPlayer.instance;
   }
 
   playAudio = (loop: boolean = false, ...fileUrl: string[]): void => {
@@ -55,10 +63,6 @@ export class AudioPlayer {
     }
     this.audioQueue = [];
   }
-
-  // public unregisterEvents() {
-  //   this.sourceNode.removeEventListener("ended", this.handleAudioEnded, false);
-  // }
 }
 
 class AudioContextManager {

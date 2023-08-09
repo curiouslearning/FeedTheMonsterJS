@@ -256,8 +256,7 @@ export class GameplayScene {
       this.height
     );
 
-    this.audioPlayer = new AudioPlayer();
-    this.audioPlayer.stopAudio();
+    this.audioPlayer = AudioPlayer.getInstance();
     this.handler = document.getElementById("canvas");
     this.puzzleData = levelData.puzzles;
     this.feedBackTexts = feedBackTexts;
@@ -558,6 +557,7 @@ export class GameplayScene {
             (y - self.monster.y - self.canvas.height / 2.7)
       ) <= 60
     ) {
+      this.audioPlayer.stopAudio();
       if (this.pickedStone != null || this.pickedStone != null) {
         if (this.levelData.levelMeta.levelType == "LetterOnly") {
           this.letterOnlyPuzzle(this.pickedStone.text);
@@ -1190,8 +1190,6 @@ export class GameplayScene {
 
   private handleCorrectStoneDrop = (feedbackIndex: number): void => {
     this.score += 100;
-    console.log('handleCorrectStone->');
-    // this.audioPlayer.playAudio(false, "./assets/audios/Eat.mp3","./assets/audios/Cheering-02.mp3", "./assets/audios/fantastic.WAV");
     this.feedbackTextEffects.wrapText(this.getRandomFeedBackText(feedbackIndex));
     this.feedBackTextCanavsElement.style.zIndex = "2";
   }
