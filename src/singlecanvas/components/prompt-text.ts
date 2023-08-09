@@ -60,6 +60,7 @@ export class PromptText extends EventManager {
         };
         this.time = 0;
         this.promptImageWidth = this.width * 0.65;
+        this.promptImageHeight = this.height * 0.3;
         
         document.addEventListener(VISIBILITY_CHANGE, this.handleVisibilityChange, false);
         // this.handler = document.getElementById("canvas");
@@ -238,13 +239,16 @@ export class PromptText extends EventManager {
       }
 
         if (!this.isStoneDropped) {
+            const scaledWidth = this.promptImageWidth * this.scale;
+            const scaledHeight = this.promptImageHeight * this.scale;
+            const offsetX = (this.width - scaledWidth) / 2;
+            const offsetY = (this.height - scaledHeight) / 5;
             this.context.drawImage(
                 this.prompt_image,
-                this.width / 2 - (this.width * 0.68) / 2,
-                // this.width / 2 - (this.width * 0.5),
-                this.height * 0.15,
-                this.promptImageWidth,
-                this.height * 0.3
+                offsetX,
+                offsetY,
+                scaledWidth,
+                scaledHeight
             );
             this.context.fillStyle = "black";
             this.context.font = 30 + "px Arial";
