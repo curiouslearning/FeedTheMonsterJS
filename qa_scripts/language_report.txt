@@ -1,0 +1,10 @@
+----------->  SESOTHO  <----------
+
+
+==  No JSON issues  in sesotho language ==
+
+
+
+==  Missing audios in sesotho language ==
+
+SESOTHO/audios/i.mp3
