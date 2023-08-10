@@ -72,8 +72,6 @@ let audioUrls = [
   "./assets/audios/LevelWinFanfare.mp3",
   "./assets/audios/LevelLoseFanfare.mp3",
   "./assets/audios/ButtonClick.mp3",
-  "./lang/" + lang + "/audios/fantastic.mp3",
-  "./lang/" + lang + "/audios/great.mp3",
   "./assets/audios/Monster Spits wrong stones-01.mp3",
   "./assets/audios/Disapointed-05.mp3",
   "./assets/audios/Eat.mp3",
@@ -97,7 +95,7 @@ function loadAudio(url) {
   });
 }
 
-let loadPromises = audioUrls.map((url) => loadAudio(url).catch((err) => { }));
+let loadPromises = audioUrls.map((url) => loadAudio(url).catch((err) => {}));
 Promise.all(loadPromises).then(() => {
   if (is_cached.has(lang)) {
     loadingScreen(false);
