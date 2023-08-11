@@ -100,12 +100,15 @@ export class LevelEndScene {
   }
   switchToReactionAnimation() {
     if (self.starCount <= 1) {
+      if (document.visibilityState === "visible") {
       self.sound.playSound("./assets/audios/LevelLoseFanfare.mp3");
-
+      }
       self.monster.changeToSpitAnimation();
     } else {
+      if (document.visibilityState === "visible") {
       self.sound.playSound("./assets/audios/LevelWinFanfare.mp3");
       self.sound.playSound("./assets/audios/intro.mp3");
+    } 
       self.monster.changeToEatAnimation();
     }
   }
