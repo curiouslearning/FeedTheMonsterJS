@@ -127,9 +127,6 @@ function handleServiceWorkerMessage(event): void {
 function handleLoadingMessage(data): void {
   document.getElementById("loading_number").innerHTML =
     " " + " downloading... " + data.data + "%";
-  const progressPercentage = data.data;
-  console.log(progressPercentage)
-  document.getElementById("bar").style.width = `${progressPercentage}%`
   if (data.data % 100 == 0) {
     is_cached.set(lang, "true");
     localStorage.setItem(
