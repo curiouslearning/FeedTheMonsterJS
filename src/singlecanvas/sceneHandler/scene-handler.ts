@@ -78,6 +78,7 @@ export class SceneHandler {
       firebase_analytics,
       this.switchSceneToLevelSelection
     );
+    
     // this.testGameplayScene = new TestGameplayScene(canvas, data, firebase_analytics, this.switchSceneToLevelSelection);
     // this.gameplayScene = new GameplayScene(this.canvas, this.context, this.data.levels[0], 1, "text", false);
     // this.monster = new Monster(this.canvas);
@@ -144,6 +145,7 @@ export class SceneHandler {
   switchSceneToGameplay = (gamePlayData, changeSceneRequestFrom?: string) => {
     this.showLoading();
     this.dispose(changeSceneRequestFrom, "GamePlay");
+    let jsonVersionNumber= this.data.majVersion.toString()+"."+this.data.minVersion.toString();
     // load in next scene --- gameplaqyscene
     setTimeout(() => {
       this.gameplayScene = new GameplayScene(
@@ -155,7 +157,8 @@ export class SceneHandler {
         this.switchSceneToEndLevel,
         gamePlayData.selectedLevelNumber,
         this.switchSceneToLevelSelection,
-        this.switchSceneToGameplay
+        this.switchSceneToGameplay,
+        jsonVersionNumber,
       );
       SceneHandler.SceneName = GameScene1;
     }, 2000);

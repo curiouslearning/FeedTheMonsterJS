@@ -5,6 +5,8 @@ export class DataModal {
   public FeedbackTexts: FeedbackTexts;
   public FeedbackAudios: FeedbackAudios;
   public rightToLeft: any;
+ public majVersion: number;
+ public minVersion: number;
 
   constructor(
     title: string,
@@ -12,7 +14,11 @@ export class DataModal {
     levels: number,
     feedbackTexts: string,
     rightToLeft: any,
-    feedbackAudios: any
+    feedbackAudios: any,
+    majVersion: number,
+    minVersion: number
+
+
   ) {
     this.title = title;
     this.otherAudios = new OtherAudios(otherAudios);
@@ -20,6 +26,8 @@ export class DataModal {
     this.FeedbackTexts = new FeedbackTexts(feedbackTexts);
     this.FeedbackAudios = new FeedbackAudios(feedbackAudios);
     this.rightToLeft = rightToLeft;
+    this.majVersion = majVersion;
+    this.minVersion = minVersion;
   }
 
   getLevels(levels) {
