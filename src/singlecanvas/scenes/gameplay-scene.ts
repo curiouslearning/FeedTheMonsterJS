@@ -1156,6 +1156,7 @@ export class GameplayScene {
   }
 
   public wordPuzzle(droppedStone: string, droppedStoneInstance: StoneConfig) {
+    this.audioPlayer.stopAudio();
     droppedStoneInstance.x = -999;
     droppedStoneInstance.y = -999;
     const feedBackIndex = this.getRandomInt(0, 1);
