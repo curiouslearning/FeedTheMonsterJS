@@ -29,6 +29,8 @@ export class LevelEndScene {
   public background: any;
   public audioPlayer: any;
   public sound: Sound;
+  public timeouts;
+  public starDrawnCount:number;
   constructor(
     canvas: any,
     height: number,
@@ -61,6 +63,7 @@ export class LevelEndScene {
     this.switchToGameplayCB = switchToGameplayCB;
     this.switchToLevelSelectionCB = switchToLevelSelectionCB;
     this.data = data;
+    this.starDrawnCount=0;
     this.closeButton = new CloseButton(
       context,
       canvas,
@@ -92,6 +95,7 @@ export class LevelEndScene {
     loadImages(this.images, (images) => {
       this.loadedImages = Object.assign({}, images);
       this.imagesLoaded = true;
+      this.starAnimation();
     });
     // this.draw(16.45);
     this.addEventListener();
@@ -132,8 +136,21 @@ export class LevelEndScene {
       }
     }
   }
+  starAnimation(){
+    const animations = [
+      { delay: 500, count: 1 },
+      { delay: 1000, count: 2 },
+      { delay: 1500, count: 3 }
+    ];
+
+    this.timeouts = animations.map(animation => {
+      return setTimeout(() => {
+        this.starDrawnCount = animation.count;
+      }, animation.delay);
+    });
+  }
   drawStars() {
-    if (this.starCount >= 1) {
+    if (this.starCount >= 1&&this.starDrawnCount>=1) {
       this.context.drawImage(
         this.loadedImages.star1Img,
         this.width * 0.2 - (this.width * 0.19) / 2,
@@ -141,7 +158,8 @@ export class LevelEndScene {
         this.width * 0.19,
         this.width * 0.19
       );
-      if (this.starCount <= 3 && this.starCount > 1) {
+      
+      if (this.starCount <= 3 && this.starCount > 1&&this.starDrawnCount <= 3 && this.starDrawnCount > 1) {
         this.context.drawImage(
           this.loadedImages.star2Img,
           this.width * 0.5 - (this.width * 0.19) / 2,
@@ -149,7 +167,7 @@ export class LevelEndScene {
           this.width * 0.19,
           this.width * 0.19
         );
-        if (this.starCount >= 3) {
+        if (this.starCount >= 3&&this.starDrawnCount >= 3) {
           this.context.drawImage(
             this.loadedImages.star3Img,
             this.width * 0.82 - (this.width * 0.19) / 2,
@@ -215,6 +233,7 @@ export class LevelEndScene {
   dispose = () => {
     this.sound.pauseSound();
     self.audioPlayer.stopAudio();
+    this.timeouts.forEach(timeout => clearTimeout(timeout));
     document
       .getElementById("canvas")
       .removeEventListener(CLICK, this.handleMouseClick, false);
