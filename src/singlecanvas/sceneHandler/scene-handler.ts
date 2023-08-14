@@ -71,13 +71,14 @@ export class SceneHandler {
     this.height = canvas.height;
     this.canavsElement = document.getElementById("canvas") as HTMLCanvasElement;
     this.context = this.canavsElement.getContext("2d");
-    console.log(this.data.levels[2]);
+    console.log(this.data.FeedbackAudios);
     this.startScene = new StartScene(
       canvas,
       data,
       firebase_analytics,
       this.switchSceneToLevelSelection
     );
+    
     // this.testGameplayScene = new TestGameplayScene(canvas, data, firebase_analytics, this.switchSceneToLevelSelection);
     // this.gameplayScene = new GameplayScene(this.canvas, this.context, this.data.levels[0], 1, "text", false);
     // this.monster = new Monster(this.canvas);
@@ -144,6 +145,7 @@ export class SceneHandler {
   switchSceneToGameplay = (gamePlayData, changeSceneRequestFrom?: string) => {
     this.showLoading();
     this.dispose(changeSceneRequestFrom, "GamePlay");
+    let jsonVersionNumber= !!this.data.majVersion && !!this.data.minVersion  ? this.data.majVersion.toString() +"."+this.data.minVersion.toString() : "";
     // load in next scene --- gameplaqyscene
     setTimeout(() => {
       this.gameplayScene = new GameplayScene(
@@ -155,7 +157,8 @@ export class SceneHandler {
         this.switchSceneToEndLevel,
         gamePlayData.selectedLevelNumber,
         this.switchSceneToLevelSelection,
-        this.switchSceneToGameplay
+        this.switchSceneToGameplay,
+        jsonVersionNumber,
       );
       SceneHandler.SceneName = GameScene1;
     }, 2000);
@@ -167,7 +170,8 @@ export class SceneHandler {
   switchSceneToEndLevel = (
     currentlevelPlayed,
     starCount: number,
-    monsterPhaseNumber: number
+    monsterPhaseNumber: number,
+    currentLevelNumber
   ) => {
     console.log(" currentlevelPlayed: ", currentlevelPlayed);
     this.loadingScreen.initCloud();
@@ -181,7 +185,7 @@ export class SceneHandler {
         this.width,
         this.context,
         starCount,
-        currentlevelPlayed.levelNumber,
+        currentLevelNumber,
         this.switchSceneToGameplay,
         this.switchSceneToLevelSelection,
         this.data,

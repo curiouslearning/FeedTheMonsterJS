@@ -10,3 +10,4 @@ export const TOUCHSTART: string = "touchstart";
 export const TOUCHMOVE: string = "touchmove";
 export const TOUCHEND: string = "touchend";
 export const CLICK: string = "click";
+export const VISIBILITY_CHANGE: string = "visibilitychange";

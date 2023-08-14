@@ -89,7 +89,9 @@ export class LevelSelectionScreen {
     loadImages(this.images, (images) => {
       this.loadedImages = Object.assign({}, images);
       this.imagesLoaded = true;
+      if (document.visibilityState === "visible") {
       this.audioPlayer.playAudio(false, "./assets/audios/intro.mp3");
+      }
     });
     this.addListeners();
   }
@@ -283,7 +285,13 @@ export class LevelSelectionScreen {
     }
   }
   createCanvas() {
-    this.audioPlayer.playAudio(false, "./assets/audios/intro.mp3");
+    if (document.visibilityState === "visible") {
+      console.log(">>>>>>>>>>>>>>>>>>>>>>>> Vissible");
+      this.audioPlayer.playAudio(false, "./assets/audios/intro.mp3");
+      }else{
+        console.log(">>>>>>>>>>>>>>>>>>>>>>>> Not Vissible");
+      }
+    
   }
   createLevelButtons(levelButtonpos: any) {
     var poss = levelButtonpos[0];

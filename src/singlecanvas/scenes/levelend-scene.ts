@@ -28,6 +28,9 @@ export class LevelEndScene {
   public data: any;
   public background: any;
   public audioPlayer: any;
+  public sound: Sound;
+  public timeouts;
+  public starDrawnCount:number;
   constructor(
     canvas: any,
     height: number,
@@ -44,6 +47,7 @@ export class LevelEndScene {
     this.height = height;
     this.width = width;
     this.context = context;
+    this.sound = new Sound();
     this.monster = new Monster(
       this.canvas,
       monsterPhaseNumber,
@@ -59,6 +63,7 @@ export class LevelEndScene {
     this.switchToGameplayCB = switchToGameplayCB;
     this.switchToLevelSelectionCB = switchToLevelSelectionCB;
     this.data = data;
+    this.starDrawnCount=0;
     this.closeButton = new CloseButton(
       context,
       canvas,
@@ -90,6 +95,7 @@ export class LevelEndScene {
     loadImages(this.images, (images) => {
       this.loadedImages = Object.assign({}, images);
       this.imagesLoaded = true;
+      this.starAnimation();
     });
     // this.draw(16.45);
     this.addEventListener();
@@ -98,15 +104,15 @@ export class LevelEndScene {
   }
   switchToReactionAnimation() {
     if (self.starCount <= 1) {
-      self.audioPlayer.playAudio(
-        false,
-        "./assets/audios/LevelLoseFanfare.mp3"
-      );
-
+      if (document.visibilityState === "visible") {
+      self.sound.playSound("./assets/audios/LevelLoseFanfare.mp3");
+      }
       self.monster.changeToSpitAnimation();
     } else {
-      self.audioPlayer.playAudio(false, "./assets/audios/LevelWinFanfare.mp3",
-      "./assets/audios/intro.mp3");
+      if (document.visibilityState === "visible") {
+      self.sound.playSound("./assets/audios/LevelWinFanfare.mp3");
+      self.sound.playSound("./assets/audios/intro.mp3");
+    } 
       self.monster.changeToEatAnimation();
     }
   }
@@ -125,11 +131,26 @@ export class LevelEndScene {
       this.monster.animation(deltaTime);
       this.closeButton.draw();
       this.retryButton.draw();
+      if(this.starCount>=2){
       this.nextButton.draw();
+      }
     }
   }
+  starAnimation(){
+    const animations = [
+      { delay: 500, count: 1 },
+      { delay: 1000, count: 2 },
+      { delay: 1500, count: 3 }
+    ];
+
+    this.timeouts = animations.map(animation => {
+      return setTimeout(() => {
+        this.starDrawnCount = animation.count;
+      }, animation.delay);
+    });
+  }
   drawStars() {
-    if (this.starCount >= 1) {
+    if (this.starCount >= 1&&this.starDrawnCount>=1) {
       this.context.drawImage(
         this.loadedImages.star1Img,
         this.width * 0.2 - (this.width * 0.19) / 2,
@@ -137,7 +158,8 @@ export class LevelEndScene {
         this.width * 0.19,
         this.width * 0.19
       );
-      if (this.starCount <= 3 && this.starCount > 1) {
+      
+      if (this.starCount <= 3 && this.starCount > 1&&this.starDrawnCount <= 3 && this.starDrawnCount > 1) {
         this.context.drawImage(
           this.loadedImages.star2Img,
           this.width * 0.5 - (this.width * 0.19) / 2,
@@ -145,7 +167,7 @@ export class LevelEndScene {
           this.width * 0.19,
           this.width * 0.19
         );
-        if (this.starCount >= 3) {
+        if (this.starCount >= 3&&this.starDrawnCount >= 3) {
           this.context.drawImage(
             this.loadedImages.star3Img,
             this.width * 0.82 - (this.width * 0.19) / 2,
@@ -161,6 +183,7 @@ export class LevelEndScene {
     document
       .getElementById("canvas")
       .addEventListener(CLICK, this.handleMouseClick, false);
+      document.addEventListener("visibilitychange", this.pauseAudios, false);
   }
 
   handleMouseClick = (event) => {
@@ -198,11 +221,26 @@ export class LevelEndScene {
       this.switchToGameplayCB(gamePlayData, "LevelEnd");
     }
   };
-
+  pauseAudios(){
+    if (document.visibilityState === "visible") {
+      if(self.starCount >=2){
+        self.sound.playSound("./assets/audios/intro.mp3");
+      }
+    }else{
+      self.sound.pauseSound();
+    }
+  }
   dispose = () => {
+    this.sound.pauseSound();
     self.audioPlayer.stopAudio();
+    this.timeouts.forEach(timeout => clearTimeout(timeout));
     document
       .getElementById("canvas")
       .removeEventListener(CLICK, this.handleMouseClick, false);
+      document.removeEventListener(
+        "visibilitychange",
+        this.pauseAudios,
+        false
+      );
   };
 }
