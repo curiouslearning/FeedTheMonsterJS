@@ -173,7 +173,6 @@ export class SceneHandler {
     console.log(" currentlevelPlayed: ", currentlevelPlayed);
     this.loadingScreen.initCloud();
     this.removeLoading();
-    setTimeout(() => {
       this.gameplayScene.dispose();
       document.getElementById("feedback-text").style.zIndex = "0";
       this.levelEndScene = new LevelEndScene(
@@ -189,7 +188,6 @@ export class SceneHandler {
         monsterPhaseNumber
       );
       SceneHandler.SceneName = EndScene1;
-    }, 4000);
   };
 
   switchSceneToLevelSelection = (changeSceneRequestFrom?: string) => {
