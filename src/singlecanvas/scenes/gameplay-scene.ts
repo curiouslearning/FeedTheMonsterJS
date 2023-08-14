@@ -99,7 +99,7 @@ export class GameplayScene {
   public width: number;
   public height: number;
   public monster: Monster;
-
+  public jsonVersionNumber: string;
   public audio: Sound;
   public canvas: any;
   public levelData: any;
@@ -154,7 +154,7 @@ export class GameplayScene {
   public time: number = 0;
   public score: number = 0;
   tempWordforWordPuzzle: string = "";
-
+  
   public switchToLevelSelection: any;
   public reloadScene: any;
   audioPlayer: AudioPlayer;
@@ -173,7 +173,8 @@ export class GameplayScene {
     switchSceneToEnd,
     levelNumber,
     switchToLevelSelection,
-    reloadScene
+    reloadScene,
+    jsonVersionNumber,
   ) {
     // this.game = game;
     this.width = canvas.width;
@@ -191,6 +192,7 @@ export class GameplayScene {
     this.levelNumber = levelNumber;
     this.switchToLevelSelection = switchToLevelSelection;
     this.reloadScene = reloadScene;
+    this.jsonVersionNumber= jsonVersionNumber;
     this.startGameTime();
     this.startPuzzleTime();
     // this.levelStartCallBack = levelStartCallBack;
@@ -204,7 +206,6 @@ export class GameplayScene {
     // this.createCanvas();
 
     this.pauseButton = new PauseButton(this.context, this.canvas);
-
     this.stoneHandler = new StoneHandler(
       this.context,
       this.canvas,
@@ -1229,6 +1230,7 @@ export class GameplayScene {
       ftm_language: lang,
       profile_number: 0,
       version_number: document.getElementById("version-info-id").innerHTML,
+      json_version_number:this.jsonVersionNumber,
       success_or_failure: isCorrect?'success':'failure',
       level_number: this.levelData.levelNumber,
       puzzle_number: this.counter,
@@ -1247,16 +1249,19 @@ export class GameplayScene {
       ftm_language: lang,
       profile_number: 0,
       version_number: document.getElementById("version-info-id").innerHTML,
+      json_version_number:this.jsonVersionNumber,
       success_or_failure: GameScore.calculateStarCount(this.score)>=3?'success':'failure',
       number_of_successful_puzzles: this.score/100,
       level_number: this.levelData.levelNumber,
       duration: (endTime - this.startTime) / 1000,
+     
     };
     this.firebaseIntegration.sendLevelCompletedEvent(levelCompletedData);
   }
 
   public startGameTime(){
      this.startTime = Date.now();
+  
   }
   public startPuzzleTime(){
     this.puzzleTime = Date.now();

@@ -42,9 +42,10 @@ window.addEventListener("load", async function () {
     data.Levels,
     data.FeedbackTexts,
     data.RightToLeft,
-    data.FeedbackAudios
+    data.FeedbackAudios,
+    data.majversion,
+    data.minversion
   );
-
   // if (window.Android) {
   //   window.Android.cachedStatus(
   //     is_cached.has(lang) ? is_cached.get(lang) : null
