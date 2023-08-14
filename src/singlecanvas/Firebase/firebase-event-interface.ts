@@ -3,6 +3,7 @@ interface CommonEventProperties {
     ftm_language: string;
     profile_number: number;
     version_number: string;
+    json_version_number: string;
 }
 
 export interface PuzzleCompletedEvent extends CommonEventProperties {
