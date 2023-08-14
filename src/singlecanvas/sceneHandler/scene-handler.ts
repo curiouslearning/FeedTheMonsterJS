@@ -145,7 +145,7 @@ export class SceneHandler {
   switchSceneToGameplay = (gamePlayData, changeSceneRequestFrom?: string) => {
     this.showLoading();
     this.dispose(changeSceneRequestFrom, "GamePlay");
-    let jsonVersionNumber= this.data.majVersion.toString()+"."+this.data.minVersion.toString();
+    let jsonVersionNumber= !!this.data.majVersion && !!this.data.minVersion  ? this.data.majVersion.toString() +"."+this.data.minVersion.toString() : "";
     // load in next scene --- gameplaqyscene
     setTimeout(() => {
       this.gameplayScene = new GameplayScene(
