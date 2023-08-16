@@ -71,7 +71,7 @@ export class StartScene {
     public handler: any;
     public static SceneName: string;
     public switchSceneToLevelSelection: any;
-
+    public titleFont: number;
     public background1: Background;
     audioPlayer: AudioPlayer;
 
@@ -96,6 +96,7 @@ export class StartScene {
         // passing level as 1 bcz here its fixed (assumption)
         this.background1 = new Background(this.context, this.width, this.height, 1);
         this.audioPlayer = new AudioPlayer();
+       
         // this.stoneHandler = new StoneHandler(this.context, this.canvas, 2, this.data.levels[0]);
         // var img = new Image();
         // img.src = "./assets/images/stone_pink_v02.png";
@@ -120,9 +121,8 @@ export class StartScene {
         this.createPlayButton();
         this.firebase_analytics = firebase_analytics;
         StartScene.SceneName = StartScene1;
-
+        
         // this.animation(0);
-
         this.images = {
             pillerImg: "./assets/images/Totem_v02_v01.png",
             bgImg: "./assets/images/bg_v01.jpg",
@@ -157,13 +157,15 @@ export class StartScene {
     }
 
     animation = (deltaTime) => {
+        this.titleFont = this.getFontWidthOfTitle();
         // let deltaTime = timeStamp - lastTime;
         // lastTime = timeStamp;
 
         // console.log("this is startscene");
-
+       
         this.context.clearRect(0, 0, this.width, this.height);
         if (StartScene.SceneName == StartScene1) {
+            
             if (this.imagesLoaded) {
                 // this.context.drawImage(this.loadedImages.bgImg, 0, 0, this.width, this.height);
                 // this.context.drawImage(
@@ -196,8 +198,8 @@ export class StartScene {
                 //     this.height / 2
                 // );
                 this.background1.draw();
-
-                this.context.font = "bold 40px Arial";
+                
+                this.context.font = "bold "+this.titleFont+"px Consolas, monospace";
                 this.context.fillStyle = "white";
                 this.context.textAlign = "center";
                 this.context.fillText(this.data.title, this.width * 0.5, this.height / 10);
@@ -285,5 +287,9 @@ export class StartScene {
     dispose() {
         this.audioPlayer.stopAudio();
         this.handler.removeEventListener("click", this.handleMouseClick, false);
+    }
+
+    getFontWidthOfTitle(){
+        return (this.width+200)/this.data.title.length;
     }
 }
