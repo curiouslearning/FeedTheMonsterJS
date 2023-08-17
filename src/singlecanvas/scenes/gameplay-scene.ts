@@ -1083,13 +1083,13 @@ export class GameplayScene {
     this.incrementPuzzle();
     this.isGameStarted = false;
     
-    if (this.counter == 1) {
+    if (this.counter == this.levelData.puzzles.length ) {
       this.levelIndicators.setIndicators(this.counter);
       this.logLevelEndFirebaseEvent();
       GameScore.setGameLevelScore(this.levelData, this.score);
       this.switchSceneToEnd(
         this.levelData,
-        3,
+        GameScore.calculateStarCount(this.score),
         this.monsterPhaseNumber,
         this.levelNumber,
         timerEnded
