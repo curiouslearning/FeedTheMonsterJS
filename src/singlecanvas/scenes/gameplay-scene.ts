@@ -217,7 +217,7 @@ export class GameplayScene {
       this.height,
       this.levelData.puzzles[this.counter],
       this.levelData,
-      false
+      this.rightToLeft
     );
     this.timerTicking = new TimerTicking(
       this.width,
