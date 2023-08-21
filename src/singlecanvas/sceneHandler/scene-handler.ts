@@ -171,28 +171,37 @@ export class SceneHandler {
     currentlevelPlayed,
     starCount: number,
     monsterPhaseNumber: number,
-    currentLevelNumber
+    currentLevelNumber,
+    isTimerEnded:boolean,
   ) => {
     console.log(" currentlevelPlayed: ", currentlevelPlayed);
     this.loadingScreen.initCloud();
     this.removeLoading();
-    setTimeout(() => {
-      this.gameplayScene.dispose();
+    var self = this;
+    function createEndLevelScene(){
+      self.gameplayScene.dispose();
       document.getElementById("feedback-text").style.zIndex = "0";
-      this.levelEndScene = new LevelEndScene(
-        this.canvas,
-        this.height,
-        this.width,
-        this.context,
+      self.levelEndScene = new LevelEndScene(
+        self.canvas,
+        self.height,
+        self.width,
+        self.context,
         starCount,
         currentLevelNumber,
-        this.switchSceneToGameplay,
-        this.switchSceneToLevelSelection,
-        this.data,
+        self.switchSceneToGameplay,
+        self.switchSceneToLevelSelection,
+        self.data,
         monsterPhaseNumber
       );
       SceneHandler.SceneName = EndScene1;
-    }, 4000);
+  }
+    if(isTimerEnded){
+      createEndLevelScene();
+    }else{
+      setTimeout(() => {
+        createEndLevelScene();
+      }, 4000);
+    }
   };
 
   switchSceneToLevelSelection = (changeSceneRequestFrom?: string) => {

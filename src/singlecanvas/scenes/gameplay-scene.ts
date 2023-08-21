@@ -1083,7 +1083,7 @@ export class GameplayScene {
     this.incrementPuzzle();
     this.isGameStarted = false;
     
-    if (this.counter == this.levelData.puzzles.length) {
+    if (this.counter == this.levelData.puzzles.length ) {
       this.levelIndicators.setIndicators(this.counter);
       this.logLevelEndFirebaseEvent();
       GameScore.setGameLevelScore(this.levelData, this.score);
@@ -1091,7 +1091,8 @@ export class GameplayScene {
         this.levelData,
         GameScore.calculateStarCount(this.score),
         this.monsterPhaseNumber,
-        this.levelNumber
+        this.levelNumber,
+        timerEnded
       );
     } 
     else {
