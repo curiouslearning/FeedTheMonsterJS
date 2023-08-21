@@ -232,7 +232,7 @@ export class PromptText extends EventManager {
     }
     draw(deltaTime) {
     //   this.time +=deltaTime;
-    
+    this.updateScaling();
     this.time = (deltaTime<17)?this.time+Math.floor(deltaTime):this.time+16;
       if (Math.floor(this.time) >= 1910 && Math.floor(this.time) <= 1926) {
         this.playSound();
@@ -268,8 +268,8 @@ export class PromptText extends EventManager {
         this.currentPromptText = this.currentPuzzleData.prompt.promptText;
         this.targetStones = this.currentPuzzleData.targetStones;
         this.isStoneDropped = false;
-        // this.time = 0;
-        this.playSound()
+        this.time = 0;
+        // this.playSound()
     }
 
     public dispose() {
