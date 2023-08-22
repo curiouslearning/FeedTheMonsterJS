@@ -175,6 +175,7 @@ export class GameplayScene {
     switchToLevelSelection,
     reloadScene,
     jsonVersionNumber,
+    feedbackAudios,
   ) {
     // this.game = game;
     this.width = canvas.width;
@@ -210,7 +211,8 @@ export class GameplayScene {
       this.context,
       this.canvas,
       this.counter,
-      this.levelData
+      this.levelData,
+      feedbackAudios
     );
     this.promptText = new PromptText(
       this.width,
@@ -1279,4 +1281,6 @@ export class GameplayScene {
     this.audioPlayer.stopAudio();
     this.pauseGamePlay();
   }
+
+  
 }
