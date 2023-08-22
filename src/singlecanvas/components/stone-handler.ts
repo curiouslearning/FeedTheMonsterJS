@@ -8,6 +8,7 @@ import { EventManager } from "../events/EventManager";
 import { Tutorial } from "./tutorial";
 import { AudioPlayer } from "./audio-player";
 import { VISIBILITY_CHANGE } from "../common/event-names";
+import { Utils } from "../common/utils";
 // import { LevelIndicators } from "./level-indicators.js";
 // import { Tutorial } from "./tutorial.js";
 // import Monster from "./animation/monster.js";
@@ -26,10 +27,6 @@ var audioUrl = {
     monsterSad: "./assets/audios/Disapointed-05.mp3",
     ondragStart: "./assets/audios/onDrag.mp3",
 };
-const feedBackAudiosUrls = [
-    "./lang/" + lang + "/audios/fantastic.mp3",
-    "./lang/" + lang + "/audios/great.mp3",
-  ];
 export default class StoneHandler extends EventManager {
     public context: CanvasRenderingContext2D;
     public canvas: { width: any; height?: number };
@@ -60,6 +57,7 @@ export default class StoneHandler extends EventManager {
     correctTargetStone: any;
     stonebg: HTMLImageElement;
     public audioPlayer: AudioPlayer;
+    public feedbackAudios: any;
     constructor(
         context: CanvasRenderingContext2D,
         canvas: { width: number; height?: number },
@@ -74,6 +72,7 @@ export default class StoneHandler extends EventManager {
         // audio,
         // feedbackTextCanvasElement
         // callbackFuntion
+        feedbackAudios
     ) {
         super({
             stoneDropCallbackHandler: (event) => this.handleStoneDrop(event),
@@ -100,6 +99,7 @@ export default class StoneHandler extends EventManager {
         // this.createStones();
         // this.draw(0);
         // this.eventListners();
+        this.feedbackAudios = this.convertFeedBackAudiosToList(feedbackAudios);
         this.puzzleStartTime = new Date();
         this.tutorial = new Tutorial(context,canvas.width,canvas.height,puzzleNumber)
         this.stonebg = new Image();
@@ -272,7 +272,7 @@ export default class StoneHandler extends EventManager {
     public isStoneDroppedCorrectForLetterOnly(droppedStone: string,feedBackIndex:number): boolean {
         if(droppedStone == this.correctTargetStone)
         {
-            this.audioPlayer.playAudio(false, "./assets/audios/Eat.mp3","./assets/audios/Cheering-02.mp3", feedBackAudiosUrls[feedBackIndex]);
+            this.audioPlayer.playAudio(false, "./assets/audios/Eat.mp3","./assets/audios/Cheering-02.mp3", Utils.getConvertedDevProdURL(this.feedbackAudios[feedBackIndex]));
             return true;
         }
         else{
@@ -284,7 +284,7 @@ export default class StoneHandler extends EventManager {
     public isStoneDroppedCorrectForLetterInWord(droppedStone: string,feedBackIndex:number): boolean {
         if(droppedStone == this.correctTargetStone)
         {
-            this.audioPlayer.playAudio(false, "./assets/audios/Eat.mp3","./assets/audios/Cheering-02.mp3", feedBackAudiosUrls[feedBackIndex]);
+            this.audioPlayer.playAudio(false, "./assets/audios/Eat.mp3","./assets/audios/Cheering-02.mp3", Utils.getConvertedDevProdURL(this.feedbackAudios[feedBackIndex]));
            
             return true;
         }
@@ -297,7 +297,7 @@ export default class StoneHandler extends EventManager {
     public isStonDroppedCorrectForWord(droppedStone: string,feedBackIndex:number): boolean {
         if (droppedStone == this.correctTargetStone.substring(0, droppedStone.length)) {
             if(droppedStone== this.getCorrectTargetStone()){
-                this.audioPlayer.playAudio(false, "./assets/audios/Eat.mp3","./assets/audios/Cheering-02.mp3", feedBackAudiosUrls[feedBackIndex]);
+                this.audioPlayer.playAudio(false, "./assets/audios/Eat.mp3","./assets/audios/Cheering-02.mp3", Utils.getConvertedDevProdURL(this.feedbackAudios[feedBackIndex]));
             }else{
                 this.audioPlayer.playAudio(false, "./assets/audios/Eat.mp3","./assets/audios/Cheering-02.mp3");
             }
@@ -343,4 +343,12 @@ this.currentPuzzleData.targetStones.forEach((e) => {
     handleVisibilityChange = () => {
         this.audioPlayer.stopAudio();
     }
+
+ 
+  convertFeedBackAudiosToList(feedbackAudios){
+    let feedBackAudioArray = [];
+    feedBackAudioArray.push(feedbackAudios['fantastic'],feedbackAudios['great']);
+    return feedBackAudioArray;
+    }   
+
  }

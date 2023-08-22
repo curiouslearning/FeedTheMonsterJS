@@ -159,6 +159,7 @@ export class SceneHandler {
         this.switchSceneToLevelSelection,
         this.switchSceneToGameplay,
         jsonVersionNumber,
+        this.data.FeedbackAudios
       );
       SceneHandler.SceneName = GameScene1;
     }, 2000);
