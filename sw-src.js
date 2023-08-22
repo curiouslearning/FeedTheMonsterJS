@@ -206,7 +206,6 @@ async function cacheFeedBackAudio(feedBackAudios, language) {
           )
       : audio);
   });
-  console.log(audioUrls)
   try {
     const cacheName = workbox.core.cacheNames.precache + language;
     const cache = await caches.open(cacheName);
