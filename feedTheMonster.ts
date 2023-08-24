@@ -138,9 +138,13 @@ function handleServiceWorkerMessage(event): void {
 }
 
 function handleLoadingMessage(data): void {
-  document.getElementById("loading_number").innerHTML =
-    " " + " downloading... " + data.data + "%";
+  const progressBar=document.getElementById("progress-bar");
+  const preogressBarContainer=document.getElementById("progress-bar-container");
+  preogressBarContainer.style.display="flex";
+  progressBar.style.display="flex";
+  progressBar.style.width=`${data.data}%`;
   if (data.data % 100 == 0) {
+    
     is_cached.set(lang, "true");
     localStorage.setItem(
       IsCached,
@@ -149,6 +153,7 @@ function handleLoadingMessage(data): void {
     localStorage.setItem("version" + lang, data.version);
     window.location.reload();
   }
+  progressBar.style.width=`${data.data}%`;
 }
 function handleUpdateFoundMessage(): void {
   let text = "Update Found\nPress ok to update.";
