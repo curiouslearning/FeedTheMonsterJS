@@ -21,6 +21,7 @@ export function loadImages(sources: any, callback: any) {
 }
 export function loadingScreen(loading: boolean) {
   const loadingElement = <HTMLElement>document.getElementById("loading-screen");
+    const progressContainer=document.getElementById("progress-bar-container")
   if (loading) {
     loadingElement.style.display = "block";
     new CanvasStack("canvas").bkgCanvas.layers.forEach((element) => {
