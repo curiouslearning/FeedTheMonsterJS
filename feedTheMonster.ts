@@ -139,6 +139,9 @@ function handleServiceWorkerMessage(event): void {
 
 function handleLoadingMessage(data): void {
   const progressBar=document.getElementById("progress-bar");
+  const preogressBarContainer=document.getElementById("progress-bar-container");
+  preogressBarContainer.style.display="flex";
+  progressBar.style.display="flex";
   progressBar.style.width=`${data.data}%`;
   if (data.data % 100 == 0) {
     
