@@ -55,7 +55,7 @@
 
   <body>
     <div class="game-scene">
-      <h1 id="version-info-id">v1.0.16</h1>
+      <h1 id="version-info-id">v1.0.17</h1>
       <button id="toggle-btn" class="off">Dev</button>
       <!--Keep the server url in href-->
       <a
@@ -64,9 +64,11 @@
         id="pwa_app"
       ></a>
       <div id="loading-screen">
-        <div class="loading-spinner"></div>
-        <p id="loading_text">Please wait,</p>
-        <p id="loading_number">loading...</p>
+        <img id="loading-gif" src="./assets/images/loadingImg.gif" alt="Loading" />
+        <div id="progress-bar-container">
+          <div id="progress-bar"></div>
+        </div>
+        
       </div>
       <img id="monster" src="./assets/images/idle4.png" alt="loading" />
       <audio id="monster_audio" src=""></audio>

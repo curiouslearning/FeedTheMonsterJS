@@ -94,7 +94,7 @@ export class TestGameplayScene {
         console.log(Date.now, " ::: ", performance.now);
         // this.monster2.x = 100;
         this.switchSceneToLevelSelection = switchSceneToLevelSelection;
-        this.stoneHandler = new StoneHandler(this.context, this.canvas, 2, this.data.levels[92]);
+        this.stoneHandler = new StoneHandler(this.context, this.canvas, 2, this.data.levels[92],this.data.feedbackAudios);
         // var img = new Image();
         // img.src = "./assets/images/stone_pink_v02.png";
         // img.onload = (e) => {

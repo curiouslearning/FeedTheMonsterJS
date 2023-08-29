@@ -126,10 +126,12 @@ export class PromptText extends EventManager {
         );
     }
 
-    drawArabic() {
+    drawRTLLang() {
         var x = this.width / 2;
         const y = this.height * 0.26;
         this.context.textAlign = "center";
+        var fontSize = this.calculateFont();
+        this.context.font = fontSize+'px Consolas, monospace';
         if (this.levelData.levelMeta.levelType == "LetterInWord") {
             var letterInWord = this.currentPromptText.replace(
                 new RegExp(this.currentPuzzleData.targetStones[0], "g"),
@@ -148,9 +150,8 @@ export class PromptText extends EventManager {
                 y
             );
         } else if (this.levelData.levelMeta.levelType == "Word") {
-            x = x - this.context.measureText(this.currentPromptText).width * 0.8;
+            x = x - this.context.measureText(this.currentPromptText).width * 0.5;
             for (let i = this.targetStones.length - 1; i >= 0; i--) {
-                x = x + this.context.measureText(this.targetStones[i]).width + 5;
                 if (this.droppedStones > i || this.droppedStones == undefined) {
                     this.context.fillStyle = "black";
                     this.context.fillText(this.targetStones[i], x, y);
@@ -158,6 +159,7 @@ export class PromptText extends EventManager {
                     this.context.fillStyle = "red";
                     this.context.fillText(this.targetStones[i], x, y);
                 }
+                x = x + this.context.measureText(this.targetStones[i]).width + 5;
             }
         } else {
             this.context.fillStyle = "black";
@@ -232,7 +234,7 @@ export class PromptText extends EventManager {
     }
     draw(deltaTime) {
     //   this.time +=deltaTime;
-    
+    this.updateScaling();
     this.time = (deltaTime<17)?this.time+Math.floor(deltaTime):this.time+16;
       if (Math.floor(this.time) >= 1910 && Math.floor(this.time) <= 1926) {
         this.playSound();
@@ -253,7 +255,7 @@ export class PromptText extends EventManager {
             this.context.fillStyle = "black";
             this.context.font = 30 + "px Arial";
             this.rightToLeft
-                ? this.drawArabic()
+                ? this.drawRTLLang()
                 : this.drawOthers();
         }
     }
@@ -268,8 +270,8 @@ export class PromptText extends EventManager {
         this.currentPromptText = this.currentPuzzleData.prompt.promptText;
         this.targetStones = this.currentPuzzleData.targetStones;
         this.isStoneDropped = false;
-        // this.time = 0;
-        this.playSound()
+        this.time = 0;
+        // this.playSound()
     }
 
     public dispose() {

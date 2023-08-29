@@ -1,13 +1,13 @@
 export class DataModal {
-  public title: string
+  public title: string;
   public otherAudios: OtherAudios;
   public levels: number;
   public FeedbackTexts: FeedbackTexts;
   public FeedbackAudios: FeedbackAudios;
   public rightToLeft: any;
- public majVersion: number;
- public minVersion: number;
-
+  public majVersion: number;
+  public minVersion: number;
+  public version: number;
   constructor(
     title: string,
     otherAudios: { [x: string]: any },
@@ -16,9 +16,8 @@ export class DataModal {
     rightToLeft: any,
     feedbackAudios: any,
     majVersion: number,
-    minVersion: number
-
-
+    minVersion: number,
+    version: number
   ) {
     this.title = title;
     this.otherAudios = new OtherAudios(otherAudios);
@@ -28,6 +27,7 @@ export class DataModal {
     this.rightToLeft = rightToLeft;
     this.majVersion = majVersion;
     this.minVersion = minVersion;
+    this.version = version;
   }
 
   getLevels(levels) {
@@ -58,18 +58,15 @@ export class FeedbackTexts {
   public amazing: any;
 
   constructor(feedbackTexts) {
-    if(feedbackTexts.length>=1){
+    if (feedbackTexts.length >= 1) {
       this.fantastic = feedbackTexts[0];
     }
-    if(feedbackTexts.length>=2){
-       this.great = feedbackTexts[1];
-      }
-    if(feedbackTexts.length>=3){
+    if (feedbackTexts.length >= 2) {
+      this.great = feedbackTexts[1];
+    }
+    if (feedbackTexts.length >= 3) {
       this.amazing = feedbackTexts[2];
     }
-     
-   
-    
   }
 }
 
@@ -79,13 +76,13 @@ export class FeedbackAudios {
   public amazing: any;
 
   constructor(feedbackAudios) {
-    if(feedbackAudios.length>=1){
+    if (feedbackAudios.length >= 1) {
       this.fantastic = feedbackAudios[0];
     }
-    if(feedbackAudios.length>=2){
-       this.great = feedbackAudios[1];
-      }
-    if(feedbackAudios.length>=3){
+    if (feedbackAudios.length >= 2) {
+      this.great = feedbackAudios[1];
+    }
+    if (feedbackAudios.length >= 3) {
       this.amazing = feedbackAudios[2];
     }
   }

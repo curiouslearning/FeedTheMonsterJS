@@ -3,7 +3,7 @@ import { LevelSelectionScreen } from "./src/scenes/level-selection-scene";
 import { getData } from "./src/data/api-data";
 import { DataModal } from "./src/data/data-modal";
 import { StartScene } from "./src/singlecanvas/scenes/start-scene";
-import { SceneHandler } from "./src/singlecanvas/sceneHandler/scene-handler"
+import { SceneHandler } from "./src/singlecanvas/sceneHandler/scene-handler";
 import { CanvasStack } from "./src/utility/canvas-stack";
 import { firebaseConfig } from "./src/firebase/firebase_config";
 import {
@@ -33,6 +33,7 @@ window.addEventListener("beforeunload", (event) => {
 window.addEventListener("load", async function () {
   registerWorkbox();
   const canvas: any = <HTMLElement>document.getElementById("canvas");
+  const versionInfoElement = document.getElementById("version-info-id");
   canvas.height = window.innerHeight;
   canvas.width = window.screen.width > 420 ? 420 : window.innerWidth;
   let data = await getData();
@@ -44,7 +45,8 @@ window.addEventListener("load", async function () {
     data.RightToLeft,
     data.FeedbackAudios,
     data.majversion,
-    data.minversion
+    data.minversion,
+    data.version
   );
   // if (window.Android) {
   //   window.Android.cachedStatus(
@@ -56,9 +58,14 @@ window.addEventListener("load", async function () {
 
   window.addEventListener("resize", async () => {
     if (is_cached.has(lang)) {
-      Debugger.DevelopmentLink
-        ? (document.getElementById("toggle-btn").style.display = "block")
-        : null;
+      if (Debugger.DevelopmentLink) {
+        if (d.majVersion && d.minVersion) {
+          versionInfoElement.innerHTML += `/j.v${d.majVersion}.${d.minVersion}`;
+        } else if (d.version) {
+          versionInfoElement.innerHTML += `/j.v${d.version}`;
+        }
+        document.getElementById("toggle-btn").style.display = "block";
+      }
       // if (navigator.onLine) {
       //   FirebaseIntegration.initializeFirebase();
       // }
@@ -75,9 +82,14 @@ window.addEventListener("load", async function () {
     // if (navigator.onLine) {
     //   FirebaseIntegration.initializeFirebase();
     // }
-    Debugger.DevelopmentLink
-      ? (document.getElementById("toggle-btn").style.display = "block")
-      : null;
+    if (Debugger.DevelopmentLink) {
+      if (d.majVersion && d.minVersion) {
+        versionInfoElement.innerHTML += `/j.v${d.majVersion}.${d.minVersion}`;
+      } else if (d.version) {
+        versionInfoElement.innerHTML += `/j.v${d.version}`;
+      }
+      document.getElementById("toggle-btn").style.display = "block";
+    }
     this.sceneHandler = new SceneHandler(canvas, d, this.analytics);
     passingDataToContainer();
   }
@@ -106,7 +118,7 @@ async function registerWorkbox(): Promise<void> {
   }
 }
 
-channel.addEventListener('message',handleServiceWorkerMessage)
+channel.addEventListener("message", handleServiceWorkerMessage);
 
 function handleServiceWorkerRegistration(registration): void {
   if (registration.installing) {
@@ -126,9 +138,13 @@ function handleServiceWorkerMessage(event): void {
 }
 
 function handleLoadingMessage(data): void {
-  document.getElementById("loading_number").innerHTML =
-    " " + " downloading... " + data.data + "%";
+  const progressBar=document.getElementById("progress-bar");
+  const preogressBarContainer=document.getElementById("progress-bar-container");
+  preogressBarContainer.style.display="flex";
+  progressBar.style.display="flex";
+  progressBar.style.width=`${data.data}%`;
   if (data.data % 100 == 0) {
+    
     is_cached.set(lang, "true");
     localStorage.setItem(
       IsCached,
@@ -137,6 +153,7 @@ function handleLoadingMessage(data): void {
     localStorage.setItem("version" + lang, data.version);
     window.location.reload();
   }
+  progressBar.style.width=`${data.data}%`;
 }
 function handleUpdateFoundMessage(): void {
   let text = "Update Found\nPress ok to update.";
