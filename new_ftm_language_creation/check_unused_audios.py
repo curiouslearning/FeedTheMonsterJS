@@ -41,6 +41,12 @@ def find_prompt_audios(json_path, prompt_audio_urls=None):
                                 prompt_audio_url = puzzle["prompt"]["PromptAudio"]
                                 if os.path.basename(prompt_audio_url) not in prompt_audio_urls:
                                     prompt_audio_urls.append(os.path.basename(prompt_audio_url))
+                                    
+            if "FeedbackAudios" in data:
+                for feedbackAudioUrl in data["FeedbackAudios"]:
+                    if os.path.basename(feedbackAudioUrl) not in prompt_audio_url:
+                        prompt_audio_urls.append(os.path.basename(feedbackAudioUrl))
+                                    
         return prompt_audio_urls
     except Exception as e:
         print("Error finding prompt audios:", e)
