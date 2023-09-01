@@ -30,7 +30,7 @@ def find_prompt_audios(json_path, prompt_audio_urls=None):
     try:
         import json
         
-        with open(json_path, "r") as json_file:
+        with open(json_path, "r",encoding="utf8") as json_file:
             data = json.load(json_file)
             
             if "Levels" in data:
@@ -53,7 +53,7 @@ def find_prompt_audios(json_path, prompt_audio_urls=None):
         return prompt_audio_urls
 
 if __name__ == "__main__":
-    root_folder = r"/run/media/amitsingh/New Volume/Sutara/NewProject/FeedTheMonsterJS/lang"
+    root_folder = "..\\lang"
    
     language = input("Enter the language: ")
     
