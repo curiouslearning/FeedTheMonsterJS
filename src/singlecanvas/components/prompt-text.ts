@@ -267,6 +267,7 @@ export class PromptText extends EventManager {
     public handleLoadPuzzle(event) {
         this.droppedStones = 0;
         this.currentPuzzleData = this.levelData.puzzles[event.detail.counter]
+        this.audioPlayer.preloadAudio(Utils.getConvertedDevProdURL(this.currentPuzzleData.prompt.promptAudio));
         this.currentPromptText = this.currentPuzzleData.prompt.promptText;
         this.targetStones = this.currentPuzzleData.targetStones;
         this.isStoneDropped = false;
