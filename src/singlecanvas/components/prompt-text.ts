@@ -4,6 +4,7 @@ import { EventManager } from "../events/EventManager";
 import { Utils } from "../common/utils";
 import { AudioPlayer } from "./audio-player";
 import { VISIBILITY_CHANGE } from "../common/event-names";
+import { PromptAudio } from "../../common/common";
 
 
 var self;
@@ -51,7 +52,7 @@ export class PromptText extends EventManager {
         this.fntstOrGrtImgArr = [];
         this.canavsElement = document.getElementById("canvas");
         this.context = this.canavsElement.getContext("2d");
-        this.audioPlayer = new AudioPlayer();
+        this.sound = new Sound();
 
         this.prompt_image = new Image();
         this.prompt_image.src = "./assets/images/promptTextBg.png";
@@ -96,7 +97,7 @@ export class PromptText extends EventManager {
     playSound = () => {
         console.log('PromptAudio',  Utils.getConvertedDevProdURL(this.currentPuzzleData.prompt.promptAudio));
         if (this.isAppForeground) {
-            this.audioPlayer.playAudio(false, Utils.getConvertedDevProdURL(this.currentPuzzleData.prompt.promptAudio)
+            this.sound.playSound(Utils.getConvertedDevProdURL(this.currentPuzzleData.prompt.promptAudio), PromptAudio
             );
         }
     }
