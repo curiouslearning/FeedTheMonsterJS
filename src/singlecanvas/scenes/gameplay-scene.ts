@@ -1183,6 +1183,12 @@ export class GameplayScene {
     }
     
     if (isCorrect) {
+      //Condition to reset the timer if the prompt text length is more than 4.
+      if(this.levelData.puzzles[this.counter].prompt.promptText.length>4)
+      {
+        this.timerTicking.startTimer();
+      }
+      
       this.monster.changeToEatAnimation();
       lang=="arabic" ? this.promptText.droppedStoneIndex(stonesCount) : this.promptText.droppedStoneIndex(this.tempWordforWordPuzzle.length);
        stonesCount++;
