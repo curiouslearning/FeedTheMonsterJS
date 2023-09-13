@@ -31,6 +31,7 @@ window.addEventListener("beforeunload", (event) => {
   FirebaseIntegration.getInstance().sendSessionEndEvent();
 });
 window.addEventListener("load", async function () {
+  setContainerAppOrientation()
   registerWorkbox();
   const canvas: any = <HTMLElement>document.getElementById("canvas");
   const versionInfoElement = document.getElementById("version-info-id");
@@ -169,5 +170,11 @@ function handleUpdateFoundMessage(): void {
 function passingDataToContainer() {
   if (window.Android) {
     window.Android.cachedStatus(is_cached.get(lang) == "true" ? true : false);
+  }
+}
+
+function setContainerAppOrientation() {
+  if (window.Android) {
+    window.Android.setContainerAppOrientation("portrait");
   }
 }
