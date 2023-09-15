@@ -170,7 +170,23 @@ export class PromptText extends EventManager {
                 }
                 x = x + this.context.measureText(this.targetStones[i]).width + 5;
             }
-        } else {
+        } 
+        else if (this.levelData.levelMeta.levelType == "SoundWord") {
+            const scaledWidth = this.promptImageWidth * this.scale;
+                    const scaledHeight = this.promptImageHeight * this.scale;
+                    // const offsetX = (this.width - scaledWidth) / 2;
+                    // const offsetY = (this.height - scaledHeight) / 5;
+                    const offsetX = (this.width - scaledWidth) *1.25;
+                    const offsetY = (this.height - scaledHeight) *0.33;
+                    this.context.drawImage(
+                        this.promptPlayButton,
+                        offsetX,
+                        offsetY,
+                        scaledWidth/4,
+                        scaledHeight/4
+                    );
+        }
+        else {
             this.context.fillStyle = "black";
             this.context.fillText(this.currentPromptText, x, y);
         }
