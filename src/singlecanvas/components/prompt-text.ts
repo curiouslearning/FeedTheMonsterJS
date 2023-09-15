@@ -35,6 +35,7 @@ export class PromptText extends EventManager {
     public isScalingUp:boolean = true;
     public scaleFactor:number = 0.00050;
     public promptImageHeight: number = 0;
+    public promptPlayButton: any;
 
     constructor(width, height, currentPuzzleData, levelData, rightToLeft) {
         super({
@@ -55,10 +56,15 @@ export class PromptText extends EventManager {
         this.sound = new Sound();
 
         this.prompt_image = new Image();
-        this.prompt_image.src = "./assets/images/promptTextBg.png";
-        this.prompt_image.onload = () => {
-            this.imagesLoaded = true;
-        };
+        this.promptPlayButton = new Image();
+        // this.prompt_image.src = "./assets/images/promptTextBg.png";
+        // this.promptPlayButton.src = "./assets/images/promptPlayButton.png"
+        this.loadImages().then(()=>{
+            console.log('Images loaded');
+        });
+        // this.prompt_image.onload = () => {
+        //     this.imagesLoaded = true;
+        // };
         this.time = 0;
         this.promptImageWidth = this.width * 0.65;
         this.promptImageHeight = this.height * 0.3;
@@ -71,6 +77,8 @@ export class PromptText extends EventManager {
         //     false
         // );
     }
+
+    
 
     handleMouseDown = (event) => {
         let self = this;
@@ -162,7 +170,23 @@ export class PromptText extends EventManager {
                 }
                 x = x + this.context.measureText(this.targetStones[i]).width + 5;
             }
-        } else {
+        } 
+        else if (this.levelData.levelMeta.levelType == "SoundWord") {
+            const scaledWidth = this.promptImageWidth * this.scale;
+                    const scaledHeight = this.promptImageHeight * this.scale;
+                    // const offsetX = (this.width - scaledWidth) / 2;
+                    // const offsetY = (this.height - scaledHeight) / 5;
+                    const offsetX = (this.width - scaledWidth) *1.25;
+                    const offsetY = (this.height - scaledHeight) *0.33;
+                    this.context.drawImage(
+                        this.promptPlayButton,
+                        offsetX,
+                        offsetY,
+                        scaledWidth/4,
+                        scaledHeight/4
+                    );
+        }
+        else {
             this.context.fillStyle = "black";
             this.context.fillText(this.currentPromptText, x, y);
         }
@@ -218,6 +242,22 @@ export class PromptText extends EventManager {
                         );
                     }
                     break;
+                }
+                case "SoundWord": {
+                    const scaledWidth = this.promptImageWidth * this.scale;
+                    const scaledHeight = this.promptImageHeight * this.scale;
+                    // const offsetX = (this.width - scaledWidth) / 2;
+                    // const offsetY = (this.height - scaledHeight) / 5;
+                    const offsetX = (this.width - scaledWidth) *1.25;
+                    const offsetY = (this.height - scaledHeight) *0.33;
+                    this.context.drawImage(
+                        this.promptPlayButton,
+                        offsetX,
+                        offsetY,
+                        scaledWidth/4,
+                        scaledHeight/4
+                    );
+                  break;
                 }
                 default: {
                     this.context.fillStyle = "black";
@@ -315,4 +355,26 @@ export class PromptText extends EventManager {
             this.isAppForeground = true
         }
     }
+
+    async loadImages() {
+        const image1Promise = this.loadImage(this.prompt_image, "./assets/images/promptTextBg.png");
+        const image2Promise = this.loadImage(this.promptPlayButton, "./assets/images/promptPlayButton.png");
+    
+        await Promise.all([image1Promise, image2Promise]);
+    
+        this.imagesLoaded = true;
+        // You can do additional actions here after both images are loaded.
+      }
+    
+      loadImage(image: HTMLImageElement, src: string): Promise<void> {
+        return new Promise<void>((resolve, reject) => {
+          image.onload = () => {
+            resolve();
+          };
+          image.src = src;
+          image.onerror = (error) => {
+            reject(error);
+          };
+        });
+      }
 }

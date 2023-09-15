@@ -571,7 +571,7 @@ export class GameplayScene {
           this.letterInWordPuzzle(this.pickedStone.text);
         }
 
-        if (this.levelData.levelMeta.levelType == "Word") {
+        if (this.levelData.levelMeta.levelType == "Word" || this.levelData.levelMeta.levelType == "SoundWord") {
           this.wordPuzzle(this.pickedStone.text, this.pickedStone);
         }
       }
@@ -1166,7 +1166,7 @@ export class GameplayScene {
     droppedStoneInstance.y = -999;
     const feedBackIndex = this.getRandomInt(0, 1);
     this.tempWordforWordPuzzle = this.tempWordforWordPuzzle + droppedStone;
-   
+
     const isCorrect = this.stoneHandler.isStonDroppedCorrectForWord(
       this.tempWordforWordPuzzle,feedBackIndex
     );
