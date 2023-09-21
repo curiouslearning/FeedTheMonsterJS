@@ -143,7 +143,9 @@ function handleLoadingMessage(data): void {
   const preogressBarContainer=document.getElementById("progress-bar-container");
   preogressBarContainer.style.display="flex";
   progressBar.style.display="flex";
+  if(progressBar.style.width>="40%"){
   progressBar.style.width=`${data.data}%`;
+  }
   if (data.data % 100 == 0) {
     
     is_cached.set(lang, "true");
