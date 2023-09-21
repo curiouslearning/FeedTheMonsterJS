@@ -244,8 +244,8 @@ export class PromptText extends EventManager {
                     break;
                 }
                 case "SoundWord": {
-                    const scaledWidth = this.promptImageWidth * this.scale;
-                    const scaledHeight = this.promptImageHeight * this.scale;
+                    const scaledWidth = this.promptImageWidth;
+                    const scaledHeight = this.promptImageHeight;
                     // const offsetX = (this.width - scaledWidth) / 2;
                     // const offsetY = (this.height - scaledHeight) / 5;
                     const offsetX = (this.width - scaledWidth) *1.25;
