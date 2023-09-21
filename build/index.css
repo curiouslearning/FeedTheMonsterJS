@@ -52,18 +52,7 @@ img {
   z-index: -1;
   transform: translate(-50%, 0%);
 }
-/* #about-company {
-  position: absolute;
-  display: none;
-  left: 50%;
-  bottom: 0%;
-  width: 100%;
-  max-width: 420px;
-  height: 30%;
-  /* background-color: rgba(0, 0, 0, 0.5); */
-  transform: translate(-50%, 0%);
-  z-index: 100;
-} */
+
 
 #about-company p {
   margin-top: 10%;
@@ -139,7 +128,7 @@ img {
 }
 
 #progress-bar-container {
-  display: none;
+  display: flex;
   position: relative; /* Keep this for proper positioning */
   width: 98%;
   height: 4vh;
@@ -149,8 +138,9 @@ img {
 }
 
 #progress-bar {
-  display: none;
+  display: flex;
   height: 100%;
+  width: 20%;
   background-color: #000000;
   transition: width 0.3s ease-in-out;
 }

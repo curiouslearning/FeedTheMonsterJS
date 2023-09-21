@@ -59,7 +59,7 @@ export class SceneHandler {
   public static SceneName: string;
   public loadingScreen: LoadingScene;
   public loading: boolean = false;
-
+  public preLoadAudio:any;
   constructor(
     canvas: HTMLCanvasElement,
     data: DataModal,
@@ -88,6 +88,7 @@ export class SceneHandler {
     // this.createPlayButton();
     // this.firebase_analytics = firebase_analytics;
     SceneHandler.SceneName = StartScene1;
+    this.preLoadAudio= this.preloadAudios(data);
     this.loadingScreen = new LoadingScene(this.width, this.height);
 
     this.animation(0);
@@ -112,6 +113,45 @@ export class SceneHandler {
     let monsterPhaseNumber = Math.floor(totalStarCount / 12) + 1 || 1;
     return monsterPhaseNumber <= 4 ? monsterPhaseNumber : 4;
   }
+
+  preloadAudios(data){
+   
+    let uniqueUrls=[];
+    for(let level of data.levels){
+     
+      for(let puzzle of level.puzzles ){
+          if(!uniqueUrls.includes(puzzle.prompt.promptAudio)){
+              uniqueUrls.push(puzzle.prompt.promptAudio);
+          }
+      }
+  }
+  this.loadUniqueUrls(uniqueUrls);
+  }
+  loadUniqueUrls(uniqueUrls){
+    let audioContext = new AudioContext();
+  let audioBuffers = {};
+    let loadPromises = uniqueUrls.map((url) => this.loadAudio(url,audioContext,audioBuffers).catch((err) => {}));
+    Promise.all(loadPromises).then(() => {
+// You can now use the audioBuffers object to play the preloaded audio files
+});
+}
+loadAudio(url,audioContext,audioBuffers) {
+  return new Promise<void>((resolve, reject) => {
+    let request = new XMLHttpRequest();
+    request.open("GET", url, true);
+    request.responseType = "arraybuffer";
+    request.onload = function () {
+      audioContext.decodeAudioData(request.response, function (buffer) {
+        audioBuffers[url] = buffer;
+        resolve();
+      });
+    };
+    request.onerror = function () {
+      reject(new Error("Error loading audio file"));
+    };
+    request.send();
+  });
+}
 
   animation = (timeStamp) => {
     let deltaTime = timeStamp - lastTime;
