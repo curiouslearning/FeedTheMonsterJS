@@ -31,7 +31,7 @@ window.addEventListener("beforeunload", (event) => {
   FirebaseIntegration.getInstance().sendSessionEndEvent();
 });
 window.addEventListener("load", async function () {
-  setContainerAppOrientation()
+  // setContainerAppOrientation()
   registerWorkbox();
   const canvas: any = <HTMLElement>document.getElementById("canvas");
   const versionInfoElement = document.getElementById("version-info-id");
