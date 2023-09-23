@@ -31,6 +31,7 @@ window.addEventListener("beforeunload", (event) => {
   FirebaseIntegration.getInstance().sendSessionEndEvent();
 });
 window.addEventListener("load", async function () {
+  // setContainerAppOrientation()
   registerWorkbox();
   const canvas: any = <HTMLElement>document.getElementById("canvas");
   const versionInfoElement = document.getElementById("version-info-id");
@@ -142,7 +143,9 @@ function handleLoadingMessage(data): void {
   const preogressBarContainer=document.getElementById("progress-bar-container");
   preogressBarContainer.style.display="flex";
   progressBar.style.display="flex";
+  if(progressBar.style.width>="40%"){
   progressBar.style.width=`${data.data}%`;
+  }
   if (data.data % 100 == 0) {
     
     is_cached.set(lang, "true");
@@ -169,5 +172,11 @@ function handleUpdateFoundMessage(): void {
 function passingDataToContainer() {
   if (window.Android) {
     window.Android.cachedStatus(is_cached.get(lang) == "true" ? true : false);
+  }
+}
+
+function setContainerAppOrientation() {
+  if (window.Android) {
+    window.Android.setContainerAppOrientation("portrait");
   }
 }
