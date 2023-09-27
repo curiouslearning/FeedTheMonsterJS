@@ -209,7 +209,7 @@ export class LevelEndScene {
       // pass same data as level is same
       this.switchToGameplayCB(gamePlayData, "LevelEnd");
     }
-    if (this.nextButton.onClick(x, y)) {
+    if (this.nextButton.onClick(x, y) && this.starCount >=2) {
       this.audioPlayer.playAudio(false, "./assets/audios/ButtonClick.mp3");
       let next = Number(this.currentLevel) + 1;
       console.log(typeof next, " next button clicked", next);
