@@ -18,7 +18,8 @@ import { FirebaseIntegration } from "./src/singlecanvas/Firebase/firebase-integr
 declare const window: any;
 declare const app: any;
 let jsonData;
-
+const progressBar=document.getElementById("progress-bar");
+const preogressBarContainer=document.getElementById("progress-bar-container");
 declare global {
   var descriptionText: string;
 }
@@ -31,6 +32,7 @@ window.addEventListener("beforeunload", (event) => {
   FirebaseIntegration.getInstance().sendSessionEndEvent();
 });
 window.addEventListener("load", async function () {
+  handleLoadingScreen();
   // setContainerAppOrientation()
   registerWorkbox();
   const canvas: any = <HTMLElement>document.getElementById("canvas");
@@ -139,11 +141,11 @@ function handleServiceWorkerMessage(event): void {
 }
 
 function handleLoadingMessage(data): void {
-  const progressBar=document.getElementById("progress-bar");
-  const preogressBarContainer=document.getElementById("progress-bar-container");
-  preogressBarContainer.style.display="flex";
-  progressBar.style.display="flex";
+   preogressBarContainer.style.display="flex";
+   progressBar.style.display="flex";
+  
   if(progressBar.style.width>="40%"){
+   
   progressBar.style.width=`${data.data}%`;
   }
   if (data.data % 100 == 0) {
@@ -179,4 +181,16 @@ function setContainerAppOrientation() {
   if (window.Android) {
     window.Android.setContainerAppOrientation("portrait");
   }
+}
+
+function handleLoadingScreen(){
+  if(is_cached.get(lang)){
+    preogressBarContainer.style.display="none";
+    progressBar.style.display="none";
+  }else{
+    preogressBarContainer.style.display="flex";
+    progressBar.style.display="flex";
+    progressBar.style.width="30%";
+  }
+
 }
