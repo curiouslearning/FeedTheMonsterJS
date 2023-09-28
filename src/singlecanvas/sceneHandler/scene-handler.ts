@@ -202,7 +202,7 @@ loadAudio(url,audioContext,audioBuffers) {
         this.data.FeedbackAudios
       );
       SceneHandler.SceneName = GameScene1;
-    }, 2000);
+    }, 1200);
     setTimeout(() => {
       this.removeLoading();
     }, 4000);

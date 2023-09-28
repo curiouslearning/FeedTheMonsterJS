@@ -128,7 +128,7 @@ img {
 }
 
 #progress-bar-container {
-  display: flex;
+  display: none;
   position: relative; /* Keep this for proper positioning */
   width: 98%;
   height: 4vh;
@@ -138,9 +138,8 @@ img {
 }
 
 #progress-bar {
-  display: flex;
+  display: none;
   height: 100%;
-  width: 20%;
   background-color: #000000;
   transition: width 0.3s ease-in-out;
 }
