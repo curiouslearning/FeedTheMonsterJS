@@ -89,7 +89,7 @@ export class SceneHandler {
     // this.firebase_analytics = firebase_analytics;
     SceneHandler.SceneName = StartScene1;
     this.preLoadAudio= this.preloadAudios(data);
-    this.loadingScreen = new LoadingScene(this.width, this.height);
+    this.loadingScreen = new LoadingScene(this.width, this.height,this.removeLoading);
 
     this.animation(0);
   }
@@ -202,10 +202,7 @@ loadAudio(url,audioContext,audioBuffers) {
         this.data.FeedbackAudios
       );
       SceneHandler.SceneName = GameScene1;
-    }, 1200);
-    setTimeout(() => {
-      this.removeLoading();
-    }, 4000);
+    }, 700);
   };
 
   switchSceneToEndLevel = (
@@ -217,7 +214,7 @@ loadAudio(url,audioContext,audioBuffers) {
   ) => {
     console.log(" currentlevelPlayed: ", currentlevelPlayed);
     this.loadingScreen.initCloud();
-    this.removeLoading();
+    // this.removeLoading();
     var self = this;
     function createEndLevelScene(){
       self.gameplayScene.dispose();
@@ -295,6 +292,7 @@ loadAudio(url,audioContext,audioBuffers) {
   };
 
   private removeLoading = (): void => {
+    console.log(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>");
     document.getElementById("loading").style.zIndex = "-1";
     this.loading = false;
   };

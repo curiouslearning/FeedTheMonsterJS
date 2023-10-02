@@ -10,12 +10,14 @@ export class LoadingScene {
   cloudXPosition: number = -500;
   stopCloudMoving: boolean = false;
   cloudMovingTimeOut: number = 0;
-  constructor(width: number, height: number) {
+  public removeLoading;
+  constructor(width: number, height: number,removeLoading) {
     this.canvas = document.getElementById("loading") as HTMLCanvasElement;
     this.canvas.height = height;
     this.canvas.width = width;
     this.height = height;
     this.width = width;
+    this.removeLoading=removeLoading;
     this.context = this.canvas.getContext("2d");
     this.images = {
       cloud6: "./assets/images/cloud_01.png",
@@ -34,6 +36,10 @@ export class LoadingScene {
     if (this.cloudXPosition >= this.width * 0.5 && !this.stopCloudMoving) {
       this.cloudMovingTimeOut += deltaTime;
       if (this.cloudMovingTimeOut > 2000) {
+        
+        setTimeout(() => {
+          this.removeLoading();  
+        }, 4000);
         this.stopCloudMoving = true;
         this.cloudXPosition = 0;
       }
