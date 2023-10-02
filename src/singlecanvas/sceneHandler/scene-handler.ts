@@ -202,7 +202,7 @@ loadAudio(url,audioContext,audioBuffers) {
         this.data.FeedbackAudios
       );
       SceneHandler.SceneName = GameScene1;
-    }, 700);
+    }, 800);
   };
 
   switchSceneToEndLevel = (
@@ -214,7 +214,6 @@ loadAudio(url,audioContext,audioBuffers) {
   ) => {
     console.log(" currentlevelPlayed: ", currentlevelPlayed);
     this.loadingScreen.initCloud();
-    // this.removeLoading();
     var self = this;
     function createEndLevelScene(){
       self.gameplayScene.dispose();
@@ -252,10 +251,7 @@ loadAudio(url,audioContext,audioBuffers) {
         this.switchSceneToGameplay
       );
       SceneHandler.SceneName = LevelSelection1;
-    }, 2000);
-    setTimeout(() => {
-      this.removeLoading();
-    }, 4000);
+    }, 800);
   };
 
   private dispose = (lastSceneName: string, nextSceneName: string): void => {
