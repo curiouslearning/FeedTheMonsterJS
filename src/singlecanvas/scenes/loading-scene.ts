@@ -32,11 +32,13 @@ export class LoadingScene {
   draw(deltaTime: number) {
     this.context.clearRect(0, 0, this.width, this.height);
     this.cloudXPosition += deltaTime * 0.75;
-
+    this.cloudMovingTimeOut += deltaTime;
+    if(this.cloudMovingTimeOut>2983){
+      this.removeLoading();
+    }
     if (this.cloudXPosition >= this.width * 0.5 && !this.stopCloudMoving) {
       this.cloudMovingTimeOut += deltaTime;
       if (this.cloudMovingTimeOut > 2000) {
-        this.removeLoading();
         this.stopCloudMoving = true;
         this.cloudXPosition = 0;
       }
