@@ -1,4 +1,5 @@
-import { Debugger } from "../../../global-variables";
+import { Debugger, lang } from "../../../global-variables";
+import languageFontMapping from "../data/i18-font-mapping";
 
 export class Utils {
     public static UrlSubstring: string = '/feedthemonster'
@@ -17,4 +18,16 @@ export class Utils {
             )
             : url;
     }
+
+    public static getLanguageSpecificFont(language: string): string {
+        const font = languageFontMapping[language];
+        
+        if (font === undefined) {
+          console.log(`Font not found for language: ${language}`);
+          return "Kalam-Regular";
+        }
+
+        return font;
+      }
+      
 }
