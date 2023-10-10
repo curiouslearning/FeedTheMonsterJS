@@ -36,7 +36,9 @@ export class LoadingScene {
     if (this.cloudXPosition >= this.width * 0.5 && !this.stopCloudMoving) {
       this.cloudMovingTimeOut += deltaTime;
       if (this.cloudMovingTimeOut > 2000) {
-        this.removeLoading();
+      setTimeout(() => {
+          this.removeLoading();
+        }, 600);
         this.stopCloudMoving = true;
         this.cloudXPosition = 0;
       }
