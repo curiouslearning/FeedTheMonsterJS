@@ -31,6 +31,7 @@ import { Debugger, lang } from "../../../global-variables";
 import { Background } from "../components/background"
 import { AudioPlayer } from "../components/audio-player";
 import { FirebaseIntegration } from "../Firebase/firebase-integration";
+import { Utils } from "../common/utils";
 // var this: any;
 let lastTime = 0;
 let pwa_install_status: any;
@@ -198,8 +199,7 @@ export class StartScene {
                 //     this.height / 2
                 // );
                 this.background1.draw();
-                
-                this.context.font = "bold "+this.titleFont+"px Consolas, monospace";
+                this.context.font = `${this.titleFont}px ${Utils.getLanguageSpecificFont(lang)}, monospace`;
                 this.context.fillStyle = "white";
                 this.context.textAlign = "center";
                 this.context.fillText(this.data.title, this.width * 0.5, this.height / 10);
