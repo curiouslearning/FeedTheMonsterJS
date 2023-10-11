@@ -15,6 +15,7 @@ import { getDatafromStorage } from "../../data/profile-data";
 import { Debugger, lang } from "../../../global-variables";
 import { GameScore } from "../data/game-score";
 import { AudioPlayer } from "../components/audio-player";
+import { Utils } from "../common/utils";
 
 var levelNumber: number;
 var self: any;
@@ -344,14 +345,14 @@ export class LevelSelectionScreen {
         imageSize
       );
       this.context.fillStyle = "white";
-      this.context.font = textFontSize + "px Arial";
+      this.context.font = textFontSize + `px ${Utils.getLanguageSpecificFont(lang)}, monospace`;
       this.context.textAlign = "center";
       this.context.fillText(
         s.index + level,
         s.x + imageSize / 3.5,
         s.y + imageSize / 3
       );
-      this.context.font = textFontSize - imageSize / 30 + "px Arial";
+      this.context.font = textFontSize - imageSize / 30 + `px ${Utils.getLanguageSpecificFont(lang)}, monospace`;
       Debugger.DebugMode
         ? this.context.fillText(
             this.data.levels[s.index + level - 1].levelMeta.levelType,

@@ -20,14 +20,15 @@ export class Utils {
     }
 
     public static getLanguageSpecificFont(language: string): string {
-        const font = languageFontMapping[language];
-        
-        if (font === undefined) {
-          console.log(`Font not found for language: ${language}`);
-          return "Kalam-Regular";
-        }
-
-        return font;
-      }
+        const lowerCaseLanguage = language.toLowerCase();
       
+        for (const key in languageFontMapping) {
+          if (key.toLowerCase() === lowerCaseLanguage) {
+            return languageFontMapping[key];
+          }
+        }
+        
+        console.log(`Font not found for language: ${language}`);
+        return 'Kalam-Regular';
+      } 
 }

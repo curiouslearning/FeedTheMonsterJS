@@ -1,4 +1,6 @@
+import { lang } from "../../../global-variables";
 import { Tutorial } from "../components/tutorial";
+import { Utils } from "./utils";
 
 export class StoneConfig {
     public x: number;
@@ -103,7 +105,7 @@ export class StoneConfig {
         //     //reached its original position
         // }
         this.context.fillStyle = "white";
-        this.context.font = this.textFontSize + "px Arial";
+        this.context.font = this.textFontSize + `px ${Utils.getLanguageSpecificFont(lang)}, monospace`;
         this.context.textAlign = "center";
         this.context.fillText(this.text, this.getX(), this.getY());
     }
