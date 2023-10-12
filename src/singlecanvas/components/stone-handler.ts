@@ -9,6 +9,7 @@ import { Tutorial } from "./tutorial";
 import { AudioPlayer } from "./audio-player";
 import { VISIBILITY_CHANGE } from "../common/event-names";
 import { Utils } from "../common/utils";
+import { TimerTicking } from "./timer-ticking";
 // import { LevelIndicators } from "./level-indicators.js";
 // import { Tutorial } from "./tutorial.js";
 // import Monster from "./animation/monster.js";
@@ -58,6 +59,7 @@ export default class StoneHandler extends EventManager {
     stonebg: HTMLImageElement;
     public audioPlayer: AudioPlayer;
     public feedbackAudios: any;
+    public timerTickingInstance: TimerTicking;
     constructor(
         context: CanvasRenderingContext2D,
         canvas: { width: number; height?: number },
@@ -72,7 +74,8 @@ export default class StoneHandler extends EventManager {
         // audio,
         // feedbackTextCanvasElement
         // callbackFuntion
-        feedbackAudios
+        feedbackAudios,
+        timerTickingInstance
     ) {
         super({
             stoneDropCallbackHandler: (event) => this.handleStoneDrop(event),
@@ -110,6 +113,7 @@ export default class StoneHandler extends EventManager {
             // this.stoneConfig = new StoneConfig(this.context, this.height, this.width, "text", 100, 100, img);
         }
         this.audioPlayer = new AudioPlayer();
+        this.timerTickingInstance = timerTickingInstance;
         document.addEventListener(VISIBILITY_CHANGE, this.handleVisibilityChange, false);
     }
 
@@ -131,6 +135,7 @@ export default class StoneHandler extends EventManager {
                     this.stonePos[i][0],
                     this.stonePos[i][1],
                     img,
+                    this.timerTickingInstance,
                     (i==foilStones.length-1)?this.tutorial:null,
                 )
             );
