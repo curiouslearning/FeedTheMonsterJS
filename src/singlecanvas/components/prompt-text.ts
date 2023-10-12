@@ -5,6 +5,7 @@ import { Utils } from "../common/utils";
 import { AudioPlayer } from "./audio-player";
 import { VISIBILITY_CHANGE } from "../common/event-names";
 import { PromptAudio } from "../../common/common";
+import { lang } from "../../../global-variables";
 
 
 var self;
@@ -125,22 +126,22 @@ export class PromptText extends EventManager {
         this.targetStones = this.currentPuzzleData.targetStones;
     }
 
-    showFantasticOrGreat(feedBackText) {
-        this.context.font = "bold 24px Arial";
-        this.context.fillStyle = "white";
-        this.context.fillText(
-            "feedBackText",
-            this.width / 2 - this.context.measureText("feedBackText").width / 2,
-            this.height * 0.25
-        );
-    }
+    // showFantasticOrGreat(feedBackText) {
+    //     this.context.font = "bold 24px Arial";
+    //     this.context.fillStyle = "white";
+    //     this.context.fillText(
+    //         "feedBackText",
+    //         this.width / 2 - this.context.measureText("feedBackText").width / 2,
+    //         this.height * 0.25
+    //     );
+    // }
 
     drawRTLLang() {
         var x = this.width / 2;
         const y = this.height * 0.26;
         this.context.textAlign = "center";
         var fontSize = this.calculateFont();
-        this.context.font = fontSize+'px Consolas, monospace';
+        this.context.font = `${fontSize}px ${Utils.getLanguageSpecificFont(lang)}, monospace`;
         if (this.levelData.levelMeta.levelType == "LetterInWord") {
             var letterInWord = this.currentPromptText.replace(
                 new RegExp(this.currentPuzzleData.targetStones[0], "g"),
@@ -197,7 +198,7 @@ export class PromptText extends EventManager {
         const y = this.height * 0.28;
         
         var fontSize = this.calculateFont();
-        this.context.font = fontSize+'px Consolas, monospace';
+        this.context.font = `${fontSize}px ${Utils.getLanguageSpecificFont(lang)}, monospace`;
         const startPrompttextX =
             this.width / 2 -
             this.context.measureText(this.currentPromptText).width / 2;
@@ -294,7 +295,7 @@ export class PromptText extends EventManager {
                 scaledHeight
             );
             this.context.fillStyle = "black";
-            this.context.font = 30 + "px Arial";
+            // this.context.font = 30 + "px Arial";
             this.rightToLeft
                 ? this.drawRTLLang()
                 : this.drawOthers();

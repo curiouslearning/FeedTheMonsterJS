@@ -15,6 +15,8 @@ import { IsCached, PWAInstallStatus } from "./src/common/common";
 import { Workbox } from "workbox-window";
 import { Debugger, lang } from "./global-variables";
 import { FirebaseIntegration } from "./src/singlecanvas/Firebase/firebase-integration";
+import languageFontMapping from "./src/singlecanvas/data/i18-font-mapping";
+import { Utils } from "./src/singlecanvas/common/utils";
 declare const window: any;
 declare const app: any;
 let jsonData;
@@ -32,6 +34,8 @@ window.addEventListener("beforeunload", (event) => {
   FirebaseIntegration.getInstance().sendSessionEndEvent();
 });
 window.addEventListener("load", async function () {
+  const font = Utils.getLanguageSpecificFont(lang);
+  await loadAndCacheFont(font, `./assets/fonts/${font}.ttf`);
   handleLoadingScreen();
   // setContainerAppOrientation()
   registerWorkbox();
@@ -193,4 +197,28 @@ function handleLoadingScreen(){
     progressBar.style.width="30%";
   }
 
+}
+
+async function loadAndCacheFont(fontName, fontPath) {
+  try {
+    const cache = await caches.open('fontCache');
+    const response = await cache.match(fontPath);
+
+    if (!response) {
+      const fontResponse = await fetch(fontPath);
+      const fontBlob = await fontResponse.blob();
+      
+      await cache.put(fontPath, new Response(fontBlob));
+      
+      const font = new FontFace(fontName, `url(${fontPath}) format('truetype')`);
+      await font.load();
+      document.fonts.add(font);
+    } else {
+      const font = new FontFace(fontName, `url(${fontPath}) format('truetype')`);
+      await font.load();
+      document.fonts.add(font);
+    }
+  } catch (error) {
+    console.error(`Failed to load and cache font: ${error}`);
+  }
 }
