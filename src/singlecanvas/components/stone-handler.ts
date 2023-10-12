@@ -7,6 +7,8 @@ import { FirebaseIntegration } from "../../firebase/firebase_integration";
 import { EventManager } from "../events/EventManager";
 import { Tutorial } from "./tutorial";
 import { AudioPlayer } from "./audio-player";
+import { VISIBILITY_CHANGE } from "../common/event-names";
+import { Utils } from "../common/utils";
 // import { LevelIndicators } from "./level-indicators.js";
 // import { Tutorial } from "./tutorial.js";
 // import Monster from "./animation/monster.js";
@@ -25,10 +27,6 @@ var audioUrl = {
     monsterSad: "./assets/audios/Disapointed-05.mp3",
     ondragStart: "./assets/audios/onDrag.mp3",
 };
-const feedBackAudiosUrls = [
-    "./lang/" + lang + "/audios/fantastic.mp3",
-    "./lang/" + lang + "/audios/great.mp3",
-  ];
 export default class StoneHandler extends EventManager {
     public context: CanvasRenderingContext2D;
     public canvas: { width: any; height?: number };
@@ -59,6 +57,7 @@ export default class StoneHandler extends EventManager {
     correctTargetStone: any;
     stonebg: HTMLImageElement;
     public audioPlayer: AudioPlayer;
+    public feedbackAudios: any;
     constructor(
         context: CanvasRenderingContext2D,
         canvas: { width: number; height?: number },
@@ -73,6 +72,7 @@ export default class StoneHandler extends EventManager {
         // audio,
         // feedbackTextCanvasElement
         // callbackFuntion
+        feedbackAudios
     ) {
         super({
             stoneDropCallbackHandler: (event) => this.handleStoneDrop(event),
@@ -99,6 +99,7 @@ export default class StoneHandler extends EventManager {
         // this.createStones();
         // this.draw(0);
         // this.eventListners();
+        this.feedbackAudios = this.convertFeedBackAudiosToList(feedbackAudios);
         this.puzzleStartTime = new Date();
         this.tutorial = new Tutorial(context,canvas.width,canvas.height,puzzleNumber)
         this.stonebg = new Image();
@@ -109,11 +110,13 @@ export default class StoneHandler extends EventManager {
             // this.stoneConfig = new StoneConfig(this.context, this.height, this.width, "text", 100, 100, img);
         }
         this.audioPlayer = new AudioPlayer();
+        document.addEventListener(VISIBILITY_CHANGE, this.handleVisibilityChange, false);
     }
 
     createStones(img) {
-        for (var i = 0; i < this.currentPuzzleData.foilStones.length; i++) {
-            if(this.currentPuzzleData.foilStones[i]==this.correctTargetStone)
+        const foilStones=this.getFoilStones();
+        for (var i = 0; i < foilStones.length; i++) {
+            if(foilStones[i]==this.correctTargetStone)
         {
             this.tutorial.updateTargetStonePositions(this.stonePos[i]);
         }
@@ -124,11 +127,11 @@ export default class StoneHandler extends EventManager {
                     this.context,
                     this.canvas.width,
                     this.canvas.height,
-                    this.currentPuzzleData.foilStones[i],
+                    foilStones[i],
                     this.stonePos[i][0],
                     this.stonePos[i][1],
                     img,
-                    (i==this.currentPuzzleData.foilStones.length-1)?this.tutorial:null,
+                    (i==foilStones.length-1)?this.tutorial:null,
                 )
             );
 
@@ -262,13 +265,14 @@ export default class StoneHandler extends EventManager {
     }
 
     public dispose() {
+        document.removeEventListener(VISIBILITY_CHANGE, this.handleVisibilityChange, false);
         this.unregisterEventListener();
     }
 
     public isStoneDroppedCorrectForLetterOnly(droppedStone: string,feedBackIndex:number): boolean {
         if(droppedStone == this.correctTargetStone)
         {
-            this.audioPlayer.playAudio(false, "./assets/audios/Eat.mp3","./assets/audios/Cheering-02.mp3", feedBackAudiosUrls[feedBackIndex]);
+            this.audioPlayer.playAudio(false, "./assets/audios/Eat.mp3","./assets/audios/Cheering-02.mp3", Utils.getConvertedDevProdURL(this.feedbackAudios[feedBackIndex]));
             return true;
         }
         else{
@@ -280,7 +284,7 @@ export default class StoneHandler extends EventManager {
     public isStoneDroppedCorrectForLetterInWord(droppedStone: string,feedBackIndex:number): boolean {
         if(droppedStone == this.correctTargetStone)
         {
-            this.audioPlayer.playAudio(false, "./assets/audios/Eat.mp3","./assets/audios/Cheering-02.mp3", feedBackAudiosUrls[feedBackIndex]);
+            this.audioPlayer.playAudio(false, "./assets/audios/Eat.mp3","./assets/audios/Cheering-02.mp3", Utils.getConvertedDevProdURL(this.feedbackAudios[feedBackIndex]));
            
             return true;
         }
@@ -293,7 +297,7 @@ export default class StoneHandler extends EventManager {
     public isStonDroppedCorrectForWord(droppedStone: string,feedBackIndex:number): boolean {
         if (droppedStone == this.correctTargetStone.substring(0, droppedStone.length)) {
             if(droppedStone== this.getCorrectTargetStone()){
-                this.audioPlayer.playAudio(false, "./assets/audios/Eat.mp3","./assets/audios/Cheering-02.mp3", feedBackAudiosUrls[feedBackIndex]);
+                this.audioPlayer.playAudio(false, "./assets/audios/Eat.mp3","./assets/audios/Cheering-02.mp3", Utils.getConvertedDevProdURL(this.feedbackAudios[feedBackIndex]));
             }else{
                 this.audioPlayer.playAudio(false, "./assets/audios/Eat.mp3","./assets/audios/Cheering-02.mp3");
             }
@@ -308,6 +312,43 @@ export default class StoneHandler extends EventManager {
     }
 
     public getFoilStones(){
-        return this.currentPuzzleData.foilStones;
+       
+    this.currentPuzzleData.targetStones.forEach((e) => {
+    const index = this.currentPuzzleData.foilStones.indexOf(e);
+    if (index !== -1) {
+    this.currentPuzzleData.foilStones.splice(index, 1);
+  }
+});
+
+
+const totalStonesCount =
+  this.currentPuzzleData.targetStones.length +
+  this.currentPuzzleData.foilStones.length;
+
+if (totalStonesCount > 8) {
+  
+  const extraStonesCount = totalStonesCount - 8;
+
+  
+  this.currentPuzzleData.foilStones.splice(0, extraStonesCount);
+}
+
+
+this.currentPuzzleData.targetStones.forEach((e) => {
+  this.currentPuzzleData.foilStones.push(e);
+});
+  return this.currentPuzzleData.foilStones.sort(() => Math.random() - 0.5);
     }
+
+    handleVisibilityChange = () => {
+        this.audioPlayer.stopAudio();
+    }
+
+ 
+  convertFeedBackAudiosToList(feedbackAudios){
+    let feedBackAudioArray = [];
+    feedBackAudioArray.push(feedbackAudios['fantastic'],feedbackAudios['great']);
+    return feedBackAudioArray;
+    }   
+
  }

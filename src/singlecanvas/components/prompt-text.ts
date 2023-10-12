@@ -3,6 +3,9 @@ import Sound from "../../common/sound";
 import { EventManager } from "../events/EventManager";
 import { Utils } from "../common/utils";
 import { AudioPlayer } from "./audio-player";
+import { VISIBILITY_CHANGE } from "../common/event-names";
+import { PromptAudio } from "../../common/common";
+import { lang } from "../../../global-variables";
 
 
 var self;
@@ -26,6 +29,14 @@ export class PromptText extends EventManager {
     audioPlayer: AudioPlayer;
     droppedStones: number = 0;
     public time: number = 0;
+    public promptImageWidth: number = 0;
+    public isAppForeground: boolean = true;
+
+    public scale:number = 1;
+    public isScalingUp:boolean = true;
+    public scaleFactor:number = 0.00050;
+    public promptImageHeight: number = 0;
+    public promptPlayButton: any;
 
     constructor(width, height, currentPuzzleData, levelData, rightToLeft) {
         super({
@@ -43,15 +54,23 @@ export class PromptText extends EventManager {
         this.fntstOrGrtImgArr = [];
         this.canavsElement = document.getElementById("canvas");
         this.context = this.canavsElement.getContext("2d");
-        this.audioPlayer = new AudioPlayer();
+        this.sound = new Sound();
 
         this.prompt_image = new Image();
-        this.prompt_image.src = "./assets/images/promptTextBg.png";
-        this.prompt_image.onload = () => {
-            this.imagesLoaded = true;
-        };
+        this.promptPlayButton = new Image();
+        // this.prompt_image.src = "./assets/images/promptTextBg.png";
+        // this.promptPlayButton.src = "./assets/images/promptPlayButton.png"
+        this.loadImages().then(()=>{
+            console.log('Images loaded');
+        });
+        // this.prompt_image.onload = () => {
+        //     this.imagesLoaded = true;
+        // };
         this.time = 0;
+        this.promptImageWidth = this.width * 0.65;
+        this.promptImageHeight = this.height * 0.3;
         
+        document.addEventListener(VISIBILITY_CHANGE, this.handleVisibilityChange, false);
         // this.handler = document.getElementById("canvas");
         // this.handler.addEventListener(
         //     "click",
@@ -59,6 +78,8 @@ export class PromptText extends EventManager {
         //     false
         // );
     }
+
+    
 
     handleMouseDown = (event) => {
         let self = this;
@@ -84,8 +105,10 @@ export class PromptText extends EventManager {
 
     playSound = () => {
         console.log('PromptAudio',  Utils.getConvertedDevProdURL(this.currentPuzzleData.prompt.promptAudio));
-        this.audioPlayer.playAudio(false, Utils.getConvertedDevProdURL(this.currentPuzzleData.prompt.promptAudio)
-        );
+        if (this.isAppForeground) {
+            this.sound.playSound(Utils.getConvertedDevProdURL(this.currentPuzzleData.prompt.promptAudio), PromptAudio
+            );
+        }
     }
 
     onClick(xClick, yClick) {
@@ -103,20 +126,22 @@ export class PromptText extends EventManager {
         this.targetStones = this.currentPuzzleData.targetStones;
     }
 
-    showFantasticOrGreat(feedBackText) {
-        this.context.font = "bold 24px Arial";
-        this.context.fillStyle = "white";
-        this.context.fillText(
-            "feedBackText",
-            this.width / 2 - this.context.measureText("feedBackText").width / 2,
-            this.height * 0.25
-        );
-    }
+    // showFantasticOrGreat(feedBackText) {
+    //     this.context.font = "bold 24px Arial";
+    //     this.context.fillStyle = "white";
+    //     this.context.fillText(
+    //         "feedBackText",
+    //         this.width / 2 - this.context.measureText("feedBackText").width / 2,
+    //         this.height * 0.25
+    //     );
+    // }
 
-    drawArabic() {
+    drawRTLLang() {
         var x = this.width / 2;
         const y = this.height * 0.26;
         this.context.textAlign = "center";
+        var fontSize = this.calculateFont();
+        this.context.font = `${fontSize}px ${Utils.getLanguageSpecificFont(lang)}, monospace`;
         if (this.levelData.levelMeta.levelType == "LetterInWord") {
             var letterInWord = this.currentPromptText.replace(
                 new RegExp(this.currentPuzzleData.targetStones[0], "g"),
@@ -135,9 +160,8 @@ export class PromptText extends EventManager {
                 y
             );
         } else if (this.levelData.levelMeta.levelType == "Word") {
-            x = x - this.context.measureText(this.currentPromptText).width * 0.8;
+            x = x - this.context.measureText(this.currentPromptText).width * 0.5;
             for (let i = this.targetStones.length - 1; i >= 0; i--) {
-                x = x + this.context.measureText(this.targetStones[i]).width + 5;
                 if (this.droppedStones > i || this.droppedStones == undefined) {
                     this.context.fillStyle = "black";
                     this.context.fillText(this.targetStones[i], x, y);
@@ -145,8 +169,25 @@ export class PromptText extends EventManager {
                     this.context.fillStyle = "red";
                     this.context.fillText(this.targetStones[i], x, y);
                 }
+                x = x + this.context.measureText(this.targetStones[i]).width + 5;
             }
-        } else {
+        } 
+        else if (this.levelData.levelMeta.levelType == "SoundWord") {
+            const scaledWidth = this.promptImageWidth * this.scale;
+                    const scaledHeight = this.promptImageHeight * this.scale;
+                    // const offsetX = (this.width - scaledWidth) / 2;
+                    // const offsetY = (this.height - scaledHeight) / 5;
+                    const offsetX = (this.width - scaledWidth) *1.25;
+                    const offsetY = (this.height - scaledHeight) *0.33;
+                    this.context.drawImage(
+                        this.promptPlayButton,
+                        offsetX,
+                        offsetY,
+                        scaledWidth/4,
+                        scaledHeight/4
+                    );
+        }
+        else {
             this.context.fillStyle = "black";
             this.context.fillText(this.currentPromptText, x, y);
         }
@@ -154,8 +195,10 @@ export class PromptText extends EventManager {
     drawOthers() {
         const promptTextLetters = this.currentPromptText.split("");
         const x = this.width / 2;
-        const y = this.height * 0.26;
-        var fontSize = 20;
+        const y = this.height * 0.28;
+        
+        var fontSize = this.calculateFont();
+        this.context.font = `${fontSize}px ${Utils.getLanguageSpecificFont(lang)}, monospace`;
         const startPrompttextX =
             this.width / 2 -
             this.context.measureText(this.currentPromptText).width / 2;
@@ -201,6 +244,22 @@ export class PromptText extends EventManager {
                     }
                     break;
                 }
+                case "SoundWord": {
+                    const scaledWidth = this.promptImageWidth;
+                    const scaledHeight = this.promptImageHeight;
+                    // const offsetX = (this.width - scaledWidth) / 2;
+                    // const offsetY = (this.height - scaledHeight) / 5;
+                    const offsetX = (this.width - scaledWidth) *1.25;
+                    const offsetY = (this.height - scaledHeight) *0.33;
+                    this.context.drawImage(
+                        this.promptPlayButton,
+                        offsetX,
+                        offsetY,
+                        scaledWidth/4,
+                        scaledHeight/4
+                    );
+                  break;
+                }
                 default: {
                     this.context.fillStyle = "black";
                     this.context.fillText(
@@ -217,25 +276,28 @@ export class PromptText extends EventManager {
     }
     draw(deltaTime) {
     //   this.time +=deltaTime;
-    
+    this.updateScaling();
     this.time = (deltaTime<17)?this.time+Math.floor(deltaTime):this.time+16;
       if (Math.floor(this.time) >= 1910 && Math.floor(this.time) <= 1926) {
         this.playSound();
       }
 
         if (!this.isStoneDropped) {
+            const scaledWidth = this.promptImageWidth * this.scale;
+            const scaledHeight = this.promptImageHeight * this.scale;
+            const offsetX = (this.width - scaledWidth) / 2;
+            const offsetY = (this.height - scaledHeight) / 5;
             this.context.drawImage(
                 this.prompt_image,
-                this.width / 2 - (this.width * 0.5) / 2,
-                // this.width / 2 - (this.width * 0.5),
-                this.height * 0.15,
-                this.width * 0.5,
-                this.height * 0.25
+                offsetX,
+                offsetY,
+                scaledWidth,
+                scaledHeight
             );
             this.context.fillStyle = "black";
-            this.context.font = 30 + "px Arial";
+            // this.context.font = 30 + "px Arial";
             this.rightToLeft
-                ? this.drawArabic()
+                ? this.drawRTLLang()
                 : this.drawOthers();
         }
     }
@@ -250,11 +312,12 @@ export class PromptText extends EventManager {
         this.currentPromptText = this.currentPuzzleData.prompt.promptText;
         this.targetStones = this.currentPuzzleData.targetStones;
         this.isStoneDropped = false;
-        // this.time = 0;
-        this.playSound()
+        this.time = 0;
+        // this.playSound()
     }
 
     public dispose() {
+        document.removeEventListener(VISIBILITY_CHANGE, this.handleVisibilityChange, false);
         this.unregisterEventListener();
     }
 
@@ -264,4 +327,55 @@ export class PromptText extends EventManager {
     droppedStoneIndex(index:number){
         this.droppedStones = index;
     }
+    calculateFont():number{
+        return (this.promptImageWidth/this.currentPromptText.length>35)?35:this.width * 0.65/this.currentPromptText.length
+    }
+
+    updateScaling() {
+        if (this.isScalingUp) {
+          this.scale += this.scaleFactor;
+          if (this.scale >= 1.05) {
+            this.isScalingUp = false;
+          }
+        } else {
+          this.scale -= this.scaleFactor;
+          if (this.scale <= 1) {
+            this.scale = 1;
+            this.isScalingUp = true;
+          }
+        }
+    }
+
+    handleVisibilityChange = () => {
+        if (document.visibilityState == "hidden") {
+            this.audioPlayer.stopAudio();
+            this.isAppForeground = false
+        }
+
+        if (document.visibilityState == "visible") {
+            this.isAppForeground = true
+        }
+    }
+
+    async loadImages() {
+        const image1Promise = this.loadImage(this.prompt_image, "./assets/images/promptTextBg.png");
+        const image2Promise = this.loadImage(this.promptPlayButton, "./assets/images/promptPlayButton.png");
+    
+        await Promise.all([image1Promise, image2Promise]);
+    
+        this.imagesLoaded = true;
+        // You can do additional actions here after both images are loaded.
+      }
+    
+      loadImage(image: HTMLImageElement, src: string): Promise<void> {
+        return new Promise<void>((resolve, reject) => {
+          image.onload = () => {
+            resolve();
+          };
+          image.src = src;
+          image.onerror = (error) => {
+            reject(error);
+          };
+        });
+      }
 }

@@ -1,4 +1,5 @@
-import { Debugger } from "../../../global-variables";
+import { Debugger, lang } from "../../../global-variables";
+import languageFontMapping from "../data/i18-font-mapping";
 
 export class Utils {
     public static UrlSubstring: string = '/feedthemonster'
@@ -17,4 +18,17 @@ export class Utils {
             )
             : url;
     }
+
+    public static getLanguageSpecificFont(language: string): string {
+        const lowerCaseLanguage = language.toLowerCase();
+      
+        for (const key in languageFontMapping) {
+          if (key.toLowerCase() === lowerCaseLanguage) {
+            return languageFontMapping[key];
+          }
+        }
+        
+        console.log(`Font not found for language: ${language}`);
+        return 'Kalam-Regular';
+      } 
 }

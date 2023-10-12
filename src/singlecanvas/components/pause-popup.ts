@@ -3,6 +3,7 @@ import CloseButton from "../components/buttons/close-button";
 import RetryButton from "../components/buttons/retry-button";
 import { Game } from "../../scenes/game";
 import { CLICK } from "../common/event-names";
+import { AudioPlayer } from "./audio-player";
 
 export default class PausePopUp {
   public canvas: Game;
@@ -18,6 +19,7 @@ export default class PausePopUp {
   public switchToLevelSelection: any;
   public reloadScene: any;
   public gameplayData: any;
+  audioPlayer: AudioPlayer;
 
   constructor(
     canvas,
@@ -38,7 +40,7 @@ export default class PausePopUp {
       "canvas"
     ) as HTMLCanvasElement;
     this.context = selfIdElement.getContext("2d");
-
+    this.audioPlayer = new AudioPlayer();
     this.cancelButton = new CancelButton(this.context, this.canvas);
     this.retryButton = new RetryButton(
       this.context,
@@ -81,14 +83,17 @@ export default class PausePopUp {
 
     if (this.cancelButton.onClick(x, y)) {
       console.log(" cancel button clicked");
+      this.playClickSound();
       this.callback();
     }
     if (this.retryButton.onClick(x, y)) {
+      this.playClickSound();
       this.dispose();
       console.log(" retry button clicked");
       this.reloadScene(this.gameplayData, "GamePlay");
     }
     if (this.closeButton.onClick(x, y)) {
+      this.playClickSound();
       this.dispose();
       console.log(" close button clicked");
       this.switchToLevelSelection("GamePlay");
@@ -139,7 +144,11 @@ export default class PausePopUp {
 
   update() { }
 
-  dispose() {
+  playClickSound = () => {
+    this.audioPlayer.playAudio(false, "./assets/audios/ButtonClick.mp3");
+  }
+
+  dispose = () => {
     document
       .getElementById("canvas")
       .removeEventListener(CLICK, this.handleMouseClick, false);

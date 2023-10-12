@@ -15,6 +15,7 @@ import { getDatafromStorage } from "../../data/profile-data";
 import { Debugger, lang } from "../../../global-variables";
 import { GameScore } from "../data/game-score";
 import { AudioPlayer } from "../components/audio-player";
+import { Utils } from "../common/utils";
 
 var levelNumber: number;
 var self: any;
@@ -72,7 +73,6 @@ export class LevelSelectionScreen {
     this.canavsElement = document.getElementById("canvas") as HTMLCanvasElement;
     this.context = this.canavsElement.getContext("2d");
     this.createLevelButtons(this.levelButtonpos);
-    this.audioPlayer = new AudioPlayer();
     this.gameLevelData = GameScore.getAllGameLevelInfo();
     this.callback = callback;
 
@@ -89,7 +89,9 @@ export class LevelSelectionScreen {
     loadImages(this.images, (images) => {
       this.loadedImages = Object.assign({}, images);
       this.imagesLoaded = true;
-      this.audioPlayer.playAudio(false, "./assets/audios/intro.mp3");
+      if (document.visibilityState === "visible") {
+      this.sound.playSound( "./assets/audios/intro.mp3");
+      }
     });
     this.addListeners();
   }
@@ -141,9 +143,9 @@ export class LevelSelectionScreen {
 
   pausePlayAudios = () => {
     if (document.visibilityState === "visible") {
-      this.audioPlayer.playAudio(false, "./assets/audios/intro.mp3");
+      this.sound.playSound( "./assets/audios/intro.mp3");
     } else {
-      this.audioPlayer.stopAudio();
+      this.sound.pauseSound();
     }
   };
 
@@ -237,12 +239,12 @@ export class LevelSelectionScreen {
         ) < 45
       ) {
         if (Debugger.DebugMode) {
-          this.audioPlayer.playAudio(false, "./assets/audios/ButtonClick.mp3");
+          this.sound.playSound("./assets/audios/ButtonClick.mp3");
           // self.sound.pauseSound();
           levelNumber = s.index + level - 1;
           self.startGame(levelNumber);
         } else if (s.index + level - 1 <= unlockLevelIndex + 1) {
-          this.audioPlayer.playAudio(false, "./assets/audios/ButtonClick.mp3");
+          this.sound.playSound( "./assets/audios/ButtonClick.mp3");
           // self.sound.pauseSound();
           levelNumber = s.index + level - 1;
           self.startGame(levelNumber);
@@ -277,13 +279,19 @@ export class LevelSelectionScreen {
         break;
       }
       case "close_button": {
-        this.audioPlayer.playAudio(false, "./assets/audios/intro.mp3");
+        this.sound.playSound( "./assets/audios/intro.mp3");
         self.drawStars();
       }
     }
   }
   createCanvas() {
-    this.audioPlayer.playAudio(false, "./assets/audios/intro.mp3");
+    if (document.visibilityState === "visible") {
+      console.log(">>>>>>>>>>>>>>>>>>>>>>>> Vissible");
+      this.sound.playSound( "./assets/audios/intro.mp3");
+      }else{
+        console.log(">>>>>>>>>>>>>>>>>>>>>>>> Not Vissible");
+      }
+    
   }
   createLevelButtons(levelButtonpos: any) {
     var poss = levelButtonpos[0];
@@ -337,14 +345,14 @@ export class LevelSelectionScreen {
         imageSize
       );
       this.context.fillStyle = "white";
-      this.context.font = textFontSize + "px Arial";
+      this.context.font = textFontSize + `px ${Utils.getLanguageSpecificFont(lang)}, monospace`;
       this.context.textAlign = "center";
       this.context.fillText(
         s.index + level,
         s.x + imageSize / 3.5,
         s.y + imageSize / 3
       );
-      this.context.font = textFontSize - imageSize / 30 + "px Arial";
+      this.context.font = textFontSize - imageSize / 30 + `px ${Utils.getLanguageSpecificFont(lang)}, monospace`;
       Debugger.DebugMode
         ? this.context.fillText(
             this.data.levels[s.index + level - 1].levelMeta.levelType,
@@ -437,7 +445,7 @@ export class LevelSelectionScreen {
 
   dispose = () => {
     // remove listeners
-    this.audioPlayer.stopAudio();
+    this.sound.pauseSound();
 
     const canvas = document.getElementById("canvas");
     canvas.removeEventListener("mousedown", this.handleMouseDown, false);

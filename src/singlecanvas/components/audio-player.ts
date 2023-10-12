@@ -56,6 +56,15 @@ export class AudioPlayer {
     this.audioQueue = [];
   }
 
+  public preloadAudio(audioSrc: string) {
+    var audio = new Audio();
+    audio.src = audioSrc;
+    audio.preload = "auto";
+    audio.load();
+    
+    return audio;
+  }
+
   // public unregisterEvents() {
   //   this.sourceNode.removeEventListener("ended", this.handleAudioEnded, false);
   // }

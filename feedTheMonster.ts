@@ -3,7 +3,7 @@ import { LevelSelectionScreen } from "./src/scenes/level-selection-scene";
 import { getData } from "./src/data/api-data";
 import { DataModal } from "./src/data/data-modal";
 import { StartScene } from "./src/singlecanvas/scenes/start-scene";
-import { SceneHandler } from "./src/singlecanvas/sceneHandler/scene-handler"
+import { SceneHandler } from "./src/singlecanvas/sceneHandler/scene-handler";
 import { CanvasStack } from "./src/utility/canvas-stack";
 import { firebaseConfig } from "./src/firebase/firebase_config";
 import {
@@ -15,10 +15,13 @@ import { IsCached, PWAInstallStatus } from "./src/common/common";
 import { Workbox } from "workbox-window";
 import { Debugger, lang } from "./global-variables";
 import { FirebaseIntegration } from "./src/singlecanvas/Firebase/firebase-integration";
+import languageFontMapping from "./src/singlecanvas/data/i18-font-mapping";
+import { Utils } from "./src/singlecanvas/common/utils";
 declare const window: any;
 declare const app: any;
 let jsonData;
-
+const progressBar=document.getElementById("progress-bar");
+const preogressBarContainer=document.getElementById("progress-bar-container");
 declare global {
   var descriptionText: string;
 }
@@ -31,8 +34,13 @@ window.addEventListener("beforeunload", (event) => {
   FirebaseIntegration.getInstance().sendSessionEndEvent();
 });
 window.addEventListener("load", async function () {
+  const font = Utils.getLanguageSpecificFont(lang);
+  await loadAndCacheFont(font, `./assets/fonts/${font}.ttf`);
+  handleLoadingScreen();
+  // setContainerAppOrientation()
   registerWorkbox();
   const canvas: any = <HTMLElement>document.getElementById("canvas");
+  const versionInfoElement = document.getElementById("version-info-id");
   canvas.height = window.innerHeight;
   canvas.width = window.screen.width > 420 ? 420 : window.innerWidth;
   let data = await getData();
@@ -42,9 +50,11 @@ window.addEventListener("load", async function () {
     data.Levels,
     data.FeedbackTexts,
     data.RightToLeft,
-    data.FeedbackAudios
+    data.FeedbackAudios,
+    data.majversion,
+    data.minversion,
+    data.version
   );
-
   // if (window.Android) {
   //   window.Android.cachedStatus(
   //     is_cached.has(lang) ? is_cached.get(lang) : null
@@ -55,9 +65,14 @@ window.addEventListener("load", async function () {
 
   window.addEventListener("resize", async () => {
     if (is_cached.has(lang)) {
-      Debugger.DevelopmentLink
-        ? (document.getElementById("toggle-btn").style.display = "block")
-        : null;
+      if (Debugger.DevelopmentLink) {
+        if (d.majVersion && d.minVersion) {
+          versionInfoElement.innerHTML += `/j.v${d.majVersion}.${d.minVersion}`;
+        } else if (d.version) {
+          versionInfoElement.innerHTML += `/j.v${d.version}`;
+        }
+        document.getElementById("toggle-btn").style.display = "block";
+      }
       // if (navigator.onLine) {
       //   FirebaseIntegration.initializeFirebase();
       // }
@@ -74,9 +89,14 @@ window.addEventListener("load", async function () {
     // if (navigator.onLine) {
     //   FirebaseIntegration.initializeFirebase();
     // }
-    Debugger.DevelopmentLink
-      ? (document.getElementById("toggle-btn").style.display = "block")
-      : null;
+    if (Debugger.DevelopmentLink) {
+      if (d.majVersion && d.minVersion) {
+        versionInfoElement.innerHTML += `/j.v${d.majVersion}.${d.minVersion}`;
+      } else if (d.version) {
+        versionInfoElement.innerHTML += `/j.v${d.version}`;
+      }
+      document.getElementById("toggle-btn").style.display = "block";
+    }
     this.sceneHandler = new SceneHandler(canvas, d, this.analytics);
     passingDataToContainer();
   }
@@ -105,7 +125,7 @@ async function registerWorkbox(): Promise<void> {
   }
 }
 
-channel.addEventListener('message',handleServiceWorkerMessage)
+channel.addEventListener("message", handleServiceWorkerMessage);
 
 function handleServiceWorkerRegistration(registration): void {
   if (registration.installing) {
@@ -125,9 +145,15 @@ function handleServiceWorkerMessage(event): void {
 }
 
 function handleLoadingMessage(data): void {
-  document.getElementById("loading_number").innerHTML =
-    " " + " downloading... " + data.data + "%";
+   preogressBarContainer.style.display="flex";
+   progressBar.style.display="flex";
+  
+  if(progressBar.style.width>="40%"){
+   
+  progressBar.style.width=`${data.data}%`;
+  }
   if (data.data % 100 == 0) {
+    
     is_cached.set(lang, "true");
     localStorage.setItem(
       IsCached,
@@ -136,6 +162,7 @@ function handleLoadingMessage(data): void {
     localStorage.setItem("version" + lang, data.version);
     window.location.reload();
   }
+  progressBar.style.width=`${data.data}%`;
 }
 function handleUpdateFoundMessage(): void {
   let text = "Update Found\nPress ok to update.";
@@ -151,5 +178,47 @@ function handleUpdateFoundMessage(): void {
 function passingDataToContainer() {
   if (window.Android) {
     window.Android.cachedStatus(is_cached.get(lang) == "true" ? true : false);
+  }
+}
+
+function setContainerAppOrientation() {
+  if (window.Android) {
+    window.Android.setContainerAppOrientation("portrait");
+  }
+}
+
+function handleLoadingScreen(){
+  if(is_cached.get(lang)){
+    preogressBarContainer.style.display="none";
+    progressBar.style.display="none";
+  }else{
+    preogressBarContainer.style.display="flex";
+    progressBar.style.display="flex";
+    progressBar.style.width="30%";
+  }
+
+}
+
+async function loadAndCacheFont(fontName, fontPath) {
+  try {
+    const cache = await caches.open('fontCache');
+    const response = await cache.match(fontPath);
+
+    if (!response) {
+      const fontResponse = await fetch(fontPath);
+      const fontBlob = await fontResponse.blob();
+      
+      await cache.put(fontPath, new Response(fontBlob));
+      
+      const font = new FontFace(fontName, `url(${fontPath}) format('truetype')`);
+      await font.load();
+      document.fonts.add(font);
+    } else {
+      const font = new FontFace(fontName, `url(${fontPath}) format('truetype')`);
+      await font.load();
+      document.fonts.add(font);
+    }
+  } catch (error) {
+    console.error(`Failed to load and cache font: ${error}`);
   }
 }

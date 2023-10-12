@@ -88,6 +88,7 @@ var self: any;
 var word_dropped_stones = 0;
 var current_puzzle_index = 0;
 var score = 0;
+ var stonesCount=1;
 var word_dropped_stones = 0;
 var isGamePause = false;
 var noMoreTarget = false;
@@ -98,7 +99,7 @@ export class GameplayScene {
   public width: number;
   public height: number;
   public monster: Monster;
-
+  public jsonVersionNumber: string;
   public audio: Sound;
   public canvas: any;
   public levelData: any;
@@ -153,7 +154,7 @@ export class GameplayScene {
   public time: number = 0;
   public score: number = 0;
   tempWordforWordPuzzle: string = "";
-
+  
   public switchToLevelSelection: any;
   public reloadScene: any;
   audioPlayer: AudioPlayer;
@@ -172,7 +173,9 @@ export class GameplayScene {
     switchSceneToEnd,
     levelNumber,
     switchToLevelSelection,
-    reloadScene
+    reloadScene,
+    jsonVersionNumber,
+    feedbackAudios,
   ) {
     // this.game = game;
     this.width = canvas.width;
@@ -190,6 +193,7 @@ export class GameplayScene {
     this.levelNumber = levelNumber;
     this.switchToLevelSelection = switchToLevelSelection;
     this.reloadScene = reloadScene;
+    this.jsonVersionNumber= jsonVersionNumber;
     this.startGameTime();
     this.startPuzzleTime();
     // this.levelStartCallBack = levelStartCallBack;
@@ -203,19 +207,19 @@ export class GameplayScene {
     // this.createCanvas();
 
     this.pauseButton = new PauseButton(this.context, this.canvas);
-
     this.stoneHandler = new StoneHandler(
       this.context,
       this.canvas,
       this.counter,
-      this.levelData
+      this.levelData,
+      feedbackAudios
     );
     this.promptText = new PromptText(
       this.width,
       this.height,
       this.levelData.puzzles[this.counter],
       this.levelData,
-      false
+      this.rightToLeft
     );
     this.timerTicking = new TimerTicking(
       this.width,
@@ -350,6 +354,9 @@ export class GameplayScene {
     return this.feedBackTexts[selectedKey];
   }
   getRandomInt(min: number, max: number) {
+    if(Object.keys(this.feedBackTexts).length==1){
+      return min;
+    }
     min = Math.ceil(min);
     max = Math.floor(max);
     return Math.floor(Math.random() * (max - min + 1)) + min;
@@ -563,7 +570,7 @@ export class GameplayScene {
           this.letterInWordPuzzle(this.pickedStone.text);
         }
 
-        if (this.levelData.levelMeta.levelType == "Word") {
+        if (this.levelData.levelMeta.levelType == "Word" || this.levelData.levelMeta.levelType == "SoundWord") {
           this.wordPuzzle(this.pickedStone.text, this.pickedStone);
         }
       }
@@ -620,9 +627,8 @@ export class GameplayScene {
 
     if (this.pauseButton.onClick(x, y)) {
       console.log(" pause button getting click from gameplay");
-      this.isPauseButtonClicked = true;
-      this.removeEventListeners();
-      this.pausePopup.addListner();
+      this.audioPlayer.playAudio(false, "./assets/audios/ButtonClick.mp3");
+      this.pauseGamePlay();
     }
 
     // send click to play prompt
@@ -885,6 +891,7 @@ export class GameplayScene {
     this.handler.addEventListener(TOUCHMOVE, this.handleTouchMove, false);
     this.handler.addEventListener(TOUCHEND, this.handleTouchEnd, false);
     this.handler.addEventListener(CLICK, this.handleMouseClick, false);
+    document.addEventListener(VISIBILITY_CHANGE, this.handleVisibilityChange, false);
   }
 
   removeEventListeners() {
@@ -1069,6 +1076,7 @@ export class GameplayScene {
   // }
 
   loadPuzzle = (isTimerEnded?:boolean) => {
+    stonesCount=1;
     let timerEnded = (isTimerEnded == undefined)?false:true;
     if(timerEnded)
     {
@@ -1078,14 +1086,16 @@ export class GameplayScene {
     this.incrementPuzzle();
     this.isGameStarted = false;
     
-    if (this.counter == this.levelData.puzzles.length) {
+    if (this.counter == this.levelData.puzzles.length ) {
       this.levelIndicators.setIndicators(this.counter);
       this.logLevelEndFirebaseEvent();
       GameScore.setGameLevelScore(this.levelData, this.score);
       this.switchSceneToEnd(
         this.levelData,
         GameScore.calculateStarCount(this.score),
-        this.monsterPhaseNumber
+        this.monsterPhaseNumber,
+        this.levelNumber,
+        timerEnded
       );
     } 
     else {
@@ -1112,7 +1122,8 @@ export class GameplayScene {
     }
   };
 
-  public dispose() {
+  public dispose = () => {
+    this.audioPlayer.stopAudio();
     this.removeEventListeners();
       this.feedbackTextEffects.unregisterEventListener();
       this.monster.unregisterEventListener();
@@ -1120,6 +1131,7 @@ export class GameplayScene {
       this.levelIndicators.unregisterEventListener();
       this.stoneHandler.unregisterEventListener();
       this.promptText.unregisterEventListener();
+      document.removeEventListener(VISIBILITY_CHANGE, this.handleVisibilityChange, false);
       // this.deleteComponentInstances();
   }
 
@@ -1146,12 +1158,14 @@ export class GameplayScene {
     this.dispatchStoneDropEvent(isCorrect);
     this.loadPuzzle();
   }
-
+  
   public wordPuzzle(droppedStone: string, droppedStoneInstance: StoneConfig) {
+    this.audioPlayer.stopAudio();
     droppedStoneInstance.x = -999;
     droppedStoneInstance.y = -999;
     const feedBackIndex = this.getRandomInt(0, 1);
     this.tempWordforWordPuzzle = this.tempWordforWordPuzzle + droppedStone;
+
     const isCorrect = this.stoneHandler.isStonDroppedCorrectForWord(
       this.tempWordforWordPuzzle,feedBackIndex
     );
@@ -1163,21 +1177,27 @@ export class GameplayScene {
       this.logPuzzleEndFirebaseEvent(isCorrect,'Word');
       this.dispatchStoneDropEvent(isCorrect);
       this.loadPuzzle();
+      stonesCount=1;
       return;
     }
-
+    
     if (isCorrect) {
+    
+      this.timerTicking.startTimer();
+      
       this.monster.changeToEatAnimation();
-      this.promptText.droppedStoneIndex(this.tempWordforWordPuzzle.length);
+      lang=="arabic" ? this.promptText.droppedStoneIndex(stonesCount) : this.promptText.droppedStoneIndex(this.tempWordforWordPuzzle.length);
+       stonesCount++;
       setTimeout(() => {
         this.monster.changeToIdleAnimation();
       }, 1500);
     } else {
+      
       this.audioPlayer.playAudio(false,'./assets/audios/MonsterSpit.mp3')
       this.logPuzzleEndFirebaseEvent(isCorrect,'Word');
       this.dispatchStoneDropEvent(isCorrect);
       this.loadPuzzle();
-     
+      stonesCount=1;
     }
   }
 
@@ -1221,6 +1241,7 @@ export class GameplayScene {
       ftm_language: lang,
       profile_number: 0,
       version_number: document.getElementById("version-info-id").innerHTML,
+      json_version_number:this.jsonVersionNumber,
       success_or_failure: isCorrect?'success':'failure',
       level_number: this.levelData.levelNumber,
       puzzle_number: this.counter,
@@ -1239,18 +1260,35 @@ export class GameplayScene {
       ftm_language: lang,
       profile_number: 0,
       version_number: document.getElementById("version-info-id").innerHTML,
+      json_version_number:this.jsonVersionNumber,
       success_or_failure: GameScore.calculateStarCount(this.score)>=3?'success':'failure',
       number_of_successful_puzzles: this.score/100,
       level_number: this.levelData.levelNumber,
       duration: (endTime - this.startTime) / 1000,
+     
     };
     this.firebaseIntegration.sendLevelCompletedEvent(levelCompletedData);
   }
 
   public startGameTime(){
      this.startTime = Date.now();
+  
   }
   public startPuzzleTime(){
     this.puzzleTime = Date.now();
   }
+
+  public pauseGamePlay = () => {
+    this.isPauseButtonClicked = true;
+    this.removeEventListeners();
+    this.pausePopup.addListner();
+    this.audioPlayer.stopAudio();
+  }
+
+  handleVisibilityChange = () => {
+    this.audioPlayer.stopAudio();
+    this.pauseGamePlay();
+  }
+
+  
 }

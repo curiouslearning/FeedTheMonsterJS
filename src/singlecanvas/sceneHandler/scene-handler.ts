@@ -59,7 +59,7 @@ export class SceneHandler {
   public static SceneName: string;
   public loadingScreen: LoadingScene;
   public loading: boolean = false;
-
+  public preLoadAudio:any;
   constructor(
     canvas: HTMLCanvasElement,
     data: DataModal,
@@ -71,13 +71,14 @@ export class SceneHandler {
     this.height = canvas.height;
     this.canavsElement = document.getElementById("canvas") as HTMLCanvasElement;
     this.context = this.canavsElement.getContext("2d");
-    console.log(this.data.levels[2]);
+    console.log(this.data.FeedbackAudios);
     this.startScene = new StartScene(
       canvas,
       data,
       firebase_analytics,
       this.switchSceneToLevelSelection
     );
+    
     // this.testGameplayScene = new TestGameplayScene(canvas, data, firebase_analytics, this.switchSceneToLevelSelection);
     // this.gameplayScene = new GameplayScene(this.canvas, this.context, this.data.levels[0], 1, "text", false);
     // this.monster = new Monster(this.canvas);
@@ -87,7 +88,8 @@ export class SceneHandler {
     // this.createPlayButton();
     // this.firebase_analytics = firebase_analytics;
     SceneHandler.SceneName = StartScene1;
-    this.loadingScreen = new LoadingScene(this.width, this.height);
+    this.preLoadAudio= this.preloadAudios(data);
+    this.loadingScreen = new LoadingScene(this.width, this.height,this.removeLoading);
 
     this.animation(0);
   }
@@ -111,6 +113,45 @@ export class SceneHandler {
     let monsterPhaseNumber = Math.floor(totalStarCount / 12) + 1 || 1;
     return monsterPhaseNumber <= 4 ? monsterPhaseNumber : 4;
   }
+
+  preloadAudios(data){
+   
+    let uniqueUrls=[];
+    for(let level of data.levels){
+     
+      for(let puzzle of level.puzzles ){
+          if(!uniqueUrls.includes(puzzle.prompt.promptAudio)){
+              uniqueUrls.push(puzzle.prompt.promptAudio);
+          }
+      }
+  }
+  this.loadUniqueUrls(uniqueUrls);
+  }
+  loadUniqueUrls(uniqueUrls){
+    let audioContext = new AudioContext();
+  let audioBuffers = {};
+    let loadPromises = uniqueUrls.map((url) => this.loadAudio(url,audioContext,audioBuffers).catch((err) => {}));
+    Promise.all(loadPromises).then(() => {
+// You can now use the audioBuffers object to play the preloaded audio files
+});
+}
+loadAudio(url,audioContext,audioBuffers) {
+  return new Promise<void>((resolve, reject) => {
+    let request = new XMLHttpRequest();
+    request.open("GET", url, true);
+    request.responseType = "arraybuffer";
+    request.onload = function () {
+      audioContext.decodeAudioData(request.response, function (buffer) {
+        audioBuffers[url] = buffer;
+        resolve();
+      });
+    };
+    request.onerror = function () {
+      reject(new Error("Error loading audio file"));
+    };
+    request.send();
+  });
+}
 
   animation = (timeStamp) => {
     let deltaTime = timeStamp - lastTime;
@@ -144,6 +185,7 @@ export class SceneHandler {
   switchSceneToGameplay = (gamePlayData, changeSceneRequestFrom?: string) => {
     this.showLoading();
     this.dispose(changeSceneRequestFrom, "GamePlay");
+    let jsonVersionNumber= !!this.data.majVersion && !!this.data.minVersion  ? this.data.majVersion.toString() +"."+this.data.minVersion.toString() : "";
     // load in next scene --- gameplaqyscene
     setTimeout(() => {
       this.gameplayScene = new GameplayScene(
@@ -155,40 +197,48 @@ export class SceneHandler {
         this.switchSceneToEndLevel,
         gamePlayData.selectedLevelNumber,
         this.switchSceneToLevelSelection,
-        this.switchSceneToGameplay
+        this.switchSceneToGameplay,
+        jsonVersionNumber,
+        this.data.FeedbackAudios
       );
       SceneHandler.SceneName = GameScene1;
-    }, 2000);
-    setTimeout(() => {
-      this.removeLoading();
-    }, 4000);
+    }, 800);
   };
 
   switchSceneToEndLevel = (
     currentlevelPlayed,
     starCount: number,
-    monsterPhaseNumber: number
+    monsterPhaseNumber: number,
+    currentLevelNumber,
+    isTimerEnded:boolean,
   ) => {
     console.log(" currentlevelPlayed: ", currentlevelPlayed);
     this.loadingScreen.initCloud();
-    this.removeLoading();
-    setTimeout(() => {
-      this.gameplayScene.dispose();
+    var self = this;
+    function createEndLevelScene(){
+      self.gameplayScene.dispose();
       document.getElementById("feedback-text").style.zIndex = "0";
-      this.levelEndScene = new LevelEndScene(
-        this.canvas,
-        this.height,
-        this.width,
-        this.context,
+      self.levelEndScene = new LevelEndScene(
+        self.canvas,
+        self.height,
+        self.width,
+        self.context,
         starCount,
-        currentlevelPlayed.levelNumber,
-        this.switchSceneToGameplay,
-        this.switchSceneToLevelSelection,
-        this.data,
+        currentLevelNumber,
+        self.switchSceneToGameplay,
+        self.switchSceneToLevelSelection,
+        self.data,
         monsterPhaseNumber
       );
       SceneHandler.SceneName = EndScene1;
-    }, 4000);
+  }
+    if(isTimerEnded){
+      createEndLevelScene();
+    }else{
+      setTimeout(() => {
+        createEndLevelScene();
+      }, 4000);
+    }
   };
 
   switchSceneToLevelSelection = (changeSceneRequestFrom?: string) => {
@@ -201,10 +251,7 @@ export class SceneHandler {
         this.switchSceneToGameplay
       );
       SceneHandler.SceneName = LevelSelection1;
-    }, 2000);
-    setTimeout(() => {
-      this.removeLoading();
-    }, 4000);
+    }, 800);
   };
 
   private dispose = (lastSceneName: string, nextSceneName: string): void => {
@@ -241,6 +288,7 @@ export class SceneHandler {
   };
 
   private removeLoading = (): void => {
+    console.log(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>");
     document.getElementById("loading").style.zIndex = "-1";
     this.loading = false;
   };

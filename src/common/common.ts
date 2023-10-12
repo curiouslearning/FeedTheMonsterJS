@@ -21,8 +21,7 @@ export function loadImages(sources: any, callback: any) {
 }
 export function loadingScreen(loading: boolean) {
   const loadingElement = <HTMLElement>document.getElementById("loading-screen");
-  const loadingText = <HTMLElement>document.getElementById("loading_text");
-  loadingText.style.display = "none";
+    const progressContainer=document.getElementById("progress-bar-container")
   if (loading) {
     loadingElement.style.display = "block";
     new CanvasStack("canvas").bkgCanvas.layers.forEach((element) => {
@@ -31,6 +30,7 @@ export function loadingScreen(loading: boolean) {
     });
   } else {
     loadingElement.style.display = "none";
+    progressContainer.style.display="none";
     new CanvasStack("canvas").bkgCanvas.layers.forEach((element) => {
       const htmlElement = <HTMLElement>document.getElementById(element.id);
       htmlElement.style.display = "flex";
