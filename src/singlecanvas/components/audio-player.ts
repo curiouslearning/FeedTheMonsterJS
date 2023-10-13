@@ -46,7 +46,7 @@ export class AudioPlayer {
     }
   }
 
-  playFeedBackAudios = (loop: boolean = false, ...fileUrl: string[]): void => {
+  playFeedbackAudios = (loop: boolean = false, ...fileUrl: string[]): void => {
     this.audioQueue = fileUrl;
     if (this.audioQueue.length > 0) {
       this.playFetch(0, loop);
