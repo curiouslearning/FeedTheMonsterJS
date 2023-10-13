@@ -55,6 +55,7 @@ export class PromptText extends EventManager {
         this.canavsElement = document.getElementById("canvas");
         this.context = this.canavsElement.getContext("2d");
         this.sound = new Sound();
+        this.audioPlayer = new AudioPlayer();
 
         this.prompt_image = new Image();
         this.promptPlayButton = new Image();
@@ -69,6 +70,7 @@ export class PromptText extends EventManager {
         this.time = 0;
         this.promptImageWidth = this.width * 0.65;
         this.promptImageHeight = this.height * 0.3;
+        this.audioPlayer.preloadPromptAudio(this.getPromptAudioUrl());
         
         document.addEventListener(VISIBILITY_CHANGE, this.handleVisibilityChange, false);
         // this.handler = document.getElementById("canvas");
@@ -106,8 +108,7 @@ export class PromptText extends EventManager {
     playSound = () => {
         console.log('PromptAudio',  Utils.getConvertedDevProdURL(this.currentPuzzleData.prompt.promptAudio));
         if (this.isAppForeground) {
-            this.sound.playSound(Utils.getConvertedDevProdURL(this.currentPuzzleData.prompt.promptAudio), PromptAudio
-            );
+            this.audioPlayer.playPromptAudio(Utils.getConvertedDevProdURL(this.currentPuzzleData.prompt.promptAudio));
         }
     }
 
@@ -312,6 +313,7 @@ export class PromptText extends EventManager {
         this.currentPromptText = this.currentPuzzleData.prompt.promptText;
         this.targetStones = this.currentPuzzleData.targetStones;
         this.isStoneDropped = false;
+        this.audioPlayer.preloadPromptAudio(this.getPromptAudioUrl());
         this.time = 0;
         // this.playSound()
     }
@@ -348,7 +350,7 @@ export class PromptText extends EventManager {
 
     handleVisibilityChange = () => {
         if (document.visibilityState == "hidden") {
-            this.audioPlayer.stopAudio();
+            this.audioPlayer.stopAllAudios();
             this.isAppForeground = false
         }
 
