@@ -576,11 +576,18 @@ export class GameplayScene {
         }
       }
     } else {
-      if (this.pickedStoneObject != null) {
-        this.pickedStone.x = this.pickedStoneObject.origx;
-        this.pickedStone.y = this.pickedStoneObject.origy;
-        this.monster.changeToIdleAnimation();
+      try {
+        if (this.pickedStoneObject != null) {
+          if (this.pickedStoneObject.origx != null && this.pickedStoneObject.origy != null) {
+            this.pickedStone.x = this.pickedStoneObject.origx;
+            this.pickedStone.y = this.pickedStoneObject.origy;          
+            this.monster.changeToIdleAnimation();
+        }
+        }
+      } catch (error) {
+        //  console.log(error);
       }
+   
     }
     this.pickedStone = null;
   };
@@ -620,7 +627,6 @@ export class GameplayScene {
     var rect = selfElement.getBoundingClientRect();
     const x = event.clientX - rect.left;
     const y = event.clientY - rect.top;
-
     if (this.monster.onClick(x, y)) {
       this.isGameStarted = true;
       this.time = 0;
