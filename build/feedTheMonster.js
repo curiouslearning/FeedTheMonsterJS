@@ -19592,10 +19592,17 @@ class GameplayScene {
                 }
             }
             else {
-                if (this.pickedStoneObject != null) {
-                    this.pickedStone.x = this.pickedStoneObject.origx;
-                    this.pickedStone.y = this.pickedStoneObject.origy;
-                    this.monster.changeToIdleAnimation();
+                try {
+                    if (this.pickedStoneObject != null) {
+                        if (this.pickedStoneObject.origx != null && this.pickedStoneObject.origy != null) {
+                            this.pickedStone.x = this.pickedStoneObject.origx;
+                            this.pickedStone.y = this.pickedStoneObject.origy;
+                            this.monster.changeToIdleAnimation();
+                        }
+                    }
+                }
+                catch (error) {
+                    //  console.log(error);
                 }
             }
             this.pickedStone = null;
