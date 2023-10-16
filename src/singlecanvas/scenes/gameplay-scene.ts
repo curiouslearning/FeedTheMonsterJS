@@ -208,12 +208,19 @@ export class GameplayScene {
     // this.createCanvas();
 
     this.pauseButton = new PauseButton(this.context, this.canvas);
+    this.timerTicking = new TimerTicking(
+      this.width,
+      this.height,
+      this.loadPuzzle
+    );
     this.stoneHandler = new StoneHandler(
       this.context,
       this.canvas,
       this.counter,
       this.levelData,
-      feedbackAudios
+      feedbackAudios,
+      this.timerTicking
+
     );
     this.promptText = new PromptText(
       this.width,
@@ -222,11 +229,7 @@ export class GameplayScene {
       this.levelData,
       this.rightToLeft
     );
-    this.timerTicking = new TimerTicking(
-      this.width,
-      this.height,
-      this.loadPuzzle
-    );
+    
     this.levelIndicators = new LevelIndicators(this.context, this.canvas, 0);
     // this.tutorial = new Tutorial(this.context, this.width, this.height);
     this.levelIndicators.setIndicators(this.counter);
@@ -826,7 +829,7 @@ export class GameplayScene {
       this.levelIndicators.draw();
       this.promptText.draw(deltaTime);
       this.monster.animation(deltaTime);
-      this.timerTicking.update(deltaTime);
+      // this.timerTicking.update(deltaTime);
       this.timerTicking.draw();
       this.stoneHandler.draw(deltaTime);
     }
