@@ -236,6 +236,7 @@ async function preloadGameAudios() {
     "./assets/audios/ButtonClick.mp3",
     "./assets/audios/Monster Spits wrong stones-01.mp3",
     "./assets/audios/Disapointed-05.mp3",
+    "./assets/audios/MonsterSpit.mp3",
     "./assets/audios/Eat.mp3",
   ];
 
