@@ -223,7 +223,7 @@ export class LevelEndScene {
       this.switchToGameplayCB(gamePlayData, "LevelEnd");
     }
   };
-  pauseAudios(){
+  pauseAudios = () => {
     if (document.visibilityState === "visible") {
       if(self.starCount >=2){
         this.audioPlayer.playAudio("./assets/audios/intro.mp3");
