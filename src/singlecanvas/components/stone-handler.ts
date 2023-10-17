@@ -60,6 +60,7 @@ export default class StoneHandler extends EventManager {
     public audioPlayer: AudioPlayer;
     public feedbackAudios: any;
     public timerTickingInstance: TimerTicking;
+    isGamePaused: boolean = false;
     constructor(
         context: CanvasRenderingContext2D,
         canvas: { width: number; height?: number },
@@ -116,7 +117,10 @@ export default class StoneHandler extends EventManager {
         this.timerTickingInstance = timerTickingInstance;
         document.addEventListener(VISIBILITY_CHANGE, this.handleVisibilityChange, false);
     }
-
+    
+    setGamePause(isGamePaused:boolean){
+      this.isGamePaused  = isGamePaused; 
+    }
     createStones(img) {
         const foilStones=this.getFoilStones();
         for (var i = 0; i < foilStones.length; i++) {
@@ -164,9 +168,16 @@ export default class StoneHandler extends EventManager {
     draw(deltaTime) {
         for (var i = 0; i < this.foilStones.length; i++) {
             this.foilStones[i].draw(deltaTime);
+
+            
         }
+            if(this.foilStones[this.foilStones.length-1].frame>=100 && !this.isGamePaused)
+            {
+                this.timerTickingInstance.update(deltaTime);
+            }
         
     }
+    
 
 
     initializeStonePos() {
