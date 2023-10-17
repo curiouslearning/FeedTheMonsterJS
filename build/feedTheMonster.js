@@ -17142,17 +17142,63 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   AudioPlayer: () => (/* binding */ AudioPlayer)
 /* harmony export */ });
+var __awaiter = (undefined && undefined.__awaiter) || function (thisArg, _arguments, P, generator) {
+    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+};
 class AudioPlayer {
     constructor() {
-        this.playAudio = (loop = false, ...fileUrl) => {
+        this.audioSourcs = [];
+        this.playFeedbackAudios = (loop = false, ...fileUrl) => {
             this.audioQueue = fileUrl;
             if (this.audioQueue.length > 0) {
                 this.playFetch(0, loop);
             }
         };
+        this.playPromptAudio = (audioSrc) => {
+            if (this.promptAudioBuffer) {
+                const sourceNode = this.audioContext.createBufferSource();
+                sourceNode.buffer = this.promptAudioBuffer;
+                sourceNode.connect(this.audioContext.destination);
+                this.audioSourcs.push(sourceNode);
+                sourceNode.start();
+            }
+        };
+        this.playButtonClickSound = (audioSrc) => {
+            const audioBuffer = AudioPlayer.audioBuffers.get(audioSrc);
+            if (audioBuffer) {
+                const sourceNode = this.audioContext.createBufferSource();
+                sourceNode.buffer = audioBuffer;
+                sourceNode.connect(this.audioContext.destination);
+                sourceNode.start();
+            }
+        };
+        this.stopFeedbackAudio = () => {
+            if (this.sourceNode) {
+                this.sourceNode.stop();
+                this.sourceNode = null;
+            }
+            this.audioQueue = [];
+        };
+        this.stopAllAudios = () => {
+            if (this.sourceNode) {
+                this.sourceNode.stop();
+                this.sourceNode = null;
+            }
+            this.audioQueue = [];
+            this.audioSourcs.forEach((sourceNode) => {
+                sourceNode.stop();
+            });
+            this.audioSourcs = [];
+        };
         this.playFetch = (index, loop) => {
             if (index >= this.audioQueue.length) {
-                this.stopAudio();
+                this.stopFeedbackAudio();
                 return;
             }
             fetch(this.audioQueue[index])
@@ -17180,25 +17226,57 @@ class AudioPlayer {
             }
             this.playFetch(index + 1, loop);
         };
-        this.stopAudio = () => {
-            if (this.sourceNode) {
-                this.sourceNode.stop();
-                this.sourceNode = null;
-            }
-            this.audioQueue = [];
-        };
         this.audioContext = AudioContextManager.getAudioContext();
         this.sourceNode = null;
         this.audioQueue = [];
     }
-    preloadAudio(audioSrc) {
-        var audio = new Audio();
-        audio.src = audioSrc;
-        audio.preload = "auto";
-        audio.load();
-        return audio;
+    preloadPromptAudio(audioSrc) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const audioBuffer = yield this.loadAndDecodeAudio(audioSrc);
+            if (audioBuffer) {
+                this.promptAudioBuffer = audioBuffer;
+            }
+        });
+    }
+    preloadGameAudio(audioSrc) {
+        return __awaiter(this, void 0, void 0, function* () {
+            if (AudioPlayer.audioBuffers.has(audioSrc)) {
+                return;
+            }
+            const audioBuffer = yield this.loadAndDecodeAudio(audioSrc);
+            if (audioBuffer) {
+                AudioPlayer.audioBuffers.set(audioSrc, audioBuffer);
+            }
+        });
+    }
+    playAudio(audioSrc) {
+        const audioBuffer = AudioPlayer.audioBuffers.get(audioSrc);
+        if (audioBuffer) {
+            const sourceNode = this.audioContext.createBufferSource();
+            sourceNode.buffer = audioBuffer;
+            sourceNode.connect(this.audioContext.destination);
+            this.audioSourcs.push(sourceNode);
+            sourceNode.start();
+        }
+    }
+    loadAndDecodeAudio(audioSrc) {
+        return __awaiter(this, void 0, void 0, function* () {
+            return new Promise((resolve, reject) => __awaiter(this, void 0, void 0, function* () {
+                try {
+                    const response = yield fetch(audioSrc);
+                    const arrayBuffer = yield response.arrayBuffer();
+                    const audioBuffer = yield this.audioContext.decodeAudioData(arrayBuffer);
+                    resolve(audioBuffer);
+                }
+                catch (error) {
+                    console.error('Error loading or decoding audio:', error);
+                    reject(error);
+                }
+            }));
+        });
     }
 }
+AudioPlayer.audioBuffers = new Map();
 class AudioContextManager {
     static getAudioContext() {
         if (!AudioContextManager.instance) {
@@ -17984,7 +18062,7 @@ class PausePopUp {
             }
         };
         this.playClickSound = () => {
-            this.audioPlayer.playAudio(false, "./assets/audios/ButtonClick.mp3");
+            this.audioPlayer.playButtonClickSound("./assets/audios/ButtonClick.mp3");
         };
         this.dispose = () => {
             document
@@ -18115,8 +18193,8 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _common_sound__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../../common/sound */ "./src/common/sound.ts");
 /* harmony import */ var _events_EventManager__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../events/EventManager */ "./src/singlecanvas/events/EventManager.ts");
 /* harmony import */ var _common_utils__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../common/utils */ "./src/singlecanvas/common/utils.ts");
-/* harmony import */ var _common_event_names__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../common/event-names */ "./src/singlecanvas/common/event-names.ts");
-/* harmony import */ var _common_common__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../../common/common */ "./src/common/common.ts");
+/* harmony import */ var _audio_player__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./audio-player */ "./src/singlecanvas/components/audio-player.ts");
+/* harmony import */ var _common_event_names__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../common/event-names */ "./src/singlecanvas/common/event-names.ts");
 /* harmony import */ var _global_variables__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ../../../global-variables */ "./global-variables.ts");
 var __awaiter = (undefined && undefined.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
@@ -18172,12 +18250,12 @@ class PromptText extends _events_EventManager__WEBPACK_IMPORTED_MODULE_1__.Event
         this.playSound = () => {
             console.log('PromptAudio', _common_utils__WEBPACK_IMPORTED_MODULE_2__.Utils.getConvertedDevProdURL(this.currentPuzzleData.prompt.promptAudio));
             if (this.isAppForeground) {
-                this.sound.playSound(_common_utils__WEBPACK_IMPORTED_MODULE_2__.Utils.getConvertedDevProdURL(this.currentPuzzleData.prompt.promptAudio), _common_common__WEBPACK_IMPORTED_MODULE_4__.PromptAudio);
+                this.audioPlayer.playPromptAudio(_common_utils__WEBPACK_IMPORTED_MODULE_2__.Utils.getConvertedDevProdURL(this.currentPuzzleData.prompt.promptAudio));
             }
         };
         this.handleVisibilityChange = () => {
             if (document.visibilityState == "hidden") {
-                this.audioPlayer.stopAudio();
+                this.audioPlayer.stopAllAudios();
                 this.isAppForeground = false;
             }
             if (document.visibilityState == "visible") {
@@ -18196,6 +18274,7 @@ class PromptText extends _events_EventManager__WEBPACK_IMPORTED_MODULE_1__.Event
         this.canavsElement = document.getElementById("canvas");
         this.context = this.canavsElement.getContext("2d");
         this.sound = new _common_sound__WEBPACK_IMPORTED_MODULE_0__["default"]();
+        this.audioPlayer = new _audio_player__WEBPACK_IMPORTED_MODULE_3__.AudioPlayer();
         this.prompt_image = new Image();
         this.promptPlayButton = new Image();
         // this.prompt_image.src = "./assets/images/promptTextBg.png";
@@ -18209,7 +18288,8 @@ class PromptText extends _events_EventManager__WEBPACK_IMPORTED_MODULE_1__.Event
         this.time = 0;
         this.promptImageWidth = this.width * 0.65;
         this.promptImageHeight = this.height * 0.3;
-        document.addEventListener(_common_event_names__WEBPACK_IMPORTED_MODULE_3__.VISIBILITY_CHANGE, this.handleVisibilityChange, false);
+        this.audioPlayer.preloadPromptAudio(this.getPromptAudioUrl());
+        document.addEventListener(_common_event_names__WEBPACK_IMPORTED_MODULE_4__.VISIBILITY_CHANGE, this.handleVisibilityChange, false);
         // this.handler = document.getElementById("canvas");
         // this.handler.addEventListener(
         //     "click",
@@ -18360,11 +18440,12 @@ class PromptText extends _events_EventManager__WEBPACK_IMPORTED_MODULE_1__.Event
         this.currentPromptText = this.currentPuzzleData.prompt.promptText;
         this.targetStones = this.currentPuzzleData.targetStones;
         this.isStoneDropped = false;
+        this.audioPlayer.preloadPromptAudio(this.getPromptAudioUrl());
         this.time = 0;
         // this.playSound()
     }
     dispose() {
-        document.removeEventListener(_common_event_names__WEBPACK_IMPORTED_MODULE_3__.VISIBILITY_CHANGE, this.handleVisibilityChange, false);
+        document.removeEventListener(_common_event_names__WEBPACK_IMPORTED_MODULE_4__.VISIBILITY_CHANGE, this.handleVisibilityChange, false);
         this.unregisterEventListener();
     }
     update() {
@@ -18484,7 +18565,7 @@ class StoneHandler extends _events_EventManager__WEBPACK_IMPORTED_MODULE_4__.Eve
         // public tutorial: Tutorial;
         this.showTutorial = (0,_data_profile_data__WEBPACK_IMPORTED_MODULE_2__.getDatafromStorage)().length == undefined ? true : false;
         this.handleVisibilityChange = () => {
-            this.audioPlayer.stopAudio();
+            this.audioPlayer.stopAllAudios();
         };
         self = this;
         this.context = context;
@@ -18641,31 +18722,31 @@ class StoneHandler extends _events_EventManager__WEBPACK_IMPORTED_MODULE_4__.Eve
     }
     isStoneDroppedCorrectForLetterOnly(droppedStone, feedBackIndex) {
         if (droppedStone == this.correctTargetStone) {
-            this.audioPlayer.playAudio(false, "./assets/audios/Eat.mp3", "./assets/audios/Cheering-02.mp3", _common_utils__WEBPACK_IMPORTED_MODULE_8__.Utils.getConvertedDevProdURL(this.feedbackAudios[feedBackIndex]));
+            this.audioPlayer.playFeedbackAudios(false, "./assets/audios/Eat.mp3", "./assets/audios/Cheering-02.mp3", _common_utils__WEBPACK_IMPORTED_MODULE_8__.Utils.getConvertedDevProdURL(this.feedbackAudios[feedBackIndex]));
             return true;
         }
         else {
-            this.audioPlayer.playAudio(false, "./assets/audios/MonsterSpit.mp3");
+            this.audioPlayer.playFeedbackAudios(false, "./assets/audios/MonsterSpit.mp3");
             return false;
         }
     }
     isStoneDroppedCorrectForLetterInWord(droppedStone, feedBackIndex) {
         if (droppedStone == this.correctTargetStone) {
-            this.audioPlayer.playAudio(false, "./assets/audios/Eat.mp3", "./assets/audios/Cheering-02.mp3", _common_utils__WEBPACK_IMPORTED_MODULE_8__.Utils.getConvertedDevProdURL(this.feedbackAudios[feedBackIndex]));
+            this.audioPlayer.playFeedbackAudios(false, "./assets/audios/Eat.mp3", "./assets/audios/Cheering-02.mp3", _common_utils__WEBPACK_IMPORTED_MODULE_8__.Utils.getConvertedDevProdURL(this.feedbackAudios[feedBackIndex]));
             return true;
         }
         else {
-            this.audioPlayer.playAudio(false, "./assets/audios/MonsterSpit.mp3");
+            this.audioPlayer.playFeedbackAudios(false, "./assets/audios/MonsterSpit.mp3");
             return false;
         }
     }
     isStonDroppedCorrectForWord(droppedStone, feedBackIndex) {
         if (droppedStone == this.correctTargetStone.substring(0, droppedStone.length)) {
             if (droppedStone == this.getCorrectTargetStone()) {
-                this.audioPlayer.playAudio(false, "./assets/audios/Eat.mp3", "./assets/audios/Cheering-02.mp3", _common_utils__WEBPACK_IMPORTED_MODULE_8__.Utils.getConvertedDevProdURL(this.feedbackAudios[feedBackIndex]));
+                this.audioPlayer.playFeedbackAudios(false, "./assets/audios/Eat.mp3", "./assets/audios/Cheering-02.mp3", _common_utils__WEBPACK_IMPORTED_MODULE_8__.Utils.getConvertedDevProdURL(this.feedbackAudios[feedBackIndex]));
             }
             else {
-                this.audioPlayer.playAudio(false, "./assets/audios/Eat.mp3", "./assets/audios/Cheering-02.mp3");
+                this.audioPlayer.playFeedbackAudios(false, "./assets/audios/Eat.mp3", "./assets/audios/Cheering-02.mp3");
             }
             return true;
         }
@@ -18775,7 +18856,7 @@ class TimerTicking extends _events_EventManager__WEBPACK_IMPORTED_MODULE_1__.Eve
             this.timer += deltaTime * 0.008;
         }
         if (Math.floor(this.width * 0.87 - (this.width * 0.87 * this.timer * 0.01)) == 40 && !this.isMyTimerOver) {
-            this.playLevelEndAudioOnce ? this.audioPlayer.playAudio(false, './assets/audios/timeout.mp3') : null;
+            this.playLevelEndAudioOnce ? this.audioPlayer.playAudio('./assets/audios/timeout.mp3') : null;
             this.playLevelEndAudioOnce = false;
         }
         if ((this.width * 0.87 - (this.width * 0.87 * this.timer * 0.01)) < 0 && !this.isMyTimerOver) {
@@ -19618,7 +19699,7 @@ class GameplayScene {
                     console.log(" clickkedon stone", sc);
                     this.pickedStoneObject = sc;
                     this.pickedStone = sc;
-                    this.audioPlayer.playAudio(false, "./assets/audios/onDrag.mp3");
+                    this.audioPlayer.playAudio("./assets/audios/onDrag.mp3");
                 }
             }
         };
@@ -19646,7 +19727,7 @@ class GameplayScene {
             }
             if (this.pauseButton.onClick(x, y)) {
                 console.log(" pause button getting click from gameplay");
-                this.audioPlayer.playAudio(false, "./assets/audios/ButtonClick.mp3");
+                this.audioPlayer.playButtonClickSound("./assets/audios/ButtonClick.mp3");
                 this.pauseGamePlay();
             }
             // send click to play prompt
@@ -19738,7 +19819,7 @@ class GameplayScene {
             }
         };
         this.dispose = () => {
-            this.audioPlayer.stopAudio();
+            this.audioPlayer.stopAllAudios();
             this.removeEventListeners();
             this.feedbackTextEffects.unregisterEventListener();
             this.monster.unregisterEventListener();
@@ -19760,10 +19841,10 @@ class GameplayScene {
             this.isPauseButtonClicked = true;
             this.removeEventListeners();
             this.pausePopup.addListner();
-            this.audioPlayer.stopAudio();
+            this.audioPlayer.stopAllAudios();
         };
         this.handleVisibilityChange = () => {
-            this.audioPlayer.stopAudio();
+            this.audioPlayer.stopAllAudios();
             this.pauseGamePlay();
         };
         // this.game = game;
@@ -19815,7 +19896,6 @@ class GameplayScene {
         this.feedBackTextCanavsElement.width = this.width;
         this.feedbackTextEffects = new _components_feedback_particle_effect_feedback_text_effects__WEBPACK_IMPORTED_MODULE_11__.FeedbackTextEffects(this.feedBackTextCanavsElement.getContext("2d"), this.width, this.height);
         this.audioPlayer = new _components_audio_player__WEBPACK_IMPORTED_MODULE_13__.AudioPlayer();
-        this.audioPlayer.stopAudio();
         this.handler = document.getElementById("canvas");
         this.puzzleData = levelData.puzzles;
         this.feedBackTexts = feedBackTexts;
@@ -20204,7 +20284,7 @@ class GameplayScene {
         this.loadPuzzle();
     }
     wordPuzzle(droppedStone, droppedStoneInstance) {
-        this.audioPlayer.stopAudio();
+        this.audioPlayer.stopFeedbackAudio();
         droppedStoneInstance.x = -999;
         droppedStoneInstance.y = -999;
         const feedBackIndex = this.getRandomInt(0, 1);
@@ -20229,7 +20309,7 @@ class GameplayScene {
             }, 1500);
         }
         else {
-            this.audioPlayer.playAudio(false, './assets/audios/MonsterSpit.mp3');
+            this.audioPlayer.playAudio('./assets/audios/MonsterSpit.mp3');
             this.logPuzzleEndFirebaseEvent(isCorrect, 'Word');
             this.dispatchStoneDropEvent(isCorrect);
             this.loadPuzzle();
@@ -20252,7 +20332,7 @@ class GameplayScene {
         this.feedBackTextCanavsElement.style.zIndex = "0";
         document.dispatchEvent(loadPuzzleEvent);
         this.addEventListeners();
-        this.audioPlayer.stopAudio();
+        this.audioPlayer.stopAllAudios();
         this.startPuzzleTime();
     }
     incrementPuzzle() {
@@ -20316,9 +20396,9 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _utility_canvas_stack__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../../utility/canvas-stack */ "./src/utility/canvas-stack.ts");
 /* harmony import */ var _common_level_config__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../../common/level-config */ "./src/common/level-config.ts");
 /* harmony import */ var _common_common__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../common/common */ "./src/common/common.ts");
-/* harmony import */ var _common_sound__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../../common/sound */ "./src/common/sound.ts");
-/* harmony import */ var _global_variables__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../../../global-variables */ "./global-variables.ts");
-/* harmony import */ var _data_game_score__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ../data/game-score */ "./src/singlecanvas/data/game-score.ts");
+/* harmony import */ var _global_variables__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../../../global-variables */ "./global-variables.ts");
+/* harmony import */ var _data_game_score__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../data/game-score */ "./src/singlecanvas/data/game-score.ts");
+/* harmony import */ var _components_audio_player__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ../components/audio-player */ "./src/singlecanvas/components/audio-player.ts");
 /* harmony import */ var _common_utils__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ../common/utils */ "./src/singlecanvas/common/utils.ts");
 
 
@@ -20330,9 +20410,9 @@ __webpack_require__.r(__webpack_exports__);
 var levelNumber;
 var self;
 var unlockLevelIndex = -1;
-var previousPlayedLevel = parseInt(_global_variables__WEBPACK_IMPORTED_MODULE_4__.Debugger.DebugMode
-    ? localStorage.getItem(_common_common__WEBPACK_IMPORTED_MODULE_2__.PreviousPlayedLevel + _global_variables__WEBPACK_IMPORTED_MODULE_4__.lang + "Debug")
-    : localStorage.getItem(_common_common__WEBPACK_IMPORTED_MODULE_2__.PreviousPlayedLevel + _global_variables__WEBPACK_IMPORTED_MODULE_4__.lang)) | 0;
+var previousPlayedLevel = parseInt(_global_variables__WEBPACK_IMPORTED_MODULE_3__.Debugger.DebugMode
+    ? localStorage.getItem(_common_common__WEBPACK_IMPORTED_MODULE_2__.PreviousPlayedLevel + _global_variables__WEBPACK_IMPORTED_MODULE_3__.lang + "Debug")
+    : localStorage.getItem(_common_common__WEBPACK_IMPORTED_MODULE_2__.PreviousPlayedLevel + _global_variables__WEBPACK_IMPORTED_MODULE_3__.lang)) | 0;
 var level;
 if (previousPlayedLevel != null) {
     level = 10 * Math.floor(previousPlayedLevel / 10);
@@ -20342,10 +20422,12 @@ class LevelSelectionScreen {
         this.imagesLoaded = false;
         this.pausePlayAudios = () => {
             if (document.visibilityState === "visible") {
-                this.sound.playSound("./assets/audios/intro.mp3");
+                // this.sound.playSound( "./assets/audios/intro.mp3");
+                this.audioPlayer.playAudio("./assets/audios/intro.mp3");
             }
             else {
-                this.sound.pauseSound();
+                this.audioPlayer.stopAllAudios();
+                // this.sound.pauseSound();
             }
         };
         this.handleTouchStart = (evt) => {
@@ -20419,14 +20501,14 @@ class LevelSelectionScreen {
                     (x - s.x - self.canvas.height / 20) +
                     (y - s.y - self.canvas.height / 20) *
                         (y - s.y - self.canvas.height / 20)) < 45) {
-                    if (_global_variables__WEBPACK_IMPORTED_MODULE_4__.Debugger.DebugMode) {
-                        this.sound.playSound("./assets/audios/ButtonClick.mp3");
+                    if (_global_variables__WEBPACK_IMPORTED_MODULE_3__.Debugger.DebugMode) {
+                        this.audioPlayer.playButtonClickSound("./assets/audios/ButtonClick.mp3");
                         // self.sound.pauseSound();
                         levelNumber = s.index + level - 1;
                         self.startGame(levelNumber);
                     }
                     else if (s.index + level - 1 <= unlockLevelIndex + 1) {
-                        this.sound.playSound("./assets/audios/ButtonClick.mp3");
+                        this.audioPlayer.playButtonClickSound("./assets/audios/ButtonClick.mp3");
                         // self.sound.pauseSound();
                         levelNumber = s.index + level - 1;
                         self.startGame(levelNumber);
@@ -20437,7 +20519,8 @@ class LevelSelectionScreen {
         };
         this.dispose = () => {
             // remove listeners
-            this.sound.pauseSound();
+            // this.sound.pauseSound();
+            this.audioPlayer.stopAllAudios();
             const canvas = document.getElementById("canvas");
             canvas.removeEventListener("mousedown", this.handleMouseDown, false);
             canvas.removeEventListener("touchstart", this.handleTouchStart, false);
@@ -20455,12 +20538,13 @@ class LevelSelectionScreen {
             self.data.levels.length / 10 > Math.floor(self.data.levels.length / 10)
                 ? Math.floor(self.data.levels.length / 10) + 1
                 : Math.floor(self.data.levels.length / 10);
-        this.sound = new _common_sound__WEBPACK_IMPORTED_MODULE_3__["default"]();
+        // this.sound = new Sound();
+        this.audioPlayer = new _components_audio_player__WEBPACK_IMPORTED_MODULE_5__.AudioPlayer();
         this.initialiseButtonPos();
         this.canavsElement = document.getElementById("canvas");
         this.context = this.canavsElement.getContext("2d");
         this.createLevelButtons(this.levelButtonpos);
-        this.gameLevelData = _data_game_score__WEBPACK_IMPORTED_MODULE_5__.GameScore.getAllGameLevelInfo();
+        this.gameLevelData = _data_game_score__WEBPACK_IMPORTED_MODULE_4__.GameScore.getAllGameLevelInfo();
         this.callback = callback;
         // loading images
         this.images = {
@@ -20475,7 +20559,8 @@ class LevelSelectionScreen {
             this.loadedImages = Object.assign({}, images);
             this.imagesLoaded = true;
             if (document.visibilityState === "visible") {
-                this.sound.playSound("./assets/audios/intro.mp3");
+                // this.sound.playSound( "./assets/audios/intro.mp3");
+                this.audioPlayer.playAudio("./assets/audios/intro.mp3");
             }
         });
         this.addListeners();
@@ -20544,7 +20629,8 @@ class LevelSelectionScreen {
                 break;
             }
             case "close_button": {
-                this.sound.playSound("./assets/audios/intro.mp3");
+                // this.sound.playSound( "./assets/audios/intro.mp3");
+                this.audioPlayer.playAudio("./assets/audios/intro.mp3");
                 self.drawStars();
             }
         }
@@ -20552,7 +20638,8 @@ class LevelSelectionScreen {
     createCanvas() {
         if (document.visibilityState === "visible") {
             console.log(">>>>>>>>>>>>>>>>>>>>>>>> Vissible");
-            this.sound.playSound("./assets/audios/intro.mp3");
+            // this.sound.playSound( "./assets/audios/intro.mp3");
+            this.audioPlayer.playAudio("./assets/audios/intro.mp3");
         }
         else {
             console.log(">>>>>>>>>>>>>>>>>>>>>>>> Not Vissible");
@@ -20591,18 +20678,19 @@ class LevelSelectionScreen {
         if (s.index + level <= self.data.levels.length) {
             this.context.drawImage(this.loadedImages.mapIcon, s.x, s.y, imageSize, imageSize);
             this.context.fillStyle = "white";
-            this.context.font = textFontSize + `px ${_common_utils__WEBPACK_IMPORTED_MODULE_6__.Utils.getLanguageSpecificFont(_global_variables__WEBPACK_IMPORTED_MODULE_4__.lang)}, monospace`;
+            this.context.font = textFontSize + `px ${_common_utils__WEBPACK_IMPORTED_MODULE_6__.Utils.getLanguageSpecificFont(_global_variables__WEBPACK_IMPORTED_MODULE_3__.lang)}, monospace`;
             this.context.textAlign = "center";
             this.context.fillText(s.index + level, s.x + imageSize / 3.5, s.y + imageSize / 3);
-            this.context.font = textFontSize - imageSize / 30 + `px ${_common_utils__WEBPACK_IMPORTED_MODULE_6__.Utils.getLanguageSpecificFont(_global_variables__WEBPACK_IMPORTED_MODULE_4__.lang)}, monospace`;
-            _global_variables__WEBPACK_IMPORTED_MODULE_4__.Debugger.DebugMode
+            this.context.font = textFontSize - imageSize / 30 + `px ${_common_utils__WEBPACK_IMPORTED_MODULE_6__.Utils.getLanguageSpecificFont(_global_variables__WEBPACK_IMPORTED_MODULE_3__.lang)}, monospace`;
+            _global_variables__WEBPACK_IMPORTED_MODULE_3__.Debugger.DebugMode
                 ? this.context.fillText(this.data.levels[s.index + level - 1].levelMeta.levelType, s.x + imageSize / 3.5, s.y + imageSize / 1.3)
                 : null;
         }
     }
     startGame(level_number) {
         this.dispose();
-        this.sound.pauseSound();
+        // this.sound.pauseSound();
+        this.audioPlayer.stopAllAudios();
         // StartScene.SceneName = GameScene1;
         let gamePlayData = {
             currentLevelData: self.data.levels[level_number],
@@ -20628,7 +20716,7 @@ class LevelSelectionScreen {
             }
             for (let s of self.levels) {
                 if (s.index + level <= self.data.levels.length) {
-                    if (!_global_variables__WEBPACK_IMPORTED_MODULE_4__.Debugger.DebugMode) {
+                    if (!_global_variables__WEBPACK_IMPORTED_MODULE_3__.Debugger.DebugMode) {
                         s.index + level - 1 > unlockLevelIndex + 1
                             ? context.drawImage(this.loadedImages.mapLock, s.x, s.y, this.canvas.height / 13, this.canvas.height / 13)
                             : null;
@@ -20691,6 +20779,23 @@ __webpack_require__.r(__webpack_exports__);
 var self;
 class LevelEndScene {
     constructor(canvas, height, width, context, starCount, currentLevel, switchToGameplayCB, switchToLevelSelectionCB, data, monsterPhaseNumber) {
+        this.switchToReactionAnimation = () => {
+            if (self.starCount <= 1) {
+                if (document.visibilityState === "visible") {
+                    this.audioPlayer.playAudio("./assets/audios/LevelLoseFanfare.mp3");
+                }
+                self.monster.changeToSpitAnimation();
+            }
+            else {
+                if (document.visibilityState === "visible") {
+                    this.audioPlayer.playAudio("./assets/audios/LevelWinFanfare.mp3");
+                    this.audioPlayer.playAudio("./assets/audios/intro.mp3");
+                    // self.sound.playSound("./assets/audios/LevelWinFanfare.mp3");
+                    // self.sound.playSound("./assets/audios/intro.mp3");
+                }
+                self.monster.changeToEatAnimation();
+            }
+        };
         this.handleMouseClick = (event) => {
             console.log(" levelend mouseclick ");
             const selfElement = document.getElementById("canvas");
@@ -20698,12 +20803,12 @@ class LevelEndScene {
             const x = event.clientX - rect.left;
             const y = event.clientY - rect.top;
             if (this.closeButton.onClick(x, y)) {
-                this.audioPlayer.playAudio(false, "./assets/audios/ButtonClick.mp3");
+                this.audioPlayer.playButtonClickSound("./assets/audios/ButtonClick.mp3");
                 console.log(" close button clicked");
                 this.switchToLevelSelectionCB("LevelEnd");
             }
             if (this.retryButton.onClick(x, y)) {
-                this.audioPlayer.playAudio(false, "./assets/audios/ButtonClick.mp3");
+                this.audioPlayer.playButtonClickSound("./assets/audios/ButtonClick.mp3");
                 console.log(" retry button clicked");
                 let gamePlayData = {
                     currentLevelData: this.data.levels[this.currentLevel],
@@ -20713,7 +20818,7 @@ class LevelEndScene {
                 this.switchToGameplayCB(gamePlayData, "LevelEnd");
             }
             if (this.nextButton.onClick(x, y) && this.starCount >= 2) {
-                this.audioPlayer.playAudio(false, "./assets/audios/ButtonClick.mp3");
+                this.audioPlayer.playButtonClickSound("./assets/audios/ButtonClick.mp3");
                 let next = Number(this.currentLevel) + 1;
                 console.log(typeof next, " next button clicked", next);
                 let gamePlayData = {
@@ -20724,8 +20829,8 @@ class LevelEndScene {
             }
         };
         this.dispose = () => {
-            this.sound.pauseSound();
-            self.audioPlayer.stopAudio();
+            // this.sound.pauseSound();
+            this.audioPlayer.stopAllAudios();
             this.timeouts.forEach(timeout => clearTimeout(timeout));
             document
                 .getElementById("canvas")
@@ -20747,6 +20852,7 @@ class LevelEndScene {
         this.closeButton = new _components_buttons_close_button__WEBPACK_IMPORTED_MODULE_5__["default"](context, canvas, this.width * 0.2 - (this.width * 0.19) / 2, this.height * 0.7);
         this.retryButton = new _components_buttons_retry_button__WEBPACK_IMPORTED_MODULE_7__["default"](this.context, this.canvas, this.width * 0.5 - (this.width * 0.19) / 2, this.height * 0.7);
         this.nextButton = new _components_buttons_next_button__WEBPACK_IMPORTED_MODULE_6__["default"](this.context, this.width, this.height, this.width * 0.8 - (this.width * 0.19) / 2, this.height * 0.7);
+        this.audioPlayer = new _components_audio_player__WEBPACK_IMPORTED_MODULE_3__.AudioPlayer();
         this.starCount = starCount;
         this.currentLevel = currentLevel;
         this.images = {
@@ -20764,22 +20870,6 @@ class LevelEndScene {
         // this.draw(16.45);
         this.addEventListener();
         self = this;
-        this.audioPlayer = new _components_audio_player__WEBPACK_IMPORTED_MODULE_3__.AudioPlayer();
-    }
-    switchToReactionAnimation() {
-        if (self.starCount <= 1) {
-            if (document.visibilityState === "visible") {
-                self.sound.playSound("./assets/audios/LevelLoseFanfare.mp3");
-            }
-            self.monster.changeToSpitAnimation();
-        }
-        else {
-            if (document.visibilityState === "visible") {
-                self.sound.playSound("./assets/audios/LevelWinFanfare.mp3");
-                self.sound.playSound("./assets/audios/intro.mp3");
-            }
-            self.monster.changeToEatAnimation();
-        }
     }
     draw(deltaTime) {
         this.background.draw();
@@ -20826,11 +20916,13 @@ class LevelEndScene {
     pauseAudios() {
         if (document.visibilityState === "visible") {
             if (self.starCount >= 2) {
-                self.sound.playSound("./assets/audios/intro.mp3");
+                this.audioPlayer.playAudio("./assets/audios/intro.mp3");
+                // self.sound.playSound("./assets/audios/intro.mp3");
             }
         }
         else {
-            self.sound.pauseSound();
+            this.audioPlayer.stopAllAudios();
+            // self.sound.pauseSound();
         }
     }
 }
@@ -21066,7 +21158,7 @@ class StartScene {
                     event: "click",
                 });
                 toggleBtn.style.display = "none";
-                this.audioPlayer.playAudio(false, "./assets/audios/ButtonClick.mp3");
+                this.audioPlayer.playButtonClickSound("./assets/audios/ButtonClick.mp3");
                 self.switchSceneToLevelSelection('StartScene');
             }
         };
@@ -21155,7 +21247,7 @@ class StartScene {
         this.handler.addEventListener("click", this.handleMouseClick, false);
     }
     dispose() {
-        this.audioPlayer.stopAudio();
+        this.audioPlayer.stopAllAudios();
         this.handler.removeEventListener("click", this.handleMouseClick, false);
     }
     getFontWidthOfTitle() {
@@ -26212,8 +26304,8 @@ var __webpack_exports__ = {};
   !*** ./feedTheMonster.ts ***!
   \***************************/
 __webpack_require__.r(__webpack_exports__);
-/* harmony import */ var _sentry_browser__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! @sentry/browser */ "./node_modules/@sentry/browser/esm/sdk.js");
-/* harmony import */ var _sentry_browser__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(/*! @sentry/browser */ "./node_modules/@sentry-internal/tracing/esm/browser/browsertracing.js");
+/* harmony import */ var _sentry_browser__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(/*! @sentry/browser */ "./node_modules/@sentry/browser/esm/sdk.js");
+/* harmony import */ var _sentry_browser__WEBPACK_IMPORTED_MODULE_11__ = __webpack_require__(/*! @sentry/browser */ "./node_modules/@sentry-internal/tracing/esm/browser/browsertracing.js");
 /* harmony import */ var _src_data_api_data__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./src/data/api-data */ "./src/data/api-data.ts");
 /* harmony import */ var _src_data_data_modal__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./src/data/data-modal */ "./src/data/data-modal.ts");
 /* harmony import */ var _src_singlecanvas_sceneHandler_scene_handler__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./src/singlecanvas/sceneHandler/scene-handler */ "./src/singlecanvas/sceneHandler/scene-handler.ts");
@@ -26223,6 +26315,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _global_variables__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ./global-variables */ "./global-variables.ts");
 /* harmony import */ var _src_singlecanvas_Firebase_firebase_integration__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ./src/singlecanvas/Firebase/firebase-integration */ "./src/singlecanvas/Firebase/firebase-integration.ts");
 /* harmony import */ var _src_singlecanvas_common_utils__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! ./src/singlecanvas/common/utils */ "./src/singlecanvas/common/utils.ts");
+/* harmony import */ var _src_singlecanvas_components_audio_player__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! ./src/singlecanvas/components/audio-player */ "./src/singlecanvas/components/audio-player.ts");
 var __awaiter = (undefined && undefined.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
     return new (P || (P = Promise))(function (resolve, reject) {
@@ -26232,6 +26325,7 @@ var __awaiter = (undefined && undefined.__awaiter) || function (thisArg, _argume
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
+
 
 
 
@@ -26257,6 +26351,7 @@ window.addEventListener("load", function () {
     return __awaiter(this, void 0, void 0, function* () {
         const font = _src_singlecanvas_common_utils__WEBPACK_IMPORTED_MODULE_8__.Utils.getLanguageSpecificFont(_global_variables__WEBPACK_IMPORTED_MODULE_6__.lang);
         yield loadAndCacheFont(font, `./assets/fonts/${font}.ttf`);
+        yield preloadGameAudios();
         handleLoadingScreen();
         // setContainerAppOrientation()
         registerWorkbox();
@@ -26314,9 +26409,9 @@ window.addEventListener("load", function () {
         }
     });
 });
-_sentry_browser__WEBPACK_IMPORTED_MODULE_9__.init({
+_sentry_browser__WEBPACK_IMPORTED_MODULE_10__.init({
     dsn: "https://b9be4420e3f449bdb00a0ac861357746@o4504951275651072.ingest.sentry.io/4504951279058944",
-    integrations: [new _sentry_browser__WEBPACK_IMPORTED_MODULE_10__.BrowserTracing()],
+    integrations: [new _sentry_browser__WEBPACK_IMPORTED_MODULE_11__.BrowserTracing()],
     // Set tracesSampleRate to 1.0 to capture 100%
     // of transactions for performance monitoring.
     // We recommend adjusting this value in production
@@ -26421,6 +26516,34 @@ function loadAndCacheFont(fontName, fontPath) {
         catch (error) {
             console.error(`Failed to load and cache font: ${error}`);
         }
+    });
+}
+function preloadGameAudios() {
+    return __awaiter(this, void 0, void 0, function* () {
+        let audioUrls = [
+            "./assets/audios/intro.mp3",
+            "./assets/audios/Cheering-02.mp3",
+            "./assets/audios/onDrag.mp3",
+            "./assets/audios/timeout.mp3",
+            "./assets/audios/LevelWinFanfare.mp3",
+            "./assets/audios/LevelLoseFanfare.mp3",
+            "./assets/audios/ButtonClick.mp3",
+            "./assets/audios/Monster Spits wrong stones-01.mp3",
+            "./assets/audios/Disapointed-05.mp3",
+            "./assets/audios/Eat.mp3",
+        ];
+        return new Promise((resolve, reject) => {
+            const preloadPromises = audioUrls.map((audioSrc) => new _src_singlecanvas_components_audio_player__WEBPACK_IMPORTED_MODULE_9__.AudioPlayer().preloadGameAudio(audioSrc));
+            Promise.all(preloadPromises)
+                .then(() => {
+                console.log("All Game audios files have been preloaded and are ready to use.");
+                resolve();
+            })
+                .catch((error) => {
+                console.error("Error preloading audio:", error);
+                reject(error);
+            });
+        });
     });
 }
 

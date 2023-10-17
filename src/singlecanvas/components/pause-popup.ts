@@ -145,7 +145,7 @@ export default class PausePopUp {
   update() { }
 
   playClickSound = () => {
-    this.audioPlayer.playAudio(false, "./assets/audios/ButtonClick.mp3");
+    this.audioPlayer.playButtonClickSound("./assets/audios/ButtonClick.mp3");
   }
 
   dispose = () => {

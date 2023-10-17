@@ -264,7 +264,6 @@ export class GameplayScene {
     );
 
     this.audioPlayer = new AudioPlayer();
-    this.audioPlayer.stopAudio();
     this.handler = document.getElementById("canvas");
     this.puzzleData = levelData.puzzles;
     this.feedBackTexts = feedBackTexts;
@@ -606,7 +605,7 @@ export class GameplayScene {
         console.log(" clickkedon stone", sc);
         this.pickedStoneObject = sc;
         this.pickedStone = sc;
-        this.audioPlayer.playAudio(false, "./assets/audios/onDrag.mp3");
+        this.audioPlayer.playAudio("./assets/audios/onDrag.mp3");
       }
     }
   };
@@ -637,7 +636,7 @@ export class GameplayScene {
 
     if (this.pauseButton.onClick(x, y)) {
       console.log(" pause button getting click from gameplay");
-      this.audioPlayer.playAudio(false, "./assets/audios/ButtonClick.mp3");
+      this.audioPlayer.playButtonClickSound("./assets/audios/ButtonClick.mp3");
       this.pauseGamePlay();
     }
 
@@ -1133,7 +1132,7 @@ export class GameplayScene {
   };
 
   public dispose = () => {
-    this.audioPlayer.stopAudio();
+    this.audioPlayer.stopAllAudios();
     this.removeEventListeners();
       this.feedbackTextEffects.unregisterEventListener();
       this.monster.unregisterEventListener();
@@ -1170,7 +1169,7 @@ export class GameplayScene {
   }
   
   public wordPuzzle(droppedStone: string, droppedStoneInstance: StoneConfig) {
-    this.audioPlayer.stopAudio();
+    this.audioPlayer.stopFeedbackAudio();
     droppedStoneInstance.x = -999;
     droppedStoneInstance.y = -999;
     const feedBackIndex = this.getRandomInt(0, 1);
@@ -1203,7 +1202,7 @@ export class GameplayScene {
       }, 1500);
     } else {
       
-      this.audioPlayer.playAudio(false,'./assets/audios/MonsterSpit.mp3')
+      this.audioPlayer.playAudio('./assets/audios/MonsterSpit.mp3')
       this.logPuzzleEndFirebaseEvent(isCorrect,'Word');
       this.dispatchStoneDropEvent(isCorrect);
       this.loadPuzzle();
@@ -1236,7 +1235,7 @@ export class GameplayScene {
         this.feedBackTextCanavsElement.style.zIndex = "0";
         document.dispatchEvent(loadPuzzleEvent);
         this.addEventListeners();
-        this.audioPlayer.stopAudio();
+        this.audioPlayer.stopAllAudios();
         this.startPuzzleTime()
   }
 
@@ -1292,11 +1291,11 @@ export class GameplayScene {
     this.isPauseButtonClicked = true;
     this.removeEventListeners();
     this.pausePopup.addListner();
-    this.audioPlayer.stopAudio();
+    this.audioPlayer.stopAllAudios();
   }
 
   handleVisibilityChange = () => {
-    this.audioPlayer.stopAudio();
+    this.audioPlayer.stopAllAudios();
     this.pauseGamePlay();
   }
 
