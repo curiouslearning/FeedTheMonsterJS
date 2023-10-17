@@ -264,10 +264,11 @@ export class PromptText extends EventManager {
                 default: {
                     this.context.fillStyle = "black";
                     this.context.fillText(
-                        promptTextLetters[i],
-                        startPrompttextX + currentWordWidth,
+                        this.currentPromptText,
+                        startPrompttextX,
                         y
                     );
+                    break;
                 }
             }
             currentWordWidth = this.context.measureText(
