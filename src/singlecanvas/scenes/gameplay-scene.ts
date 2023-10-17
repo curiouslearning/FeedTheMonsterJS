@@ -208,12 +208,19 @@ export class GameplayScene {
     // this.createCanvas();
 
     this.pauseButton = new PauseButton(this.context, this.canvas);
+    this.timerTicking = new TimerTicking(
+      this.width,
+      this.height,
+      this.loadPuzzle
+    );
     this.stoneHandler = new StoneHandler(
       this.context,
       this.canvas,
       this.counter,
       this.levelData,
-      feedbackAudios
+      feedbackAudios,
+      this.timerTicking
+
     );
     this.promptText = new PromptText(
       this.width,
@@ -222,11 +229,7 @@ export class GameplayScene {
       this.levelData,
       this.rightToLeft
     );
-    this.timerTicking = new TimerTicking(
-      this.width,
-      this.height,
-      this.loadPuzzle
-    );
+    
     this.levelIndicators = new LevelIndicators(this.context, this.canvas, 0);
     // this.tutorial = new Tutorial(this.context, this.width, this.height);
     this.levelIndicators.setIndicators(this.counter);
@@ -575,11 +578,18 @@ export class GameplayScene {
         }
       }
     } else {
-      if (this.pickedStoneObject != null) {
-        this.pickedStone.x = this.pickedStoneObject.origx;
-        this.pickedStone.y = this.pickedStoneObject.origy;
-        this.monster.changeToIdleAnimation();
+      try {
+        if (this.pickedStoneObject != null) {
+          if (this.pickedStoneObject.origx != null && this.pickedStoneObject.origy != null) {
+            this.pickedStone.x = this.pickedStoneObject.origx;
+            this.pickedStone.y = this.pickedStoneObject.origy;          
+            this.monster.changeToIdleAnimation();
+        }
+        }
+      } catch (error) {
+        //  console.log(error);
       }
+   
     }
     this.pickedStone = null;
   };
@@ -619,7 +629,6 @@ export class GameplayScene {
     var rect = selfElement.getBoundingClientRect();
     const x = event.clientX - rect.left;
     const y = event.clientY - rect.top;
-
     if (this.monster.onClick(x, y)) {
       this.isGameStarted = true;
       this.time = 0;
@@ -819,7 +828,7 @@ export class GameplayScene {
       this.levelIndicators.draw();
       this.promptText.draw(deltaTime);
       this.monster.animation(deltaTime);
-      this.timerTicking.update(deltaTime);
+      // this.timerTicking.update(deltaTime);
       this.timerTicking.draw();
       this.stoneHandler.draw(deltaTime);
     }
