@@ -92,7 +92,7 @@ export class StoneConfig {
             this.frame = this.frame + 1;
         }
         else{
-            this.timerTickingInstance.update(deltaTime);
+           
             if(this.tutorialInstance!=null || this.tutorialInstance!=undefined)
             {
                 this.tutorialInstance.draw(deltaTime);
