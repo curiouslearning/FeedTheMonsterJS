@@ -60,6 +60,7 @@ export default class StoneHandler extends EventManager {
     public audioPlayer: AudioPlayer;
     public feedbackAudios: any;
     public timerTickingInstance: TimerTicking;
+    isGamePaused: boolean = false;
     constructor(
         context: CanvasRenderingContext2D,
         canvas: { width: number; height?: number },
@@ -116,7 +117,10 @@ export default class StoneHandler extends EventManager {
         this.timerTickingInstance = timerTickingInstance;
         document.addEventListener(VISIBILITY_CHANGE, this.handleVisibilityChange, false);
     }
-
+    
+    setGamePause(isGamePaused:boolean){
+      this.isGamePaused  = isGamePaused; 
+    }
     createStones(img) {
         const foilStones=this.getFoilStones();
         for (var i = 0; i < foilStones.length; i++) {
@@ -164,9 +168,16 @@ export default class StoneHandler extends EventManager {
     draw(deltaTime) {
         for (var i = 0; i < this.foilStones.length; i++) {
             this.foilStones[i].draw(deltaTime);
+
+            
         }
+            if(this.foilStones[this.foilStones.length-1].frame>=100 && !this.isGamePaused)
+            {
+                this.timerTickingInstance.update(deltaTime);
+            }
         
     }
+    
 
 
     initializeStonePos() {
@@ -277,11 +288,11 @@ export default class StoneHandler extends EventManager {
     public isStoneDroppedCorrectForLetterOnly(droppedStone: string,feedBackIndex:number): boolean {
         if(droppedStone == this.correctTargetStone)
         {
-            this.audioPlayer.playAudio(false, "./assets/audios/Eat.mp3","./assets/audios/Cheering-02.mp3", Utils.getConvertedDevProdURL(this.feedbackAudios[feedBackIndex]));
+            this.audioPlayer.playFeedbackAudios(false, "./assets/audios/Eat.mp3","./assets/audios/Cheering-02.mp3", Utils.getConvertedDevProdURL(this.feedbackAudios[feedBackIndex]));
             return true;
         }
         else{
-            this.audioPlayer.playAudio(false, "./assets/audios/MonsterSpit.mp3");
+            this.audioPlayer.playFeedbackAudios(false, "./assets/audios/MonsterSpit.mp3");
             return false;
         }
     }
@@ -289,12 +300,12 @@ export default class StoneHandler extends EventManager {
     public isStoneDroppedCorrectForLetterInWord(droppedStone: string,feedBackIndex:number): boolean {
         if(droppedStone == this.correctTargetStone)
         {
-            this.audioPlayer.playAudio(false, "./assets/audios/Eat.mp3","./assets/audios/Cheering-02.mp3", Utils.getConvertedDevProdURL(this.feedbackAudios[feedBackIndex]));
+            this.audioPlayer.playFeedbackAudios(false, "./assets/audios/Eat.mp3","./assets/audios/Cheering-02.mp3", Utils.getConvertedDevProdURL(this.feedbackAudios[feedBackIndex]));
            
             return true;
         }
         else{
-            this.audioPlayer.playAudio(false, "./assets/audios/MonsterSpit.mp3");
+            this.audioPlayer.playFeedbackAudios(false, "./assets/audios/MonsterSpit.mp3");
             return false;
         }
     }
@@ -302,9 +313,9 @@ export default class StoneHandler extends EventManager {
     public isStonDroppedCorrectForWord(droppedStone: string,feedBackIndex:number): boolean {
         if (droppedStone == this.correctTargetStone.substring(0, droppedStone.length)) {
             if(droppedStone== this.getCorrectTargetStone()){
-                this.audioPlayer.playAudio(false, "./assets/audios/Eat.mp3","./assets/audios/Cheering-02.mp3", Utils.getConvertedDevProdURL(this.feedbackAudios[feedBackIndex]));
+                this.audioPlayer.playFeedbackAudios(false, "./assets/audios/Eat.mp3","./assets/audios/Cheering-02.mp3", Utils.getConvertedDevProdURL(this.feedbackAudios[feedBackIndex]));
             }else{
-                this.audioPlayer.playAudio(false, "./assets/audios/Eat.mp3","./assets/audios/Cheering-02.mp3");
+                this.audioPlayer.playFeedbackAudios(false, "./assets/audios/Eat.mp3","./assets/audios/Cheering-02.mp3");
             }
             return true;
         } else {
@@ -346,7 +357,7 @@ this.currentPuzzleData.targetStones.forEach((e) => {
     }
 
     handleVisibilityChange = () => {
-        this.audioPlayer.stopAudio();
+        this.audioPlayer.stopAllAudios();
     }
 
  
