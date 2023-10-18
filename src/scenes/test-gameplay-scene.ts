@@ -12,7 +12,7 @@ import {
     LevelSelection1,
     GameScene1,
     loadImages
-} from "../../common/common";
+} from "../common/common";
 import { LevelIndicators } from "../components/level-indicator";
 import { PromptText } from "../components/prompt-text"
 // import { Tutorial } from "../components/tutorial";
@@ -20,15 +20,14 @@ import { TimerTicking } from "../components/timer-ticking";
 // import PausePopUp from "../components/pause-popup"
 import StoneHandler from "../components/stone-handler";
 import { StoneConfig } from "../common/stone-config"
-import Sound from "../../common/sound";
-import InstallButton from "../../components/buttons/install_button";
-import PlayButton from "../../singlecanvas/components/play-button";
+import Sound from "../common/sound";
 import { Monster } from "../components/monster";
-import { DataModal } from "../../data/data-modal";
+import { DataModal } from "../data/data-modal";
 // import { CanvasStack } from "../../utility/canvas-stack";
 import { LevelSelectionScreen } from "../scenes/level-selection-scene";
-import { Debugger, lang } from "../../../global-variables";
+import { Debugger, lang } from "../../global-variables";
 import { Tutorial } from "../components/tutorial";
+import PlayButton from "../components/play-button";
 // var this: any;
 let lastTime = 0;
 let pwa_install_status: any;
@@ -62,7 +61,7 @@ export class TestGameplayScene {
     public context: CanvasRenderingContext2D;
     public buttonContext: CanvasRenderingContext2D;
     public outcome: any;
-    public playButton: PlayButton | InstallButton;
+    public playButton: PlayButton;
     public levelSelectionScene: any;
     public images: Object;
     public loadedImages: any;

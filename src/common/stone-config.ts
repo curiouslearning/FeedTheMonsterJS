@@ -1,4 +1,4 @@
-import { lang } from "../../../global-variables";
+import { lang } from "../../global-variables";
 import { TimerTicking } from "../components/timer-ticking";
 import { Tutorial } from "../components/tutorial";
 import { Utils } from "./utils";

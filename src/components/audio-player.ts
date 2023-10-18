@@ -1,4 +1,4 @@
-import { Window } from "../../../global-variables";
+import { Window } from "../../global-variables";
 
 export class AudioPlayer {
   private audioContext: AudioContext | null;

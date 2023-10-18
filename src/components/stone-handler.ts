@@ -1,33 +1,15 @@
-import { lang, pseudoId } from "../../../global-variables";
-// import { FeedbackAudio, GameFields, PhraseAudio } from "../common/common.js";
-import Sound from "../../common/sound";
+import { lang, pseudoId } from "../../global-variables";
+import Sound from "../common/sound";
 import { StoneConfig } from "../common/stone-config";
-import { getDatafromStorage } from "../../data/profile-data";
-import { FirebaseIntegration } from "../../firebase/firebase_integration";
+import { getDatafromStorage } from "../data/profile-data";
 import { EventManager } from "../events/EventManager";
 import { Tutorial } from "./tutorial";
 import { AudioPlayer } from "./audio-player";
 import { VISIBILITY_CHANGE } from "../common/event-names";
 import { Utils } from "../common/utils";
 import { TimerTicking } from "./timer-ticking";
-// import { LevelIndicators } from "./level-indicators.js";
-// import { Tutorial } from "./tutorial.js";
-// import Monster from "./animation/monster.js";
-// import { TextEffects } from "./animation/text_effects.js";
-// import PromptText from "./prompt_text.js";
-var self;
-var frameCount: number = 0;
-var audioUrl = {
-    phraseAudios: [
-        "./lang/" + lang + "/audios/fantastic.mp3",
-        "./lang/" + lang + "/audios/great.mp3",
-    ],
-    monsterSplit: "./assets/audios/Monster Spits wrong stones-01.mp3",
-    monsterEat: "./assets/audios/Eat.mp3",
-    monsterHappy: "./assets/audios/Cheering-02.mp3",
-    monsterSad: "./assets/audios/Disapointed-05.mp3",
-    ondragStart: "./assets/audios/onDrag.mp3",
-};
+
+
 export default class StoneHandler extends EventManager {
     public context: CanvasRenderingContext2D;
     public canvas: { width: any; height?: number };
@@ -81,27 +63,13 @@ export default class StoneHandler extends EventManager {
             stoneDropCallbackHandler: (event) => this.handleStoneDrop(event),
             loadPuzzleCallbackHandler: (event) => this.handleLoadPuzzle(event)
         })
-        self = this;
         this.context = context;
         this.canvas = canvas;
-        // this.stoneHtmlElement = stoneHtmlElement;
         this.puzzleNumber = puzzleNumber;
         this.levelData = levelData;
-        // this.feedBackTexts = feedBackTexts;
         this.setTargetStone(this.puzzleNumber)
-        // this.monster = monster;
-        // this.levelIndicators = levelIndicators;
-        // this.callbackFuntion = callbackFuntion;
-        // this.correctAnswer = this.targetStones.join("");
         this.initializeStonePos();
-        // this.feedbackEffects = feedbackEffects;
-        // this.feedbackTextCanvasElement = feedbackTextCanvasElement;
-        // this.promptButton = promptButton;
-        // this.audio = audio;
-        // this.tutorial = new Tutorial(context, canvas);
-        // this.createStones();
-        // this.draw(0);
-        // this.eventListners();
+
         this.feedbackAudios = this.convertFeedBackAudiosToList(feedbackAudios);
         this.puzzleStartTime = new Date();
         this.tutorial = new Tutorial(context,canvas.width,canvas.height,puzzleNumber)
@@ -110,7 +78,6 @@ export default class StoneHandler extends EventManager {
         this.audioPlayer = new AudioPlayer();
         this.stonebg.onload = (e) => {
             this.createStones(this.stonebg)
-            // this.stoneConfig = new StoneConfig(this.context, this.height, this.width, "text", 100, 100, img);
         }
         this.audioPlayer = new AudioPlayer();
         this.timerTickingInstance = timerTickingInstance;
@@ -143,23 +110,9 @@ export default class StoneHandler extends EventManager {
         }
         
         
-       
-        // this.foilStones.forEach((stone) => {
-        //     if (stone.text == this.targetStones[0]) {
-        //         // this.tutorialPosition = [stone.targetX, stone.targetY];
-        //         // this.tutorial.updateTargetStonePositions(this.tutorialPosition);
-        //         // this.tutorial.animateImage();
-        //     }
-        // });
+
     }
-    displayTutorial() {
-        // if (!GameFields.showTutorial) {
-        //     GameFields.setTimeOuts.timerShowTutorial = setTimeout(() => {
-        //         GameFields.showTutorial = true;
-        //         clearTimeout(GameFields.setTimeOuts.timerShowTutorial);
-        //     }, 2000);
-        // }
-    }
+
 
     draw(deltaTime) {
         for (var i = 0; i < this.foilStones.length; i++) {
@@ -212,32 +165,6 @@ export default class StoneHandler extends EventManager {
         this.stonePos = this.stonePos.sort(() => Math.random() - 0.5);
     }
 
-    update(deltaTime) {
-
-    }
-    puzzleEndFirebaseEvents(
-        success_or_failure,
-        puzzle_number,
-        item_selected,
-        target,
-        foils,
-        response_time
-    ) {
-        var puzzleEndTime = new Date();
-        FirebaseIntegration.customEvents("puzzle_completed", {
-            cr_user_id: pseudoId,
-            success_or_failure: success_or_failure,
-            level_number: this.levelData.levelNumber,
-            puzzle_number: puzzle_number,
-            item_selected: item_selected,
-            target: target,
-            foils: foils,
-            profile_number: 0,
-            ftm_language: lang,
-            version_number: document.getElementById("version-info-id").innerHTML,
-            response_time: (puzzleEndTime.getTime() - response_time) / 1000,
-        });
-    }
 
     public setTargetStone(puzzleNumber) {
         this.currentPuzzleData = this.levelData.puzzles[puzzleNumber];

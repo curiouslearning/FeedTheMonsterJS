@@ -1,4 +1,4 @@
-import { loadImages } from "../../common/common";
+import { loadImages } from "../common/common";
 
 // to do need to optimize more
 var images = {

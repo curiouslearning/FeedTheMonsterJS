@@ -1,4 +1,4 @@
-import { loadImages } from "../../common/common";
+import { loadImages } from "../common/common";
 
 export default class PlayButton {
     public posX: number;

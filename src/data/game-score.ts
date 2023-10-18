@@ -1,4 +1,4 @@
-import { lang } from "../../../global-variables";
+import { lang } from "../../global-variables";
 
 export class GameScore {
   public static currentlanguage: string = lang;

@@ -1,16 +1,15 @@
-import { Game } from "../../../scenes/game";
 
 export default class CloseButton {
     public posX: number;
     public posY: number;
     public context: CanvasRenderingContext2D;
-    public canvas: Game;
+    public canvas: HTMLCanvasElement;
     public imagesLoaded: boolean = false;
     public close_button_image: any;
 
     constructor(
         context: CanvasRenderingContext2D,
-        canvas: Game,
+        canvas: HTMLCanvasElement,
         posX: number,
         posY: number
     ) {

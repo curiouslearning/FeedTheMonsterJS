@@ -1,6 +1,6 @@
-import { loadImages } from "../../common/common";
-import Sound from "../../common/sound";
-import { CLICK, MOUSEUP } from "../common/event-names";
+import { loadImages } from "../common/common";
+import Sound from "../common/sound";
+import { CLICK } from "../common/event-names";
 import { AudioPlayer } from "../components/audio-player";
 import { Background } from "../components/background";
 import CloseButton from "../components/buttons/close-button";

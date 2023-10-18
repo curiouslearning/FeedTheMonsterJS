@@ -1,16 +1,16 @@
-import { Game } from "../../../scenes/game";
+
 
 export default class RetryButton {
     public posX: number;
     public posY: number;
     public context: CanvasRenderingContext2D;
-    public canvas: Game;
+    public canvas: HTMLCanvasElement;
     public imagesLoaded: boolean = false;
     public retry_button_image: any;
 
     constructor(
         context: CanvasRenderingContext2D,
-        canvas: Game,
+        canvas: HTMLCanvasElement,
         posX: number,
         posY: number
     ) {

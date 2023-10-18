@@ -1,210 +1,353 @@
-import { PromptTextLayer } from "../common/common";
-import { CanvasStack } from "../utility/canvas-stack";
-import { Game } from "../scenes/game";
+
+import Sound from "../common/sound";
+import { EventManager } from "../events/EventManager";
+import { Utils } from "../common/utils";
+import { AudioPlayer } from "./audio-player";
+import { VISIBILITY_CHANGE } from "../common/event-names";
+import { PromptAudio } from "../common/common";
 import { lang } from "../../global-variables";
+
+
 var self;
-export class PromptText {
-  public game: Game;
-  public width: number;
-  public height: number;
-  public canvasStack: any;
-  public levelData: any;
-  public currentPromptText: any;
-  public currentPuzzleData: any;
-  public fntstOrGrtImgArr: any;
-  public id: any;
-  public canavsElement: any;
-  public context: any;
-  public prompt_image: any;
-  public targetStones: any;
-  public rightToLeft: boolean;
+export class PromptText extends EventManager {
+    public width: number;
+    public height: number;
+    public levelData: any;
+    public currentPromptText: any;
+    public currentPuzzleData: any;
+    public fntstOrGrtImgArr: any;
+    public id: any;
+    public canavsElement: any;
+    public context: any;
+    public prompt_image: any;
+    public targetStones: any;
+    public rightToLeft: boolean;
+    public imagesLoaded: boolean = false;
+    public sound: Sound;
+    public isStoneDropped: boolean = false;
+    audioPlayer: AudioPlayer;
+    droppedStones: number = 0;
+    public time: number = 0;
+    public promptImageWidth: number = 0;
+    public isAppForeground: boolean = true;
 
-  constructor(game, currentPuzzleData, levelData, rightToLeft) {
-    this.game = game;
-    this.width = game.width;
-    this.height = game.height;
-    this.canvasStack = new CanvasStack("canvas");
-    this.levelData = levelData;
-    this.rightToLeft = rightToLeft;
-    self = this;
-    this.currentPromptText = currentPuzzleData.prompt.promptText;
-    this.currentPuzzleData = currentPuzzleData;
-    this.targetStones = this.currentPuzzleData.targetStones;
-    this.fntstOrGrtImgArr = [];
-    this.canavsElement = document.getElementById("canvas");
-    this.context = this.canavsElement.getContext("2d");
-    // this.createCanvas();
-    this.loadFantasticAndGreatImage();
-    this.createBackground();
-  }
+    public scale:number = 1;
+    public isScalingUp:boolean = true;
+    public scaleFactor:number = 0.00050;
+    public promptImageHeight: number = 0;
+    public promptPlayButton: any;
 
-  loadFantasticAndGreatImage() {
-    var self = this;
-  }
+    constructor(width, height, currentPuzzleData, levelData, rightToLeft) {
+        super({
+            stoneDropCallbackHandler: (event) => this.handleStoneDrop(event),
+            loadPuzzleCallbackHandler: (event) => this.handleLoadPuzzle(event)
+        })
+        this.width = width;
+        this.height = height;
+        this.levelData = levelData;
+        this.rightToLeft = rightToLeft;
+        self = this;
+        this.currentPromptText = currentPuzzleData.prompt.promptText;
+        this.currentPuzzleData = currentPuzzleData;
+        this.targetStones = this.currentPuzzleData.targetStones;
+        this.fntstOrGrtImgArr = [];
+        this.canavsElement = document.getElementById("canvas");
+        this.context = this.canavsElement.getContext("2d");
+        this.sound = new Sound();
 
-  createCanvas() {
-  }
+        this.prompt_image = new Image();
+        this.promptPlayButton = new Image();
 
-  setCurrrentPuzzleData(data) {
-    this.currentPuzzleData = data;
-    this.currentPromptText = data.prompt.promptText;
-    this.targetStones = this.currentPuzzleData.targetStones;
-  }
+        this.loadImages().then(()=>{
+            console.log('Images loaded');
+        });
 
-  showFantasticOrGreat(feedBackText) {
-    this.context.font = "bold 24px Arial";
-    this.context.fillStyle = "white";
-    this.context.fillText(
-      feedBackText,
-      this.game.width / 2 - this.context.measureText("feedBackText").width / 2,
-      this.height * 0.25
-    );
-  }
+        this.time = 0;
+        this.promptImageWidth = this.width * 0.65;
+        this.promptImageHeight = this.height * 0.3;
+        
+        document.addEventListener(VISIBILITY_CHANGE, this.handleVisibilityChange, false);
+    }
 
-  deleteCanvas() {
-    this.canvasStack.deleteLayer(this.id);
-  }
-  drawArabic(droppedStones = 0) {
-    console.log("Prompt", this.currentPromptText);
-    var x = this.width / 2;
-    const y = this.height * 0.26;
-    this.context.textAlign = "center";
-    if (this.levelData.levelMeta.levelType == "LetterInWord") {
-      var letterInWord = this.currentPromptText.replace(
-        new RegExp(this.currentPuzzleData.targetStones[0], "g"),
-        ""
-      );
-      this.context.fillStyle = "red";
-      this.context.fillText(
-        this.targetStones[0],
-        x + this.context.measureText(letterInWord).width / 2,
-        y
-      );
-      this.context.fillStyle = "black";
-      this.context.fillText(
-        letterInWord,
-        x - this.context.measureText(this.targetStones[0]).width / 2,
-        y
-      );
-    } else if (this.levelData.levelMeta.levelType == "Word") {
-      x = x - this.context.measureText(this.currentPromptText).width * 0.8;
-      for (let i = this.targetStones.length - 1; i >= 0; i--) {
-        x = x + this.context.measureText(this.targetStones[i]).width + 5;
-        // this.context.textAlign = "center";
-        if (droppedStones > i || droppedStones == undefined) {
-          this.context.fillStyle = "black";
-          this.context.fillText(this.targetStones[i], x, y);
+    
+
+    handleMouseDown = (event) => {
+        let self = this;
+        const selfElement = <HTMLElement>document.getElementById("canvas");
+        event.preventDefault();
+        var rect = selfElement.getBoundingClientRect();
+        const x = event.clientX - rect.left;
+        const y = event.clientY - rect.top;
+        if (self.onClick(x, y)) {
+            console.log('Clicked on Play prompt audio');
+
+            this.playSound();
+        }
+    }
+
+    public getPromptAudioUrl = (): string => {
+        return Utils.getConvertedDevProdURL(this.currentPuzzleData.prompt.promptAudio);
+    }
+
+    playSound = () => {
+        console.log('PromptAudio',  Utils.getConvertedDevProdURL(this.currentPuzzleData.prompt.promptAudio));
+        if (this.isAppForeground) {
+            this.sound.playSound(Utils.getConvertedDevProdURL(this.currentPuzzleData.prompt.promptAudio), PromptAudio
+            );
+        }
+    }
+
+    onClick(xClick, yClick) {
+        if (
+            Math.sqrt(xClick - this.width / 3) < 12 &&
+            Math.sqrt(yClick - this.height / 5.5) < 10
+        ) {
+            return true;
+        }
+    }
+
+    setCurrrentPuzzleData(data) {
+        this.currentPuzzleData = data;
+        this.currentPromptText = data.prompt.promptText;
+        this.targetStones = this.currentPuzzleData.targetStones;
+    }
+
+
+    drawRTLLang() {
+        var x = this.width / 2;
+        const y = this.height * 0.26;
+        this.context.textAlign = "center";
+        var fontSize = this.calculateFont();
+        this.context.font = `${fontSize}px ${Utils.getLanguageSpecificFont(lang)}, monospace`;
+        if (this.levelData.levelMeta.levelType == "LetterInWord") {
+            var letterInWord = this.currentPromptText.replace(
+                new RegExp(this.currentPuzzleData.targetStones[0], "g"),
+                ""
+            );
+            this.context.fillStyle = "red";
+            this.context.fillText(
+                this.targetStones[0],
+                x + this.context.measureText(letterInWord).width / 2,
+                y
+            );
+            this.context.fillStyle = "black";
+            this.context.fillText(
+                letterInWord,
+                x - this.context.measureText(this.targetStones[0]).width / 2,
+                y
+            );
+        } else if (this.levelData.levelMeta.levelType == "Word") {
+            x = x - this.context.measureText(this.currentPromptText).width * 0.5;
+            for (let i = this.targetStones.length - 1; i >= 0; i--) {
+                if (this.droppedStones > i || this.droppedStones == undefined) {
+                    this.context.fillStyle = "black";
+                    this.context.fillText(this.targetStones[i], x, y);
+                } else {
+                    this.context.fillStyle = "red";
+                    this.context.fillText(this.targetStones[i], x, y);
+                }
+                x = x + this.context.measureText(this.targetStones[i]).width + 5;
+            }
+        } 
+        else if (this.levelData.levelMeta.levelType == "SoundWord") {
+            const scaledWidth = this.promptImageWidth * this.scale;
+                    const scaledHeight = this.promptImageHeight * this.scale;
+                    // const offsetX = (this.width - scaledWidth) / 2;
+                    // const offsetY = (this.height - scaledHeight) / 5;
+                    const offsetX = (this.width - scaledWidth) *1.25;
+                    const offsetY = (this.height - scaledHeight) *0.33;
+                    this.context.drawImage(
+                        this.promptPlayButton,
+                        offsetX,
+                        offsetY,
+                        scaledWidth/4,
+                        scaledHeight/4
+                    );
+        }
+        else {
+            this.context.fillStyle = "black";
+            this.context.fillText(this.currentPromptText, x, y);
+        }
+    }
+    drawOthers() {
+        const promptTextLetters = this.currentPromptText.split("");
+        const x = this.width / 2;
+        const y = this.height * 0.28;
+        
+        var fontSize = this.calculateFont();
+        this.context.font = `${fontSize}px ${Utils.getLanguageSpecificFont(lang)}, monospace`;
+        const startPrompttextX =
+            this.width / 2 -
+            this.context.measureText(this.currentPromptText).width / 2;
+        let currentWordWidth = 0;
+        var letterHighlight: Array<string> =
+            this.currentPuzzleData.targetStones[0].split("");
+        for (let i = 0; i < promptTextLetters.length; i++) {
+            switch (this.levelData.levelMeta.levelType) {
+                case "LetterInWord": {
+                    if (letterHighlight.includes(promptTextLetters[i])) {
+                        letterHighlight = letterHighlight.slice(1, letterHighlight.length);
+                        this.context.fillStyle = "red";
+                        this.context.fillText(
+                            promptTextLetters[i],
+                            startPrompttextX + currentWordWidth,
+                            y
+                        );
+                    } else {
+                        this.context.fillStyle = "black";
+                        this.context.fillText(
+                            promptTextLetters[i],
+                            startPrompttextX + currentWordWidth,
+                            y
+                        );
+                    }
+                    break;
+                }
+                case "Word": {
+                    if (this.droppedStones > i || this.droppedStones == undefined) {
+                        this.context.fillStyle = "black";
+                        this.context.fillText(
+                            promptTextLetters[i],
+                            startPrompttextX + currentWordWidth,
+                            y
+                        );
+                    } else {
+                        this.context.fillStyle = "red";
+                        this.context.fillText(
+                            promptTextLetters[i],
+                            startPrompttextX + currentWordWidth,
+                            y
+                        );
+                    }
+                    break;
+                }
+                case "SoundWord": {
+                    const scaledWidth = this.promptImageWidth;
+                    const scaledHeight = this.promptImageHeight;
+                    const offsetX = (this.width - scaledWidth) *1.25;
+                    const offsetY = (this.height - scaledHeight) *0.33;
+                    this.context.drawImage(
+                        this.promptPlayButton,
+                        offsetX,
+                        offsetY,
+                        scaledWidth/4,
+                        scaledHeight/4
+                    );
+                  break;
+                }
+                default: {
+                    this.context.fillStyle = "black";
+                    this.context.fillText(
+                        promptTextLetters[i],
+                        startPrompttextX + currentWordWidth,
+                        y
+                    );
+                }
+            }
+            currentWordWidth = this.context.measureText(
+                this.currentPromptText.substring(0, i + 1)
+            ).width;
+        }
+    }
+    draw(deltaTime) {
+    this.updateScaling();
+    this.time = (deltaTime<17)?this.time+Math.floor(deltaTime):this.time+16;
+      if (Math.floor(this.time) >= 1910 && Math.floor(this.time) <= 1926) {
+        this.playSound();
+      }
+
+        if (!this.isStoneDropped) {
+            const scaledWidth = this.promptImageWidth * this.scale;
+            const scaledHeight = this.promptImageHeight * this.scale;
+            const offsetX = (this.width - scaledWidth) / 2;
+            const offsetY = (this.height - scaledHeight) / 5;
+            this.context.drawImage(
+                this.prompt_image,
+                offsetX,
+                offsetY,
+                scaledWidth,
+                scaledHeight
+            );
+            this.context.fillStyle = "black";
+            this.rightToLeft
+                ? this.drawRTLLang()
+                : this.drawOthers();
+        }
+    }
+
+    public handleStoneDrop(event) {
+        this.isStoneDropped = true;
+    }
+
+    public handleLoadPuzzle(event) {
+        this.droppedStones = 0;
+        this.currentPuzzleData = this.levelData.puzzles[event.detail.counter]
+        this.currentPromptText = this.currentPuzzleData.prompt.promptText;
+        this.targetStones = this.currentPuzzleData.targetStones;
+        this.isStoneDropped = false;
+        this.time = 0;
+    }
+
+    public dispose() {
+        document.removeEventListener(VISIBILITY_CHANGE, this.handleVisibilityChange, false);
+        this.unregisterEventListener();
+    }
+
+    update() {
+
+    }
+    droppedStoneIndex(index:number){
+        this.droppedStones = index;
+    }
+    calculateFont():number{
+        return (this.promptImageWidth/this.currentPromptText.length>35)?35:this.width * 0.65/this.currentPromptText.length
+    }
+
+    updateScaling() {
+        if (this.isScalingUp) {
+          this.scale += this.scaleFactor;
+          if (this.scale >= 1.05) {
+            this.isScalingUp = false;
+          }
         } else {
-          this.context.fillStyle = "red";
-          this.context.fillText(this.targetStones[i], x, y);
-        }
-      }
-    } else {
-      this.context.fillStyle = "black";
-      this.context.fillText(this.currentPromptText, x, y);
-    }
-  }
-  drawOthers(droppedStones = 0) {
-    const promptTextLetters = this.currentPromptText.split("");
-    const x = this.width / 2;
-    const y = this.height * 0.26;
-    var fontSize = 20;
-    const startPrompttextX =
-      this.width / 2 -
-      this.context.measureText(this.currentPromptText).width / 2;
-    let currentWordWidth = 0;
-    var letterHighlight: Array<string> =
-      this.currentPuzzleData.targetStones[0].split("");
-    for (let i = 0; i < promptTextLetters.length; i++) {
-      // this.context.textAlign = "center";
-      switch (this.levelData.levelMeta.levelType) {
-        case "LetterInWord": {
-          if (letterHighlight.includes(promptTextLetters[i])) {
-            letterHighlight = letterHighlight.slice(1, letterHighlight.length);
-            this.context.fillStyle = "red";
-            this.context.fillText(
-              promptTextLetters[i],
-              // fontSize * i + x - promptTextLetters.length * 6,
-              startPrompttextX + currentWordWidth,
-              y
-            );
-          } else {
-            this.context.fillStyle = "black";
-            this.context.fillText(
-              promptTextLetters[i],
-              // fontSize * i + x - promptTextLetters.length * 6,
-              startPrompttextX + currentWordWidth,
-              y
-            );
+          this.scale -= this.scaleFactor;
+          if (this.scale <= 1) {
+            this.scale = 1;
+            this.isScalingUp = true;
           }
-          // currentWordWidth = this.context.measureText(this.currentPromptText.substring(0, i + 1)).width;
-          break;
         }
-        case "Word": {
-          if (droppedStones > i || droppedStones == undefined) {
-            this.context.fillStyle = "black";
-            this.context.fillText(
-              promptTextLetters[i],
-              // fontSize * i + x - promptTextLetters.length * 6,
-              startPrompttextX + currentWordWidth,
-              y
-            );
-          } else {
-            this.context.fillStyle = "red";
-            this.context.fillText(
-              promptTextLetters[i],
-              // fontSize * i + x - promptTextLetters.length * 6,
-              startPrompttextX + currentWordWidth,
-              y
-            );
-          }
-          break;
-        }
-        default: {
-          this.context.fillStyle = "black";
-          this.context.fillText(
-            promptTextLetters[i],
-            startPrompttextX + currentWordWidth,
-            // fontSize * i + x - promptTextLetters.length * 6,
-            y
-          );
-        }
-      }
-      currentWordWidth = this.context.measureText(
-        this.currentPromptText.substring(0, i + 1)
-      ).width;
     }
-  }
-  draw(droppedStones = 0) {
-    // this.context.clearRect(0, 0, this.width, this.height);
-    this.context.drawImage(
-      this.prompt_image,
-      this.game.width / 2 - (this.game.width * 0.5) / 2,
-      this.height * 0.15,
-      this.game.width * 0.5,
-      this.height * 0.25
-    );
-    this.context.fillStyle = "black";
-    this.context.font = 30 + "px Arial";
-    // this.context.textAlign = "center";
-    this.rightToLeft
-      ? this.drawArabic(droppedStones)
-      : this.drawOthers(droppedStones);
-    // this.context.fillText(
-    //     this.currentPromptText,
-    //   this.width / 2.1,
-    //   this.height * 0.26
-    // );
-  }
-  createBackground() {
-    var self = this;
-    self.prompt_image = new Image();
-    self.prompt_image.src = "./assets/images/promptTextBg.png";
-    self.prompt_image.onload = function (e) {
-      self.draw();
-    };
-  }
-  update() {
-    this.createBackground();
-  }
+
+    handleVisibilityChange = () => {
+        if (document.visibilityState == "hidden") {
+            this.audioPlayer.stopAudio();
+            this.isAppForeground = false
+        }
+
+        if (document.visibilityState == "visible") {
+            this.isAppForeground = true
+        }
+    }
+
+    async loadImages() {
+        const image1Promise = this.loadImage(this.prompt_image, "./assets/images/promptTextBg.png");
+        const image2Promise = this.loadImage(this.promptPlayButton, "./assets/images/promptPlayButton.png");
+    
+        await Promise.all([image1Promise, image2Promise]);
+    
+        this.imagesLoaded = true;
+        // You can do additional actions here after both images are loaded.
+      }
+    
+      loadImage(image: HTMLImageElement, src: string): Promise<void> {
+        return new Promise<void>((resolve, reject) => {
+          image.onload = () => {
+            resolve();
+          };
+          image.src = src;
+          image.onerror = (error) => {
+            reject(error);
+          };
+        });
+      }
 }
