@@ -273,6 +273,7 @@ export class StartScene {
         const y = event.clientY - rect.top;
         if (self.playButton.onClick(x, y)) {
             FirebaseIntegration.getInstance().sendUserClickedOnPlayEvent();
+            // @ts-ignore
             fbq("trackCustom", FirebaseUserClicked, {
                 event: "click",
             });
