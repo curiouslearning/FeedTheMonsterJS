@@ -278,7 +278,7 @@ export class StartScene {
                 event: "click",
             });
             toggleBtn.style.display = "none";
-            this.audioPlayer.playAudio(false, "./assets/audios/ButtonClick.mp3");
+            this.audioPlayer.playButtonClickSound("./assets/audios/ButtonClick.mp3");
             self.switchSceneToLevelSelection('StartScene');
         }
 
@@ -286,7 +286,7 @@ export class StartScene {
     }
 
     dispose() {
-        this.audioPlayer.stopAudio();
+        this.audioPlayer.stopAllAudios();
         this.handler.removeEventListener("click", this.handleMouseClick, false);
     }
 
