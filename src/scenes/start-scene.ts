@@ -227,6 +227,7 @@ export class StartScene {
           self.firebase_analytics
             ? self.firebase_analytics.logEvent(FirebaseUserClicked, "click")
             : null;
+            // @ts-ignore 
           fbq("trackCustom", FirebaseUserClicked, {
             event: "click",
           });
@@ -246,6 +247,7 @@ export class StartScene {
           //   if (outcome === "accepted") {
           //     pwa_install_status = null;
           //     localStorage.setItem(PWAInstallStatus, "true");
+          // @ts-ignore 
           //     fbq("trackCustom", FirebaseUserInstall, {
           //       event: "install_count",
           //     });
@@ -257,6 +259,7 @@ export class StartScene {
           //       : null;
           //     window.location.reload();
           //   } else {
+            // @ts-ignore 
           //     fbq("trackCustom", UserCancelled, {
           //       event: "cancel_count",
           //     });
