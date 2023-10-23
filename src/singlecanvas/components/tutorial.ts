@@ -1,4 +1,3 @@
-import { Debugger } from "../../../global-variables";
 import { GameScore } from "../data/game-score";
 
 var self;
@@ -99,7 +98,7 @@ export class Tutorial {
     }
 
     shouldPlayTutorial(): boolean {
-        let playDragAnimationForFirstPuzzle = GameScore.getAllGameLevelInfo(Debugger).length <= 0 && this.puzzleNumber == 0;
+        let playDragAnimationForFirstPuzzle = GameScore.getAllGameLevelInfo().length <= 0 && this.puzzleNumber == 0;
         return playDragAnimationForFirstPuzzle;
 
     }

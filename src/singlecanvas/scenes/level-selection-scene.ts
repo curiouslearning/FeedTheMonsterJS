@@ -74,7 +74,7 @@ export class LevelSelectionScreen {
     this.canavsElement = document.getElementById("canvas") as HTMLCanvasElement;
     this.context = this.canavsElement.getContext("2d");
     this.createLevelButtons(this.levelButtonpos);
-    this.gameLevelData = GameScore.getAllGameLevelInfo(Debugger);
+    this.gameLevelData = GameScore.getAllGameLevelInfo();
     this.callback = callback;
 
     // loading images
