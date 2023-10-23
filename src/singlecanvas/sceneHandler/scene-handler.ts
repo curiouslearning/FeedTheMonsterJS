@@ -109,7 +109,7 @@ export class SceneHandler {
   }
 
   public checkMonsterPhaseUpdation(): number {
-    let totalStarCount = GameScore.getTotalStarCount();
+    let totalStarCount = GameScore.getTotalStarCount(Debugger);
     let monsterPhaseNumber = Math.floor(totalStarCount / 12) + 1 || 1;
     return monsterPhaseNumber <= 4 ? monsterPhaseNumber : 4;
   }

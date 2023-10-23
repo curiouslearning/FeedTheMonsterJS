@@ -1099,7 +1099,7 @@ export class GameplayScene {
     if (this.counter == this.levelData.puzzles.length ) {
       this.levelIndicators.setIndicators(this.counter);
       this.logLevelEndFirebaseEvent();
-      GameScore.setGameLevelScore(this.levelData, this.score);
+      GameScore.setGameLevelScore(this.levelData, this.score,Debugger);
       this.switchSceneToEnd(
         this.levelData,
         GameScore.calculateStarCount(this.score),
