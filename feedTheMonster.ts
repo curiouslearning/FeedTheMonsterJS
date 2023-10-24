@@ -15,10 +15,14 @@ import { IsCached, PWAInstallStatus } from "./src/common/common";
 import { Workbox } from "workbox-window";
 import { Debugger, lang } from "./global-variables";
 import { FirebaseIntegration } from "./src/singlecanvas/Firebase/firebase-integration";
+import { Utils } from "./src/singlecanvas/common/utils";
+import { resolve } from "path";
+import { AudioPlayer } from "./src/singlecanvas/components/audio-player";
 declare const window: any;
 declare const app: any;
 let jsonData;
-
+const progressBar=document.getElementById("progress-bar");
+const preogressBarContainer=document.getElementById("progress-bar-container");
 declare global {
   var descriptionText: string;
 }
@@ -31,6 +35,10 @@ window.addEventListener("beforeunload", (event) => {
   FirebaseIntegration.getInstance().sendSessionEndEvent();
 });
 window.addEventListener("load", async function () {
+  const font = Utils.getLanguageSpecificFont(lang);
+  await loadAndCacheFont(font, `./assets/fonts/${font}.ttf`);
+  await preloadGameAudios();
+  handleLoadingScreen();
   // setContainerAppOrientation()
   registerWorkbox();
   const canvas: any = <HTMLElement>document.getElementById("canvas");
@@ -139,11 +147,11 @@ function handleServiceWorkerMessage(event): void {
 }
 
 function handleLoadingMessage(data): void {
-  const progressBar=document.getElementById("progress-bar");
-  const preogressBarContainer=document.getElementById("progress-bar-container");
-  preogressBarContainer.style.display="flex";
-  progressBar.style.display="flex";
+   preogressBarContainer.style.display="flex";
+   progressBar.style.display="flex";
+  
   if(progressBar.style.width>="40%"){
+   
   progressBar.style.width=`${data.data}%`;
   }
   if (data.data % 100 == 0) {
@@ -179,4 +187,70 @@ function setContainerAppOrientation() {
   if (window.Android) {
     window.Android.setContainerAppOrientation("portrait");
   }
+}
+
+function handleLoadingScreen(){
+  if(is_cached.get(lang)){
+    preogressBarContainer.style.display="none";
+    progressBar.style.display="none";
+  }else{
+    preogressBarContainer.style.display="flex";
+    progressBar.style.display="flex";
+    progressBar.style.width="30%";
+  }
+
+}
+
+async function loadAndCacheFont(fontName, fontPath) {
+  try {
+    const cache = await caches.open('fontCache');
+    const response = await cache.match(fontPath);
+
+    if (!response) {
+      const fontResponse = await fetch(fontPath);
+      const fontBlob = await fontResponse.blob();
+      
+      await cache.put(fontPath, new Response(fontBlob));
+      
+      const font = new FontFace(fontName, `url(${fontPath}) format('truetype')`);
+      await font.load();
+      document.fonts.add(font);
+    } else {
+      const font = new FontFace(fontName, `url(${fontPath}) format('truetype')`);
+      await font.load();
+      document.fonts.add(font);
+    }
+  } catch (error) {
+    console.error(`Failed to load and cache font: ${error}`);
+  }
+}
+
+async function preloadGameAudios() {
+  let audioUrls = [
+    "./assets/audios/intro.mp3",
+    "./assets/audios/Cheering-02.mp3",
+    "./assets/audios/onDrag.mp3",
+    "./assets/audios/timeout.mp3",
+    "./assets/audios/LevelWinFanfare.mp3",
+    "./assets/audios/LevelLoseFanfare.mp3",
+    "./assets/audios/ButtonClick.mp3",
+    "./assets/audios/Monster Spits wrong stones-01.mp3",
+    "./assets/audios/Disapointed-05.mp3",
+    "./assets/audios/MonsterSpit.mp3",
+    "./assets/audios/Eat.mp3",
+  ];
+
+  return new Promise<void>((resolve, reject) => {
+    const preloadPromises = audioUrls.map((audioSrc) => new AudioPlayer().preloadGameAudio(audioSrc));
+    
+    Promise.all(preloadPromises)
+      .then(() => {
+        console.log("All Game audios files have been preloaded and are ready to use.");
+        resolve();
+      })
+      .catch((error) => {
+        console.error("Error preloading audio:", error);
+        reject(error);
+      });
+  });
 }

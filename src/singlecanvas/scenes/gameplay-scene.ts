@@ -208,12 +208,19 @@ export class GameplayScene {
     // this.createCanvas();
 
     this.pauseButton = new PauseButton(this.context, this.canvas);
+    this.timerTicking = new TimerTicking(
+      this.width,
+      this.height,
+      this.loadPuzzle
+    );
     this.stoneHandler = new StoneHandler(
       this.context,
       this.canvas,
       this.counter,
       this.levelData,
-      feedbackAudios
+      feedbackAudios,
+      this.timerTicking
+
     );
     this.promptText = new PromptText(
       this.width,
@@ -222,11 +229,7 @@ export class GameplayScene {
       this.levelData,
       this.rightToLeft
     );
-    this.timerTicking = new TimerTicking(
-      this.width,
-      this.height,
-      this.loadPuzzle
-    );
+    
     this.levelIndicators = new LevelIndicators(this.context, this.canvas, 0);
     // this.tutorial = new Tutorial(this.context, this.width, this.height);
     this.levelIndicators.setIndicators(this.counter);
@@ -261,7 +264,6 @@ export class GameplayScene {
     );
 
     this.audioPlayer = new AudioPlayer();
-    this.audioPlayer.stopAudio();
     this.handler = document.getElementById("canvas");
     this.puzzleData = levelData.puzzles;
     this.feedBackTexts = feedBackTexts;
@@ -293,6 +295,7 @@ export class GameplayScene {
   resumeGame = () => {
     this.addEventListeners();
     this.isPauseButtonClicked = false;
+    this.stoneHandler.setGamePause(false);
     this.pausePopup.dispose();
   };
 
@@ -576,11 +579,18 @@ export class GameplayScene {
         }
       }
     } else {
-      if (this.pickedStoneObject != null) {
-        this.pickedStone.x = this.pickedStoneObject.origx;
-        this.pickedStone.y = this.pickedStoneObject.origy;
-        this.monster.changeToIdleAnimation();
+      try {
+        if (this.pickedStoneObject != null) {
+          if (this.pickedStoneObject.origx != null && this.pickedStoneObject.origy != null) {
+            this.pickedStone.x = this.pickedStoneObject.origx;
+            this.pickedStone.y = this.pickedStoneObject.origy;          
+            this.monster.changeToIdleAnimation();
+        }
+        }
+      } catch (error) {
+        //  console.log(error);
       }
+   
     }
     this.pickedStone = null;
   };
@@ -596,7 +606,7 @@ export class GameplayScene {
         console.log(" clickkedon stone", sc);
         this.pickedStoneObject = sc;
         this.pickedStone = sc;
-        this.audioPlayer.playAudio(false, "./assets/audios/onDrag.mp3");
+        this.audioPlayer.playAudio("./assets/audios/onDrag.mp3");
       }
     }
   };
@@ -620,7 +630,6 @@ export class GameplayScene {
     var rect = selfElement.getBoundingClientRect();
     const x = event.clientX - rect.left;
     const y = event.clientY - rect.top;
-
     if (this.monster.onClick(x, y)) {
       this.isGameStarted = true;
       this.time = 0;
@@ -628,7 +637,7 @@ export class GameplayScene {
 
     if (this.pauseButton.onClick(x, y)) {
       console.log(" pause button getting click from gameplay");
-      this.audioPlayer.playAudio(false, "./assets/audios/ButtonClick.mp3");
+      this.audioPlayer.playButtonClickSound("./assets/audios/ButtonClick.mp3");
       this.pauseGamePlay();
     }
 
@@ -820,7 +829,7 @@ export class GameplayScene {
       this.levelIndicators.draw();
       this.promptText.draw(deltaTime);
       this.monster.animation(deltaTime);
-      this.timerTicking.update(deltaTime);
+      // this.timerTicking.update(deltaTime);
       this.timerTicking.draw();
       this.stoneHandler.draw(deltaTime);
     }
@@ -1124,7 +1133,7 @@ export class GameplayScene {
   };
 
   public dispose = () => {
-    this.audioPlayer.stopAudio();
+    this.audioPlayer.stopAllAudios();
     this.removeEventListeners();
       this.feedbackTextEffects.unregisterEventListener();
       this.monster.unregisterEventListener();
@@ -1161,7 +1170,7 @@ export class GameplayScene {
   }
   
   public wordPuzzle(droppedStone: string, droppedStoneInstance: StoneConfig) {
-    this.audioPlayer.stopAudio();
+    this.audioPlayer.stopFeedbackAudio();
     droppedStoneInstance.x = -999;
     droppedStoneInstance.y = -999;
     const feedBackIndex = this.getRandomInt(0, 1);
@@ -1194,7 +1203,7 @@ export class GameplayScene {
       }, 1500);
     } else {
       
-      this.audioPlayer.playAudio(false,'./assets/audios/MonsterSpit.mp3')
+      this.audioPlayer.playAudio('./assets/audios/MonsterSpit.mp3')
       this.logPuzzleEndFirebaseEvent(isCorrect,'Word');
       this.dispatchStoneDropEvent(isCorrect);
       this.loadPuzzle();
@@ -1227,7 +1236,7 @@ export class GameplayScene {
         this.feedBackTextCanavsElement.style.zIndex = "0";
         document.dispatchEvent(loadPuzzleEvent);
         this.addEventListeners();
-        this.audioPlayer.stopAudio();
+        this.audioPlayer.stopAllAudios();
         this.startPuzzleTime()
   }
 
@@ -1281,13 +1290,14 @@ export class GameplayScene {
 
   public pauseGamePlay = () => {
     this.isPauseButtonClicked = true;
+    this.stoneHandler.setGamePause(true);
     this.removeEventListeners();
     this.pausePopup.addListner();
-    this.audioPlayer.stopAudio();
+    this.audioPlayer.stopAllAudios();
   }
 
   handleVisibilityChange = () => {
-    this.audioPlayer.stopAudio();
+    this.audioPlayer.stopAllAudios();
     this.pauseGamePlay();
   }
 

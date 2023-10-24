@@ -29,12 +29,13 @@ export function loadingScreen(loading: boolean) {
       htmlElement.style.display = "none";
     });
   } else {
-    loadingElement.style.display = "none";
-    progressContainer.style.display="none";
+       loadingElement.style.zIndex = "1";
+       progressContainer.style.display = "none";
     new CanvasStack("canvas").bkgCanvas.layers.forEach((element) => {
       const htmlElement = <HTMLElement>document.getElementById(element.id);
       htmlElement.style.display = "flex";
     });
+  
   }
 }
 export const MonsterLayer = "monsterCanvas";

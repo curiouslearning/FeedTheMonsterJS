@@ -4,7 +4,9 @@ export class FirebaseIntegration {
   static firebaseApp: any;
   static analytics: any;
   static async initializeFirebase() {
+     // @ts-ignore
     this.firebaseApp = firebase.initializeApp(firebaseConfig);
+     // @ts-ignore
     this.analytics = firebase.analytics(this.firebaseApp);
   }
   static sessionEnd() {

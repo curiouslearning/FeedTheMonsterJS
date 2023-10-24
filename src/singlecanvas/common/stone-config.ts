@@ -1,4 +1,7 @@
+import { lang } from "../../../global-variables";
+import { TimerTicking } from "../components/timer-ticking";
 import { Tutorial } from "../components/tutorial";
+import { Utils } from "./utils";
 
 export class StoneConfig {
     public x: number;
@@ -16,10 +19,11 @@ export class StoneConfig {
     public imageCenterOffsetY: number;
     public context: CanvasRenderingContext2D;
     public tutorialInstance: Tutorial;
+    public timerTickingInstance: TimerTicking;
 
     public frame: any = 0;
 
-    constructor(context, canvasWidth, canvasHeight, stoneLetter, xPos, yPos, img,tutorialInstance?) {
+    constructor(context, canvasWidth, canvasHeight, stoneLetter, xPos, yPos, img,timerTickingInstance,tutorialInstance?) {
         this.x = xPos;
         this.y = yPos;
         this.origx = xPos;
@@ -35,6 +39,7 @@ export class StoneConfig {
         this.calculateImageAndFontSize();
         this.imageCenterOffsetX = this.imageSize / 2.3;
         this.imageCenterOffsetY = this.imageSize / 1.5;
+        this.timerTickingInstance = timerTickingInstance;
         // this.img.src = "./assets/images/stone_pink_v02.png";
 
     }
@@ -87,6 +92,7 @@ export class StoneConfig {
             this.frame = this.frame + 1;
         }
         else{
+           
             if(this.tutorialInstance!=null || this.tutorialInstance!=undefined)
             {
                 this.tutorialInstance.draw(deltaTime);
@@ -103,7 +109,7 @@ export class StoneConfig {
         //     //reached its original position
         // }
         this.context.fillStyle = "white";
-        this.context.font = this.textFontSize + "px Arial";
+        this.context.font = this.textFontSize + `px ${Utils.getLanguageSpecificFont(lang)}, monospace`;
         this.context.textAlign = "center";
         this.context.fillText(this.text, this.getX(), this.getY());
     }

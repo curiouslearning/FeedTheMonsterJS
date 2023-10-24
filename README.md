@@ -320,7 +320,6 @@ this.context.fillText(this.score, this.width / 2.25, this.height / 15);
 
 <p align="right">(<a href="#top">back to top</a>)</p>
 
-
 <!-- CONTRIBUTING -->
 
 ## Contributing
