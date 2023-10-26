@@ -1,9 +1,9 @@
 module.exports = {
   globDirectory: "build/",
   globPatterns: [
-    "**/*.{wav,mp3,WAV,png,jpg,js,json,css,html}",
+    "**/*.{wav,mp3,WAV,png,jpg,js,gif,css,html}",
     
-    "lang/**/*.json"
+    "./manifest.json"
   ],
   maximumFileSizeToCacheInBytes: 10 * 1024 * 1024,
   swDest: "build/sw.js",

@@ -34,6 +34,10 @@ channel.addEventListener("message", async function (event) {
     number = 0;
     await getCacheName(event.data.data);
   }
+  if (event.data.command === "CacheUpdate") {
+    caches.delete(workbox.core.cacheNames.precache + event.data.data);
+    await getCacheName(event.data.data);
+  }
 });
 
 self.registration.addEventListener("updatefound", function (e) {
@@ -103,6 +107,7 @@ async function getCacheName(language) {
 async function getALLAudioUrls(cacheName, language) {
   // await cacheCommonAssets(language);
   let audioList = [];
+  audioList.push("./lang/" + language + "/ftm_" + language + ".json");
   fetch("./lang/" + language + "/ftm_" + language + ".json", {
     method: "GET",
     headers: {

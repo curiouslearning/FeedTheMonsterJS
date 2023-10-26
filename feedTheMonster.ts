@@ -171,6 +171,7 @@ function handleUpdateFoundMessage(): void {
   if (confirm(text) == true) {
     // localStorage.removeItem(IsCached);
     // setTimeout(()=>{
+    channel.postMessage({ command: "CacheUpdate", data: lang });
     window.location.reload();
     // },3000)
   } else {
