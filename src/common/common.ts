@@ -17,16 +17,15 @@ export function loadImages(sources: any, callback: any) {
   }
 }
 export function loadingScreen(loading: boolean) {
-  const loadingElement = <HTMLElement>document.getElementById("loading-screen");
-    const progressContainer=document.getElementById("progress-bar-container")
+  const loadingElement: HTMLElement = <HTMLElement>document.getElementById("loading-screen");
+  const progressContainer: HTMLElement = document.getElementById("progress-bar-container");
   if (loading) {
     loadingElement.style.display = "block";
   } else {
-    loadingElement.style.display = "none";
-    progressContainer.style.display="none";
+    loadingElement.style.zIndex = "1";
+    progressContainer.style.display = "none";
   }
 }
-
 export const FirebaseUserClicked = "user_clicked";
 export const FirebaseUserInstall = "user_installed";
 export const PWAInstallStatus = "pwa_installed_status";

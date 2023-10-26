@@ -6,7 +6,7 @@ import { LevelIndicators } from "../components/level-indicator";
 import {
   loadImages,
   loadingScreen,
-  PreviousPlayedLevel
+  PreviousPlayedLevel,
 } from "../common/common";
 import Sound from "../common/sound";
 import { Debugger, lang, pseudoId } from "../../global-variables";
@@ -30,7 +30,10 @@ import { Background } from "../components/background";
 import { FeedbackTextEffects } from "../components/feedback-particle-effect/feedback-text-effects";
 import { GameScore } from "../data/game-score";
 import { AudioPlayer } from "../components/audio-player";
-import { LevelCompletedEvent, PuzzleCompletedEvent } from "../Firebase/firebase-event-interface";
+import {
+  LevelCompletedEvent,
+  PuzzleCompletedEvent,
+} from "../Firebase/firebase-event-interface";
 import { FirebaseIntegration } from "../Firebase/firebase-integration";
 
 var images = {
@@ -56,8 +59,7 @@ var images = {
   winterPillerImg: "./assets/images/Winter_sign_v01.png",
 };
 
-
-var stonesCount=1;
+var stonesCount = 1;
 
 export class GameplayScene {
   public game: any;
@@ -118,7 +120,7 @@ export class GameplayScene {
   public time: number = 0;
   public score: number = 0;
   tempWordforWordPuzzle: string = "";
-  
+
   public switchToLevelSelection: any;
   public reloadScene: any;
   audioPlayer: AudioPlayer;
@@ -139,7 +141,7 @@ export class GameplayScene {
     switchToLevelSelection,
     reloadScene,
     jsonVersionNumber,
-    feedbackAudios,
+    feedbackAudios
   ) {
     this.width = canvas.width;
     this.height = canvas.height;
@@ -152,7 +154,7 @@ export class GameplayScene {
     this.levelNumber = levelNumber;
     this.switchToLevelSelection = switchToLevelSelection;
     this.reloadScene = reloadScene;
-    this.jsonVersionNumber= jsonVersionNumber;
+    this.jsonVersionNumber = jsonVersionNumber;
     this.startGameTime();
     this.startPuzzleTime();
 
@@ -169,7 +171,6 @@ export class GameplayScene {
       this.levelData,
       feedbackAudios,
       this.timerTicking
-
     );
     this.promptText = new PromptText(
       this.width,
@@ -178,7 +179,7 @@ export class GameplayScene {
       this.levelData,
       this.rightToLeft
     );
-    
+
     this.levelIndicators = new LevelIndicators(this.context, this.canvas, 0);
 
     this.levelIndicators.setIndicators(this.counter);
@@ -202,7 +203,9 @@ export class GameplayScene {
       this.levelData.levelNumber
     );
     this.firebaseIntegration = new FirebaseIntegration();
-    this.feedBackTextCanavsElement = document.getElementById("feedback-text") as HTMLCanvasElement;
+    this.feedBackTextCanavsElement = document.getElementById(
+      "feedback-text"
+    ) as HTMLCanvasElement;
     this.feedBackTextCanavsElement.height = this.height;
     this.feedBackTextCanavsElement.width = this.width;
 
@@ -239,7 +242,6 @@ export class GameplayScene {
         )
       : localStorage.setItem(PreviousPlayedLevel + lang, previousPlayedLevel);
     this.addEventListeners();
-
   }
 
   resumeGame = () => {
@@ -255,7 +257,7 @@ export class GameplayScene {
     return this.feedBackTexts[selectedKey];
   }
   getRandomInt(min: number, max: number) {
-    if(Object.keys(this.feedBackTexts).length==1){
+    if (Object.keys(this.feedBackTexts).length == 1) {
       return min;
     }
     min = Math.ceil(min);
@@ -288,15 +290,27 @@ export class GameplayScene {
           this.letterInWordPuzzle(this.pickedStone.text);
         }
 
-        if (this.levelData.levelMeta.levelType == "Word" || this.levelData.levelMeta.levelType == "SoundWord") {
+        if (
+          this.levelData.levelMeta.levelType == "Word" ||
+          this.levelData.levelMeta.levelType == "SoundWord"
+        ) {
           this.wordPuzzle(this.pickedStone.text, this.pickedStone);
         }
       }
     } else {
-      if (this.pickedStoneObject != null) {
-        this.pickedStone.x = this.pickedStoneObject.origx;
-        this.pickedStone.y = this.pickedStoneObject.origy;
-        this.monster.changeToIdleAnimation();
+      try {
+        if (this.pickedStoneObject != null) {
+          if (
+            this.pickedStoneObject.origx != null &&
+            this.pickedStoneObject.origy != null
+          ) {
+            this.pickedStone.x = this.pickedStoneObject.origx;
+            this.pickedStone.y = this.pickedStoneObject.origy;
+            this.monster.changeToIdleAnimation();
+          }
+        }
+      } catch (error) {
+        //  console.log(error);
       }
     }
     this.pickedStone = null;
@@ -384,8 +398,7 @@ export class GameplayScene {
     document.getElementById("canvas").dispatchEvent(mouseEvent);
   };
 
-
-  draw(deltaTime) {
+  draw(deltaTime: number) {
     if (!this.isGameStarted && !this.isPauseButtonClicked) {
       this.time = this.time + deltaTime;
       if (this.time >= 5000) {
@@ -393,7 +406,7 @@ export class GameplayScene {
         this.time = 0;
       }
     }
-   
+
     if (this.imagesLoaded) {
       this.background1.draw();
     }
@@ -443,7 +456,11 @@ export class GameplayScene {
     this.handler.addEventListener(TOUCHMOVE, this.handleTouchMove, false);
     this.handler.addEventListener(TOUCHEND, this.handleTouchEnd, false);
     this.handler.addEventListener(CLICK, this.handleMouseClick, false);
-    document.addEventListener(VISIBILITY_CHANGE, this.handleVisibilityChange, false);
+    document.addEventListener(
+      VISIBILITY_CHANGE,
+      this.handleVisibilityChange,
+      false
+    );
   }
 
   removeEventListeners() {
@@ -461,160 +478,17 @@ export class GameplayScene {
     this.handler.removeEventListener("touchend", this.handleTouchEnd, false);
   }
 
-  createBackgroud() {
-    var self = this;
-    const availableBackgroundTypes = ["Summer", "Autumn", "Winter"];
-    var backgroundType =
-      Math.floor(self.levelData.levelNumber / 10) %
-      availableBackgroundTypes.length;
-    if (self.levelData.levelNumber >= 30) {
-      backgroundType = backgroundType % 3;
-    }
-    loadingScreen(true);
-    var context = this.context;
-    var width = this.width;
-    var height = this.height;
-
-    loadImages(images, function (image) {
-      switch (availableBackgroundTypes[backgroundType]) {
-        case "Winter":
-          {
-            context.drawImage(image.winterBgImg, 0, 0, width, height);
-            context.drawImage(
-              image.winterPillerImg,
-              width * 0.38,
-              height / 6,
-              width / 1.2,
-              height / 2
-            );
-            context.drawImage(
-              image.winterFenceImg,
-              -width * 0.4,
-              height / 4,
-              width,
-              height / 2
-            );
-            context.drawImage(
-              image.winterHillImg,
-              -width * 0.25,
-              height / 2,
-              width * 1.5,
-              height / 2
-            );
-            context.drawImage(
-              image.winterGrassImg,
-              -width * 0.25,
-              height / 2 + (height / 2) * 0.1,
-              width * 1.5,
-              height / 2
-            );
-          }
-
-          break;
-        case "Autumn":
-          {
-            context.drawImage(image.autumnBgImg, 0, 0, width, height);
-            context.drawImage(
-              image.autumnPillerImg,
-              width * 0.38,
-              height / 6,
-              width / 1.2,
-              height / 2
-            );
-            context.drawImage(
-              image.autumnFenceImg,
-              -width * 0.4,
-              height / 4,
-              width,
-              height / 2
-            );
-            context.drawImage(
-              image.autumnHillImg,
-              -width * 0.25,
-              height / 2,
-              width * 1.5,
-              height / 2
-            );
-            context.drawImage(
-              image.autumnGrassImg,
-              -width * 0.25,
-              height / 2 + (height / 2) * 0.1,
-              width * 1.5,
-              height / 2
-            );
-          }
-          break;
-        default:
-          {
-            context.drawImage(image.bgImg, 0, 0, width, height);
-            context.drawImage(
-              image.pillerImg,
-              width * 0.6,
-              height / 6,
-              width,
-              height / 2
-            );
-            context.drawImage(
-              image.fenchImg,
-              -width * 0.4,
-              height / 3,
-              width,
-              height / 3
-            );
-            context.drawImage(
-              image.hillImg,
-              -width * 0.25,
-              height / 2,
-              width * 1.5,
-              height / 2
-            );
-            context.drawImage(
-              image.grassImg,
-              -width * 0.25,
-              height / 2 + (height / 2) * 0.1,
-              width * 1.5,
-              height / 2
-            );
-          }
-          break;
-      }
-      context.drawImage(
-        image.timer_empty,
-        0,
-        height * 0.1,
-        width,
-        height * 0.05
-      );
-      context.drawImage(
-        image.rotating_clock,
-        5,
-        height * 0.09,
-        width * 0.12,
-        height * 0.06
-      );
-      // self.timerTicking.createBackgroud();
-      // self.stones.draw(deltaTime);
-      self.pauseButton.draw();
-      self.levelIndicators.draw();
-      // self.promptText.createBackground();
-      loadingScreen(false);
-      self.loadedImages = Object.assign({}, image);
-      // self.allImagesLoaded = true;
-    });
-  }
-
-  loadPuzzle = (isTimerEnded?:boolean) => {
-    stonesCount=1;
-    let timerEnded = (isTimerEnded == undefined)?false:true;
-    if(timerEnded)
-    {
+  loadPuzzle = (isTimerEnded?: boolean) => {
+    stonesCount = 1;
+    let timerEnded = isTimerEnded == undefined ? false : true;
+    if (timerEnded) {
       this.logPuzzleEndFirebaseEvent(false);
     }
     this.removeEventListeners();
     this.incrementPuzzle();
     this.isGameStarted = false;
-    
-    if (this.counter == this.levelData.puzzles.length ) {
+
+    if (this.counter == this.levelData.puzzles.length) {
       this.levelIndicators.setIndicators(this.counter);
       this.logLevelEndFirebaseEvent();
       GameScore.setGameLevelScore(this.levelData, this.score);
@@ -625,27 +499,22 @@ export class GameplayScene {
         this.levelNumber,
         timerEnded
       );
-    } 
-    else {
+    } else {
       const loadPuzzleData = {
         counter: this.counter,
       };
       const loadPuzzleEvent = new CustomEvent(LOADPUZZLE, {
         detail: loadPuzzleData,
       });
-     
-      if(timerEnded)
-      {
+
+      if (timerEnded) {
         // this.monster.changeToIdleAnimation();
         this.initNewPuzzle(loadPuzzleEvent);
-       
-      }
-      else{
+      } else {
         setTimeout(() => {
-            // this.changeToNextPuzzle();  
-            this.initNewPuzzle(loadPuzzleEvent);
-           
-          }, 4000);
+          // this.changeToNextPuzzle();
+          this.initNewPuzzle(loadPuzzleEvent);
+        }, 4000);
       }
     }
   };
@@ -653,20 +522,26 @@ export class GameplayScene {
   public dispose = () => {
     this.audioPlayer.stopAudio();
     this.removeEventListeners();
-      this.feedbackTextEffects.unregisterEventListener();
-      this.monster.unregisterEventListener();
-      this.timerTicking.unregisterEventListener();
-      this.levelIndicators.unregisterEventListener();
-      this.stoneHandler.unregisterEventListener();
-      this.promptText.unregisterEventListener();
-      document.removeEventListener(VISIBILITY_CHANGE, this.handleVisibilityChange, false);
-      // this.deleteComponentInstances();
-  }
+    this.feedbackTextEffects.unregisterEventListener();
+    this.monster.unregisterEventListener();
+    this.timerTicking.unregisterEventListener();
+    this.levelIndicators.unregisterEventListener();
+    this.stoneHandler.unregisterEventListener();
+    this.promptText.unregisterEventListener();
+    document.removeEventListener(
+      VISIBILITY_CHANGE,
+      this.handleVisibilityChange,
+      false
+    );
+    // this.deleteComponentInstances();
+  };
 
   public letterInWordPuzzle(droppedStone: string) {
     const feedBackIndex = this.getRandomInt(0, 1);
-    const isCorrect =
-      this.stoneHandler.isStoneDroppedCorrectForLetterInWord(droppedStone,feedBackIndex);
+    const isCorrect = this.stoneHandler.isStoneDroppedCorrectForLetterInWord(
+      droppedStone,
+      feedBackIndex
+    );
     if (isCorrect) {
       this.handleCorrectStoneDrop(feedBackIndex);
     }
@@ -677,16 +552,18 @@ export class GameplayScene {
 
   public letterOnlyPuzzle(droppedStone: string) {
     const feedBackIndex = this.getRandomInt(0, 1);
-    const isCorrect =
-      this.stoneHandler.isStoneDroppedCorrectForLetterOnly(droppedStone,feedBackIndex);
+    const isCorrect = this.stoneHandler.isStoneDroppedCorrectForLetterOnly(
+      droppedStone,
+      feedBackIndex
+    );
     if (isCorrect) {
-     this.handleCorrectStoneDrop(feedBackIndex);
+      this.handleCorrectStoneDrop(feedBackIndex);
     }
     this.logPuzzleEndFirebaseEvent(isCorrect);
     this.dispatchStoneDropEvent(isCorrect);
     this.loadPuzzle();
   }
-  
+
   public wordPuzzle(droppedStone: string, droppedStoneInstance: StoneConfig) {
     this.audioPlayer.stopAudio();
     droppedStoneInstance.x = -999;
@@ -695,47 +572,50 @@ export class GameplayScene {
     this.tempWordforWordPuzzle = this.tempWordforWordPuzzle + droppedStone;
 
     const isCorrect = this.stoneHandler.isStonDroppedCorrectForWord(
-      this.tempWordforWordPuzzle,feedBackIndex
+      this.tempWordforWordPuzzle,
+      feedBackIndex
     );
     if (
       this.stoneHandler.getCorrectTargetStone() == this.tempWordforWordPuzzle &&
       isCorrect
     ) {
       this.handleCorrectStoneDrop(feedBackIndex);
-      this.logPuzzleEndFirebaseEvent(isCorrect,'Word');
+      this.logPuzzleEndFirebaseEvent(isCorrect, "Word");
       this.dispatchStoneDropEvent(isCorrect);
       this.loadPuzzle();
-      stonesCount=1;
+      stonesCount = 1;
       return;
     }
-    
+
     if (isCorrect) {
-    
       this.timerTicking.startTimer();
-      
+
       this.monster.changeToEatAnimation();
-      lang=="arabic" ? this.promptText.droppedStoneIndex(stonesCount) : this.promptText.droppedStoneIndex(this.tempWordforWordPuzzle.length);
-       stonesCount++;
+      lang == "arabic"
+        ? this.promptText.droppedStoneIndex(stonesCount)
+        : this.promptText.droppedStoneIndex(this.tempWordforWordPuzzle.length);
+      stonesCount++;
       setTimeout(() => {
         this.monster.changeToIdleAnimation();
       }, 1500);
     } else {
-      
-      this.audioPlayer.playAudio(false,'./assets/audios/MonsterSpit.mp3')
-      this.logPuzzleEndFirebaseEvent(isCorrect,'Word');
+      this.audioPlayer.playAudio(false, "./assets/audios/MonsterSpit.mp3");
+      this.logPuzzleEndFirebaseEvent(isCorrect, "Word");
       this.dispatchStoneDropEvent(isCorrect);
       this.loadPuzzle();
-      stonesCount=1;
+      stonesCount = 1;
     }
   }
 
   private handleCorrectStoneDrop = (feedbackIndex: number): void => {
     this.score += 100;
-    console.log('handleCorrectStone->');
+    console.log("handleCorrectStone->");
     // this.audioPlayer.playAudio(false, "./assets/audios/Eat.mp3","./assets/audios/Cheering-02.mp3", "./assets/audios/fantastic.WAV");
-    this.feedbackTextEffects.wrapText(this.getRandomFeedBackText(feedbackIndex));
+    this.feedbackTextEffects.wrapText(
+      this.getRandomFeedBackText(feedbackIndex)
+    );
     this.feedBackTextCanavsElement.style.zIndex = "2";
-  }
+  };
 
   private dispatchStoneDropEvent(isCorrect: boolean): void {
     const loadPuzzleData = { isCorrect: isCorrect };
@@ -745,35 +625,38 @@ export class GameplayScene {
     document.dispatchEvent(dropStoneEvent);
   }
 
-  private initNewPuzzle(loadPuzzleEvent){
-        this.isGameStarted = false;
-        this.time = 0;
-        this.tempWordforWordPuzzle = "";
-        this.pickedStone = null;
-        this.feedbackTextEffects.clearParticle();
-        this.feedBackTextCanavsElement.style.zIndex = "0";
-        document.dispatchEvent(loadPuzzleEvent);
-        this.addEventListeners();
-        this.audioPlayer.stopAudio();
-        this.startPuzzleTime()
+  private initNewPuzzle(loadPuzzleEvent) {
+    this.isGameStarted = false;
+    this.time = 0;
+    this.tempWordforWordPuzzle = "";
+    this.pickedStone = null;
+    this.feedbackTextEffects.clearParticle();
+    this.feedBackTextCanavsElement.style.zIndex = "0";
+    document.dispatchEvent(loadPuzzleEvent);
+    this.addEventListeners();
+    this.audioPlayer.stopAudio();
+    this.startPuzzleTime();
   }
 
-  private incrementPuzzle(){
+  private incrementPuzzle() {
     this.counter += 1;
   }
 
-  public logPuzzleEndFirebaseEvent(isCorrect:boolean,puzzleType?:string){
+  public logPuzzleEndFirebaseEvent(isCorrect: boolean, puzzleType?: string) {
     let endTime = Date.now();
     const puzzleCompletedData: PuzzleCompletedEvent = {
       cr_user_id: pseudoId,
       ftm_language: lang,
       profile_number: 0,
       version_number: document.getElementById("version-info-id").innerHTML,
-      json_version_number:this.jsonVersionNumber,
-      success_or_failure: isCorrect?'success':'failure',
+      json_version_number: this.jsonVersionNumber,
+      success_or_failure: isCorrect ? "success" : "failure",
       level_number: this.levelData.levelNumber,
       puzzle_number: this.counter,
-      item_selected: (puzzleType == 'Word')?this.tempWordforWordPuzzle:this.pickedStone?.text,
+      item_selected:
+        puzzleType == "Word"
+          ? this.tempWordforWordPuzzle
+          : this.pickedStone?.text,
       target: this.stoneHandler.getCorrectTargetStone(),
       foils: this.stoneHandler.getFoilStones(),
       response_time: (endTime - this.puzzleTime) / 1000,
@@ -781,28 +664,27 @@ export class GameplayScene {
     this.firebaseIntegration.sendPuzzleCompletedEvent(puzzleCompletedData);
   }
 
-  public logLevelEndFirebaseEvent(){
+  public logLevelEndFirebaseEvent() {
     let endTime = Date.now();
     const levelCompletedData: LevelCompletedEvent = {
       cr_user_id: pseudoId,
       ftm_language: lang,
       profile_number: 0,
       version_number: document.getElementById("version-info-id").innerHTML,
-      json_version_number:this.jsonVersionNumber,
-      success_or_failure: GameScore.calculateStarCount(this.score)>=3?'success':'failure',
-      number_of_successful_puzzles: this.score/100,
+      json_version_number: this.jsonVersionNumber,
+      success_or_failure:
+        GameScore.calculateStarCount(this.score) >= 3 ? "success" : "failure",
+      number_of_successful_puzzles: this.score / 100,
       level_number: this.levelData.levelNumber,
       duration: (endTime - this.startTime) / 1000,
-     
     };
     this.firebaseIntegration.sendLevelCompletedEvent(levelCompletedData);
   }
 
-  public startGameTime(){
-     this.startTime = Date.now();
-  
+  public startGameTime() {
+    this.startTime = Date.now();
   }
-  public startPuzzleTime(){
+  public startPuzzleTime() {
     this.puzzleTime = Date.now();
   }
 
@@ -812,12 +694,10 @@ export class GameplayScene {
     this.removeEventListeners();
     this.pausePopup.addListner();
     this.audioPlayer.stopAudio();
-  }
+  };
 
   handleVisibilityChange = () => {
     this.audioPlayer.stopAudio();
     this.pauseGamePlay();
-  }
-
-  
+  };
 }
