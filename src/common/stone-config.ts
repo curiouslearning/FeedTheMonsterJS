@@ -82,12 +82,11 @@ export class StoneConfig {
         return this.getEase(currentProgress, 0, distance, steps);
     }
 
-    draw(deltaTime) {
+    draw(deltaTime: number) {
         if (this.frame < 100) {
             this.frame = this.frame + 1;
         }
         else{
-            this.timerTickingInstance.update(deltaTime);
             if(this.tutorialInstance!=null || this.tutorialInstance!=undefined)
             {
                 this.tutorialInstance.draw(deltaTime);

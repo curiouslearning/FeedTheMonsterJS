@@ -245,6 +245,7 @@ export class GameplayScene {
   resumeGame = () => {
     this.addEventListeners();
     this.isPauseButtonClicked = false;
+    this.stoneHandler.setGamePause(false);
     this.pausePopup.dispose();
   };
 
@@ -807,6 +808,7 @@ export class GameplayScene {
 
   public pauseGamePlay = () => {
     this.isPauseButtonClicked = true;
+    this.stoneHandler.setGamePause(true);
     this.removeEventListeners();
     this.pausePopup.addListner();
     this.audioPlayer.stopAudio();

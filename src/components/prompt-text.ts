@@ -233,8 +233,8 @@ export class PromptText extends EventManager {
                 default: {
                     this.context.fillStyle = "black";
                     this.context.fillText(
-                        promptTextLetters[i],
-                        startPrompttextX + currentWordWidth,
+                        this.currentPromptText,
+                        startPrompttextX,
                         y
                     );
                 }
@@ -244,7 +244,7 @@ export class PromptText extends EventManager {
             ).width;
         }
     }
-    draw(deltaTime) {
+    draw(deltaTime: number) {
     this.updateScaling();
     this.time = (deltaTime<17)?this.time+Math.floor(deltaTime):this.time+16;
       if (Math.floor(this.time) >= 1910 && Math.floor(this.time) <= 1926) {

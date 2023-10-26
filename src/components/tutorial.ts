@@ -55,7 +55,7 @@ export class Tutorial {
 
     animateImage() {
         this.x = this.startx;
-        this.y = this.startx;
+        this.y = this.starty;
         this.dx = (this.endx - this.startx) / 5000;
         this.dy = (this.endy - this.starty) / 5000;
         this.absdx = this.isMobile() ? Math.abs(this.dx) * 3 : Math.abs(this.dx);

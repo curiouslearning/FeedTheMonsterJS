@@ -31,6 +31,7 @@ export default class StoneHandler extends EventManager {
   public audioPlayer: AudioPlayer;
   public feedbackAudios: string[];
   public timerTickingInstance: TimerTicking;
+  isGamePaused: boolean = false;
   constructor(
     context: CanvasRenderingContext2D,
     canvas: { width: number; height?: number },
@@ -99,6 +100,13 @@ export default class StoneHandler extends EventManager {
   draw(deltaTime) {
     for (var i = 0; i < this.foilStones.length; i++) {
       this.foilStones[i].draw(deltaTime);
+    }
+
+    if (
+      this.foilStones[this.foilStones.length - 1].frame >= 100 &&
+      !this.isGamePaused
+    ) {
+      this.timerTickingInstance.update(deltaTime);
     }
   }
 
@@ -283,5 +291,9 @@ export default class StoneHandler extends EventManager {
       feedbackAudios["great"]
     );
     return feedBackAudioArray;
+  }
+
+  setGamePause(isGamePaused:boolean){
+    this.isGamePaused  = isGamePaused; 
   }
 }
