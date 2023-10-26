@@ -11,12 +11,11 @@ export default class PausePopUp {
   public retryButton: RetryButton;
   public closeButton: CloseButton;
   public imagesLoaded: boolean = false;
-  public pop_up_image: any;
+  public pop_up_image: HTMLImageElement;
 
-  public id: any;
-  public callback: any;
-  public switchToLevelSelection: any;
-  public reloadScene: any;
+  public callback: Function;
+  public switchToLevelSelection: Function;
+  public reloadScene: Function;
   public gameplayData: any;
   audioPlayer: AudioPlayer;
 
@@ -55,10 +54,10 @@ export default class PausePopUp {
       this.canvas.width * 0.4 -
       (this.canvas.width * 0.19) / 2
     );
-    var pop_up_image = new Image();
-    pop_up_image.src = "./assets/images/popup_bg_v01.png";
-    pop_up_image.onload = (e) => {
-      this.pop_up_image = pop_up_image;
+    this.pop_up_image = new Image();
+    this.pop_up_image.src = "./assets/images/popup_bg_v01.png";
+    this.pop_up_image.onload = (e) => {
+      this.pop_up_image = this.pop_up_image;
       this.imagesLoaded = true;
     };
 
@@ -114,7 +113,6 @@ export default class PausePopUp {
     }
   }
 
-  update() { }
 
   playClickSound = () => {
     this.audioPlayer.playAudio(false, "./assets/audios/ButtonClick.mp3");

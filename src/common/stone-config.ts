@@ -8,7 +8,6 @@ export class StoneConfig {
     public y: number;
     public origx: number;
     public origy: number;
-    // public drawready: boolean;
     public text: string;
     public img: CanvasImageSource;
     public imageSize: number;
@@ -20,27 +19,23 @@ export class StoneConfig {
     public context: CanvasRenderingContext2D;
     public tutorialInstance: Tutorial;
     public timerTickingInstance: TimerTicking;
-
-    public frame: any = 0;
+    public frame: number = 0;
 
     constructor(context, canvasWidth, canvasHeight, stoneLetter, xPos, yPos, img,timerTickingInstance,tutorialInstance?) {
         this.x = xPos;
         this.y = yPos;
         this.origx = xPos;
         this.origy = yPos;
-         // this.drawready = false;
         this.canvasWidth = canvasWidth;
         this.canvasHeight = canvasHeight;
         this.tutorialInstance = tutorialInstance;
         this.text = stoneLetter;
         this.img = img;
         this.context = context;
-        // this.imageSize = this.context.measureText(this.text).width * 1.1;
         this.calculateImageAndFontSize();
         this.imageCenterOffsetX = this.imageSize / 2.3;
         this.imageCenterOffsetY = this.imageSize / 1.5;
         this.timerTickingInstance = timerTickingInstance;
-        // this.img.src = "./assets/images/stone_pink_v02.png";
 
     }
 
@@ -105,20 +100,10 @@ export class StoneConfig {
             this.imageSize,
             this.imageSize
         );
-        // if (Math.round(this.x) == stoneConfig.targetX) {
-        //     //reached its original position
-        // }
+
         this.context.fillStyle = "white";
         this.context.font = this.textFontSize + `px ${Utils.getLanguageSpecificFont(lang)}, monospace`;
         this.context.textAlign = "center";
         this.context.fillText(this.text, this.getX(), this.getY());
-    }
-
-    update() {
-        // update stone apearing animation
-        // if (this.frame < 100) {
-        //     this.frame = this.frame + 1;
-        // }
-       
     }
 }

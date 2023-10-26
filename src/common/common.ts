@@ -26,21 +26,9 @@ export function loadingScreen(loading: boolean) {
     progressContainer.style.display="none";
   }
 }
-export const MonsterLayer = "monsterCanvas";
-export const TutorialLayer = "tutorialCanvas";
-export const PausePopupLayer = "pausepopupCanvas";
-export const StoneLayer = "stoneCanvas";
-export const TimetickerLayer = "timetickCanvas";
-export const LevelEndLayer = "levelEndCanvas";
-export const LevelEndButtonsLayer = "levelEndButtonsCanvas";
-export const LevelSelectionLayer = "levelSelectionCanvas";
-export const LevelStartLayer = "levelStartCanvas";
-export const StartSceneLayer = "startSceneCanvas";
-export const PlayButtonLayer = "playButtonCanvas";
-export const GameEndLayer = "GameEndCanvas";
+
 export const FirebaseUserClicked = "user_clicked";
 export const FirebaseUserInstall = "user_installed";
-export const PromptTextLayer = "promptTextCanvas";
 export const PWAInstallStatus = "pwa_installed_status";
 export const UserCancelled = "user_cancel_installation";
 export const NativePlayButton = "native_playbutton_clicked";

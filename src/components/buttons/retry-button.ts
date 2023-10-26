@@ -6,7 +6,7 @@ export default class RetryButton {
     public context: CanvasRenderingContext2D;
     public canvas: HTMLCanvasElement;
     public imagesLoaded: boolean = false;
-    public retry_button_image: any;
+    public retry_button_image: HTMLImageElement;
 
     constructor(
         context: CanvasRenderingContext2D,
@@ -19,11 +19,11 @@ export default class RetryButton {
         this.context = context;
         this.canvas = canvas;
 
-        var retry_button_image = new Image();
-        retry_button_image.src = "./assets/images/retry_btn.png";
-        retry_button_image.onload = (e) => {
+        this.retry_button_image = new Image();
+        this.retry_button_image.src = "./assets/images/retry_btn.png";
+        this.retry_button_image.onload = (e) => {
             this.imagesLoaded = true;
-            this.retry_button_image = retry_button_image;
+            this.retry_button_image = this.retry_button_image;
         }
     }
 
@@ -39,7 +39,7 @@ export default class RetryButton {
         }
     }
 
-    onClick(xClick: number, yClick: number) {
+    onClick(xClick: number, yClick: number): boolean {
         const distance = Math.sqrt(
             (xClick - this.posX - (this.canvas.width * 0.19) / 2) *
             (xClick - this.posX - (this.canvas.width * 0.19) / 2) +

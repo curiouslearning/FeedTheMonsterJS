@@ -8,19 +8,16 @@ import { PromptAudio } from "../common/common";
 import { lang } from "../../global-variables";
 
 
-var self;
 export class PromptText extends EventManager {
     public width: number;
     public height: number;
     public levelData: any;
-    public currentPromptText: any;
+    public currentPromptText: string;
     public currentPuzzleData: any;
-    public fntstOrGrtImgArr: any;
-    public id: any;
-    public canavsElement: any;
-    public context: any;
-    public prompt_image: any;
-    public targetStones: any;
+    public canavsElement: HTMLCanvasElement;
+    public context: CanvasRenderingContext2D;
+    public prompt_image: HTMLImageElement;
+    public targetStones: string[];
     public rightToLeft: boolean;
     public imagesLoaded: boolean = false;
     public sound: Sound;
@@ -35,9 +32,9 @@ export class PromptText extends EventManager {
     public isScalingUp:boolean = true;
     public scaleFactor:number = 0.00050;
     public promptImageHeight: number = 0;
-    public promptPlayButton: any;
+    public promptPlayButton: HTMLImageElement;
 
-    constructor(width, height, currentPuzzleData, levelData, rightToLeft) {
+    constructor(width: number, height: number, currentPuzzleData: any, levelData: any, rightToLeft) {
         super({
             stoneDropCallbackHandler: (event) => this.handleStoneDrop(event),
             loadPuzzleCallbackHandler: (event) => this.handleLoadPuzzle(event)
@@ -46,12 +43,10 @@ export class PromptText extends EventManager {
         this.height = height;
         this.levelData = levelData;
         this.rightToLeft = rightToLeft;
-        self = this;
         this.currentPromptText = currentPuzzleData.prompt.promptText;
         this.currentPuzzleData = currentPuzzleData;
         this.targetStones = this.currentPuzzleData.targetStones;
-        this.fntstOrGrtImgArr = [];
-        this.canavsElement = document.getElementById("canvas");
+        this.canavsElement = document.getElementById("canvas") as HTMLCanvasElement;
         this.context = this.canavsElement.getContext("2d");
         this.sound = new Sound();
 

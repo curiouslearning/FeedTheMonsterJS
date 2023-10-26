@@ -7,7 +7,7 @@ import { Workbox } from "workbox-window";
 import { Debugger, lang } from "./global-variables";
 import { FirebaseIntegration } from "./src/Firebase/firebase-integration";
 import { Utils } from "./src/common/utils";
-declare const window: Window;
+declare const window: any;
 
 class App {
   private canvas: HTMLCanvasElement;

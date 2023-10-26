@@ -1,24 +1,18 @@
 import { GameScore } from "../data/game-score";
 
-var self;
-let startX = 0;
-let startY = 0;
-let endX = 200;
-let endY = 100;
 export class Tutorial {
     public width: number;
     public height: number;
     public context: CanvasRenderingContext2D;
     public tutorialImg: any;
     public imagesLoaded: boolean = false;
-    // public game: any;
     public targetStonePositions: any;
     public startx: number;
     public starty: number;
     public endx: number;
     public endy: number;
     public endTutorial: boolean = false;
-    public puzzleNumber: any;
+    public puzzleNumber: number;
     x: number;
     y: number;
     dx: number;
@@ -27,13 +21,11 @@ export class Tutorial {
     absdy: number;
 
     constructor(context, width, height, puzzleNumber) {
-        // this.game = game;
-        self = this;
         this.width = width;
         this.height = height;
         this.context = context;
-        this.startx = startX;
-        this.starty = startY;
+        this.startx = 0;
+        this.starty = 0;
         this.endx = this.width / 2;
         this.endy = this.height / 2 - 30;
         this.puzzleNumber = puzzleNumber;
@@ -45,9 +37,7 @@ export class Tutorial {
 
     }
 
-    updateTargetStonePositions(targetStonePosition) {
-        startX = targetStonePosition[0] - 22;
-        startY = targetStonePosition[1] - 50;
+    updateTargetStonePositions(targetStonePosition: number[]) {
         this.startx = targetStonePosition[0] - 22;
         this.starty = targetStonePosition[1] - 50;
         this.animateImage();
@@ -59,14 +49,13 @@ export class Tutorial {
         );
     }
 
-    setTutorialEnd(endTutorial) {
+    setTutorialEnd(endTutorial: boolean) {
         this.endTutorial = endTutorial;
-
     }
 
     animateImage() {
-        this.x = startX;
-        this.y = startY;
+        this.x = this.startx;
+        this.y = this.startx;
         this.dx = (this.endx - this.startx) / 5000;
         this.dy = (this.endy - this.starty) / 5000;
         this.absdx = this.isMobile() ? Math.abs(this.dx) * 3 : Math.abs(this.dx);
@@ -74,7 +63,7 @@ export class Tutorial {
         this.setTutorialEnd(false);
     }
 
-    draw(deltaTime) {
+    draw(deltaTime: number) {
         if (this.imagesLoaded && !this.endTutorial && this.shouldPlayTutorial()) {
             this.x =
                 this.dx >= 0

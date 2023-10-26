@@ -4,7 +4,7 @@ export default class PauseButton {
     public context: CanvasRenderingContext2D;
     public canvas: { height: number };
     public imagesLoaded: boolean = false;
-    public pause_button_image: any;
+    public pause_button_image: HTMLImageElement;
 
     constructor(
         context: CanvasRenderingContext2D,
@@ -15,11 +15,11 @@ export default class PauseButton {
         this.context = context;
         this.canvas = canvas;
 
-        var pause_button_image = new Image();
-        pause_button_image.src = "./assets/images/pause_v01.png";
-        pause_button_image.onload = (e) => {
+        this.pause_button_image = new Image();
+        this.pause_button_image.src = "./assets/images/pause_v01.png";
+        this.pause_button_image.onload = (e) => {
             this.imagesLoaded = true;
-            this.pause_button_image = pause_button_image;
+            this.pause_button_image = this.pause_button_image;
         }
     }
     draw() {
@@ -33,7 +33,7 @@ export default class PauseButton {
             );
         }
     }
-    onClick(xClick: number, yClick: number) {
+    onClick(xClick: number, yClick: number): boolean {
         const distance = Math.sqrt(
             (xClick - this.posX - (this.canvas.height * 0.09) / 2) *
             (xClick - this.posX - (this.canvas.height * 0.09) / 2) +

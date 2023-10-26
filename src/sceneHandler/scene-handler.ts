@@ -11,9 +11,9 @@ import { TestGameplayScene } from "../scenes/test-gameplay-scene";
 import { LevelSelectionScreen } from "../scenes/level-selection-scene";
 import { Debugger } from "../../global-variables";
 import { GameplayScene } from "../scenes/gameplay-scene";
-import { LevelEndScene } from "../scenes/levelend-scene";
 import { GameScore } from "../data/game-score";
 import { LoadingScene } from "../scenes/loading-scene";
+import { LevelEndScene } from "../scenes/levelend-scene";
 
 
 export class SceneHandler {

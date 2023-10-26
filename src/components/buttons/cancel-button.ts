@@ -4,7 +4,7 @@ export default class CancelButton {
     public context: CanvasRenderingContext2D;
     public canvas: { width: any; height?: number };
     public imagesLoaded: boolean = false;
-    public cancel_button_image: any;
+    public cancel_button_image: HTMLImageElement;
 
     constructor(
         context: CanvasRenderingContext2D,
@@ -15,11 +15,11 @@ export default class CancelButton {
         this.context = context;
         this.canvas = canvas;
 
-        var cancel_button_image = new Image();
-        cancel_button_image.src = "./assets/images/close_btn.png";
-        cancel_button_image.onload = (e) => {
+        this.cancel_button_image = new Image();
+        this.cancel_button_image.src = "./assets/images/close_btn.png";
+        this.cancel_button_image.onload = (e) => {
             this.imagesLoaded = true;
-            this.cancel_button_image = cancel_button_image;
+            this.cancel_button_image = this.cancel_button_image;
         }
     }
 
@@ -35,7 +35,7 @@ export default class CancelButton {
         }
     }
 
-    onClick(xClick, yClick) {
+    onClick(xClick: number, yClick: number): boolean {
         const distance = Math.sqrt(
             (xClick - this.posX - (this.canvas.width * 0.15) / 2) *
             (xClick - this.posX - (this.canvas.width * 0.15) / 2) +

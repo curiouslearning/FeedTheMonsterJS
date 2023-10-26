@@ -30,15 +30,11 @@ export class Background {
     public width: number;
     public height: number;
     public context: CanvasRenderingContext2D;
-    public tutorialImg: any;
     public imagesLoaded: boolean = false;
     public loadedImages: any;
-    // public game: any;
-    public targetStonePositions: any;
-    // images: { pillerImg: string; bgImg: string; hillImg: string; grassImg: string; fenchImg: string; };
-    public levelNumber: any;
+    public levelNumber: number;
     public availableBackgroundTypes = ["Summer", "Autumn", "Winter"];
-    public backgroundType: any;
+    public backgroundType: number;
 
 
     constructor(context, width, height, levelNumber) {

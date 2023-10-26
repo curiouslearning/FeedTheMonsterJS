@@ -1,4 +1,4 @@
-import { lang } from "../../global-variables";
+import { Debugger, lang } from "../../global-variables";
 
 export class GameScore {
   public static currentlanguage: string = lang;
@@ -34,14 +34,14 @@ export class GameScore {
     return data == undefined ? [] : JSON.parse(data) as Map<string, any>[];
   }
 
-  public static setTotalStarCount(starsGained){
+  public static setTotalStarCount(starsGained): void {
     let starCount = this.getTotalStarCount();
     let totalStarCount = starCount + starsGained;
     localStorage.setItem(this.currentlanguage + "totalStarCount",totalStarCount);
 
   }
 
-  public static getTotalStarCount(){
+  public static getTotalStarCount(): number {
     const starCount = localStorage.getItem(this.currentlanguage + "totalStarCount");
     return starCount == undefined ? 0: parseInt(starCount);
   }
@@ -56,5 +56,12 @@ export class GameScore {
       : score == 500
       ? 3
       : 0;
+  }
+
+  public static getDatafromStorage() {
+    const data = Debugger.DebugMode
+      ? JSON.parse(localStorage.getItem(lang + "ProfileDebug") || "{}")
+      : JSON.parse(localStorage.getItem(lang + "Profile") || "{}");
+    return data;
   }
 }

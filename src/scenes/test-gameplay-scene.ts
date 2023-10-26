@@ -3,10 +3,7 @@ import {
     FirebaseUserClicked,
     FirebaseUserInstall,
     loadingScreen,
-    MonsterLayer,
-    PlayButtonLayer,
     PWAInstallStatus,
-    StartSceneLayer,
     UserCancelled,
     StartScene1,
     LevelSelection1,
@@ -276,7 +273,7 @@ export class TestGameplayScene {
             this.context.fillText("Testing Gameplay", this.width * 0.5, this.height / 10);
             // this.update(deltaTime);
             // this.context.scale(1.5, 1.5);
-            this.monster.animation(deltaTime);
+            this.monster.update(deltaTime);
             // this.monster2.animation(deltaTime);
             // this.context.setTransform(1, 0, 0, 0, 0, 0);
             // this.playButton.draw();

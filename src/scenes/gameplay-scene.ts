@@ -56,19 +56,7 @@ var images = {
   winterPillerImg: "./assets/images/Winter_sign_v01.png",
 };
 
-var audioUrl = {
-  phraseAudios: [
-    "./lang/" + lang + "/audios/fantastic.mp3",
-    // "./assets/audios/good job.WAV",
-    "./lang/" + lang + "/audios/great.mp3",
-  ],
-  monsterSplit: "./assets/audios/Monster Spits wrong stones-01.mp3",
-  monsterEat: "./assets/audios/Eat.mp3",
-  monsterHappy: "./assets/audios/Cheering-02.mp3",
-  monsterSad: "./assets/audios/Disapointed-05.mp3",
-  buttonClick: "./assets/audios/ButtonClick.mp3",
-};
-var self: any;
+
 var stonesCount=1;
 
 export class GameplayScene {
@@ -155,7 +143,6 @@ export class GameplayScene {
   ) {
     this.width = canvas.width;
     this.height = canvas.height;
-    self = this;
     this.rightToLeft = rightToLeft;
     this.canvas = canvas;
     this.context = this.canvas.getContext("2d");
@@ -414,7 +401,7 @@ export class GameplayScene {
       this.pauseButton.draw();
       this.levelIndicators.draw();
       this.promptText.draw(deltaTime);
-      this.monster.animation(deltaTime);
+      this.monster.update(deltaTime);
       this.timerTicking.draw();
       this.stoneHandler.draw(deltaTime);
       this.pausePopup.draw();
@@ -423,7 +410,7 @@ export class GameplayScene {
       this.pauseButton.draw();
       this.levelIndicators.draw();
       this.promptText.draw(deltaTime);
-      this.monster.animation(deltaTime);
+      this.monster.update(deltaTime);
       this.timerTicking.draw();
       this.feedbackTextEffects.render();
     }
@@ -431,7 +418,7 @@ export class GameplayScene {
       this.pauseButton.draw();
       this.levelIndicators.draw();
       this.promptText.draw(deltaTime);
-      this.monster.animation(deltaTime);
+      this.monster.update(deltaTime);
       this.timerTicking.draw();
       this.pausePopup.draw();
     }
@@ -439,7 +426,7 @@ export class GameplayScene {
       this.pauseButton.draw();
       this.levelIndicators.draw();
       this.promptText.draw(deltaTime);
-      this.monster.animation(deltaTime);
+      this.monster.update(deltaTime);
       // this.timerTicking.update(deltaTime);
       this.timerTicking.draw();
       this.stoneHandler.draw(deltaTime);

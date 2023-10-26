@@ -6,11 +6,6 @@ import {
 
 import { EventManager } from "../events/EventManager";
 
-var self;
-var animationFrame;
-var monsterPhaseNumber = Debugger.DebugMode
-  ? localStorage.getItem(StoreMonsterPhaseNumber + lang + "Debug") || 1
-  : localStorage.getItem(StoreMonsterPhaseNumber + lang) || 1;
 
 export class Monster extends EventManager {
   public zindex: number;
@@ -27,7 +22,6 @@ export class Monster extends EventManager {
   public frameInterval: number;
   public frameTimer: number;
   public canvasStack: any;
-  public id: any;
   public canavsElement: HTMLCanvasElement;
   public context: CanvasRenderingContext2D;
   public game: any;
@@ -42,7 +36,6 @@ export class Monster extends EventManager {
       loadPuzzleCallbackHandler: (event) => this.handleLoadPuzzle(event),
     });
     this.game = game;
-    self = this;
     this.monsterPhase = monsterPhase;
     this.width = this.game.width;
     this.height = this.game.height;
@@ -131,9 +124,6 @@ export class Monster extends EventManager {
   changeToSpitAnimation() {
     this.image = this.loadedImages.spitImg;
   }
-  animation(deltaTime) {
-    self.update(deltaTime);
-  }
 
   public handleStoneDrop(event) {
     if (event.detail.isCorrect) {
@@ -150,7 +140,7 @@ export class Monster extends EventManager {
     this.unregisterEventListener();
   }
 
-  onClick(xClick: number, yClick: number) {
+  onClick(xClick: number, yClick: number): boolean {
     const distance = Math.sqrt(
       (xClick - this.x - this.width / 4) * (xClick - this.x - this.width / 4) +
         (yClick - this.y - this.height / 2.7) *

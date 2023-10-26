@@ -18,9 +18,6 @@ export class LevelIndicators extends EventManager{
         this.context = context;
         this.canvas = canvas;
         this.activeIndicators = activeIndicators;
-        // this.draw();
-
-        // loading images
         this.images = {
             level_indicator: "./assets/images/levels_v01.png",
             bar_empty: "./assets/images/bar_empty_v01.png",
@@ -34,7 +31,6 @@ export class LevelIndicators extends EventManager{
     }
     setIndicators(indicatorCount) {
         this.activeIndicators = indicatorCount;
-        this.update(this);
     }
 
     addDropStoneEvent() {
@@ -73,9 +69,6 @@ export class LevelIndicators extends EventManager{
                 );
             }
         }
-    }
-    update(deltaTime) {
-
     }
 
     public dispose() {

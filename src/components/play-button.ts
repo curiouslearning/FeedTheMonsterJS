@@ -40,7 +40,7 @@ export default class PlayButton {
             );
         }
     }
-    onClick(xClick: number, yClick: number) {
+    onClick(xClick: number, yClick: number): boolean {
         const distance = Math.sqrt(
             (xClick - this.posX - this.canvas.width / 6) *
             (xClick - this.posX - this.canvas.width / 6) +

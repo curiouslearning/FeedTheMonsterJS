@@ -5,7 +5,7 @@ export default class CloseButton {
     public context: CanvasRenderingContext2D;
     public canvas: HTMLCanvasElement;
     public imagesLoaded: boolean = false;
-    public close_button_image: any;
+    public close_button_image: HTMLImageElement;
 
     constructor(
         context: CanvasRenderingContext2D,
@@ -17,12 +17,11 @@ export default class CloseButton {
         this.posY = posY;
         this.context = context;
         this.canvas = canvas;
-        // this.draw();
-        var close_button_image = new Image();
-        close_button_image.src = "./assets/images/map_btn.png";
-        close_button_image.onload = (e) => {
+        this.close_button_image = new Image();
+        this.close_button_image.src = "./assets/images/map_btn.png";
+        this.close_button_image.onload = (e) => {
             this.imagesLoaded = true;
-            this.close_button_image = close_button_image;
+            this.close_button_image = this.close_button_image;
         }
     }
     draw() {
@@ -36,7 +35,7 @@ export default class CloseButton {
             );
         }
     }
-    onClick(xClick: number, yClick: number) {
+    onClick(xClick: number, yClick: number): boolean {
         const distance = Math.sqrt(
             (xClick - this.posX - (this.canvas.width * 0.19) / 2) *
             (xClick - this.posX - (this.canvas.width * 0.19) / 2) +

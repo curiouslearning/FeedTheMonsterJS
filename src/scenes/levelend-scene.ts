@@ -7,9 +7,9 @@ import CloseButton from "../components/buttons/close-button";
 import NextButton from "../components/buttons/next-button";
 import RetryButton from "../components/buttons/retry-button";
 import { Monster } from "../components/monster";
-var self;
+
 export class LevelEndScene {
-  public canvas: any;
+  public canvas: HTMLCanvasElement;
   public height: number;
   public width: number;
   public images: any;
@@ -18,19 +18,19 @@ export class LevelEndScene {
   public id: string;
   public context: CanvasRenderingContext2D;
   public monster: Monster;
-  public closeButton: any;
-  public retryButton: any;
-  public nextButton: any;
+  public closeButton: CloseButton;
+  public retryButton: RetryButton;
+  public nextButton: NextButton;
   public starCount: number;
   public currentLevel: number;
-  public switchToGameplayCB: any;
-  public switchToLevelSelectionCB: any;
+  public switchToGameplayCB: Function;
+  public switchToLevelSelectionCB: Function;
   public data: any;
-  public background: any;
-  public audioPlayer: any;
+  public background: Background;
+  public audioPlayer: AudioPlayer;
   public sound: Sound;
-  public timeouts;
-  public starDrawnCount:number;
+  public timeouts: any[];
+  public starDrawnCount: number;
   constructor(
     canvas: any,
     height: number,
@@ -59,11 +59,11 @@ export class LevelEndScene {
       this.height,
       currentLevel
     );
-    // console.log(" currentlevelPlayed in levelenEEd: ", currentlevelPlayed.levelNumber);
+
     this.switchToGameplayCB = switchToGameplayCB;
     this.switchToLevelSelectionCB = switchToLevelSelectionCB;
     this.data = data;
-    this.starDrawnCount=0;
+    this.starDrawnCount = 0;
     this.closeButton = new CloseButton(
       context,
       canvas,
@@ -97,25 +97,23 @@ export class LevelEndScene {
       this.imagesLoaded = true;
       this.starAnimation();
     });
-    // this.draw(16.45);
     this.addEventListener();
-    self = this;
     this.audioPlayer = new AudioPlayer();
   }
-  switchToReactionAnimation() {
-    if (self.starCount <= 1) {
+  switchToReactionAnimation = () => {
+    if (this.starCount <= 1) {
       if (document.visibilityState === "visible") {
-      self.sound.playSound("./assets/audios/LevelLoseFanfare.mp3");
+        this.sound.playSound("./assets/audios/LevelLoseFanfare.mp3");
       }
-      self.monster.changeToSpitAnimation();
+      this.monster.changeToSpitAnimation();
     } else {
       if (document.visibilityState === "visible") {
-      self.sound.playSound("./assets/audios/LevelWinFanfare.mp3");
-      self.sound.playSound("./assets/audios/intro.mp3");
-    } 
-      self.monster.changeToEatAnimation();
+        this.sound.playSound("./assets/audios/LevelWinFanfare.mp3");
+        this.sound.playSound("./assets/audios/intro.mp3");
+      }
+      this.monster.changeToEatAnimation();
     }
-  }
+  };
   draw(deltaTime: number) {
     this.background.draw();
     if (this.imagesLoaded) {
@@ -128,29 +126,29 @@ export class LevelEndScene {
       );
       this.drawStars();
 
-      this.monster.animation(deltaTime);
+      this.monster.update(deltaTime);
       this.closeButton.draw();
       this.retryButton.draw();
-      if(this.starCount>=2){
-      this.nextButton.draw();
+      if (this.starCount >= 2) {
+        this.nextButton.draw();
       }
     }
   }
-  starAnimation(){
+  starAnimation() {
     const animations = [
       { delay: 500, count: 1 },
       { delay: 1000, count: 2 },
-      { delay: 1500, count: 3 }
+      { delay: 1500, count: 3 },
     ];
 
-    this.timeouts = animations.map(animation => {
+    this.timeouts = animations.map((animation) => {
       return setTimeout(() => {
         this.starDrawnCount = animation.count;
       }, animation.delay);
     });
   }
   drawStars() {
-    if (this.starCount >= 1&&this.starDrawnCount>=1) {
+    if (this.starCount >= 1 && this.starDrawnCount >= 1) {
       this.context.drawImage(
         this.loadedImages.star1Img,
         this.width * 0.2 - (this.width * 0.19) / 2,
@@ -158,8 +156,13 @@ export class LevelEndScene {
         this.width * 0.19,
         this.width * 0.19
       );
-      
-      if (this.starCount <= 3 && this.starCount > 1&&this.starDrawnCount <= 3 && this.starDrawnCount > 1) {
+
+      if (
+        this.starCount <= 3 &&
+        this.starCount > 1 &&
+        this.starDrawnCount <= 3 &&
+        this.starDrawnCount > 1
+      ) {
         this.context.drawImage(
           this.loadedImages.star2Img,
           this.width * 0.5 - (this.width * 0.19) / 2,
@@ -167,7 +170,7 @@ export class LevelEndScene {
           this.width * 0.19,
           this.width * 0.19
         );
-        if (this.starCount >= 3&&this.starDrawnCount >= 3) {
+        if (this.starCount >= 3 && this.starDrawnCount >= 3) {
           this.context.drawImage(
             this.loadedImages.star3Img,
             this.width * 0.82 - (this.width * 0.19) / 2,
@@ -183,7 +186,7 @@ export class LevelEndScene {
     document
       .getElementById("canvas")
       .addEventListener(CLICK, this.handleMouseClick, false);
-      document.addEventListener("visibilitychange", this.pauseAudios, false);
+    document.addEventListener("visibilitychange", this.pauseAudios, false);
   }
 
   handleMouseClick = (event) => {
@@ -209,7 +212,7 @@ export class LevelEndScene {
       // pass same data as level is same
       this.switchToGameplayCB(gamePlayData, "LevelEnd");
     }
-    if (this.nextButton.onClick(x, y) && this.starCount >=2) {
+    if (this.nextButton.onClick(x, y) && this.starCount >= 2) {
       this.audioPlayer.playAudio(false, "./assets/audios/ButtonClick.mp3");
       let next = Number(this.currentLevel) + 1;
       console.log(typeof next, " next button clicked", next);
@@ -221,26 +224,22 @@ export class LevelEndScene {
       this.switchToGameplayCB(gamePlayData, "LevelEnd");
     }
   };
-  pauseAudios(){
+  pauseAudios = () => {
     if (document.visibilityState === "visible") {
-      if(self.starCount >=2){
-        self.sound.playSound("./assets/audios/intro.mp3");
+      if (this.starCount >= 2) {
+        this.sound.playSound("./assets/audios/intro.mp3");
       }
-    }else{
-      self.sound.pauseSound();
+    } else {
+      this.sound.pauseSound();
     }
-  }
+  };
   dispose = () => {
     this.sound.pauseSound();
-    self.audioPlayer.stopAudio();
-    this.timeouts.forEach(timeout => clearTimeout(timeout));
+    this.audioPlayer.stopAudio();
+    this.timeouts.forEach((timeout) => clearTimeout(timeout));
     document
       .getElementById("canvas")
       .removeEventListener(CLICK, this.handleMouseClick, false);
-      document.removeEventListener(
-        "visibilitychange",
-        this.pauseAudios,
-        false
-      );
+    document.removeEventListener("visibilitychange", this.pauseAudios, false);
   };
 }

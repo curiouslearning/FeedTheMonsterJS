@@ -2,11 +2,6 @@ import { loadImages } from "../common/common";
 import { EventManager } from "../events/EventManager";
 import { AudioPlayer } from "./audio-player";
 
-declare global {
-    interface Window {
-        Android?: any;
-    }
-}
 export class TimerTicking extends EventManager {
     public width: number;
     public height: number;
@@ -21,22 +16,17 @@ export class TimerTicking extends EventManager {
     public context: CanvasRenderingContext2D;
     public timer_full: HTMLImageElement;
     public pauseButtonClicked: boolean;
-    public id: string;
-    public fps: any;
-    public frameInterval: any;
-    public frameTimer: any;
     public images: Object;
     public loadedImages: any;
-    public callback: any;
+    public callback: Function;
     public imagesLoaded: boolean = false;
     public startMyTimer: boolean = true;
     public isMyTimerOver: boolean = false;
-    // public isAnswerDropped: boolean = false;
     public isStoneDropped: boolean = false;
     public audioPlayer: AudioPlayer;
     public playLevelEndAudioOnce: boolean = true;
 
-    constructor(width: any, height: any, callback: any) {
+    constructor(width: number, height: number, callback: Function) {
         super({
             stoneDropCallbackHandler: (event) => this.handleStoneDrop(event),
             loadPuzzleCallbackHandler: (event) => this.handleLoadPuzzle(event)
@@ -53,10 +43,6 @@ export class TimerTicking extends EventManager {
         this.isTimerStarted = false;
         this.isTimerEnded = false;
         this.isTimerRunningOut = false;
-        var self = this;
-        this.fps = 60;
-        this.frameInterval = 1000 / this.fps;
-        this.frameTimer = 0;
         this.audioPlayer = new AudioPlayer();
         this.playLevelEndAudioOnce = true;
         this.images = {
