@@ -29,6 +29,6 @@ export class Utils {
         }
         
         console.log(`Font not found for language: ${language}`);
-        return 'Sans-serif';
+        return 'Consolas';
       } 
 }
