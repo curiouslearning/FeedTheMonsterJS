@@ -1,5 +1,4 @@
 
-import Sound from "../common/sound";
 import { EventManager } from "../events/EventManager";
 import { Utils } from "../common/utils";
 import { AudioPlayer } from "./audio-player";
@@ -20,9 +19,8 @@ export class PromptText extends EventManager {
     public targetStones: string[];
     public rightToLeft: boolean;
     public imagesLoaded: boolean = false;
-    public sound: Sound;
+    public audioPlayer: AudioPlayer;
     public isStoneDropped: boolean = false;
-    audioPlayer: AudioPlayer;
     droppedStones: number = 0;
     public time: number = 0;
     public promptImageWidth: number = 0;
@@ -48,7 +46,8 @@ export class PromptText extends EventManager {
         this.targetStones = this.currentPuzzleData.targetStones;
         this.canavsElement = document.getElementById("canvas") as HTMLCanvasElement;
         this.context = this.canavsElement.getContext("2d");
-        this.sound = new Sound();
+        this.audioPlayer = new AudioPlayer();
+        this.audioPlayer.preloadPromptAudio(this.getPromptAudioUrl());
 
         this.prompt_image = new Image();
         this.promptPlayButton = new Image();
@@ -75,7 +74,6 @@ export class PromptText extends EventManager {
         const y = event.clientY - rect.top;
         if (self.onClick(x, y)) {
             console.log('Clicked on Play prompt audio');
-
             this.playSound();
         }
     }
@@ -87,8 +85,7 @@ export class PromptText extends EventManager {
     playSound = () => {
         console.log('PromptAudio',  Utils.getConvertedDevProdURL(this.currentPuzzleData.prompt.promptAudio));
         if (this.isAppForeground) {
-            this.sound.playSound(Utils.getConvertedDevProdURL(this.currentPuzzleData.prompt.promptAudio), PromptAudio
-            );
+            this.audioPlayer.playPromptAudio(Utils.getConvertedDevProdURL(this.currentPuzzleData.prompt.promptAudio));
         }
     }
 
@@ -144,7 +141,7 @@ export class PromptText extends EventManager {
                 x = x + this.context.measureText(this.targetStones[i]).width + 5;
             }
         } 
-        else if (this.levelData.levelMeta.levelType == "SoundWord") {
+        else if (this.levelData.levelMeta.levelType == "audioPlayerWord") {
             const scaledWidth = this.promptImageWidth * this.scale;
                     const scaledHeight = this.promptImageHeight * this.scale;
                     // const offsetX = (this.width - scaledWidth) / 2;
@@ -216,7 +213,7 @@ export class PromptText extends EventManager {
                     }
                     break;
                 }
-                case "SoundWord": {
+                case "audioPlayerWord": {
                     const scaledWidth = this.promptImageWidth;
                     const scaledHeight = this.promptImageHeight;
                     const offsetX = (this.width - scaledWidth) *1.25;
@@ -315,7 +312,7 @@ export class PromptText extends EventManager {
 
     handleVisibilityChange = () => {
         if (document.visibilityState == "hidden") {
-            this.audioPlayer.stopAudio();
+            this.audioPlayer.stopAllAudios();
             this.isAppForeground = false
         }
 

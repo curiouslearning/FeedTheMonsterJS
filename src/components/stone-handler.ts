@@ -1,4 +1,3 @@
-import Sound from "../common/sound";
 import { StoneConfig } from "../common/stone-config";
 import { EventManager } from "../events/EventManager";
 import { Tutorial } from "./tutorial";
@@ -20,7 +19,6 @@ export default class StoneHandler extends EventManager {
   public puzzleNumber: number;
   public levelData: any;
   public correctAnswer: string;
-  public audio: Sound;
   public puzzleStartTime: Date;
   public showTutorial: boolean =
     GameScore.getDatafromStorage().length == undefined ? true : false;
@@ -97,7 +95,7 @@ export default class StoneHandler extends EventManager {
     }
   }
 
-  draw(deltaTime) {
+  draw(deltaTime: number) {
     for (var i = 0; i < this.foilStones.length; i++) {
       this.foilStones[i].draw(deltaTime);
     }
@@ -193,7 +191,7 @@ export default class StoneHandler extends EventManager {
     feedBackIndex: number
   ): boolean {
     if (droppedStone == this.correctTargetStone) {
-      this.audioPlayer.playAudio(
+      this.audioPlayer.playFeedbackAudios(
         false,
         "./assets/audios/Eat.mp3",
         "./assets/audios/Cheering-02.mp3",
@@ -201,7 +199,7 @@ export default class StoneHandler extends EventManager {
       );
       return true;
     } else {
-      this.audioPlayer.playAudio(false, "./assets/audios/MonsterSpit.mp3");
+      this.audioPlayer.playFeedbackAudios(false, "./assets/audios/MonsterSpit.mp3");
       return false;
     }
   }
@@ -211,7 +209,7 @@ export default class StoneHandler extends EventManager {
     feedBackIndex: number
   ): boolean {
     if (droppedStone == this.correctTargetStone) {
-      this.audioPlayer.playAudio(
+      this.audioPlayer.playFeedbackAudios(
         false,
         "./assets/audios/Eat.mp3",
         "./assets/audios/Cheering-02.mp3",
@@ -220,7 +218,7 @@ export default class StoneHandler extends EventManager {
 
       return true;
     } else {
-      this.audioPlayer.playAudio(false, "./assets/audios/MonsterSpit.mp3");
+      this.audioPlayer.playFeedbackAudios(false, "./assets/audios/MonsterSpit.mp3");
       return false;
     }
   }
@@ -233,14 +231,14 @@ export default class StoneHandler extends EventManager {
       droppedStone == this.correctTargetStone.substring(0, droppedStone.length)
     ) {
       if (droppedStone == this.getCorrectTargetStone()) {
-        this.audioPlayer.playAudio(
+        this.audioPlayer.playFeedbackAudios(
           false,
           "./assets/audios/Eat.mp3",
           "./assets/audios/Cheering-02.mp3",
           Utils.getConvertedDevProdURL(this.feedbackAudios[feedBackIndex])
         );
       } else {
-        this.audioPlayer.playAudio(
+        this.audioPlayer.playFeedbackAudios(
           false,
           "./assets/audios/Eat.mp3",
           "./assets/audios/Cheering-02.mp3"
@@ -281,7 +279,7 @@ export default class StoneHandler extends EventManager {
   }
 
   handleVisibilityChange = () => {
-    this.audioPlayer.stopAudio();
+    this.audioPlayer.stopAllAudios();
   };
 
   convertFeedBackAudiosToList(feedbackAudios): string[] {

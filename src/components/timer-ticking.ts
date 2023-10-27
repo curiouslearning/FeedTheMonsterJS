@@ -73,7 +73,7 @@ export class TimerTicking extends EventManager {
             this.timer += deltaTime * 0.008;
         }
         if (Math.floor(this.width * 0.87 - (this.width * 0.87 * this.timer * 0.01)) == 40 && !this.isMyTimerOver) {
-            this.playLevelEndAudioOnce?this.audioPlayer.playAudio(false,'./assets/audios/timeout.mp3'):null;
+            this.playLevelEndAudioOnce?this.audioPlayer.playAudio('./assets/audios/timeout.mp3'):null;
             this.playLevelEndAudioOnce = false;
         }
         if ((this.width * 0.87 - (this.width * 0.87 * this.timer * 0.01)) < 0 && !this.isMyTimerOver) {

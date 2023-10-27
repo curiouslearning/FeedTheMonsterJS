@@ -17,7 +17,6 @@ import { TimerTicking } from "../components/timer-ticking";
 // import PausePopUp from "../components/pause-popup"
 import StoneHandler from "../components/stone-handler";
 import { StoneConfig } from "../common/stone-config"
-import Sound from "../common/sound";
 import { Monster } from "../components/monster";
 import { DataModal } from "../data/data-modal";
 // import { CanvasStack } from "../../utility/canvas-stack";
@@ -405,7 +404,7 @@ export class TestGameplayScene {
                 event: "click",
             });
             toggleBtn.style.display = "none";
-            new Sound().playSound("./assets/audios/ButtonClick.mp3", ButtonClick);
+            // new Sound().playSound("./assets/audios/ButtonClick.mp3", ButtonClick);
             self.switchSceneToLevelSelection();
         }
 

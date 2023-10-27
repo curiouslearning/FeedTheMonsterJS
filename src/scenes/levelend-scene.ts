@@ -1,5 +1,4 @@
 import { loadImages } from "../common/common";
-import Sound from "../common/sound";
 import { CLICK } from "../common/event-names";
 import { AudioPlayer } from "../components/audio-player";
 import { Background } from "../components/background";
@@ -28,7 +27,6 @@ export class LevelEndScene {
   public data: any;
   public background: Background;
   public audioPlayer: AudioPlayer;
-  public sound: Sound;
   public timeouts: any[];
   public starDrawnCount: number;
   constructor(
@@ -47,7 +45,6 @@ export class LevelEndScene {
     this.height = height;
     this.width = width;
     this.context = context;
-    this.sound = new Sound();
     this.monster = new Monster(
       this.canvas,
       monsterPhaseNumber,
@@ -103,13 +100,13 @@ export class LevelEndScene {
   switchToReactionAnimation = () => {
     if (this.starCount <= 1) {
       if (document.visibilityState === "visible") {
-        this.sound.playSound("./assets/audios/LevelLoseFanfare.mp3");
+        this.audioPlayer.playAudio("./assets/audios/LevelLoseFanfare.mp3");
       }
       this.monster.changeToSpitAnimation();
     } else {
       if (document.visibilityState === "visible") {
-        this.sound.playSound("./assets/audios/LevelWinFanfare.mp3");
-        this.sound.playSound("./assets/audios/intro.mp3");
+        this.audioPlayer.playAudio("./assets/audios/LevelWinFanfare.mp3");
+        this.audioPlayer.playAudio("./assets/audios/intro.mp3");
       }
       this.monster.changeToEatAnimation();
     }
@@ -197,13 +194,13 @@ export class LevelEndScene {
     const y = event.clientY - rect.top;
 
     if (this.closeButton.onClick(x, y)) {
-      this.audioPlayer.playAudio(false, "./assets/audios/ButtonClick.mp3");
+      this.audioPlayer.playAudio("./assets/audios/ButtonClick.mp3");
       console.log(" close button clicked");
 
       this.switchToLevelSelectionCB("LevelEnd");
     }
     if (this.retryButton.onClick(x, y)) {
-      this.audioPlayer.playAudio(false, "./assets/audios/ButtonClick.mp3");
+      this.audioPlayer.playAudio("./assets/audios/ButtonClick.mp3");
       console.log(" retry button clicked");
       let gamePlayData = {
         currentLevelData: this.data.levels[this.currentLevel],
@@ -213,7 +210,7 @@ export class LevelEndScene {
       this.switchToGameplayCB(gamePlayData, "LevelEnd");
     }
     if (this.nextButton.onClick(x, y) && this.starCount >= 2) {
-      this.audioPlayer.playAudio(false, "./assets/audios/ButtonClick.mp3");
+      this.audioPlayer.playAudio("./assets/audios/ButtonClick.mp3");
       let next = Number(this.currentLevel) + 1;
       console.log(typeof next, " next button clicked", next);
       let gamePlayData = {
@@ -227,15 +224,14 @@ export class LevelEndScene {
   pauseAudios = () => {
     if (document.visibilityState === "visible") {
       if (this.starCount >= 2) {
-        this.sound.playSound("./assets/audios/intro.mp3");
+        this.audioPlayer.playAudio("./assets/audios/intro.mp3");
       }
     } else {
-      this.sound.pauseSound();
+      this.audioPlayer.stopAllAudios();
     }
   };
   dispose = () => {
-    this.sound.pauseSound();
-    this.audioPlayer.stopAudio();
+    this.audioPlayer.stopAllAudios();
     this.timeouts.forEach((timeout) => clearTimeout(timeout));
     document
       .getElementById("canvas")

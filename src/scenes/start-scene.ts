@@ -128,13 +128,13 @@ export class StartScene {
         event: "click",
       });
       this.toggleBtn.style.display = "none";
-      this.audioPlayer.playAudio(false, "./assets/audios/ButtonClick.mp3");
+      this.audioPlayer.playAudio("./assets/audios/ButtonClick.mp3");
       self.switchSceneToLevelSelection("StartScene");
     }
   };
 
   dispose() {
-    this.audioPlayer.stopAudio();
+    this.audioPlayer.stopAllAudios();
     this.handler.removeEventListener("click", this.handleMouseClick, false);
     window.removeEventListener("beforeinstallprompt", this.handlerInstallPrompt, false);
   }
