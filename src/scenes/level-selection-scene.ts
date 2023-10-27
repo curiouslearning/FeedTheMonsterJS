@@ -63,6 +63,7 @@ export class LevelSelectionScreen {
     this.createLevelButtons(this.levelButtonpos);
     this.gameLevelData = GameScore.getAllGameLevelInfo();
     this.callback = callback;
+    this.audioPlayer = new AudioPlayer();
 
     // loading images
     this.images = {

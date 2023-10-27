@@ -5,7 +5,6 @@ export class AudioPlayer {
   private sourceNode: AudioBufferSourceNode | null;
   private audioQueue: string[];
 
-  //
   private promptAudioBuffer: AudioBuffer | null;
   private static audioBuffers: Map<string, AudioBuffer> = new Map();
   private audioSourcs: Array<AudioBufferSourceNode> = [];

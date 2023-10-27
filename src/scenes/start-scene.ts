@@ -128,7 +128,7 @@ export class StartScene {
         event: "click",
       });
       this.toggleBtn.style.display = "none";
-      this.audioPlayer.playAudio("./assets/audios/ButtonClick.mp3");
+      this.audioPlayer.playButtonClickSound("./assets/audios/ButtonClick.mp3");
       self.switchSceneToLevelSelection("StartScene");
     }
   };

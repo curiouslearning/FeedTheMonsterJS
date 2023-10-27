@@ -7,6 +7,7 @@ import { Workbox } from "workbox-window";
 import { Debugger, lang } from "./global-variables";
 import { FirebaseIntegration } from "./src/Firebase/firebase-integration";
 import { Utils } from "./src/common/utils";
+import { AudioPlayer } from "./src/components/audio-player";
 declare const window: any;
 
 class App {
@@ -18,6 +19,7 @@ class App {
   private progressBarContainer: HTMLElement | null;
   private channel: BroadcastChannel;
   private sceneHandler: SceneHandler;
+  private loadingElement: HTMLElement;
 
   constructor(lang: string) {
     this.lang = lang;
@@ -26,6 +28,7 @@ class App {
     this.progressBar = document.getElementById("progress-bar") as HTMLElement;
     this.progressBarContainer = document.getElementById("progress-bar-container") as HTMLElement;
     this.versionInfoElement = document.getElementById("version-info-id") as HTMLElement;
+    this.loadingElement = document.getElementById('loading-screen') as HTMLElement;
     this.is_cached = this.initializeCachedData();
     this.channel.addEventListener("message", this.handleServiceWorkerMessage);
     window.addEventListener("beforeunload", this.handleBeforeUnload);
@@ -35,6 +38,7 @@ class App {
   private async init() {
     const font = Utils.getLanguageSpecificFont(this.lang);
     await this.loadAndCacheFont(font, `./assets/fonts/${font}.ttf`);
+    await this.preloadGameAudios();
     this.handleLoadingScreen();
     this.registerWorkbox();
     this.setupCanvas();
@@ -80,8 +84,10 @@ class App {
     }
   }
 
-  private handleLoadingScreen() {
+  private handleLoadingScreen = () => {
     if(this.is_cached.get(lang)){
+      this.loadingElement.style.zIndex = '-1';
+      this.loadingElement.style.display = 'none';
       this.progressBarContainer.style.display="none";
       this.progressBar.style.display="none";
     }else{
@@ -201,7 +207,6 @@ class App {
         localStorage.setItem("version" + this.lang, data.version);
         window.location.reload();
       }
-
       this.progressBar.style.width = `${data.data}%`;
     }
   }
@@ -225,6 +230,36 @@ class App {
 
   private handleBeforeUnload = (event: BeforeUnloadEvent): void => {
     FirebaseIntegration.getInstance().sendSessionEndEvent();
+  }
+
+  private preloadGameAudios = async() => {
+    let audioUrls = [
+      "./assets/audios/intro.mp3",
+      "./assets/audios/Cheering-02.mp3",
+      "./assets/audios/onDrag.mp3",
+      "./assets/audios/timeout.mp3",
+      "./assets/audios/LevelWinFanfare.mp3",
+      "./assets/audios/LevelLoseFanfare.mp3",
+      "./assets/audios/ButtonClick.mp3",
+      "./assets/audios/Monster Spits wrong stones-01.mp3",
+      "./assets/audios/Disapointed-05.mp3",
+      "./assets/audios/MonsterSpit.mp3",
+      "./assets/audios/Eat.mp3",
+    ];
+  
+    return new Promise<void>((resolve, reject) => {
+      const preloadPromises = audioUrls.map((audioSrc) => new AudioPlayer().preloadGameAudio(audioSrc));
+      
+      Promise.all(preloadPromises)
+        .then(() => {
+          console.log("All Game audios files have been preloaded and are ready to use.");
+          resolve();
+        })
+        .catch((error) => {
+          console.error("Error preloading audio:", error);
+          reject(error);
+        });
+    });
   }
   
 }

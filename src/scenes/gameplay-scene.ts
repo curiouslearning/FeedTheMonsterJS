@@ -5,7 +5,6 @@ import PauseButton from "../components/buttons/pause-button";
 import { LevelIndicators } from "../components/level-indicator";
 import {
   loadImages,
-  loadingScreen,
   PreviousPlayedLevel,
 } from "../common/common";
 import { Debugger, lang, pseudoId } from "../../global-variables";

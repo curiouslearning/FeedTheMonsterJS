@@ -1,13 +1,6 @@
 import {
-    ButtonClick,
     FirebaseUserClicked,
-    FirebaseUserInstall,
-    loadingScreen,
     PWAInstallStatus,
-    UserCancelled,
-    StartScene1,
-    LevelSelection1,
-    GameScene1,
     loadImages
 } from "../common/common";
 import { LevelIndicators } from "../components/level-indicator";
