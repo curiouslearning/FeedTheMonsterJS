@@ -27,7 +27,7 @@ import { Monster } from "../components/monster";
 import { DataModal } from "../../data/data-modal";
 // import { CanvasStack } from "../../utility/canvas-stack";
 import { LevelSelectionScreen } from "../scenes/level-selection-scene";
-import { Debugger, lang } from "../../../global-variables";
+import { Debugger, font, lang } from "../../../global-variables";
 import { Background } from "../components/background"
 import { AudioPlayer } from "../components/audio-player";
 import { FirebaseIntegration } from "../Firebase/firebase-integration";
@@ -199,7 +199,7 @@ export class StartScene {
                 //     this.height / 2
                 // );
                 this.background1.draw();
-                this.context.font = `${this.titleFont}px ${Utils.getLanguageSpecificFont(lang)}, monospace`;
+                this.context.font = `${this.titleFont}px ${font}, monospace`;
                 this.context.fillStyle = "white";
                 this.context.textAlign = "center";
                 this.context.fillText(this.data.title, this.width * 0.5, this.height / 10);
