@@ -211,10 +211,10 @@ export class GameplayScene {
     this.pausePopup.dispose();
   };
 
-  getRandomFeedBackText(randomIndex) {
+  getRandomFeedBackText(randomIndex: number): string {
     const keys = Object.keys(this.feedBackTexts);
     const selectedKey = keys[randomIndex];
-    return this.feedBackTexts[selectedKey];
+    return this.feedBackTexts[selectedKey] as string;
   }
 
   getRandomInt(min: number, max: number) {

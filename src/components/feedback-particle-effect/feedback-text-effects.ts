@@ -43,7 +43,7 @@ export class FeedbackTextEffects {
       this.handleTextWorkerMessage.bind(this)
     );
   }
-  public wrapText(text: any): void {
+  public wrapText(text: string): void {
     console.log(text, ">>>>>>>>>");
     const gradient = this.context.createLinearGradient(
       0,
