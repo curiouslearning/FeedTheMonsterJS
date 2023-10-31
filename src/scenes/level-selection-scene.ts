@@ -306,12 +306,42 @@ export class LevelSelectionScreen{
           }
           for (let i = 0; i < gameLevelData.length; i++) {
             if (s.index - 1 + this.levelSelectionPageIndex == parseInt(gameLevelData[i].levelNumber)) {
-              this.drawStar(s, canvas, gameLevelData[i].starCount, this.context);
+              this.drawStar(s, this.canvas, gameLevelData[i].starCount, this.context);
               break;
             }
           }
         }
       }
+    }
+  }
+  private drawStar(s: any, canvas: any, starCount: number, context) {
+    var imageSize = canvas.height / 5;
+    if (starCount >= 1) {
+      context.drawImage(
+        this.loadedImages.star,
+        s.x,
+        s.y - imageSize * 0.01,
+        imageSize / 5,
+        imageSize / 5
+      );
+    }
+    if (starCount > 1) {
+      context.drawImage(
+        this.loadedImages.star,
+        s.x + imageSize / 2.5,
+        s.y - imageSize * 0.01,
+        imageSize / 5,
+        imageSize / 5
+      );
+    }
+    if (starCount == 3) {
+      context.drawImage(
+        this.loadedImages.star,
+        s.x + imageSize / 5,
+        s.y - imageSize * 0.1,
+        imageSize / 5,
+        imageSize / 5
+      );
     }
   }
   private startGame(level_number: string | number) {
