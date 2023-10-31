@@ -146,11 +146,11 @@ export class LevelSelectionScreen{
       return;
     }
 
-    var xUp = evt.touches[0].clientX;
-    var yUp = evt.touches[0].clientY;
+    let xUp = evt.touches[0].clientX;
+    let yUp = evt.touches[0].clientY;
 
-    var xDiff = this.xDown - xUp;
-    var yDiff = this.yDown - yUp;
+    let xDiff = this.xDown - xUp;
+    let yDiff = this.yDown - yUp;
 
     if (Math.abs(xDiff) > Math.abs(yDiff)) {
       /*most significant*/
@@ -176,7 +176,7 @@ export class LevelSelectionScreen{
   private handleMouseDown = (event) => {
     // return function (event) {
     event.preventDefault();
-    var rect = document.getElementById("canvas").getBoundingClientRect();
+    let rect = document.getElementById("canvas").getBoundingClientRect();
     const x = event.clientX - rect.left;
     const y = event.clientY - rect.top;
     if (
@@ -224,8 +224,8 @@ export class LevelSelectionScreen{
     }
   };
   private drawLevel(s: any, canvas: { height: number }){
-    var imageSize = canvas.height / 5;
-    var textFontSize = imageSize / 6;
+    let imageSize = canvas.height / 5;
+    let textFontSize = imageSize / 6;
     if (s.index + this.levelSelectionPageIndex <= this.data.levels.length) {
       this.context.drawImage(
         this.loadedImages.mapIcon,
@@ -258,7 +258,7 @@ export class LevelSelectionScreen{
     }
   }
   private downButton(level: number) {
-    var imageSize = this.canvas.height / 10;
+    let imageSize = this.canvas.height / 10;
     if (level != this.levelsSectionCount * 10 - 10) {
       this.context.drawImage(
         this.loadedImages.nextbtn,
@@ -315,7 +315,7 @@ export class LevelSelectionScreen{
     }
   }
   private drawStar(s: any, canvas: any, starCount: number, context) {
-    var imageSize = canvas.height / 5;
+    let imageSize = canvas.height / 5;
     if (starCount >= 1) {
       context.drawImage(
         this.loadedImages.star,
