@@ -1,44 +1,58 @@
 import { LevelConfig } from "../common/level-config";
-import { PreviousPlayedLevel, loadImages } from "../common/common";
+import {
+  PreviousPlayedLevel,
+  loadImages,
+} from "../common/common";
 import { Debugger, lang } from "../../global-variables";
 import { GameScore } from "../data/game-score";
 import { AudioPlayer } from "../components/audio-player";
 import { Utils } from "../common/utils";
-import { DataModal } from "../data/data-modal";
 
-let levelNumber: number;
-let self: any;
-let unlockLevelIndex = -1;
-let previousPlayedLevel: number =
+var levelNumber: number;
+var self: any;
+var unlockLevelIndex = -1;
+var previousPlayedLevel: number =
   parseInt(
     Debugger.DebugMode
       ? localStorage.getItem(PreviousPlayedLevel + lang + "Debug")
       : localStorage.getItem(PreviousPlayedLevel + lang)
   ) | 0;
-let level: number;
+var level: number;
 if (previousPlayedLevel != null) {
   level = 10 * Math.floor(previousPlayedLevel / 10);
 }
 export class LevelSelectionScreen {
-  private canvas: HTMLCanvasElement;
-  private data: DataModal;
-  private canavsElement: HTMLCanvasElement;
-  private context: CanvasRenderingContext2D;
-  private levelButtonpos: any;
-  private levelsSectionCount: number;
-  private gameLevelData: any;
-  private callback: any;
-  private images: Object;
-  private loadedImages: any;
-  private imagesLoaded: boolean = false;
-  private xDown: number;
-  private yDown: number;
-  private audioPlayer: AudioPlayer;
+  public canvas: HTMLCanvasElement;
+  public width: number;
+  public height: number;
+  public canvasStack: any;
+  public data: any;
+  public levels: any[];
+  public id: string;
+  public canavsElement: HTMLCanvasElement;
+  public context: CanvasRenderingContext2D;
+  public levelButtonpos: any;
+  public starsId: any;
+  public starsCanavsElement: HTMLElement;
+  public starsContext: any;
+  public levelsSectionCount: number;
+  public gameLevelData: any;
+  public callback: any;
+  public images: Object;
+  public loadedImages: any;
+  public imagesLoaded: boolean = false;
+  public levelNumber: number;
+  public xDown: number;
+  public yDown: number;
+  public audioPlayer: AudioPlayer;
 
-  constructor(canvas: HTMLCanvasElement, data: DataModal, callback: any) {
+  constructor(canvas: HTMLCanvasElement, data: any, callback: any) {
     this.canvas = canvas;
+    this.width = canvas.width;
+    this.height = canvas.height;
     self = this;
     this.data = data;
+    this.levels = [];
     this.levelsSectionCount =
       self.data.levels.length / 10 > Math.floor(self.data.levels.length / 10)
         ? Math.floor(self.data.levels.length / 10) + 1
@@ -65,7 +79,7 @@ export class LevelSelectionScreen {
       this.loadedImages = Object.assign({}, images);
       this.imagesLoaded = true;
       if (document.visibilityState === "visible") {
-        this.audioPlayer.playAudio("./assets/audios/intro.mp3");
+      this.audioPlayer.playAudio( "./assets/audios/intro.mp3");
       }
     });
     this.addListeners();
@@ -97,7 +111,7 @@ export class LevelSelectionScreen {
     ];
   }
 
-  private addListeners() {
+  addListeners() {
     // next prev button listner #1
     document
       .getElementById("canvas")
@@ -116,9 +130,9 @@ export class LevelSelectionScreen {
       .addEventListener("touchmove", this.handleTouchMove, false);
   }
 
-  private pausePlayAudios = () => {
+  pausePlayAudios = () => {
     if (document.visibilityState === "visible") {
-      this.audioPlayer.playAudio("./assets/audios/intro.mp3");
+      this.audioPlayer.playAudio( "./assets/audios/intro.mp3");
     } else {
       this.audioPlayer.stopAllAudios();
     }
@@ -142,11 +156,11 @@ export class LevelSelectionScreen {
       return;
     }
 
-    let xUp = evt.touches[0].clientX;
-    let yUp = evt.touches[0].clientY;
+    var xUp = evt.touches[0].clientX;
+    var yUp = evt.touches[0].clientY;
 
-    let xDiff = this.xDown - xUp;
-    let yDiff = this.yDown - yUp;
+    var xDiff = this.xDown - xUp;
+    var yDiff = this.yDown - yUp;
 
     if (Math.abs(xDiff) > Math.abs(yDiff)) {
       /*most significant*/
@@ -175,9 +189,10 @@ export class LevelSelectionScreen {
     this.yDown = null;
   };
 
-  private handleMouseDown = (event) => {
+  handleMouseDown = (event) => {
+    // return function (event) {
     event.preventDefault();
-    let rect = document.getElementById("canvas").getBoundingClientRect();
+    var rect = document.getElementById("canvas").getBoundingClientRect();
     const x = event.clientX - rect.left;
     const y = event.clientY - rect.top;
     if (
@@ -213,23 +228,22 @@ export class LevelSelectionScreen {
         ) < 45
       ) {
         if (Debugger.DebugMode) {
-          this.audioPlayer.playButtonClickSound(
-            "./assets/audios/ButtonClick.mp3"
-          );
+          this.audioPlayer.playButtonClickSound("./assets/audios/ButtonClick.mp3");
+          // self.sound.pauseSound();
           levelNumber = s.index + level - 1;
           self.startGame(levelNumber);
         } else if (s.index + level - 1 <= unlockLevelIndex + 1) {
-          this.audioPlayer.playButtonClickSound(
-            "./assets/audios/ButtonClick.mp3"
-          );
+          this.audioPlayer.playButtonClickSound( "./assets/audios/ButtonClick.mp3");
+          // self.sound.pauseSound();
           levelNumber = s.index + level - 1;
           self.startGame(levelNumber);
         }
       }
     }
+    // };
   };
 
-  public drawLevelSelection() {
+  testDraw() {
     if (this.imagesLoaded) {
       this.context.drawImage(
         this.loadedImages.map,
@@ -238,30 +252,56 @@ export class LevelSelectionScreen {
         this.canvas.width,
         this.canvas.height
       );
-      this.draw();
+      this.draw(1);
       this.downButton(level);
       this.drawStars(this.gameLevelData);
     }
   }
-
-  private createLevelButtons(levelButtonpos: any) {
-    let poss = levelButtonpos[0];
-    let i = 0;
+  gameSceneCallBack(button_name: string) {
+    switch (button_name) {
+      case "next_button": {
+        self.startGame((levelNumber += 1));
+        break;
+      }
+      case "retry_button": {
+        self.startGame(levelNumber);
+        break;
+      }
+      case "close_button": {
+        this.audioPlayer.playAudio( "./assets/audios/intro.mp3");
+        self.drawStars();
+      }
+    }
+  }
+  createCanvas() {
+    if (document.visibilityState === "visible") {
+      console.log(">>>>>>>>>>>>>>>>>>>>>>>> Vissible");
+      this.audioPlayer.playAudio( "./assets/audios/intro.mp3");
+      }else{
+        console.log(">>>>>>>>>>>>>>>>>>>>>>>> Not Vissible");
+      }
+    
+  }
+  createLevelButtons(levelButtonpos: any) {
+    var poss = levelButtonpos[0];
+    var i = 0;
     for (let s = 0; s < 10; s++) {
-      let ns = new LevelConfig(poss[i][0], poss[i][1], i + 1);
+      var ns = new LevelConfig(poss[i][0], poss[i][1], i + 1);
       self.levels.push(ns);
       i += 1;
     }
+    // this.draw(level);
+    // this.downButton(level);
   }
-  private draw() {
+  draw(level: number) {
     for (let s of self.levels) {
       this.drawlevel(s, self.canvas);
     }
   }
 
   // hides or shows next and previous buttons
-  private downButton(level: number) {
-    let imageSize = self.canvas.height / 10;
+  downButton(level: number) {
+    var imageSize = self.canvas.height / 10;
     if (level != self.levelsSectionCount * 10 - 10) {
       this.context.drawImage(
         this.loadedImages.nextbtn,
@@ -282,9 +322,9 @@ export class LevelSelectionScreen {
     }
   }
   // drawing level bg icon+ leevel numer
-  private drawlevel(s: any, canvas: { height: number }) {
-    let imageSize = canvas.height / 5;
-    let textFontSize = imageSize / 6;
+  drawlevel(s: any, canvas: { height: number }) {
+    var imageSize = canvas.height / 5;
+    var textFontSize = imageSize / 6;
     if (s.index + level <= self.data.levels.length) {
       this.context.drawImage(
         this.loadedImages.mapIcon,
@@ -294,18 +334,14 @@ export class LevelSelectionScreen {
         imageSize
       );
       this.context.fillStyle = "white";
-      this.context.font =
-        textFontSize + `px ${Utils.getLanguageSpecificFont(lang)}, monospace`;
+      this.context.font = textFontSize + `px ${Utils.getLanguageSpecificFont(lang)}, monospace`;
       this.context.textAlign = "center";
       this.context.fillText(
         s.index + level,
         s.x + imageSize / 3.5,
         s.y + imageSize / 3
       );
-      this.context.font =
-        textFontSize -
-        imageSize / 30 +
-        `px ${Utils.getLanguageSpecificFont(lang)}, monospace`;
+      this.context.font = textFontSize - imageSize / 30 + `px ${Utils.getLanguageSpecificFont(lang)}, monospace`;
       Debugger.DebugMode
         ? this.context.fillText(
             this.data.levels[s.index + level - 1].levelMeta.levelType,
@@ -315,21 +351,23 @@ export class LevelSelectionScreen {
         : null;
     }
   }
-  private startGame(level_number: string | number) {
+  startGame(level_number: string | number) {
     this.dispose();
     this.audioPlayer.stopAllAudios();
+    // StartScene.SceneName = GameScene1;
     let gamePlayData = {
       currentLevelData: self.data.levels[level_number],
       selectedLevelNumber: level_number,
     };
-    this.callback(gamePlayData, "LevelSelection");
+    this.callback(gamePlayData,'LevelSelection');
   }
 
   // draw stars on top of level number
-  private drawStars(gameLevelData) {
+  drawStars(gameLevelData) {
     let canvas = document.getElementById("canvas");
-    let canavsElement = <HTMLCanvasElement>document.getElementById("canvas");
-    let context = canavsElement.getContext("2d");
+    var canavsElement = <HTMLCanvasElement>document.getElementById("canvas");
+    var context = canavsElement.getContext("2d");
+    // context.clearRect(0, 0, this.canvas.width, this.canvas.height);
     if (gameLevelData != null) {
       if (gameLevelData.length != undefined) {
         for (let game of gameLevelData) {
@@ -363,8 +401,8 @@ export class LevelSelectionScreen {
       }
     }
   }
-  private drawStar(s: any, canvas: any, starCount: number, context) {
-    let imageSize = canvas.height / 5;
+  drawStar(s: any, canvas: any, starCount: number, context) {
+    var imageSize = canvas.height / 5;
     if (starCount >= 1) {
       context.drawImage(
         this.loadedImages.star,
@@ -394,7 +432,7 @@ export class LevelSelectionScreen {
     }
   }
 
-  public dispose = () => {
+  dispose = () => {
     // remove listeners
     this.audioPlayer.stopAllAudios();
 
