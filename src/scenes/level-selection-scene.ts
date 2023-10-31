@@ -12,7 +12,7 @@ export class LevelSelectionScreen{
   private levelButtonPos:any;
   private canvasElement:HTMLCanvasElement;
   private context:CanvasRenderingContext2D;
-  private levels:[];
+  private levels:any;
   private gameLevelData:any;
   public callBack:any;
   private audioPlayer:AudioPlayer;
