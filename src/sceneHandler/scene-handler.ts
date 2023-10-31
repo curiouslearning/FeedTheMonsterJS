@@ -89,7 +89,7 @@ export class SceneHandler {
       this.loading ? this.loadingScreen.draw(deltaTime) : null;
     } else if (SceneHandler.SceneName == LevelSelection1) {
       this.loading ? this.loadingScreen.draw(deltaTime) : null;
-      this.levelSelectionScene.testDraw();
+      this.levelSelectionScene.drawLevelSelection();
     } else if (SceneHandler.SceneName == GameScene1) {
       this.loading ? this.loadingScreen.draw(deltaTime) : null;
       this.gameplayScene.draw(deltaTime);
