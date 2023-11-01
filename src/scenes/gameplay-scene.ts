@@ -572,6 +572,7 @@ export class GameplayScene {
     this.score += 100;
     console.log("handleCorrectStone->");
     // this.audioPlayer.playAudio(false, "./assets/audios/Eat.mp3","./assets/audios/Cheering-02.mp3", "./assets/audios/fantastic.WAV");
+    console.log(this.getRandomFeedBackText(feedbackIndex));
     this.feedbackTextEffects.wrapText(
       this.getRandomFeedBackText(feedbackIndex)
     );
