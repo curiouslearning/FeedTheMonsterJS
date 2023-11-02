@@ -851,7 +851,7 @@ if __name__ == '__main__':
             # print(wav_unique_prompt_texts)
             output_folder=f'/run/media/amitsingh/New Volume/Sutara/NewProject/FeedTheMonsterJS/lang/{lang}/audios'
             
-            download_github_audios(owner,repo,"");
+            # download_github_audios(owner,repo,"");
             
             missing_audios =  check_missing_audios(unique_prompt_texts,output_folder);
             missing_wav_audios=find_missing_wav_audios(missing_audios)
