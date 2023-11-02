@@ -832,7 +832,7 @@ if __name__ == '__main__':
     receiver=["amit@sutara.org","nikhilchoudhary@sutara.org"]
     owner = 'curiouslearning'
     repo = 'ftm-languagepacks'
-    github_access_token="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"
+    github_access_token="please enter your github access token"
     lang=getLanguage();
     missing_audios =set()
     missing_audios_in_drive=[]
