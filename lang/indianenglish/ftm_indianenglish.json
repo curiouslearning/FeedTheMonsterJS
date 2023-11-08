@@ -1,0 +1,8279 @@
+{
+  "title": "Feed the Monster",
+  "RightToLeft": false,
+  "FeedbackTexts": [
+    "Fantastic"
+  ],
+  "majversion": 3,
+  "minversion": 3,
+  "langname": "INDIANENGLISH",
+  "FeedbackAudios": [
+    "https://feedthemonster.curiouscontent.org/lang/indianenglish/audios/fantastic.mp3"
+  ],
+  "OtherAudios": {
+    "Select your player": "https://feedthemonster.curiouscontent.org/lang/indianenglish/audios/Select-your-player.mp3",
+    "Watch me grow": "https://feedthemonster.curiouscontent.org/lang/indianenglish/audios/watch-me-grow.mp3",
+    "Are you sure": "https://feedthemonster.curiouscontent.org/lang/indianenglish/audios/are-you-sure.mp3"
+  },
+  "Levels": [
+    {
+      "LevelMeta": {
+        "LevelNumber": 0,
+        "PromptType": "Visible",
+        "LevelType": "LetterOnly",
+        "csvType": "match",
+        "PromptFadeout": 0,
+        "LetterGroup": 1
+      },
+      "Puzzles": [
+        {
+          "SegmentNumber": 0,
+          "targetstones": [
+            {
+              "StoneText": "m"
+            }
+          ],
+          "prompt": {
+            "PromptText": "m",
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/indianenglish/audios/m.mp3"
+          },
+          "foilstones": [
+            {
+              "StoneText": "m"
+            },
+            {
+              "StoneText": "n"
+            }
+          ]
+        },
+        {
+          "SegmentNumber": 1,
+          "targetstones": [
+            {
+              "StoneText": "p"
+            }
+          ],
+          "prompt": {
+            "PromptText": "p",
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/indianenglish/audios/p.mp3"
+          },
+          "foilstones": [
+            {
+              "StoneText": "c"
+            },
+            {
+              "StoneText": "t"
+            }
+          ]
+        },
+        {
+          "SegmentNumber": 2,
+          "targetstones": [
+            {
+              "StoneText": "t"
+            }
+          ],
+          "prompt": {
+            "PromptText": "t",
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/indianenglish/audios/t.mp3"
+          },
+          "foilstones": [
+            {
+              "StoneText": "t"
+            },
+            {
+              "StoneText": "c"
+            }
+          ]
+        },
+        {
+          "SegmentNumber": 3,
+          "targetstones": [
+            {
+              "StoneText": "n"
+            }
+          ],
+          "prompt": {
+            "PromptText": "n",
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/indianenglish/audios/n.mp3"
+          },
+          "foilstones": [
+            {
+              "StoneText": "p"
+            },
+            {
+              "StoneText": "t"
+            }
+          ]
+        },
+        {
+          "SegmentNumber": 4,
+          "targetstones": [
+            {
+              "StoneText": "c"
+            }
+          ],
+          "prompt": {
+            "PromptText": "c",
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/indianenglish/audios/c.mp3"
+          },
+          "foilstones": [
+            {
+              "StoneText": "t"
+            },
+            {
+              "StoneText": "c"
+            },
+            {
+              "StoneText": "p"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "LevelMeta": {
+        "LevelNumber": 1,
+        "PromptType": "Visible",
+        "LevelType": "LetterOnly",
+        "csvType": "match",
+        "PromptFadeout": 0,
+        "LetterGroup": 1
+      },
+      "Puzzles": [
+        {
+          "SegmentNumber": 0,
+          "targetstones": [
+            {
+              "StoneText": "m"
+            }
+          ],
+          "prompt": {
+            "PromptText": "m",
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/indianenglish/audios/m.mp3"
+          },
+          "foilstones": [
+            {
+              "StoneText": "m"
+            },
+            {
+              "StoneText": "t"
+            },
+            {
+              "StoneText": "c"
+            }
+          ]
+        },
+        {
+          "SegmentNumber": 1,
+          "targetstones": [
+            {
+              "StoneText": "c"
+            }
+          ],
+          "prompt": {
+            "PromptText": "c",
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/indianenglish/audios/c.mp3"
+          },
+          "foilstones": [
+            {
+              "StoneText": "p"
+            },
+            {
+              "StoneText": "c"
+            },
+            {
+              "StoneText": "t"
+            }
+          ]
+        },
+        {
+          "SegmentNumber": 2,
+          "targetstones": [
+            {
+              "StoneText": "n"
+            }
+          ],
+          "prompt": {
+            "PromptText": "n",
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/indianenglish/audios/n.mp3"
+          },
+          "foilstones": [
+            {
+              "StoneText": "t"
+            },
+            {
+              "StoneText": "t"
+            },
+            {
+              "StoneText": "p"
+            }
+          ]
+        },
+        {
+          "SegmentNumber": 3,
+          "targetstones": [
+            {
+              "StoneText": "t"
+            }
+          ],
+          "prompt": {
+            "PromptText": "t",
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/indianenglish/audios/t.mp3"
+          },
+          "foilstones": [
+            {
+              "StoneText": "p"
+            },
+            {
+              "StoneText": "n"
+            },
+            {
+              "StoneText": "m"
+            }
+          ]
+        },
+        {
+          "SegmentNumber": 4,
+          "targetstones": [
+            {
+              "StoneText": "p"
+            }
+          ],
+          "prompt": {
+            "PromptText": "p",
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/indianenglish/audios/p.mp3"
+          },
+          "foilstones": [
+            {
+              "StoneText": "c"
+            },
+            {
+              "StoneText": "t"
+            },
+            {
+              "StoneText": "n"
+            },
+            {
+              "StoneText": "t"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "LevelMeta": {
+        "LevelNumber": 2,
+        "PromptType": "Hidden",
+        "LevelType": "LetterOnly",
+        "csvType": "matchSound",
+        "PromptFadeout": 0,
+        "LetterGroup": 1
+      },
+      "Puzzles": [
+        {
+          "SegmentNumber": 0,
+          "targetstones": [
+            {
+              "StoneText": "p"
+            }
+          ],
+          "prompt": {
+            "PromptText": "p",
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/indianenglish/audios/p.mp3"
+          },
+          "foilstones": [
+            {
+              "StoneText": "n"
+            },
+            {
+              "StoneText": "c"
+            }
+          ]
+        },
+        {
+          "SegmentNumber": 1,
+          "targetstones": [
+            {
+              "StoneText": "m"
+            }
+          ],
+          "prompt": {
+            "PromptText": "m",
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/indianenglish/audios/m.mp3"
+          },
+          "foilstones": [
+            {
+              "StoneText": "m"
+            },
+            {
+              "StoneText": "m"
+            }
+          ]
+        },
+        {
+          "SegmentNumber": 2,
+          "targetstones": [
+            {
+              "StoneText": "n"
+            }
+          ],
+          "prompt": {
+            "PromptText": "n",
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/indianenglish/audios/n.mp3"
+          },
+          "foilstones": [
+            {
+              "StoneText": "n"
+            },
+            {
+              "StoneText": "t"
+            }
+          ]
+        },
+        {
+          "SegmentNumber": 3,
+          "targetstones": [
+            {
+              "StoneText": "c"
+            }
+          ],
+          "prompt": {
+            "PromptText": "c",
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/indianenglish/audios/c.mp3"
+          },
+          "foilstones": [
+            {
+              "StoneText": "p"
+            },
+            {
+              "StoneText": "m"
+            }
+          ]
+        },
+        {
+          "SegmentNumber": 4,
+          "targetstones": [
+            {
+              "StoneText": "t"
+            }
+          ],
+          "prompt": {
+            "PromptText": "t",
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/indianenglish/audios/t.mp3"
+          },
+          "foilstones": [
+            {
+              "StoneText": "c"
+            },
+            {
+              "StoneText": "t"
+            },
+            {
+              "StoneText": "t"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "LevelMeta": {
+        "LevelNumber": 3,
+        "PromptType": "Visible",
+        "LevelType": "LetterOnly",
+        "csvType": "match",
+        "PromptFadeout": 0,
+        "LetterGroup": 2
+      },
+      "Puzzles": [
+        {
+          "SegmentNumber": 0,
+          "targetstones": [
+            {
+              "StoneText": "a"
+            }
+          ],
+          "prompt": {
+            "PromptText": "a",
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/indianenglish/audios/a.mp3"
+          },
+          "foilstones": [
+            {
+              "StoneText": "a"
+            },
+            {
+              "StoneText": "a"
+            }
+          ]
+        },
+        {
+          "SegmentNumber": 1,
+          "targetstones": [
+            {
+              "StoneText": "m"
+            }
+          ],
+          "prompt": {
+            "PromptText": "m",
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/indianenglish/audios/m.mp3"
+          },
+          "foilstones": [
+            {
+              "StoneText": "p"
+            },
+            {
+              "StoneText": "a"
+            }
+          ]
+        },
+        {
+          "SegmentNumber": 2,
+          "targetstones": [
+            {
+              "StoneText": "n"
+            }
+          ],
+          "prompt": {
+            "PromptText": "n",
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/indianenglish/audios/n.mp3"
+          },
+          "foilstones": [
+            {
+              "StoneText": "c"
+            },
+            {
+              "StoneText": "n"
+            }
+          ]
+        },
+        {
+          "SegmentNumber": 3,
+          "targetstones": [
+            {
+              "StoneText": "p"
+            }
+          ],
+          "prompt": {
+            "PromptText": "p",
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/indianenglish/audios/p.mp3"
+          },
+          "foilstones": [
+            {
+              "StoneText": "p"
+            },
+            {
+              "StoneText": "a"
+            }
+          ]
+        },
+        {
+          "SegmentNumber": 4,
+          "targetstones": [
+            {
+              "StoneText": "a"
+            }
+          ],
+          "prompt": {
+            "PromptText": "a",
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/indianenglish/audios/a.mp3"
+          },
+          "foilstones": [
+            {
+              "StoneText": "n"
+            },
+            {
+              "StoneText": "a"
+            },
+            {
+              "StoneText": "t"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "LevelMeta": {
+        "LevelNumber": 4,
+        "PromptType": "Visible",
+        "LevelType": "LetterOnly",
+        "csvType": "match",
+        "PromptFadeout": 0,
+        "LetterGroup": 2
+      },
+      "Puzzles": [
+        {
+          "SegmentNumber": 0,
+          "targetstones": [
+            {
+              "StoneText": "c"
+            }
+          ],
+          "prompt": {
+            "PromptText": "c",
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/indianenglish/audios/c.mp3"
+          },
+          "foilstones": [
+            {
+              "StoneText": "b"
+            },
+            {
+              "StoneText": "m"
+            },
+            {
+              "StoneText": "c"
+            }
+          ]
+        },
+        {
+          "SegmentNumber": 1,
+          "targetstones": [
+            {
+              "StoneText": "p"
+            }
+          ],
+          "prompt": {
+            "PromptText": "p",
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/indianenglish/audios/p.mp3"
+          },
+          "foilstones": [
+            {
+              "StoneText": "n"
+            },
+            {
+              "StoneText": "a"
+            },
+            {
+              "StoneText": "c"
+            }
+          ]
+        },
+        {
+          "SegmentNumber": 2,
+          "targetstones": [
+            {
+              "StoneText": "t"
+            }
+          ],
+          "prompt": {
+            "PromptText": "t",
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/indianenglish/audios/t.mp3"
+          },
+          "foilstones": [
+            {
+              "StoneText": "p"
+            },
+            {
+              "StoneText": "t"
+            },
+            {
+              "StoneText": "p"
+            }
+          ]
+        },
+        {
+          "SegmentNumber": 3,
+          "targetstones": [
+            {
+              "StoneText": "a"
+            }
+          ],
+          "prompt": {
+            "PromptText": "a",
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/indianenglish/audios/a.mp3"
+          },
+          "foilstones": [
+            {
+              "StoneText": "c"
+            },
+            {
+              "StoneText": "a"
+            },
+            {
+              "StoneText": "m"
+            }
+          ]
+        },
+        {
+          "SegmentNumber": 4,
+          "targetstones": [
+            {
+              "StoneText": "b"
+            }
+          ],
+          "prompt": {
+            "PromptText": "b",
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/indianenglish/audios/b.mp3"
+          },
+          "foilstones": [
+            {
+              "StoneText": "b"
+            },
+            {
+              "StoneText": "t"
+            },
+            {
+              "StoneText": "c"
+            },
+            {
+              "StoneText": "c"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "LevelMeta": {
+        "LevelNumber": 5,
+        "PromptType": "Hidden",
+        "LevelType": "LetterOnly",
+        "csvType": "matchSound",
+        "PromptFadeout": 0,
+        "LetterGroup": 2
+      },
+      "Puzzles": [
+        {
+          "SegmentNumber": 0,
+          "targetstones": [
+            {
+              "StoneText": "a"
+            }
+          ],
+          "prompt": {
+            "PromptText": "a",
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/indianenglish/audios/a.mp3"
+          },
+          "foilstones": [
+            {
+              "StoneText": "t"
+            },
+            {
+              "StoneText": "c"
+            },
+            {
+              "StoneText": "c"
+            }
+          ]
+        },
+        {
+          "SegmentNumber": 1,
+          "targetstones": [
+            {
+              "StoneText": "m"
+            }
+          ],
+          "prompt": {
+            "PromptText": "m",
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/indianenglish/audios/m.mp3"
+          },
+          "foilstones": [
+            {
+              "StoneText": "m"
+            },
+            {
+              "StoneText": "b"
+            },
+            {
+              "StoneText": "n"
+            }
+          ]
+        },
+        {
+          "SegmentNumber": 2,
+          "targetstones": [
+            {
+              "StoneText": "t"
+            }
+          ],
+          "prompt": {
+            "PromptText": "t",
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/indianenglish/audios/t.mp3"
+          },
+          "foilstones": [
+            {
+              "StoneText": "p"
+            },
+            {
+              "StoneText": "n"
+            },
+            {
+              "StoneText": "b"
+            }
+          ]
+        },
+        {
+          "SegmentNumber": 3,
+          "targetstones": [
+            {
+              "StoneText": "c"
+            }
+          ],
+          "prompt": {
+            "PromptText": "c",
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/indianenglish/audios/c.mp3"
+          },
+          "foilstones": [
+            {
+              "StoneText": "t"
+            },
+            {
+              "StoneText": "n"
+            },
+            {
+              "StoneText": "b"
+            }
+          ]
+        },
+        {
+          "SegmentNumber": 4,
+          "targetstones": [
+            {
+              "StoneText": "n"
+            }
+          ],
+          "prompt": {
+            "PromptText": "n",
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/indianenglish/audios/n.mp3"
+          },
+          "foilstones": [
+            {
+              "StoneText": "a"
+            },
+            {
+              "StoneText": "c"
+            },
+            {
+              "StoneText": "c"
+            },
+            {
+              "StoneText": "m"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "LevelMeta": {
+        "LevelNumber": 6,
+        "PromptType": "Visible",
+        "LevelType": "LetterInWord",
+        "csvType": "matchfirst",
+        "PromptFadeout": 0,
+        "LetterGroup": 3
+      },
+      "Puzzles": [
+        {
+          "SegmentNumber": 0,
+          "targetstones": [
+            {
+              "StoneText": "p"
+            }
+          ],
+          "prompt": {
+            "PromptText": "pat",
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/indianenglish/audios/p.mp3"
+          },
+          "foilstones": [
+            {
+              "StoneText": "b"
+            },
+            {
+              "StoneText": "n"
+            },
+            {
+              "StoneText": "p"
+            }
+          ]
+        },
+        {
+          "SegmentNumber": 1,
+          "targetstones": [
+            {
+              "StoneText": "m"
+            }
+          ],
+          "prompt": {
+            "PromptText": "mat",
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/indianenglish/audios/m.mp3"
+          },
+          "foilstones": [
+            {
+              "StoneText": "t"
+            },
+            {
+              "StoneText": "b"
+            },
+            {
+              "StoneText": "a"
+            }
+          ]
+        },
+        {
+          "SegmentNumber": 2,
+          "targetstones": [
+            {
+              "StoneText": "c"
+            }
+          ],
+          "prompt": {
+            "PromptText": "cat",
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/indianenglish/audios/c.mp3"
+          },
+          "foilstones": [
+            {
+              "StoneText": "m"
+            },
+            {
+              "StoneText": "a"
+            },
+            {
+              "StoneText": "m"
+            }
+          ]
+        },
+        {
+          "SegmentNumber": 3,
+          "targetstones": [
+            {
+              "StoneText": "t"
+            }
+          ],
+          "prompt": {
+            "PromptText": "tap",
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/indianenglish/audios/t.mp3"
+          },
+          "foilstones": [
+            {
+              "StoneText": "p"
+            },
+            {
+              "StoneText": "t"
+            },
+            {
+              "StoneText": "p"
+            }
+          ]
+        },
+        {
+          "SegmentNumber": 4,
+          "targetstones": [
+            {
+              "StoneText": "n"
+            }
+          ],
+          "prompt": {
+            "PromptText": "nap",
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/indianenglish/audios/n.mp3"
+          },
+          "foilstones": [
+            {
+              "StoneText": "c"
+            },
+            {
+              "StoneText": "c"
+            },
+            {
+              "StoneText": "m"
+            },
+            {
+              "StoneText": "m"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "LevelMeta": {
+        "LevelNumber": 7,
+        "PromptType": "Visible",
+        "LevelType": "LetterInWord",
+        "csvType": "matchfirst",
+        "PromptFadeout": 0,
+        "LetterGroup": 3
+      },
+      "Puzzles": [
+        {
+          "SegmentNumber": 0,
+          "targetstones": [
+            {
+              "StoneText": "a"
+            }
+          ],
+          "prompt": {
+            "PromptText": "at",
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/indianenglish/audios/a.mp3"
+          },
+          "foilstones": [
+            {
+              "StoneText": "m"
+            },
+            {
+              "StoneText": "a"
+            },
+            {
+              "StoneText": "c"
+            }
+          ]
+        },
+        {
+          "SegmentNumber": 1,
+          "targetstones": [
+            {
+              "StoneText": "p"
+            }
+          ],
+          "prompt": {
+            "PromptText": "pam",
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/indianenglish/audios/p.mp3"
+          },
+          "foilstones": [
+            {
+              "StoneText": "a"
+            },
+            {
+              "StoneText": "m"
+            },
+            {
+              "StoneText": "a"
+            }
+          ]
+        },
+        {
+          "SegmentNumber": 2,
+          "targetstones": [
+            {
+              "StoneText": "t"
+            }
+          ],
+          "prompt": {
+            "PromptText": "tam",
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/indianenglish/audios/t.mp3"
+          },
+          "foilstones": [
+            {
+              "StoneText": "b"
+            },
+            {
+              "StoneText": "t"
+            },
+            {
+              "StoneText": "t"
+            }
+          ]
+        },
+        {
+          "SegmentNumber": 3,
+          "targetstones": [
+            {
+              "StoneText": "t"
+            }
+          ],
+          "prompt": {
+            "PromptText": "tab",
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/indianenglish/audios/t.mp3"
+          },
+          "foilstones": [
+            {
+              "StoneText": "p"
+            },
+            {
+              "StoneText": "a"
+            },
+            {
+              "StoneText": "t"
+            }
+          ]
+        },
+        {
+          "SegmentNumber": 4,
+          "targetstones": [
+            {
+              "StoneText": "m"
+            }
+          ],
+          "prompt": {
+            "PromptText": "mat",
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/indianenglish/audios/m.mp3"
+          },
+          "foilstones": [
+            {
+              "StoneText": "c"
+            },
+            {
+              "StoneText": "t"
+            },
+            {
+              "StoneText": "t"
+            },
+            {
+              "StoneText": "t"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "LevelMeta": {
+        "LevelNumber": 8,
+        "PromptType": "Visible",
+        "LevelType": "LetterInWord",
+        "csvType": "matchfirst",
+        "PromptFadeout": 0,
+        "LetterGroup": 3
+      },
+      "Puzzles": [
+        {
+          "SegmentNumber": 0,
+          "targetstones": [
+            {
+              "StoneText": "m"
+            }
+          ],
+          "prompt": {
+            "PromptText": "mat",
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/indianenglish/audios/m.mp3"
+          },
+          "foilstones": [
+            {
+              "StoneText": "m"
+            },
+            {
+              "StoneText": "m"
+            },
+            {
+              "StoneText": "t"
+            }
+          ]
+        },
+        {
+          "SegmentNumber": 1,
+          "targetstones": [
+            {
+              "StoneText": "p"
+            }
+          ],
+          "prompt": {
+            "PromptText": "pam",
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/indianenglish/audios/p.mp3"
+          },
+          "foilstones": [
+            {
+              "StoneText": "c"
+            },
+            {
+              "StoneText": "p"
+            },
+            {
+              "StoneText": "p"
+            }
+          ]
+        },
+        {
+          "SegmentNumber": 2,
+          "targetstones": [
+            {
+              "StoneText": "c"
+            }
+          ],
+          "prompt": {
+            "PromptText": "cat",
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/indianenglish/audios/c.mp3"
+          },
+          "foilstones": [
+            {
+              "StoneText": "p"
+            },
+            {
+              "StoneText": "t"
+            },
+            {
+              "StoneText": "t"
+            }
+          ]
+        },
+        {
+          "SegmentNumber": 3,
+          "targetstones": [
+            {
+              "StoneText": "p"
+            }
+          ],
+          "prompt": {
+            "PromptText": "pan",
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/indianenglish/audios/p.mp3"
+          },
+          "foilstones": [
+            {
+              "StoneText": "m"
+            },
+            {
+              "StoneText": "c"
+            },
+            {
+              "StoneText": "c"
+            }
+          ]
+        },
+        {
+          "SegmentNumber": 4,
+          "targetstones": [
+            {
+              "StoneText": "t"
+            }
+          ],
+          "prompt": {
+            "PromptText": "tap",
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/indianenglish/audios/t.mp3"
+          },
+          "foilstones": [
+            {
+              "StoneText": "c"
+            },
+            {
+              "StoneText": "m"
+            },
+            {
+              "StoneText": "m"
+            },
+            {
+              "StoneText": "m"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "LevelMeta": {
+        "LevelNumber": 9,
+        "PromptType": "Visible",
+        "LevelType": "Word",
+        "csvType": "spell",
+        "PromptFadeout": "4",
+        "LetterGroup": 3
+      },
+      "Puzzles": [
+        {
+          "SegmentNumber": 0,
+          "targetstones": [
+            {
+              "StoneText": "m"
+            },
+            {
+              "StoneText": "a"
+            },
+            {
+              "StoneText": "t"
+            }
+          ],
+          "prompt": {
+            "PromptText": "mat",
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/indianenglish/audios/mat.mp3"
+          },
+          "foilstones": [
+            {
+              "StoneText": "c"
+            },
+            {
+              "StoneText": "c"
+            },
+            {
+              "StoneText": "c"
+            }
+          ]
+        },
+        {
+          "SegmentNumber": 1,
+          "targetstones": [
+            {
+              "StoneText": "t"
+            },
+            {
+              "StoneText": "a"
+            },
+            {
+              "StoneText": "p"
+            }
+          ],
+          "prompt": {
+            "PromptText": "tap",
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/indianenglish/audios/tap.mp3"
+          },
+          "foilstones": [
+            {
+              "StoneText": "t"
+            },
+            {
+              "StoneText": "p"
+            },
+            {
+              "StoneText": "t"
+            },
+            {
+              "StoneText": "c"
+            }
+          ]
+        },
+        {
+          "SegmentNumber": 2,
+          "targetstones": [
+            {
+              "StoneText": "p"
+            },
+            {
+              "StoneText": "a"
+            },
+            {
+              "StoneText": "m"
+            }
+          ],
+          "prompt": {
+            "PromptText": "pam",
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/indianenglish/audios/pam.mp3"
+          },
+          "foilstones": [
+            {
+              "StoneText": "p"
+            },
+            {
+              "StoneText": "a"
+            },
+            {
+              "StoneText": "a"
+            }
+          ]
+        },
+        {
+          "SegmentNumber": 3,
+          "targetstones": [
+            {
+              "StoneText": "c"
+            },
+            {
+              "StoneText": "a"
+            },
+            {
+              "StoneText": "t"
+            }
+          ],
+          "prompt": {
+            "PromptText": "cat",
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/indianenglish/audios/cat.mp3"
+          },
+          "foilstones": [
+            {
+              "StoneText": "t"
+            },
+            {
+              "StoneText": "a"
+            },
+            {
+              "StoneText": "t"
+            }
+          ]
+        },
+        {
+          "SegmentNumber": 4,
+          "targetstones": [
+            {
+              "StoneText": "t"
+            },
+            {
+              "StoneText": "a"
+            },
+            {
+              "StoneText": "m"
+            }
+          ],
+          "prompt": {
+            "PromptText": "tam",
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/indianenglish/audios/tam.mp3"
+          },
+          "foilstones": [
+            {
+              "StoneText": "a"
+            },
+            {
+              "StoneText": "a"
+            },
+            {
+              "StoneText": "c"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "LevelMeta": {
+        "LevelNumber": 10,
+        "PromptType": "Visible",
+        "LevelType": "Word",
+        "csvType": "spell",
+        "PromptFadeout": 0,
+        "LetterGroup": 4
+      },
+      "Puzzles": [
+        {
+          "SegmentNumber": 0,
+          "targetstones": [
+            {
+              "StoneText": "c"
+            },
+            {
+              "StoneText": "a"
+            },
+            {
+              "StoneText": "t"
+            }
+          ],
+          "prompt": {
+            "PromptText": "cat",
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/indianenglish/audios/cat.mp3"
+          },
+          "foilstones": [
+            {
+              "StoneText": "p"
+            },
+            {
+              "StoneText": "a"
+            },
+            {
+              "StoneText": "b"
+            }
+          ]
+        },
+        {
+          "SegmentNumber": 1,
+          "targetstones": [
+            {
+              "StoneText": "t"
+            },
+            {
+              "StoneText": "a"
+            },
+            {
+              "StoneText": "n"
+            }
+          ],
+          "prompt": {
+            "PromptText": "tan",
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/indianenglish/audios/tan.mp3"
+          },
+          "foilstones": [
+            {
+              "StoneText": "a"
+            },
+            {
+              "StoneText": "t"
+            },
+            {
+              "StoneText": "b"
+            }
+          ]
+        },
+        {
+          "SegmentNumber": 2,
+          "targetstones": [
+            {
+              "StoneText": "n"
+            },
+            {
+              "StoneText": "a"
+            },
+            {
+              "StoneText": "p"
+            }
+          ],
+          "prompt": {
+            "PromptText": "nap",
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/indianenglish/audios/nap.mp3"
+          },
+          "foilstones": [
+            {
+              "StoneText": "m"
+            },
+            {
+              "StoneText": "n"
+            },
+            {
+              "StoneText": "a"
+            }
+          ]
+        },
+        {
+          "SegmentNumber": 3,
+          "targetstones": [
+            {
+              "StoneText": "p"
+            },
+            {
+              "StoneText": "a"
+            },
+            {
+              "StoneText": "t"
+            }
+          ],
+          "prompt": {
+            "PromptText": "pat",
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/indianenglish/audios/pat.mp3"
+          },
+          "foilstones": [
+            {
+              "StoneText": "n"
+            },
+            {
+              "StoneText": "a"
+            },
+            {
+              "StoneText": "t"
+            },
+            {
+              "StoneText": "n"
+            }
+          ]
+        },
+        {
+          "SegmentNumber": 4,
+          "targetstones": [
+            {
+              "StoneText": "c"
+            },
+            {
+              "StoneText": "a"
+            },
+            {
+              "StoneText": "p"
+            }
+          ],
+          "prompt": {
+            "PromptText": "cap",
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/indianenglish/audios/cap.mp3"
+          },
+          "foilstones": [
+            {
+              "StoneText": "t"
+            },
+            {
+              "StoneText": "c"
+            },
+            {
+              "StoneText": "a"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "LevelMeta": {
+        "LevelNumber": 11,
+        "PromptType": "Hidden",
+        "LevelType": "Word",
+        "csvType": "spellSound",
+        "PromptFadeout": 0,
+        "LetterGroup": 4
+      },
+      "Puzzles": [
+        {
+          "SegmentNumber": 0,
+          "targetstones": [
+            {
+              "StoneText": "p"
+            },
+            {
+              "StoneText": "a"
+            },
+            {
+              "StoneText": "t"
+            }
+          ],
+          "prompt": {
+            "PromptText": "pat",
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/indianenglish/audios/pat.mp3"
+          },
+          "foilstones": [
+            {
+              "StoneText": "a"
+            },
+            {
+              "StoneText": "c"
+            },
+            {
+              "StoneText": "m"
+            }
+          ]
+        },
+        {
+          "SegmentNumber": 1,
+          "targetstones": [
+            {
+              "StoneText": "m"
+            },
+            {
+              "StoneText": "a"
+            },
+            {
+              "StoneText": "p"
+            }
+          ],
+          "prompt": {
+            "PromptText": "map",
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/indianenglish/audios/map.mp3"
+          },
+          "foilstones": [
+            {
+              "StoneText": "a"
+            },
+            {
+              "StoneText": "a"
+            },
+            {
+              "StoneText": "p"
+            }
+          ]
+        },
+        {
+          "SegmentNumber": 2,
+          "targetstones": [
+            {
+              "StoneText": "t"
+            },
+            {
+              "StoneText": "a"
+            },
+            {
+              "StoneText": "m"
+            }
+          ],
+          "prompt": {
+            "PromptText": "tam",
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/indianenglish/audios/tam.mp3"
+          },
+          "foilstones": [
+            {
+              "StoneText": "t"
+            },
+            {
+              "StoneText": "c"
+            },
+            {
+              "StoneText": "m"
+            }
+          ]
+        },
+        {
+          "SegmentNumber": 3,
+          "targetstones": [
+            {
+              "StoneText": "m"
+            },
+            {
+              "StoneText": "a"
+            },
+            {
+              "StoneText": "t"
+            }
+          ],
+          "prompt": {
+            "PromptText": "mat",
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/indianenglish/audios/mat.mp3"
+          },
+          "foilstones": [
+            {
+              "StoneText": "p"
+            },
+            {
+              "StoneText": "n"
+            },
+            {
+              "StoneText": "t"
+            }
+          ]
+        },
+        {
+          "SegmentNumber": 4,
+          "targetstones": [
+            {
+              "StoneText": "c"
+            },
+            {
+              "StoneText": "a"
+            },
+            {
+              "StoneText": "p"
+            }
+          ],
+          "prompt": {
+            "PromptText": "cap",
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/indianenglish/audios/cap.mp3"
+          },
+          "foilstones": [
+            {
+              "StoneText": "a"
+            },
+            {
+              "StoneText": "n"
+            },
+            {
+              "StoneText": "p"
+            },
+            {
+              "StoneText": "a"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "LevelMeta": {
+        "LevelNumber": 12,
+        "PromptType": "Visible",
+        "LevelType": "LetterOnly",
+        "csvType": "match",
+        "PromptFadeout": 0,
+        "LetterGroup": 4
+      },
+      "Puzzles": [
+        {
+          "SegmentNumber": 0,
+          "targetstones": [
+            {
+              "StoneText": "f"
+            }
+          ],
+          "prompt": {
+            "PromptText": "f",
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/indianenglish/audios/f.mp3"
+          },
+          "foilstones": [
+            {
+              "StoneText": "l"
+            },
+            {
+              "StoneText": "z"
+            },
+            {
+              "StoneText": "s"
+            }
+          ]
+        },
+        {
+          "SegmentNumber": 1,
+          "targetstones": [
+            {
+              "StoneText": "l"
+            }
+          ],
+          "prompt": {
+            "PromptText": "l",
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/indianenglish/audios/l.mp3"
+          },
+          "foilstones": [
+            {
+              "StoneText": "l"
+            },
+            {
+              "StoneText": "a"
+            },
+            {
+              "StoneText": "l"
+            }
+          ]
+        },
+        {
+          "SegmentNumber": 2,
+          "targetstones": [
+            {
+              "StoneText": "s"
+            }
+          ],
+          "prompt": {
+            "PromptText": "s",
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/indianenglish/audios/s.mp3"
+          },
+          "foilstones": [
+            {
+              "StoneText": "s"
+            },
+            {
+              "StoneText": "s"
+            },
+            {
+              "StoneText": "z"
+            }
+          ]
+        },
+        {
+          "SegmentNumber": 3,
+          "targetstones": [
+            {
+              "StoneText": "z"
+            }
+          ],
+          "prompt": {
+            "PromptText": "z",
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/indianenglish/audios/z.mp3"
+          },
+          "foilstones": [
+            {
+              "StoneText": "l"
+            },
+            {
+              "StoneText": "l"
+            },
+            {
+              "StoneText": "s"
+            }
+          ]
+        },
+        {
+          "SegmentNumber": 4,
+          "targetstones": [
+            {
+              "StoneText": "p"
+            }
+          ],
+          "prompt": {
+            "PromptText": "p",
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/indianenglish/audios/p.mp3"
+          },
+          "foilstones": [
+            {
+              "StoneText": "p"
+            },
+            {
+              "StoneText": "a"
+            },
+            {
+              "StoneText": "p"
+            },
+            {
+              "StoneText": "l"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "LevelMeta": {
+        "LevelNumber": 13,
+        "PromptType": "Visible",
+        "LevelType": "LetterOnly",
+        "csvType": "match",
+        "PromptFadeout": "4",
+        "LetterGroup": 4
+      },
+      "Puzzles": [
+        {
+          "SegmentNumber": 0,
+          "targetstones": [
+            {
+              "StoneText": "s"
+            }
+          ],
+          "prompt": {
+            "PromptText": "s",
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/indianenglish/audios/s.mp3"
+          },
+          "foilstones": [
+            {
+              "StoneText": "c"
+            },
+            {
+              "StoneText": "n"
+            },
+            {
+              "StoneText": "n"
+            }
+          ]
+        },
+        {
+          "SegmentNumber": 1,
+          "targetstones": [
+            {
+              "StoneText": "l"
+            }
+          ],
+          "prompt": {
+            "PromptText": "l",
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/indianenglish/audios/l.mp3"
+          },
+          "foilstones": [
+            {
+              "StoneText": "n"
+            },
+            {
+              "StoneText": "l"
+            },
+            {
+              "StoneText": "f"
+            }
+          ]
+        },
+        {
+          "SegmentNumber": 2,
+          "targetstones": [
+            {
+              "StoneText": "p"
+            }
+          ],
+          "prompt": {
+            "PromptText": "p",
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/indianenglish/audios/p.mp3"
+          },
+          "foilstones": [
+            {
+              "StoneText": "s"
+            },
+            {
+              "StoneText": "z"
+            },
+            {
+              "StoneText": "p"
+            }
+          ]
+        },
+        {
+          "SegmentNumber": 3,
+          "targetstones": [
+            {
+              "StoneText": "n"
+            }
+          ],
+          "prompt": {
+            "PromptText": "n",
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/indianenglish/audios/n.mp3"
+          },
+          "foilstones": [
+            {
+              "StoneText": "b"
+            },
+            {
+              "StoneText": "b"
+            },
+            {
+              "StoneText": "a"
+            }
+          ]
+        },
+        {
+          "SegmentNumber": 4,
+          "targetstones": [
+            {
+              "StoneText": "f"
+            }
+          ],
+          "prompt": {
+            "PromptText": "f",
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/indianenglish/audios/f.mp3"
+          },
+          "foilstones": [
+            {
+              "StoneText": "f"
+            },
+            {
+              "StoneText": "f"
+            },
+            {
+              "StoneText": "l"
+            },
+            {
+              "StoneText": "s"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "LevelMeta": {
+        "LevelNumber": 14,
+        "PromptType": "Hidden",
+        "LevelType": "LetterOnly",
+        "csvType": "matchSound",
+        "PromptFadeout": 0,
+        "LetterGroup": 5
+      },
+      "Puzzles": [
+        {
+          "SegmentNumber": 0,
+          "targetstones": [
+            {
+              "StoneText": "f"
+            }
+          ],
+          "prompt": {
+            "PromptText": "f",
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/indianenglish/audios/f.mp3"
+          },
+          "foilstones": [
+            {
+              "StoneText": "c"
+            },
+            {
+              "StoneText": "a"
+            }
+          ]
+        },
+        {
+          "SegmentNumber": 1,
+          "targetstones": [
+            {
+              "StoneText": "s"
+            }
+          ],
+          "prompt": {
+            "PromptText": "s",
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/indianenglish/audios/s.mp3"
+          },
+          "foilstones": [
+            {
+              "StoneText": "z"
+            },
+            {
+              "StoneText": "f"
+            }
+          ]
+        },
+        {
+          "SegmentNumber": 2,
+          "targetstones": [
+            {
+              "StoneText": "n"
+            }
+          ],
+          "prompt": {
+            "PromptText": "n",
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/indianenglish/audios/n.mp3"
+          },
+          "foilstones": [
+            {
+              "StoneText": "c"
+            },
+            {
+              "StoneText": "a"
+            }
+          ]
+        },
+        {
+          "SegmentNumber": 3,
+          "targetstones": [
+            {
+              "StoneText": "z"
+            }
+          ],
+          "prompt": {
+            "PromptText": "z",
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/indianenglish/audios/z.mp3"
+          },
+          "foilstones": [
+            {
+              "StoneText": "c"
+            },
+            {
+              "StoneText": "s"
+            }
+          ]
+        },
+        {
+          "SegmentNumber": 4,
+          "targetstones": [
+            {
+              "StoneText": "p"
+            }
+          ],
+          "prompt": {
+            "PromptText": "p",
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/indianenglish/audios/p.mp3"
+          },
+          "foilstones": [
+            {
+              "StoneText": "n"
+            },
+            {
+              "StoneText": "m"
+            },
+            {
+              "StoneText": "n"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "LevelMeta": {
+        "LevelNumber": 15,
+        "PromptType": "Visible",
+        "LevelType": "LetterOnly",
+        "csvType": "match",
+        "PromptFadeout": 0,
+        "LetterGroup": 5
+      },
+      "Puzzles": [
+        {
+          "SegmentNumber": 0,
+          "targetstones": [
+            {
+              "StoneText": "f"
+            }
+          ],
+          "prompt": {
+            "PromptText": "f",
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/indianenglish/audios/f.mp3"
+          },
+          "foilstones": [
+            {
+              "StoneText": "m"
+            },
+            {
+              "StoneText": "z"
+            },
+            {
+              "StoneText": "f"
+            }
+          ]
+        },
+        {
+          "SegmentNumber": 1,
+          "targetstones": [
+            {
+              "StoneText": "i"
+            }
+          ],
+          "prompt": {
+            "PromptText": "i",
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/indianenglish/audios/i.mp3"
+          },
+          "foilstones": [
+            {
+              "StoneText": "i"
+            },
+            {
+              "StoneText": "b"
+            },
+            {
+              "StoneText": "i"
+            }
+          ]
+        },
+        {
+          "SegmentNumber": 2,
+          "targetstones": [
+            {
+              "StoneText": "s"
+            }
+          ],
+          "prompt": {
+            "PromptText": "s",
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/indianenglish/audios/s.mp3"
+          },
+          "foilstones": [
+            {
+              "StoneText": "m"
+            },
+            {
+              "StoneText": "s"
+            },
+            {
+              "StoneText": "b"
+            }
+          ]
+        },
+        {
+          "SegmentNumber": 3,
+          "targetstones": [
+            {
+              "StoneText": "n"
+            }
+          ],
+          "prompt": {
+            "PromptText": "n",
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/indianenglish/audios/n.mp3"
+          },
+          "foilstones": [
+            {
+              "StoneText": "c"
+            },
+            {
+              "StoneText": "f"
+            },
+            {
+              "StoneText": "f"
+            }
+          ]
+        },
+        {
+          "SegmentNumber": 4,
+          "targetstones": [
+            {
+              "StoneText": "i"
+            }
+          ],
+          "prompt": {
+            "PromptText": "i",
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/indianenglish/audios/i.mp3"
+          },
+          "foilstones": [
+            {
+              "StoneText": "f"
+            },
+            {
+              "StoneText": "i"
+            },
+            {
+              "StoneText": "f"
+            },
+            {
+              "StoneText": "i"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "LevelMeta": {
+        "LevelNumber": 16,
+        "PromptType": "Visible",
+        "LevelType": "LetterOnly",
+        "csvType": "match",
+        "PromptFadeout": "4",
+        "LetterGroup": 5
+      },
+      "Puzzles": [
+        {
+          "SegmentNumber": 0,
+          "targetstones": [
+            {
+              "StoneText": "p"
+            }
+          ],
+          "prompt": {
+            "PromptText": "p",
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/indianenglish/audios/p.mp3"
+          },
+          "foilstones": [
+            {
+              "StoneText": "p"
+            },
+            {
+              "StoneText": "a"
+            },
+            {
+              "StoneText": "f"
+            },
+            {
+              "StoneText": "s"
+            },
+            {
+              "StoneText": "n"
+            }
+          ]
+        },
+        {
+          "SegmentNumber": 1,
+          "targetstones": [
+            {
+              "StoneText": "i"
+            }
+          ],
+          "prompt": {
+            "PromptText": "i",
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/indianenglish/audios/i.mp3"
+          },
+          "foilstones": [
+            {
+              "StoneText": "l"
+            },
+            {
+              "StoneText": "b"
+            },
+            {
+              "StoneText": "a"
+            },
+            {
+              "StoneText": "m"
+            }
+          ]
+        },
+        {
+          "SegmentNumber": 2,
+          "targetstones": [
+            {
+              "StoneText": "n"
+            }
+          ],
+          "prompt": {
+            "PromptText": "n",
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/indianenglish/audios/n.mp3"
+          },
+          "foilstones": [
+            {
+              "StoneText": "f"
+            },
+            {
+              "StoneText": "l"
+            },
+            {
+              "StoneText": "n"
+            }
+          ]
+        },
+        {
+          "SegmentNumber": 3,
+          "targetstones": [
+            {
+              "StoneText": "l"
+            }
+          ],
+          "prompt": {
+            "PromptText": "l",
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/indianenglish/audios/l.mp3"
+          },
+          "foilstones": [
+            {
+              "StoneText": "b"
+            },
+            {
+              "StoneText": "i"
+            },
+            {
+              "StoneText": "m"
+            },
+            {
+              "StoneText": "p"
+            }
+          ]
+        },
+        {
+          "SegmentNumber": 4,
+          "targetstones": [
+            {
+              "StoneText": "f"
+            }
+          ],
+          "prompt": {
+            "PromptText": "f",
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/indianenglish/audios/f.mp3"
+          },
+          "foilstones": [
+            {
+              "StoneText": "i"
+            },
+            {
+              "StoneText": "n"
+            },
+            {
+              "StoneText": "m"
+            },
+            {
+              "StoneText": "m"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "LevelMeta": {
+        "LevelNumber": 17,
+        "PromptType": "Hidden",
+        "LevelType": "LetterOnly",
+        "csvType": "matchSound",
+        "PromptFadeout": 0,
+        "LetterGroup": 6
+      },
+      "Puzzles": [
+        {
+          "SegmentNumber": 0,
+          "targetstones": [
+            {
+              "StoneText": "i"
+            }
+          ],
+          "prompt": {
+            "PromptText": "i",
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/indianenglish/audios/i.mp3"
+          },
+          "foilstones": [
+            {
+              "StoneText": "c"
+            },
+            {
+              "StoneText": "i"
+            },
+            {
+              "StoneText": "b"
+            },
+            {
+              "StoneText": "f"
+            }
+          ]
+        },
+        {
+          "SegmentNumber": 1,
+          "targetstones": [
+            {
+              "StoneText": "f"
+            }
+          ],
+          "prompt": {
+            "PromptText": "f",
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/indianenglish/audios/f.mp3"
+          },
+          "foilstones": [
+            {
+              "StoneText": "c"
+            },
+            {
+              "StoneText": "s"
+            },
+            {
+              "StoneText": "t"
+            },
+            {
+              "StoneText": "f"
+            }
+          ]
+        },
+        {
+          "SegmentNumber": 2,
+          "targetstones": [
+            {
+              "StoneText": "p"
+            }
+          ],
+          "prompt": {
+            "PromptText": "p",
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/indianenglish/audios/p.mp3"
+          },
+          "foilstones": [
+            {
+              "StoneText": "i"
+            },
+            {
+              "StoneText": "c"
+            },
+            {
+              "StoneText": "n"
+            },
+            {
+              "StoneText": "i"
+            }
+          ]
+        },
+        {
+          "SegmentNumber": 3,
+          "targetstones": [
+            {
+              "StoneText": "n"
+            }
+          ],
+          "prompt": {
+            "PromptText": "n",
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/indianenglish/audios/n.mp3"
+          },
+          "foilstones": [
+            {
+              "StoneText": "p"
+            },
+            {
+              "StoneText": "s"
+            },
+            {
+              "StoneText": "b"
+            },
+            {
+              "StoneText": "c"
+            }
+          ]
+        },
+        {
+          "SegmentNumber": 4,
+          "targetstones": [
+            {
+              "StoneText": "s"
+            }
+          ],
+          "prompt": {
+            "PromptText": "s",
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/indianenglish/audios/s.mp3"
+          },
+          "foilstones": [
+            {
+              "StoneText": "n"
+            },
+            {
+              "StoneText": "s"
+            },
+            {
+              "StoneText": "t"
+            },
+            {
+              "StoneText": "n"
+            },
+            {
+              "StoneText": "f"
+            },
+            {
+              "StoneText": "n"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "LevelMeta": {
+        "LevelNumber": 18,
+        "PromptType": "Visible",
+        "LevelType": "LetterInWord",
+        "csvType": "matchfirst",
+        "PromptFadeout": 0,
+        "LetterGroup": 6
+      },
+      "Puzzles": [
+        {
+          "SegmentNumber": 0,
+          "targetstones": [
+            {
+              "StoneText": "n"
+            }
+          ],
+          "prompt": {
+            "PromptText": "ni",
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/indianenglish/audios/n.mp3"
+          },
+          "foilstones": [
+            {
+              "StoneText": "t"
+            },
+            {
+              "StoneText": "a"
+            },
+            {
+              "StoneText": "b"
+            },
+            {
+              "StoneText": "n"
+            }
+          ]
+        },
+        {
+          "SegmentNumber": 1,
+          "targetstones": [
+            {
+              "StoneText": "p"
+            }
+          ],
+          "prompt": {
+            "PromptText": "psi",
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/indianenglish/audios/p.mp3"
+          },
+          "foilstones": [
+            {
+              "StoneText": "n"
+            },
+            {
+              "StoneText": "n"
+            },
+            {
+              "StoneText": "p"
+            },
+            {
+              "StoneText": "p"
+            }
+          ]
+        },
+        {
+          "SegmentNumber": 2,
+          "targetstones": [
+            {
+              "StoneText": "n"
+            }
+          ],
+          "prompt": {
+            "PromptText": "npi",
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/indianenglish/audios/n.mp3"
+          },
+          "foilstones": [
+            {
+              "StoneText": "n"
+            },
+            {
+              "StoneText": "z"
+            },
+            {
+              "StoneText": "n"
+            },
+            {
+              "StoneText": "n"
+            }
+          ]
+        },
+        {
+          "SegmentNumber": 3,
+          "targetstones": [
+            {
+              "StoneText": "p"
+            }
+          ],
+          "prompt": {
+            "PromptText": "pli",
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/indianenglish/audios/p.mp3"
+          },
+          "foilstones": [
+            {
+              "StoneText": "p"
+            },
+            {
+              "StoneText": "p"
+            },
+            {
+              "StoneText": "p"
+            },
+            {
+              "StoneText": "p"
+            }
+          ]
+        },
+        {
+          "SegmentNumber": 4,
+          "targetstones": [
+            {
+              "StoneText": "p"
+            }
+          ],
+          "prompt": {
+            "PromptText": "pni",
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/indianenglish/audios/p.mp3"
+          },
+          "foilstones": [
+            {
+              "StoneText": "p"
+            },
+            {
+              "StoneText": "s"
+            },
+            {
+              "StoneText": "m"
+            },
+            {
+              "StoneText": "z"
+            },
+            {
+              "StoneText": "c"
+            },
+            {
+              "StoneText": "p"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "LevelMeta": {
+        "LevelNumber": 19,
+        "PromptType": "Visible",
+        "LevelType": "LetterInWord",
+        "csvType": "matchfirst",
+        "PromptFadeout": 0,
+        "LetterGroup": 6
+      },
+      "Puzzles": [
+        {
+          "SegmentNumber": 0,
+          "targetstones": [
+            {
+              "StoneText": "i"
+            }
+          ],
+          "prompt": {
+            "PromptText": "idn",
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/indianenglish/audios/i.mp3"
+          },
+          "foilstones": [
+            {
+              "StoneText": "a"
+            },
+            {
+              "StoneText": "i"
+            },
+            {
+              "StoneText": "b"
+            },
+            {
+              "StoneText": "n"
+            }
+          ]
+        },
+        {
+          "SegmentNumber": 1,
+          "targetstones": [
+            {
+              "StoneText": "i"
+            }
+          ],
+          "prompt": {
+            "PromptText": "ird",
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/indianenglish/audios/i.mp3"
+          },
+          "foilstones": [
+            {
+              "StoneText": "n"
+            },
+            {
+              "StoneText": "b"
+            },
+            {
+              "StoneText": "i"
+            },
+            {
+              "StoneText": "i"
+            }
+          ]
+        },
+        {
+          "SegmentNumber": 2,
+          "targetstones": [
+            {
+              "StoneText": "i"
+            }
+          ],
+          "prompt": {
+            "PromptText": "inp",
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/indianenglish/audios/i.mp3"
+          },
+          "foilstones": [
+            {
+              "StoneText": "s"
+            },
+            {
+              "StoneText": "i"
+            },
+            {
+              "StoneText": "i"
+            },
+            {
+              "StoneText": "i"
+            }
+          ]
+        },
+        {
+          "SegmentNumber": 3,
+          "targetstones": [
+            {
+              "StoneText": "i"
+            }
+          ],
+          "prompt": {
+            "PromptText": "ipn",
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/indianenglish/audios/i.mp3"
+          },
+          "foilstones": [
+            {
+              "StoneText": "i"
+            },
+            {
+              "StoneText": "i"
+            },
+            {
+              "StoneText": "l"
+            },
+            {
+              "StoneText": "s"
+            }
+          ]
+        },
+        {
+          "SegmentNumber": 4,
+          "targetstones": [
+            {
+              "StoneText": "i"
+            }
+          ],
+          "prompt": {
+            "PromptText": "idd",
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/indianenglish/audios/i.mp3"
+          },
+          "foilstones": [
+            {
+              "StoneText": "i"
+            },
+            {
+              "StoneText": "i"
+            },
+            {
+              "StoneText": "i"
+            },
+            {
+              "StoneText": "i"
+            },
+            {
+              "StoneText": "s"
+            },
+            {
+              "StoneText": "t"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "LevelMeta": {
+        "LevelNumber": 20,
+        "PromptType": "Visible",
+        "LevelType": "LetterInWord",
+        "csvType": "matchfirst",
+        "PromptFadeout": 0,
+        "LetterGroup": 6
+      },
+      "Puzzles": [
+        {
+          "SegmentNumber": 0,
+          "targetstones": [
+            {
+              "StoneText": "p"
+            }
+          ],
+          "prompt": {
+            "PromptText": "pin",
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/indianenglish/audios/p.mp3"
+          },
+          "foilstones": [
+            {
+              "StoneText": "p"
+            },
+            {
+              "StoneText": "p"
+            },
+            {
+              "StoneText": "a"
+            },
+            {
+              "StoneText": "l"
+            }
+          ]
+        },
+        {
+          "SegmentNumber": 1,
+          "targetstones": [
+            {
+              "StoneText": "n"
+            }
+          ],
+          "prompt": {
+            "PromptText": "nip",
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/indianenglish/audios/n.mp3"
+          },
+          "foilstones": [
+            {
+              "StoneText": "n"
+            },
+            {
+              "StoneText": "p"
+            },
+            {
+              "StoneText": "f"
+            },
+            {
+              "StoneText": "z"
+            }
+          ]
+        },
+        {
+          "SegmentNumber": 2,
+          "targetstones": [
+            {
+              "StoneText": "z"
+            }
+          ],
+          "prompt": {
+            "PromptText": "zip",
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/indianenglish/audios/z.mp3"
+          },
+          "foilstones": [
+            {
+              "StoneText": "z"
+            },
+            {
+              "StoneText": "f"
+            },
+            {
+              "StoneText": "l"
+            },
+            {
+              "StoneText": "l"
+            }
+          ]
+        },
+        {
+          "SegmentNumber": 3,
+          "targetstones": [
+            {
+              "StoneText": "f"
+            }
+          ],
+          "prompt": {
+            "PromptText": "fin",
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/indianenglish/audios/f.mp3"
+          },
+          "foilstones": [
+            {
+              "StoneText": "p"
+            },
+            {
+              "StoneText": "f"
+            },
+            {
+              "StoneText": "z"
+            },
+            {
+              "StoneText": "n"
+            }
+          ]
+        },
+        {
+          "SegmentNumber": 4,
+          "targetstones": [
+            {
+              "StoneText": "l"
+            }
+          ],
+          "prompt": {
+            "PromptText": "lip",
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/indianenglish/audios/l.mp3"
+          },
+          "foilstones": [
+            {
+              "StoneText": "l"
+            },
+            {
+              "StoneText": "z"
+            },
+            {
+              "StoneText": "p"
+            },
+            {
+              "StoneText": "n"
+            },
+            {
+              "StoneText": "n"
+            },
+            {
+              "StoneText": "l"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "LevelMeta": {
+        "LevelNumber": 21,
+        "PromptType": "Visible",
+        "LevelType": "LetterInWord",
+        "csvType": "matchfirst",
+        "PromptFadeout": "4",
+        "LetterGroup": 6
+      },
+      "Puzzles": [
+        {
+          "SegmentNumber": 0,
+          "targetstones": [
+            {
+              "StoneText": "ip"
+            }
+          ],
+          "prompt": {
+            "PromptText": "ipz",
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/indianenglish/audios/ip.mp3"
+          },
+          "foilstones": [
+            {
+              "StoneText": "f"
+            },
+            {
+              "StoneText": "ip"
+            },
+            {
+              "StoneText": "m"
+            }
+          ]
+        },
+        {
+          "SegmentNumber": 1,
+          "targetstones": [
+            {
+              "StoneText": "in"
+            }
+          ],
+          "prompt": {
+            "PromptText": "inf",
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/indianenglish/audios/in.mp3"
+          },
+          "foilstones": [
+            {
+              "StoneText": "ip"
+            },
+            {
+              "StoneText": "ip"
+            },
+            {
+              "StoneText": "ip"
+            }
+          ]
+        },
+        {
+          "SegmentNumber": 2,
+          "targetstones": [
+            {
+              "StoneText": "ip"
+            }
+          ],
+          "prompt": {
+            "PromptText": "ipn",
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/indianenglish/audios/ip.mp3"
+          },
+          "foilstones": [
+            {
+              "StoneText": "c"
+            },
+            {
+              "StoneText": "z"
+            },
+            {
+              "StoneText": "in"
+            }
+          ]
+        },
+        {
+          "SegmentNumber": 3,
+          "targetstones": [
+            {
+              "StoneText": "ip"
+            }
+          ],
+          "prompt": {
+            "PromptText": "ips",
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/indianenglish/audios/ip.mp3"
+          },
+          "foilstones": [
+            {
+              "StoneText": "ip"
+            },
+            {
+              "StoneText": "p"
+            },
+            {
+              "StoneText": "in"
+            }
+          ]
+        },
+        {
+          "SegmentNumber": 4,
+          "targetstones": [
+            {
+              "StoneText": "in"
+            }
+          ],
+          "prompt": {
+            "PromptText": "inp",
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/indianenglish/audios/in.mp3"
+          },
+          "foilstones": [
+            {
+              "StoneText": "ip"
+            },
+            {
+              "StoneText": "c"
+            },
+            {
+              "StoneText": "ip"
+            },
+            {
+              "StoneText": "b"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "LevelMeta": {
+        "LevelNumber": 22,
+        "PromptType": "Visible",
+        "LevelType": "Word",
+        "csvType": "spell",
+        "PromptFadeout": 0,
+        "LetterGroup": 7
+      },
+      "Puzzles": [
+        {
+          "SegmentNumber": 0,
+          "targetstones": [
+            {
+              "StoneText": "l"
+            },
+            {
+              "StoneText": "i"
+            },
+            {
+              "StoneText": "p"
+            }
+          ],
+          "prompt": {
+            "PromptText": "lip",
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/indianenglish/audios/lip.mp3"
+          },
+          "foilstones": [
+            {
+              "StoneText": "m"
+            },
+            {
+              "StoneText": "i"
+            },
+            {
+              "StoneText": "i"
+            }
+          ]
+        },
+        {
+          "SegmentNumber": 1,
+          "targetstones": [
+            {
+              "StoneText": "p"
+            },
+            {
+              "StoneText": "i"
+            },
+            {
+              "StoneText": "n"
+            }
+          ],
+          "prompt": {
+            "PromptText": "pin",
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/indianenglish/audios/pin.mp3"
+          },
+          "foilstones": [
+            {
+              "StoneText": "p"
+            },
+            {
+              "StoneText": "i"
+            },
+            {
+              "StoneText": "n"
+            }
+          ]
+        },
+        {
+          "SegmentNumber": 2,
+          "targetstones": [
+            {
+              "StoneText": "s"
+            },
+            {
+              "StoneText": "i"
+            },
+            {
+              "StoneText": "p"
+            }
+          ],
+          "prompt": {
+            "PromptText": "sip",
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/indianenglish/audios/sip.mp3"
+          },
+          "foilstones": [
+            {
+              "StoneText": "s"
+            },
+            {
+              "StoneText": "i"
+            },
+            {
+              "StoneText": "p"
+            }
+          ]
+        },
+        {
+          "SegmentNumber": 3,
+          "targetstones": [
+            {
+              "StoneText": "n"
+            },
+            {
+              "StoneText": "i"
+            },
+            {
+              "StoneText": "p"
+            }
+          ],
+          "prompt": {
+            "PromptText": "nip",
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/indianenglish/audios/nip.mp3"
+          },
+          "foilstones": [
+            {
+              "StoneText": "p"
+            },
+            {
+              "StoneText": "p"
+            },
+            {
+              "StoneText": "i"
+            }
+          ]
+        },
+        {
+          "SegmentNumber": 4,
+          "targetstones": [
+            {
+              "StoneText": "z"
+            },
+            {
+              "StoneText": "i"
+            },
+            {
+              "StoneText": "p"
+            }
+          ],
+          "prompt": {
+            "PromptText": "zip",
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/indianenglish/audios/zip.mp3"
+          },
+          "foilstones": [
+            {
+              "StoneText": "i"
+            },
+            {
+              "StoneText": "n"
+            },
+            {
+              "StoneText": "z"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "LevelMeta": {
+        "LevelNumber": 23,
+        "PromptType": "Visible",
+        "LevelType": "Word",
+        "csvType": "spell",
+        "PromptFadeout": 0,
+        "LetterGroup": 7
+      },
+      "Puzzles": [
+        {
+          "SegmentNumber": 0,
+          "targetstones": [
+            {
+              "StoneText": "n"
+            },
+            {
+              "StoneText": "i"
+            },
+            {
+              "StoneText": "p"
+            }
+          ],
+          "prompt": {
+            "PromptText": "nip",
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/indianenglish/audios/nip.mp3"
+          },
+          "foilstones": [
+            {
+              "StoneText": "t"
+            },
+            {
+              "StoneText": "s"
+            },
+            {
+              "StoneText": "in"
+            }
+          ]
+        },
+        {
+          "SegmentNumber": 1,
+          "targetstones": [
+            {
+              "StoneText": "f"
+            },
+            {
+              "StoneText": "i"
+            },
+            {
+              "StoneText": "n"
+            }
+          ],
+          "prompt": {
+            "PromptText": "fin",
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/indianenglish/audios/fin.mp3"
+          },
+          "foilstones": [
+            {
+              "StoneText": "n"
+            },
+            {
+              "StoneText": "i"
+            },
+            {
+              "StoneText": "f"
+            }
+          ]
+        },
+        {
+          "SegmentNumber": 2,
+          "targetstones": [
+            {
+              "StoneText": "l"
+            },
+            {
+              "StoneText": "i"
+            },
+            {
+              "StoneText": "p"
+            }
+          ],
+          "prompt": {
+            "PromptText": "lip",
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/indianenglish/audios/lip.mp3"
+          },
+          "foilstones": [
+            {
+              "StoneText": "i"
+            },
+            {
+              "StoneText": "p"
+            },
+            {
+              "StoneText": "f"
+            },
+            {
+              "StoneText": "z"
+            }
+          ]
+        },
+        {
+          "SegmentNumber": 3,
+          "targetstones": [
+            {
+              "StoneText": "s"
+            },
+            {
+              "StoneText": "i"
+            },
+            {
+              "StoneText": "p"
+            }
+          ],
+          "prompt": {
+            "PromptText": "sip",
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/indianenglish/audios/sip.mp3"
+          },
+          "foilstones": [
+            {
+              "StoneText": "f"
+            },
+            {
+              "StoneText": "i"
+            },
+            {
+              "StoneText": "p"
+            }
+          ]
+        },
+        {
+          "SegmentNumber": 4,
+          "targetstones": [
+            {
+              "StoneText": "z"
+            },
+            {
+              "StoneText": "i"
+            },
+            {
+              "StoneText": "p"
+            }
+          ],
+          "prompt": {
+            "PromptText": "zip",
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/indianenglish/audios/zip.mp3"
+          },
+          "foilstones": [
+            {
+              "StoneText": "p"
+            },
+            {
+              "StoneText": "ip"
+            },
+            {
+              "StoneText": "z"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "LevelMeta": {
+        "LevelNumber": 24,
+        "PromptType": "Hidden",
+        "LevelType": "Word",
+        "csvType": "spellSound",
+        "PromptFadeout": 0,
+        "LetterGroup": 7
+      },
+      "Puzzles": [
+        {
+          "SegmentNumber": 0,
+          "targetstones": [
+            {
+              "StoneText": "c"
+            },
+            {
+              "StoneText": "a"
+            },
+            {
+              "StoneText": "n"
+            }
+          ],
+          "prompt": {
+            "PromptText": "can",
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/indianenglish/audios/can.mp3"
+          },
+          "foilstones": [
+            {
+              "StoneText": "m"
+            },
+            {
+              "StoneText": "m"
+            },
+            {
+              "StoneText": "n"
+            }
+          ]
+        },
+        {
+          "SegmentNumber": 1,
+          "targetstones": [
+            {
+              "StoneText": "f"
+            },
+            {
+              "StoneText": "i"
+            },
+            {
+              "StoneText": "n"
+            }
+          ],
+          "prompt": {
+            "PromptText": "fin",
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/indianenglish/audios/fin.mp3"
+          },
+          "foilstones": [
+            {
+              "StoneText": "z"
+            },
+            {
+              "StoneText": "n"
+            },
+            {
+              "StoneText": "i"
+            }
+          ]
+        },
+        {
+          "SegmentNumber": 2,
+          "targetstones": [
+            {
+              "StoneText": "z"
+            },
+            {
+              "StoneText": "i"
+            },
+            {
+              "StoneText": "p"
+            }
+          ],
+          "prompt": {
+            "PromptText": "zip",
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/indianenglish/audios/zip.mp3"
+          },
+          "foilstones": [
+            {
+              "StoneText": "a"
+            },
+            {
+              "StoneText": "n"
+            },
+            {
+              "StoneText": "n"
+            }
+          ]
+        },
+        {
+          "SegmentNumber": 3,
+          "targetstones": [
+            {
+              "StoneText": "m"
+            },
+            {
+              "StoneText": "a"
+            },
+            {
+              "StoneText": "t"
+            }
+          ],
+          "prompt": {
+            "PromptText": "mat",
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/indianenglish/audios/mat.mp3"
+          },
+          "foilstones": [
+            {
+              "StoneText": "i"
+            },
+            {
+              "StoneText": "p"
+            },
+            {
+              "StoneText": "p"
+            }
+          ]
+        },
+        {
+          "SegmentNumber": 4,
+          "targetstones": [
+            {
+              "StoneText": "l"
+            },
+            {
+              "StoneText": "i"
+            },
+            {
+              "StoneText": "p"
+            }
+          ],
+          "prompt": {
+            "PromptText": "lip",
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/indianenglish/audios/lip.mp3"
+          },
+          "foilstones": [
+            {
+              "StoneText": "t"
+            },
+            {
+              "StoneText": "p"
+            },
+            {
+              "StoneText": "c"
+            },
+            {
+              "StoneText": "l"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "LevelMeta": {
+        "LevelNumber": 25,
+        "PromptType": "Visible",
+        "LevelType": "LetterOnly",
+        "csvType": "match",
+        "PromptFadeout": 0,
+        "LetterGroup": 7
+      },
+      "Puzzles": [
+        {
+          "SegmentNumber": 0,
+          "targetstones": [
+            {
+              "StoneText": "b"
+            }
+          ],
+          "prompt": {
+            "PromptText": "b",
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/indianenglish/audios/b.mp3"
+          },
+          "foilstones": [
+            {
+              "StoneText": "g"
+            },
+            {
+              "StoneText": "a"
+            },
+            {
+              "StoneText": "z"
+            }
+          ]
+        },
+        {
+          "SegmentNumber": 1,
+          "targetstones": [
+            {
+              "StoneText": "r"
+            }
+          ],
+          "prompt": {
+            "PromptText": "r",
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/indianenglish/audios/r.mp3"
+          },
+          "foilstones": [
+            {
+              "StoneText": "z"
+            },
+            {
+              "StoneText": "g"
+            },
+            {
+              "StoneText": "a"
+            }
+          ]
+        },
+        {
+          "SegmentNumber": 2,
+          "targetstones": [
+            {
+              "StoneText": "g"
+            }
+          ],
+          "prompt": {
+            "PromptText": "g",
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/indianenglish/audios/g.mp3"
+          },
+          "foilstones": [
+            {
+              "StoneText": "c"
+            },
+            {
+              "StoneText": "b"
+            },
+            {
+              "StoneText": "l"
+            },
+            {
+              "StoneText": "a"
+            }
+          ]
+        },
+        {
+          "SegmentNumber": 3,
+          "targetstones": [
+            {
+              "StoneText": "c"
+            }
+          ],
+          "prompt": {
+            "PromptText": "c",
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/indianenglish/audios/c.mp3"
+          },
+          "foilstones": [
+            {
+              "StoneText": "t"
+            },
+            {
+              "StoneText": "s"
+            },
+            {
+              "StoneText": "r"
+            }
+          ]
+        },
+        {
+          "SegmentNumber": 4,
+          "targetstones": [
+            {
+              "StoneText": "t"
+            }
+          ],
+          "prompt": {
+            "PromptText": "t",
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/indianenglish/audios/t.mp3"
+          },
+          "foilstones": [
+            {
+              "StoneText": "f"
+            },
+            {
+              "StoneText": "b"
+            },
+            {
+              "StoneText": "r"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "LevelMeta": {
+        "LevelNumber": 26,
+        "PromptType": "Hidden",
+        "LevelType": "LetterOnly",
+        "csvType": "matchSound",
+        "PromptFadeout": 0,
+        "LetterGroup": 7
+      },
+      "Puzzles": [
+        {
+          "SegmentNumber": 0,
+          "targetstones": [
+            {
+              "StoneText": "g"
+            }
+          ],
+          "prompt": {
+            "PromptText": "g",
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/indianenglish/audios/g.mp3"
+          },
+          "foilstones": [
+            {
+              "StoneText": "g"
+            },
+            {
+              "StoneText": "g"
+            },
+            {
+              "StoneText": "t"
+            }
+          ]
+        },
+        {
+          "SegmentNumber": 1,
+          "targetstones": [
+            {
+              "StoneText": "c"
+            }
+          ],
+          "prompt": {
+            "PromptText": "c",
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/indianenglish/audios/c.mp3"
+          },
+          "foilstones": [
+            {
+              "StoneText": "l"
+            },
+            {
+              "StoneText": "r"
+            },
+            {
+              "StoneText": "r"
+            }
+          ]
+        },
+        {
+          "SegmentNumber": 2,
+          "targetstones": [
+            {
+              "StoneText": "n"
+            }
+          ],
+          "prompt": {
+            "PromptText": "n",
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/indianenglish/audios/n.mp3"
+          },
+          "foilstones": [
+            {
+              "StoneText": "c"
+            },
+            {
+              "StoneText": "r"
+            },
+            {
+              "StoneText": "b"
+            },
+            {
+              "StoneText": "m"
+            }
+          ]
+        },
+        {
+          "SegmentNumber": 3,
+          "targetstones": [
+            {
+              "StoneText": "b"
+            }
+          ],
+          "prompt": {
+            "PromptText": "b",
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/indianenglish/audios/b.mp3"
+          },
+          "foilstones": [
+            {
+              "StoneText": "t"
+            },
+            {
+              "StoneText": "a"
+            },
+            {
+              "StoneText": "r"
+            }
+          ]
+        },
+        {
+          "SegmentNumber": 4,
+          "targetstones": [
+            {
+              "StoneText": "r"
+            }
+          ],
+          "prompt": {
+            "PromptText": "r",
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/indianenglish/audios/r.mp3"
+          },
+          "foilstones": [
+            {
+              "StoneText": "r"
+            },
+            {
+              "StoneText": "a"
+            },
+            {
+              "StoneText": "s"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "LevelMeta": {
+        "LevelNumber": 27,
+        "PromptType": "Hidden",
+        "LevelType": "LetterOnly",
+        "csvType": "matchSound",
+        "PromptFadeout": 0,
+        "LetterGroup": 8
+      },
+      "Puzzles": [
+        {
+          "SegmentNumber": 0,
+          "targetstones": [
+            {
+              "StoneText": "b"
+            }
+          ],
+          "prompt": {
+            "PromptText": "b",
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/indianenglish/audios/b.mp3"
+          },
+          "foilstones": [
+            {
+              "StoneText": "r"
+            },
+            {
+              "StoneText": "b"
+            },
+            {
+              "StoneText": "r"
+            }
+          ]
+        },
+        {
+          "SegmentNumber": 1,
+          "targetstones": [
+            {
+              "StoneText": "r"
+            }
+          ],
+          "prompt": {
+            "PromptText": "r",
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/indianenglish/audios/r.mp3"
+          },
+          "foilstones": [
+            {
+              "StoneText": "b"
+            },
+            {
+              "StoneText": "b"
+            },
+            {
+              "StoneText": "t"
+            }
+          ]
+        },
+        {
+          "SegmentNumber": 2,
+          "targetstones": [
+            {
+              "StoneText": "g"
+            }
+          ],
+          "prompt": {
+            "PromptText": "g",
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/indianenglish/audios/g.mp3"
+          },
+          "foilstones": [
+            {
+              "StoneText": "c"
+            },
+            {
+              "StoneText": "n"
+            },
+            {
+              "StoneText": "in"
+            },
+            {
+              "StoneText": "g"
+            }
+          ]
+        },
+        {
+          "SegmentNumber": 3,
+          "targetstones": [
+            {
+              "StoneText": "n"
+            }
+          ],
+          "prompt": {
+            "PromptText": "n",
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/indianenglish/audios/n.mp3"
+          },
+          "foilstones": [
+            {
+              "StoneText": "g"
+            },
+            {
+              "StoneText": "i"
+            },
+            {
+              "StoneText": "ip"
+            }
+          ]
+        },
+        {
+          "SegmentNumber": 4,
+          "targetstones": [
+            {
+              "StoneText": "t"
+            }
+          ],
+          "prompt": {
+            "PromptText": "t",
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/indianenglish/audios/t.mp3"
+          },
+          "foilstones": [
+            {
+              "StoneText": "p"
+            },
+            {
+              "StoneText": "z"
+            },
+            {
+              "StoneText": "r"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "LevelMeta": {
+        "LevelNumber": 28,
+        "PromptType": "Visible",
+        "LevelType": "LetterOnly",
+        "csvType": "match",
+        "PromptFadeout": 0,
+        "LetterGroup": 8
+      },
+      "Puzzles": [
+        {
+          "SegmentNumber": 0,
+          "targetstones": [
+            {
+              "StoneText": "u"
+            }
+          ],
+          "prompt": {
+            "PromptText": "u",
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/indianenglish/audios/u.mp3"
+          },
+          "foilstones": [
+            {
+              "StoneText": "f"
+            },
+            {
+              "StoneText": "u"
+            },
+            {
+              "StoneText": "ip"
+            },
+            {
+              "StoneText": "r"
+            },
+            {
+              "StoneText": "f"
+            },
+            {
+              "StoneText": "r"
+            }
+          ]
+        },
+        {
+          "SegmentNumber": 1,
+          "targetstones": [
+            {
+              "StoneText": "b"
+            }
+          ],
+          "prompt": {
+            "PromptText": "b",
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/indianenglish/audios/b.mp3"
+          },
+          "foilstones": [
+            {
+              "StoneText": "b"
+            },
+            {
+              "StoneText": "p"
+            },
+            {
+              "StoneText": "n"
+            },
+            {
+              "StoneText": "g"
+            },
+            {
+              "StoneText": "r"
+            }
+          ]
+        },
+        {
+          "SegmentNumber": 2,
+          "targetstones": [
+            {
+              "StoneText": "r"
+            }
+          ],
+          "prompt": {
+            "PromptText": "r",
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/indianenglish/audios/r.mp3"
+          },
+          "foilstones": [
+            {
+              "StoneText": "b"
+            },
+            {
+              "StoneText": "r"
+            },
+            {
+              "StoneText": "c"
+            },
+            {
+              "StoneText": "f"
+            },
+            {
+              "StoneText": "b"
+            },
+            {
+              "StoneText": "b"
+            }
+          ]
+        },
+        {
+          "SegmentNumber": 3,
+          "targetstones": [
+            {
+              "StoneText": "u"
+            }
+          ],
+          "prompt": {
+            "PromptText": "u",
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/indianenglish/audios/u.mp3"
+          },
+          "foilstones": [
+            {
+              "StoneText": "s"
+            },
+            {
+              "StoneText": "b"
+            },
+            {
+              "StoneText": "s"
+            },
+            {
+              "StoneText": "p"
+            },
+            {
+              "StoneText": "u"
+            }
+          ]
+        },
+        {
+          "SegmentNumber": 4,
+          "targetstones": [
+            {
+              "StoneText": "t"
+            }
+          ],
+          "prompt": {
+            "PromptText": "t",
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/indianenglish/audios/t.mp3"
+          },
+          "foilstones": [
+            {
+              "StoneText": "p"
+            },
+            {
+              "StoneText": "t"
+            },
+            {
+              "StoneText": "t"
+            },
+            {
+              "StoneText": "u"
+            },
+            {
+              "StoneText": "in"
+            },
+            {
+              "StoneText": "p"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "LevelMeta": {
+        "LevelNumber": 29,
+        "PromptType": "Visible",
+        "LevelType": "LetterOnly",
+        "csvType": "match",
+        "PromptFadeout": 0,
+        "LetterGroup": 8
+      },
+      "Puzzles": [
+        {
+          "SegmentNumber": 0,
+          "targetstones": [
+            {
+              "StoneText": "c"
+            }
+          ],
+          "prompt": {
+            "PromptText": "c",
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/indianenglish/audios/c.mp3"
+          },
+          "foilstones": [
+            {
+              "StoneText": "a"
+            },
+            {
+              "StoneText": "m"
+            },
+            {
+              "StoneText": "p"
+            },
+            {
+              "StoneText": "a"
+            },
+            {
+              "StoneText": "a"
+            },
+            {
+              "StoneText": "n"
+            }
+          ]
+        },
+        {
+          "SegmentNumber": 1,
+          "targetstones": [
+            {
+              "StoneText": "a"
+            }
+          ],
+          "prompt": {
+            "PromptText": "a",
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/indianenglish/audios/a.mp3"
+          },
+          "foilstones": [
+            {
+              "StoneText": "u"
+            },
+            {
+              "StoneText": "u"
+            },
+            {
+              "StoneText": "f"
+            },
+            {
+              "StoneText": "c"
+            },
+            {
+              "StoneText": "a"
+            },
+            {
+              "StoneText": "f"
+            }
+          ]
+        },
+        {
+          "SegmentNumber": 2,
+          "targetstones": [
+            {
+              "StoneText": "n"
+            }
+          ],
+          "prompt": {
+            "PromptText": "n",
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/indianenglish/audios/n.mp3"
+          },
+          "foilstones": [
+            {
+              "StoneText": "f"
+            },
+            {
+              "StoneText": "m"
+            },
+            {
+              "StoneText": "t"
+            },
+            {
+              "StoneText": "p"
+            },
+            {
+              "StoneText": "n"
+            }
+          ]
+        },
+        {
+          "SegmentNumber": 3,
+          "targetstones": [
+            {
+              "StoneText": "p"
+            }
+          ],
+          "prompt": {
+            "PromptText": "p",
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/indianenglish/audios/p.mp3"
+          },
+          "foilstones": [
+            {
+              "StoneText": "u"
+            },
+            {
+              "StoneText": "t"
+            },
+            {
+              "StoneText": "f"
+            },
+            {
+              "StoneText": "b"
+            },
+            {
+              "StoneText": "g"
+            }
+          ]
+        },
+        {
+          "SegmentNumber": 4,
+          "targetstones": [
+            {
+              "StoneText": "r"
+            }
+          ],
+          "prompt": {
+            "PromptText": "r",
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/indianenglish/audios/r.mp3"
+          },
+          "foilstones": [
+            {
+              "StoneText": "p"
+            },
+            {
+              "StoneText": "g"
+            },
+            {
+              "StoneText": "a"
+            },
+            {
+              "StoneText": "c"
+            },
+            {
+              "StoneText": "a"
+            },
+            {
+              "StoneText": "z"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "LevelMeta": {
+        "LevelNumber": 30,
+        "PromptType": "Hidden",
+        "LevelType": "LetterOnly",
+        "csvType": "matchSound",
+        "PromptFadeout": 0,
+        "LetterGroup": 8
+      },
+      "Puzzles": [
+        {
+          "SegmentNumber": 0,
+          "targetstones": [
+            {
+              "StoneText": "b"
+            }
+          ],
+          "prompt": {
+            "PromptText": "b",
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/indianenglish/audios/b.mp3"
+          },
+          "foilstones": [
+            {
+              "StoneText": "c"
+            },
+            {
+              "StoneText": "n"
+            },
+            {
+              "StoneText": "f"
+            },
+            {
+              "StoneText": "ip"
+            },
+            {
+              "StoneText": "b"
+            },
+            {
+              "StoneText": "l"
+            }
+          ]
+        },
+        {
+          "SegmentNumber": 1,
+          "targetstones": [
+            {
+              "StoneText": "s"
+            }
+          ],
+          "prompt": {
+            "PromptText": "s",
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/indianenglish/audios/s.mp3"
+          },
+          "foilstones": [
+            {
+              "StoneText": "g"
+            },
+            {
+              "StoneText": "b"
+            },
+            {
+              "StoneText": "p"
+            },
+            {
+              "StoneText": "u"
+            },
+            {
+              "StoneText": "u"
+            },
+            {
+              "StoneText": "c"
+            }
+          ]
+        },
+        {
+          "SegmentNumber": 2,
+          "targetstones": [
+            {
+              "StoneText": "z"
+            }
+          ],
+          "prompt": {
+            "PromptText": "z",
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/indianenglish/audios/z.mp3"
+          },
+          "foilstones": [
+            {
+              "StoneText": "i"
+            },
+            {
+              "StoneText": "u"
+            },
+            {
+              "StoneText": "u"
+            },
+            {
+              "StoneText": "g"
+            },
+            {
+              "StoneText": "p"
+            }
+          ]
+        },
+        {
+          "SegmentNumber": 3,
+          "targetstones": [
+            {
+              "StoneText": "u"
+            }
+          ],
+          "prompt": {
+            "PromptText": "u",
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/indianenglish/audios/u.mp3"
+          },
+          "foilstones": [
+            {
+              "StoneText": "u"
+            },
+            {
+              "StoneText": "s"
+            },
+            {
+              "StoneText": "i"
+            },
+            {
+              "StoneText": "n"
+            },
+            {
+              "StoneText": "u"
+            }
+          ]
+        },
+        {
+          "SegmentNumber": 4,
+          "targetstones": [
+            {
+              "StoneText": "i"
+            }
+          ],
+          "prompt": {
+            "PromptText": "i",
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/indianenglish/audios/i.mp3"
+          },
+          "foilstones": [
+            {
+              "StoneText": "t"
+            },
+            {
+              "StoneText": "m"
+            },
+            {
+              "StoneText": "u"
+            },
+            {
+              "StoneText": "s"
+            },
+            {
+              "StoneText": "m"
+            },
+            {
+              "StoneText": "b"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "LevelMeta": {
+        "LevelNumber": 31,
+        "PromptType": "Visible",
+        "LevelType": "LetterInWord",
+        "csvType": "matchfirst",
+        "PromptFadeout": "4",
+        "LetterGroup": 8
+      },
+      "Puzzles": [
+        {
+          "SegmentNumber": 0,
+          "targetstones": [
+            {
+              "StoneText": "b"
+            }
+          ],
+          "prompt": {
+            "PromptText": "bun",
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/indianenglish/audios/b.mp3"
+          },
+          "foilstones": [
+            {
+              "StoneText": "g"
+            },
+            {
+              "StoneText": "b"
+            },
+            {
+              "StoneText": "in"
+            },
+            {
+              "StoneText": "g"
+            },
+            {
+              "StoneText": "m"
+            }
+          ]
+        },
+        {
+          "SegmentNumber": 1,
+          "targetstones": [
+            {
+              "StoneText": "c"
+            }
+          ],
+          "prompt": {
+            "PromptText": "cut",
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/indianenglish/audios/c.mp3"
+          },
+          "foilstones": [
+            {
+              "StoneText": "ip"
+            },
+            {
+              "StoneText": "in"
+            },
+            {
+              "StoneText": "z"
+            },
+            {
+              "StoneText": "n"
+            },
+            {
+              "StoneText": "p"
+            },
+            {
+              "StoneText": "t"
+            }
+          ]
+        },
+        {
+          "SegmentNumber": 2,
+          "targetstones": [
+            {
+              "StoneText": "r"
+            }
+          ],
+          "prompt": {
+            "PromptText": "rug",
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/indianenglish/audios/r.mp3"
+          },
+          "foilstones": [
+            {
+              "StoneText": "n"
+            },
+            {
+              "StoneText": "a"
+            },
+            {
+              "StoneText": "t"
+            },
+            {
+              "StoneText": "c"
+            },
+            {
+              "StoneText": "b"
+            },
+            {
+              "StoneText": "t"
+            }
+          ]
+        },
+        {
+          "SegmentNumber": 3,
+          "targetstones": [
+            {
+              "StoneText": "t"
+            }
+          ],
+          "prompt": {
+            "PromptText": "tub",
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/indianenglish/audios/t.mp3"
+          },
+          "foilstones": [
+            {
+              "StoneText": "m"
+            },
+            {
+              "StoneText": "z"
+            },
+            {
+              "StoneText": "n"
+            },
+            {
+              "StoneText": "m"
+            },
+            {
+              "StoneText": "i"
+            }
+          ]
+        },
+        {
+          "SegmentNumber": 4,
+          "targetstones": [
+            {
+              "StoneText": "n"
+            }
+          ],
+          "prompt": {
+            "PromptText": "nut",
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/indianenglish/audios/n.mp3"
+          },
+          "foilstones": [
+            {
+              "StoneText": "c"
+            },
+            {
+              "StoneText": "u"
+            },
+            {
+              "StoneText": "i"
+            },
+            {
+              "StoneText": "n"
+            },
+            {
+              "StoneText": "s"
+            },
+            {
+              "StoneText": "ip"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "LevelMeta": {
+        "LevelNumber": 32,
+        "PromptType": "Visible",
+        "LevelType": "LetterInWord",
+        "csvType": "matchfirst",
+        "PromptFadeout": 0,
+        "LetterGroup": 9
+      },
+      "Puzzles": [
+        {
+          "SegmentNumber": 0,
+          "targetstones": [
+            {
+              "StoneText": "u"
+            }
+          ],
+          "prompt": {
+            "PromptText": "urn",
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/indianenglish/audios/u.mp3"
+          },
+          "foilstones": [
+            {
+              "StoneText": "f"
+            },
+            {
+              "StoneText": "p"
+            },
+            {
+              "StoneText": "z"
+            },
+            {
+              "StoneText": "n"
+            },
+            {
+              "StoneText": "u"
+            },
+            {
+              "StoneText": "c"
+            }
+          ]
+        },
+        {
+          "SegmentNumber": 1,
+          "targetstones": [
+            {
+              "StoneText": "u"
+            }
+          ],
+          "prompt": {
+            "PromptText": "ubc",
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/indianenglish/audios/u.mp3"
+          },
+          "foilstones": [
+            {
+              "StoneText": "r"
+            },
+            {
+              "StoneText": "s"
+            },
+            {
+              "StoneText": "i"
+            },
+            {
+              "StoneText": "u"
+            },
+            {
+              "StoneText": "u"
+            },
+            {
+              "StoneText": "z"
+            }
+          ]
+        },
+        {
+          "SegmentNumber": 2,
+          "targetstones": [
+            {
+              "StoneText": "u"
+            }
+          ],
+          "prompt": {
+            "PromptText": "unt",
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/indianenglish/audios/u.mp3"
+          },
+          "foilstones": [
+            {
+              "StoneText": "l"
+            },
+            {
+              "StoneText": "in"
+            },
+            {
+              "StoneText": "u"
+            },
+            {
+              "StoneText": "a"
+            },
+            {
+              "StoneText": "u"
+            }
+          ]
+        },
+        {
+          "SegmentNumber": 3,
+          "targetstones": [
+            {
+              "StoneText": "u"
+            }
+          ],
+          "prompt": {
+            "PromptText": "utg",
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/indianenglish/audios/u.mp3"
+          },
+          "foilstones": [
+            {
+              "StoneText": "u"
+            },
+            {
+              "StoneText": "b"
+            },
+            {
+              "StoneText": "ip"
+            },
+            {
+              "StoneText": "p"
+            },
+            {
+              "StoneText": "n"
+            },
+            {
+              "StoneText": "l"
+            }
+          ]
+        },
+        {
+          "SegmentNumber": 4,
+          "targetstones": [
+            {
+              "StoneText": "u"
+            }
+          ],
+          "prompt": {
+            "PromptText": "ugt",
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/indianenglish/audios/u.mp3"
+          },
+          "foilstones": [
+            {
+              "StoneText": "p"
+            },
+            {
+              "StoneText": "u"
+            },
+            {
+              "StoneText": "m"
+            },
+            {
+              "StoneText": "n"
+            },
+            {
+              "StoneText": "u"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "LevelMeta": {
+        "LevelNumber": 33,
+        "PromptType": "Visible",
+        "LevelType": "LetterInWord",
+        "csvType": "matchfirst",
+        "PromptFadeout": 0,
+        "LetterGroup": 9
+      },
+      "Puzzles": [
+        {
+          "SegmentNumber": 0,
+          "targetstones": [
+            {
+              "StoneText": "b"
+            }
+          ],
+          "prompt": {
+            "PromptText": "bru",
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/indianenglish/audios/b.mp3"
+          },
+          "foilstones": [
+            {
+              "StoneText": "l"
+            },
+            {
+              "StoneText": "f"
+            },
+            {
+              "StoneText": "i"
+            },
+            {
+              "StoneText": "b"
+            },
+            {
+              "StoneText": "u"
+            },
+            {
+              "StoneText": "i"
+            }
+          ]
+        },
+        {
+          "SegmentNumber": 1,
+          "targetstones": [
+            {
+              "StoneText": "n"
+            }
+          ],
+          "prompt": {
+            "PromptText": "nbu",
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/indianenglish/audios/n.mp3"
+          },
+          "foilstones": [
+            {
+              "StoneText": "s"
+            },
+            {
+              "StoneText": "b"
+            },
+            {
+              "StoneText": "n"
+            },
+            {
+              "StoneText": "c"
+            },
+            {
+              "StoneText": "l"
+            },
+            {
+              "StoneText": "i"
+            }
+          ]
+        },
+        {
+          "SegmentNumber": 2,
+          "targetstones": [
+            {
+              "StoneText": "g"
+            }
+          ],
+          "prompt": {
+            "PromptText": "gbu",
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/indianenglish/audios/g.mp3"
+          },
+          "foilstones": [
+            {
+              "StoneText": "m"
+            },
+            {
+              "StoneText": "u"
+            },
+            {
+              "StoneText": "i"
+            },
+            {
+              "StoneText": "b"
+            },
+            {
+              "StoneText": "g"
+            }
+          ]
+        },
+        {
+          "SegmentNumber": 3,
+          "targetstones": [
+            {
+              "StoneText": "t"
+            }
+          ],
+          "prompt": {
+            "PromptText": "tcu",
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/indianenglish/audios/t.mp3"
+          },
+          "foilstones": [
+            {
+              "StoneText": "ip"
+            },
+            {
+              "StoneText": "b"
+            },
+            {
+              "StoneText": "g"
+            },
+            {
+              "StoneText": "m"
+            },
+            {
+              "StoneText": "b"
+            },
+            {
+              "StoneText": "n"
+            }
+          ]
+        },
+        {
+          "SegmentNumber": 4,
+          "targetstones": [
+            {
+              "StoneText": "b"
+            }
+          ],
+          "prompt": {
+            "PromptText": "btu",
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/indianenglish/audios/b.mp3"
+          },
+          "foilstones": [
+            {
+              "StoneText": "g"
+            },
+            {
+              "StoneText": "b"
+            },
+            {
+              "StoneText": "p"
+            },
+            {
+              "StoneText": "i"
+            },
+            {
+              "StoneText": "i"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "LevelMeta": {
+        "LevelNumber": 34,
+        "PromptType": "Visible",
+        "LevelType": "LetterInWord",
+        "csvType": "matchfirst",
+        "PromptFadeout": 0,
+        "LetterGroup": 9
+      },
+      "Puzzles": [
+        {
+          "SegmentNumber": 0,
+          "targetstones": [
+            {
+              "StoneText": "ug"
+            }
+          ],
+          "prompt": {
+            "PromptText": "ugt",
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/indianenglish/audios/ug.mp3"
+          },
+          "foilstones": [
+            {
+              "StoneText": "ug"
+            },
+            {
+              "StoneText": "un"
+            },
+            {
+              "StoneText": "n"
+            },
+            {
+              "StoneText": "r"
+            },
+            {
+              "StoneText": "in"
+            },
+            {
+              "StoneText": "g"
+            }
+          ]
+        },
+        {
+          "SegmentNumber": 1,
+          "targetstones": [
+            {
+              "StoneText": "un"
+            }
+          ],
+          "prompt": {
+            "PromptText": "unb",
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/indianenglish/audios/un.mp3"
+          },
+          "foilstones": [
+            {
+              "StoneText": "u"
+            },
+            {
+              "StoneText": "in"
+            },
+            {
+              "StoneText": "in"
+            },
+            {
+              "StoneText": "un"
+            },
+            {
+              "StoneText": "m"
+            },
+            {
+              "StoneText": "l"
+            }
+          ]
+        },
+        {
+          "SegmentNumber": 2,
+          "targetstones": [
+            {
+              "StoneText": "ut"
+            }
+          ],
+          "prompt": {
+            "PromptText": "utn",
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/indianenglish/audios/ut.mp3"
+          },
+          "foilstones": [
+            {
+              "StoneText": "s"
+            },
+            {
+              "StoneText": "m"
+            },
+            {
+              "StoneText": "m"
+            },
+            {
+              "StoneText": "ut"
+            },
+            {
+              "StoneText": "ug"
+            }
+          ]
+        },
+        {
+          "SegmentNumber": 3,
+          "targetstones": [
+            {
+              "StoneText": "ug"
+            }
+          ],
+          "prompt": {
+            "PromptText": "ugr",
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/indianenglish/audios/ug.mp3"
+          },
+          "foilstones": [
+            {
+              "StoneText": "g"
+            },
+            {
+              "StoneText": "ug"
+            },
+            {
+              "StoneText": "r"
+            },
+            {
+              "StoneText": "un"
+            },
+            {
+              "StoneText": "ip"
+            },
+            {
+              "StoneText": "s"
+            }
+          ]
+        },
+        {
+          "SegmentNumber": 4,
+          "targetstones": [
+            {
+              "StoneText": "un"
+            }
+          ],
+          "prompt": {
+            "PromptText": "unr",
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/indianenglish/audios/un.mp3"
+          },
+          "foilstones": [
+            {
+              "StoneText": "z"
+            },
+            {
+              "StoneText": "ut"
+            },
+            {
+              "StoneText": "un"
+            },
+            {
+              "StoneText": "f"
+            },
+            {
+              "StoneText": "ug"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "LevelMeta": {
+        "LevelNumber": 35,
+        "PromptType": "Visible",
+        "LevelType": "Word",
+        "csvType": "spell",
+        "PromptFadeout": 0,
+        "LetterGroup": 9
+      },
+      "Puzzles": [
+        {
+          "SegmentNumber": 0,
+          "targetstones": [
+            {
+              "StoneText": "b"
+            },
+            {
+              "StoneText": "u"
+            },
+            {
+              "StoneText": "g"
+            }
+          ],
+          "prompt": {
+            "PromptText": "bug",
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/indianenglish/audios/bug.mp3"
+          },
+          "foilstones": [
+            {
+              "StoneText": "b"
+            },
+            {
+              "StoneText": "u"
+            },
+            {
+              "StoneText": "u"
+            },
+            {
+              "StoneText": "u"
+            },
+            {
+              "StoneText": "i"
+            },
+            {
+              "StoneText": "t"
+            },
+            {
+              "StoneText": "u"
+            },
+            {
+              "StoneText": "r"
+            }
+          ]
+        },
+        {
+          "SegmentNumber": 1,
+          "targetstones": [
+            {
+              "StoneText": "r"
+            },
+            {
+              "StoneText": "u"
+            },
+            {
+              "StoneText": "t"
+            }
+          ],
+          "prompt": {
+            "PromptText": "rut",
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/indianenglish/audios/rut.mp3"
+          },
+          "foilstones": [
+            {
+              "StoneText": "ut"
+            },
+            {
+              "StoneText": "u"
+            },
+            {
+              "StoneText": "u"
+            },
+            {
+              "StoneText": "b"
+            },
+            {
+              "StoneText": "ut"
+            },
+            {
+              "StoneText": "g"
+            },
+            {
+              "StoneText": "z"
+            }
+          ]
+        },
+        {
+          "SegmentNumber": 2,
+          "targetstones": [
+            {
+              "StoneText": "b"
+            },
+            {
+              "StoneText": "u"
+            },
+            {
+              "StoneText": "n"
+            }
+          ],
+          "prompt": {
+            "PromptText": "bun",
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/indianenglish/audios/bun.mp3"
+          },
+          "foilstones": [
+            {
+              "StoneText": "r"
+            },
+            {
+              "StoneText": "ut"
+            },
+            {
+              "StoneText": "i"
+            },
+            {
+              "StoneText": "n"
+            },
+            {
+              "StoneText": "u"
+            },
+            {
+              "StoneText": "g"
+            },
+            {
+              "StoneText": "c"
+            },
+            {
+              "StoneText": "n"
+            }
+          ]
+        },
+        {
+          "SegmentNumber": 3,
+          "targetstones": [
+            {
+              "StoneText": "c"
+            },
+            {
+              "StoneText": "u"
+            },
+            {
+              "StoneText": "b"
+            }
+          ],
+          "prompt": {
+            "PromptText": "cub",
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/indianenglish/audios/cub.mp3"
+          },
+          "foilstones": [
+            {
+              "StoneText": "b"
+            },
+            {
+              "StoneText": "n"
+            },
+            {
+              "StoneText": "u"
+            },
+            {
+              "StoneText": "t"
+            },
+            {
+              "StoneText": "g"
+            },
+            {
+              "StoneText": "ut"
+            }
+          ]
+        },
+        {
+          "SegmentNumber": 4,
+          "targetstones": [
+            {
+              "StoneText": "t"
+            },
+            {
+              "StoneText": "u"
+            },
+            {
+              "StoneText": "g"
+            }
+          ],
+          "prompt": {
+            "PromptText": "tug",
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/indianenglish/audios/tug.mp3"
+          },
+          "foilstones": [
+            {
+              "StoneText": "c"
+            },
+            {
+              "StoneText": "b"
+            },
+            {
+              "StoneText": "u"
+            },
+            {
+              "StoneText": "s"
+            },
+            {
+              "StoneText": "r"
+            },
+            {
+              "StoneText": "c"
+            },
+            {
+              "StoneText": "r"
+            },
+            {
+              "StoneText": "g"
+            },
+            {
+              "StoneText": "g"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "LevelMeta": {
+        "LevelNumber": 36,
+        "PromptType": "Visible",
+        "LevelType": "Word",
+        "csvType": "spell",
+        "PromptFadeout": 0,
+        "LetterGroup": 6
+      },
+      "Puzzles": [
+        {
+          "SegmentNumber": 0,
+          "targetstones": [
+            {
+              "StoneText": "r"
+            },
+            {
+              "StoneText": "u"
+            },
+            {
+              "StoneText": "g"
+            }
+          ],
+          "prompt": {
+            "PromptText": "rug",
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/indianenglish/audios/rug.mp3"
+          },
+          "foilstones": [
+            {
+              "StoneText": "r"
+            },
+            {
+              "StoneText": "g"
+            },
+            {
+              "StoneText": "g"
+            },
+            {
+              "StoneText": "t"
+            },
+            {
+              "StoneText": "b"
+            },
+            {
+              "StoneText": "u"
+            },
+            {
+              "StoneText": "b"
+            }
+          ]
+        },
+        {
+          "SegmentNumber": 1,
+          "targetstones": [
+            {
+              "StoneText": "t"
+            },
+            {
+              "StoneText": "u"
+            },
+            {
+              "StoneText": "b"
+            }
+          ],
+          "prompt": {
+            "PromptText": "tub",
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/indianenglish/audios/tub.mp3"
+          },
+          "foilstones": [
+            {
+              "StoneText": "f"
+            },
+            {
+              "StoneText": "a"
+            },
+            {
+              "StoneText": "u"
+            },
+            {
+              "StoneText": "u"
+            },
+            {
+              "StoneText": "c"
+            },
+            {
+              "StoneText": "t"
+            },
+            {
+              "StoneText": "g"
+            },
+            {
+              "StoneText": "b"
+            }
+          ]
+        },
+        {
+          "SegmentNumber": 2,
+          "targetstones": [
+            {
+              "StoneText": "c"
+            },
+            {
+              "StoneText": "u"
+            },
+            {
+              "StoneText": "t"
+            }
+          ],
+          "prompt": {
+            "PromptText": "cut",
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/indianenglish/audios/cut.mp3"
+          },
+          "foilstones": [
+            {
+              "StoneText": "u"
+            },
+            {
+              "StoneText": "r"
+            },
+            {
+              "StoneText": "c"
+            },
+            {
+              "StoneText": "in"
+            },
+            {
+              "StoneText": "t"
+            },
+            {
+              "StoneText": "m"
+            },
+            {
+              "StoneText": "n"
+            },
+            {
+              "StoneText": "t"
+            }
+          ]
+        },
+        {
+          "SegmentNumber": 3,
+          "targetstones": [
+            {
+              "StoneText": "b"
+            },
+            {
+              "StoneText": "u"
+            },
+            {
+              "StoneText": "n"
+            }
+          ],
+          "prompt": {
+            "PromptText": "bun",
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/indianenglish/audios/bun.mp3"
+          },
+          "foilstones": [
+            {
+              "StoneText": "b"
+            },
+            {
+              "StoneText": "un"
+            },
+            {
+              "StoneText": "b"
+            },
+            {
+              "StoneText": "b"
+            },
+            {
+              "StoneText": "u"
+            },
+            {
+              "StoneText": "t"
+            },
+            {
+              "StoneText": "b"
+            },
+            {
+              "StoneText": "u"
+            },
+            {
+              "StoneText": "u"
+            }
+          ]
+        },
+        {
+          "SegmentNumber": 4,
+          "targetstones": [
+            {
+              "StoneText": "t"
+            },
+            {
+              "StoneText": "u"
+            },
+            {
+              "StoneText": "g"
+            }
+          ],
+          "prompt": {
+            "PromptText": "tug",
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/indianenglish/audios/tug.mp3"
+          },
+          "foilstones": [
+            {
+              "StoneText": "u"
+            },
+            {
+              "StoneText": "r"
+            },
+            {
+              "StoneText": "l"
+            },
+            {
+              "StoneText": "t"
+            },
+            {
+              "StoneText": "b"
+            },
+            {
+              "StoneText": "m"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "LevelMeta": {
+        "LevelNumber": 37,
+        "PromptType": "Hidden",
+        "LevelType": "Word",
+        "csvType": "spellSound",
+        "PromptFadeout": 0,
+        "LetterGroup": 9
+      },
+      "Puzzles": [
+        {
+          "SegmentNumber": 0,
+          "targetstones": [
+            {
+              "StoneText": "n"
+            },
+            {
+              "StoneText": "u"
+            },
+            {
+              "StoneText": "t"
+            }
+          ],
+          "prompt": {
+            "PromptText": "nut",
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/indianenglish/audios/nut.mp3"
+          },
+          "foilstones": [
+            {
+              "StoneText": "g"
+            },
+            {
+              "StoneText": "t"
+            },
+            {
+              "StoneText": "u"
+            },
+            {
+              "StoneText": "t"
+            },
+            {
+              "StoneText": "g"
+            },
+            {
+              "StoneText": "n"
+            },
+            {
+              "StoneText": "u"
+            },
+            {
+              "StoneText": "p"
+            }
+          ]
+        },
+        {
+          "SegmentNumber": 1,
+          "targetstones": [
+            {
+              "StoneText": "r"
+            },
+            {
+              "StoneText": "u"
+            },
+            {
+              "StoneText": "n"
+            }
+          ],
+          "prompt": {
+            "PromptText": "run",
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/indianenglish/audios/run.mp3"
+          },
+          "foilstones": [
+            {
+              "StoneText": "u"
+            },
+            {
+              "StoneText": "b"
+            },
+            {
+              "StoneText": "un"
+            },
+            {
+              "StoneText": "t"
+            },
+            {
+              "StoneText": "r"
+            },
+            {
+              "StoneText": "p"
+            },
+            {
+              "StoneText": "u"
+            },
+            {
+              "StoneText": "n"
+            },
+            {
+              "StoneText": "g"
+            }
+          ]
+        },
+        {
+          "SegmentNumber": 2,
+          "targetstones": [
+            {
+              "StoneText": "g"
+            },
+            {
+              "StoneText": "u"
+            },
+            {
+              "StoneText": "n"
+            }
+          ],
+          "prompt": {
+            "PromptText": "gun",
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/indianenglish/audios/gun.mp3"
+          },
+          "foilstones": [
+            {
+              "StoneText": "i"
+            },
+            {
+              "StoneText": "ip"
+            },
+            {
+              "StoneText": "u"
+            },
+            {
+              "StoneText": "b"
+            },
+            {
+              "StoneText": "i"
+            },
+            {
+              "StoneText": "u"
+            },
+            {
+              "StoneText": "r"
+            },
+            {
+              "StoneText": "i"
+            }
+          ]
+        },
+        {
+          "SegmentNumber": 3,
+          "targetstones": [
+            {
+              "StoneText": "t"
+            },
+            {
+              "StoneText": "u"
+            },
+            {
+              "StoneText": "g"
+            }
+          ],
+          "prompt": {
+            "PromptText": "tug",
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/indianenglish/audios/tug.mp3"
+          },
+          "foilstones": [
+            {
+              "StoneText": "g"
+            },
+            {
+              "StoneText": "u"
+            },
+            {
+              "StoneText": "n"
+            },
+            {
+              "StoneText": "s"
+            },
+            {
+              "StoneText": "z"
+            },
+            {
+              "StoneText": "g"
+            },
+            {
+              "StoneText": "u"
+            }
+          ]
+        },
+        {
+          "SegmentNumber": 4,
+          "targetstones": [
+            {
+              "StoneText": "r"
+            },
+            {
+              "StoneText": "u"
+            },
+            {
+              "StoneText": "b"
+            }
+          ],
+          "prompt": {
+            "PromptText": "rub",
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/indianenglish/audios/rub.mp3"
+          },
+          "foilstones": [
+            {
+              "StoneText": "u"
+            },
+            {
+              "StoneText": "u"
+            },
+            {
+              "StoneText": "t"
+            },
+            {
+              "StoneText": "n"
+            },
+            {
+              "StoneText": "a"
+            },
+            {
+              "StoneText": "in"
+            },
+            {
+              "StoneText": "u"
+            },
+            {
+              "StoneText": "ut"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "LevelMeta": {
+        "LevelNumber": 38,
+        "PromptType": "Visible",
+        "LevelType": "LetterOnly",
+        "csvType": "match",
+        "PromptFadeout": 0,
+        "LetterGroup": 10
+      },
+      "Puzzles": [
+        {
+          "SegmentNumber": 0,
+          "targetstones": [
+            {
+              "StoneText": "s"
+            }
+          ],
+          "prompt": {
+            "PromptText": "s",
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/indianenglish/audios/s.mp3"
+          },
+          "foilstones": [
+            {
+              "StoneText": "c"
+            },
+            {
+              "StoneText": "n"
+            },
+            {
+              "StoneText": "un"
+            },
+            {
+              "StoneText": "ip"
+            },
+            {
+              "StoneText": "l"
+            },
+            {
+              "StoneText": "a"
+            },
+            {
+              "StoneText": "u"
+            },
+            {
+              "StoneText": "c"
+            }
+          ]
+        },
+        {
+          "SegmentNumber": 1,
+          "targetstones": [
+            {
+              "StoneText": "m"
+            }
+          ],
+          "prompt": {
+            "PromptText": "m",
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/indianenglish/audios/m.mp3"
+          },
+          "foilstones": [
+            {
+              "StoneText": "t"
+            },
+            {
+              "StoneText": "un"
+            },
+            {
+              "StoneText": "s"
+            },
+            {
+              "StoneText": "c"
+            },
+            {
+              "StoneText": "un"
+            },
+            {
+              "StoneText": "g"
+            },
+            {
+              "StoneText": "s"
+            },
+            {
+              "StoneText": "a"
+            }
+          ]
+        },
+        {
+          "SegmentNumber": 2,
+          "targetstones": [
+            {
+              "StoneText": "u"
+            }
+          ],
+          "prompt": {
+            "PromptText": "u",
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/indianenglish/audios/u.mp3"
+          },
+          "foilstones": [
+            {
+              "StoneText": "p"
+            },
+            {
+              "StoneText": "c"
+            },
+            {
+              "StoneText": "z"
+            },
+            {
+              "StoneText": "b"
+            },
+            {
+              "StoneText": "b"
+            },
+            {
+              "StoneText": "l"
+            },
+            {
+              "StoneText": "a"
+            },
+            {
+              "StoneText": "u"
+            }
+          ]
+        },
+        {
+          "SegmentNumber": 3,
+          "targetstones": [
+            {
+              "StoneText": "n"
+            }
+          ],
+          "prompt": {
+            "PromptText": "n",
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/indianenglish/audios/n.mp3"
+          },
+          "foilstones": [
+            {
+              "StoneText": "c"
+            },
+            {
+              "StoneText": "m"
+            },
+            {
+              "StoneText": "m"
+            },
+            {
+              "StoneText": "n"
+            },
+            {
+              "StoneText": "i"
+            },
+            {
+              "StoneText": "f"
+            },
+            {
+              "StoneText": "ut"
+            }
+          ]
+        },
+        {
+          "SegmentNumber": 4,
+          "targetstones": [
+            {
+              "StoneText": "c"
+            }
+          ],
+          "prompt": {
+            "PromptText": "c",
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/indianenglish/audios/c.mp3"
+          },
+          "foilstones": [
+            {
+              "StoneText": "t"
+            },
+            {
+              "StoneText": "b"
+            },
+            {
+              "StoneText": "t"
+            },
+            {
+              "StoneText": "s"
+            },
+            {
+              "StoneText": "g"
+            },
+            {
+              "StoneText": "m"
+            },
+            {
+              "StoneText": "u"
+            },
+            {
+              "StoneText": "s"
+            },
+            {
+              "StoneText": "b"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "LevelMeta": {
+        "LevelNumber": 39,
+        "PromptType": "Visible",
+        "LevelType": "LetterOnly",
+        "csvType": "match",
+        "PromptFadeout": 0,
+        "LetterGroup": 10
+      },
+      "Puzzles": [
+        {
+          "SegmentNumber": 0,
+          "targetstones": [
+            {
+              "StoneText": "z"
+            }
+          ],
+          "prompt": {
+            "PromptText": "z",
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/indianenglish/audios/z.mp3"
+          },
+          "foilstones": [
+            {
+              "StoneText": "a"
+            },
+            {
+              "StoneText": "u"
+            },
+            {
+              "StoneText": "t"
+            },
+            {
+              "StoneText": "p"
+            },
+            {
+              "StoneText": "f"
+            },
+            {
+              "StoneText": "c"
+            },
+            {
+              "StoneText": "ug"
+            },
+            {
+              "StoneText": "p"
+            }
+          ]
+        },
+        {
+          "SegmentNumber": 1,
+          "targetstones": [
+            {
+              "StoneText": "i"
+            }
+          ],
+          "prompt": {
+            "PromptText": "i",
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/indianenglish/audios/i.mp3"
+          },
+          "foilstones": [
+            {
+              "StoneText": "ut"
+            },
+            {
+              "StoneText": "a"
+            },
+            {
+              "StoneText": "un"
+            },
+            {
+              "StoneText": "ug"
+            },
+            {
+              "StoneText": "ug"
+            },
+            {
+              "StoneText": "t"
+            },
+            {
+              "StoneText": "n"
+            },
+            {
+              "StoneText": "p"
+            }
+          ]
+        },
+        {
+          "SegmentNumber": 2,
+          "targetstones": [
+            {
+              "StoneText": "a"
+            }
+          ],
+          "prompt": {
+            "PromptText": "a",
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/indianenglish/audios/a.mp3"
+          },
+          "foilstones": [
+            {
+              "StoneText": "p"
+            },
+            {
+              "StoneText": "n"
+            },
+            {
+              "StoneText": "r"
+            },
+            {
+              "StoneText": "r"
+            },
+            {
+              "StoneText": "r"
+            },
+            {
+              "StoneText": "un"
+            },
+            {
+              "StoneText": "t"
+            },
+            {
+              "StoneText": "a"
+            }
+          ]
+        },
+        {
+          "SegmentNumber": 3,
+          "targetstones": [
+            {
+              "StoneText": "p"
+            }
+          ],
+          "prompt": {
+            "PromptText": "p",
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/indianenglish/audios/p.mp3"
+          },
+          "foilstones": [
+            {
+              "StoneText": "t"
+            },
+            {
+              "StoneText": "s"
+            },
+            {
+              "StoneText": "a"
+            },
+            {
+              "StoneText": "n"
+            },
+            {
+              "StoneText": "z"
+            },
+            {
+              "StoneText": "i"
+            },
+            {
+              "StoneText": "m"
+            },
+            {
+              "StoneText": "t"
+            },
+            {
+              "StoneText": "z"
+            }
+          ]
+        },
+        {
+          "SegmentNumber": 4,
+          "targetstones": [
+            {
+              "StoneText": "t"
+            }
+          ],
+          "prompt": {
+            "PromptText": "t",
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/indianenglish/audios/t.mp3"
+          },
+          "foilstones": [
+            {
+              "StoneText": "t"
+            },
+            {
+              "StoneText": "z"
+            },
+            {
+              "StoneText": "ut"
+            },
+            {
+              "StoneText": "i"
+            },
+            {
+              "StoneText": "p"
+            },
+            {
+              "StoneText": "i"
+            },
+            {
+              "StoneText": "r"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "LevelMeta": {
+        "LevelNumber": 40,
+        "PromptType": "Hidden",
+        "LevelType": "LetterOnly",
+        "csvType": "matchSound",
+        "PromptFadeout": 0,
+        "LetterGroup": 10
+      },
+      "Puzzles": [
+        {
+          "SegmentNumber": 0,
+          "targetstones": [
+            {
+              "StoneText": "as"
+            }
+          ],
+          "prompt": {
+            "PromptText": "as",
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/indianenglish/audios/as.mp3"
+          },
+          "foilstones": [
+            {
+              "StoneText": "ug"
+            },
+            {
+              "StoneText": "an"
+            },
+            {
+              "StoneText": "r"
+            },
+            {
+              "StoneText": "ut"
+            },
+            {
+              "StoneText": "ap"
+            },
+            {
+              "StoneText": "ag"
+            },
+            {
+              "StoneText": "t"
+            },
+            {
+              "StoneText": "c"
+            }
+          ]
+        },
+        {
+          "SegmentNumber": 1,
+          "targetstones": [
+            {
+              "StoneText": "an"
+            }
+          ],
+          "prompt": {
+            "PromptText": "an",
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/indianenglish/audios/an.mp3"
+          },
+          "foilstones": [
+            {
+              "StoneText": "an"
+            },
+            {
+              "StoneText": "ug"
+            },
+            {
+              "StoneText": "an"
+            },
+            {
+              "StoneText": "ug"
+            },
+            {
+              "StoneText": "g"
+            },
+            {
+              "StoneText": "p"
+            },
+            {
+              "StoneText": "ap"
+            },
+            {
+              "StoneText": "am"
+            }
+          ]
+        },
+        {
+          "SegmentNumber": 2,
+          "targetstones": [
+            {
+              "StoneText": "ag"
+            }
+          ],
+          "prompt": {
+            "PromptText": "ag",
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/indianenglish/audios/ag.mp3"
+          },
+          "foilstones": [
+            {
+              "StoneText": "ag"
+            },
+            {
+              "StoneText": "g"
+            },
+            {
+              "StoneText": "l"
+            },
+            {
+              "StoneText": "l"
+            },
+            {
+              "StoneText": "m"
+            },
+            {
+              "StoneText": "f"
+            },
+            {
+              "StoneText": "n"
+            },
+            {
+              "StoneText": "b"
+            }
+          ]
+        },
+        {
+          "SegmentNumber": 3,
+          "targetstones": [
+            {
+              "StoneText": "ap"
+            }
+          ],
+          "prompt": {
+            "PromptText": "ap",
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/indianenglish/audios/ap.mp3"
+          },
+          "foilstones": [
+            {
+              "StoneText": "ug"
+            },
+            {
+              "StoneText": "g"
+            },
+            {
+              "StoneText": "an"
+            },
+            {
+              "StoneText": "am"
+            },
+            {
+              "StoneText": "as"
+            },
+            {
+              "StoneText": "an"
+            },
+            {
+              "StoneText": "in"
+            },
+            {
+              "StoneText": "u"
+            },
+            {
+              "StoneText": "c"
+            }
+          ]
+        },
+        {
+          "SegmentNumber": 4,
+          "targetstones": [
+            {
+              "StoneText": "am"
+            }
+          ],
+          "prompt": {
+            "PromptText": "am",
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/indianenglish/audios/am.mp3"
+          },
+          "foilstones": [
+            {
+              "StoneText": "ag"
+            },
+            {
+              "StoneText": "as"
+            },
+            {
+              "StoneText": "l"
+            },
+            {
+              "StoneText": "b"
+            },
+            {
+              "StoneText": "t"
+            },
+            {
+              "StoneText": "am"
+            },
+            {
+              "StoneText": "t"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "LevelMeta": {
+        "LevelNumber": 41,
+        "PromptType": "Visible",
+        "LevelType": "LetterOnly",
+        "csvType": "match",
+        "PromptFadeout": "5",
+        "LetterGroup": 10
+      },
+      "Puzzles": [
+        {
+          "SegmentNumber": 0,
+          "targetstones": [
+            {
+              "StoneText": "im"
+            }
+          ],
+          "prompt": {
+            "PromptText": "im",
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/indianenglish/audios/im.mp3"
+          },
+          "foilstones": [
+            {
+              "StoneText": "im"
+            },
+            {
+              "StoneText": "z"
+            },
+            {
+              "StoneText": "an"
+            },
+            {
+              "StoneText": "s"
+            },
+            {
+              "StoneText": "is"
+            },
+            {
+              "StoneText": "as"
+            },
+            {
+              "StoneText": "c"
+            },
+            {
+              "StoneText": "c"
+            }
+          ]
+        },
+        {
+          "SegmentNumber": 1,
+          "targetstones": [
+            {
+              "StoneText": "ig"
+            }
+          ],
+          "prompt": {
+            "PromptText": "ig",
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/indianenglish/audios/ig.mp3"
+          },
+          "foilstones": [
+            {
+              "StoneText": "u"
+            },
+            {
+              "StoneText": "un"
+            },
+            {
+              "StoneText": "im"
+            },
+            {
+              "StoneText": "is"
+            },
+            {
+              "StoneText": "is"
+            },
+            {
+              "StoneText": "as"
+            },
+            {
+              "StoneText": "ig"
+            },
+            {
+              "StoneText": "r"
+            }
+          ]
+        },
+        {
+          "SegmentNumber": 2,
+          "targetstones": [
+            {
+              "StoneText": "it"
+            }
+          ],
+          "prompt": {
+            "PromptText": "it",
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/indianenglish/audios/it.mp3"
+          },
+          "foilstones": [
+            {
+              "StoneText": "b"
+            },
+            {
+              "StoneText": "ug"
+            },
+            {
+              "StoneText": "ip"
+            },
+            {
+              "StoneText": "ip"
+            },
+            {
+              "StoneText": "it"
+            },
+            {
+              "StoneText": "ag"
+            },
+            {
+              "StoneText": "ip"
+            },
+            {
+              "StoneText": "it"
+            }
+          ]
+        },
+        {
+          "SegmentNumber": 3,
+          "targetstones": [
+            {
+              "StoneText": "ip"
+            }
+          ],
+          "prompt": {
+            "PromptText": "ip",
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/indianenglish/audios/ip.mp3"
+          },
+          "foilstones": [
+            {
+              "StoneText": "ig"
+            },
+            {
+              "StoneText": "un"
+            },
+            {
+              "StoneText": "l"
+            },
+            {
+              "StoneText": "g"
+            },
+            {
+              "StoneText": "im"
+            },
+            {
+              "StoneText": "it"
+            },
+            {
+              "StoneText": "ig"
+            },
+            {
+              "StoneText": "im"
+            },
+            {
+              "StoneText": "r"
+            }
+          ]
+        },
+        {
+          "SegmentNumber": 4,
+          "targetstones": [
+            {
+              "StoneText": "is"
+            }
+          ],
+          "prompt": {
+            "PromptText": "is",
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/indianenglish/audios/is.mp3"
+          },
+          "foilstones": [
+            {
+              "StoneText": "ug"
+            },
+            {
+              "StoneText": "it"
+            },
+            {
+              "StoneText": "ip"
+            },
+            {
+              "StoneText": "z"
+            },
+            {
+              "StoneText": "ip"
+            },
+            {
+              "StoneText": "am"
+            },
+            {
+              "StoneText": "i"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "LevelMeta": {
+        "LevelNumber": 42,
+        "PromptType": "Visible",
+        "LevelType": "LetterOnly",
+        "csvType": "match",
+        "PromptFadeout": 0,
+        "LetterGroup": 11
+      },
+      "Puzzles": [
+        {
+          "SegmentNumber": 0,
+          "targetstones": [
+            {
+              "StoneText": "un"
+            }
+          ],
+          "prompt": {
+            "PromptText": "un",
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/indianenglish/audios/un.mp3"
+          },
+          "foilstones": [
+            {
+              "StoneText": "ug"
+            },
+            {
+              "StoneText": "ag"
+            },
+            {
+              "StoneText": "p"
+            },
+            {
+              "StoneText": "r"
+            },
+            {
+              "StoneText": "it"
+            },
+            {
+              "StoneText": "ag"
+            },
+            {
+              "StoneText": "b"
+            },
+            {
+              "StoneText": "a"
+            }
+          ]
+        },
+        {
+          "SegmentNumber": 1,
+          "targetstones": [
+            {
+              "StoneText": "um"
+            }
+          ],
+          "prompt": {
+            "PromptText": "um",
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/indianenglish/audios/um.mp3"
+          },
+          "foilstones": [
+            {
+              "StoneText": "t"
+            },
+            {
+              "StoneText": "um"
+            },
+            {
+              "StoneText": "p"
+            },
+            {
+              "StoneText": "r"
+            },
+            {
+              "StoneText": "ap"
+            },
+            {
+              "StoneText": "b"
+            },
+            {
+              "StoneText": "us"
+            },
+            {
+              "StoneText": "ig"
+            }
+          ]
+        },
+        {
+          "SegmentNumber": 2,
+          "targetstones": [
+            {
+              "StoneText": "ug"
+            }
+          ],
+          "prompt": {
+            "PromptText": "ug",
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/indianenglish/audios/ug.mp3"
+          },
+          "foilstones": [
+            {
+              "StoneText": "a"
+            },
+            {
+              "StoneText": "um"
+            },
+            {
+              "StoneText": "a"
+            },
+            {
+              "StoneText": "um"
+            },
+            {
+              "StoneText": "ut"
+            },
+            {
+              "StoneText": "um"
+            },
+            {
+              "StoneText": "an"
+            },
+            {
+              "StoneText": "in"
+            }
+          ]
+        },
+        {
+          "SegmentNumber": 3,
+          "targetstones": [
+            {
+              "StoneText": "us"
+            }
+          ],
+          "prompt": {
+            "PromptText": "us",
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/indianenglish/audios/us.mp3"
+          },
+          "foilstones": [
+            {
+              "StoneText": "as"
+            },
+            {
+              "StoneText": "ap"
+            },
+            {
+              "StoneText": "ug"
+            },
+            {
+              "StoneText": "ip"
+            },
+            {
+              "StoneText": "im"
+            },
+            {
+              "StoneText": "ut"
+            },
+            {
+              "StoneText": "ug"
+            }
+          ]
+        },
+        {
+          "SegmentNumber": 4,
+          "targetstones": [
+            {
+              "StoneText": "ut"
+            }
+          ],
+          "prompt": {
+            "PromptText": "ut",
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/indianenglish/audios/ut.mp3"
+          },
+          "foilstones": [
+            {
+              "StoneText": "a"
+            },
+            {
+              "StoneText": "ig"
+            },
+            {
+              "StoneText": "un"
+            },
+            {
+              "StoneText": "us"
+            },
+            {
+              "StoneText": "b"
+            },
+            {
+              "StoneText": "ig"
+            },
+            {
+              "StoneText": "us"
+            },
+            {
+              "StoneText": "ut"
+            },
+            {
+              "StoneText": "t"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "LevelMeta": {
+        "LevelNumber": 43,
+        "PromptType": "Hidden",
+        "LevelType": "LetterOnly",
+        "csvType": "matchSound",
+        "PromptFadeout": 0,
+        "LetterGroup": 11
+      },
+      "Puzzles": [
+        {
+          "SegmentNumber": 0,
+          "targetstones": [
+            {
+              "StoneText": "us"
+            }
+          ],
+          "prompt": {
+            "PromptText": "us",
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/indianenglish/audios/us.mp3"
+          },
+          "foilstones": [
+            {
+              "StoneText": "g"
+            },
+            {
+              "StoneText": "p"
+            },
+            {
+              "StoneText": "z"
+            },
+            {
+              "StoneText": "us"
+            },
+            {
+              "StoneText": "t"
+            },
+            {
+              "StoneText": "us"
+            },
+            {
+              "StoneText": "is"
+            },
+            {
+              "StoneText": "us"
+            }
+          ]
+        },
+        {
+          "SegmentNumber": 1,
+          "targetstones": [
+            {
+              "StoneText": "am"
+            }
+          ],
+          "prompt": {
+            "PromptText": "am",
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/indianenglish/audios/am.mp3"
+          },
+          "foilstones": [
+            {
+              "StoneText": "b"
+            },
+            {
+              "StoneText": "ug"
+            },
+            {
+              "StoneText": "an"
+            },
+            {
+              "StoneText": "is"
+            },
+            {
+              "StoneText": "am"
+            },
+            {
+              "StoneText": "a"
+            },
+            {
+              "StoneText": "im"
+            },
+            {
+              "StoneText": "r"
+            }
+          ]
+        },
+        {
+          "SegmentNumber": 2,
+          "targetstones": [
+            {
+              "StoneText": "an"
+            }
+          ],
+          "prompt": {
+            "PromptText": "an",
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/indianenglish/audios/an.mp3"
+          },
+          "foilstones": [
+            {
+              "StoneText": "is"
+            },
+            {
+              "StoneText": "ip"
+            },
+            {
+              "StoneText": "ap"
+            },
+            {
+              "StoneText": "am"
+            },
+            {
+              "StoneText": "ug"
+            },
+            {
+              "StoneText": "m"
+            },
+            {
+              "StoneText": "it"
+            },
+            {
+              "StoneText": "g"
+            }
+          ]
+        },
+        {
+          "SegmentNumber": 3,
+          "targetstones": [
+            {
+              "StoneText": "um"
+            }
+          ],
+          "prompt": {
+            "PromptText": "um",
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/indianenglish/audios/um.mp3"
+          },
+          "foilstones": [
+            {
+              "StoneText": "s"
+            },
+            {
+              "StoneText": "ap"
+            },
+            {
+              "StoneText": "an"
+            },
+            {
+              "StoneText": "t"
+            },
+            {
+              "StoneText": "an"
+            },
+            {
+              "StoneText": "ut"
+            },
+            {
+              "StoneText": "um"
+            }
+          ]
+        },
+        {
+          "SegmentNumber": 4,
+          "targetstones": [
+            {
+              "StoneText": "ip"
+            }
+          ],
+          "prompt": {
+            "PromptText": "ip",
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/indianenglish/audios/ip.mp3"
+          },
+          "foilstones": [
+            {
+              "StoneText": "ip"
+            },
+            {
+              "StoneText": "u"
+            },
+            {
+              "StoneText": "i"
+            },
+            {
+              "StoneText": "ig"
+            },
+            {
+              "StoneText": "an"
+            },
+            {
+              "StoneText": "l"
+            },
+            {
+              "StoneText": "i"
+            },
+            {
+              "StoneText": "un"
+            },
+            {
+              "StoneText": "us"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "LevelMeta": {
+        "LevelNumber": 44,
+        "PromptType": "Visible",
+        "LevelType": "LetterInWord",
+        "csvType": "matchfirst",
+        "PromptFadeout": 0,
+        "LetterGroup": 11
+      },
+      "Puzzles": [
+        {
+          "SegmentNumber": 0,
+          "targetstones": [
+            {
+              "StoneText": "p"
+            }
+          ],
+          "prompt": {
+            "PromptText": "pun",
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/indianenglish/audios/p.mp3"
+          },
+          "foilstones": [
+            {
+              "StoneText": "am"
+            },
+            {
+              "StoneText": "c"
+            },
+            {
+              "StoneText": "p"
+            },
+            {
+              "StoneText": "ig"
+            },
+            {
+              "StoneText": "um"
+            },
+            {
+              "StoneText": "g"
+            },
+            {
+              "StoneText": "un"
+            },
+            {
+              "StoneText": "b"
+            }
+          ]
+        },
+        {
+          "SegmentNumber": 1,
+          "targetstones": [
+            {
+              "StoneText": "b"
+            }
+          ],
+          "prompt": {
+            "PromptText": "bin",
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/indianenglish/audios/b.mp3"
+          },
+          "foilstones": [
+            {
+              "StoneText": "ug"
+            },
+            {
+              "StoneText": "i"
+            },
+            {
+              "StoneText": "l"
+            },
+            {
+              "StoneText": "c"
+            },
+            {
+              "StoneText": "p"
+            },
+            {
+              "StoneText": "p"
+            },
+            {
+              "StoneText": "g"
+            },
+            {
+              "StoneText": "f"
+            }
+          ]
+        },
+        {
+          "SegmentNumber": 2,
+          "targetstones": [
+            {
+              "StoneText": "l"
+            }
+          ],
+          "prompt": {
+            "PromptText": "lag",
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/indianenglish/audios/l.mp3"
+          },
+          "foilstones": [
+            {
+              "StoneText": "im"
+            },
+            {
+              "StoneText": "ap"
+            },
+            {
+              "StoneText": "ut"
+            },
+            {
+              "StoneText": "an"
+            },
+            {
+              "StoneText": "ut"
+            },
+            {
+              "StoneText": "b"
+            },
+            {
+              "StoneText": "n"
+            }
+          ]
+        },
+        {
+          "SegmentNumber": 3,
+          "targetstones": [
+            {
+              "StoneText": "f"
+            }
+          ],
+          "prompt": {
+            "PromptText": "fig",
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/indianenglish/audios/f.mp3"
+          },
+          "foilstones": [
+            {
+              "StoneText": "an"
+            },
+            {
+              "StoneText": "ug"
+            },
+            {
+              "StoneText": "p"
+            },
+            {
+              "StoneText": "t"
+            },
+            {
+              "StoneText": "s"
+            },
+            {
+              "StoneText": "im"
+            },
+            {
+              "StoneText": "t"
+            },
+            {
+              "StoneText": "b"
+            },
+            {
+              "StoneText": "l"
+            }
+          ]
+        },
+        {
+          "SegmentNumber": 4,
+          "targetstones": [
+            {
+              "StoneText": "g"
+            }
+          ],
+          "prompt": {
+            "PromptText": "gag",
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/indianenglish/audios/g.mp3"
+          },
+          "foilstones": [
+            {
+              "StoneText": "is"
+            },
+            {
+              "StoneText": "ug"
+            },
+            {
+              "StoneText": "ug"
+            },
+            {
+              "StoneText": "un"
+            },
+            {
+              "StoneText": "it"
+            },
+            {
+              "StoneText": "is"
+            },
+            {
+              "StoneText": "im"
+            },
+            {
+              "StoneText": "s"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "LevelMeta": {
+        "LevelNumber": 45,
+        "PromptType": "Visible",
+        "LevelType": "LetterInWord",
+        "csvType": "matchfirst",
+        "PromptFadeout": 0,
+        "LetterGroup": 11
+      },
+      "Puzzles": [
+        {
+          "SegmentNumber": 0,
+          "targetstones": [
+            {
+              "StoneText": "u"
+            }
+          ],
+          "prompt": {
+            "PromptText": "urb",
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/indianenglish/audios/u.mp3"
+          },
+          "foilstones": [
+            {
+              "StoneText": "r"
+            },
+            {
+              "StoneText": "g"
+            },
+            {
+              "StoneText": "a"
+            },
+            {
+              "StoneText": "c"
+            },
+            {
+              "StoneText": "g"
+            },
+            {
+              "StoneText": "m"
+            },
+            {
+              "StoneText": "r"
+            },
+            {
+              "StoneText": "s"
+            }
+          ]
+        },
+        {
+          "SegmentNumber": 1,
+          "targetstones": [
+            {
+              "StoneText": "a"
+            }
+          ],
+          "prompt": {
+            "PromptText": "apn",
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/indianenglish/audios/a.mp3"
+          },
+          "foilstones": [
+            {
+              "StoneText": "ap"
+            },
+            {
+              "StoneText": "i"
+            },
+            {
+              "StoneText": "am"
+            },
+            {
+              "StoneText": "it"
+            },
+            {
+              "StoneText": "a"
+            },
+            {
+              "StoneText": "un"
+            },
+            {
+              "StoneText": "ut"
+            },
+            {
+              "StoneText": "u"
+            }
+          ]
+        },
+        {
+          "SegmentNumber": 2,
+          "targetstones": [
+            {
+              "StoneText": "a"
+            }
+          ],
+          "prompt": {
+            "PromptText": "acp",
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/indianenglish/audios/a.mp3"
+          },
+          "foilstones": [
+            {
+              "StoneText": "ug"
+            },
+            {
+              "StoneText": "a"
+            },
+            {
+              "StoneText": "ig"
+            },
+            {
+              "StoneText": "u"
+            },
+            {
+              "StoneText": "um"
+            },
+            {
+              "StoneText": "i"
+            },
+            {
+              "StoneText": "n"
+            },
+            {
+              "StoneText": "s"
+            }
+          ]
+        },
+        {
+          "SegmentNumber": 3,
+          "targetstones": [
+            {
+              "StoneText": "i"
+            }
+          ],
+          "prompt": {
+            "PromptText": "ibt",
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/indianenglish/audios/i.mp3"
+          },
+          "foilstones": [
+            {
+              "StoneText": "u"
+            },
+            {
+              "StoneText": "ut"
+            },
+            {
+              "StoneText": "a"
+            },
+            {
+              "StoneText": "um"
+            },
+            {
+              "StoneText": "um"
+            },
+            {
+              "StoneText": "us"
+            },
+            {
+              "StoneText": "t"
+            }
+          ]
+        },
+        {
+          "SegmentNumber": 4,
+          "targetstones": [
+            {
+              "StoneText": "u"
+            }
+          ],
+          "prompt": {
+            "PromptText": "utg",
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/indianenglish/audios/u.mp3"
+          },
+          "foilstones": [
+            {
+              "StoneText": "a"
+            },
+            {
+              "StoneText": "s"
+            },
+            {
+              "StoneText": "m"
+            },
+            {
+              "StoneText": "l"
+            },
+            {
+              "StoneText": "ut"
+            },
+            {
+              "StoneText": "c"
+            },
+            {
+              "StoneText": "in"
+            },
+            {
+              "StoneText": "ut"
+            },
+            {
+              "StoneText": "a"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "LevelMeta": {
+        "LevelNumber": 46,
+        "PromptType": "Visible",
+        "LevelType": "LetterInWord",
+        "csvType": "matchfirst",
+        "PromptFadeout": "4",
+        "LetterGroup": 11
+      },
+      "Puzzles": [
+        {
+          "SegmentNumber": 0,
+          "targetstones": [
+            {
+              "StoneText": "p"
+            }
+          ],
+          "prompt": {
+            "PromptText": "pit",
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/indianenglish/audios/p.mp3"
+          },
+          "foilstones": [
+            {
+              "StoneText": "c"
+            },
+            {
+              "StoneText": "p"
+            },
+            {
+              "StoneText": "p"
+            },
+            {
+              "StoneText": "us"
+            },
+            {
+              "StoneText": "r"
+            },
+            {
+              "StoneText": "z"
+            },
+            {
+              "StoneText": "p"
+            },
+            {
+              "StoneText": "p"
+            }
+          ]
+        },
+        {
+          "SegmentNumber": 1,
+          "targetstones": [
+            {
+              "StoneText": "p"
+            }
+          ],
+          "prompt": {
+            "PromptText": "pza",
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/indianenglish/audios/p.mp3"
+          },
+          "foilstones": [
+            {
+              "StoneText": "ap"
+            },
+            {
+              "StoneText": "i"
+            },
+            {
+              "StoneText": "ip"
+            },
+            {
+              "StoneText": "i"
+            },
+            {
+              "StoneText": "ut"
+            },
+            {
+              "StoneText": "m"
+            },
+            {
+              "StoneText": "u"
+            },
+            {
+              "StoneText": "g"
+            }
+          ]
+        },
+        {
+          "SegmentNumber": 2,
+          "targetstones": [
+            {
+              "StoneText": "i"
+            }
+          ],
+          "prompt": {
+            "PromptText": "ibn",
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/indianenglish/audios/i.mp3"
+          },
+          "foilstones": [
+            {
+              "StoneText": "ip"
+            },
+            {
+              "StoneText": "u"
+            },
+            {
+              "StoneText": "f"
+            },
+            {
+              "StoneText": "r"
+            },
+            {
+              "StoneText": "i"
+            },
+            {
+              "StoneText": "p"
+            },
+            {
+              "StoneText": "us"
+            },
+            {
+              "StoneText": "c"
+            }
+          ]
+        },
+        {
+          "SegmentNumber": 3,
+          "targetstones": [
+            {
+              "StoneText": "p"
+            }
+          ],
+          "prompt": {
+            "PromptText": "pug",
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/indianenglish/audios/p.mp3"
+          },
+          "foilstones": [
+            {
+              "StoneText": "um"
+            },
+            {
+              "StoneText": "p"
+            },
+            {
+              "StoneText": "ap"
+            },
+            {
+              "StoneText": "a"
+            },
+            {
+              "StoneText": "p"
+            },
+            {
+              "StoneText": "as"
+            },
+            {
+              "StoneText": "n"
+            }
+          ]
+        },
+        {
+          "SegmentNumber": 4,
+          "targetstones": [
+            {
+              "StoneText": "t"
+            }
+          ],
+          "prompt": {
+            "PromptText": "tca",
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/indianenglish/audios/t.mp3"
+          },
+          "foilstones": [
+            {
+              "StoneText": "u"
+            },
+            {
+              "StoneText": "us"
+            },
+            {
+              "StoneText": "p"
+            },
+            {
+              "StoneText": "p"
+            },
+            {
+              "StoneText": "p"
+            },
+            {
+              "StoneText": "u"
+            },
+            {
+              "StoneText": "an"
+            },
+            {
+              "StoneText": "t"
+            },
+            {
+              "StoneText": "l"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "LevelMeta": {
+        "LevelNumber": 47,
+        "PromptType": "Visible",
+        "LevelType": "LetterInWord",
+        "csvType": "matchfirst",
+        "PromptFadeout": 0,
+        "LetterGroup": 12
+      },
+      "Puzzles": [
+        {
+          "SegmentNumber": 0,
+          "targetstones": [
+            {
+              "StoneText": "ap"
+            }
+          ],
+          "prompt": {
+            "PromptText": "apl",
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/indianenglish/audios/ap.mp3"
+          },
+          "foilstones": [
+            {
+              "StoneText": "it"
+            },
+            {
+              "StoneText": "f"
+            },
+            {
+              "StoneText": "im"
+            }
+          ]
+        },
+        {
+          "SegmentNumber": 1,
+          "targetstones": [
+            {
+              "StoneText": "an"
+            }
+          ],
+          "prompt": {
+            "PromptText": "anp",
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/indianenglish/audios/an.mp3"
+          },
+          "foilstones": [
+            {
+              "StoneText": "up"
+            },
+            {
+              "StoneText": "ap"
+            },
+            {
+              "StoneText": "ut"
+            }
+          ]
+        },
+        {
+          "SegmentNumber": 2,
+          "targetstones": [
+            {
+              "StoneText": "up"
+            }
+          ],
+          "prompt": {
+            "PromptText": "upp",
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/indianenglish/audios/up.mp3"
+          },
+          "foilstones": [
+            {
+              "StoneText": "um"
+            },
+            {
+              "StoneText": "b"
+            },
+            {
+              "StoneText": "u"
+            }
+          ]
+        },
+        {
+          "SegmentNumber": 3,
+          "targetstones": [
+            {
+              "StoneText": "ib"
+            }
+          ],
+          "prompt": {
+            "PromptText": "ibr",
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/indianenglish/audios/ib.mp3"
+          },
+          "foilstones": [
+            {
+              "StoneText": "ib"
+            },
+            {
+              "StoneText": "it"
+            },
+            {
+              "StoneText": "g"
+            },
+            {
+              "StoneText": "ut"
+            }
+          ]
+        },
+        {
+          "SegmentNumber": 4,
+          "targetstones": [
+            {
+              "StoneText": "it"
+            }
+          ],
+          "prompt": {
+            "PromptText": "itl",
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/indianenglish/audios/it.mp3"
+          },
+          "foilstones": [
+            {
+              "StoneText": "it"
+            },
+            {
+              "StoneText": "ug"
+            },
+            {
+              "StoneText": "as"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "LevelMeta": {
+        "LevelNumber": 48,
+        "PromptType": "Visible",
+        "LevelType": "Word",
+        "csvType": "spell",
+        "PromptFadeout": 0,
+        "LetterGroup": 12
+      },
+      "Puzzles": [
+        {
+          "SegmentNumber": 0,
+          "targetstones": [
+            {
+              "StoneText": "n"
+            },
+            {
+              "StoneText": "a"
+            },
+            {
+              "StoneText": "g"
+            }
+          ],
+          "prompt": {
+            "PromptText": "nag",
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/indianenglish/audios/nag.mp3"
+          },
+          "foilstones": [
+            {
+              "StoneText": "u"
+            },
+            {
+              "StoneText": "r"
+            },
+            {
+              "StoneText": "g"
+            }
+          ]
+        },
+        {
+          "SegmentNumber": 1,
+          "targetstones": [
+            {
+              "StoneText": "r"
+            },
+            {
+              "StoneText": "u"
+            },
+            {
+              "StoneText": "n"
+            }
+          ],
+          "prompt": {
+            "PromptText": "run",
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/indianenglish/audios/run.mp3"
+          },
+          "foilstones": [
+            {
+              "StoneText": "g"
+            },
+            {
+              "StoneText": "b"
+            },
+            {
+              "StoneText": "a"
+            }
+          ]
+        },
+        {
+          "SegmentNumber": 2,
+          "targetstones": [
+            {
+              "StoneText": "r"
+            },
+            {
+              "StoneText": "u"
+            },
+            {
+              "StoneText": "g"
+            }
+          ],
+          "prompt": {
+            "PromptText": "rug",
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/indianenglish/audios/rug.mp3"
+          },
+          "foilstones": [
+            {
+              "StoneText": "is"
+            },
+            {
+              "StoneText": "z"
+            },
+            {
+              "StoneText": "r"
+            }
+          ]
+        },
+        {
+          "SegmentNumber": 3,
+          "targetstones": [
+            {
+              "StoneText": "p"
+            },
+            {
+              "StoneText": "i"
+            },
+            {
+              "StoneText": "g"
+            }
+          ],
+          "prompt": {
+            "PromptText": "pig",
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/indianenglish/audios/pig.mp3"
+          },
+          "foilstones": [
+            {
+              "StoneText": "r"
+            },
+            {
+              "StoneText": "ig"
+            },
+            {
+              "StoneText": "n"
+            },
+            {
+              "StoneText": "u"
+            }
+          ]
+        },
+        {
+          "SegmentNumber": 4,
+          "targetstones": [
+            {
+              "StoneText": "r"
+            },
+            {
+              "StoneText": "u"
+            },
+            {
+              "StoneText": "b"
+            }
+          ],
+          "prompt": {
+            "PromptText": "rub",
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/indianenglish/audios/rub.mp3"
+          },
+          "foilstones": [
+            {
+              "StoneText": "g"
+            },
+            {
+              "StoneText": "um"
+            },
+            {
+              "StoneText": "p"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "LevelMeta": {
+        "LevelNumber": 49,
+        "PromptType": "Visible",
+        "LevelType": "Word",
+        "csvType": "spell",
+        "PromptFadeout": 0,
+        "LetterGroup": 13
+      },
+      "Puzzles": [
+        {
+          "SegmentNumber": 0,
+          "targetstones": [
+            {
+              "StoneText": "p"
+            },
+            {
+              "StoneText": "i"
+            },
+            {
+              "StoneText": "t"
+            }
+          ],
+          "prompt": {
+            "PromptText": "pit",
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/indianenglish/audios/pit.mp3"
+          },
+          "foilstones": [
+            {
+              "StoneText": "im"
+            },
+            {
+              "StoneText": "is"
+            },
+            {
+              "StoneText": "s"
+            },
+            {
+              "StoneText": "l"
+            },
+            {
+              "StoneText": "z"
+            },
+            {
+              "StoneText": "z"
+            },
+            {
+              "StoneText": "a"
+            },
+            {
+              "StoneText": "t"
+            }
+          ]
+        },
+        {
+          "SegmentNumber": 1,
+          "targetstones": [
+            {
+              "StoneText": "f"
+            },
+            {
+              "StoneText": "a"
+            },
+            {
+              "StoneText": "b"
+            }
+          ],
+          "prompt": {
+            "PromptText": "fab",
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/indianenglish/audios/fab.mp3"
+          },
+          "foilstones": [
+            {
+              "StoneText": "u"
+            },
+            {
+              "StoneText": "is"
+            },
+            {
+              "StoneText": "g"
+            },
+            {
+              "StoneText": "um"
+            },
+            {
+              "StoneText": "in"
+            },
+            {
+              "StoneText": "g"
+            },
+            {
+              "StoneText": "t"
+            },
+            {
+              "StoneText": "f"
+            }
+          ]
+        },
+        {
+          "SegmentNumber": 2,
+          "targetstones": [
+            {
+              "StoneText": "r"
+            },
+            {
+              "StoneText": "a"
+            },
+            {
+              "StoneText": "m"
+            }
+          ],
+          "prompt": {
+            "PromptText": "ram",
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/indianenglish/audios/ram.mp3"
+          },
+          "foilstones": [
+            {
+              "StoneText": "is"
+            },
+            {
+              "StoneText": "i"
+            },
+            {
+              "StoneText": "z"
+            },
+            {
+              "StoneText": "r"
+            },
+            {
+              "StoneText": "a"
+            },
+            {
+              "StoneText": "l"
+            },
+            {
+              "StoneText": "m"
+            }
+          ]
+        },
+        {
+          "SegmentNumber": 3,
+          "targetstones": [
+            {
+              "StoneText": "m"
+            },
+            {
+              "StoneText": "u"
+            },
+            {
+              "StoneText": "g"
+            }
+          ],
+          "prompt": {
+            "PromptText": "mug",
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/indianenglish/audios/mug.mp3"
+          },
+          "foilstones": [
+            {
+              "StoneText": "i"
+            },
+            {
+              "StoneText": "p"
+            },
+            {
+              "StoneText": "m"
+            },
+            {
+              "StoneText": "g"
+            },
+            {
+              "StoneText": "f"
+            },
+            {
+              "StoneText": "us"
+            },
+            {
+              "StoneText": "f"
+            },
+            {
+              "StoneText": "a"
+            },
+            {
+              "StoneText": "us"
+            }
+          ]
+        },
+        {
+          "SegmentNumber": 4,
+          "targetstones": [
+            {
+              "StoneText": "g"
+            },
+            {
+              "StoneText": "a"
+            },
+            {
+              "StoneText": "g"
+            }
+          ],
+          "prompt": {
+            "PromptText": "gag",
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/indianenglish/audios/gag.mp3"
+          },
+          "foilstones": [
+            {
+              "StoneText": "ap"
+            },
+            {
+              "StoneText": "as"
+            },
+            {
+              "StoneText": "us"
+            },
+            {
+              "StoneText": "a"
+            },
+            {
+              "StoneText": "ug"
+            },
+            {
+              "StoneText": "ug"
+            },
+            {
+              "StoneText": "f"
+            },
+            {
+              "StoneText": "ut"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "LevelMeta": {
+        "LevelNumber": 50,
+        "PromptType": "Hidden",
+        "LevelType": "Word",
+        "csvType": "spellSound",
+        "PromptFadeout": 0,
+        "LetterGroup": 13
+      },
+      "Puzzles": [
+        {
+          "SegmentNumber": 0,
+          "targetstones": [
+            {
+              "StoneText": "n"
+            },
+            {
+              "StoneText": "i"
+            },
+            {
+              "StoneText": "t"
+            }
+          ],
+          "prompt": {
+            "PromptText": "nit",
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/indianenglish/audios/nit.mp3"
+          },
+          "foilstones": [
+            {
+              "StoneText": "a"
+            },
+            {
+              "StoneText": "m"
+            },
+            {
+              "StoneText": "n"
+            },
+            {
+              "StoneText": "m"
+            },
+            {
+              "StoneText": "r"
+            },
+            {
+              "StoneText": "c"
+            },
+            {
+              "StoneText": "b"
+            },
+            {
+              "StoneText": "i"
+            }
+          ]
+        },
+        {
+          "SegmentNumber": 1,
+          "targetstones": [
+            {
+              "StoneText": "m"
+            },
+            {
+              "StoneText": "u"
+            },
+            {
+              "StoneText": "m"
+            }
+          ],
+          "prompt": {
+            "PromptText": "mum",
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/indianenglish/audios/mum.mp3"
+          },
+          "foilstones": [
+            {
+              "StoneText": "u"
+            },
+            {
+              "StoneText": "r"
+            },
+            {
+              "StoneText": "a"
+            },
+            {
+              "StoneText": "i"
+            },
+            {
+              "StoneText": "i"
+            },
+            {
+              "StoneText": "l"
+            },
+            {
+              "StoneText": "ib"
+            },
+            {
+              "StoneText": "c"
+            }
+          ]
+        },
+        {
+          "SegmentNumber": 2,
+          "targetstones": [
+            {
+              "StoneText": "l"
+            },
+            {
+              "StoneText": "a"
+            },
+            {
+              "StoneText": "g"
+            }
+          ],
+          "prompt": {
+            "PromptText": "lag",
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/indianenglish/audios/lag.mp3"
+          },
+          "foilstones": [
+            {
+              "StoneText": "ap"
+            },
+            {
+              "StoneText": "u"
+            },
+            {
+              "StoneText": "g"
+            },
+            {
+              "StoneText": "m"
+            },
+            {
+              "StoneText": "ag"
+            },
+            {
+              "StoneText": "t"
+            },
+            {
+              "StoneText": "l"
+            },
+            {
+              "StoneText": "n"
+            }
+          ]
+        },
+        {
+          "SegmentNumber": 3,
+          "targetstones": [
+            {
+              "StoneText": "c"
+            },
+            {
+              "StoneText": "a"
+            },
+            {
+              "StoneText": "t"
+            }
+          ],
+          "prompt": {
+            "PromptText": "cat",
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/indianenglish/audios/cat.mp3"
+          },
+          "foilstones": [
+            {
+              "StoneText": "n"
+            },
+            {
+              "StoneText": "c"
+            },
+            {
+              "StoneText": "s"
+            },
+            {
+              "StoneText": "i"
+            },
+            {
+              "StoneText": "a"
+            },
+            {
+              "StoneText": "a"
+            },
+            {
+              "StoneText": "f"
+            }
+          ]
+        },
+        {
+          "SegmentNumber": 4,
+          "targetstones": [
+            {
+              "StoneText": "f"
+            },
+            {
+              "StoneText": "i"
+            },
+            {
+              "StoneText": "n"
+            }
+          ],
+          "prompt": {
+            "PromptText": "fin",
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/indianenglish/audios/fin.mp3"
+          },
+          "foilstones": [
+            {
+              "StoneText": "t"
+            },
+            {
+              "StoneText": "g"
+            },
+            {
+              "StoneText": "i"
+            },
+            {
+              "StoneText": "m"
+            },
+            {
+              "StoneText": "up"
+            },
+            {
+              "StoneText": "a"
+            },
+            {
+              "StoneText": "a"
+            },
+            {
+              "StoneText": "c"
+            },
+            {
+              "StoneText": "m"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
