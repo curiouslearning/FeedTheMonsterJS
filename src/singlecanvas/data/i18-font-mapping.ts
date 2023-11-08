@@ -47,7 +47,7 @@ const languageFontMapping: { [language: string]: string } = {
   Tagalog: "Consolas",
   Vietnamese: "Consolas",
   Pashto: "Consolas",
-  Twi: "adobe_arabic_bold",
+  Twi: "Noto Sans",
 };
 
 export default languageFontMapping;
