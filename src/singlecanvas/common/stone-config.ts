@@ -1,4 +1,4 @@
-import { lang } from "../../../global-variables";
+import { font, lang } from "../../../global-variables";
 import { TimerTicking } from "../components/timer-ticking";
 import { Tutorial } from "../components/tutorial";
 import { Utils } from "./utils";
@@ -68,11 +68,7 @@ export class StoneConfig {
             // Animation has ended, return the final stone position
             return this.x;
         }
-    
-        let distance = this.x - 0;
-        let steps = 100;
-        let currentProgress = this.frame;
-        return this.getEase(currentProgress, 0, distance, steps);
+        return this.getEase(this.frame, 0, this.x, 100);
     }
 
     getY = () => {
@@ -80,11 +76,7 @@ export class StoneConfig {
             // Animation has ended, return the final stone position
             return this.y;
         }
-    
-        let distance = this.y - 0;
-        let steps = 100;
-        let currentProgress = this.frame;
-        return this.getEase(currentProgress, 0, distance, steps);
+        return this.getEase(this.frame, 0, this.y, 100);
     }
 
     draw(deltaTime) {
@@ -109,7 +101,7 @@ export class StoneConfig {
         //     //reached its original position
         // }
         this.context.fillStyle = "white";
-        this.context.font = this.textFontSize + `px ${Utils.getLanguageSpecificFont(lang)}, monospace`;
+        this.context.font = this.textFontSize + `px ${font}, monospace`;
         this.context.textAlign = "center";
         this.context.fillText(this.text, this.getX(), this.getY());
     }

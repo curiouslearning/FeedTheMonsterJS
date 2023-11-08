@@ -5,7 +5,7 @@ import { Utils } from "../common/utils";
 import { AudioPlayer } from "./audio-player";
 import { VISIBILITY_CHANGE } from "../common/event-names";
 import { PromptAudio } from "../../common/common";
-import { lang } from "../../../global-variables";
+import { font, lang } from "../../../global-variables";
 
 
 var self;
@@ -142,7 +142,7 @@ export class PromptText extends EventManager {
         const y = this.height * 0.26;
         this.context.textAlign = "center";
         var fontSize = this.calculateFont();
-        this.context.font = `${fontSize}px ${Utils.getLanguageSpecificFont(lang)}, monospace`;
+        this.context.font = `${fontSize}px ${font}, monospace`;
         if (this.levelData.levelMeta.levelType == "LetterInWord") {
             var letterInWord = this.currentPromptText.replace(
                 new RegExp(this.currentPuzzleData.targetStones[0], "g"),
@@ -199,7 +199,7 @@ export class PromptText extends EventManager {
         const y = this.height * 0.28;
         
         var fontSize = this.calculateFont();
-        this.context.font = `${fontSize}px ${Utils.getLanguageSpecificFont(lang)}, monospace`;
+        this.context.font = `${fontSize}px ${font}, monospace`;
         const startPrompttextX =
             this.width / 2 -
             this.context.measureText(this.currentPromptText).width / 2;
