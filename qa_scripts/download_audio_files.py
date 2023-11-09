@@ -96,7 +96,7 @@ def download_and_convert_folder(repo_owner, repo_name, folder_path, output_dir, 
 
 
 def read_json_file(file_path):
-    with open(file_path, 'r') as file:
+    with open(file_path, 'r', encoding='utf-8') as file:
         json_data = json.load(file)
     return json_data
 
