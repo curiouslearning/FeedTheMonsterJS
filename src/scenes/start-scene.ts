@@ -6,12 +6,18 @@ import {
 import { StoneConfig } from "../common/stone-config";
 import { Monster } from "../components/monster";
 import { DataModal } from "../data/data-modal";
-import { Debugger, lang } from "../../global-variables";
+import { Debugger, font, lang } from "../../global-variables";
 import { Background } from "../components/background";
 import { AudioPlayer } from "../components/audio-player";
 import { FirebaseIntegration } from "../Firebase/firebase-integration";
 import { Utils } from "../common/utils";
 import PlayButton from "../components/play-button";
+
+interface TitleConfig {
+  text: string;
+  xPos: number;
+  yPos: number;
+}
 
 export class StartScene {
   public canvas: HTMLCanvasElement;
@@ -38,6 +44,7 @@ export class StartScene {
   audioPlayer: AudioPlayer;
   private toggleBtn: HTMLElement;
   private pwa_install_status: Event;
+  private titleConfig: TitleConfig;
 
   constructor(
     canvas: HTMLCanvasElement,
@@ -58,12 +65,25 @@ export class StartScene {
 
     this.pwa_status = localStorage.getItem(PWAInstallStatus);
     this.handler = document.getElementById("canvas") as HTMLCanvasElement;
+    this.setSceneConfigs();
     this.devToggle();
     this.createPlayButton();
 
     StartScene.SceneName = StartScene1;
     window.addEventListener("beforeinstallprompt", this.handlerInstallPrompt);
   }
+
+  setSceneConfigs = () => {
+    this.titleConfig = {
+      text: this.data.title as string,
+      xPos: this.width * 0.5,
+      yPos: this.height / 10,
+    };
+    this.titleFont = this.getFontWidthOfTitle();
+    this.context.font = `${this.titleFont}px ${font}, monospace`;
+    this.context.fillStyle = "white";
+    this.context.textAlign = "center";
+  };
 
   devToggle = () => {
     this.toggleBtn.addEventListener("click", () => {
@@ -77,29 +97,14 @@ export class StartScene {
         this.toggleBtn.innerText = "Dev";
       }
     });
-  }
-
-  animation = (deltaTime: number) => {
-    this.titleFont = this.getFontWidthOfTitle();
-
-    this.context.clearRect(0, 0, this.width, this.height);
-    if (StartScene.SceneName == StartScene1) {
-      this.background1.draw();
-      this.context.font = `${this.titleFont}px ${Utils.getLanguageSpecificFont(
-        lang
-      )}, monospace`;
-      this.context.fillStyle = "white";
-      this.context.textAlign = "center";
-      this.context.fillText(
-        this.data.title,
-        this.width * 0.5,
-        this.height / 10
-      );
-      this.monster.update(deltaTime);
-      this.playButton.draw();
-    }
   };
 
+  animation = (deltaTime: number) => {
+    this.background1.draw();
+    this.context.fillText(this.titleConfig.text, this.titleConfig.xPos, this.titleConfig.yPos);
+    this.monster.update(deltaTime);
+    this.playButton.draw();
+  };
 
   createPlayButton() {
     this.playButton = new PlayButton(
@@ -136,7 +141,11 @@ export class StartScene {
   dispose() {
     this.audioPlayer.stopAllAudios();
     this.handler.removeEventListener("click", this.handleMouseClick, false);
-    window.removeEventListener("beforeinstallprompt", this.handlerInstallPrompt, false);
+    window.removeEventListener(
+      "beforeinstallprompt",
+      this.handlerInstallPrompt,
+      false
+    );
   }
 
   getFontWidthOfTitle() {
@@ -147,5 +156,5 @@ export class StartScene {
     event.preventDefault();
     this.pwa_install_status = event;
     localStorage.setItem(PWAInstallStatus, "false");
-  }
+  };
 }

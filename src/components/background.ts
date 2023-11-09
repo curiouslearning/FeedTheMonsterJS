@@ -25,6 +25,34 @@ var images = {
     winterPillerImg: "./assets/images/Winter_sign_v01.png",
 };
 
+interface PillerImageConfig {
+    xPos: number;
+    yPos: number;
+    imageWidth: number;
+    imageHeight: number
+}
+
+interface HillImageConfig {
+    xPos: number;
+    yPos: number;
+    imageWidth: number;
+    imageHeight: number
+}
+
+interface FenceImageConfig {
+    xPos: number;
+    yPos: number;
+    imageWidth: number;
+    imageHeight: number
+}
+
+interface GrassImageConfig {
+    xPos: number;
+    yPos: number;
+    imageWidth: number;
+    imageHeight: number
+}
+
 
 export class Background {
     public width: number;
@@ -35,6 +63,10 @@ export class Background {
     public levelNumber: number;
     public availableBackgroundTypes = ["Summer", "Autumn", "Winter"];
     public backgroundType: number;
+    private pillerImageConfig: PillerImageConfig;
+    private fenceImageConfig: FenceImageConfig;
+    private hillImageConfig: HillImageConfig;
+    private grassImageConfig: GrassImageConfig;
 
 
     constructor(context, width, height, levelNumber) {
@@ -49,11 +81,42 @@ export class Background {
         if (this.levelNumber >= 30) {
             this.backgroundType = this.backgroundType % 3;
         }
+        this.setComponentConfigs();
 
         loadImages(images, (images) => {
             this.loadedImages = Object.assign({}, images);
             this.imagesLoaded = true;
         });
+    }
+
+    setComponentConfigs = () => {
+        this.pillerImageConfig = {
+            xPos: this.width * 0.38,
+            yPos: this.height / 6,
+            imageWidth: this.width / 1.2,
+            imageHeight: this.height / 2,
+        }
+
+        this.fenceImageConfig = {
+            xPos: -this.width * 0.4,
+            yPos: this.height / 4,
+            imageWidth: this.width,
+            imageHeight: this.height / 2,
+        }
+
+        this.hillImageConfig = {
+            xPos: -this.width * 0.25,
+            yPos: this.height / 2,
+            imageWidth: this.width * 1.5,
+            imageHeight: this.height / 2,
+        }
+
+        this.grassImageConfig = {
+            xPos: -this.width * 0.25,
+            yPos: this.height / 2 + (this.height / 2) * 0.1,
+            imageWidth: this.width * 1.5,
+            imageHeight: this.height / 2,
+        }
     }
 
 
@@ -65,31 +128,31 @@ export class Background {
                         this.context.drawImage(this.loadedImages.winterBgImg, 0, 0, this.width, this.height);
                         this.context.drawImage(
                             this.loadedImages.winterPillerImg,
-                            this.width * 0.38,
-                            this.height / 6,
-                            this.width / 1.2,
-                            this.height / 2
+                            this.pillerImageConfig.xPos,
+                            this.pillerImageConfig.yPos,
+                            this.pillerImageConfig.imageWidth,
+                            this.pillerImageConfig.imageHeight
                         );
                         this.context.drawImage(
                             this.loadedImages.winterFenceImg,
-                            -this.width * 0.4,
-                            this.height / 4,
-                            this.width,
-                            this.height / 2
+                            this.fenceImageConfig.xPos,
+                            this.fenceImageConfig.yPos,
+                            this.fenceImageConfig.imageWidth,
+                            this.fenceImageConfig.imageHeight
                         );
                         this.context.drawImage(
                             this.loadedImages.winterHillImg,
-                            -this.width * 0.25,
-                            this.height / 2,
-                            this.width * 1.5,
-                            this.height / 2
+                            this.hillImageConfig.xPos,
+                            this.hillImageConfig.yPos,
+                            this.hillImageConfig.imageWidth,
+                            this.hillImageConfig.imageHeight
                         );
                         this.context.drawImage(
                             this.loadedImages.winterGrassImg,
-                            -this.width * 0.25,
-                            this.height / 2 + (this.height / 2) * 0.1,
-                            this.width * 1.5,
-                            this.height / 2
+                            this.grassImageConfig.xPos,
+                            this.grassImageConfig.yPos,
+                            this.grassImageConfig.imageWidth,
+                            this.grassImageConfig.imageHeight
                         );
                     }
 
@@ -99,31 +162,31 @@ export class Background {
                         this.context.drawImage(this.loadedImages.autumnBgImg, 0, 0, this.width, this.height);
                         this.context.drawImage(
                             this.loadedImages.autumnPillerImg,
-                            this.width * 0.38,
-                            this.height / 6,
-                            this.width / 1.2,
-                            this.height / 2
+                            this.pillerImageConfig.xPos,
+                            this.pillerImageConfig.yPos,
+                            this.pillerImageConfig.imageWidth,
+                            this.pillerImageConfig.imageHeight
                         );
                         this.context.drawImage(
                             this.loadedImages.autumnFenceImg,
-                            -this.width * 0.4,
-                            this.height / 4,
-                            this.width,
-                            this.height / 2
+                            this.fenceImageConfig.xPos,
+                            this.fenceImageConfig.yPos,
+                            this.fenceImageConfig.imageWidth,
+                            this.fenceImageConfig.imageHeight
                         );
                         this.context.drawImage(
                             this.loadedImages.autumnHillImg,
-                            -this.width * 0.25,
-                            this.height / 2,
-                            this.width * 1.5,
-                            this.height / 2
+                            this.hillImageConfig.xPos,
+                            this.hillImageConfig.yPos,
+                            this.hillImageConfig.imageWidth,
+                            this.hillImageConfig.imageHeight
                         );
                         this.context.drawImage(
                             this.loadedImages.autumnGrassImg,
-                            -this.width * 0.25,
-                            this.height / 2 + (this.height / 2) * 0.1,
-                            this.width * 1.5,
-                            this.height / 2
+                            this.grassImageConfig.xPos,
+                            this.grassImageConfig.yPos,
+                            this.grassImageConfig.imageWidth,
+                            this.grassImageConfig.imageHeight
                         );
                     }
                     break;
@@ -133,30 +196,30 @@ export class Background {
                         this.context.drawImage(
                             this.loadedImages.pillerImg,
                             this.width * 0.6,
-                            this.height / 6,
+                            this.pillerImageConfig.yPos,
                             this.width,
-                            this.height / 2
+                            this.pillerImageConfig.imageHeight
                         );
                         this.context.drawImage(
                             this.loadedImages.fenchImg,
-                            -this.width * 0.4,
-                            this.height / 3,
-                            this.width,
-                            this.height / 3
+                            this.fenceImageConfig.xPos,
+                            this.fenceImageConfig.yPos,
+                            this.fenceImageConfig.imageWidth,
+                            this.fenceImageConfig.imageHeight
                         );
                         this.context.drawImage(
                             this.loadedImages.hillImg,
-                            -this.width * 0.25,
-                            this.height / 2,
-                            this.width * 1.5,
-                            this.height / 2
+                            this.hillImageConfig.xPos,
+                            this.hillImageConfig.yPos,
+                            this.hillImageConfig.imageWidth,
+                            this.hillImageConfig.imageHeight
                         );
                         this.context.drawImage(
                             this.loadedImages.grassImg,
-                            -this.width * 0.25,
-                            this.height / 2 + (this.height / 2) * 0.1,
-                            this.width * 1.5,
-                            this.height / 2
+                            this.grassImageConfig.xPos,
+                            this.grassImageConfig.yPos,
+                            this.grassImageConfig.imageWidth,
+                            this.grassImageConfig.imageHeight
                         );
                     }
                     break;

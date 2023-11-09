@@ -6,6 +6,12 @@ import {
 
 import { EventManager } from "../events/EventManager";
 
+interface MonsterConfigs {
+  xPos: number;
+  yPos: number;
+  imageWidth: number;
+  imageHeight: number;
+}
 
 export class Monster extends EventManager {
   public zindex: number;
@@ -29,6 +35,7 @@ export class Monster extends EventManager {
   public loadedImages: any;
   public imagesLoaded: boolean = false;
   public monsterPhase: number;
+  private monsterConfig: MonsterConfigs
 
   constructor(game, monsterPhase, callBackFunction?) {
     super({
@@ -48,6 +55,7 @@ export class Monster extends EventManager {
     this.maxFrame = 6;
     this.x = this.game.width / 2 - this.game.width * 0.243;
     this.y = this.game.width / 3;
+    this.setComponentConfig();
     this.fps = 10;
     this.countFrame = 0;
     this.frameInterval = 1000 / this.fps;
@@ -73,6 +81,14 @@ export class Monster extends EventManager {
   }
 
 
+  private setComponentConfig = () => {
+    this.monsterConfig = {
+      xPos: this.x,
+      yPos: this.y * 0.8,
+      imageWidth: this.width / 2,
+      imageHeight: this.height / 1.5
+    }
+  }
   update(deltaTime) {
     if (this.frameTimer >= this.frameInterval) {
       this.frameTimer = 0;
@@ -96,10 +112,10 @@ export class Monster extends EventManager {
         1386 * this.frameY,
         768,
         1386,
-        this.x,
-        this.y * 0.8,
-        this.width / 2,
-        this.height / 1.5
+        this.monsterConfig.xPos,
+        this.monsterConfig.yPos,
+        this.monsterConfig.imageWidth,
+        this.monsterConfig.imageHeight
       );
     }
   }

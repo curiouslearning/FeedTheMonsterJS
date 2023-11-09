@@ -2,6 +2,27 @@ import { loadImages } from "../common/common";
 import { EventManager } from "../events/EventManager";
 import { AudioPlayer } from "./audio-player";
 
+interface TimerEmpty {
+    xPos: number;
+    yPos: number;
+    imageWidth: number;
+    imageHeight: number;
+}
+
+interface RotatingClock {
+    xPos: number;
+    yPos: number;
+    imageWidth: number;
+    imageHeight: number;
+}
+
+interface TimerFull {
+    xPos: number;
+    yPos: number;
+    imageWidth: number;
+    imageHeight: number;
+}
+
 export class TimerTicking extends EventManager {
     public width: number;
     public height: number;
@@ -25,7 +46,10 @@ export class TimerTicking extends EventManager {
     public isStoneDropped: boolean = false;
     public audioPlayer: AudioPlayer;
     public playLevelEndAudioOnce: boolean = true;
-
+    private timerEmpty: TimerEmpty;
+    private rotatingClock: RotatingClock;
+    private timerFull: TimerFull;
+    private timeRemaining: number
     constructor(width: number, height: number, callback: Function) {
         super({
             stoneDropCallbackHandler: (event) => this.handleStoneDrop(event),
@@ -43,6 +67,7 @@ export class TimerTicking extends EventManager {
         this.isTimerStarted = false;
         this.isTimerEnded = false;
         this.isTimerRunningOut = false;
+        this.setComponentConfig();
         this.audioPlayer = new AudioPlayer();
         this.playLevelEndAudioOnce = true;
         this.images = {
@@ -55,6 +80,31 @@ export class TimerTicking extends EventManager {
             this.loadedImages = Object.assign({}, images);
             this.imagesLoaded = true;
         });
+    }
+
+    setComponentConfig = () => {
+        this.timerEmpty = {
+            xPos: 0,
+            yPos: this.height * 0.1,
+            imageWidth: this.width,
+            imageHeight: this.height * 0.05
+        };
+
+        this.rotatingClock = {
+            xPos: 5,
+            yPos: this.height * 0.09,
+            imageWidth: this.width * 0.12,
+            imageHeight: this.height * 0.06
+        };
+
+        this.timerFull = {
+            xPos: this.width * 0.14,
+            yPos: this.height * 0.099,
+            imageWidth: this.width * 0.87,
+            imageHeight: this.height * 0.05
+        }
+
+        this.timeRemaining = this.width * 0.87;
     }
 
     startTimer() {
@@ -72,11 +122,11 @@ export class TimerTicking extends EventManager {
         if (this.startMyTimer && !this.isStoneDropped) {
             this.timer += deltaTime * 0.008;
         }
-        if (Math.floor(this.width * 0.87 - (this.width * 0.87 * this.timer * 0.01)) == 40 && !this.isMyTimerOver) {
+        if (Math.floor(this.timeRemaining - (this.timeRemaining * this.timer * 0.01)) == 40 && !this.isMyTimerOver) {
             this.playLevelEndAudioOnce?this.audioPlayer.playAudio('./assets/audios/timeout.mp3'):null;
             this.playLevelEndAudioOnce = false;
         }
-        if ((this.width * 0.87 - (this.width * 0.87 * this.timer * 0.01)) < 0 && !this.isMyTimerOver) {
+        if ((this.timeRemaining  - (this.timeRemaining * this.timer * 0.01)) < 0 && !this.isMyTimerOver) {
             this.isMyTimerOver = true;
             this.callback(true);
         }
@@ -86,17 +136,17 @@ export class TimerTicking extends EventManager {
         if (this.imagesLoaded) {
             this.context.drawImage(
                 this.loadedImages.timer_empty,
-                0,
-                this.height * 0.1,
-                this.width,
-                this.height * 0.05
+                this.timerEmpty.xPos,
+                this.timerEmpty.yPos,
+                this.timerEmpty.imageWidth,
+                this.timerEmpty.imageHeight
             );
             this.context.drawImage(
                 this.loadedImages.rotating_clock,
-                5,
-                this.height * 0.09,
-                this.width * 0.12,
-                this.height * 0.06
+                this.rotatingClock.xPos,
+                this.rotatingClock.yPos,
+                this.rotatingClock.imageWidth,
+                this.rotatingClock.imageHeight
             );
             this.context.drawImage(
                 this.loadedImages.timer_full,
@@ -104,10 +154,10 @@ export class TimerTicking extends EventManager {
                 0,
                 this.timerWidth - (this.timerWidth * this.timer * 0.01),
                 this.timerHeight,
-                this.width * 0.14,
-                this.height * 0.099,
-                this.width * 0.87 - (this.width * 0.87 * this.timer * 0.01),
-                this.height * 0.05
+                this.timerFull.xPos,
+                this.timerFull.yPos,
+                this.timerFull.imageWidth - (this.timerFull.imageWidth * this.timer * 0.01),
+                this.timerFull.imageHeight
             );
         }
     }

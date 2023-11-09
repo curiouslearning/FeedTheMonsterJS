@@ -214,16 +214,13 @@ export class GameplayScene {
   getRandomFeedBackText(randomIndex: number): string {
     const keys = Object.keys(this.feedBackTexts);
     const selectedKey = keys[randomIndex];
-    return this.feedBackTexts[selectedKey] as string;
+    return this.feedBackTexts[selectedKey];
   }
 
-  getRandomInt(min: number, max: number) {
-    if (Object.keys(this.feedBackTexts).length == 1) {
-      return min;
-    }
-    min = Math.ceil(min);
-    max = Math.floor(max);
-    return Math.floor(Math.random() * (max - min + 1)) + min;
+  getRandomInt(min: number, max: number): number {
+    const feedbackValues = Object.values(this.feedBackTexts);
+    const definedValuesMaxCount = (feedbackValues.filter(value => value != undefined).length) - 1;
+    return Math.floor(Math.random() * (definedValuesMaxCount - min + 1)) + min;
   }
 
   handleMouseUp = (event) => {
@@ -570,9 +567,7 @@ export class GameplayScene {
 
   private handleCorrectStoneDrop = (feedbackIndex: number): void => {
     this.score += 100;
-    console.log("handleCorrectStone->");
     // this.audioPlayer.playAudio(false, "./assets/audios/Eat.mp3","./assets/audios/Cheering-02.mp3", "./assets/audios/fantastic.WAV");
-    console.log(this.getRandomFeedBackText(feedbackIndex));
     this.feedbackTextEffects.wrapText(
       this.getRandomFeedBackText(feedbackIndex)
     );
