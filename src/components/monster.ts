@@ -36,6 +36,7 @@ export class Monster extends EventManager {
   public imagesLoaded: boolean = false;
   public monsterPhase: number;
   private monsterConfig: MonsterConfigs
+  private animationIndex: number = 0;
 
   constructor(game, monsterPhase, callBackFunction?) {
     super({
@@ -62,10 +63,11 @@ export class Monster extends EventManager {
     this.frameTimer = 0;
 
     this.images = {
-      eatImg: "./assets/images/eat1" + this.monsterPhase + ".png",
-      idleImg: "./assets/images/idle1" + this.monsterPhase + ".png",
-      spitImg: "./assets/images/spit1" + this.monsterPhase + ".png",
-      dragImg: "./assets/images/drag1" + this.monsterPhase + ".png",
+      idleImg: "./assets/images/monster_01.png",
+      // eatImg: "./assets/images/eat1" + this.monsterPhase + ".png",
+      // idleImg: "./assets/images/idle1" + this.monsterPhase + ".png",
+      // spitImg: "./assets/images/spit1" + this.monsterPhase + ".png",
+      // dragImg: "./assets/images/drag1" + this.monsterPhase + ".png",
     };
 
     loadImages(this.images, (images) => {
@@ -83,10 +85,10 @@ export class Monster extends EventManager {
 
   private setComponentConfig = () => {
     this.monsterConfig = {
-      xPos: this.x,
-      yPos: this.y * 0.8,
-      imageWidth: this.width / 2,
-      imageHeight: this.height / 1.5
+      xPos: 0,
+      yPos: 0,
+      imageWidth: this.width,
+      imageHeight: this.height
     }
   }
   update(deltaTime) {
@@ -108,10 +110,10 @@ export class Monster extends EventManager {
     if (this.imagesLoaded) {
       this.context.drawImage(
         this.image,
-        770 * this.frameX,
-        1386 * this.frameY,
+        (770)* this.frameX,
+        (1371*this.animationIndex),
         768,
-        1386,
+        1371,
         this.monsterConfig.xPos,
         this.monsterConfig.yPos,
         this.monsterConfig.imageWidth,
@@ -126,19 +128,23 @@ export class Monster extends EventManager {
   
 
   changeToDragAnimation() {
-    this.image = this.loadedImages.dragImg;
+    // this.image = this.loadedImages.dragImg;
+    this.animationIndex = 1;
   }
 
   changeToEatAnimation() {
-    this.image = this.loadedImages.eatImg;
+    // this.image = this.loadedImages.eatImg;
+    this.animationIndex = 2;
   }
 
   changeToIdleAnimation() {
     this.image = this.loadedImages.idleImg;
+       this.animationIndex = 0;
   }
 
   changeToSpitAnimation() {
-    this.image = this.loadedImages.spitImg;
+    // this.image = this.loadedImages.spitImg;
+    this.animationIndex = 3;
   }
 
   public handleStoneDrop(event) {
