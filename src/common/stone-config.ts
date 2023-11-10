@@ -20,6 +20,8 @@ export class StoneConfig {
     public tutorialInstance: Tutorial;
     public timerTickingInstance: TimerTicking;
     public frame: number = 0;
+    public getCurrentX: number;
+    public getCurrentY: number;
 
     constructor(context, canvasWidth, canvasHeight, stoneLetter, xPos, yPos, img,timerTickingInstance,tutorialInstance?) {
         this.x = xPos;
@@ -63,11 +65,7 @@ export class StoneConfig {
             // Animation has ended, return the final stone position
             return this.x;
         }
-    
-        let distance = this.x - 0;
-        let steps = 100;
-        let currentProgress = this.frame;
-        return this.getEase(currentProgress, 0, distance, steps);
+        return this.getEase(this.frame, 0, this.x, 100);
     }
 
     getY = () => {
@@ -75,14 +73,12 @@ export class StoneConfig {
             // Animation has ended, return the final stone position
             return this.y;
         }
-    
-        let distance = this.y - 0;
-        let steps = 100;
-        let currentProgress = this.frame;
-        return this.getEase(currentProgress, 0, distance, steps);
+        return this.getEase(this.frame, 0, this.y, 100);
     }
 
     draw(deltaTime: number) {
+        this.getCurrentX = this.getX();
+        this.getCurrentY = this.getY();
         if (this.frame < 100) {
             this.frame = this.frame + 1;
         }
@@ -94,8 +90,8 @@ export class StoneConfig {
         }
         this.context.drawImage(
             this.img,
-            this.getX() - this.imageCenterOffsetX,
-            this.getY()- this.imageCenterOffsetY,
+            this.getCurrentX - this.imageCenterOffsetX,
+            this.getCurrentY- this.imageCenterOffsetY,
             this.imageSize,
             this.imageSize
         );
@@ -103,6 +99,6 @@ export class StoneConfig {
         this.context.fillStyle = "white";
         this.context.font = this.textFontSize + `px ${font}, monospace`;
         this.context.textAlign = "center";
-        this.context.fillText(this.text, this.getX(), this.getY());
+        this.context.fillText(this.text, this.getCurrentX, this.getCurrentY);
     }
 }

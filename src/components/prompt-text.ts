@@ -225,6 +225,7 @@ export class PromptText extends EventManager {
                         scaledWidth/4,
                         scaledHeight/4
                     );
+
                   break;
                 }
                 default: {
@@ -276,6 +277,7 @@ export class PromptText extends EventManager {
         this.currentPuzzleData = this.levelData.puzzles[event.detail.counter]
         this.currentPromptText = this.currentPuzzleData.prompt.promptText;
         this.targetStones = this.currentPuzzleData.targetStones;
+        this.audioPlayer.preloadPromptAudio(this.getPromptAudioUrl());
         this.isStoneDropped = false;
         this.time = 0;
     }

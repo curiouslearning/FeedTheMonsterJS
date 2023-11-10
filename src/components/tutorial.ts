@@ -19,6 +19,9 @@ export class Tutorial {
     dy: number;
     absdx: number;
     absdy: number;
+    disx: number;
+    disy: number;
+    distance: number;
 
     constructor(context, width, height, puzzleNumber) {
         this.width = width;
@@ -73,10 +76,10 @@ export class Tutorial {
                 this.dy >= 0
                     ? this.y + this.absdy * deltaTime
                     : this.y - this.absdy * deltaTime;
-            const disx = this.x - this.endx + this.absdx;
-            const disy = this.y - this.endy + this.absdy;
-            const distance = Math.sqrt(disx * disx + disy * disy);
-            if (distance < 1) {
+            this.disx = this.x - this.endx + this.absdx;
+            this.disy = this.y - this.endy + this.absdy;
+            this.distance = Math.sqrt(this.disx * this.disx + this.disy * this.disy);
+            if (this.distance < 1) {
                 this.endTutorial = true;
                 // GameFields.tutorialStatus = true;
 
