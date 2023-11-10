@@ -217,13 +217,10 @@ export class GameplayScene {
     return this.feedBackTexts[selectedKey] as string;
   }
 
-  getRandomInt(min: number, max: number) {
-    if (Object.keys(this.feedBackTexts).length == 1) {
-      return min;
-    }
-    min = Math.ceil(min);
-    max = Math.floor(max);
-    return Math.floor(Math.random() * (max - min + 1)) + min;
+  getRandomInt(min: number, max: number): number {
+    const feedbackValues = Object.values(this.feedBackTexts);
+    const definedValuesMaxCount = (feedbackValues.filter(value => value != undefined).length) - 1;
+    return Math.floor(Math.random() * (definedValuesMaxCount - min + 1)) + min;
   }
 
   handleMouseUp = (event) => {
