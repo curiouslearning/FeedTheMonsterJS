@@ -1,4 +1,4 @@
-import { Debugger, lang } from "../../global-variables";
+import { Debugger, font, lang } from "../../global-variables";
 import { PreviousPlayedLevel, loadImages } from "../common/common";
 import { LevelConfig } from "../common/level-config";
 import { Utils } from "../common/utils";
@@ -244,7 +244,7 @@ export class LevelSelectionScreen {
       );
       this.context.fillStyle = "white";
       this.context.font =
-        textFontSize + `px ${Utils.getLanguageSpecificFont(lang)}, monospace`;
+        textFontSize + `px ${font}, monospace`;
       this.context.textAlign = "center";
       this.context.fillText(
         s.index + this.levelSelectionPageIndex,
@@ -254,7 +254,7 @@ export class LevelSelectionScreen {
       this.context.font =
         textFontSize -
         imageSize / 30 +
-        `px ${Utils.getLanguageSpecificFont(lang)}, monospace`;
+        `px ${font}, monospace`;
       Debugger.DebugMode
         ? this.context.fillText(
             this.data.levels[s.index + this.levelSelectionPageIndex - 1]

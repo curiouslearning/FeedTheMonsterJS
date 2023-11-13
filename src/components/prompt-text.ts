@@ -4,7 +4,7 @@ import { Utils } from "../common/utils";
 import { AudioPlayer } from "./audio-player";
 import { VISIBILITY_CHANGE } from "../common/event-names";
 import { PromptAudio } from "../common/common";
-import { lang } from "../../global-variables";
+import { font, lang } from "../../global-variables";
 
 
 export class PromptText extends EventManager {
@@ -110,7 +110,7 @@ export class PromptText extends EventManager {
         const y = this.height * 0.26;
         this.context.textAlign = "center";
         var fontSize = this.calculateFont();
-        this.context.font = `${fontSize}px ${Utils.getLanguageSpecificFont(lang)}, monospace`;
+        this.context.font = `${fontSize}px ${font}, monospace`;
         if (this.levelData.levelMeta.levelType == "LetterInWord") {
             var letterInWord = this.currentPromptText.replace(
                 new RegExp(this.currentPuzzleData.targetStones[0], "g"),
@@ -167,8 +167,8 @@ export class PromptText extends EventManager {
         const y = this.height * 0.28;
         
         var fontSize = this.calculateFont();
-        this.context.font = `${fontSize}px ${Utils.getLanguageSpecificFont(lang)}, monospace`;
-        const startPrompttextX =
+        this.context.font = `${fontSize}px ${font}, monospace`;
+        let startPrompttextX =
             this.width / 2 -
             this.context.measureText(this.currentPromptText).width / 2;
         let currentWordWidth = 0;
@@ -182,14 +182,14 @@ export class PromptText extends EventManager {
                         this.context.fillStyle = "red";
                         this.context.fillText(
                             promptTextLetters[i],
-                            startPrompttextX + currentWordWidth,
+                            startPrompttextX,
                             y
                         );
                     } else {
                         this.context.fillStyle = "black";
                         this.context.fillText(
                             promptTextLetters[i],
-                            startPrompttextX + currentWordWidth,
+                            startPrompttextX,
                             y
                         );
                     }
@@ -200,22 +200,24 @@ export class PromptText extends EventManager {
                         this.context.fillStyle = "black";
                         this.context.fillText(
                             promptTextLetters[i],
-                            startPrompttextX + currentWordWidth,
+                            startPrompttextX,
                             y
                         );
                     } else {
                         this.context.fillStyle = "red";
                         this.context.fillText(
                             promptTextLetters[i],
-                            startPrompttextX + currentWordWidth,
+                            startPrompttextX,
                             y
                         );
                     }
                     break;
                 }
-                case "audioPlayerWord": {
+                case "SoundWord": {
                     const scaledWidth = this.promptImageWidth;
                     const scaledHeight = this.promptImageHeight;
+                    // const offsetX = (this.width - scaledWidth) / 2;
+                    // const offsetY = (this.height - scaledHeight) / 5;
                     const offsetX = (this.width - scaledWidth) *1.25;
                     const offsetY = (this.height - scaledHeight) *0.33;
                     this.context.drawImage(
@@ -234,11 +236,15 @@ export class PromptText extends EventManager {
                         startPrompttextX,
                         y
                     );
+                    break;
                 }
             }
-            currentWordWidth = this.context.measureText(
-                this.currentPromptText.substring(0, i + 1)
-            ).width;
+            currentWordWidth = (this.context.measureText(
+                promptTextLetters[i]
+            ).width + this.context.measureText(
+                promptTextLetters[i + 1]
+            ).width) / 2;
+            startPrompttextX += currentWordWidth;
         }
     }
     draw(deltaTime: number) {

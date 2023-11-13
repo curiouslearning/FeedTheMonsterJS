@@ -6,7 +6,7 @@ import {
 import { StoneConfig } from "../common/stone-config";
 import { Monster } from "../components/monster";
 import { DataModal } from "../data/data-modal";
-import { Debugger, lang } from "../../global-variables";
+import { Debugger, font, lang } from "../../global-variables";
 import { Background } from "../components/background";
 import { AudioPlayer } from "../components/audio-player";
 import { FirebaseIntegration } from "../Firebase/firebase-integration";
@@ -85,9 +85,7 @@ export class StartScene {
     this.context.clearRect(0, 0, this.width, this.height);
     if (StartScene.SceneName == StartScene1) {
       this.background1.draw();
-      this.context.font = `${this.titleFont}px ${Utils.getLanguageSpecificFont(
-        lang
-      )}, monospace`;
+      this.context.font = `${this.titleFont}px ${font}, monospace`;
       this.context.fillStyle = "white";
       this.context.textAlign = "center";
       this.context.fillText(
