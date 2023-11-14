@@ -80,6 +80,7 @@ export class LevelEndScene {
       this.width * 0.8 - (this.width * 0.19) / 2,
       this.height * 0.7
     );
+    this.audioPlayer = new AudioPlayer();
     this.starCount = starCount;
     this.currentLevel = currentLevel;
     this.images = {

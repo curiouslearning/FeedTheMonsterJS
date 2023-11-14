@@ -16,7 +16,6 @@ export function loadImages(sources: any, callback: any) {
     images[src].src = sources[src];
   }
 }
-
 export const FirebaseUserClicked = "user_clicked";
 export const FirebaseUserInstall = "user_installed";
 export const PWAInstallStatus = "pwa_installed_status";
