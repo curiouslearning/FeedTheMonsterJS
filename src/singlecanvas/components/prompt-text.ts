@@ -200,7 +200,7 @@ export class PromptText extends EventManager {
         
         var fontSize = this.calculateFont();
         this.context.font = `${fontSize}px ${font}, monospace`;
-        const startPrompttextX =
+        let startPrompttextX =
             this.width / 2 -
             this.context.measureText(this.currentPromptText).width / 2;
         let currentWordWidth = 0;
@@ -214,14 +214,14 @@ export class PromptText extends EventManager {
                         this.context.fillStyle = "red";
                         this.context.fillText(
                             promptTextLetters[i],
-                            startPrompttextX + currentWordWidth,
+                            startPrompttextX,
                             y
                         );
                     } else {
                         this.context.fillStyle = "black";
                         this.context.fillText(
                             promptTextLetters[i],
-                            startPrompttextX + currentWordWidth,
+                            startPrompttextX,
                             y
                         );
                     }
@@ -232,14 +232,14 @@ export class PromptText extends EventManager {
                         this.context.fillStyle = "black";
                         this.context.fillText(
                             promptTextLetters[i],
-                            startPrompttextX + currentWordWidth,
+                            startPrompttextX,
                             y
                         );
                     } else {
                         this.context.fillStyle = "red";
                         this.context.fillText(
                             promptTextLetters[i],
-                            startPrompttextX + currentWordWidth,
+                            startPrompttextX,
                             y
                         );
                     }
@@ -271,9 +271,12 @@ export class PromptText extends EventManager {
                     break;
                 }
             }
-            currentWordWidth = this.context.measureText(
-                this.currentPromptText.substring(0, i + 1)
-            ).width;
+            currentWordWidth = (this.context.measureText(
+                promptTextLetters[i]
+            ).width + this.context.measureText(
+                promptTextLetters[i + 1]
+            ).width) / 2;
+            startPrompttextX += currentWordWidth;
         }
     }
     draw(deltaTime) {
