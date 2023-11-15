@@ -37,14 +37,8 @@ export class FeedbackTextEffects {
       x: 0,
       y: 0,
     };
-    this.textWorker = new Worker(window.feedbackTextWorkerPath)
-    this.textWorker.addEventListener(
-      "message",
-      this.handleTextWorkerMessage.bind(this)
-    );
-  }
-  public wrapText(text: string): void {
-    console.log(text, ">>>>>>>>>");
+    this.textWorker = new Worker(window.feedbackTextWorkerPath);
+
     const gradient = this.context.createLinearGradient(
       0,
       0,
@@ -60,6 +54,15 @@ export class FeedbackTextEffects {
     this.context.lineWidth = 3;
     this.context.strokeStyle = "#A46225";
     this.context.font = `bold ${this.fontSize}px Kalam, cursive`;
+
+    this.textWorker.addEventListener(
+      "message",
+      this.handleTextWorkerMessage.bind(this)
+    );
+  }
+  public wrapText(text: string): void {
+    console.log(text, ">>>>>>>>>");
+
     // break multiline text
     let lineArray: string[] = [];
     let words = text.split(" ");

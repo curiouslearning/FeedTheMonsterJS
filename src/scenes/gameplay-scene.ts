@@ -63,6 +63,7 @@ export class GameplayScene {
   loadedImages: any;
   stoneHandler: StoneHandler;
   public counter: number = 0;
+  public feedbackIndex: number = 0;
   tutorial: Tutorial;
   images: {
     pillerImg: string;
@@ -180,6 +181,10 @@ export class GameplayScene {
     this.handler = document.getElementById("canvas");
     this.puzzleData = levelData.puzzles;
     this.feedBackTexts = feedBackTexts;
+    this.feedbackIndex = this.getRandomInt(0, 1);
+    this.feedbackTextEffects.wrapText(
+      this.getRandomFeedBackText(this.feedbackIndex)
+    );
 
     this.images = {
       pillerImg: "./assets/images/Totem_v02_v01.png",
@@ -495,13 +500,12 @@ export class GameplayScene {
   };
 
   public letterInWordPuzzle(droppedStone: string) {
-    const feedBackIndex = this.getRandomInt(0, 1);
     const isCorrect = this.stoneHandler.isStoneDroppedCorrectForLetterInWord(
       droppedStone,
-      feedBackIndex
+      this.feedbackIndex
     );
     if (isCorrect) {
-      this.handleCorrectStoneDrop(feedBackIndex);
+      this.handleCorrectStoneDrop(this.feedbackIndex);
     }
     this.logPuzzleEndFirebaseEvent(isCorrect);
     this.dispatchStoneDropEvent(isCorrect);
@@ -509,13 +513,12 @@ export class GameplayScene {
   }
 
   public letterOnlyPuzzle(droppedStone: string) {
-    const feedBackIndex = this.getRandomInt(0, 1);
     const isCorrect = this.stoneHandler.isStoneDroppedCorrectForLetterOnly(
       droppedStone,
-      feedBackIndex
+      this.feedbackIndex
     );
     if (isCorrect) {
-      this.handleCorrectStoneDrop(feedBackIndex);
+      this.handleCorrectStoneDrop(this.feedbackIndex);
     }
     this.logPuzzleEndFirebaseEvent(isCorrect);
     this.dispatchStoneDropEvent(isCorrect);
@@ -526,18 +529,17 @@ export class GameplayScene {
     this.audioPlayer.stopFeedbackAudio();
     droppedStoneInstance.x = -999;
     droppedStoneInstance.y = -999;
-    const feedBackIndex = this.getRandomInt(0, 1);
     this.tempWordforWordPuzzle = this.tempWordforWordPuzzle + droppedStone;
 
     const isCorrect = this.stoneHandler.isStonDroppedCorrectForWord(
       this.tempWordforWordPuzzle,
-      feedBackIndex
+      this.feedbackIndex
     );
     if (
       this.stoneHandler.getCorrectTargetStone() == this.tempWordforWordPuzzle &&
       isCorrect
     ) {
-      this.handleCorrectStoneDrop(feedBackIndex);
+      this.handleCorrectStoneDrop(this.feedbackIndex);
       this.logPuzzleEndFirebaseEvent(isCorrect, "Word");
       this.dispatchStoneDropEvent(isCorrect);
       this.loadPuzzle();
@@ -568,9 +570,6 @@ export class GameplayScene {
   private handleCorrectStoneDrop = (feedbackIndex: number): void => {
     this.score += 100;
     // this.audioPlayer.playAudio(false, "./assets/audios/Eat.mp3","./assets/audios/Cheering-02.mp3", "./assets/audios/fantastic.WAV");
-    this.feedbackTextEffects.wrapText(
-      this.getRandomFeedBackText(feedbackIndex)
-    );
     this.feedBackTextCanavsElement.style.zIndex = "2";
   };
 
@@ -592,6 +591,10 @@ export class GameplayScene {
     document.dispatchEvent(loadPuzzleEvent);
     this.addEventListeners();
     this.audioPlayer.stopAllAudios();
+    this.feedbackIndex = this.getRandomInt(0, 1);
+    this.feedbackTextEffects.wrapText(
+      this.getRandomFeedBackText(this.feedbackIndex)
+    );
     this.startPuzzleTime();
   }
 
