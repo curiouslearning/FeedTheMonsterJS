@@ -162,14 +162,23 @@ export class Monster extends EventManager {
     this.unregisterEventListener();
   }
 
+  isPointInsideOval(x, y) {
+    const center = { x: (this.width/1.96), y: this.height/1.5 };
+    const majorAxisPoints = [{ x: (this.width/1.995), y: (this.height/1.777) }, { x: (this.width/1.995), y: (this.height/1.302) }];
+    const minorAxisPoints = [{ x: (this.width/2.79), y: (this.height/1.466) }, { x: (this.width/1.513), y: (this.height/1.466) }];
+  
+    const a = Math.abs(majorAxisPoints[0].y - majorAxisPoints[1].y) / 2;
+    const b = Math.abs(minorAxisPoints[0].x - minorAxisPoints[1].x) / 2;
+  
+    const ellipseEquation = ((x - center.x) ** 2) / (a ** 2) + ((y - center.y) ** 2) / (b ** 2);
+    return ellipseEquation <= 1;
+  }
+
   onClick(xClick: number, yClick: number): boolean {
-    const distance = Math.sqrt(
-      (xClick - this.x - this.width / 4) * (xClick - this.x - this.width / 4) +
-        (yClick - this.y - this.height / 2.7) *
-          (yClick - this.y - this.height / 2.7)
-    );
-    if (distance <= 60) {
+    if (this.isPointInsideOval(xClick, yClick)) {
       return true;
+    } else {
+      return false;
     }
   }
 }

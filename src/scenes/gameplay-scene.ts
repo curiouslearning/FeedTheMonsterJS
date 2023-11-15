@@ -91,6 +91,7 @@ export class GameplayScene {
   firebaseIntegration: FirebaseIntegration;
   startTime: number;
   puzzleTime: number;
+  
 
   constructor(
     canvas,
@@ -119,6 +120,8 @@ export class GameplayScene {
     this.jsonVersionNumber = jsonVersionNumber;
     this.startGameTime();
     this.startPuzzleTime();
+   
+
 
     this.pauseButton = new PauseButton(this.context, this.canvas);
     this.timerTicking = new TimerTicking(
@@ -141,6 +144,7 @@ export class GameplayScene {
       this.levelData,
       this.rightToLeft
     );
+    
 
     this.levelIndicators = new LevelIndicators(this.context, this.canvas, 0);
 
@@ -208,6 +212,7 @@ export class GameplayScene {
       : localStorage.setItem(PreviousPlayedLevel + lang, previousPlayedLevel);
     this.addEventListeners();
   }
+  
 
   resumeGame = () => {
     this.addEventListeners();
@@ -227,6 +232,15 @@ export class GameplayScene {
     const definedValuesMaxCount = (feedbackValues.filter(value => value != undefined).length) - 1;
     return Math.floor(Math.random() * (definedValuesMaxCount - min + 1)) + min;
   }
+  
+  isPointInsideCircle(x: number, y: number) {
+    const centerX= (this.width/1.98);
+    const centerY = (this.height/1.643);
+    const radius = 40;
+    const distance = Math.sqrt((x - centerX) ** 2 + (y - centerY) ** 2);
+  
+    return distance <= radius;
+  }
 
   handleMouseUp = (event) => {
     console.log(" upping mouse like a pro ");
@@ -237,12 +251,7 @@ export class GameplayScene {
     const y = event.clientY - rect.top;
     // event.preventDefault();
     if (
-      Math.sqrt(
-        (x - self.monster.x - self.canvas.width / 4) *
-          (x - self.monster.x - self.canvas.width / 4) +
-          (y - self.monster.y - self.canvas.height / 2.7) *
-            (y - self.monster.y - self.canvas.height / 2.7)
-      ) <= 60
+      this.isPointInsideCircle(x,y)
     ) {
       if (this.pickedStone != null || this.pickedStone != null) {
         if (this.levelData.levelMeta.levelType == "LetterOnly") {
