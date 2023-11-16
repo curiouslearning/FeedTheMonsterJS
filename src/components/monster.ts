@@ -1,26 +1,13 @@
 import { Debugger, lang } from "../../global-variables";
-import { MonsterLayer, StoreMonsterPhaseNumber } from "../common/common";
-import { CanvasStack } from "../utility/canvas-stack";
-var lastTime = 0;
-var self;
-var animationFrame;
-var monsterPhaseNumber = Debugger.DebugMode
-  ? localStorage.getItem(StoreMonsterPhaseNumber + lang + "Debug") || 1
-  : localStorage.getItem(StoreMonsterPhaseNumber + lang) || 1;
-var eatImg = new Image();
-eatImg.src = "./assets/images/eat1" + monsterPhaseNumber + ".png";
-var idleImg = new Image();
-idleImg.src = "./assets/images/idle1" + monsterPhaseNumber + ".png";
-var spitImg = new Image();
-spitImg.src = "./assets/images/spit1" + monsterPhaseNumber + ".png";
-var dragImg = new Image();
-dragImg.src = "./assets/images/drag1" + monsterPhaseNumber + ".png";
-dragImg.onload =
-  function () {
-    console.log("loadeded1");
-  };
-console.log("monsterexecuting");
-export class Monster {
+import {
+  StoreMonsterPhaseNumber,
+  loadImages,
+} from "../common/common";
+
+import { EventManager } from "../events/EventManager";
+
+
+export class Monster extends EventManager {
   public zindex: number;
   public width: number;
   public height: number;
@@ -35,19 +22,27 @@ export class Monster {
   public frameInterval: number;
   public frameTimer: number;
   public canvasStack: any;
-  public id: any;
   public canavsElement: HTMLCanvasElement;
   public context: CanvasRenderingContext2D;
   public game: any;
+  public images: Object;
+  public loadedImages: any;
+  public imagesLoaded: boolean = false;
+  public monsterPhase: number;
 
-  constructor(game, zindex?) {
-    console.log(" originalcanvas ", game);
+  constructor(game, monsterPhase, callBackFunction?) {
+    super({
+      stoneDropCallbackHandler: (event) => this.handleStoneDrop(event),
+      loadPuzzleCallbackHandler: (event) => this.handleLoadPuzzle(event),
+    });
     this.game = game;
-    self = this;
-    this.zindex = zindex;
+    this.monsterPhase = monsterPhase;
     this.width = this.game.width;
     this.height = this.game.height;
+    this.canavsElement = document.getElementById("canvas") as HTMLCanvasElement;
+    this.context = this.canavsElement.getContext("2d");
     this.image = document.getElementById("monster") as HTMLImageElement;
+
     this.frameX = 0;
     this.frameY = 0;
     this.maxFrame = 6;
@@ -57,41 +52,29 @@ export class Monster {
     this.countFrame = 0;
     this.frameInterval = 1000 / this.fps;
     this.frameTimer = 0;
-    this.canvasStack = new CanvasStack("canvas");
-    this.createCanvas();
+
+    this.images = {
+      eatImg: "./assets/images/eat1" + this.monsterPhase + ".png",
+      idleImg: "./assets/images/idle1" + this.monsterPhase + ".png",
+      spitImg: "./assets/images/spit1" + this.monsterPhase + ".png",
+      dragImg: "./assets/images/drag1" + this.monsterPhase + ".png",
+    };
+
+    loadImages(this.images, (images) => {
+      this.loadedImages = Object.assign({}, images);
+      this.changeToIdleAnimation();
+
+      this.imagesLoaded = true;
+      if (callBackFunction) {
+        console.log(this.imagesLoaded);
+        callBackFunction();
+      }
+    });
   }
 
-  createCanvas() {
-    this.id = this.canvasStack.createLayer(
-      this.height,
-      this.width,
-      "canvas"
-    );
-    this.canavsElement = document.getElementById(this.id) as HTMLCanvasElement;
-    this.context = this.canavsElement.getContext("2d");
-    // this.canavsElement.style.zIndex = "6";
-    this.canavsElement.style.bottom = "0";
-    // dragImg = new Image();
-    // dragImg.src = "./assets/images/drag1" + 1 + ".png";
-    // dragImg.onload = function () {
-    //   console.log(" Image is loaded ");
-    // }
-    // this.draw();
-    // this.animation(0);
-  }
-
-  changeZindex(index) {
-    this.canavsElement.style.zIndex = index;
-  }
-
-  deleteCanvas() {
-    cancelAnimationFrame(animationFrame);
-    this.canvasStack.deleteLayer(this.id);
-  }
 
   update(deltaTime) {
     if (this.frameTimer >= this.frameInterval) {
-      // console.log(deltaTime," bb ",this.frameTimer);
       this.frameTimer = 0;
       if (this.frameX < this.maxFrame) {
         this.frameX++;
@@ -106,70 +89,65 @@ export class Monster {
   }
 
   draw() {
-    // this.context.clearRect(0, 0, 100, 100);
-    this.context.drawImage(
-      this.image,
-      770 * this.frameX,
-      1386 * this.frameY,
-      768,
-      1386,
-      this.x,
-      this.y * 0.8,
-      this.width / 2,
-      this.height / 1.5
-    );
+    if (this.imagesLoaded) {
+      this.context.drawImage(
+        this.image,
+        770 * this.frameX,
+        1386 * this.frameY,
+        768,
+        1386,
+        this.x,
+        this.y * 0.8,
+        this.width / 2,
+        this.height / 1.5
+      );
+    }
   }
 
   changeImage(src) {
-    this.animation(0);
-    // if (this.frameY == 1) {
-    //   this.frameY = 0;
-    // } else {
-    //   this.frameY = 1;
-    // }
     this.image.src = src;
   }
-  changePhaseNumber(monsterPhaseNum) {
-    console.log("monster changing");
-    eatImg = new Image();
-    eatImg.src = "./assets/images/eat1" + monsterPhaseNum + ".png";
-    idleImg = new Image();
-    idleImg.src = "./assets/images/idle1" + monsterPhaseNum + ".png";
-    spitImg = new Image();
-    spitImg.src = "./assets/images/spit1" + monsterPhaseNum + ".png";
-    dragImg = new Image();
-    dragImg.src = "./assets/images/drag1" + monsterPhaseNum + ".png";
-    console.log(eatImg.src);
-    console.log(idleImg.src);
-    console.log(spitImg.src);
-    console.log(monsterPhaseNumber);
-  }
+  
 
   changeToDragAnimation() {
-    this.image = dragImg;
+    this.image = this.loadedImages.dragImg;
   }
 
   changeToEatAnimation() {
-    this.image = eatImg;
-    setTimeout(() => {
-      this.changeToIdleAnimation();
-    }, 2000);
+    this.image = this.loadedImages.eatImg;
   }
 
   changeToIdleAnimation() {
-    this.image = idleImg;
+    this.image = this.loadedImages.idleImg;
   }
 
   changeToSpitAnimation() {
-    this.image = spitImg;
-    setTimeout(() => {
-      this.changeToIdleAnimation();
-    }, 2000);
+    this.image = this.loadedImages.spitImg;
   }
-  animation(timeStamp) {
-    let deltaTime = timeStamp - lastTime;
-    lastTime = timeStamp;
-    self.update(deltaTime);
-    animationFrame = requestAnimationFrame(self.animation);
+
+  public handleStoneDrop(event) {
+    if (event.detail.isCorrect) {
+      this.changeToEatAnimation();
+    } else {
+      this.changeToSpitAnimation();
+    }
+  }
+  public handleLoadPuzzle(event) {
+    this.changeToIdleAnimation();
+  }
+
+  public dispose() {
+    this.unregisterEventListener();
+  }
+
+  onClick(xClick: number, yClick: number): boolean {
+    const distance = Math.sqrt(
+      (xClick - this.x - this.width / 4) * (xClick - this.x - this.width / 4) +
+        (yClick - this.y - this.height / 2.7) *
+          (yClick - this.y - this.height / 2.7)
+    );
+    if (distance <= 60) {
+      return true;
+    }
   }
 }

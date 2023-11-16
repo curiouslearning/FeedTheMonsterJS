@@ -13,7 +13,7 @@ githubSounds = []
 letters = []
 folder_index = 0
 selected_folder = sys.argv[1]
-feedback_words = ['amazing', 'fantastic1', 'great1', 'amazing!']
+feedback_words = ['amazing', 'fantastic1','fantastic', 'great1', 'amazing!']
 repo_owner = 'curiouslearning'
 repo_name = 'ftm-languagepacks'
 output_path = 'language_report.txt'
@@ -96,7 +96,7 @@ def download_and_convert_folder(repo_owner, repo_name, folder_path, output_dir, 
 
 
 def read_json_file(file_path):
-    with open(file_path, 'r') as file:
+    with open(file_path, 'r', encoding='utf-8') as file:
         json_data = json.load(file)
     return json_data
 

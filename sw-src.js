@@ -6,7 +6,7 @@ workbox.precaching.precacheAndRoute(self.__WB_MANIFEST, {
   exclude: [/^lang\//],
 });
 var number = 0;
-var version = 1.1;
+var version = 1.3;
 // self.addEventListener('activate', function(e) {
 //     console.log("activated");
 //
@@ -32,6 +32,10 @@ self.addEventListener("activate", function (event) {
 channel.addEventListener("message", async function (event) {
   if (event.data.command === "Cache") {
     number = 0;
+    await getCacheName(event.data.data);
+  }
+  if (event.data.command === "CacheUpdate") {
+    caches.delete(workbox.core.cacheNames.precache + event.data.data);
     await getCacheName(event.data.data);
   }
 });
@@ -101,15 +105,17 @@ async function getCacheName(language) {
 }
 
 async function getALLAudioUrls(cacheName, language) {
-  await cacheCommonAssets(language);
+  // await cacheCommonAssets(language);
   let audioList = [];
+  audioList.push("./lang/" + language + "/ftm_" + language + ".json");
   fetch("./lang/" + language + "/ftm_" + language + ".json", {
     method: "GET",
     headers: {
       "Content-Type": "application/json",
     },
   }).then((res) =>
-    res.json().then((data) => {
+    res.json().then(async (data) => {
+      await cacheFeedBackAudio(data.FeedbackAudios,language);
       for (var i = 0; i < data.Levels.length; i++) {
         
 
@@ -188,6 +194,39 @@ function cacheCommonAssets(language) {
   });
 }
 
+
+
+async function cacheFeedBackAudio(feedBackAudios, language) {
+  let audioUrls = []
+  feedBackAudios.forEach(audio => {
+    audioUrls.push(
+      self.location.href.includes("https://feedthemonsterdev.curiouscontent.org")
+      ? audio.slice(
+          0,
+          audio.indexOf("/feedthemonster") + "/feedthemonster".length
+        ) +
+          "dev" +
+          audio.slice(
+            audio.indexOf("/feedthemonster") + "/feedthemonster".length
+          )
+      : audio);
+  });
+  try {
+    const cacheName = workbox.core.cacheNames.precache + language;
+    const cache = await caches.open(cacheName);
+    await Promise.all(audioUrls.map(async (url) => {
+      try {
+        await cache.add(url);
+        console.log('Cached:', url);
+      } catch (e) {
+        console.log('Error caching feedback Audio:', url, e);
+      }
+    }));
+  } catch (e) {
+    console.log('Could not open cache:', e);
+  }
+}
+
 self.addEventListener("fetch", function (event) {
   event.respondWith(
     caches.match(event.request).then(function (response) {
@@ -198,3 +237,4 @@ self.addEventListener("fetch", function (event) {
     })
   );
 });
+

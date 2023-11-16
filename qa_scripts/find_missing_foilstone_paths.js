@@ -14,7 +14,6 @@ const rl = readline.createInterface({
 async function main() {
   // language = await promptForLanguageSelection();
   const json = await processModule(language);
-  json["title"] = "Feed The Monster";
   const missingLetterPaths = findMissingLetter(json);
   outputFilePath = `${__dirname}/language_report.txt`;
   if (!build_lang) {
@@ -71,6 +70,11 @@ function findMissingLetter(obj, path = "", paths = []) {
   if (typeof obj === "object" && obj !== null) {
     for (let key in obj) {
       if (obj.hasOwnProperty(key)) {
+        if (key == "targetstones") {
+          if (!Array.isArray(obj[key])) {
+            obj[key] = [obj[key]];
+          }
+        }
         var newPath = path ? `${path}.${key}` : key;
         if (key === "FeedbackAudios") {
           for (fd_url in obj[key]) {
