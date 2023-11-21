@@ -55,7 +55,7 @@
 
   <body>
     <div class="game-scene">
-      <h1 id="version-info-id">v1.0.21</h1>
+      <h1 id="version-info-id">v1.0.22</h1>
       <button id="toggle-btn" class="off">Dev</button>
       <!--Keep the server url in href-->
       <a
@@ -71,15 +71,6 @@
         
       </div>
       <img id="monster" src="./assets/images/idle4.png" alt="loading" />
-      <audio id="monster_audio" src=""></audio>
-      <audio id="feedback_audio" src=""></audio>
-      <audio id="intro_music" src=""></audio>
-      <audio id="prompt_audio" src=""></audio>
-      <audio id="button_click" src=""></audio>
-      <audio id="time_over" src=""></audio>
-      <audio id="stone_music" src=""></audio>
-      <audio id="phrase_audio" src=""></audio>
-      <audio id="level_end_audio" src=""></audio>
 
       <div id="discription-text">
         <p>
@@ -102,14 +93,10 @@
       <canvas id="feedback-text"></canvas>
       <canvas id="canvas"></canvas>
     </div>
-    <!-- <script defer type="module" src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
-        <script defer type="module" src="https://www.gstatic.com/firebasejs/8.10.1/firebase-analytics.js"></script> -->
     <script type="module" src="feedTheMonster.js"></script>
     <script
       type="module"
       src="https://storage.googleapis.com/workbox-cdn/releases/6.4.1/workbox-sw.js"
     ></script>
-    <!-- <script src="sw.js" type="text/javascript"></script> -->
-    
   </body>
 </html>
