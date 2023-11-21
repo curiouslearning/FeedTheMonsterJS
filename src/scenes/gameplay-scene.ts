@@ -317,7 +317,7 @@ export class GameplayScene {
 
     if (this.pauseButton.onClick(x, y)) {
       console.log(" pause button getting click from gameplay");
-      this.audioPlayer.playAudio("./assets/audios/ButtonClick.mp3");
+      this.audioPlayer.playButtonClickSound("./assets/audios/ButtonClick.mp3");
       this.pauseGamePlay();
     }
 
