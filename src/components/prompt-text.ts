@@ -232,7 +232,7 @@ export class PromptText extends EventManager {
                 default: {
                     this.context.fillStyle = "black";
                     this.context.fillText(
-                        this.currentPromptText,
+                        promptTextLetters[i],
                         startPrompttextX,
                         y
                     );
