@@ -232,8 +232,8 @@ export class PromptText extends EventManager {
                 default: {
                     this.context.fillStyle = "black";
                     this.context.fillText(
-                        promptTextLetters[i],
-                        startPrompttextX,
+                        this.currentPromptText,
+                        this.width/2,
                         y
                     );
                     break;
