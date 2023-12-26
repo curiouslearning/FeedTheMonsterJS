@@ -7,7 +7,7 @@ owner = "curiouslearning"
 repo = "ftm-languagepacks"
 
 # Provide your access token
-token = "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"
+token = "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"
 
 # API endpoint
 url = f"https://api.github.com/repos/{owner}/{repo}/contents"
