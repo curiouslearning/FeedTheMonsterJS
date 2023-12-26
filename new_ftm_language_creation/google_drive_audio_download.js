@@ -28,7 +28,7 @@ function authenticate() {
       client_secret,
       redirect_uris[0]
     );
-    // 4/0AfJohXk0M4MwnCktbRfGWSZlUFQZZDHyN7_D8-55SDr7CTK8WwfWlPM2-_mwWHnyk2VOEQ
+
     fs.readFile("token.json", (err, token) => {
       if (err) {
         getAccessToken(oAuth2Client)
