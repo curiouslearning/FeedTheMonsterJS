@@ -610,7 +610,7 @@ export class GameplayScene {
       version_number: document.getElementById("version-info-id").innerHTML,
       json_version_number: this.jsonVersionNumber,
       success_or_failure: isCorrect ? "success" : "failure",
-      level_number: this.levelData.levelNumber,
+      level_number: this.levelData.levelMeta.levelNumber,
       puzzle_number: this.counter,
       item_selected:
         puzzleType == "Word"
@@ -634,7 +634,7 @@ export class GameplayScene {
       success_or_failure:
         GameScore.calculateStarCount(this.score) >= 3 ? "success" : "failure",
       number_of_successful_puzzles: this.score / 100,
-      level_number: this.levelData.levelNumber,
+      level_number: this.levelData.levelMeta.levelNumber,
       duration: (endTime - this.startTime) / 1000,
     };
     this.firebaseIntegration.sendLevelCompletedEvent(levelCompletedData);
