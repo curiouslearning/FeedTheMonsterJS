@@ -6,7 +6,7 @@ workbox.precaching.precacheAndRoute(self.__WB_MANIFEST, {
   exclude: [/^lang\//],
 });
 var number = 0;
-var version = 1.7;
+var version = 1.8;
 // self.addEventListener('activate', function(e) {
 //     console.log("activated");
 //
