@@ -6,7 +6,7 @@ workbox.precaching.precacheAndRoute([{"revision":"ec214e1eef89105b484900ac15d926
   exclude: [/^lang\//],
 });
 var number = 0;
-var version = 1.12;
+var version = 1.13;
 // self.addEventListener('activate', function(e) {
 //     console.log("activated");
 //
