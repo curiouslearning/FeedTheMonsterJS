@@ -5,3 +5,4 @@ ftm_web_json
 token.json
 credentials.json
 convertAudios
+.DS_Store
