@@ -71,6 +71,7 @@ export class GameplayScene {
     grassImg: string;
     fenchImg: string;
     profileMonster: string;
+    playButtonImg:string;
   };
   handler: HTMLElement;
   pickedStoneObject: StoneConfig;
@@ -188,6 +189,7 @@ export class GameplayScene {
       grassImg: "./assets/images/FG_a_v01.png",
       fenchImg: "./assets/images/fence_v01.png",
       profileMonster: "./assets/images/idle4.png",
+      playButtonImg:"./assets/images/Play_button.png"
     };
 
     loadImages(this.images, (images) => {
