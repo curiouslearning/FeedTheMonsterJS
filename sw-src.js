@@ -6,7 +6,7 @@ workbox.precaching.precacheAndRoute(self.__WB_MANIFEST, {
   exclude: [/^lang\//],
 });
 var number = 0;
-var version = 1.16;
+var version = 1.17;
 // self.addEventListener('activate', function(e) {
 //     console.log("activated");
 //
@@ -59,16 +59,16 @@ self.registration.addEventListener("updatefound", function (e) {
 //   await caches.open(cacheName).then(function (cache) {
 //     cache
 //       .add(
-        // self.location.href.includes("https://feedthemonsterdev.curiouscontent.org")
-        //   ? file.slice(
-        //       0,
-        //       file.indexOf("/feedthemonster") + "/feedthemonster".length
-        //     ) +
-        //       "dev" +
-        //       file.slice(
-        //         file.indexOf("/feedthemonster") + "/feedthemonster".length
-        //       )
-        //   : file
+// self.location.href.includes("https://feedthemonsterdev.curiouscontent.org")
+//   ? file.slice(
+//       0,
+//       file.indexOf("/feedthemonster") + "/feedthemonster".length
+//     ) +
+//       "dev" +
+//       file.slice(
+//         file.indexOf("/feedthemonster") + "/feedthemonster".length
+//       )
+//   : file
 //       )
 //       .finally(() => {
 //         number = number + 1;
@@ -97,7 +97,7 @@ async function cacheLangAssets(file, cacheName) {
 }
 async function getCacheName(language) {
   ///awt
- await caches.keys().then((cacheNames) => {
+  await caches.keys().then((cacheNames) => {
     cacheNames.forEach(async (cacheName) => {
       await getALLAudioUrls(cacheName, language);
     });
@@ -115,72 +115,72 @@ async function getALLAudioUrls(cacheName, language) {
     },
   }).then((res) =>
     res.json().then(async (data) => {
-      await cacheFeedBackAudio(data.FeedbackAudios,language);
+      await cacheFeedBackAudio(data.FeedbackAudios, language);
       for (var i = 0; i < data.Levels.length; i++) {
-        
-
         data.Levels[i].Puzzles.forEach(async (element) => {
           let file = element.prompt.PromptAudio;
           // audioList.push(element.prompt.PromptAudio)
           audioList.push(
-          self.location.href.includes("https://feedthemonsterdev.curiouscontent.org")
-          ? file.slice(
-              0,
-              file.indexOf("/feedthemonster") + "/feedthemonster".length
-            ) +
-              "dev" +
-              file.slice(
-                file.indexOf("/feedthemonster") + "/feedthemonster".length
-              )
-          : file);
-        //  await cacheAudiosFiles(
-        //     element.prompt.PromptAudio,
-        //     workbox.core.cacheNames.precache + language,
-        //     data.Levels.length
-        //   );
+            self.location.href.includes(
+              "https://feedthemonsterdev.curiouscontent.org"
+            )
+              ? file.slice(
+                  0,
+                  file.indexOf("/feedthemonster") + "/feedthemonster".length
+                ) +
+                  "dev" +
+                  file.slice(
+                    file.indexOf("/feedthemonster") + "/feedthemonster".length
+                  )
+              : file
+          );
+          //  await cacheAudiosFiles(
+          //     element.prompt.PromptAudio,
+          //     workbox.core.cacheNames.precache + language,
+          //     data.Levels.length
+          //   );
         });
       }
-    cacheAudiosFiles(audioList,language);
+      cacheAudiosFiles(audioList, language);
     })
   );
 }
 
-async function cacheAudiosFiles(audioList,language){
+async function cacheAudiosFiles(audioList, language) {
   let percentageInterval = 10;
   const uniqueAudioURLs = [...new Set(audioList)];
   const partSize = Math.ceil(uniqueAudioURLs.length / percentageInterval);
-  
 
-  for(let i=0;i<percentageInterval;i++){
-      const startIndex = i * partSize;
-      let endIndex = startIndex + partSize;
-      if (i == percentageInterval-1) {
-        endIndex = uniqueAudioURLs.length;
-      }
-      const part = uniqueAudioURLs.slice(startIndex, endIndex);
-      const cache = await caches.open(workbox.core.cacheNames.precache + language);
-      try {
-        await cache.addAll(part);
-      } catch (e) {
-        console.log('Could not add audios:', e);
-      } finally {
-        await channel.postMessage({
-          msg: "Loading",
-          data: (i + 1) * percentageInterval,
-        });
-      }
-      // await cache.addAll(part).finally(()=>{
-      //   channel.postMessage({
-      //     msg: "Loading",
-      //     data: (i + 1) * percentageInterval
-      //   });
-      // }).catch(async (e)=>{
-      //   await console.log('Couldnt add audios');
-      // });
-      
+  for (let i = 0; i < percentageInterval; i++) {
+    const startIndex = i * partSize;
+    let endIndex = startIndex + partSize;
+    if (i == percentageInterval - 1) {
+      endIndex = uniqueAudioURLs.length;
+    }
+    const part = uniqueAudioURLs.slice(startIndex, endIndex);
+    const cache = await caches.open(
+      workbox.core.cacheNames.precache + language
+    );
+    try {
+      await cache.addAll(part);
+    } catch (e) {
+      console.log("Could not add audios:", e);
+    } finally {
+      await channel.postMessage({
+        msg: "Loading",
+        data: (i + 1) * percentageInterval,
+      });
+    }
+    // await cache.addAll(part).finally(()=>{
+    //   channel.postMessage({
+    //     msg: "Loading",
+    //     data: (i + 1) * percentageInterval
+    //   });
+    // }).catch(async (e)=>{
+    //   await console.log('Couldnt add audios');
+    // });
   }
-
-};
+}
 
 function cacheCommonAssets(language) {
   [
@@ -194,36 +194,39 @@ function cacheCommonAssets(language) {
   });
 }
 
-
-
 async function cacheFeedBackAudio(feedBackAudios, language) {
-  let audioUrls = []
-  feedBackAudios.forEach(audio => {
+  let audioUrls = [];
+  feedBackAudios.forEach((audio) => {
     audioUrls.push(
-      self.location.href.includes("https://feedthemonsterdev.curiouscontent.org")
-      ? audio.slice(
-          0,
-          audio.indexOf("/feedthemonster") + "/feedthemonster".length
-        ) +
-          "dev" +
-          audio.slice(
+      self.location.href.includes(
+        "https://feedthemonsterdev.curiouscontent.org"
+      )
+        ? audio.slice(
+            0,
             audio.indexOf("/feedthemonster") + "/feedthemonster".length
-          )
-      : audio);
+          ) +
+            "dev" +
+            audio.slice(
+              audio.indexOf("/feedthemonster") + "/feedthemonster".length
+            )
+        : audio
+    );
   });
   try {
     const cacheName = workbox.core.cacheNames.precache + language;
     const cache = await caches.open(cacheName);
-    await Promise.all(audioUrls.map(async (url) => {
-      try {
-        await cache.add(url);
-        console.log('Cached:', url);
-      } catch (e) {
-        console.log('Error caching feedback Audio:', url, e);
-      }
-    }));
+    await Promise.all(
+      audioUrls.map(async (url) => {
+        try {
+          await cache.add(url);
+          console.log("Cached:", url);
+        } catch (e) {
+          console.log("Error caching feedback Audio:", url, e);
+        }
+      })
+    );
   } catch (e) {
-    console.log('Could not open cache:', e);
+    console.log("Could not open cache:", e);
   }
 }
 
@@ -237,4 +240,3 @@ self.addEventListener("fetch", function (event) {
     })
   );
 });
-

@@ -148,8 +148,8 @@ export class PromptText extends EventManager {
       } else {
         this.context.drawImage(
           this.promptPlayButton,
-          offsetX,
-          offsetY,
+          this.width / 2.4,
+          y / 1.15,
           scaledWidth / 4,
           scaledHeight / 4
         );
@@ -170,8 +170,8 @@ export class PromptText extends EventManager {
       } else {
         this.context.drawImage(
           this.promptPlayButton,
-          offsetX,
-          offsetY,
+          this.width / 2.4,
+          y / 1.15,
           scaledWidth / 4,
           scaledHeight / 4
         );
@@ -182,8 +182,8 @@ export class PromptText extends EventManager {
 
       this.context.drawImage(
         this.promptPlayButton,
-        offsetX,
-        offsetY,
+        this.width / 2.4,
+        y / 1.15,
         scaledWidth / 4,
         scaledHeight / 4
       );
@@ -194,8 +194,8 @@ export class PromptText extends EventManager {
       } else {
         this.context.drawImage(
           this.promptPlayButton,
-          offsetX,
-          offsetY,
+          this.width / 2.4,
+          y / 1.15,
           scaledWidth / 4,
           scaledHeight / 4
         );
@@ -238,8 +238,8 @@ export class PromptText extends EventManager {
           } else {
             this.context.drawImage(
               this.promptPlayButton,
-              offsetX,
-              offsetY,
+              this.width / 2.4,
+              y / 1.25,
               scaledWidth / 4,
               scaledHeight / 4
             );
@@ -258,8 +258,8 @@ export class PromptText extends EventManager {
           } else {
             this.context.drawImage(
               this.promptPlayButton,
-              offsetX,
-              offsetY,
+              this.width / 2.4,
+              y / 1.25,
               scaledWidth / 4,
               scaledHeight / 4
             );
@@ -275,8 +275,8 @@ export class PromptText extends EventManager {
             const offsetY = (this.height - scaledHeight) * 0.33;
             this.context.drawImage(
               this.promptPlayButton,
-              offsetX,
-              offsetY,
+              this.width / 2.4,
+              y / 1.25,
               scaledWidth / 4,
               scaledHeight / 4
             );
@@ -284,8 +284,8 @@ export class PromptText extends EventManager {
           } else {
             this.context.drawImage(
               this.promptPlayButton,
-              offsetX,
-              offsetY,
+              this.width / 2.4,
+              y / 1.25,
               scaledWidth / 4,
               scaledHeight / 4
             );
@@ -299,8 +299,8 @@ export class PromptText extends EventManager {
           } else {
             this.context.drawImage(
               this.promptPlayButton,
-              offsetX,
-              offsetY,
+              this.width / 2.4,
+              y / 1.25,
               scaledWidth / 4,
               scaledHeight / 4
             );
