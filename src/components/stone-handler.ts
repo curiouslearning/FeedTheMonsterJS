@@ -112,7 +112,7 @@ export default class StoneHandler extends EventManager {
     var offsetCoordinateValue = 32;
     this.stonePos = [
       [
-        this.canvas.width / 5 - offsetCoordinateValue,
+        this.canvas.width / 4.5 - offsetCoordinateValue,
         this.canvas.height / 1.9 - offsetCoordinateValue,
       ],
       [
@@ -127,8 +127,8 @@ export default class StoneHandler extends EventManager {
         this.canvas.width / 4 - offsetCoordinateValue,
         this.canvas.height / 1.28 - offsetCoordinateValue,
       ],
-      [
-        this.canvas.width / 7 - offsetCoordinateValue,
+       [
+        this.canvas.width / 5 - offsetCoordinateValue,
         this.canvas.height / 1.5 - offsetCoordinateValue,
       ],
       [
@@ -144,7 +144,7 @@ export default class StoneHandler extends EventManager {
         this.canvas.height / 1.42 - offsetCoordinateValue,
       ],
       [
-        this.canvas.width / 6 - offsetCoordinateValue,
+        this.canvas.width / 4.5 - offsetCoordinateValue,
         this.canvas.height / 1.15 - offsetCoordinateValue,
       ],
     ];
