@@ -1,7 +1,9 @@
 {
   "title": "إطعام ٱلوحش",
-  "RightToLeft": true,
-  "FeedbackTexts": ["fantastic!"],
+  "RightToLeft": false,
+  "FeedbackTexts": [
+    "fantastic!"
+  ],
   "majversion": 3,
   "minversion": 2,
   "langname": "ARABIC",
