@@ -130,7 +130,7 @@ export class PromptText extends EventManager {
                 letterInWord,
                 x - this.context.measureText(this.targetStones[0]).width / 2,
                 y
-            );}{
+            );}
                 else{
                     this.context.drawImage(
                         this.promptPlayButton,
@@ -140,7 +140,7 @@ export class PromptText extends EventManager {
                         scaledHeight / 4
                       );
                 }
-            }
+            
         } else if (this.levelData.levelMeta.levelType == "Word") {
             if (this.levelData.levelMeta.protoType == "Visible") {
             x = x - this.context.measureText(this.currentPromptText).width * 0.5;
