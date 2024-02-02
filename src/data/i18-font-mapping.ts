@@ -45,7 +45,7 @@ const languageFontMapping: { [language: string]: string } = {
   Ukrainian: "Consolas",
   Hindi: "Consolas",
   Tagalog: "Consolas",
-  Vietnamese: "Consolas",
+  Vietnamese: "NotoSans-Regular",
   Pashto: "Consolas",
   Twi: "NotoSans-Regular",
 };
