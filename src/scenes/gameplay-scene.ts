@@ -262,7 +262,12 @@ export class GameplayScene {
             this.pickedStoneObject.origx != null &&
             this.pickedStoneObject.origy != null
           ) {
-            this.pickedStone.x = this.pickedStoneObject.origx;
+            if (this.pickedStone.text.length >= 3  && this.pickedStoneObject.origx<50 && this.pickedStoneObject.origx< this.width/2 ){
+            this.pickedStone.x = this.pickedStoneObject.origx+25;
+            
+            }else{
+              this.pickedStone.x = this.pickedStoneObject.origx;
+            }
             this.pickedStone.y = this.pickedStoneObject.origy;
             this.monster.changeToIdleAnimation();
           }

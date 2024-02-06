@@ -46,6 +46,9 @@ export class StoneConfig {
         ) {
             this.imageSize = this.context.measureText(this.text).width * 1.1;
             this.textFontSize = this.canvasHeight / 25;
+            if (this.text.length >= 3  && this.origx<50 && this.origx< this.canvasWidth/2 ) {
+                  this.x = this.origx + 25;
+            }
         } else {
             this.imageSize = this.canvasHeight / 13;
             this.textFontSize = this.canvasHeight / 20;
