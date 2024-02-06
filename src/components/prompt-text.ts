@@ -266,15 +266,10 @@ export class PromptText extends EventManager {
                       );
             }}
                 case "SoundWord": {
-                    
-                    // const offsetX = (this.width - scaledWidth) / 2;
-                    // const offsetY = (this.height - scaledHeight) / 5;
-                    const offsetX = (this.width - scaledWidth) *1.25;
-                    const offsetY = (this.height - scaledHeight) *0.33;
                     this.context.drawImage(
                         this.promptPlayButton,
-                        offsetX,
-                        offsetY,
+                        this.width / 2.4,
+                        y / 1.25,
                         scaledWidth/4,
                         scaledHeight/4
                     );
