@@ -1,5 +1,5 @@
 import { BaseFirebaseIntegration } from "./base-firebase-integration";
-import { LevelCompletedEvent, PuzzleCompletedEvent } from "./firebase-event-interface";
+import { LevelCompletedEvent, PuzzleCompletedEvent, SessionEnd, SessionStart } from "./firebase-event-interface";
 
 export class FirebaseIntegration extends BaseFirebaseIntegration {
     static instance: FirebaseIntegration;
@@ -14,17 +14,18 @@ export class FirebaseIntegration extends BaseFirebaseIntegration {
         }
         return FirebaseIntegration.instance;
     }
-
+    public sendSessionStartEvent(data: SessionStart): void {
+        this.customEvents("session_start", data);
+    }
+    public sendSessionEndEvent(data: SessionEnd): void {
+        this.customEvents("session_end", data);
+    }
     public sendPuzzleCompletedEvent(data: PuzzleCompletedEvent): void {
         this.customEvents("puzzle_completed", data);
     }
 
     public sendLevelCompletedEvent(data: LevelCompletedEvent): void {
         this.customEvents("level_completed", data);
-    }
-
-    public sendSessionEndEvent(): void {
-        this.sessionEnd();
     }
 
     public sendUserClickedOnPlayEvent(): void {

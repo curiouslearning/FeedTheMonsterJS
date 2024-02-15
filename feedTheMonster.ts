@@ -8,6 +8,9 @@ import { Debugger, lang } from "./global-variables";
 import { FirebaseIntegration } from "./src/Firebase/firebase-integration";
 import { Utils } from "./src/common/utils";
 import { AudioPlayer } from "./src/components/audio-player";
+import { SessionStart,
+SessionEnd
+} from "./src/Firebase/firebase-event-interface";
 declare const window: any;
 
 class App {
@@ -20,7 +23,7 @@ class App {
   private channel: BroadcastChannel;
   private sceneHandler: SceneHandler;
   private loadingElement: HTMLElement;
-
+  private jsonVersionNumber: string;
   constructor(lang: string) {
     this.lang = lang;
     this.canvas = document.getElementById("canvas") as HTMLCanvasElement;
@@ -32,9 +35,10 @@ class App {
     this.is_cached = this.initializeCachedData();
     this.channel.addEventListener("message", this.handleServiceWorkerMessage);
     window.addEventListener("beforeunload", this.handleBeforeUnload);
+    this.jsonVersionNumber;
     this.init();
   }
-
+   
   private async init() {
     const font = Utils.getLanguageSpecificFont(this.lang);
     await this.loadAndCacheFont(font, `./assets/fonts/${font}.ttf`);
@@ -45,7 +49,7 @@ class App {
     const data = await getData();
     const dataModal = this.createDataModal(data);
     this.globalInitialization(data);
-
+    
     window.addEventListener("resize", async () => {
       this.handleResize(dataModal);
     });
