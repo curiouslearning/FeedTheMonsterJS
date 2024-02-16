@@ -4,7 +4,7 @@ import { DataModal } from "./src/data/data-modal";
 import { SceneHandler } from "./src/sceneHandler/scene-handler";
 import { IsCached } from "./src/common/common";
 import { Workbox } from "workbox-window";
-import { Debugger, lang } from "./global-variables";
+import { Debugger, lang, pseudoId } from "./global-variables";
 import { FirebaseIntegration } from "./src/Firebase/firebase-integration";
 import { Utils } from "./src/common/utils";
 import { AudioPlayer } from "./src/components/audio-player";
@@ -23,7 +23,9 @@ class App {
   private channel: BroadcastChannel;
   private sceneHandler: SceneHandler;
   private loadingElement: HTMLElement;
-  private jsonVersionNumber: string;
+  private majVersion:string;
+  private minVersion:string;
+  firebaseIntegration: FirebaseIntegration;
   constructor(lang: string) {
     this.lang = lang;
     this.canvas = document.getElementById("canvas") as HTMLCanvasElement;
@@ -33,10 +35,12 @@ class App {
     this.versionInfoElement = document.getElementById("version-info-id") as HTMLElement;
     this.loadingElement = document.getElementById('loading-screen') as HTMLElement;
     this.is_cached = this.initializeCachedData();
+    this.firebaseIntegration = new FirebaseIntegration();
+    this.init();
     this.channel.addEventListener("message", this.handleServiceWorkerMessage);
     window.addEventListener("beforeunload", this.handleBeforeUnload);
-    this.jsonVersionNumber;
-    this.init();
+    document.addEventListener("visibilitychange", this.handleVisibilityChange);
+    
   }
    
   private async init() {
@@ -46,10 +50,13 @@ class App {
     this.handleLoadingScreen();
     this.registerWorkbox();
     this.setupCanvas();
-    const data = await getData();
+     const data = await getData();
+     this.majVersion = data.majversion;
+     this.minVersion = data.minversion
     const dataModal = this.createDataModal(data);
     this.globalInitialization(data);
-    
+     this.logSessionStartFirebaseEvent();
+    console.log(data);
     window.addEventListener("resize", async () => {
       this.handleResize(dataModal);
     });
@@ -58,7 +65,45 @@ class App {
       this.handleCachedScenario(dataModal);
     }
   }
+ 
+  private logSessionStartFirebaseEvent(){
+    let lastSessionEndTime = localStorage.getItem("lastSessionEndTime");
 
+    let lastTime = 0;
+    
+    if (lastSessionEndTime) {
+        let parsedTimestamp = parseInt(lastSessionEndTime);
+    
+        if (!isNaN(parsedTimestamp)) {
+          lastTime = Math.abs(new Date().getTime() - parsedTimestamp);
+        }}
+    const sessionStartData: SessionStart = {
+      cr_user_id: pseudoId,
+      ftm_language: lang,
+      profile_number: 0,
+      version_number: document.getElementById("version-info-id").innerHTML,
+      json_version_number: !!this.majVersion && !!this.minVersion  ? this.majVersion.toString() +"."+this.minVersion.toString() : "",
+      event_date_with_timestamp: new Date() + ' ' + new Date().getTime(),
+      days_since_last:lastTime? lastTime/ (1000 * 60 * 60 * 24): 0,
+
+    };
+    
+    this.firebaseIntegration.sendSessionStartEvent(sessionStartData);
+  }
+  private logSessionEndFirebaseEvent(){
+    const sessionEndData: SessionEnd = {
+      cr_user_id: pseudoId,
+      ftm_language: lang,
+      profile_number: 0,
+      version_number: document.getElementById("version-info-id").innerHTML,
+      json_version_number: !!this.majVersion && !!this.minVersion  ? this.majVersion.toString() +"."+this.minVersion.toString() : "",
+      event_date_with_timestamp: new Date() + ' ' + new Date().getTime(),
+      duration:  0,
+
+    };
+    localStorage.set("lastSessionEndTime",new Date().getTime());
+  this.firebaseIntegration.sendSessionEndEvent(sessionEndData);
+}
   private initializeCachedData(): Map<string, boolean> {
     const storedData = localStorage.getItem(IsCached);
     return storedData ? new Map(JSON.parse(storedData)) : new Map();
@@ -231,9 +276,13 @@ class App {
       this.handleUpdateFoundMessage();
     }
   }
-
-  private handleBeforeUnload = (event: BeforeUnloadEvent): void => {
-    FirebaseIntegration.getInstance().sendSessionEndEvent();
+  private handleVisibilityChange = () => {
+    if (document.visibilityState !== "visible") {
+      this.logSessionEndFirebaseEvent();
+    }
+  };
+  private handleBeforeUnload = async (event: BeforeUnloadEvent): Promise<void> => {
+    this.logSessionEndFirebaseEvent();
   }
 
   private preloadGameAudios = async() => {

@@ -22,7 +22,7 @@ export interface PuzzleCompletedEvent extends CommonEventProperties {
     target: string;
     foils: string[];
     response_time: number;
-    event_date_with_timestamp: string;
+    event_date_with_timestamp: any;
 }
 export interface LevelCompletedEvent extends CommonEventProperties {
     success_or_failure: string;
