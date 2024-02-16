@@ -279,7 +279,9 @@ class App {
     }
   }
   private handleVisibilityChange = () => {
-    if (document.visibilityState !== "visible") {
+    if (document.visibilityState === "visible") {
+    this.logSessionStartFirebaseEvent();
+    }else{
       this.logSessionEndFirebaseEvent();
     }
   };
