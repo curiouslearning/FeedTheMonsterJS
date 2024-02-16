@@ -11,6 +11,7 @@ import { AudioPlayer } from "./src/components/audio-player";
 import { SessionStart,
 SessionEnd
 } from "./src/Firebase/firebase-event-interface";
+import { VISIBILITY_CHANGE } from "./src/common/event-names"; 
 declare const window: any;
 
 class App {
@@ -41,7 +42,7 @@ class App {
     this.init();
     this.channel.addEventListener("message", this.handleServiceWorkerMessage);
     window.addEventListener("beforeunload", this.handleBeforeUnload);
-    document.addEventListener("visibilitychange", this.handleVisibilityChange);
+    document.addEventListener(VISIBILITY_CHANGE, this.handleVisibilityChange);
     
   }
    
