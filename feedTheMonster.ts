@@ -103,7 +103,7 @@ class App {
       duration:  (new Date().getTime() - this.startSessionTime)/1000,
 
     };
-    localStorage.set("lastSessionEndTime",new Date().getTime().toString());
+    localStorage.setItem("lastSessionEndTime",new Date().getTime().toString());
   this.firebaseIntegration.sendSessionEndEvent(sessionEndData);
 }
   private initializeCachedData(): Map<string, boolean> {
