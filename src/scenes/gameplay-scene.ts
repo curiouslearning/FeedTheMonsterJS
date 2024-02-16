@@ -31,6 +31,7 @@ import { AudioPlayer } from "../components/audio-player";
 import {
   LevelCompletedEvent,
   PuzzleCompletedEvent,
+  
 } from "../Firebase/firebase-event-interface";
 import { FirebaseIntegration } from "../Firebase/firebase-integration";
 
@@ -617,13 +618,13 @@ export class GameplayScene {
       success_or_failure: isCorrect ? "success" : "failure",
       level_number: this.levelData.levelMeta.levelNumber,
       puzzle_number: this.counter,
-      item_selected:
-        puzzleType == "Word"
-          ? this.tempWordforWordPuzzle
-          : this.pickedStone?.text,
+      item_selected: puzzleType == "Word"
+        ? this.tempWordforWordPuzzle
+        : this.pickedStone?.text,
       target: this.stoneHandler.getCorrectTargetStone(),
       foils: this.stoneHandler.getFoilStones(),
       response_time: (endTime - this.puzzleTime) / 1000,
+      event_date_with_timestamp: new Date() + ' ' + new Date().getTime(),
     };
     this.firebaseIntegration.sendPuzzleCompletedEvent(puzzleCompletedData);
   }
@@ -641,6 +642,7 @@ export class GameplayScene {
       number_of_successful_puzzles: this.score / 100,
       level_number: this.levelData.levelMeta.levelNumber,
       duration: (endTime - this.startTime) / 1000,
+      event_date_with_timestamp: new Date() + ' ' + new Date().getTime(),
     };
     this.firebaseIntegration.sendLevelCompletedEvent(levelCompletedData);
   }

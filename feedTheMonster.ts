@@ -4,10 +4,14 @@ import { DataModal } from "./src/data/data-modal";
 import { SceneHandler } from "./src/sceneHandler/scene-handler";
 import { IsCached } from "./src/common/common";
 import { Workbox } from "workbox-window";
-import { Debugger, lang } from "./global-variables";
+import { Debugger, lang, pseudoId } from "./global-variables";
 import { FirebaseIntegration } from "./src/Firebase/firebase-integration";
 import { Utils } from "./src/common/utils";
 import { AudioPlayer } from "./src/components/audio-player";
+import { SessionStart,
+SessionEnd
+} from "./src/Firebase/firebase-event-interface";
+import { VISIBILITY_CHANGE } from "./src/common/event-names"; 
 declare const window: any;
 
 class App {
@@ -20,7 +24,10 @@ class App {
   private channel: BroadcastChannel;
   private sceneHandler: SceneHandler;
   private loadingElement: HTMLElement;
-
+  private majVersion:string;
+  private minVersion:string;
+  private startSessionTime:number;
+  firebaseIntegration: FirebaseIntegration;
   constructor(lang: string) {
     this.lang = lang;
     this.canvas = document.getElementById("canvas") as HTMLCanvasElement;
@@ -30,11 +37,15 @@ class App {
     this.versionInfoElement = document.getElementById("version-info-id") as HTMLElement;
     this.loadingElement = document.getElementById('loading-screen') as HTMLElement;
     this.is_cached = this.initializeCachedData();
+    this.firebaseIntegration = new FirebaseIntegration();
+    this.startSessionTime = 0;
+    this.init();
     this.channel.addEventListener("message", this.handleServiceWorkerMessage);
     window.addEventListener("beforeunload", this.handleBeforeUnload);
-    this.init();
+    document.addEventListener(VISIBILITY_CHANGE, this.handleVisibilityChange);
+    
   }
-
+   
   private async init() {
     const font = Utils.getLanguageSpecificFont(this.lang);
     await this.loadAndCacheFont(font, `./assets/fonts/${font}.ttf`);
@@ -42,10 +53,13 @@ class App {
     this.handleLoadingScreen();
     this.registerWorkbox();
     this.setupCanvas();
-    const data = await getData();
+     const data = await getData();
+     this.majVersion = data.majversion;
+     this.minVersion = data.minversion
     const dataModal = this.createDataModal(data);
     this.globalInitialization(data);
-
+     this.logSessionStartFirebaseEvent();
+    console.log(data);
     window.addEventListener("resize", async () => {
       this.handleResize(dataModal);
     });
@@ -54,7 +68,47 @@ class App {
       this.handleCachedScenario(dataModal);
     }
   }
+ 
+  private logSessionStartFirebaseEvent(){
+    let lastSessionEndTime = localStorage.getItem("lastSessionEndTime");
 
+    let lastTime = 0;
+    this.startSessionTime = new Date().getTime();
+    if (lastSessionEndTime) {
+        let parsedTimestamp = parseInt(lastSessionEndTime);
+    
+        if (!isNaN(parsedTimestamp)) {
+          lastTime = Math.abs(new Date().getTime() - parsedTimestamp);
+        }}
+        const daysSinceLast = lastTime ? lastTime / (1000 * 60 * 60 * 24) : 0;
+        const roundedDaysSinceLast = parseFloat(daysSinceLast.toFixed(3));
+    const sessionStartData: SessionStart = {
+      cr_user_id: pseudoId,
+      ftm_language: lang,
+      profile_number: 0,
+      version_number: document.getElementById("version-info-id").innerHTML,
+      json_version_number: !!this.majVersion && !!this.minVersion  ? this.majVersion.toString() +"."+this.minVersion.toString() : "",
+      event_date_with_timestamp: new Date() + ' ' + new Date().getTime(),
+      days_since_last:roundedDaysSinceLast,
+
+    };
+    
+    this.firebaseIntegration.sendSessionStartEvent(sessionStartData);
+  }
+  private logSessionEndFirebaseEvent(){
+    const sessionEndData: SessionEnd = {
+      cr_user_id: pseudoId,
+      ftm_language: lang,
+      profile_number: 0,
+      version_number: document.getElementById("version-info-id").innerHTML,
+      json_version_number: !!this.majVersion && !!this.minVersion  ? this.majVersion.toString() +"."+this.minVersion.toString() : "",
+      event_date_with_timestamp: new Date() + ' ' + new Date().getTime(),
+      duration:  (new Date().getTime() - this.startSessionTime)/1000,
+
+    };
+    localStorage.setItem("lastSessionEndTime",new Date().getTime().toString());
+  this.firebaseIntegration.sendSessionEndEvent(sessionEndData);
+}
   private initializeCachedData(): Map<string, boolean> {
     const storedData = localStorage.getItem(IsCached);
     return storedData ? new Map(JSON.parse(storedData)) : new Map();
@@ -227,9 +281,15 @@ class App {
       this.handleUpdateFoundMessage();
     }
   }
-
-  private handleBeforeUnload = (event: BeforeUnloadEvent): void => {
-    FirebaseIntegration.getInstance().sendSessionEndEvent();
+  private handleVisibilityChange = () => {
+    if (document.visibilityState === "visible") {
+    this.logSessionStartFirebaseEvent();
+    }else{
+      this.logSessionEndFirebaseEvent();
+    }
+  };
+  private handleBeforeUnload = async (event: BeforeUnloadEvent): Promise<void> => {
+    this.logSessionEndFirebaseEvent();
   }
 
   private preloadGameAudios = async() => {
