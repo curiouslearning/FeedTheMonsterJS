@@ -27,12 +27,11 @@ drive_folder_id = "16mfArt7NQds_jTYPYAp_Hp7thkQ3SD8v"
 teamid = "0AArPHFZAiZRmUk9PVA"
 ## client secrets location
 sec_file = './credentials.json'
-amit_json ='./sec.json'
 # The Google Drive API version to use.
 API_VERSION = 'v3'
 present_audios=set()
 missing_assessment_audios=set()
-feedback_audios=["fantastic","great","amazing"]
+feedback_audios={'fantastic','great','amazing'}
 # Create a service account credentials object.
 credentials = service_account.Credentials.from_service_account_file(
     sec_file, scopes=['https://www.googleapis.com/auth/drive'])
@@ -67,11 +66,11 @@ def assessment_content_check(request):
         lang =request.args.get("lang", "English")
          
     subject=lang+"  "+"Assessment Survey Content Check Report"
-     
     assesment_data=get_assessment_data(gc,sheet_id)
     if not assesment_data:
         body="There was error while generating json,\n Make sure that the language name is correct" 
         inform_user_about_updates(receiver,subject,body)
+    assesment_data= assesment_data.union(feedback_audios)
     check_missing_audio_assets_in_drive(drive_service, root_drive_id,root_drive_id,assesment_data,lang,depth=0)
     missing_assessment_audios=assesment_data-present_audios
     if not missing_assessment_audios:        
