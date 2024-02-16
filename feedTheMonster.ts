@@ -25,6 +25,7 @@ class App {
   private loadingElement: HTMLElement;
   private majVersion:string;
   private minVersion:string;
+  private startSessionTime:number;
   firebaseIntegration: FirebaseIntegration;
   constructor(lang: string) {
     this.lang = lang;
@@ -36,6 +37,7 @@ class App {
     this.loadingElement = document.getElementById('loading-screen') as HTMLElement;
     this.is_cached = this.initializeCachedData();
     this.firebaseIntegration = new FirebaseIntegration();
+    this.startSessionTime = 0;
     this.init();
     this.channel.addEventListener("message", this.handleServiceWorkerMessage);
     window.addEventListener("beforeunload", this.handleBeforeUnload);
@@ -70,7 +72,7 @@ class App {
     let lastSessionEndTime = localStorage.getItem("lastSessionEndTime");
 
     let lastTime = 0;
-    
+    this.startSessionTime = new Date().getTime();
     if (lastSessionEndTime) {
         let parsedTimestamp = parseInt(lastSessionEndTime);
     
@@ -98,10 +100,10 @@ class App {
       version_number: document.getElementById("version-info-id").innerHTML,
       json_version_number: !!this.majVersion && !!this.minVersion  ? this.majVersion.toString() +"."+this.minVersion.toString() : "",
       event_date_with_timestamp: new Date() + ' ' + new Date().getTime(),
-      duration:  0,
+      duration:  (new Date().getTime() - this.startSessionTime)/1000,
 
     };
-    localStorage.set("lastSessionEndTime",new Date().getTime());
+    localStorage.set("lastSessionEndTime",new Date().getTime().toString());
   this.firebaseIntegration.sendSessionEndEvent(sessionEndData);
 }
   private initializeCachedData(): Map<string, boolean> {
