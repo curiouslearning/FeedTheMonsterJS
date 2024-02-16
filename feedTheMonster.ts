@@ -80,6 +80,8 @@ class App {
         if (!isNaN(parsedTimestamp)) {
           lastTime = Math.abs(new Date().getTime() - parsedTimestamp);
         }}
+        const daysSinceLast = lastTime ? lastTime / (1000 * 60 * 60 * 24) : 0;
+        const roundedDaysSinceLast = parseFloat(daysSinceLast.toFixed(3));
     const sessionStartData: SessionStart = {
       cr_user_id: pseudoId,
       ftm_language: lang,
@@ -87,7 +89,7 @@ class App {
       version_number: document.getElementById("version-info-id").innerHTML,
       json_version_number: !!this.majVersion && !!this.minVersion  ? this.majVersion.toString() +"."+this.minVersion.toString() : "",
       event_date_with_timestamp: new Date() + ' ' + new Date().getTime(),
-      days_since_last:lastTime? lastTime/ (1000 * 60 * 60 * 24): 0,
+      days_since_last:roundedDaysSinceLast,
 
     };
     
