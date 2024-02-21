@@ -6,7 +6,10 @@ import os
 from google.oauth2 import service_account
 from googleapiclient.discovery import build
 from googleapiclient.discovery import build
-
+import smtplib
+from email.mime.multipart import MIMEMultipart
+from email.mime.text import MIMEText
+from email.mime.application import MIMEApplication
 
 
 @functions_framework.http
@@ -40,9 +43,7 @@ def content_verification(request):
             return
         
         print("Json Data Generated sucessfully")
-        # prompt_text=find_unique_audio_urls(json_data)
         prompt_text =find_prompt_audios(json_data)
-        print(prompt_text)
         if not prompt_text:
             body="There was error while generating json,\n Make sure that the language name is correct"
             inform_user_about_updates(receiver,subject,body)
@@ -50,7 +51,6 @@ def content_verification(request):
         
         wav_prompt_text=find_unique_wav_audio_texts(prompt_text)
         m4a_prompt_text=get_m4a_prompt_texts(prompt_text)
-        print(m4a_prompt_text)
         output= check_in_drive(shared_drive_id,root_folder_id,desired_folder_id,prompt_text,wav_prompt_text,m4a_prompt_text,lang)
         if not output and json_data:
             body += "JSON generation process is successful.\n"
@@ -115,15 +115,6 @@ def get_m4a_prompt_texts(unique_prompt_texts):
     return m4a_prompt_texts
 
 
-
-
-
-
-
-
-
-
-
 # Path to the JSON key file you downloaded when setting up the service account.
 KEY_FILE = './credentials.json'
 missing_audios_on_drive= set()
@@ -140,7 +131,6 @@ drive_service = build('drive', API_VERSION, credentials=credentials)
 
 
 def download_audio_files(drive_id,folder_id,fileName,lang,wav_unique_prompt_texts,m4a_prompt_text,unique_prompt_texts,depth=0):
-    # # Query for audio files in the selected folder
     
     query_params = {
         'supportsAllDrives': True,
@@ -159,7 +149,6 @@ def download_audio_files(drive_id,folder_id,fileName,lang,wav_unique_prompt_text
     
     
     count=0
-    # Loop through the audio files and download each one
     for audio_file in audio_files:
         count =count+1
         file_name = audio_file["name"].lower()
@@ -188,11 +177,9 @@ def download_audio_files(drive_id,folder_id,fileName,lang,wav_unique_prompt_text
 
 def get_correct_file_name(name):
     filename, extension = os.path.splitext(name)
-    print(">>>>>>>>>>>",extension)
     keywords_to_remove = ["_feedback", "_sound", "_word", "_syllable", "_memory",".wav",".mp3"]
     if filename == "fantastic1.wav" or filename == "fantastic1.mp3" or filename == "fantastic1_feedback.wav" or filename == "fantastic1_feedback.mp3":
         filename = "fantastic.wav"
-        print(filename+"<<<<<<<<<<<")
                         
 
         
@@ -202,17 +189,15 @@ def get_correct_file_name(name):
             
     filename=re.sub(r'[\d_]', '', filename)+extension
     filename=" ".join(filename.split())
-            
-    print(">>>>>>>>>>>>>",filename)
     return filename.lower()
 
 
 
 
 
-
+# Query for contents in the selected folder
 def list_contents_and_download(drive_id, folder_id,lang,wav_unique_prompt_texts,m4a_prompt_text,unique_prompt_texts, depth=0):
-    # Query for contents in the selected folder
+    
     
     query_params = {
         'supportsAllDrives': True,
@@ -225,14 +210,10 @@ def list_contents_and_download(drive_id, folder_id,lang,wav_unique_prompt_texts,
     
     results = drive_service.files().list(**query_params).execute()
     contents = results.get('files', [])
-
-    # Create the output folder if it doesn't exist
     
-
     for content in contents:
         print('  ' * depth + f'{content["name"].lower()} ({content["id"]})')
         if content['mimeType'] == 'application/vnd.google-apps.folder':
-            # If it's a folder, call the function recursively
             list_contents_and_download(drive_id, content['id'],lang,wav_unique_prompt_texts,m4a_prompt_text,unique_prompt_texts, depth + 1)
         
             
@@ -306,7 +287,6 @@ def check_in_drive(drive_id, folder_id, desired_folder_id,unique_prompt_texts,wa
 
     for folder in folders:
         if folder["id"] == desired_folder_id:
-            # You've reached the desired folder, now you can list its contents or perform any desired actions.
             list_contents_of_folder(drive_id, folder["id"],unique_prompt_texts,lang,wav_unique_prompt_texts,m4a_prompt_text, depth + 1)
            
                         
@@ -318,42 +298,11 @@ def check_in_drive(drive_id, folder_id, desired_folder_id,unique_prompt_texts,wa
     return missing_audios_on_drive
 
 
-
-
-
-
-
-
-
-
-
-
-#####################################
-
-
-
-# Path to the JSON key file you downloaded when setting up the service account.
-KEY_FILE = './credentials.json'
-
-# The Google Drive API version to use.
-API_VERSION = 'v3'
-
-# Create a service account credentials object.
-credentials = service_account.Credentials.from_service_account_file(
-    KEY_FILE, scopes=['https://www.googleapis.com/auth/drive'])
-
-# Create a Drive API service.
-drive_service = build('drive', API_VERSION, credentials=credentials)
-
-
 def get_json_data(lang,drive_id,folder_id,depth=0):
     
     is_json_generated= list_initial_files(drive_id,"18SRLdZK-n2QismpXY1Cn-FFqrJutIU8I",depth+1,lang)
     return is_json_generated
     
-
-
-
 
 def list_initial_files(drive_id,folder_id,depth,lang):
     query_params = {
@@ -395,26 +344,12 @@ def generate_json_file(lang,id):
 
     
 def process_data(json_data):
-    # Example operation: Summing values in a list
     if 'values' in json_data and isinstance(json_data['values'], list):
         total = sum(json_data['values'])
         return total
     else:
         return "Invalid JSON format"
     
-
-
-
-
-
-
-
-#######################################################
-
-import smtplib
-from email.mime.multipart import MIMEMultipart
-from email.mime.text import MIMEText
-from email.mime.application import MIMEApplication
 
 
 def inform_user_about_updates(receiver,subject,body):
@@ -427,13 +362,9 @@ def inform_user_about_updates(receiver,subject,body):
     msg['To'] = ', '.join(receiver)
     msg['Subject'] = subject
 
-    # Add the body of the email
     msg.attach(MIMEText(body, 'plain'))
     # Generate the report
-    # report_content = f"Missing audios in google drive-->\n{body}"
      
-    
-
     try:
         # msg.attach(MIMEText(report_content, 'plain'))
         server = smtplib.SMTP_SSL('smtp.gmail.com', 465)

@@ -51,7 +51,6 @@ def assessment_content_check(request):
     
     
     gc = pygsheets.authorize(service_file=sec_file)
-    # gc.drive.enable_team_drive(teamid);
 
     request_json = request.get_json(silent=True)
     request_args = request.args
@@ -83,7 +82,6 @@ def assessment_content_check(request):
     return f"missing audios in google drive-->{body}"
 
 def get_assessment_data(gc, sheet_id):
-    # connect to the spreadsheet
     fetched_sheet = gc.open_by_key(sheet_id)
     fetched_content = fetched_sheet[1].get_values("B1","B150")
     unique_content=get_unique_content(fetched_content)
@@ -219,16 +217,13 @@ def list_missing_feedback_audios(drive_service, root_drive_id,drive_id,assesment
         
 
 def inform_user_about_updates(receiver,subject,body):
-    # Replace these with your Gmail account details and email content
     gmail_user = 'amit@sutara.org'
     gmail_app_password = 'pjwt jlkx weuj dzwg'
-     # Create a multipart message
     msg = MIMEMultipart()
     msg['From'] = gmail_user
     msg['To'] = ', '.join(receiver)
     msg['Subject'] = subject
 
-    # Add the body of the email
     msg.attach(MIMEText(body, 'plain'))
      
     
