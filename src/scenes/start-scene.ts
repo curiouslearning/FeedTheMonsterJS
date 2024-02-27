@@ -12,7 +12,7 @@ import { AudioPlayer } from "../components/audio-player";
 import { FirebaseIntegration } from "../Firebase/firebase-integration";
 import { Utils } from "../common/utils";
 import PlayButton from "../components/play-button";
-
+import { TappedStart } from "../Firebase/firebase-event-interface";
 export class StartScene {
   public canvas: HTMLCanvasElement;
   public data: any;
@@ -60,7 +60,6 @@ export class StartScene {
     this.handler = document.getElementById("canvas") as HTMLCanvasElement;
     this.devToggle();
     this.createPlayButton();
-
     StartScene.SceneName = StartScene1;
     window.addEventListener("beforeinstallprompt", this.handlerInstallPrompt);
   }
@@ -104,7 +103,7 @@ export class StartScene {
       this.context,
       this.canvas,
       this.canvas.width * 0.35,
-      this.canvas.height / 7
+      this.canvas.height / 7,
     );
     document.addEventListener("selectstart", function (e) {
       e.preventDefault();
