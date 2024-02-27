@@ -36,12 +36,10 @@ export default class PlayButton {
         });
     }
     private async init() {
-        
          const data = await getData();
          this.majVersion = data.majversion;
-         this.minVersion = data.minversion
-        
-      }
+         this.minVersion = data.minversion 
+    }
     draw() {
         if (this.imagesLoaded) {
             this.context.drawImage(
@@ -61,7 +59,6 @@ export default class PlayButton {
             (yClick - this.posY - this.canvas.width / 6) *
             (yClick - this.posY - this.canvas.width / 6)
         );
-        console.log("play button clicked>>>>>>>");
         this.logTappedStartFirebaseEvent();
         if (distance < this.canvas.width / 8) {
             return true;
@@ -77,7 +74,6 @@ export default class PlayButton {
           version_number: document.getElementById("version-info-id").innerHTML,
           json_version_number:  !!this.majVersion && !!this.minVersion  ? this.majVersion.toString() +"."+this.minVersion.toString() : "",
         };
-        console.log("><><>"+tappedStartData)
         this.firebaseIntegration.sendTappedStartEvent(tappedStartData);
-      }
+    }
 }

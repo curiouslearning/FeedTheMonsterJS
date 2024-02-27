@@ -12,7 +12,6 @@ import { AudioPlayer } from "../components/audio-player";
 import { FirebaseIntegration } from "../Firebase/firebase-integration";
 import { Utils } from "../common/utils";
 import PlayButton from "../components/play-button";
-import { TappedStart } from "../Firebase/firebase-event-interface";
 export class StartScene {
   public canvas: HTMLCanvasElement;
   public data: any;

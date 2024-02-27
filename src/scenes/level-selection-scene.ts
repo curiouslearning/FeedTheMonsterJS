@@ -42,7 +42,7 @@ export class LevelSelectionScreen {
     this.initialiseButtonPos();
     this.levels = [];  
     this.firebaseIntegration = new FirebaseIntegration();
-     this.init();
+    this.init();
     this.canvasElement = document.getElementById("canvas") as HTMLCanvasElement;
     this.context = this.canvasElement.getContext("2d");
     this.createLevelButtons(this.levelButtonPos);
@@ -78,13 +78,11 @@ export class LevelSelectionScreen {
     });
     this.addListeners();
   }
-  private async init() {
-        
+  private async init() {     
     const data = await getData();
     this.majVersion = data.majversion;
     this.minVersion = data.minversion
-   
- }
+  }
   private initialiseButtonPos() {
     this.levelButtonPos = [
       [
@@ -400,7 +398,6 @@ export class LevelSelectionScreen {
       json_version_number:  !!this.majVersion && !!this.minVersion  ? this.majVersion.toString() +"."+this.minVersion.toString() : "",
       level_selected:this.levelNumber,
     };
-    console.log("><><>"+selectedLeveltData)
     this.firebaseIntegration.sendSelectedLevelEvent(selectedLeveltData);
   }
   public drawLevelSelection() {
