@@ -624,7 +624,7 @@ export class GameplayScene {
       target: this.stoneHandler.getCorrectTargetStone(),
       foils: this.stoneHandler.getFoilStones(),
       response_time: (endTime - this.puzzleTime) / 1000,
-      event_date_with_timestamp: new Date() + ' ' + new Date().getTime(),
+
     };
     this.firebaseIntegration.sendPuzzleCompletedEvent(puzzleCompletedData);
   }
@@ -642,7 +642,6 @@ export class GameplayScene {
       number_of_successful_puzzles: this.score / 100,
       level_number: this.levelData.levelMeta.levelNumber,
       duration: (endTime - this.startTime) / 1000,
-      event_date_with_timestamp: new Date() + ' ' + new Date().getTime(),
     };
     this.firebaseIntegration.sendLevelCompletedEvent(levelCompletedData);
   }

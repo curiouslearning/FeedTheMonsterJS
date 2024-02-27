@@ -88,7 +88,6 @@ class App {
       profile_number: 0,
       version_number: document.getElementById("version-info-id").innerHTML,
       json_version_number: !!this.majVersion && !!this.minVersion  ? this.majVersion.toString() +"."+this.minVersion.toString() : "",
-      event_date_with_timestamp: new Date() + ' ' + new Date().getTime(),
       days_since_last:roundedDaysSinceLast,
 
     };
@@ -102,7 +101,6 @@ class App {
       profile_number: 0,
       version_number: document.getElementById("version-info-id").innerHTML,
       json_version_number: !!this.majVersion && !!this.minVersion  ? this.majVersion.toString() +"."+this.minVersion.toString() : "",
-      event_date_with_timestamp: new Date() + ' ' + new Date().getTime(),
       duration:  (new Date().getTime() - this.startSessionTime)/1000,
 
     };
