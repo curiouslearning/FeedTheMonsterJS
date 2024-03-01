@@ -11,12 +11,19 @@ export class BaseFirebaseIntegration {
   firebaseApp: any;
   analytics: any;
   constructor() {
-    this.initializeFirebase();
-    this.setCommonUserProperties();
+    this.initializeFirebase()
   }
 
   protected customEvents(eventName: string, event: object): void {
     try {
+      this.initializeFirebase()
+      setUserProperties(this.analytics, {
+        cr_user_id: pseudoId,
+        ftm_language: lang,
+        profile_number: 4,
+        version_number: document.getElementById("version-info-id").innerHTML,
+        json_version_number: 1.2333,
+      });
       console.log(`Sending custom event ${eventName} with data:`, event);
       logEvent(this.analytics, eventName, event);
     } catch (error) {
@@ -38,20 +45,6 @@ export class BaseFirebaseIntegration {
       this.analytics = getAnalytics(this.firebaseApp);
     } catch (error) {
       console.error("Error while initializing Firebase:", error);
-    }
-  }
-  private setCommonUserProperties() {
-    try {
-      setUserProperties(this.analytics, {
-        cr_user_id: pseudoId,
-        ftm_language: lang,
-        profile_number: 0,
-        version_number: document.getElementById("version-info-id").innerHTML,
-        json_version_number: 1.2333,
-      });
-      console.log("User properties set");
-    } catch (error) {
-      console.error("Error while setting user properties:", error);
     }
   }
 }
