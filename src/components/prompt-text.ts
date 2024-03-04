@@ -110,8 +110,11 @@ export class PromptText extends EventManager {
         const y = this.height * 0.26;
         this.context.textAlign = "center";
         var fontSize = this.calculateFont();
+        const scaledWidth = this.promptImageWidth;
+        const scaledHeight = this.promptImageHeight;
         this.context.font = `${fontSize}px ${font}, monospace`;
         if (this.levelData.levelMeta.levelType == "LetterInWord") {
+            if (this.levelData.levelMeta.protoType == "Visible") {
             var letterInWord = this.currentPromptText.replace(
                 new RegExp(this.currentPuzzleData.targetStones[0], "g"),
                 ""
@@ -127,8 +130,19 @@ export class PromptText extends EventManager {
                 letterInWord,
                 x - this.context.measureText(this.targetStones[0]).width / 2,
                 y
-            );
+            );}
+                else{
+                    this.context.drawImage(
+                        this.promptPlayButton,
+                        this.width / 2.4,
+                        y / 1.15,
+                        scaledWidth / 4,
+                        scaledHeight / 4
+                      );
+                }
+            
         } else if (this.levelData.levelMeta.levelType == "Word") {
+            if (this.levelData.levelMeta.protoType == "Visible") {
             x = x - this.context.measureText(this.currentPromptText).width * 0.5;
             for (let i = this.targetStones.length - 1; i >= 0; i--) {
                 if (this.droppedStones > i || this.droppedStones == undefined) {
@@ -140,10 +154,17 @@ export class PromptText extends EventManager {
                 }
                 x = x + this.context.measureText(this.targetStones[i]).width + 5;
             }
-        } 
+        } else{
+            this.context.drawImage(
+                this.promptPlayButton,
+                this.width / 2.4,
+                y / 1.15,
+                scaledWidth / 4,
+                scaledHeight / 4
+              );
+        }}
         else if (this.levelData.levelMeta.levelType == "audioPlayerWord") {
-            const scaledWidth = this.promptImageWidth * this.scale;
-                    const scaledHeight = this.promptImageHeight * this.scale;
+            
                     // const offsetX = (this.width - scaledWidth) / 2;
                     // const offsetY = (this.height - scaledHeight) / 5;
                     const offsetX = (this.width - scaledWidth) *1.25;
@@ -157,15 +178,26 @@ export class PromptText extends EventManager {
                     );
         }
         else {
+            if (this.levelData.levelMeta.protoType == "Visible") {
             this.context.fillStyle = "black";
             this.context.fillText(this.currentPromptText, x, y);
+            }else{
+                this.context.drawImage(
+                    this.promptPlayButton,
+                    this.width / 2.4,
+                    y / 1.15,
+                    scaledWidth / 4,
+                    scaledHeight / 4
+                  );
+            }
         }
     }
     drawOthers() {
         const promptTextLetters = this.currentPromptText.split("");
         const x = this.width / 2;
         const y = this.height * 0.28;
-        
+        const scaledWidth = this.promptImageWidth;
+        const scaledHeight = this.promptImageHeight;
         var fontSize = this.calculateFont();
         this.context.font = `${fontSize}px ${font}, monospace`;
         let startPrompttextX =
@@ -177,6 +209,7 @@ export class PromptText extends EventManager {
         for (let i = 0; i < promptTextLetters.length; i++) {
             switch (this.levelData.levelMeta.levelType) {
                 case "LetterInWord": {
+                    if (this.levelData.levelMeta.protoType == "Visible") {
                     if (letterHighlight.includes(promptTextLetters[i])) {
                         letterHighlight = letterHighlight.slice(1, letterHighlight.length);
                         this.context.fillStyle = "red";
@@ -194,8 +227,18 @@ export class PromptText extends EventManager {
                         );
                     }
                     break;
+                    }else{
+                        this.context.drawImage(
+                            this.promptPlayButton,
+                            this.width / 2.4,
+                            y / 1.25,
+                            scaledWidth / 4,
+                            scaledHeight / 4
+                          );
+                    }
                 }
                 case "Word": {
+                    if (this.levelData.levelMeta.protoType == "Visible") {
                     if (this.droppedStones > i || this.droppedStones == undefined) {
                         this.context.fillStyle = "black";
                         this.context.fillText(
@@ -213,23 +256,27 @@ export class PromptText extends EventManager {
                     }
                     break;
                 }
-                case "SoundWord": {
-                    const scaledWidth = this.promptImageWidth;
-                    const scaledHeight = this.promptImageHeight;
-                    // const offsetX = (this.width - scaledWidth) / 2;
-                    // const offsetY = (this.height - scaledHeight) / 5;
-                    const offsetX = (this.width - scaledWidth) *1.25;
-                    const offsetY = (this.height - scaledHeight) *0.33;
+                else{
                     this.context.drawImage(
                         this.promptPlayButton,
-                        offsetX,
-                        offsetY,
+                        this.width / 2.4,
+                        y / 1.25,
+                        scaledWidth / 4,
+                        scaledHeight / 4
+                      );
+            }}
+                case "SoundWord": {
+                    this.context.drawImage(
+                        this.promptPlayButton,
+                        this.width / 2.4,
+                        y / 1.25,
                         scaledWidth/4,
                         scaledHeight/4
                     );
                   break;
                 }
                 default: {
+                    if (this.levelData.levelMeta.protoType == "Visible") {
                     this.context.fillStyle = "black";
                     this.context.fillText(
                         this.currentPromptText,
@@ -237,7 +284,15 @@ export class PromptText extends EventManager {
                         y
                     );
                     break;
-                }
+                }else{
+                    this.context.drawImage(
+                        this.promptPlayButton,
+                        this.width / 2.4,
+                        y / 1.25,
+                        scaledWidth / 4,
+                        scaledHeight / 4
+                      );
+                }}
             }
             currentWordWidth = (this.context.measureText(
                 promptTextLetters[i]
@@ -350,3 +405,4 @@ export class PromptText extends EventManager {
         });
       }
 }
+

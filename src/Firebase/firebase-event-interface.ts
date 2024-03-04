@@ -5,7 +5,18 @@ interface CommonEventProperties {
     version_number: string;
     json_version_number: string;
 }
-
+export interface SessionStart extends CommonEventProperties{
+    days_since_last:Number;
+}
+export interface SessionEnd extends CommonEventProperties{
+    duration: number;
+}
+export interface TappedStart extends CommonEventProperties{
+   
+}
+export interface SelectedLevel extends CommonEventProperties{
+    level_selected: number;
+}
 export interface PuzzleCompletedEvent extends CommonEventProperties {
     success_or_failure: string;
     level_number: number;
@@ -14,6 +25,7 @@ export interface PuzzleCompletedEvent extends CommonEventProperties {
     target: string;
     foils: string[];
     response_time: number;
+    
 }
 export interface LevelCompletedEvent extends CommonEventProperties {
     success_or_failure: string;

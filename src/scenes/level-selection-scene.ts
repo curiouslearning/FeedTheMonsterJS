@@ -1,10 +1,12 @@
-import { Debugger, font, lang } from "../../global-variables";
+import { Debugger, font, lang, pseudoId } from "../../global-variables";
 import { PreviousPlayedLevel, loadImages } from "../common/common";
 import { LevelConfig } from "../common/level-config";
 import { Utils } from "../common/utils";
 import { AudioPlayer } from "../components/audio-player";
+import { getData } from "../data/api-data";
 import { GameScore } from "../data/game-score";
-
+import { SelectedLevel } from "../Firebase/firebase-event-interface";
+import { FirebaseIntegration } from "../Firebase/firebase-integration";
 export class LevelSelectionScreen {
   private canvas: HTMLCanvasElement;
   private data: any;
@@ -25,6 +27,9 @@ export class LevelSelectionScreen {
   private levelNumber: number;
   private levelsSectionCount: number;
   private unlockLevelIndex: number;
+  private majVersion:string;
+  private minVersion:string;
+  private firebaseIntegration: FirebaseIntegration;
   constructor(canvas: HTMLCanvasElement, data: any, callBack: Function) {
     this.canvas = canvas;
     this.data = data;
@@ -35,7 +40,9 @@ export class LevelSelectionScreen {
         ? Math.floor(self.data.levels.length / 10) + 1
         : Math.floor(self.data.levels.length / 10);
     this.initialiseButtonPos();
-    this.levels = [];
+    this.levels = [];  
+    this.firebaseIntegration = new FirebaseIntegration();
+    this.init();
     this.canvasElement = document.getElementById("canvas") as HTMLCanvasElement;
     this.context = this.canvasElement.getContext("2d");
     this.createLevelButtons(this.levelButtonPos);
@@ -70,6 +77,11 @@ export class LevelSelectionScreen {
       }
     });
     this.addListeners();
+  }
+  private async init() {     
+    const data = await getData();
+    this.majVersion = data.majversion;
+    this.minVersion = data.minversion
   }
   private initialiseButtonPos() {
     this.levelButtonPos = [
@@ -217,6 +229,7 @@ export class LevelSelectionScreen {
             "./assets/audios/ButtonClick.mp3"
           );
           this.levelNumber = s.index + this.levelSelectionPageIndex - 1;
+          console.log(this.levelNumber);
           this.startGame(this.levelNumber);
         } else if (
           s.index + this.levelSelectionPageIndex - 1 <=
@@ -373,7 +386,19 @@ export class LevelSelectionScreen {
       currentLevelData: this.data.levels[level_number],
       selectedLevelNumber: level_number,
     };
+    this.logSelectedLevelEvent();
     this.callBack(gamePlayData, "LevelSelection");
+  }
+  public logSelectedLevelEvent() {
+    const selectedLeveltData: SelectedLevel = {
+      cr_user_id: pseudoId,
+      ftm_language: lang,
+      profile_number: 0,
+      version_number: document.getElementById("version-info-id").innerHTML,
+      json_version_number:  !!this.majVersion && !!this.minVersion  ? this.majVersion.toString() +"."+this.minVersion.toString() : "",
+      level_selected:this.levelNumber,
+    };
+    this.firebaseIntegration.sendSelectedLevelEvent(selectedLeveltData);
   }
   public drawLevelSelection() {
     if (this.imagesLoaded) {

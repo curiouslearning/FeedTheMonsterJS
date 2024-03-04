@@ -31,6 +31,7 @@ import { AudioPlayer } from "../components/audio-player";
 import {
   LevelCompletedEvent,
   PuzzleCompletedEvent,
+  
 } from "../Firebase/firebase-event-interface";
 import { FirebaseIntegration } from "../Firebase/firebase-integration";
 
@@ -262,7 +263,12 @@ export class GameplayScene {
             this.pickedStoneObject.origx != null &&
             this.pickedStoneObject.origy != null
           ) {
-            this.pickedStone.x = this.pickedStoneObject.origx;
+            if (this.pickedStone.text.length >= 3  && this.pickedStoneObject.origx<50 && this.pickedStoneObject.origx< this.width/2 ){
+            this.pickedStone.x = this.pickedStoneObject.origx+25;
+            
+            }else{
+              this.pickedStone.x = this.pickedStoneObject.origx;
+            }
             this.pickedStone.y = this.pickedStoneObject.origy;
             this.monster.changeToIdleAnimation();
           }
@@ -612,13 +618,13 @@ export class GameplayScene {
       success_or_failure: isCorrect ? "success" : "failure",
       level_number: this.levelData.levelMeta.levelNumber,
       puzzle_number: this.counter,
-      item_selected:
-        puzzleType == "Word"
-          ? this.tempWordforWordPuzzle
-          : this.pickedStone?.text,
+      item_selected: puzzleType == "Word"
+        ? this.tempWordforWordPuzzle
+        : this.pickedStone?.text,
       target: this.stoneHandler.getCorrectTargetStone(),
       foils: this.stoneHandler.getFoilStones(),
       response_time: (endTime - this.puzzleTime) / 1000,
+
     };
     this.firebaseIntegration.sendPuzzleCompletedEvent(puzzleCompletedData);
   }

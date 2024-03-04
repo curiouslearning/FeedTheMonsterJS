@@ -110,6 +110,7 @@ export default class StoneHandler extends EventManager {
 
   initializeStonePos() {
     var offsetCoordinateValue = 32;
+    
     this.stonePos = [
       [
         this.canvas.width / 5 - offsetCoordinateValue,
@@ -127,7 +128,7 @@ export default class StoneHandler extends EventManager {
         this.canvas.width / 4 - offsetCoordinateValue,
         this.canvas.height / 1.28 - offsetCoordinateValue,
       ],
-      [
+       [
         this.canvas.width / 7 - offsetCoordinateValue,
         this.canvas.height / 1.5 - offsetCoordinateValue,
       ],
@@ -145,7 +146,7 @@ export default class StoneHandler extends EventManager {
       ],
       [
         this.canvas.width / 6 - offsetCoordinateValue,
-        this.canvas.height / 1.15 - offsetCoordinateValue,
+        this.canvas.height / 1.1 - offsetCoordinateValue,
       ],
     ];
     this.stonePos = this.stonePos.sort(() => Math.random() - 0.5);
