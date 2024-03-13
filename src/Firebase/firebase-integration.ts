@@ -1,15 +1,13 @@
-import { getAnalytics, setUserProperties } from "firebase/analytics";
 import { BaseFirebaseIntegration } from "./base-firebase-integration";
 import { LevelCompletedEvent, PuzzleCompletedEvent, SelectedLevel, SessionEnd, SessionStart, TappedStart } from "./firebase-event-interface";
 
 export class FirebaseIntegration extends BaseFirebaseIntegration {
     static instance: FirebaseIntegration;
-    
+
     constructor() {
         super();
-        const analytics = getAnalytics();
     }
-   
+
     public static getInstance(): FirebaseIntegration {
         if (!FirebaseIntegration.instance) {
             FirebaseIntegration.instance = new FirebaseIntegration();
