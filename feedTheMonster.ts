@@ -9,7 +9,8 @@ import { FirebaseIntegration } from "./src/Firebase/firebase-integration";
 import { Utils } from "./src/common/utils";
 import { AudioPlayer } from "./src/components/audio-player";
 import { SessionStart,
-SessionEnd
+SessionEnd,
+DownloadCompleted
 } from "./src/Firebase/firebase-event-interface";
 import { VISIBILITY_CHANGE } from "./src/common/event-names"; 
 declare const window: any;
@@ -256,6 +257,14 @@ class App {
           IsCached,
           JSON.stringify(Array.from(this.is_cached.entries()))
         );
+        const download_completed: DownloadCompleted = {
+          cr_user_id: pseudoId,
+          ftm_language: lang,
+          profile_number: 0,
+          version_number: document.getElementById("version-info-id").innerHTML,
+          json_version_number: !!this.majVersion && !!this.minVersion  ? this.majVersion.toString() +"."+this.minVersion.toString() : "",
+        };
+        this.firebaseIntegration.sendDownloadCompletedEvent(download_completed);
         localStorage.setItem("version" + this.lang, data.version);
         window.location.reload();
       }
