@@ -112,12 +112,13 @@ export class StartScene {
 
   handleMouseClick = (event) => {
     let self = this;
-    const selfElement = <HTMLElement>document.getElementById("canvas");
+    const selfElement = document.getElementById("canvas") as HTMLCanvasElement;
     event.preventDefault();
     var rect = selfElement.getBoundingClientRect();
+    const {excludeX, excludeY} = Utils.getExcludedCoordinates(selfElement, 15);
     const x = event.clientX - rect.left;
     const y = event.clientY - rect.top;
-    if (self.playButton.onClick(x, y)) {
+    if (!(x < excludeX && y < excludeY)) {
       FirebaseIntegration.getInstance().sendUserClickedOnPlayEvent();
       // @ts-ignore
       fbq("trackCustom", FirebaseUserClicked, {
