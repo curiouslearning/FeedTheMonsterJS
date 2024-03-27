@@ -2632,6 +2632,11 @@ class Utils {
         console.log(`Font not found for language: ${language}`);
         return 'NotoSans-Regular';
     }
+    static getExcludedCoordinates(canvas, exclusionPercentage) {
+        const excludedAreaWidth = canvas.width * (exclusionPercentage / 100);
+        const excludedAreaHeight = canvas.height * (exclusionPercentage / 100);
+        return { excludeX: excludedAreaWidth, excludeY: excludedAreaHeight };
+    }
 }
 
 
@@ -6242,7 +6247,9 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _components_background__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../components/background */ "./src/components/background.ts");
 /* harmony import */ var _components_audio_player__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../components/audio-player */ "./src/components/audio-player.ts");
 /* harmony import */ var _Firebase_firebase_integration__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ../Firebase/firebase-integration */ "./src/Firebase/firebase-integration.ts");
-/* harmony import */ var _components_play_button__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ../components/play-button */ "./src/components/play-button.ts");
+/* harmony import */ var _common_utils__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ../common/utils */ "./src/common/utils.ts");
+/* harmony import */ var _components_play_button__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ../components/play-button */ "./src/components/play-button.ts");
+
 
 
 
@@ -6321,7 +6328,7 @@ class StartScene {
         }
     };
     createPlayButton() {
-        this.playButton = new _components_play_button__WEBPACK_IMPORTED_MODULE_6__["default"](this.context, this.canvas, this.canvas.width * 0.35, this.canvas.height / 7);
+        this.playButton = new _components_play_button__WEBPACK_IMPORTED_MODULE_7__["default"](this.context, this.canvas, this.canvas.width * 0.35, this.canvas.height / 7);
         document.addEventListener("selectstart", function (e) {
             e.preventDefault();
         });
@@ -6334,7 +6341,8 @@ class StartScene {
         var rect = selfElement.getBoundingClientRect();
         const x = event.clientX - rect.left;
         const y = event.clientY - rect.top;
-        if (self.playButton.onClick(x, y)) {
+        const { excludeX, excludeY } = _common_utils__WEBPACK_IMPORTED_MODULE_6__.Utils.getExcludedCoordinates(selfElement, 15);
+        if (!(x < excludeX && y < excludeY)) {
             _Firebase_firebase_integration__WEBPACK_IMPORTED_MODULE_5__.FirebaseIntegration.getInstance().sendUserClickedOnPlayEvent();
             // @ts-ignore
             fbq("trackCustom", _common_common__WEBPACK_IMPORTED_MODULE_0__.FirebaseUserClicked, {

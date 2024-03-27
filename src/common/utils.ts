@@ -30,5 +30,12 @@ export class Utils {
         
         console.log(`Font not found for language: ${language}`);
         return 'NotoSans-Regular';
-      } 
+      }
+      
+      public static getExcludedCoordinates(canvas: HTMLCanvasElement, exclusionPercentage: number): { excludeX: number, excludeY: number } {
+        const excludedAreaWidth = canvas.width * (exclusionPercentage / 100);
+        const excludedAreaHeight = canvas.height * (exclusionPercentage / 100);
+
+        return { excludeX: excludedAreaWidth, excludeY: excludedAreaHeight };
+    }
 }
