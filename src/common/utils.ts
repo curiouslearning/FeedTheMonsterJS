@@ -31,4 +31,8 @@ export class Utils {
         console.log(`Font not found for language: ${language}`);
         return 'NotoSans-Regular';
       } 
+
+      public static getRandomNumber(min: number, max: number): number {
+        return Math.floor(Math.random() * (max - min + 1)) + min;
+      }
 }
