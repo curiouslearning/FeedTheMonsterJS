@@ -46,6 +46,7 @@ export class GameplayScene {
   public timerTicking: TimerTicking;
   public promptText: PromptText;
   public pauseButton: PauseButton;
+  public tutorial: Tutorial;
   public puzzleData: any;
   public id: string;
   public context: CanvasRenderingContext2D;
@@ -64,7 +65,6 @@ export class GameplayScene {
   loadedImages: any;
   stoneHandler: StoneHandler;
   public counter: number = 0;
-  tutorial: Tutorial;
   images: {
     pillerImg: string;
     bgImg: string;
@@ -134,6 +134,12 @@ export class GameplayScene {
       feedbackAudios,
       this.timerTicking
     );
+    this.tutorial = new Tutorial(
+      this.context,
+      canvas.width,
+      canvas.height
+    );
+
     this.promptText = new PromptText(
       this.width,
       this.height,
@@ -391,6 +397,7 @@ export class GameplayScene {
       this.monster.update(deltaTime);
       this.timerTicking.draw();
       this.feedbackTextEffects.render();
+      this.tutorial.clickOnMonsterTutorial(deltaTime);
     }
     if (this.isPauseButtonClicked && !this.isGameStarted) {
       this.pauseButton.draw();
