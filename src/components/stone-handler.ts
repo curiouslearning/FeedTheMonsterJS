@@ -287,8 +287,9 @@ export default class StoneHandler extends EventManager {
       false,
       "./assets/audios/Eat.mp3",
       `./assets/audios/Cheering-0${randomNumber}.mp3`,
-      Utils.getConvertedDevProdURL(this.feedbackAudios[feedBackIndex])
-    );
+      Utils.getConvertedDevProdURL(this.feedbackAudios[feedBackIndex]),
+      "assets/audios/PointsAdd.wav"
 
+    );
   }
 }

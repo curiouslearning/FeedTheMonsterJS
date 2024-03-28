@@ -314,6 +314,7 @@ class App {
       "./assets/audios/Disapointed-05.mp3",
       "./assets/audios/MonsterSpit.mp3",
       "./assets/audios/Eat.mp3",
+      "./assets/audios/PointsAdd.wav"
     ];
   
     return new Promise<void>((resolve, reject) => {
