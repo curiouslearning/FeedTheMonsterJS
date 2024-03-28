@@ -200,7 +200,7 @@ export default class StoneHandler extends EventManager {
       );
       return true;
     } else {
-      this.audioPlayer.playFeedbackAudios(false, "./assets/audios/MonsterSpit.mp3");
+      this.audioPlayer.playFeedbackAudios(false,"./assets/audios/Eat.mp3", "./assets/audios/Disapointed-05.mp3","./assets/audios/MonsterSpit.mp3");
       return false;
     }
   }
@@ -219,7 +219,7 @@ export default class StoneHandler extends EventManager {
 
       return true;
     } else {
-      this.audioPlayer.playFeedbackAudios(false, "./assets/audios/MonsterSpit.mp3");
+      this.audioPlayer.playFeedbackAudios(false, "./assets/audios/Eat.mp3","./assets/audios/Disapointed-05.mp3","./assets/audios/MonsterSpit.mp3");
       return false;
     }
   }
