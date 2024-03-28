@@ -303,6 +303,8 @@ class App {
     let audioUrls = [
       "./assets/audios/intro.mp3",
       "./assets/audios/Cheering-02.mp3",
+      "./assets/audios/Cheering-03.mp3",
+      "./assets/audios/Cheering-01.mp3",
       "./assets/audios/onDrag.mp3",
       "./assets/audios/timeout.mp3",
       "./assets/audios/LevelWinFanfare.mp3",

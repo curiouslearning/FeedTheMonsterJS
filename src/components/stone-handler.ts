@@ -192,12 +192,7 @@ export default class StoneHandler extends EventManager {
     feedBackIndex: number
   ): boolean {
     if (droppedStone == this.correctTargetStone) {
-      this.audioPlayer.playFeedbackAudios(
-        false,
-        "./assets/audios/Eat.mp3",
-        "./assets/audios/Cheering-02.mp3",
-        Utils.getConvertedDevProdURL(this.feedbackAudios[feedBackIndex])
-      );
+      this.playCorrectAnswerFeedbackSound(feedBackIndex);
       return true;
     } else {
       this.audioPlayer.playFeedbackAudios(false, "./assets/audios/MonsterSpit.mp3");
@@ -209,14 +204,9 @@ export default class StoneHandler extends EventManager {
     droppedStone: string,
     feedBackIndex: number
   ): boolean {
+    
     if (droppedStone == this.correctTargetStone) {
-      this.audioPlayer.playFeedbackAudios(
-        false,
-        "./assets/audios/Eat.mp3",
-        "./assets/audios/Cheering-02.mp3",
-        Utils.getConvertedDevProdURL(this.feedbackAudios[feedBackIndex])
-      );
-
+      this.playCorrectAnswerFeedbackSound(feedBackIndex);
       return true;
     } else {
       this.audioPlayer.playFeedbackAudios(false, "./assets/audios/MonsterSpit.mp3");
@@ -232,12 +222,7 @@ export default class StoneHandler extends EventManager {
       droppedStone == this.correctTargetStone.substring(0, droppedStone.length)
     ) {
       if (droppedStone == this.getCorrectTargetStone()) {
-        this.audioPlayer.playFeedbackAudios(
-          false,
-          "./assets/audios/Eat.mp3",
-          "./assets/audios/Cheering-02.mp3",
-          Utils.getConvertedDevProdURL(this.feedbackAudios[feedBackIndex])
-        );
+        this.playCorrectAnswerFeedbackSound(feedBackIndex);
       } else {
         this.audioPlayer.playFeedbackAudios(
           false,
@@ -294,5 +279,16 @@ export default class StoneHandler extends EventManager {
 
   setGamePause(isGamePaused:boolean){
     this.isGamePaused  = isGamePaused; 
+  }
+
+  playCorrectAnswerFeedbackSound(feedBackIndex: number) {
+    const randomNumber = Utils.getRandomNumber(1, 3).toString();
+    this.audioPlayer.playFeedbackAudios(
+      false,
+      "./assets/audios/Eat.mp3",
+      `./assets/audios/Cheering-0${randomNumber}.mp3`,
+      Utils.getConvertedDevProdURL(this.feedbackAudios[feedBackIndex])
+    );
+
   }
 }
