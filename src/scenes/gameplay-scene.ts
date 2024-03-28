@@ -563,7 +563,7 @@ export class GameplayScene {
         this.monster.changeToIdleAnimation();
       }, 1500);
     } else {
-      this.audioPlayer.playAudio("./assets/audios/MonsterSpit.mp3");
+      this.audioPlayer.playFeedbackAudios(false, "./assets/audios/Eat.mp3","./assets/audios/Disapointed-05.mp3","./assets/audios/MonsterSpit.mp3");
       this.logPuzzleEndFirebaseEvent(isCorrect, "Word");
       this.dispatchStoneDropEvent(isCorrect);
       this.loadPuzzle();

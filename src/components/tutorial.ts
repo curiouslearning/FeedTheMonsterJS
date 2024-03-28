@@ -1,4 +1,3 @@
-import { loadImages } from "../common/common";
 import { GameScore } from "../data/game-score";
 
 export class Tutorial {
@@ -64,7 +63,7 @@ export class Tutorial {
         this.setTutorialEnd(false);
     }
 
-    draw(deltaTime: number,img:CanvasImageSource,imageSize:number) {
+    draw(deltaTime: number) {
         if (this.imagesLoaded && !this.endTutorial && this.shouldPlayTutorial()) {
             this.x =
                 this.dx >= 0
@@ -82,11 +81,8 @@ export class Tutorial {
                 // GameFields.tutorialStatus = true;
 
             }
-            let previousAlpha = this.context.globalAlpha;
-            this.context.globalAlpha = 0.4;
-            this.context.drawImage(img, this.x, this.y+20,imageSize,imageSize);
-            this.context.globalAlpha = previousAlpha;
-            this.context.drawImage(this.tutorialImg, this.x+15, this.y+10);
+            this.context.drawImage(this.tutorialImg, this.x, this.y);
+
         }
     }
 
