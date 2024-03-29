@@ -76,7 +76,9 @@ export class Tutorial {
       const disy = this.y - this.endy + this.absdy;
       const distance = Math.sqrt(disx * disx + disy * disy);
       if (distance < 1) {
-        this.endTutorial = true;
+        this.x=this.startx;
+        this.y=this.starty;
+        this.draw(deltaTime,img,imageSize)
         // GameFields.tutorialStatus = true;
       }
       let previousAlpha = this.context.globalAlpha;
