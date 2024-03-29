@@ -13,6 +13,8 @@ export class Tutorial {
   public endy: number;
   public endTutorial: boolean = false;
   public puzzleNumber: number;
+  public playMnstrClkTtrlAnim: boolean = true;
+  public totalTime: number = 0;
   x: number;
   y: number;
   dx: number;
@@ -20,7 +22,7 @@ export class Tutorial {
   absdx: number;
   absdy: number;
 
-  constructor(context, width, height, puzzleNumber) {
+  constructor(context, width, height, puzzleNumber?) {
     this.width = width;
     this.height = height;
     this.context = context;
@@ -89,13 +91,49 @@ export class Tutorial {
     }
   }
 
+  clickOnMonsterTutorial(deltaTime) {
+        if(this.shouldPlayMonsterClickTutorialAnimation)
+        {
+            this.totalTime += Math.floor(deltaTime);
+            const transitionDuration = 1000;
+
+            const scaleFactor = this.sinusoidalInterpolation(this.totalTime, 1, 1.5, transitionDuration);
+
+            const scaledWidth = this.tutorialImg.width * scaleFactor;
+            const scaledHeight = this.tutorialImg.height * scaleFactor;
+            const offsetX = this.endx;
+            const offsetY = this.height / 1.9 + (this.tutorialImg.height / 2);
+            this.context.drawImage(this.tutorialImg, offsetX, offsetY, scaledWidth, scaledHeight);
+
+        }
+    
+    }
+
+    sinusoidalInterpolation(time, minScale, maxScale, duration) {
+        const amplitude = (maxScale - minScale) / 2;
+        const frequency = Math.PI / duration;
+        return minScale + amplitude * Math.sin(frequency * time);
+    }
+
+
   shouldPlayTutorial(): boolean {
     let playDragAnimationForFirstPuzzle =
       GameScore.getAllGameLevelInfo().length <= 0 && this.puzzleNumber == 0;
     return playDragAnimationForFirstPuzzle;
   }
 
+  shouldPlayMonsterClickTutorialAnimation(): boolean{
+    let playDragAnimationForFirstPuzzle =
+      GameScore.getAllGameLevelInfo().length <= 0 && this.playMnstrClkTtrlAnim;
+    return playDragAnimationForFirstPuzzle;
+  }
+
   setPuzzleNumber(puzzleNumer: number) {
     this.puzzleNumber = puzzleNumer;
+  }
+
+  setPlayMonsterClickAnimation(value: boolean)
+  {
+    this.playMnstrClkTtrlAnim = value;
   }
 }
