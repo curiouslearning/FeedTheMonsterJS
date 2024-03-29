@@ -85,7 +85,7 @@ export class StoneConfig {
         else{
             if(this.tutorialInstance!=null || this.tutorialInstance!=undefined)
             {
-                this.tutorialInstance.draw(deltaTime);
+                this.tutorialInstance.draw(deltaTime,this.img,this.imageSize);
             }
         }
         this.context.drawImage(
