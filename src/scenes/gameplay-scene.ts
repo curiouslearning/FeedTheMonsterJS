@@ -46,6 +46,7 @@ export class GameplayScene {
   public timerTicking: TimerTicking;
   public promptText: PromptText;
   public pauseButton: PauseButton;
+  public tutorial: Tutorial;
   public puzzleData: any;
   public id: string;
   public context: CanvasRenderingContext2D;
@@ -64,7 +65,6 @@ export class GameplayScene {
   loadedImages: any;
   stoneHandler: StoneHandler;
   public counter: number = 0;
-  tutorial: Tutorial;
   images: {
     pillerImg: string;
     bgImg: string;
@@ -134,6 +134,12 @@ export class GameplayScene {
       feedbackAudios,
       this.timerTicking
     );
+    this.tutorial = new Tutorial(
+      this.context,
+      canvas.width,
+      canvas.height
+    );
+
     this.promptText = new PromptText(
       this.width,
       this.height,
@@ -319,6 +325,7 @@ export class GameplayScene {
     if (this.monster.onClick(x, y)) {
       this.isGameStarted = true;
       this.time = 0;
+      this.tutorial.setPlayMonsterClickAnimation(false);
     }
 
     if (this.pauseButton.onClick(x, y)) {
@@ -368,6 +375,7 @@ export class GameplayScene {
       if (this.time >= 5000) {
         this.isGameStarted = true;
         this.time = 0;
+        this.tutorial.setPlayMonsterClickAnimation(false);
       }
     }
 
@@ -391,6 +399,7 @@ export class GameplayScene {
       this.monster.update(deltaTime);
       this.timerTicking.draw();
       this.feedbackTextEffects.render();
+      (this.counter==0)?this.tutorial.clickOnMonsterTutorial(deltaTime):undefined;
     }
     if (this.isPauseButtonClicked && !this.isGameStarted) {
       this.pauseButton.draw();
@@ -478,7 +487,7 @@ export class GameplayScene {
         setTimeout(() => {
           // this.changeToNextPuzzle();
           this.initNewPuzzle(loadPuzzleEvent);
-        }, 4500);
+        }, 4000);
       }
     }
   };
@@ -563,7 +572,7 @@ export class GameplayScene {
         this.monster.changeToIdleAnimation();
       }, 1500);
     } else {
-      this.audioPlayer.playFeedbackAudios(false, "./assets/audios/Eat.mp3","./assets/audios/Disapointed-05.mp3","./assets/audios/MonsterSpit.mp3");
+      this.audioPlayer.playAudio("./assets/audios/MonsterSpit.mp3");
       this.logPuzzleEndFirebaseEvent(isCorrect, "Word");
       this.dispatchStoneDropEvent(isCorrect);
       this.loadPuzzle();

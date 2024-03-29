@@ -13,6 +13,8 @@ export class Tutorial {
     public endy: number;
     public endTutorial: boolean = false;
     public puzzleNumber: number;
+    public totalTime: number = 0;
+    public playMonsterClickTutorial: boolean = true;
     x: number;
     y: number;
     dx: number;
@@ -20,15 +22,18 @@ export class Tutorial {
     absdx: number;
     absdy: number;
 
-    constructor(context, width, height, puzzleNumber) {
+    constructor(context, width, height, puzzleNumber?) {
         this.width = width;
         this.height = height;
         this.context = context;
         this.startx = 0;
         this.starty = 0;
         this.endx = this.width / 2;
-        this.endy = this.height / 2 - 30;
-        this.puzzleNumber = puzzleNumber;
+        this.endy = this.height / 2 ;
+        // this.puzzleNumber = puzzleNumber
+        console.log('PuzzleNumber-->',puzzleNumber);
+        this.puzzleNumber = (puzzleNumber>=0)?puzzleNumber:null;
+        console.log('PuzzleNumber2-->',this.puzzleNumber);
         this.tutorialImg = new Image();
         this.tutorialImg.src = "./assets/images/tutorial_hand.png";
         this.tutorialImg.onload = () => {
@@ -85,14 +90,48 @@ export class Tutorial {
 
         }
     }
+    clickOnMonsterTutorial(deltaTime) {
+        if(this.shouldPlayMonsterClickAnimation())
+        {
+            this.totalTime += Math.floor(deltaTime);
+            const transitionDuration = 1000;
+        
+            const scaleFactor = this.sinusoidalInterpolation(this.totalTime, 1, 1.5, transitionDuration);
+    
+            const scaledWidth = this.tutorialImg.width * scaleFactor;
+            const scaledHeight = this.tutorialImg.height * scaleFactor;
+            const offsetX = this.endx;
+            const offsetY = this.height / 1.9 + (this.tutorialImg.height / 2);
+            this.context.drawImage(this.tutorialImg, offsetX, offsetY, scaledWidth, scaledHeight);
 
+        }
+       
+    }
+    
+    sinusoidalInterpolation(time, minScale, maxScale, duration) {
+        const amplitude = (maxScale - minScale) / 2;
+        const frequency = Math.PI / duration;
+        return minScale + amplitude * Math.sin(frequency * time);
+    }
+    
+    
     shouldPlayTutorial(): boolean {
         let playDragAnimationForFirstPuzzle = GameScore.getAllGameLevelInfo().length <= 0 && this.puzzleNumber == 0;
         return playDragAnimationForFirstPuzzle;
 
     }
 
+    shouldPlayMonsterClickAnimation(): boolean{
+        let playMonsterClickAnimation = GameScore.getAllGameLevelInfo().length <= 0 && this.playMonsterClickTutorial;
+        return playMonsterClickAnimation;
+    }
+
     setPuzzleNumber(puzzleNumer: number) {
         this.puzzleNumber = puzzleNumer;
+    }
+
+    setPlayMonsterClickAnimation(value: boolean){
+        this.playMonsterClickTutorial = value;
+
     }
 }
