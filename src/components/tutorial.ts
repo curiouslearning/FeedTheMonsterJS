@@ -30,7 +30,7 @@ export class Tutorial {
     this.starty = 0;
     this.endx = this.width / 2;
     this.endy = this.height / 2 - 30;
-    this.puzzleNumber = puzzleNumber;
+    this.puzzleNumber = (puzzleNumber>=0)?puzzleNumber:null;
     this.tutorialImg = new Image();
     this.tutorialImg.src = "./assets/images/tutorial_hand.png";
     this.tutorialImg.onload = () => {
@@ -132,8 +132,7 @@ export class Tutorial {
     this.puzzleNumber = puzzleNumer;
   }
 
-  setPlayMonsterClickAnimation(value: boolean)
-  {
+  setPlayMonsterClickAnimation(value: boolean) {
     this.playMnstrClkTtrlAnim = value;
   }
 }
