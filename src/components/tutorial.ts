@@ -1,3 +1,4 @@
+import { createRippleEffect } from "../common/utils";
 import { GameScore } from "../data/game-score";
 
 export class Tutorial {
@@ -21,6 +22,8 @@ export class Tutorial {
   dy: number;
   absdx: number;
   absdy: number;
+  startRipple: boolean = false;
+  drawRipple: (x: number, y: number, restart?: boolean) => void;
 
   constructor(context, width, height, puzzleNumber?) {
     this.width = width;
@@ -33,6 +36,7 @@ export class Tutorial {
     this.puzzleNumber = (puzzleNumber>=0)?puzzleNumber:null;
     this.tutorialImg = new Image();
     this.tutorialImg.src = "./assets/images/tutorial_hand.png";
+    this.drawRipple = createRippleEffect(this.context)
     this.tutorialImg.onload = () => {
       this.imagesLoaded = true;
     };
@@ -102,6 +106,28 @@ export class Tutorial {
 
       
         const offsetX = this.endx;
+
+        if(Math.floor(offsetY)>=335)
+        {
+          this.startRipple = true;
+          console.log('OffsetY-->middle');
+          
+        }
+
+        
+        if(Math.floor(offsetY)<=300)
+        {
+          this.startRipple = false;
+          console.log('OffsetY-->middleeeeeee');
+          this.drawRipple(offsetX, this.height / 1.9 + (this.tutorialImg.height / 1.5), true)
+          
+        }
+
+
+
+        if (this.startRipple) {
+          this.drawRipple(offsetX, this.height / 1.9 + (this.tutorialImg.height / 1.5))
+        }
         this.context.drawImage(this.tutorialImg, offsetX, offsetY, this.tutorialImg.width, this.tutorialImg.height);
     }
   }
