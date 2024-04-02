@@ -90,30 +90,21 @@ export class Tutorial {
       this.context.drawImage(this.tutorialImg, this.x + 15, this.y + 10);
     }
   }
-
+  
   clickOnMonsterTutorial(deltaTime) {
-        if(this.shouldPlayMonsterClickTutorialAnimation)
-        {
-            this.totalTime += Math.floor(deltaTime);
-            const transitionDuration = 1000;
+    if (this.shouldPlayMonsterClickTutorialAnimation) {
+        this.totalTime += Math.floor(deltaTime);
+        const transitionDuration = 1000;
 
-            const scaleFactor = this.sinusoidalInterpolation(this.totalTime, 1, 1.5, transitionDuration);
+       
+        const amplitude = (this.tutorialImg.height / 2); 
+        const offsetY = (this.height / 1.9) + (this.tutorialImg.height / 2) - (amplitude * Math.sin(Math.PI * (this.totalTime / transitionDuration)));
 
-            const scaledWidth = this.tutorialImg.width * scaleFactor;
-            const scaledHeight = this.tutorialImg.height * scaleFactor;
-            const offsetX = this.endx;
-            const offsetY = this.height / 1.9 + (this.tutorialImg.height / 2);
-            this.context.drawImage(this.tutorialImg, offsetX, offsetY, scaledWidth, scaledHeight);
-
-        }
-    
+      
+        const offsetX = this.endx;
+        this.context.drawImage(this.tutorialImg, offsetX, offsetY, this.tutorialImg.width, this.tutorialImg.height);
     }
-
-    sinusoidalInterpolation(time, minScale, maxScale, duration) {
-        const amplitude = (maxScale - minScale) / 2;
-        const frequency = Math.PI / duration;
-        return minScale + amplitude * Math.sin(frequency * time);
-    }
+  }
 
 
   shouldPlayTutorial(): boolean {
