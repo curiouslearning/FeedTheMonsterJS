@@ -195,7 +195,11 @@ export default class StoneHandler extends EventManager {
       this.playCorrectAnswerFeedbackSound(feedBackIndex);
       return true;
     } else {
-      this.audioPlayer.playFeedbackAudios(false,"./assets/audios/Eat.mp3", "./assets/audios/Disapointed-05.mp3","./assets/audios/MonsterSpit.mp3");
+      if(Math.round(Math.random())>0){
+        this.audioPlayer.playFeedbackAudios(false, "./assets/audios/Eat.mp3","./assets/audios/Disapointed-05.mp3","./assets/audios/MonsterSpit.mp3");
+      }else{
+        this.audioPlayer.playFeedbackAudios(false, "./assets/audios/Eat.mp3","./assets/audios/MonsterSpit.mp3");
+      }
       return false;
     }
   }
@@ -209,8 +213,12 @@ export default class StoneHandler extends EventManager {
       this.playCorrectAnswerFeedbackSound(feedBackIndex);
       return true;
     } else {
-      this.audioPlayer.playFeedbackAudios(false, "./assets/audios/Eat.mp3","./assets/audios/Disapointed-05.mp3","./assets/audios/MonsterSpit.mp3");
-      return false;
+      if(Math.round(Math.random())>0){
+        this.audioPlayer.playFeedbackAudios(false, "./assets/audios/Eat.mp3","./assets/audios/Disapointed-05.mp3","./assets/audios/MonsterSpit.mp3");
+      }else{
+        this.audioPlayer.playFeedbackAudios(false, "./assets/audios/Eat.mp3","./assets/audios/MonsterSpit.mp3");
+      }
+       return false;
     }
   }
 
