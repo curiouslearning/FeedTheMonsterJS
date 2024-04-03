@@ -232,6 +232,7 @@ export default class StoneHandler extends EventManager {
       if (droppedStone == this.getCorrectTargetStone()) {
         this.playCorrectAnswerFeedbackSound(feedBackIndex);
       } else {
+        this.audioPlayer.playFeedbackAudios(false, "assets/audios/CorrectStoneFinal.mp3");
         this.audioPlayer.playFeedbackAudios(
           false,
           "./assets/audios/Eat.mp3",
