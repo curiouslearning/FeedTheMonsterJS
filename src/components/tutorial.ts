@@ -77,19 +77,37 @@ export class Tutorial {
       const disx = this.x - this.endx + this.absdx;
       const disy = this.y - this.endy + this.absdy;
       const distance = Math.sqrt(disx * disx + disy * disy);
-      if (distance < 1) {
-        this.x=this.startx;
-        this.y=this.starty;
-        this.draw(deltaTime,img,imageSize)
-        // GameFields.tutorialStatus = true;
-      }
+      if(distance<15){
+        this.createHandScaleAnimation(deltaTime,img,imageSize,this.endx,this.height / 2 + (this.tutorialImg.height / 2))//draws hand sacling animation when the hand dragging is complete!
+      }else if(Math.sqrt((this.x - this.startx) * (this.x - this.startx) + (this.y - this.starty) * (this.y - this.starty)) <= 20){
+        this.createHandScaleAnimation(deltaTime,img,imageSize,this.startx,this.starty)//draws hand scalling before the stone drag animation!
+      }else{
       let previousAlpha = this.context.globalAlpha;
       this.context.globalAlpha = 0.4;
       this.context.drawImage(img, this.x, this.y + 20, imageSize, imageSize);
       this.context.globalAlpha = previousAlpha;
-      this.context.drawImage(this.tutorialImg, this.x + 15, this.y + 10);
-    }
+      this.context.drawImage(this.tutorialImg, this.x + 15, this.y + 10);//draws the hand stone drag animation!
+    }}
   }
+ createHandScaleAnimation(deltaTime:number,img:CanvasImageSource,imageSize:number,offsetX:number,offsetY:number) {
+    this.totalTime += Math.floor(deltaTime);
+    const transitionDuration = 500;
+    const scaleFactor = this.sinusoidalInterpolation(this.totalTime, 1, 1.5, transitionDuration);
+    const scaledWidth = this.tutorialImg.width * scaleFactor;
+    const scaledHeight = this.tutorialImg.height * scaleFactor;
+    this.context.drawImage(this.tutorialImg, offsetX, offsetY, scaledWidth, scaledHeight);
+    if(this.totalTime>900){//condition to draw the hand stone drag again!
+      this.totalTime = Math.floor(deltaTime);
+      this.x=this.startx;
+      this.y=this.starty;
+      this.draw(deltaTime,img,imageSize)
+    }
+}
+sinusoidalInterpolation(time, minScale, maxScale, duration) {
+    const amplitude = (maxScale - minScale) / 2;
+    const frequency = Math.PI / duration;
+    return minScale + amplitude * Math.sin(frequency * time);
+}
   
   clickOnMonsterTutorial(deltaTime) {
     if (this.shouldPlayMonsterClickTutorialAnimation()) {
