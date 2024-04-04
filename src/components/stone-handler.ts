@@ -298,8 +298,8 @@ export default class StoneHandler extends EventManager {
       false,
       "./assets/audios/Eat.mp3",
       `./assets/audios/Cheering-0${randomNumber}.mp3`,
+      "assets/audios/PointsAdd.wav",
       Utils.getConvertedDevProdURL(this.feedbackAudios[feedBackIndex]),
-      "assets/audios/PointsAdd.wav"
     );
     // to play the audio parrallely.
     this.correctStoneAudio.play();
