@@ -96,7 +96,7 @@ export class Tutorial {
     const scaledWidth = this.tutorialImg.width * scaleFactor;
     const scaledHeight = this.tutorialImg.height * scaleFactor;
     this.context.drawImage(this.tutorialImg, offsetX, offsetY, scaledWidth, scaledHeight);
-    if(this.totalTime>900){//condition to draw the hand stone drag again!
+    if(this.totalTime>750){//condition to draw the hand stone drag again!
       this.totalTime = Math.floor(deltaTime);
       this.x=this.startx;
       this.y=this.starty;
