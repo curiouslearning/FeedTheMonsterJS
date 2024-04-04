@@ -96,7 +96,7 @@ export class Tutorial {
   }
   
   clickOnMonsterTutorial(deltaTime) {
-    if (this.shouldPlayMonsterClickTutorialAnimation) {
+    if (this.shouldPlayMonsterClickTutorialAnimation()) {
         this.totalTime += Math.floor(deltaTime);
         const transitionDuration = 1000;
 

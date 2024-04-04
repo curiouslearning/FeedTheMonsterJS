@@ -22,7 +22,7 @@ export default class StoneHandler extends EventManager {
   public puzzleStartTime: Date;
   public showTutorial: boolean =
     GameScore.getDatafromStorage().length == undefined ? true : false;
-
+  public correctStoneAudio: HTMLAudioElement;
   public tutorial: Tutorial;
   correctTargetStone: string;
   stonebg: HTMLImageElement;
@@ -48,7 +48,8 @@ export default class StoneHandler extends EventManager {
     this.levelData = levelData;
     this.setTargetStone(this.puzzleNumber);
     this.initializeStonePos();
-
+    this.correctStoneAudio = new Audio("assets/audios/CorrectStoneFinal.mp3");
+    this.correctStoneAudio.loop = false;
     this.feedbackAudios = this.convertFeedBackAudiosToList(feedbackAudios);
     this.puzzleStartTime = new Date();
     this.tutorial = new Tutorial(
@@ -195,7 +196,11 @@ export default class StoneHandler extends EventManager {
       this.playCorrectAnswerFeedbackSound(feedBackIndex);
       return true;
     } else {
-      this.audioPlayer.playFeedbackAudios(false,"./assets/audios/Eat.mp3", "./assets/audios/Disapointed-05.mp3","./assets/audios/MonsterSpit.mp3");
+      if(Math.round(Math.random())>0){
+        this.audioPlayer.playFeedbackAudios(false, "./assets/audios/Eat.mp3","./assets/audios/Disapointed-05.mp3","./assets/audios/MonsterSpit.mp3");
+      }else{
+        this.audioPlayer.playFeedbackAudios(false, "./assets/audios/Eat.mp3","./assets/audios/MonsterSpit.mp3");
+      }
       return false;
     }
   }
@@ -209,8 +214,12 @@ export default class StoneHandler extends EventManager {
       this.playCorrectAnswerFeedbackSound(feedBackIndex);
       return true;
     } else {
-      this.audioPlayer.playFeedbackAudios(false, "./assets/audios/Eat.mp3","./assets/audios/Disapointed-05.mp3","./assets/audios/MonsterSpit.mp3");
-      return false;
+      if(Math.round(Math.random())>0){
+        this.audioPlayer.playFeedbackAudios(false, "./assets/audios/Eat.mp3","./assets/audios/Disapointed-05.mp3","./assets/audios/MonsterSpit.mp3");
+      }else{
+        this.audioPlayer.playFeedbackAudios(false, "./assets/audios/Eat.mp3","./assets/audios/MonsterSpit.mp3");
+      }
+       return false;
     }
   }
 
@@ -229,6 +238,7 @@ export default class StoneHandler extends EventManager {
           "./assets/audios/Eat.mp3",
           "./assets/audios/Cheering-02.mp3"
         );
+        this.correctStoneAudio.play();
       }
       return true;
     } else {
@@ -266,6 +276,7 @@ export default class StoneHandler extends EventManager {
 
   handleVisibilityChange = () => {
     this.audioPlayer.stopAllAudios();
+    this.correctStoneAudio.pause();
   };
 
   convertFeedBackAudiosToList(feedbackAudios): string[] {
@@ -283,8 +294,6 @@ export default class StoneHandler extends EventManager {
 
   playCorrectAnswerFeedbackSound(feedBackIndex: number) {
     const randomNumber = Utils.getRandomNumber(1, 3).toString();
-    // Play both "Eat.mp3" and the "CorrectStoneFinal.mp3" sound simultaneously
-    this.audioPlayer.playFeedbackAudios(false, "assets/audios/CorrectStoneFinal.mp3");
     this.audioPlayer.playFeedbackAudios(
       false,
       "./assets/audios/Eat.mp3",
@@ -293,5 +302,7 @@ export default class StoneHandler extends EventManager {
       "assets/audios/PointsAdd.wav"
 
     );
+    // to play the audio parrallely.
+    this.correctStoneAudio.play();
   }
 }
