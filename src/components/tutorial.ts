@@ -1,3 +1,4 @@
+import { createRippleEffect } from "../common/utils";
 import { GameScore } from "../data/game-score";
 
 export class Tutorial {
@@ -21,6 +22,8 @@ export class Tutorial {
   dy: number;
   absdx: number;
   absdy: number;
+  startRipple: boolean = false;
+  drawRipple: (x: number, y: number, restart?: boolean) => void;
 
   constructor(context, width, height, puzzleNumber?) {
     this.width = width;
@@ -33,6 +36,7 @@ export class Tutorial {
     this.puzzleNumber = (puzzleNumber>=0)?puzzleNumber:null;
     this.tutorialImg = new Image();
     this.tutorialImg.src = "./assets/images/tutorial_hand.png";
+    this.drawRipple = createRippleEffect(this.context)
     this.tutorialImg.onload = () => {
       this.imagesLoaded = true;
     };
@@ -110,17 +114,31 @@ sinusoidalInterpolation(time, minScale, maxScale, duration) {
 }
   
   clickOnMonsterTutorial(deltaTime) {
-    if (this.shouldPlayMonsterClickTutorialAnimation()) {
-        this.totalTime += Math.floor(deltaTime);
-        const transitionDuration = 1000;
-
-       
-        const amplitude = (this.tutorialImg.height / 2); 
-        const offsetY = (this.height / 1.9) + (this.tutorialImg.height / 2) - (amplitude * Math.sin(Math.PI * (this.totalTime / transitionDuration)));
-
-      
+    if (this.shouldPlayMonsterClickTutorialAnimation) {
+        const transitionDuration = 2000;
+        const bottomPosition = this.height / 1.9 + (this.tutorialImg.height/0.8 );
+        const topPosition = this.height / 1.9 + (this.tutorialImg.height/0.8 )- this.tutorialImg.height;
+        let currentOffsetY;
         const offsetX = this.endx;
-        this.context.drawImage(this.tutorialImg, offsetX, offsetY, this.tutorialImg.width, this.tutorialImg.height);
+        if (this.totalTime < transitionDuration / 2) {
+            currentOffsetY = topPosition + (this.totalTime / (transitionDuration / 2)) * (bottomPosition - topPosition);
+            this.drawRipple(offsetX, this.height / 1.9 + (this.tutorialImg.height / 1.5), true)
+        } else {
+            currentOffsetY = bottomPosition - ((this.totalTime - transitionDuration / 2) / (transitionDuration / 2)) * (bottomPosition - topPosition);
+            this.drawRipple(offsetX, this.height / 1.9 + (this.tutorialImg.height/1.2)+ this.tutorialImg.height)
+        }
+        this.context.drawImage(
+            this.tutorialImg,
+            offsetX,
+            currentOffsetY,
+            this.tutorialImg.width,
+            this.tutorialImg.height
+        );
+  
+        if (currentOffsetY <= topPosition) {
+            this.totalTime = 0;
+        }
+        this.totalTime += deltaTime;
     }
   }
 
