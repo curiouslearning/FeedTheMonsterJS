@@ -96,39 +96,41 @@ export class Tutorial {
   }
   
   clickOnMonsterTutorial(deltaTime) {
-    if (this.shouldPlayMonsterClickTutorialAnimation()) {
-        this.totalTime += Math.floor(deltaTime);
-        const transitionDuration = 1000;
-
-       
-        const amplitude = (this.tutorialImg.height / 2); 
-        const offsetY = (this.height / 1.9) + (this.tutorialImg.height / 2) - (amplitude * Math.sin(Math.PI * (this.totalTime / transitionDuration)));
-
-      
+    if (this.shouldPlayMonsterClickTutorialAnimation) {
+  
+        const transitionDuration = 2000;
+        const bottomPosition = this.height / 1.9 + (this.tutorialImg.height / 2);
+        const topPosition = this.height / 1.9 + (this.tutorialImg.height / 2)- this.tutorialImg.height;
+        let currentOffsetY;
         const offsetX = this.endx;
-
-        if(Math.floor(offsetY)>=335)
-        {
-          this.startRipple = true;
-          console.log('OffsetY-->middle');
-          
-        }
-
+  
+        if (this.totalTime < transitionDuration / 2) {
+            currentOffsetY = topPosition + (this.totalTime / (transitionDuration / 2)) * (bottomPosition - topPosition);
+            this.drawRipple(offsetX, this.height / 1.9 + (this.tutorialImg.height / 1.5), true)
+        } else {
+            currentOffsetY = bottomPosition - ((this.totalTime - transitionDuration / 2) / (transitionDuration / 2)) * (bottomPosition - topPosition);
+            this.drawRipple(offsetX, this.height / 1.9 + (this.tutorialImg.height / 1.5))
+          }
+       
+        this.context.drawImage(
+            this.tutorialImg,
+            offsetX,
+            currentOffsetY,
+            this.tutorialImg.width,
+            this.tutorialImg.height
+        );
+  
         
-        if(Math.floor(offsetY)<=300)
-        {
-          this.startRipple = false;
-          console.log('OffsetY-->middleeeeeee');
-          this.drawRipple(offsetX, this.height / 1.9 + (this.tutorialImg.height / 1.5), true)
-          
+        if (currentOffsetY >= bottomPosition) {
+          console.log('Bottom');
+            
+        } else if (currentOffsetY <= topPosition) {
+          console.log('Topp');
+            this.totalTime = 0;
         }
-
-
-
-        if (this.startRipple) {
-          this.drawRipple(offsetX, this.height / 1.9 + (this.tutorialImg.height / 1.5))
-        }
-        this.context.drawImage(this.tutorialImg, offsetX, offsetY, this.tutorialImg.width, this.tutorialImg.height);
+  
+        // Increment totalTime
+        this.totalTime += deltaTime;
     }
   }
 

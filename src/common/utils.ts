@@ -54,7 +54,7 @@ export function createRippleEffect(context: CanvasRenderingContext2D): (x: numbe
   const initialOuterRadius: number = 20;
   const initialInnerRadius: number = 10;
   const maxRadius: number = 60;
-  let increment: number = 1;
+  let increment: number = 0.5;
   let outerRadius: number = initialOuterRadius;
   let innerRadius: number = initialInnerRadius;
 
@@ -67,14 +67,14 @@ export function createRippleEffect(context: CanvasRenderingContext2D): (x: numbe
       centerY = y
       ctx.beginPath();
       ctx.arc(centerX, centerY, outerRadius, 0, 2 * Math.PI);
-      ctx.strokeStyle = "blue";
+      ctx.strokeStyle = "white";
       ctx.lineWidth = 2;
       ctx.stroke();
       ctx.closePath();
 
       ctx.beginPath();
       ctx.arc(centerX, centerY, innerRadius, 0, 2 * Math.PI);
-      ctx.strokeStyle = "red";
+      ctx.strokeStyle = "white";
       ctx.lineWidth = 2;
       ctx.stroke();
       ctx.closePath();
