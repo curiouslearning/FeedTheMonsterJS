@@ -487,7 +487,7 @@ export class GameplayScene {
         setTimeout(() => {
           // this.changeToNextPuzzle();
           this.initNewPuzzle(loadPuzzleEvent);
-        }, 4800);
+        }, 4500);
       }
     }
   };
