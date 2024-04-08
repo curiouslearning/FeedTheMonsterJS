@@ -16,6 +16,7 @@ export class Tutorial {
   public puzzleNumber: number;
   public playMnstrClkTtrlAnim: boolean = true;
   public totalTime: number = 0;
+  private monsterStoneDifference:number=0;
   x: number;
   y: number;
   dx: number;
@@ -45,6 +46,7 @@ export class Tutorial {
   updateTargetStonePositions(targetStonePosition: number[]) {
     this.startx = targetStonePosition[0] - 22;
     this.starty = targetStonePosition[1] - 50;
+    this.monsterStoneDifference = Math.sqrt((this.startx - this.endx) * (this.startx - this.endx) + (this.starty - this.endy) * (this.starty - this.endy));
     this.animateImage();
   }
 
@@ -81,10 +83,15 @@ export class Tutorial {
       const disx = this.x - this.endx + this.absdx;
       const disy = this.y - this.endy + this.absdy;
       const distance = Math.sqrt(disx * disx + disy * disy);
-      if(distance<10){
-        this.createHandScaleAnimation(deltaTime,img,imageSize,this.endx,this.height / 2 + (this.tutorialImg.height / 2),true)//draws hand sacling animation when the hand dragging is complete!
-      }else if(Math.sqrt((this.x - this.startx) * (this.x - this.startx) + (this.y - this.starty) * (this.y - this.starty)) <= 15){
-        this.createHandScaleAnimation(deltaTime,img,imageSize,this.startx,this.starty,false)//draws hand scalling before the stone drag animation!
+      let monsterStoneDifferenceInPercentage=(100*distance/this.monsterStoneDifference);
+      if (monsterStoneDifferenceInPercentage < 15) {
+        if(monsterStoneDifferenceInPercentage>1){
+        this.createHandScaleAnimation(deltaTime,this.endx,this.endy,true)
+      }else{
+        this.x=this.startx; 
+        this.y=this.starty;
+      }}else if(monsterStoneDifferenceInPercentage>80){
+        this.createHandScaleAnimation(deltaTime,this.startx+15,this.starty+10,false);
       }else{
       let previousAlpha = this.context.globalAlpha;
       this.context.globalAlpha = 0.4;
@@ -93,20 +100,16 @@ export class Tutorial {
       this.context.drawImage(this.tutorialImg, this.x + 15, this.y + 10);//draws the hand stone drag animation!
     }}
   }
- createHandScaleAnimation(deltaTime:number,img:CanvasImageSource,imageSize:number,offsetX:number,offsetY:number,scaleHandAnimation:boolean) {
+ createHandScaleAnimation(deltaTime:number,offsetX:number,offsetY:number,shouldCreateRipple:boolean) {
     this.totalTime += Math.floor(deltaTime);
     const transitionDuration = 500;
     const scaleFactor = this.sinusoidalInterpolation(this.totalTime, 1, 1.5, transitionDuration);
     const scaledWidth = this.tutorialImg.width * scaleFactor;
     const scaledHeight = this.tutorialImg.height * scaleFactor;
     this.context.drawImage(this.tutorialImg, offsetX, offsetY, scaledWidth, scaledHeight);
-    this.drawRipple(this.startx+20,this.starty+25)
-    if(this.totalTime>750||scaleHandAnimation){//condition to draw the hand stone drag again!
-      this.totalTime = Math.floor(deltaTime);
-      this.x=this.startx;
-      this.y=this.starty;
-      this.draw(deltaTime,img,imageSize)
-    }
+    shouldCreateRipple?(null):(this.drawRipple(offsetX+this.width*0.02,offsetY+this.tutorialImg.height/2,false))
+    
+    
 }
 sinusoidalInterpolation(time, minScale, maxScale, duration) {
     const amplitude = (maxScale - minScale) / 2;
