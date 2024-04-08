@@ -118,7 +118,7 @@ sinusoidalInterpolation(time, minScale, maxScale, duration) {
 }
   
   clickOnMonsterTutorial(deltaTime) {
-    if (this.shouldPlayMonsterClickTutorialAnimation) {
+    if (this.shouldPlayMonsterClickTutorialAnimation()) {
         const transitionDuration = 2000;
         const bottomPosition = this.height /2.2 + (this.tutorialImg.height/0.8 );
         const topPosition = this.height / 2.2 + (this.tutorialImg.height/0.8 )- this.tutorialImg.height;
