@@ -14,6 +14,9 @@ export interface SessionEnd extends CommonEventProperties{
 export interface TappedStart extends CommonEventProperties{
    
 }
+export interface DownloadCompleted extends CommonEventProperties{
+   
+}
 export interface SelectedLevel extends CommonEventProperties{
     level_selected: number;
 }

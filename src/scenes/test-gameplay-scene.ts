@@ -279,7 +279,7 @@ export class TestGameplayScene {
             // this.levelIndicator.update(deltaTime);
             // this.tutorial.draw(deltaTime);
             this.timerTicking.update(deltaTime);
-            this.tutorial.draw(deltaTime);
+            // this.tutorial.draw(deltaTime);
             // this.pauseMenu.draw();
         }
         // }
