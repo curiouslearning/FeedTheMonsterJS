@@ -84,14 +84,14 @@ export class Tutorial {
       const disy = this.y - this.endy + this.absdy;
       const distance = Math.sqrt(disx * disx + disy * disy);
       let monsterStoneDifferenceInPercentage=(100*distance/this.monsterStoneDifference);
-      if (monsterStoneDifferenceInPercentage < 20) {
+      if (monsterStoneDifferenceInPercentage < 15) {
         if(monsterStoneDifferenceInPercentage>1){
         this.createHandScaleAnimation(deltaTime,this.endx,this.endy,true)
       }else{
         this.x=this.startx; 
         this.y=this.starty;
       }}else if(monsterStoneDifferenceInPercentage>80){
-        this.createHandScaleAnimation(deltaTime,this.startx,this.starty,false);
+        this.createHandScaleAnimation(deltaTime,this.startx+15,this.starty+10,false);
       }else{
       let previousAlpha = this.context.globalAlpha;
       this.context.globalAlpha = 0.4;
@@ -107,7 +107,7 @@ export class Tutorial {
     const scaledWidth = this.tutorialImg.width * scaleFactor;
     const scaledHeight = this.tutorialImg.height * scaleFactor;
     this.context.drawImage(this.tutorialImg, offsetX, offsetY, scaledWidth, scaledHeight);
-    shouldCreateRipple?(null):(this.drawRipple(offsetX+this.width*0.01,offsetY+this.tutorialImg.height/2))
+    shouldCreateRipple?(null):(this.drawRipple(offsetX+this.width*0.02,offsetY+this.tutorialImg.height/2,false))
     
     
 }
