@@ -1,4 +1,5 @@
 import { TextParticle } from "./text-particle";
+import { font } from "../../../global-variables";
 
 export class FeedbackTextEffects {
   public context: CanvasRenderingContext2D;
@@ -59,7 +60,7 @@ export class FeedbackTextEffects {
     this.context.textBaseline = "middle";
     this.context.lineWidth = 3;
     this.context.strokeStyle = "#A46225";
-    this.context.font = `bold ${this.fontSize}px Kalam, cursive`;
+    this.context.font = `${this.fontSize}px ${font}, monospace`;
     // break multiline text
     let lineArray: string[] = [];
     let words = text.split(" ");
