@@ -51,7 +51,7 @@ export function createRippleEffect(context: CanvasRenderingContext2D): (x: numbe
   let centerX: number = 0;
   let centerY: number = 0;
 
-  const initialOuterRadius: number = 20;
+  const initialOuterRadius: number = 10;
   const initialInnerRadius: number = 10;
   const maxRadius: number = 60;
   let increment: number = 0.5;
