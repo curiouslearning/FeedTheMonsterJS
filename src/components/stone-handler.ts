@@ -283,7 +283,8 @@ export default class StoneHandler extends EventManager {
     let feedBackAudioArray = [];
     feedBackAudioArray.push(
       feedbackAudios["fantastic"],
-      feedbackAudios["great"]
+      feedbackAudios["great"],
+      feedbackAudios["amazing"],
     );
     return feedBackAudioArray;
   }
@@ -302,6 +303,7 @@ export default class StoneHandler extends EventManager {
       Utils.getConvertedDevProdURL(this.feedbackAudios[feedBackIndex]),
     );
     // to play the audio parrallely.
+    console.log("this is util fun>>>>"+Utils.getConvertedDevProdURL(this.feedbackAudios[feedBackIndex]))
     this.correctStoneAudio.play();
   }
 }
