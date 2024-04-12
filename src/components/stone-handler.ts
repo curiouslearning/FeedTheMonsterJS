@@ -303,7 +303,6 @@ export default class StoneHandler extends EventManager {
       Utils.getConvertedDevProdURL(this.feedbackAudios[feedBackIndex]),
     );
     // to play the audio parrallely.
-    console.log("this is util fun>>>>"+Utils.getConvertedDevProdURL(this.feedbackAudios[feedBackIndex]))
     this.correctStoneAudio.play();
   }
 }
