@@ -283,7 +283,8 @@ export default class StoneHandler extends EventManager {
     let feedBackAudioArray = [];
     feedBackAudioArray.push(
       feedbackAudios["fantastic"],
-      feedbackAudios["great"]
+      feedbackAudios["great"],
+      feedbackAudios["amazing"],
     );
     return feedBackAudioArray;
   }
