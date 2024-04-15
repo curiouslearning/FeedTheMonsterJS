@@ -120,16 +120,16 @@ sinusoidalInterpolation(time, minScale, maxScale, duration) {
   clickOnMonsterTutorial(deltaTime) {
     if (this.shouldPlayMonsterClickTutorialAnimation()) {
         const transitionDuration = 2000;
-        const bottomPosition = this.height /2.2 + (this.tutorialImg.height/0.8 );
-        const topPosition = this.height / 2.2 + (this.tutorialImg.height/0.8 )- this.tutorialImg.height;
+        const bottomPosition = this.height /1.9 + (this.tutorialImg.height/0.8 );
+        const topPosition = this.height / 1.9 + (this.tutorialImg.height/0.8 )- this.tutorialImg.height;
         let currentOffsetY;
         const offsetX = this.endx;
         if (this.totalTime < transitionDuration / 2) {
             currentOffsetY = topPosition + (this.totalTime / (transitionDuration / 2)) * (bottomPosition - topPosition);
-            this.drawRipple(offsetX, this.height / 2.2 + (this.tutorialImg.height / 1.8), true)
+            this.drawRipple(offsetX, this.height / 1.9 + (this.tutorialImg.height / 1.5), true)
         } else {
             currentOffsetY = bottomPosition - ((this.totalTime - transitionDuration / 2) / (transitionDuration / 2)) * (bottomPosition - topPosition);
-            this.drawRipple(offsetX, this.height / 2.2 + (this.tutorialImg.height)+ this.tutorialImg.height)
+            this.drawRipple(offsetX, this.height/ 1.9 + (this.tutorialImg.height/1.2)+this.tutorialImg.height)
         }
         this.context.drawImage(
             this.tutorialImg,

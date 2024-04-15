@@ -96,10 +96,10 @@ export class Monster extends EventManager {
         1386 * this.frameY,
         768,
         1386,
-        this.x,
-        this.y * 0.8,
-        this.width / 2,
-        this.height / 1.5
+        this.x * 0.5,
+        this.y * 0.1,
+        (this.width / 2) * 1.5,
+        (this.height / 1.5) * 1.5
       );
     }
   }
@@ -110,18 +110,22 @@ export class Monster extends EventManager {
   
 
   changeToDragAnimation() {
+    this.maxFrame=6
     this.image = this.loadedImages.dragImg;
   }
 
   changeToEatAnimation() {
+    this.maxFrame=12
     this.image = this.loadedImages.eatImg;
   }
 
   changeToIdleAnimation() {
+    this.maxFrame=6;
     this.image = this.loadedImages.idleImg;
   }
 
   changeToSpitAnimation() {
+    this.maxFrame=12;
     this.image = this.loadedImages.spitImg;
   }
 
