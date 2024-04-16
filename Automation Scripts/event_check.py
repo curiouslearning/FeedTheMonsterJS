@@ -1,14 +1,19 @@
 import requests
 from google.cloud import bigquery
 import json
+from datetime import datetime
 
 # Define the credentials path outside of any function
 credentials_path = 'D:\curious leraning\FeedTheMonsterJS\Automation Scripts\credentials.json'  # Replace with the actual path to your credentials file
 
 # Function to send Slack notification
-def send_slack_notification(message):
-    webhook_url = 'https://hooks.slack.com/services/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'  # Replace with your Slack webhook URL
+def send_slack_notification(*args):
+    webhook_url = 'https://hooks.slack.com/services/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'  # Replace with your Slack webhook URL
+    message = args[0]
+    missing_keys = args[1] if len(args) > 1 else None
 
+    if missing_keys:
+        message += f"\nMissing keys: {', '.join(missing_keys)}"
     payload = {
         "text": message
     }
@@ -24,10 +29,10 @@ def run_qa_tests():
         credentials_info = json.load(f)
     
     client = bigquery.Client.from_service_account_info(credentials_info)
-
+    today_date = datetime.now().strftime('%Y%m%d')
     # Check if level_completed event is logged
-    query = """
-    SELECT * FROM `ftm-b9d99.analytics_159643920.events_intraday_20240413`
+    query = f"""
+    SELECT * FROM `ftm-b9d99.analytics_159643920.events_intraday_{today_date}`
     WHERE event_name="level_completed"
     """
     query_job = client.query(query)
@@ -38,11 +43,19 @@ def run_qa_tests():
     # Now iterate over the rows and perform checks
     for row in rows:
         event_params = row.get('event_params', [])  # Use get() to handle missing key
-            required_keys = {'success_or_failure', 'number_of_successful_puzzles', 'level_number', 'profile_number', 'cr_user_id', 'ftm_language', 'version_number', 'json_version_number', 'duration'}
+        required_keys = {'success_or_failure', 'number_of_successful_puzzles', 'level_number', 'profile_number','ftm_language', 'version_number', 'json_version_number', 'duration'}
     # Check if all required keys are present
-        if not all(key in [param['key'] for param in event_params] for key in required_keys):
-        send_slack_notification("QA Test Failure: Missing one or more required keys in event parameters.")
-        return
+        present_keys = [param['key'] for param in event_params]
+        
+        # Check if all required keys are present
+        missing_keys = []
+        for key in required_keys:
+            if key not in present_keys:
+                missing_keys.append(key)
+        
+        if missing_keys:
+            send_slack_notification("QA Test Failure: Missing one or more required keys in event parameters.", missing_keys)
+            return
         for param in event_params:
             key = param['key']
             value = param['value']
