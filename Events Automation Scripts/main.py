@@ -1,27 +1,51 @@
+import functions_framework
+import re
+import unicodedata
+import requests
+import os
 import requests
 from google.cloud import bigquery
 import json
 from datetime import datetime
-
+from google.oauth2 import service_account
+from googleapiclient.discovery import build
+from googleapiclient.discovery import build
+import smtplib
+from email.mime.multipart import MIMEMultipart
+from email.mime.text import MIMEText
+from email.mime.application import MIMEApplication
+@functions_framework.http
+def level_completed_event_check(request):
+    """HTTP Cloud Function.
+    Args:
+        request (flask.Request): The request object.
+    Returns:
+        The response text, or any set of values that can be turned into a
+        Response object using `make_response`.
+    """
+    request_json = request.get_json(silent=True)
+    request_args = request.args
+    
+    # Run QA tests
+    run_qa_tests()
+    return "Event check completed."
+    
+    
 # Define the credentials path outside of any function
-credentials_path = 'D:\curious leraning\FeedTheMonsterJS\Automation Scripts\credentials.json'  # Replace with the actual path to your credentials file
-
+credentials_path = 'D:\curious leraning\FeedTheMonsterJS\Events Automation Scripts\credentials.json'  # Replace with the actual path to your credentials file
 # Function to send Slack notification
 def send_slack_notification(*args):
-    webhook_url = 'https://hooks.slack.com/services/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'  # Replace with your Slack webhook URL
+    webhook_url = 'https://hooks.slack.com/services/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'  # Replace with your Slack webhook URL
     message = args[0]
     missing_keys = args[1] if len(args) > 1 else None
-
     if missing_keys:
         message += f"\nMissing keys: {', '.join(missing_keys)}"
     payload = {
         "text": message
     }
-
     response = requests.post(webhook_url, json=payload)
     if response.status_code != 200:
         print(f"Failed to send Slack notification. Status code: {response.status_code}")
-
 # Function to run QA tests
 def run_qa_tests():
     # Explicitly provide credentials for BigQuery client
@@ -36,7 +60,6 @@ def run_qa_tests():
     WHERE event_name="level_completed"
     """
     query_job = client.query(query)
-    
     # Fetch all results using pagination
     result = query_job.result()
     rows = list(result)  # Convert the result iterator to a list
@@ -52,9 +75,8 @@ def run_qa_tests():
         for key in required_keys:
             if key not in present_keys:
                 missing_keys.append(key)
-        
         if missing_keys:
-            send_slack_notification("QA Test Failure: Missing one or more required keys in event parameters.", missing_keys)
+            send_slack_notification(" level_completed QA Test Failure: Missing one or more required keys in event parameters.", missing_keys)
             return
         for param in event_params:
             key = param['key']
@@ -63,50 +85,58 @@ def run_qa_tests():
             if key == 'success_or_failure':
                 # Check if int_value exists and if the value is None
                 if 'string_value' in value and value['string_value'] is None:
-                    send_slack_notification("QA Test Failure: success_or_failure should be an string. Possibly missing or not an string.")
+                    send_slack_notification("level_completed QA Test Failure: success_or_failure should be an string. Possibly missing or not an string.")
                     return
             elif key == 'number_of_successful_puzzles':
                 # Check if int_value exists and if the value is None
                 if 'int_value' in value and value['int_value'] is None:
-                    send_slack_notification("QA Test Failure: number_of successful_puzzles should be an integer. Possibly missing or not an integer.")
+                    send_slack_notification("level_completed QA Test Failure: number_of successful_puzzles should be an integer. Possibly missing or not an integer.")
                     return
             elif key == 'level_number':
                 # Check if int_value exists and if the value is None
                 if 'int_value' in value and value['int_value'] is None:
-                    send_slack_notification("QA Test Failure: level_number should be an integer. Possibly missing or not an integer")
+                    send_slack_notification("level_completed QA Test Failure: level_number should be an integer. Possibly missing or not an integer")
                     return
             elif key == 'profile_number':
                 # Check if int_value exists and if the value is None
                 if 'int_value' in value and value['int_value'] is None:
-                    send_slack_notification("QA Test Failure: profile_number should be an integer. Possibly missing or not an integer")
+                    send_slack_notification("level_completed QA Test Failure: profile_number should be an integer. Possibly missing or not an integer")
                     return
             elif key == 'cr_user_id':
                 # Check if int_value exists and if the value is None
                 if 'string_value' in value and value['string_value'] is None:
-                    send_slack_notification("QA Test Failure: cr_user_id should be an string. Possibly missing or not an string")
+                    send_slack_notification("level_completed QA Test Failure: cr_user_id should be an string. Possibly missing or not an string")
                     return
             elif key == 'ftm_language':
                 # Check if int_value exists and if the value is None
                 if 'string_value' in value and value['string_value'] is None:
-                    send_slack_notification("QA Test Failure: ftm_language should be an string. Possibly missing or not an string")
+                    send_slack_notification("level_completed QA Test Failure: ftm_language should be an string. Possibly missing or not an string")
                     return
             elif key == 'version_number':
                 # Check if int_value exists and if the value is None
                 if 'string_value' in value and value['string_value'] is None:
-                    send_slack_notification("QA Test Failure: version_number should be an string. Possibly missing or not an string")
+                    send_slack_notification("level_completed QA Test Failure: version_number should be an string. Possibly missing or not an string")
                     return
             elif key == 'json_version_number':
                 # Check if int_value exists and if the value is None
                 if 'double_value' in value and value['double_value'] is None:
-                    send_slack_notification("QA Test Failure: json_version_number should be an double. Possibly missing or not an double")
+                    send_slack_notification("level_completed QA Test Failure: json_version_number should be an double. Possibly missing or not an double")
                     return
             elif key == 'duration':
                 # Check if int_value exists and if the value is None
                 if 'double_value' in value and value['double_value'] is None:
-                    send_slack_notification("QA Test Failure: duration should be an double. Possibly missing or not an double")
+                    send_slack_notification("level_completed QA Test Failure: duration should be an double. Possibly missing or not an double")
                     return
     # If all checks passed, send success notification
-    send_slack_notification("QA Test Success: All QA tests passed successfully.")
+    # send_slack_notification("QA Test Success: All QA tests passed successfully.")
 
-# Run QA tests
-run_qa_tests()
+
+
+
+
+
+
+
+
+
+
