@@ -33,7 +33,7 @@ def level_completed_event_check(request):
 credentials_path = 'credentials.json'  # Replace with the actual path to your credentials file
 # Function to send Slack notification
 def send_slack_notification(*args):
-    webhook_url = 'https://hooks.slack.com/services/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'  # Replace with your Slack webhook URL
+    webhook_url = 'https://hooks.slack.com/services/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'  # Replace with your Slack webhook URL
     message = args[0]
     missing_keys = args[1] if len(args) > 1 else None
     if missing_keys:
