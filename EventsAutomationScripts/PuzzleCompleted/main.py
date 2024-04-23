@@ -33,7 +33,8 @@ def puzzle_completed_event_check(request):
 credentials_path = 'credentials.json'  # Replace with the actual path to your credentials file
 # Function to send Slack notification
 def send_slack_notification(message, count=None):
-    webhook_url = 'https://hooks.slack.com/services/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'  # Replace with your Slack webhook URL
+    # Add your secret webhook URL over here
+    webhook_url = ''  # Replace with your Slack webhook URL
     if count:
         message += f" ({count} events)"
     payload = {
