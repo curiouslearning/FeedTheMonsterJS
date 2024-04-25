@@ -3179,6 +3179,8 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */   FeedbackTextEffects: () => (/* binding */ FeedbackTextEffects)
 /* harmony export */ });
 /* harmony import */ var _text_particle__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./text-particle */ "./src/components/feedback-particle-effect/text-particle.ts");
+/* harmony import */ var _global_variables__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../../../global-variables */ "./global-variables.ts");
+
 
 class FeedbackTextEffects {
     context;
@@ -3227,7 +3229,7 @@ class FeedbackTextEffects {
         this.context.textBaseline = "middle";
         this.context.lineWidth = 3;
         this.context.strokeStyle = "#A46225";
-        this.context.font = `bold ${this.fontSize}px Kalam, cursive`;
+        this.context.font = `${this.fontSize}px ${_global_variables__WEBPACK_IMPORTED_MODULE_1__.font}, monospace`;
         // break multiline text
         let lineArray = [];
         let words = text.split(" ");
@@ -3521,15 +3523,19 @@ class Monster extends _events_EventManager__WEBPACK_IMPORTED_MODULE_1__.EventMan
         this.image.src = src;
     }
     changeToDragAnimation() {
+        this.maxFrame = 6;
         this.image = this.loadedImages.dragImg;
     }
     changeToEatAnimation() {
+        this.maxFrame = 12;
         this.image = this.loadedImages.eatImg;
     }
     changeToIdleAnimation() {
+        this.maxFrame = 6;
         this.image = this.loadedImages.idleImg;
     }
     changeToSpitAnimation() {
+        this.maxFrame = 12;
         this.image = this.loadedImages.spitImg;
     }
     handleStoneDrop(event) {
@@ -4293,7 +4299,7 @@ class StoneHandler extends _events_EventManager__WEBPACK_IMPORTED_MODULE_1__.Eve
     };
     convertFeedBackAudiosToList(feedbackAudios) {
         let feedBackAudioArray = [];
-        feedBackAudioArray.push(feedbackAudios["fantastic"], feedbackAudios["great"]);
+        feedBackAudioArray.push(feedbackAudios["fantastic"], feedbackAudios["great"], feedbackAudios["amazing"]);
         return feedBackAudioArray;
     }
     setGamePause(isGamePaused) {
