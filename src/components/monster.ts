@@ -96,10 +96,10 @@ export class Monster extends EventManager {
         1386 * this.frameY,
         768,
         1386,
-        this.x,
-        this.y * 0.8,
-        this.width / 2,
-        this.height / 1.5
+        this.x * 0.5,
+        this.y * 0.1,
+        (this.width / 2) * 1.5,
+        (this.height / 1.5) * 1.5
       );
     }
   }
