@@ -12,6 +12,7 @@ import StoneHandler from "../components/stone-handler";
 import { Tutorial } from "../components/tutorial";
 import { StoneConfig } from "../common/stone-config";
 import PausePopUp from "../components/pause-popup";
+import AreYouSurePopUp from "../components/feedback-particle-effect/sure-popup";
 import {
   CLICK,
   LOADPUZZLE,
@@ -76,6 +77,7 @@ export class GameplayScene {
   handler: HTMLElement;
   pickedStoneObject: StoneConfig;
   pausePopup: PausePopUp;
+  surePopup: AreYouSurePopUp;
   isPauseButtonClicked: boolean = false;
   public background1: Background;
   feedBackTextCanavsElement: HTMLCanvasElement;
@@ -163,6 +165,11 @@ export class GameplayScene {
       this.reloadScene,
       gamePlayData
     );
+    this.surePopup= new AreYouSurePopUp(
+      this.canvas,
+      this.switchToLevelSelection,
+      this.noCallback
+    )
 
     this.background1 = new Background(
       this.context,
@@ -216,6 +223,14 @@ export class GameplayScene {
     this.isPauseButtonClicked = false;
     this.stoneHandler.setGamePause(false);
     this.pausePopup.dispose();
+    // this.surePopup.dispose();
+  };
+  noCallback = () => {
+    this.addEventListeners();
+    this.isPauseButtonClicked = false;
+    this.stoneHandler.setGamePause(false);
+    this.pausePopup.dispose();
+    // this.surePopup.dispose();
   };
 
   getRandomFeedBackText(randomIndex: number): string {
@@ -391,6 +406,7 @@ export class GameplayScene {
       this.timerTicking.draw();
       this.stoneHandler.draw(deltaTime);
       this.pausePopup.draw();
+      // this.surePopup.draw();
     }
     if (!this.isPauseButtonClicked && !this.isGameStarted) {
       this.pauseButton.draw();
@@ -408,6 +424,7 @@ export class GameplayScene {
       this.monster.update(deltaTime);
       this.timerTicking.draw();
       this.pausePopup.draw();
+      // this.surePopup.draw();
     }
     if (!this.isPauseButtonClicked && this.isGameStarted) {
       this.pauseButton.draw();
@@ -671,6 +688,7 @@ export class GameplayScene {
     this.stoneHandler.setGamePause(true);
     this.removeEventListeners();
     this.pausePopup.addListner();
+    // this.surePopup.addListner();
     this.audioPlayer.stopAllAudios();
   };
 
