@@ -29,10 +29,10 @@ export default class NoButton {
         if (this.imagesLoaded) {
             this.context.drawImage(
                 this.no_button_image,
-                this.posX,
-                this.posY,
-                this.canvas.width * 0.15,
-                this.canvas.width * 0.15
+                this.posX+5,
+                this.posY+10,
+                this.canvas.width * 0.18,
+                this.canvas.width * 0.18
             );
         }
     }

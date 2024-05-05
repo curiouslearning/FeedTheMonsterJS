@@ -29,10 +29,10 @@ export default class YesButton {
         if (this.imagesLoaded) {
             this.context.drawImage(
                 this.yes_button_image,
-                this.posX,
+                this.posX-5,
                 this.posY,
-                this.canvas.width * 0.15,
-                this.canvas.width * 0.15
+                this.canvas.width * 0.2,
+                this.canvas.width * 0.2
             );
         }
     }

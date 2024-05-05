@@ -65,7 +65,7 @@ export default class PausePopUp {
     };
     this.retrySurePopup = new AreYouSurePopUp(
       this.canvas,
-      this.reloadScene, // Provide switchToLevelSelection callback
+      this.yesRetryCallback, // Provide switchToLevelSelection callback
       this.noRetryCallback // Provide reloadScene callback
   );
   this.CloseSurePopup= new AreYouSurePopUp(
@@ -73,15 +73,20 @@ export default class PausePopUp {
     this.switchToLevelSelection, // Provide switchToLevelSelection callback
     this.noCloseCallback // Provide reloadScene callback
 );
-this.retrySurePopup.addListner(); // Add listeners for retry popup
-this.CloseSurePopup.addListner();
-    // this.createCanvas();
+
+  }
+  yesRetryCallback=()=>{
+    this.playClickSound();
+      console.log(" retry button clicked");
+        this.reloadScene(this.gameplayData, "GamePlay");
+        
   }
   noRetryCallback = () => {
     if (this.isRetryButtonClicked) {
       this.addListner();
       this.isRetryButtonClicked = false;
       this.retrySurePopup.dispose();
+      // this.CloseSurePopup.dispose();
   }
   };
   noCloseCallback = () => {
@@ -89,6 +94,7 @@ this.CloseSurePopup.addListner();
       this.addListner();
       this.isCloseButtonClicked = false;
       this.CloseSurePopup.dispose();
+      // this.retrySurePopup.dispose();
   }
   };
   addListner = () => {
@@ -111,37 +117,21 @@ this.CloseSurePopup.addListner();
     
     }
     if (this.retryButton.onClick(x, y)) {
-      this.playClickSound();
-      this.isRetryButtonClicked = true;
+      this.playClickSound(); 
       this.dispose();
-      
+      this.isRetryButtonClicked = true;
       console.log(" retry button clicked");
-      // this.reloadScene(this.gameplayData, "GamePlay");
-      this.retrySurePopup.draw();
+      this.retrySurePopup.addListner();
     }
     if (this.closeButton.onClick(x, y)) {
       this.playClickSound();
-       this.dispose();
-       this.isCloseButtonClicked=true;
-      this.CloseSurePopup.draw();
+      this.dispose();
+      this.isCloseButtonClicked=true;
+      this.CloseSurePopup.addListner();
       console.log(" close button clicked");
       // this.switchToLevelSelection("GamePlay");
 
     }
-    // if (this.cancelButton.onClick(x, y) || this.retryButton.onClick(x, y) || this.closeButton.onClick(x, y)) {
-    //   // Show the "Are you sure?" popup
-    //   const areYouSurePopup = new AreYouSurePopUp(this.canvas, () => {
-    //     console.log("this button is clicked>>>>>>>>>>")
-    //     // Yes clicked
-    //     areYouSurePopup.dispose();
-    //     this.playClickSound();
-    //     this.callback();
-    //   }, () => {
-    //     // No clicked
-    //     areYouSurePopup.dispose();
-    //   });
-    //   areYouSurePopup.addListner();
-    // }
   };
 
   draw() {
@@ -158,6 +148,10 @@ this.CloseSurePopup.addListner();
       this.cancelButton.draw();
       this.retryButton.draw();
       this.closeButton.draw();
+      if(this.isRetryButtonClicked==true)
+        this.retrySurePopup.draw();
+      if(this.isCloseButtonClicked==true)
+        this.CloseSurePopup.draw();
     }
   }
 
@@ -167,7 +161,6 @@ this.CloseSurePopup.addListner();
   }
 
   dispose = () => {
-    console.log("we are in the pause dispose>>>>")
     document
       .getElementById("canvas")
       .removeEventListener(CLICK, this.handleMouseClick, false);

@@ -42,7 +42,7 @@ export default class AreYouSurePopUp {
       this.canvas.width * 0.4 -
       (this.canvas.width * 0.15) / 2
         );
-        // this.yesButton = new YesButton(this.context, this.canvas); // Initialize YesButton
+
         this.pop_up_image = new Image();
         this.pop_up_image.src = "./assets/images/popup_bg_v01.png";
         this.pop_up_image.onload = (e) => {
@@ -66,17 +66,20 @@ export default class AreYouSurePopUp {
 
         if (this.yesButton.onClick(x, y)) {
             console.log(" Yes button clicked");
+            // this.dispose()
             this.yesCallback();
-            this.dispose()
+            
         }
         if (this.noButton.onClick(x, y)) {
             console.log(" No button clicked");
+            // this.dispose()
             this.noCallback();
-            this.dispose()
+            
         }
     };
 
     draw() {
+       
         if (this.imagesLoaded) {
             this.context.fillStyle = "rgba(0,0,0,0.5)";
             this.context.fillRect(0, 0, this.canvas.width, this.canvas.height);
@@ -87,8 +90,15 @@ export default class AreYouSurePopUp {
                 this.canvas.width * 0.8,
                 this.canvas.width * 0.8
             );
-            // this.yesButton.draw(); // Draw YesButton
-            console.log("we are inside draw");
+            const textY = this.canvas.height * 0.2 + 80; 
+            this.context.fillStyle = "white";
+            this.context.font = "28px Arial"; 
+            this.context.fillText(
+                "are you sure?",
+                this.canvas.width / 2,
+                this.canvas.height/2.8
+            );
+            // console.log("we are inside draw");
             this.yesButton.draw();
             this.noButton.draw();
         }
