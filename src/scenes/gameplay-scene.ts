@@ -223,7 +223,8 @@ export class GameplayScene {
     this.addEventListeners();
 
 
-    this.ws = new WebSocket('ws://localhost:8080');
+    let url="://devcuriousreader.wpcomstaging.com/tesing_ftm_js/?cr_lang="+lang
+    this.ws = new WebSocket('ws'+url);
 
     // WebSocket event listeners
     this.ws.onopen = () => {
