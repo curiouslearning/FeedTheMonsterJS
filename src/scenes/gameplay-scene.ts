@@ -37,7 +37,10 @@ import {
 import { FirebaseIntegration } from "../Firebase/firebase-integration";
 
 
+
+
 export class GameplayScene {
+  
   public width: number;
   public height: number;
   public monster: Monster;
@@ -94,6 +97,8 @@ export class GameplayScene {
   startTime: number;
   puzzleTime: number;
 
+  private ws: WebSocket;
+  private reconnectInterval: number = 3000;
   constructor(
     canvas,
     levelData,
@@ -216,8 +221,33 @@ export class GameplayScene {
         )
       : localStorage.setItem(PreviousPlayedLevel + lang, previousPlayedLevel);
     this.addEventListeners();
+
+
+    this.ws = new WebSocket('ws://localhost:8080');
+
+    // WebSocket event listeners
+    this.ws.onopen = () => {
+      console.log('WebSocket connection established.');
+    };
+
+    this.ws.onerror = (error) => {
+      console.error('WebSocket error:', error);
+    };
+
+    // Receive messages from the server
+    this.ws.onmessage = (event) => {
+      console.log('Received message from server:', event.data);
+
+      // Handle the received message here
+      // For example, you can call a method based on the received message
+      if (event.data === 'pause') {
+        this.pauseGamePlay();
+      }
+    };
   }
 
+
+  
   resumeGame = () => {
     this.addEventListeners();
     this.isPauseButtonClicked = false;
@@ -691,6 +721,9 @@ export class GameplayScene {
     // this.surePopup.addListner();
     this.audioPlayer.stopAllAudios();
   };
+  public pauseGamePlayFromJS=()=> {
+    this.pauseGamePlay();
+}
 
   handleVisibilityChange = () => {
     this.audioPlayer.stopAllAudios();
