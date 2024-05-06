@@ -221,10 +221,8 @@ export class GameplayScene {
         )
       : localStorage.setItem(PreviousPlayedLevel + lang, previousPlayedLevel);
     this.addEventListeners();
-
-
-    let url="://devcuriousreader.wpcomstaging.com/tesing_ftm_js/?cr_lang="+lang
-    this.ws = new WebSocket('ws'+url);
+    
+    this.ws = new WebSocket('ws'+window.location.href.replace('http',''));
 
     // WebSocket event listeners
     this.ws.onopen = () => {
