@@ -34,8 +34,7 @@ import {
   
 } from "../Firebase/firebase-event-interface";
 import { FirebaseIntegration } from "../Firebase/firebase-integration";
-import { WebSocket } from 'ws';
-
+// import { WebSocket } from 'ws';
 export class GameplayScene {
   public width: number;
   public height: number;
@@ -215,8 +214,9 @@ export class GameplayScene {
 
   private initWebSocket() {
     // Establish WebSocket connection
-    let url = window.location.href.replace("https","")
-    this.webSocket = new WebSocket(`ws${url}`);
+    let url = window.location.href.replace("http", "ws");
+    console.log(">>>>>>>>>>",url);
+    this.webSocket = new WebSocket(url);
 
     // Handle WebSocket events
     this.webSocket.onopen = () => {
@@ -226,7 +226,7 @@ export class GameplayScene {
     this.webSocket.onmessage = (event) => {
       // Handle received message
       const message = event.data;
-      console.log('Received message from server:', message);
+      console.log('WebSocket Received message from server:', message);
       // Process the received message as needed
     };
 
