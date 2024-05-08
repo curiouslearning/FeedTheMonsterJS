@@ -34,7 +34,7 @@ import {
   
 } from "../Firebase/firebase-event-interface";
 import { FirebaseIntegration } from "../Firebase/firebase-integration";
-import { WebSocket } from 'ws';
+
 
 
 
@@ -94,7 +94,7 @@ export class GameplayScene {
   firebaseIntegration: FirebaseIntegration;
   startTime: number;
   puzzleTime: number;
-  private webSocket: WebSocket;
+
   constructor(
     canvas,
     levelData,
@@ -212,34 +212,8 @@ export class GameplayScene {
         )
       : localStorage.setItem(PreviousPlayedLevel + lang, previousPlayedLevel);
     this.addEventListeners();
-
-    this.initWebSocket();
   }
-  private initWebSocket() {
-    // Establish WebSocket connection
-    let url = window.location.href.replace("https","")
-    this.webSocket = new WebSocket(`ws${url}`);
 
-    // Handle WebSocket events
-    this.webSocket.onopen = () => {
-      console.log('WebSocket connection opened');
-    };
-
-    this.webSocket.onmessage = (event) => {
-      // Handle received message
-      const message = event.data;
-      console.log('Received message from server:', message);
-      // Process the received message as needed
-    };
-
-    this.webSocket.onerror = (error) => {
-      console.error('WebSocket error:', error);
-    };
-
-    this.webSocket.onclose = () => {
-      console.log('WebSocket connection closed');
-    };
-  }
 
   
   resumeGame = () => {
