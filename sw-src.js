@@ -6,7 +6,7 @@ workbox.precaching.precacheAndRoute(self.__WB_MANIFEST, {
   exclude: [/^lang\//],
 });
 var number = 0;
-var version = 1.19;
+var version = 1.20;
 // self.addEventListener('activate', function(e) {
 //     console.log("activated");
 //
@@ -145,41 +145,35 @@ async function getALLAudioUrls(cacheName, language) {
   );
 }
 
-async function cacheAudiosFiles(audioList,language){
-  let percentageInterval = 10;
+async function cacheAudiosFiles(audioList, language) {
   const uniqueAudioURLs = [...new Set(audioList)];
+  const percentageInterval = 10;
   const partSize = Math.ceil(uniqueAudioURLs.length / percentageInterval);
-  
 
-  for(let i=0;i<percentageInterval;i++){
-      const startIndex = i * partSize;
-      let endIndex = startIndex + partSize;
-      if (i == percentageInterval-1) {
-        endIndex = uniqueAudioURLs.length;
-      }
-      const part = uniqueAudioURLs.slice(startIndex, endIndex);
-      const cache = await caches.open(workbox.core.cacheNames.precache + language);
-      try {
-        await cache.addAll(part);
-      } catch (e) {
-        console.log('Could not add audios:', e);
-      } finally {
-        await channel.postMessage({
-          msg: "Loading",
-          data: (i + 1) * percentageInterval,
-        });
-      }
-      // await cache.addAll(part).finally(()=>{
-      //   channel.postMessage({
-      //     msg: "Loading",
-      //     data: (i + 1) * percentageInterval
-      //   });
-      // }).catch(async (e)=>{
-      //   await console.log('Couldnt add audios');
-      // });
-      
+  const delayBetweenRequests = 800;
+
+  for (let i = 0; i < percentageInterval; i++) {
+    const startIndex = i * partSize;
+    let endIndex = startIndex + partSize;
+    if (i == percentageInterval - 1) {
+      endIndex = uniqueAudioURLs.length+1;
+    }
+    const part = uniqueAudioURLs.slice(startIndex, endIndex);
+    const cache = await caches.open(workbox.core.cacheNames.precache + language);
+    try {
+      await cache.addAll(part);
+    } catch (e) {
+      console.log('Could not add audios:', e);
+    } finally {
+      await channel.postMessage({
+        msg: "Loading",
+        data: (i + 1) * percentageInterval,
+      });
+    }
+
+    
+    await new Promise(resolve => setTimeout(resolve, delayBetweenRequests));
   }
-
 };
 
 function cacheCommonAssets(language) {

@@ -129,7 +129,7 @@ sinusoidalInterpolation(time, minScale, maxScale, duration) {
             this.drawRipple(offsetX, this.height / 1.9 + (this.tutorialImg.height / 1.5), true)
         } else {
             currentOffsetY = bottomPosition - ((this.totalTime - transitionDuration / 2) / (transitionDuration / 2)) * (bottomPosition - topPosition);
-            this.drawRipple(offsetX, this.height/ 1.9 + (this.tutorialImg.height/1.2)+this.tutorialImg.height)
+            this.drawRipple(offsetX, this.height/   1.9 + (this.tutorialImg.height / 1.2)+ this.tutorialImg.height)
         }
         this.context.drawImage(
             this.tutorialImg,
