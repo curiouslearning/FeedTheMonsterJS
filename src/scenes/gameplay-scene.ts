@@ -36,7 +36,7 @@ import {
 import { FirebaseIntegration } from "../Firebase/firebase-integration";
 
 
-export class GameplayScene {
+export class GameplayScene {  
   public width: number;
   public height: number;
   public monster: Monster;
@@ -673,7 +673,7 @@ export class GameplayScene {
     this.pausePopup.addListner();
     this.audioPlayer.stopAllAudios();
   };
-
+  
   handleVisibilityChange = () => {
     this.audioPlayer.stopAllAudios();
     this.pauseGamePlay();
