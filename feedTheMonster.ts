@@ -251,7 +251,7 @@ class App {
         this.progressBar.style.width = `${data.data}%`;
       }
 
-      if (data.data % 100 === 0) {
+      if (data.data % 100 === 0 && !this.is_cached.get(this.lang)) {
         this.is_cached.set(this.lang, true);
         localStorage.setItem(
           IsCached,

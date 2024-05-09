@@ -110,18 +110,22 @@ export class Monster extends EventManager {
   
 
   changeToDragAnimation() {
+    this.maxFrame=6
     this.image = this.loadedImages.dragImg;
   }
 
   changeToEatAnimation() {
+    this.maxFrame=12
     this.image = this.loadedImages.eatImg;
   }
 
   changeToIdleAnimation() {
+    this.maxFrame=6;
     this.image = this.loadedImages.idleImg;
   }
 
   changeToSpitAnimation() {
+    this.maxFrame=12;
     this.image = this.loadedImages.spitImg;
   }
 
