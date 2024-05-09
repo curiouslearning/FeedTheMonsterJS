@@ -1,7 +1,7 @@
 import CancelButton from "../components/buttons/cancel-button";
 import CloseButton from "../components/buttons/close-button";
 import RetryButton from "../components/buttons/retry-button";
-import { CLICK } from "../common/event-names";
+import { CLICK, VISIBILITY_CHANGE } from "../common/event-names";
 import { AudioPlayer } from "./audio-player";
 import AreYouSurePopUp from "./feedback-particle-effect/sure-popup";
 import { lang } from "../../global-variables";
@@ -83,18 +83,13 @@ export default class PausePopUp {
   noRetryCallback = () => {
     if (this.isRetryButtonClicked) {
       this.isRetryButtonClicked = false;
-      this.retrySurePopup.dispose();
-      this.addListner();
-      // this.CloseSurePopup.dispose();
+      this.callback();
     }
   };
   noCloseCallback = () => {
     if (this.isCloseButtonClicked) {
-      // this.addListner();
       this.isCloseButtonClicked = false;
-      this.CloseSurePopup.dispose();
-      this.addListner();
-      // this.retrySurePopup.dispose();
+      this.callback();
     }
   };
   addListner = () => {
@@ -161,8 +156,10 @@ export default class PausePopUp {
       this.cancelButton.draw();
       this.retryButton.draw();
       this.closeButton.draw();
-      if (this.isRetryButtonClicked == true && lang=="english") this.retrySurePopup.draw();
-      if (this.isCloseButtonClicked == true && lang=="english") this.CloseSurePopup.draw();
+      if (this.isRetryButtonClicked == true && lang == "english")
+        this.retrySurePopup.draw();
+      if (this.isCloseButtonClicked == true && lang == "english")
+        this.CloseSurePopup.draw();
     }
   }
 

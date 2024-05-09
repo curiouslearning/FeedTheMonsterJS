@@ -64,11 +64,13 @@ export default class AreYouSurePopUp {
 
     if (this.yesButton.onClick(x, y)) {
       console.log(" Yes button clicked");
+      this.playClickSound();
       this.dispose();
       this.yesCallback();
     }
     if (this.noButton.onClick(x, y)) {
       console.log(" No button clicked");
+      this.playClickSound();
       this.dispose();
       this.noCallback();
     }
@@ -97,7 +99,9 @@ export default class AreYouSurePopUp {
       this.noButton.draw();
     }
   }
-
+  playClickSound = () => {
+    this.audioPlayer.playButtonClickSound("./assets/audios/ButtonClick.mp3");
+  };
   dispose = () => {
     document
       .getElementById("canvas")
