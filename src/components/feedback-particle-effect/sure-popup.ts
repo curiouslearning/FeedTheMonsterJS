@@ -18,11 +18,7 @@ export default class AreYouSurePopUp {
     this.canvas = canvas;
     this.yesCallback = yesCallback;
     this.noCallback = noCallback;
-
-    const selfIdElement = document.getElementById(
-      "canvas"
-    ) as HTMLCanvasElement;
-    this.context = selfIdElement.getContext("2d");
+    this.context = this.canvas.getContext("2d");
     this.audioPlayer = new AudioPlayer();
     this.yesButton = new YesButton(
       this.context,
@@ -50,8 +46,7 @@ export default class AreYouSurePopUp {
   }
 
   addListner = () => {
-    document
-      .getElementById("canvas")
+    this.canvas
       .addEventListener(CLICK, this.handleMouseClick, false);
   };
 
@@ -103,8 +98,7 @@ export default class AreYouSurePopUp {
     this.audioPlayer.playButtonClickSound("./assets/audios/ButtonClick.mp3");
   };
   dispose = () => {
-    document
-      .getElementById("canvas")
+    this.canvas
       .removeEventListener(CLICK, this.handleMouseClick, false);
   };
 }
