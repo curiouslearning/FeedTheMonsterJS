@@ -34,8 +34,9 @@ import {
   
 } from "../Firebase/firebase-event-interface";
 import { FirebaseIntegration } from "../Firebase/firebase-integration";
-// import { WebSocket } from 'ws';
-export class GameplayScene {
+
+
+export class GameplayScene {  
   public width: number;
   public height: number;
   public monster: Monster;
@@ -91,7 +92,6 @@ export class GameplayScene {
   startTime: number;
   puzzleTime: number;
 
-  private webSocket: WebSocket;
   constructor(
     canvas,
     levelData,
@@ -209,34 +209,6 @@ export class GameplayScene {
         )
       : localStorage.setItem(PreviousPlayedLevel + lang, previousPlayedLevel);
     this.addEventListeners();
-    this.initWebSocket();
-  }
-
-  private initWebSocket() {
-    // Establish WebSocket connection
-    let url = window.location.href.replace("http", "ws");
-    console.log(">>>>>>>>>>",url);
-    this.webSocket = new WebSocket(url);
-
-    // Handle WebSocket events
-    this.webSocket.onopen = () => {
-      console.log('WebSocket connection opened');
-    };
-
-    this.webSocket.onmessage = (event) => {
-      // Handle received message
-      const message = event.data;
-      console.log('WebSocket Received message from server:', message);
-      // Process the received message as needed
-    };
-
-    this.webSocket.onerror = (error) => {
-      console.error('WebSocket error:', error);
-    };
-
-    this.webSocket.onclose = () => {
-      console.log('WebSocket connection closed');
-    };
   }
 
   resumeGame = () => {
@@ -701,7 +673,7 @@ export class GameplayScene {
     this.pausePopup.addListner();
     this.audioPlayer.stopAllAudios();
   };
-
+  
   handleVisibilityChange = () => {
     this.audioPlayer.stopAllAudios();
     this.pauseGamePlay();
