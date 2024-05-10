@@ -149,14 +149,6 @@ export default class StoneHandler extends EventManager {
         this.canvas.width / 6 - offsetCoordinateValue,
         this.canvas.height / 1.1 - offsetCoordinateValue,
       ],
-      [
-        this.canvas.width / 1.4 - offsetCoordinateValue,
-        this.canvas.height / 1.02 - offsetCoordinateValue,
-      ],
-       [
-        this.canvas.width / 1.05 - offsetCoordinateValue,
-        this.canvas.height / 1.03 - offsetCoordinateValue,
-      ],
     ];
     this.stonePos = this.stonePos.sort(() => Math.random() - 0.5);
   }
