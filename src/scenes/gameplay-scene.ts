@@ -242,9 +242,9 @@ export class GameplayScene {
       Math.sqrt(
         (x - self.monster.x - self.canvas.width / 4) *
           (x - self.monster.x - self.canvas.width / 4) +
-          (y - self.monster.y - self.canvas.height / 2.7) *
-            (y - self.monster.y - self.canvas.height / 2.7)
-      ) <= 60
+          (y - self.monster.y - self.canvas.height / 2.2) *
+            (y - self.monster.y - self.canvas.height / 2.2)
+      ) <= 70
     ) {
       if (this.pickedStone != null || this.pickedStone != null) {
         if (this.levelData.levelMeta.levelType == "LetterOnly") {

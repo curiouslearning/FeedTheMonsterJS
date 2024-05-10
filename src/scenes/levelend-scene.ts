@@ -65,20 +65,20 @@ export class LevelEndScene {
       context,
       canvas,
       this.width * 0.2 - (this.width * 0.19) / 2,
-      this.height * 0.7
+      this.height /1.25
     );
     this.retryButton = new RetryButton(
       this.context,
       this.canvas,
       this.width * 0.5 - (this.width * 0.19) / 2,
-      this.height * 0.7
+      this.height /1.25
     );
     this.nextButton = new NextButton(
       this.context,
       this.width,
       this.height,
       this.width * 0.8 - (this.width * 0.19) / 2,
-      this.height * 0.7
+      this.height /1.25
     );
     this.audioPlayer = new AudioPlayer();
     this.starCount = starCount;
@@ -120,7 +120,7 @@ export class LevelEndScene {
         0,
         0,
         this.width,
-        this.height
+        this.height+this.height*0.12
       );
       this.drawStars();
 
