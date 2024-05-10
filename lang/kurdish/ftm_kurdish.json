@@ -10,7 +10,9 @@
   "minversion": 13,
   "langname": "KURDISH",
   "FeedbackAudios": [
-    "https://feedthemonster.curiouscontent.org/lang/kurdish/audios/fantastic.mp3"
+    "https://feedthemonster.curiouscontent.org/lang/kurdish/audios/fantastic.mp3",
+    "https://feedthemonster.curiouscontent.org/lang/kurdish/audios/great.mp3",
+    "https://feedthemonster.curiouscontent.org/lang/kurdish/audios/amazing.mp3"
   ],
   "OtherAudios": {
     "Select your player": "https://feedthemonster.curiouscontent.org/lang/kurdish/audios/Select-your-player.mp3",
