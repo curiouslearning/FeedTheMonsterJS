@@ -147,10 +147,10 @@ export class Monster extends EventManager {
   onClick(xClick: number, yClick: number): boolean {
     const distance = Math.sqrt(
       (xClick - this.x - this.width / 4) * (xClick - this.x - this.width / 4) +
-        (yClick - this.y - this.height / 2.7) *
-          (yClick - this.y - this.height / 2.7)
+        (yClick - this.y - this.height / 2.2) *
+          (yClick - this.y - this.height / 2.2)
     );
-    if (distance <= 60) {
+    if (distance <= 70) {
       return true;
     }
   }
