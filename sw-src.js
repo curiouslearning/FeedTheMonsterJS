@@ -149,71 +149,88 @@ async function cacheAudiosFiles(audioList, language) {
   const uniqueAudioURLs = [...new Set(audioList)];
   const percentageInterval = 10;
   const partSize = Math.ceil(uniqueAudioURLs.length / percentageInterval);
-
   const delayBetweenRequests = 800;
+  const timeoutMultiplier = 0.8; 
 
   for (let i = 0; i < percentageInterval; i++) {
     const startIndex = i * partSize;
     let endIndex = startIndex + partSize;
     if (i == percentageInterval - 1) {
-      endIndex = uniqueAudioURLs.length+1;
+      endIndex = uniqueAudioURLs.length;
     }
     const part = uniqueAudioURLs.slice(startIndex, endIndex);
-    const cache = await caches.open(workbox.core.cacheNames.precache + language);
+
     try {
-      await cache.addAll(part);
+      const cache = await caches.open(workbox.core.cacheNames.precache + language);
+      const timeoutPromises = part.map(async (url) => {
+        const timeoutPromise = new Promise((resolve, reject) => {
+          const timeoutId = setTimeout(() => {
+            clearTimeout(timeoutId);
+            reject(new Error("Timeout while caching audio: " + url));
+          }, 5000 * timeoutMultiplier); 
+        });
+
+        return Promise.race([timeoutPromise, cache.add(url)]);
+      });
+
+      await Promise.all(timeoutPromises);
     } catch (e) {
       console.log('Could not add audios:', e);
     } finally {
       await channel.postMessage({
         msg: "Loading",
-        data: (i + 1) * percentageInterval,
+        data: Math.min((i + 1) * percentageInterval, 100), 
       });
     }
 
-    
     await new Promise(resolve => setTimeout(resolve, delayBetweenRequests));
   }
 };
 
-function cacheCommonAssets(language) {
-  [
-    "./lang/" + language + "/audios/fantastic.WAV",
-    "./lang/" + language + "/audios/great.wav",
-    "./lang/" + language + "/images/fantastic_01.png",
-    "./lang/" + language + "/images/great_01.png",
-    "./lang/" + language + "/images/title.png",
-  ].forEach(async (res) => {
-    await cacheLangAssets(res, workbox.core.cacheNames.precache + language);
-  });
+async function cacheCommonAssets(language) {
+  const assetUrls = [
+    `./lang/${language}/audios/fantastic.WAV`,
+    `./lang/${language}/audios/great.wav`,
+    `./lang/${language}/images/fantastic_01.png`,
+    `./lang/${language}/images/great_01.png`,
+    `./lang/${language}/images/title.png`,
+  ];
+
+  await Promise.all(assetUrls.map(async (url) => {
+    try {
+      await cacheLangAssets(url, workbox.core.cacheNames.precache + language);
+      console.log('Cached:', url);
+    } catch (e) {
+      console.log('Error caching common asset:', url, e);
+    }
+  }));
 }
 
-
-
 async function cacheFeedBackAudio(feedBackAudios, language) {
-  let audioUrls = []
-  feedBackAudios.forEach(audio => {
-    audioUrls.push(
-      self.location.href.includes("https://feedthemonsterdev.curiouscontent.org")
-      ? audio.slice(
-          0,
-          audio.indexOf("/feedthemonster") + "/feedthemonster".length
-        ) +
-          "dev" +
-          audio.slice(
-            audio.indexOf("/feedthemonster") + "/feedthemonster".length
-          )
-      : audio);
+  const audioUrls = feedBackAudios.map(audio => {
+    return self.location.href.includes("https://feedthemonsterdev.curiouscontent.org")
+      ? audio.replace("/feedthemonster", "/feedthemonsterdev")
+      : audio;
   });
+
   try {
     const cacheName = workbox.core.cacheNames.precache + language;
     const cache = await caches.open(cacheName);
+
+    const timeoutMultiplier = 0.8; 
     await Promise.all(audioUrls.map(async (url) => {
       try {
-        await cache.add(url);
+        const timeoutPromise = new Promise((resolve, reject) => {
+          const timeoutId = setTimeout(() => {
+            clearTimeout(timeoutId);
+            reject(new Error("Timeout while caching audio: " + url));
+          }, 1000 * timeoutMultiplier); 
+        });
+
+        await Promise.race([timeoutPromise, cache.add(url)]);
         console.log('Cached:', url);
       } catch (e) {
-        console.log('Error caching feedback Audio:', url, e);
+        console.log('Error caching feedback audio:', url, e);
       }
     }));
   } catch (e) {
