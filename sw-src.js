@@ -202,13 +202,30 @@ async function cacheCommonAssets(language) {
     `./lang/${language}/images/title.png`,
   ];
 
-  for (const url of assetUrls) {
-    try {
-      await cacheLangAssets(url, workbox.core.cacheNames.precache + language);
-      console.log('Cached:', url);
-    } catch (e) {
-      console.log('Error caching common asset:', url, e);
-    }
+  const timeoutMultiplier = 0.6; // Adjust multiplier based on device performance
+  const timeoutValue = 3000; // Adjust timeout value as needed (in milliseconds)
+
+  try {
+    const cacheName = workbox.core.cacheNames.precache + language;
+    const cache = await caches.open(cacheName);
+
+    await Promise.all(assetUrls.map(async (url) => {
+      try {
+        const timeoutPromise = new Promise((resolve, reject) => {
+          const timeoutId = setTimeout(() => {
+            clearTimeout(timeoutId);
+            reject(new Error("Timeout while caching asset: " + url));
+          }, timeoutValue * timeoutMultiplier);
+        });
+
+        await Promise.race([timeoutPromise, cache.add(url)]);
+        console.log('Cached:', url);
+      } catch (e) {
+        console.log('Error caching asset:', url, e);
+      }
+    }));
+  } catch (e) {
+    console.log('Could not open cache:', e);
   }
 }
 
@@ -238,7 +255,7 @@ async function cacheFeedBackAudio(feedBackAudios, language) {
         await Promise.race([timeoutPromise, cache.add(url)]);
         console.log('Cached:', url);
       } catch (e) {
-        console.log('Error caching feedback audio:', url, e);
+        console.log('Error caching audio:', url, e);
       }
     }));
   } catch (e) {
