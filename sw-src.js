@@ -150,7 +150,8 @@ async function cacheAudiosFiles(audioList, language) {
   const percentageInterval = 10;
   const partSize = Math.ceil(uniqueAudioURLs.length / percentageInterval);
   const delayBetweenRequests = 800;
-  const timeoutMultiplier = 0.8; 
+  const timeoutMultiplier = 0.6; // Adjust multiplier based on device performance
+  const timeoutValue = 3000; // Adjust timeout value as needed (in milliseconds)
 
   for (let i = 0; i < percentageInterval; i++) {
     const startIndex = i * partSize;
@@ -163,29 +164,34 @@ async function cacheAudiosFiles(audioList, language) {
     try {
       const cache = await caches.open(workbox.core.cacheNames.precache + language);
       const timeoutPromises = part.map(async (url) => {
-        const timeoutPromise = new Promise((resolve, reject) => {
-          const timeoutId = setTimeout(() => {
-            clearTimeout(timeoutId);
-            reject(new Error("Timeout while caching audio: " + url));
-          }, 5000 * timeoutMultiplier); 
-        });
+        try {
+          const timeoutPromise = new Promise((resolve, reject) => {
+            const timeoutId = setTimeout(() => {
+              clearTimeout(timeoutId);
+              reject(new Error("Timeout while caching audio: " + url));
+            }, timeoutValue * timeoutMultiplier);
+          });
 
-        return Promise.race([timeoutPromise, cache.add(url)]);
+          return Promise.race([timeoutPromise, cache.add(url)]);
+        } catch (error) {
+          console.error('Error caching audio:', url, error);
+        }
       });
 
       await Promise.all(timeoutPromises);
-    } catch (e) {
-      console.log('Could not add audios:', e);
+    } catch (error) {
+      console.error('Could not add audios:', error);
     } finally {
       await channel.postMessage({
         msg: "Loading",
-        data: Math.min((i + 1) * percentageInterval, 100), 
+        data: Math.min((i + 1) * percentageInterval, 100),
       });
     }
 
     await new Promise(resolve => setTimeout(resolve, delayBetweenRequests));
   }
-};
+}
+
 
 async function cacheCommonAssets(language) {
   const assetUrls = [
@@ -196,14 +202,14 @@ async function cacheCommonAssets(language) {
     `./lang/${language}/images/title.png`,
   ];
 
-  await Promise.all(assetUrls.map(async (url) => {
+  for (const url of assetUrls) {
     try {
       await cacheLangAssets(url, workbox.core.cacheNames.precache + language);
       console.log('Cached:', url);
     } catch (e) {
       console.log('Error caching common asset:', url, e);
     }
-  }));
+  }
 }
 
 async function cacheFeedBackAudio(feedBackAudios, language) {
@@ -213,18 +219,20 @@ async function cacheFeedBackAudio(feedBackAudios, language) {
       : audio;
   });
 
+  const timeoutMultiplier = 0.6; // Adjust multiplier based on device performance
+  const timeoutValue = 3000; // Adjust timeout value as needed (in milliseconds)
+
   try {
     const cacheName = workbox.core.cacheNames.precache + language;
     const cache = await caches.open(cacheName);
 
-    const timeoutMultiplier = 0.8; 
     await Promise.all(audioUrls.map(async (url) => {
       try {
         const timeoutPromise = new Promise((resolve, reject) => {
           const timeoutId = setTimeout(() => {
             clearTimeout(timeoutId);
             reject(new Error("Timeout while caching audio: " + url));
-          }, 1000 * timeoutMultiplier); 
+          }, timeoutValue * timeoutMultiplier);
         });
 
         await Promise.race([timeoutPromise, cache.add(url)]);
@@ -237,6 +245,7 @@ async function cacheFeedBackAudio(feedBackAudios, language) {
     console.log('Could not open cache:', e);
   }
 }
+
 
 self.addEventListener("fetch", function (event) {
   event.respondWith(
