@@ -26,7 +26,7 @@ export class FeedbackTextEffects {
     this.canvasHeight = canvasHeight
     this.textX = this.canvasWidth / 1.8;
     this.textY = this.canvasHeight / 2;
-    this.fontSize = 65;
+    this.fontSize = 50;
     this.lineHeight = this.fontSize * 0.8;
     this.maxTextWidth = this.canvasWidth * 5;
     this.particleDuration = 5000;
@@ -60,7 +60,7 @@ export class FeedbackTextEffects {
     this.context.textBaseline = "middle";
     this.context.lineWidth = 3;
     this.context.strokeStyle = "#A46225";
-    this.context.font = `${this.fontSize}px ${font}, monospace`;
+    this.context.font = `${this.fontSize+this.fontSize/text.length}px ${font}, monospace`;
     // break multiline text
     let lineArray: string[] = [];
     let words = text.split(" ");
