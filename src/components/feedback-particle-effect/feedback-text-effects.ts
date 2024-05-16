@@ -60,7 +60,7 @@ export class FeedbackTextEffects {
     this.context.textBaseline = "middle";
     this.context.lineWidth = 3;
     this.context.strokeStyle = "#A46225";
-    this.context.font = `${this.fontSize+this.fontSize/text.length}px ${font}, monospace`;
+    this.context.font = `${this.fontSize-text.length*0.3}px ${font}, monospace`;
     // break multiline text
     let lineArray: string[] = [];
     let words = text.split(" ");
