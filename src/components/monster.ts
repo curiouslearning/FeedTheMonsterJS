@@ -150,7 +150,7 @@ export class Monster extends EventManager {
         (yClick - this.y - this.height / 2.2) *
           (yClick - this.y - this.height / 2.2)
     );
-    if (distance <= 70) {
+    if (distance <= 100) {
       return true;
     }
   }
