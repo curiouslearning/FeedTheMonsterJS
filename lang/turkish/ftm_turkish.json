@@ -2,13 +2,17 @@
   "title": "Canavarı Besle",
   "RightToLeft": false,
   "FeedbackTexts": [
-    "Harika"
+    "Harika",
+    "Mükemmel!",
+    "Aferin"
   ],
   "majversion": 3,
   "minversion": 18,
   "langname": "TURKISH",
   "FeedbackAudios": [
-    "https://feedthemonster.curiouscontent.org/lang/turkish/audios/fantastic.mp3"
+    "https://feedthemonster.curiouscontent.org/lang/turkish/audios/fantastic.mp3",
+    "https://feedthemonster.curiouscontent.org/lang/turkish/audios/great.mp3",
+    "https://feedthemonster.curiouscontent.org/lang/turkish/audios/amazing.mp3"
   ],
   "OtherAudios": {
     "Select your player": "https://feedthemonster.curiouscontent.org/lang/turkish/audios/Select-your-player.mp3",
