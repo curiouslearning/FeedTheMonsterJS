@@ -26,7 +26,7 @@ export class FeedbackTextEffects {
     this.canvasHeight = canvasHeight
     this.textX = this.canvasWidth / 1.8;
     this.textY = this.canvasHeight / 2;
-    this.fontSize = 50;
+    this.fontSize = 65;
     this.lineHeight = this.fontSize * 0.8;
     this.maxTextWidth = this.canvasWidth * 5;
     this.particleDuration = 5000;
@@ -80,14 +80,30 @@ export class FeedbackTextEffects {
     this.textY = this.canvasHeight / 4.2 - textHeight / 2;
     const initialX = 50;
     const spacing = 0.3;
+    text =text.trim();
     lineArray.forEach((text, index) => {
       let x = initialX;
+      let lastSpaceIndex=text.lastIndexOf(" ",text.lastIndexOf(" ")-1);
       console.log(text.length);
+      if(this.fontSize*text.length > this.canvasWidth*1.7 &&lastSpaceIndex!=-1) {
+        let initialText=text.slice(0,lastSpaceIndex);
+        let lastText=" "+text.slice(lastSpaceIndex+1);
+        this.context.fillText(
+          initialText,
+          this.textX,
+          this.textY + index * this.lineHeight 
+        );
+        this.context.fillText(
+          lastText,
+          this.textX,
+          this.textY + index * this.lineHeight +this.canvasHeight/12
+        );
+      }else{
       this.context.fillText(
         text,
         this.textX,
         this.textY + index * this.lineHeight
-      );
+      );}
     });
     this.convertToParticle();
   }
