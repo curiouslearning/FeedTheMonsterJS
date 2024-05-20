@@ -33,7 +33,7 @@ export class Tutorial {
     this.startx = 0;
     this.starty = 0;
     this.endx = this.width / 2;
-    this.endy = this.height / 2 - 30;
+    this.endy = this.height / 2 ;
     this.puzzleNumber = (puzzleNumber>=0)?puzzleNumber:null;
     this.tutorialImg = new Image();
     this.tutorialImg.src = "./assets/images/tutorial_hand.png";
@@ -86,7 +86,7 @@ export class Tutorial {
       let monsterStoneDifferenceInPercentage=(100*distance/this.monsterStoneDifference);
       if (monsterStoneDifferenceInPercentage < 15) {
         if(monsterStoneDifferenceInPercentage>1){
-        this.createHandScaleAnimation(deltaTime,this.endx,this.endy,true)
+        this.createHandScaleAnimation(deltaTime,this.endx,this.endy+30,true)
       }else{
         this.x=this.startx; 
         this.y=this.starty;
