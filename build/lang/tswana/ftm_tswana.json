@@ -10,9 +10,9 @@
   "minversion": 6,
   "langname": "TSWANA",
   "FeedbackAudios": [
-    "https://feedthemonster.curiouscontent.org/lang/tswanaturkish/audios/fantastic.mp3",
-    "https://feedthemonster.curiouscontent.org/lang/tswanaturkish/audios/great.mp3",
-    "https://feedthemonster.curiouscontent.org/lang/tswanaturkish/audios/amazing.mp3"
+    "https://feedthemonster.curiouscontent.org/lang/tswana/audios/fantastic.mp3",
+    "https://feedthemonster.curiouscontent.org/lang/tswana/audios/great.mp3",
+    "https://feedthemonster.curiouscontent.org/lang/tswana/audios/amazing.mp3"
   ],
   "OtherAudios": {
     "Select your player": "https://feedthemonster.curiouscontent.org/lang/tswana/audios/Select-your-player.mp3",
