@@ -69,7 +69,6 @@ export class GameplayScene {
     pillerImg: string;
     bgImg: string;
     hillImg: string;
-    grassImg: string;
     fenchImg: string;
     profileMonster: string;
   };
@@ -192,7 +191,6 @@ export class GameplayScene {
       pillerImg: "./assets/images/Totem_v02_v01.png",
       bgImg: "./assets/images/bg_v01.jpg",
       hillImg: "./assets/images/hill_v01.png",
-      grassImg: "./assets/images/FG_a_v01.png",
       fenchImg: "./assets/images/fence_v01.png",
       profileMonster: "./assets/images/idle4.png",
     };
