@@ -115,7 +115,6 @@ export class TestGameplayScene {
             pillerImg: "./assets/images/Totem_v02_v01.png",
             bgImg: "./assets/images/bg_v01.jpg",
             hillImg: "./assets/images/hill_v01.png",
-            grassImg: "./assets/images/FG_a_v01.png",
             fenchImg: "./assets/images/fence_v01.png",
             profileMonster: "./assets/images/idle4.png"
         }
@@ -250,14 +249,7 @@ export class TestGameplayScene {
                 this.height / 2,
                 this.width * 1.5,
                 this.height / 2
-            );
-            this.context.drawImage(
-                this.loadedImages.grassImg,
-                -this.width * 0.25,
-                this.height / 2 + (this.height / 2) * 0.1,
-                this.width * 1.5,
-                this.height / 2
-            );
+            )
 
             this.context.font = "bold 40px Arial";
             this.context.fillStyle = "white";
