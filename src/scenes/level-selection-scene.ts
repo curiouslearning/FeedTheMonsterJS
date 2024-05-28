@@ -258,8 +258,8 @@ export class LevelSelectionScreen {
         isSpecialLevel ? this.loadedImages.mapIconSpecial : this.loadedImages.mapIcon,
         s.x,
         s.y,
-        imageSize,
-        imageSize
+        isSpecialLevel ?imageSize*0.9 : imageSize,
+        isSpecialLevel ?imageSize*0.9 : imageSize
       );
 
       this.context.fillStyle = "white";
