@@ -60,7 +60,7 @@ export class FeedbackTextEffects {
     this.context.textBaseline = "middle";
     this.context.lineWidth = 3;
     this.context.strokeStyle = "#A46225";
-    this.context.font = `${this.fontSize}px ${font}, monospace`;
+    this.context.font = `${this.fontSize-text.length*0.3}px ${font}, monospace`;
     // break multiline text
     let lineArray: string[] = [];
     let words = text.split(" ");
@@ -80,14 +80,30 @@ export class FeedbackTextEffects {
     this.textY = this.canvasHeight / 4.2 - textHeight / 2;
     const initialX = 50;
     const spacing = 0.3;
+    text =text.trim();
     lineArray.forEach((text, index) => {
       let x = initialX;
+      let lastSpaceIndex=text.lastIndexOf(" ",text.lastIndexOf(" ")-1);
       console.log(text.length);
+      if(this.fontSize*text.length > this.canvasWidth*1.7 &&lastSpaceIndex!=-1) {
+        let initialText=text.slice(0,lastSpaceIndex);
+        let lastText=" "+text.slice(lastSpaceIndex+1);
+        this.context.fillText(
+          initialText,
+          this.textX,
+          this.textY + index * this.lineHeight 
+        );
+        this.context.fillText(
+          lastText,
+          this.textX,
+          this.textY + index * this.lineHeight +this.canvasHeight/12
+        );
+      }else{
       this.context.fillText(
         text,
         this.textX,
         this.textY + index * this.lineHeight
-      );
+      );}
     });
     this.convertToParticle();
   }

@@ -5,7 +5,6 @@ var images = {
     bgImg: "./assets/images/bg_v01.jpg",
     hillImg: "./assets/images/hill_v01.png",
     pillerImg: "./assets/images/Totem_v02_v01.png",
-    grassImg: "./assets/images/FG_a_v01.png",
     fenchImg: "./assets/images/fence_v01.png",
 
 
@@ -13,14 +12,12 @@ var images = {
     autumnHillImg: "./assets/images/Autumn_hill_v01.png",
     autumnPillerImg: "./assets/images/Autumn_sign_v01.png",
     autumnSignImg: "./assets/images/Autumn_sign_v01.png",
-    autumnGrassImg: "./assets/images/Autumn_FG_v01.png",
     autumnFenceImg: "./assets/images/Autumn_fence_v01.png",
 
 
     winterBgImg: "./assets/images/Winter_bg_01.jpg",
     winterHillImg: "./assets/images/Winter_hill_v01.png",
     winterSignImg: "./assets/images/Winter_sign_v01.png",
-    winterGrassImg: "./assets/images/Winter_FG_v01.png",
     winterFenceImg: "./assets/images/Winter_fence_v01.png",
     winterPillerImg: "./assets/images/Winter_sign_v01.png",
 };
@@ -83,14 +80,7 @@ export class Background {
                             this.height / 2,
                             this.width * 1.5,
                             this.height / 2
-                        );
-                        this.context.drawImage(
-                            this.loadedImages.winterGrassImg,
-                            -this.width * 0.25,
-                            this.height / 2 + (this.height / 2) * 0.1,
-                            this.width * 1.5,
-                            this.height / 2
-                        );
+                        )
                     }
 
                     break;
@@ -117,14 +107,7 @@ export class Background {
                             this.height / 2,
                             this.width * 1.5,
                             this.height / 2
-                        );
-                        this.context.drawImage(
-                            this.loadedImages.autumnGrassImg,
-                            -this.width * 0.25,
-                            this.height / 2 + (this.height / 2) * 0.1,
-                            this.width * 1.5,
-                            this.height / 2
-                        );
+                        )
                     }
                     break;
                 default:
@@ -150,14 +133,7 @@ export class Background {
                             this.height / 2,
                             this.width * 1.5,
                             this.height / 2
-                        );
-                        this.context.drawImage(
-                            this.loadedImages.grassImg,
-                            -this.width * 0.25,
-                            this.height / 2 + (this.height / 2) * 0.1,
-                            this.width * 1.5,
-                            this.height / 2
-                        );
+                        )
                     }
                     break;
             }
