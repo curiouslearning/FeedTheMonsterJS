@@ -62,7 +62,8 @@ export class LevelSelectionScreen {
     }
     // loading images
     this.images = {
-      mapIcon: "./assets/images/mapIcon.png",
+      mapIcon: "./assets/images/mapicon.png",
+      mapIconSpecial: "./assets/images/map_icon_monster_level_v01.png",
       mapLock: "./assets/images/mapLock.png",
       map: "./assets/images/map.jpg",
       star: "./assets/images/star.png",
@@ -244,17 +245,23 @@ export class LevelSelectionScreen {
       }
     }
   };
+
   private drawLevel(s: any, canvas: { height: number }) {
     let imageSize = canvas.height / 5;
     let textFontSize = imageSize / 6;
+    const specialLevels = [5, 13, 20, 30, 42];
+
     if (s.index + this.levelSelectionPageIndex <= this.data.levels.length) {
+      const levelNumber = s.index + this.levelSelectionPageIndex;
+      const isSpecialLevel = specialLevels.includes(levelNumber);
       this.context.drawImage(
-        this.loadedImages.mapIcon,
+        isSpecialLevel ? this.loadedImages.mapIconSpecial : this.loadedImages.mapIcon,
         s.x,
         s.y,
         imageSize,
         imageSize
       );
+
       this.context.fillStyle = "white";
       this.context.font =
         textFontSize + `px ${font}, monospace`;
