@@ -62,7 +62,7 @@ export class LevelSelectionScreen {
     }
     // loading images
     this.images = {
-      mapIcon: "./assets/images/mapicon.png",
+      mapIcon: "./assets/images/mapIcon.png",
       mapIconSpecial: "./assets/images/map_icon_monster_level_v01.png",
       mapLock: "./assets/images/mapLock.png",
       map: "./assets/images/map.jpg",
