@@ -26,7 +26,7 @@ export class FeedbackTextEffects {
     this.canvasHeight = canvasHeight
     this.textX = this.canvasWidth / 1.8;
     this.textY = this.canvasHeight / 2;
-    this.fontSize = 65;
+    this.fontSize =this.canvasWidth/7.5;
     this.lineHeight = this.fontSize * 0.8;
     this.maxTextWidth = this.canvasWidth * 5;
     this.particleDuration = 5000;

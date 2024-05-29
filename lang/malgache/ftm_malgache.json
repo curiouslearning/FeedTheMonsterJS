@@ -10,14 +10,14 @@
   "minversion": 5,
   "langname": "MALAGASY",
   "FeedbackAudios": [
-    "https://feedthemonster.curiouscontent.org/lang/malagasy/audios/fantastic.mp3",
-    "https://feedthemonster.curiouscontent.org/lang/malagasy/audios/great.mp3",
-    "https://feedthemonster.curiouscontent.org/lang/malagasy/audios/amazing.mp3"
+    "https://feedthemonster.curiouscontent.org/lang/malgache/audios/fantastic.mp3",
+    "https://feedthemonster.curiouscontent.org/lang/malgache/audios/great.mp3",
+    "https://feedthemonster.curiouscontent.org/lang/malgache/audios/amazing.mp3"
   ],
   "OtherAudios": {
-    "Select your player": "https://feedthemonster.curiouscontent.org/lang/malagasy/audios/Select-your-player.mp3",
-    "Watch me grow": "https://feedthemonster.curiouscontent.org/lang/malagasy/audios/watch-me-grow.mp3",
-    "Are you sure": "https://feedthemonster.curiouscontent.org/lang/malagasy/audios/are-you-sure.mp3"
+    "Select your player": "https://feedthemonster.curiouscontent.org/lang/malgache/audios/Select-your-player.mp3",
+    "Watch me grow": "https://feedthemonster.curiouscontent.org/lang/malgache/audios/watch-me-grow.mp3",
+    "Are you sure": "https://feedthemonster.curiouscontent.org/lang/malgache/audios/are-you-sure.mp3"
   },
   "Levels": [
     {
@@ -39,7 +39,7 @@
           ],
           "prompt": {
             "PromptText": "s",
-            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malagasy/audios/s.mp3"
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malgache/audios/s.mp3"
           },
           "foilstones": [
             {
@@ -59,7 +59,7 @@
           ],
           "prompt": {
             "PromptText": "l",
-            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malagasy/audios/l.mp3"
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malgache/audios/l.mp3"
           },
           "foilstones": [
             {
@@ -79,7 +79,7 @@
           ],
           "prompt": {
             "PromptText": "s",
-            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malagasy/audios/s.mp3"
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malgache/audios/s.mp3"
           },
           "foilstones": [
             {
@@ -99,7 +99,7 @@
           ],
           "prompt": {
             "PromptText": "s",
-            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malagasy/audios/s.mp3"
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malgache/audios/s.mp3"
           },
           "foilstones": [
             {
@@ -119,7 +119,7 @@
           ],
           "prompt": {
             "PromptText": "s",
-            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malagasy/audios/s.mp3"
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malgache/audios/s.mp3"
           },
           "foilstones": [
             {
@@ -154,7 +154,7 @@
           ],
           "prompt": {
             "PromptText": "n",
-            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malagasy/audios/n.mp3"
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malgache/audios/n.mp3"
           },
           "foilstones": [
             {
@@ -177,7 +177,7 @@
           ],
           "prompt": {
             "PromptText": "z",
-            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malagasy/audios/z.mp3"
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malgache/audios/z.mp3"
           },
           "foilstones": [
             {
@@ -200,7 +200,7 @@
           ],
           "prompt": {
             "PromptText": "r",
-            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malagasy/audios/r.mp3"
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malgache/audios/r.mp3"
           },
           "foilstones": [
             {
@@ -223,7 +223,7 @@
           ],
           "prompt": {
             "PromptText": "m",
-            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malagasy/audios/m.mp3"
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malgache/audios/m.mp3"
           },
           "foilstones": [
             {
@@ -246,7 +246,7 @@
           ],
           "prompt": {
             "PromptText": "f",
-            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malagasy/audios/f.mp3"
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malgache/audios/f.mp3"
           },
           "foilstones": [
             {
@@ -284,7 +284,7 @@
           ],
           "prompt": {
             "PromptText": "v",
-            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malagasy/audios/v.mp3"
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malgache/audios/v.mp3"
           },
           "foilstones": [
             {
@@ -304,7 +304,7 @@
           ],
           "prompt": {
             "PromptText": "m",
-            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malagasy/audios/m.mp3"
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malgache/audios/m.mp3"
           },
           "foilstones": [
             {
@@ -324,7 +324,7 @@
           ],
           "prompt": {
             "PromptText": "f",
-            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malagasy/audios/f.mp3"
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malgache/audios/f.mp3"
           },
           "foilstones": [
             {
@@ -344,7 +344,7 @@
           ],
           "prompt": {
             "PromptText": "d",
-            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malagasy/audios/d.mp3"
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malgache/audios/d.mp3"
           },
           "foilstones": [
             {
@@ -364,7 +364,7 @@
           ],
           "prompt": {
             "PromptText": "l",
-            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malagasy/audios/l.mp3"
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malgache/audios/l.mp3"
           },
           "foilstones": [
             {
@@ -399,7 +399,7 @@
           ],
           "prompt": {
             "PromptText": "h",
-            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malagasy/audios/h.mp3"
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malgache/audios/h.mp3"
           },
           "foilstones": [
             {
@@ -419,7 +419,7 @@
           ],
           "prompt": {
             "PromptText": "r",
-            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malagasy/audios/r.mp3"
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malgache/audios/r.mp3"
           },
           "foilstones": [
             {
@@ -439,7 +439,7 @@
           ],
           "prompt": {
             "PromptText": "z",
-            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malagasy/audios/z.mp3"
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malgache/audios/z.mp3"
           },
           "foilstones": [
             {
@@ -459,7 +459,7 @@
           ],
           "prompt": {
             "PromptText": "f",
-            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malagasy/audios/f.mp3"
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malgache/audios/f.mp3"
           },
           "foilstones": [
             {
@@ -479,7 +479,7 @@
           ],
           "prompt": {
             "PromptText": "k",
-            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malagasy/audios/k.mp3"
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malgache/audios/k.mp3"
           },
           "foilstones": [
             {
@@ -514,7 +514,7 @@
           ],
           "prompt": {
             "PromptText": "n",
-            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malagasy/audios/n.mp3"
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malgache/audios/n.mp3"
           },
           "foilstones": [
             {
@@ -537,7 +537,7 @@
           ],
           "prompt": {
             "PromptText": "n",
-            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malagasy/audios/n.mp3"
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malgache/audios/n.mp3"
           },
           "foilstones": [
             {
@@ -560,7 +560,7 @@
           ],
           "prompt": {
             "PromptText": "a",
-            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malagasy/audios/a.mp3"
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malgache/audios/a.mp3"
           },
           "foilstones": [
             {
@@ -583,7 +583,7 @@
           ],
           "prompt": {
             "PromptText": "g",
-            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malagasy/audios/g.mp3"
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malgache/audios/g.mp3"
           },
           "foilstones": [
             {
@@ -606,7 +606,7 @@
           ],
           "prompt": {
             "PromptText": "r",
-            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malagasy/audios/r.mp3"
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malgache/audios/r.mp3"
           },
           "foilstones": [
             {
@@ -644,7 +644,7 @@
           ],
           "prompt": {
             "PromptText": "r",
-            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malagasy/audios/r.mp3"
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malgache/audios/r.mp3"
           },
           "foilstones": [
             {
@@ -667,7 +667,7 @@
           ],
           "prompt": {
             "PromptText": "z",
-            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malagasy/audios/z.mp3"
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malgache/audios/z.mp3"
           },
           "foilstones": [
             {
@@ -690,7 +690,7 @@
           ],
           "prompt": {
             "PromptText": "f",
-            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malagasy/audios/f.mp3"
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malgache/audios/f.mp3"
           },
           "foilstones": [
             {
@@ -713,7 +713,7 @@
           ],
           "prompt": {
             "PromptText": "v",
-            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malagasy/audios/v.mp3"
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malgache/audios/v.mp3"
           },
           "foilstones": [
             {
@@ -736,7 +736,7 @@
           ],
           "prompt": {
             "PromptText": "v",
-            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malagasy/audios/v.mp3"
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malgache/audios/v.mp3"
           },
           "foilstones": [
             {
@@ -774,7 +774,7 @@
           ],
           "prompt": {
             "PromptText": "haba",
-            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malagasy/audios/h.mp3"
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malgache/audios/h.mp3"
           },
           "foilstones": [
             {
@@ -797,7 +797,7 @@
           ],
           "prompt": {
             "PromptText": "saka",
-            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malagasy/audios/s.mp3"
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malgache/audios/s.mp3"
           },
           "foilstones": [
             {
@@ -820,7 +820,7 @@
           ],
           "prompt": {
             "PromptText": "saka",
-            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malagasy/audios/s.mp3"
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malgache/audios/s.mp3"
           },
           "foilstones": [
             {
@@ -843,7 +843,7 @@
           ],
           "prompt": {
             "PromptText": "ala",
-            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malagasy/audios/a.mp3"
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malgache/audios/a.mp3"
           },
           "foilstones": [
             {
@@ -866,7 +866,7 @@
           ],
           "prompt": {
             "PromptText": "haba",
-            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malagasy/audios/h.mp3"
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malgache/audios/h.mp3"
           },
           "foilstones": [
             {
@@ -904,7 +904,7 @@
           ],
           "prompt": {
             "PromptText": "haba",
-            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malagasy/audios/h.mp3"
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malgache/audios/h.mp3"
           },
           "foilstones": [
             {
@@ -927,7 +927,7 @@
           ],
           "prompt": {
             "PromptText": "saka",
-            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malagasy/audios/s.mp3"
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malgache/audios/s.mp3"
           },
           "foilstones": [
             {
@@ -950,7 +950,7 @@
           ],
           "prompt": {
             "PromptText": "daba",
-            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malagasy/audios/d.mp3"
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malgache/audios/d.mp3"
           },
           "foilstones": [
             {
@@ -973,7 +973,7 @@
           ],
           "prompt": {
             "PromptText": "saka",
-            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malagasy/audios/s.mp3"
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malgache/audios/s.mp3"
           },
           "foilstones": [
             {
@@ -996,7 +996,7 @@
           ],
           "prompt": {
             "PromptText": "haba",
-            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malagasy/audios/h.mp3"
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malgache/audios/h.mp3"
           },
           "foilstones": [
             {
@@ -1034,7 +1034,7 @@
           ],
           "prompt": {
             "PromptText": "laza",
-            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malagasy/audios/l.mp3"
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malgache/audios/l.mp3"
           },
           "foilstones": [
             {
@@ -1057,7 +1057,7 @@
           ],
           "prompt": {
             "PromptText": "saka",
-            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malagasy/audios/s.mp3"
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malgache/audios/s.mp3"
           },
           "foilstones": [
             {
@@ -1080,7 +1080,7 @@
           ],
           "prompt": {
             "PromptText": "ala",
-            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malagasy/audios/a.mp3"
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malgache/audios/a.mp3"
           },
           "foilstones": [
             {
@@ -1103,7 +1103,7 @@
           ],
           "prompt": {
             "PromptText": "daba",
-            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malagasy/audios/d.mp3"
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malgache/audios/d.mp3"
           },
           "foilstones": [
             {
@@ -1126,7 +1126,7 @@
           ],
           "prompt": {
             "PromptText": "gana",
-            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malagasy/audios/g.mp3"
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malgache/audios/g.mp3"
           },
           "foilstones": [
             {
@@ -1170,7 +1170,7 @@
           ],
           "prompt": {
             "PromptText": "aza",
-            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malagasy/audios/aza.mp3"
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malgache/audios/aza.mp3"
           },
           "foilstones": [
             {
@@ -1202,7 +1202,7 @@
           ],
           "prompt": {
             "PromptText": "daba",
-            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malagasy/audios/daba.mp3"
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malgache/audios/daba.mp3"
           },
           "foilstones": [
             {
@@ -1234,7 +1234,7 @@
           ],
           "prompt": {
             "PromptText": "ala",
-            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malagasy/audios/ala.mp3"
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malgache/audios/ala.mp3"
           },
           "foilstones": [
             {
@@ -1266,7 +1266,7 @@
           ],
           "prompt": {
             "PromptText": "gara",
-            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malagasy/audios/gara.mp3"
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malgache/audios/gara.mp3"
           },
           "foilstones": [
             {
@@ -1295,7 +1295,7 @@
           ],
           "prompt": {
             "PromptText": "ala",
-            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malagasy/audios/ala.mp3"
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malgache/audios/ala.mp3"
           },
           "foilstones": [
             {
@@ -1339,7 +1339,7 @@
           ],
           "prompt": {
             "PromptText": "gara",
-            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malagasy/audios/gara.mp3"
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malgache/audios/gara.mp3"
           },
           "foilstones": [
             {
@@ -1368,7 +1368,7 @@
           ],
           "prompt": {
             "PromptText": "asa",
-            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malagasy/audios/asa.mp3"
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malgache/audios/asa.mp3"
           },
           "foilstones": [
             {
@@ -1397,7 +1397,7 @@
           ],
           "prompt": {
             "PromptText": "aza",
-            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malagasy/audios/aza.mp3"
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malgache/audios/aza.mp3"
           },
           "foilstones": [
             {
@@ -1426,7 +1426,7 @@
           ],
           "prompt": {
             "PromptText": "ala",
-            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malagasy/audios/ala.mp3"
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malgache/audios/ala.mp3"
           },
           "foilstones": [
             {
@@ -1461,7 +1461,7 @@
           ],
           "prompt": {
             "PromptText": "hafa",
-            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malagasy/audios/hafa.mp3"
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malgache/audios/hafa.mp3"
           },
           "foilstones": [
             {
@@ -1505,7 +1505,7 @@
           ],
           "prompt": {
             "PromptText": "gana",
-            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malagasy/audios/gana.mp3"
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malgache/audios/gana.mp3"
           },
           "foilstones": [
             {
@@ -1534,7 +1534,7 @@
           ],
           "prompt": {
             "PromptText": "asa",
-            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malagasy/audios/asa.mp3"
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malgache/audios/asa.mp3"
           },
           "foilstones": [
             {
@@ -1566,7 +1566,7 @@
           ],
           "prompt": {
             "PromptText": "saka",
-            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malagasy/audios/saka.mp3"
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malgache/audios/saka.mp3"
           },
           "foilstones": [
             {
@@ -1598,7 +1598,7 @@
           ],
           "prompt": {
             "PromptText": "gara",
-            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malagasy/audios/gara.mp3"
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malgache/audios/gara.mp3"
           },
           "foilstones": [
             {
@@ -1630,7 +1630,7 @@
           ],
           "prompt": {
             "PromptText": "daba",
-            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malagasy/audios/daba.mp3"
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malgache/audios/daba.mp3"
           },
           "foilstones": [
             {
@@ -1668,7 +1668,7 @@
           ],
           "prompt": {
             "PromptText": "f",
-            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malagasy/audios/f.mp3"
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malgache/audios/f.mp3"
           },
           "foilstones": [
             {
@@ -1691,7 +1691,7 @@
           ],
           "prompt": {
             "PromptText": "b",
-            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malagasy/audios/b.mp3"
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malgache/audios/b.mp3"
           },
           "foilstones": [
             {
@@ -1714,7 +1714,7 @@
           ],
           "prompt": {
             "PromptText": "v",
-            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malagasy/audios/v.mp3"
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malgache/audios/v.mp3"
           },
           "foilstones": [
             {
@@ -1737,7 +1737,7 @@
           ],
           "prompt": {
             "PromptText": "e",
-            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malagasy/audios/e.mp3"
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malgache/audios/e.mp3"
           },
           "foilstones": [
             {
@@ -1760,7 +1760,7 @@
           ],
           "prompt": {
             "PromptText": "r",
-            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malagasy/audios/r.mp3"
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malgache/audios/r.mp3"
           },
           "foilstones": [
             {
@@ -1798,7 +1798,7 @@
           ],
           "prompt": {
             "PromptText": "n",
-            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malagasy/audios/n.mp3"
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malgache/audios/n.mp3"
           },
           "foilstones": [
             {
@@ -1821,7 +1821,7 @@
           ],
           "prompt": {
             "PromptText": "b",
-            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malagasy/audios/b.mp3"
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malgache/audios/b.mp3"
           },
           "foilstones": [
             {
@@ -1844,7 +1844,7 @@
           ],
           "prompt": {
             "PromptText": "b",
-            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malagasy/audios/b.mp3"
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malgache/audios/b.mp3"
           },
           "foilstones": [
             {
@@ -1867,7 +1867,7 @@
           ],
           "prompt": {
             "PromptText": "v",
-            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malagasy/audios/v.mp3"
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malgache/audios/v.mp3"
           },
           "foilstones": [
             {
@@ -1890,7 +1890,7 @@
           ],
           "prompt": {
             "PromptText": "f",
-            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malagasy/audios/f.mp3"
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malgache/audios/f.mp3"
           },
           "foilstones": [
             {
@@ -1928,7 +1928,7 @@
           ],
           "prompt": {
             "PromptText": "e",
-            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malagasy/audios/e.mp3"
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malgache/audios/e.mp3"
           },
           "foilstones": [
             {
@@ -1948,7 +1948,7 @@
           ],
           "prompt": {
             "PromptText": "e",
-            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malagasy/audios/e.mp3"
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malgache/audios/e.mp3"
           },
           "foilstones": [
             {
@@ -1968,7 +1968,7 @@
           ],
           "prompt": {
             "PromptText": "f",
-            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malagasy/audios/f.mp3"
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malgache/audios/f.mp3"
           },
           "foilstones": [
             {
@@ -1988,7 +1988,7 @@
           ],
           "prompt": {
             "PromptText": "e",
-            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malagasy/audios/e.mp3"
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malgache/audios/e.mp3"
           },
           "foilstones": [
             {
@@ -2008,7 +2008,7 @@
           ],
           "prompt": {
             "PromptText": "b",
-            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malagasy/audios/b.mp3"
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malgache/audios/b.mp3"
           },
           "foilstones": [
             {
@@ -2043,7 +2043,7 @@
           ],
           "prompt": {
             "PromptText": "r",
-            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malagasy/audios/r.mp3"
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malgache/audios/r.mp3"
           },
           "foilstones": [
             {
@@ -2066,7 +2066,7 @@
           ],
           "prompt": {
             "PromptText": "v",
-            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malagasy/audios/v.mp3"
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malgache/audios/v.mp3"
           },
           "foilstones": [
             {
@@ -2089,7 +2089,7 @@
           ],
           "prompt": {
             "PromptText": "e",
-            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malagasy/audios/e.mp3"
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malgache/audios/e.mp3"
           },
           "foilstones": [
             {
@@ -2112,7 +2112,7 @@
           ],
           "prompt": {
             "PromptText": "b",
-            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malagasy/audios/b.mp3"
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malgache/audios/b.mp3"
           },
           "foilstones": [
             {
@@ -2135,7 +2135,7 @@
           ],
           "prompt": {
             "PromptText": "f",
-            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malagasy/audios/f.mp3"
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malgache/audios/f.mp3"
           },
           "foilstones": [
             {
@@ -2173,7 +2173,7 @@
           ],
           "prompt": {
             "PromptText": "b",
-            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malagasy/audios/b.mp3"
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malgache/audios/b.mp3"
           },
           "foilstones": [
             {
@@ -2202,7 +2202,7 @@
           ],
           "prompt": {
             "PromptText": "n",
-            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malagasy/audios/n.mp3"
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malgache/audios/n.mp3"
           },
           "foilstones": [
             {
@@ -2228,7 +2228,7 @@
           ],
           "prompt": {
             "PromptText": "n",
-            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malagasy/audios/n.mp3"
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malgache/audios/n.mp3"
           },
           "foilstones": [
             {
@@ -2251,7 +2251,7 @@
           ],
           "prompt": {
             "PromptText": "v",
-            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malagasy/audios/v.mp3"
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malgache/audios/v.mp3"
           },
           "foilstones": [
             {
@@ -2277,7 +2277,7 @@
           ],
           "prompt": {
             "PromptText": "f",
-            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malagasy/audios/f.mp3"
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malgache/audios/f.mp3"
           },
           "foilstones": [
             {
@@ -2315,7 +2315,7 @@
           ],
           "prompt": {
             "PromptText": "n",
-            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malagasy/audios/n.mp3"
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malgache/audios/n.mp3"
           },
           "foilstones": [
             {
@@ -2341,7 +2341,7 @@
           ],
           "prompt": {
             "PromptText": "h",
-            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malagasy/audios/h.mp3"
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malgache/audios/h.mp3"
           },
           "foilstones": [
             {
@@ -2367,7 +2367,7 @@
           ],
           "prompt": {
             "PromptText": "k",
-            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malagasy/audios/k.mp3"
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malgache/audios/k.mp3"
           },
           "foilstones": [
             {
@@ -2393,7 +2393,7 @@
           ],
           "prompt": {
             "PromptText": "k",
-            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malagasy/audios/k.mp3"
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malgache/audios/k.mp3"
           },
           "foilstones": [
             {
@@ -2419,7 +2419,7 @@
           ],
           "prompt": {
             "PromptText": "v",
-            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malagasy/audios/v.mp3"
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malgache/audios/v.mp3"
           },
           "foilstones": [
             {
@@ -2463,7 +2463,7 @@
           ],
           "prompt": {
             "PromptText": "hendre",
-            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malagasy/audios/h.mp3"
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malgache/audios/h.mp3"
           },
           "foilstones": [
             {
@@ -2489,7 +2489,7 @@
           ],
           "prompt": {
             "PromptText": "bebe",
-            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malagasy/audios/b.mp3"
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malgache/audios/b.mp3"
           },
           "foilstones": [
             {
@@ -2515,7 +2515,7 @@
           ],
           "prompt": {
             "PromptText": "endre",
-            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malagasy/audios/e.mp3"
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malgache/audios/e.mp3"
           },
           "foilstones": [
             {
@@ -2541,7 +2541,7 @@
           ],
           "prompt": {
             "PromptText": "endre",
-            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malagasy/audios/e.mp3"
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malgache/audios/e.mp3"
           },
           "foilstones": [
             {
@@ -2567,7 +2567,7 @@
           ],
           "prompt": {
             "PromptText": "bebe",
-            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malagasy/audios/b.mp3"
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malgache/audios/b.mp3"
           },
           "foilstones": [
             {
@@ -2611,7 +2611,7 @@
           ],
           "prompt": {
             "PromptText": "hendre",
-            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malagasy/audios/h.mp3"
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malgache/audios/h.mp3"
           },
           "foilstones": [
             {
@@ -2637,7 +2637,7 @@
           ],
           "prompt": {
             "PromptText": "bebe",
-            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malagasy/audios/b.mp3"
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malgache/audios/b.mp3"
           },
           "foilstones": [
             {
@@ -2663,7 +2663,7 @@
           ],
           "prompt": {
             "PromptText": "kere",
-            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malagasy/audios/k.mp3"
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malgache/audios/k.mp3"
           },
           "foilstones": [
             {
@@ -2689,7 +2689,7 @@
           ],
           "prompt": {
             "PromptText": "endre",
-            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malagasy/audios/e.mp3"
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malgache/audios/e.mp3"
           },
           "foilstones": [
             {
@@ -2715,7 +2715,7 @@
           ],
           "prompt": {
             "PromptText": "endre",
-            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malagasy/audios/e.mp3"
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malgache/audios/e.mp3"
           },
           "foilstones": [
             {
@@ -2759,7 +2759,7 @@
           ],
           "prompt": {
             "PromptText": "endre",
-            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malagasy/audios/e.mp3"
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malgache/audios/e.mp3"
           },
           "foilstones": [
             {
@@ -2785,7 +2785,7 @@
           ],
           "prompt": {
             "PromptText": "hendre",
-            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malagasy/audios/h.mp3"
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malgache/audios/h.mp3"
           },
           "foilstones": [
             {
@@ -2811,7 +2811,7 @@
           ],
           "prompt": {
             "PromptText": "endre",
-            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malagasy/audios/e.mp3"
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malgache/audios/e.mp3"
           },
           "foilstones": [
             {
@@ -2837,7 +2837,7 @@
           ],
           "prompt": {
             "PromptText": "bebe",
-            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malagasy/audios/b.mp3"
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malgache/audios/b.mp3"
           },
           "foilstones": [
             {
@@ -2863,7 +2863,7 @@
           ],
           "prompt": {
             "PromptText": "kere",
-            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malagasy/audios/k.mp3"
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malgache/audios/k.mp3"
           },
           "foilstones": [
             {
@@ -2907,7 +2907,7 @@
           ],
           "prompt": {
             "PromptText": "kere",
-            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malagasy/audios/k.mp3"
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malgache/audios/k.mp3"
           },
           "foilstones": [
             {
@@ -2930,7 +2930,7 @@
           ],
           "prompt": {
             "PromptText": "kere",
-            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malagasy/audios/k.mp3"
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malgache/audios/k.mp3"
           },
           "foilstones": [
             {
@@ -2953,7 +2953,7 @@
           ],
           "prompt": {
             "PromptText": "endre",
-            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malagasy/audios/e.mp3"
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malgache/audios/e.mp3"
           },
           "foilstones": [
             {
@@ -2976,7 +2976,7 @@
           ],
           "prompt": {
             "PromptText": "bebe",
-            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malagasy/audios/b.mp3"
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malgache/audios/b.mp3"
           },
           "foilstones": [
             {
@@ -2999,7 +2999,7 @@
           ],
           "prompt": {
             "PromptText": "kere",
-            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malagasy/audios/k.mp3"
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malgache/audios/k.mp3"
           },
           "foilstones": [
             {
@@ -3046,7 +3046,7 @@
           ],
           "prompt": {
             "PromptText": "kere",
-            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malagasy/audios/kere.mp3"
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malgache/audios/kere.mp3"
           },
           "foilstones": [
             {
@@ -3084,7 +3084,7 @@
           ],
           "prompt": {
             "PromptText": "hendre",
-            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malagasy/audios/hendre.mp3"
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malgache/audios/hendre.mp3"
           },
           "foilstones": [
             {
@@ -3116,7 +3116,7 @@
           ],
           "prompt": {
             "PromptText": "kere",
-            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malagasy/audios/kere.mp3"
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malgache/audios/kere.mp3"
           },
           "foilstones": [
             {
@@ -3148,7 +3148,7 @@
           ],
           "prompt": {
             "PromptText": "kere",
-            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malagasy/audios/kere.mp3"
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malgache/audios/kere.mp3"
           },
           "foilstones": [
             {
@@ -3180,7 +3180,7 @@
           ],
           "prompt": {
             "PromptText": "bebe",
-            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malagasy/audios/bebe.mp3"
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malgache/audios/bebe.mp3"
           },
           "foilstones": [
             {
@@ -3224,7 +3224,7 @@
           ],
           "prompt": {
             "PromptText": "kere",
-            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malagasy/audios/kere.mp3"
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malgache/audios/kere.mp3"
           },
           "foilstones": [
             {
@@ -3256,7 +3256,7 @@
           ],
           "prompt": {
             "PromptText": "bebe",
-            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malagasy/audios/bebe.mp3"
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malgache/audios/bebe.mp3"
           },
           "foilstones": [
             {
@@ -3291,7 +3291,7 @@
           ],
           "prompt": {
             "PromptText": "endre",
-            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malagasy/audios/endre.mp3"
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malgache/audios/endre.mp3"
           },
           "foilstones": [
             {
@@ -3332,7 +3332,7 @@
           ],
           "prompt": {
             "PromptText": "hendre",
-            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malagasy/audios/hendre.mp3"
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malgache/audios/hendre.mp3"
           },
           "foilstones": [
             {
@@ -3364,7 +3364,7 @@
           ],
           "prompt": {
             "PromptText": "bebe",
-            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malagasy/audios/bebe.mp3"
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malgache/audios/bebe.mp3"
           },
           "foilstones": [
             {
@@ -3408,7 +3408,7 @@
           ],
           "prompt": {
             "PromptText": "kere",
-            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malagasy/audios/kere.mp3"
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malgache/audios/kere.mp3"
           },
           "foilstones": [
             {
@@ -3440,7 +3440,7 @@
           ],
           "prompt": {
             "PromptText": "bebe",
-            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malagasy/audios/bebe.mp3"
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malgache/audios/bebe.mp3"
           },
           "foilstones": [
             {
@@ -3472,7 +3472,7 @@
           ],
           "prompt": {
             "PromptText": "kere",
-            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malagasy/audios/kere.mp3"
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malgache/audios/kere.mp3"
           },
           "foilstones": [
             {
@@ -3504,7 +3504,7 @@
           ],
           "prompt": {
             "PromptText": "bebe",
-            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malagasy/audios/bebe.mp3"
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malgache/audios/bebe.mp3"
           },
           "foilstones": [
             {
@@ -3536,7 +3536,7 @@
           ],
           "prompt": {
             "PromptText": "bebe",
-            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malagasy/audios/bebe.mp3"
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malgache/audios/bebe.mp3"
           },
           "foilstones": [
             {
@@ -3574,7 +3574,7 @@
           ],
           "prompt": {
             "PromptText": "v",
-            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malagasy/audios/v.mp3"
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malgache/audios/v.mp3"
           },
           "foilstones": [
             {
@@ -3597,7 +3597,7 @@
           ],
           "prompt": {
             "PromptText": "v",
-            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malagasy/audios/v.mp3"
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malgache/audios/v.mp3"
           },
           "foilstones": [
             {
@@ -3620,7 +3620,7 @@
           ],
           "prompt": {
             "PromptText": "r",
-            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malagasy/audios/r.mp3"
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malgache/audios/r.mp3"
           },
           "foilstones": [
             {
@@ -3646,7 +3646,7 @@
           ],
           "prompt": {
             "PromptText": "n",
-            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malagasy/audios/n.mp3"
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malgache/audios/n.mp3"
           },
           "foilstones": [
             {
@@ -3669,7 +3669,7 @@
           ],
           "prompt": {
             "PromptText": "d",
-            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malagasy/audios/d.mp3"
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malgache/audios/d.mp3"
           },
           "foilstones": [
             {
@@ -3704,7 +3704,7 @@
           ],
           "prompt": {
             "PromptText": "k",
-            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malagasy/audios/k.mp3"
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malgache/audios/k.mp3"
           },
           "foilstones": [
             {
@@ -3727,7 +3727,7 @@
           ],
           "prompt": {
             "PromptText": "z",
-            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malagasy/audios/z.mp3"
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malgache/audios/z.mp3"
           },
           "foilstones": [
             {
@@ -3750,7 +3750,7 @@
           ],
           "prompt": {
             "PromptText": "d",
-            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malagasy/audios/d.mp3"
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malgache/audios/d.mp3"
           },
           "foilstones": [
             {
@@ -3776,7 +3776,7 @@
           ],
           "prompt": {
             "PromptText": "t",
-            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malagasy/audios/t.mp3"
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malgache/audios/t.mp3"
           },
           "foilstones": [
             {
@@ -3799,7 +3799,7 @@
           ],
           "prompt": {
             "PromptText": "z",
-            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malagasy/audios/z.mp3"
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malgache/audios/z.mp3"
           },
           "foilstones": [
             {
@@ -3834,7 +3834,7 @@
           ],
           "prompt": {
             "PromptText": "i",
-            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malagasy/audios/i.mp3"
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malgache/audios/i.mp3"
           },
           "foilstones": [
             {
@@ -3857,7 +3857,7 @@
           ],
           "prompt": {
             "PromptText": "d",
-            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malagasy/audios/d.mp3"
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malgache/audios/d.mp3"
           },
           "foilstones": [
             {
@@ -3880,7 +3880,7 @@
           ],
           "prompt": {
             "PromptText": "d",
-            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malagasy/audios/d.mp3"
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malgache/audios/d.mp3"
           },
           "foilstones": [
             {
@@ -3906,7 +3906,7 @@
           ],
           "prompt": {
             "PromptText": "d",
-            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malagasy/audios/d.mp3"
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malgache/audios/d.mp3"
           },
           "foilstones": [
             {
@@ -3929,7 +3929,7 @@
           ],
           "prompt": {
             "PromptText": "t",
-            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malagasy/audios/t.mp3"
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malgache/audios/t.mp3"
           },
           "foilstones": [
             {
@@ -3964,7 +3964,7 @@
           ],
           "prompt": {
             "PromptText": "d",
-            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malagasy/audios/d.mp3"
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malgache/audios/d.mp3"
           },
           "foilstones": [
             {
@@ -3996,7 +3996,7 @@
           ],
           "prompt": {
             "PromptText": "v",
-            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malagasy/audios/v.mp3"
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malgache/audios/v.mp3"
           },
           "foilstones": [
             {
@@ -4025,7 +4025,7 @@
           ],
           "prompt": {
             "PromptText": "i",
-            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malagasy/audios/i.mp3"
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malgache/audios/i.mp3"
           },
           "foilstones": [
             {
@@ -4057,7 +4057,7 @@
           ],
           "prompt": {
             "PromptText": "v",
-            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malagasy/audios/v.mp3"
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malgache/audios/v.mp3"
           },
           "foilstones": [
             {
@@ -4086,7 +4086,7 @@
           ],
           "prompt": {
             "PromptText": "r",
-            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malagasy/audios/r.mp3"
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malgache/audios/r.mp3"
           },
           "foilstones": [
             {
@@ -4130,7 +4130,7 @@
           ],
           "prompt": {
             "PromptText": "r",
-            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malagasy/audios/r.mp3"
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malgache/audios/r.mp3"
           },
           "foilstones": [
             {
@@ -4162,7 +4162,7 @@
           ],
           "prompt": {
             "PromptText": "v",
-            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malagasy/audios/v.mp3"
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malgache/audios/v.mp3"
           },
           "foilstones": [
             {
@@ -4194,7 +4194,7 @@
           ],
           "prompt": {
             "PromptText": "k",
-            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malagasy/audios/k.mp3"
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malgache/audios/k.mp3"
           },
           "foilstones": [
             {
@@ -4223,7 +4223,7 @@
           ],
           "prompt": {
             "PromptText": "t",
-            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malagasy/audios/t.mp3"
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malgache/audios/t.mp3"
           },
           "foilstones": [
             {
@@ -4252,7 +4252,7 @@
           ],
           "prompt": {
             "PromptText": "t",
-            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malagasy/audios/t.mp3"
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malgache/audios/t.mp3"
           },
           "foilstones": [
             {
@@ -4296,7 +4296,7 @@
           ],
           "prompt": {
             "PromptText": "r",
-            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malagasy/audios/r.mp3"
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malgache/audios/r.mp3"
           },
           "foilstones": [
             {
@@ -4328,7 +4328,7 @@
           ],
           "prompt": {
             "PromptText": "s",
-            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malagasy/audios/s.mp3"
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malgache/audios/s.mp3"
           },
           "foilstones": [
             {
@@ -4360,7 +4360,7 @@
           ],
           "prompt": {
             "PromptText": "k",
-            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malagasy/audios/k.mp3"
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malgache/audios/k.mp3"
           },
           "foilstones": [
             {
@@ -4389,7 +4389,7 @@
           ],
           "prompt": {
             "PromptText": "s",
-            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malagasy/audios/s.mp3"
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malgache/audios/s.mp3"
           },
           "foilstones": [
             {
@@ -4418,7 +4418,7 @@
           ],
           "prompt": {
             "PromptText": "n",
-            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malagasy/audios/n.mp3"
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malgache/audios/n.mp3"
           },
           "foilstones": [
             {
@@ -4462,7 +4462,7 @@
           ],
           "prompt": {
             "PromptText": "vidy",
-            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malagasy/audios/v.mp3"
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malgache/audios/v.mp3"
           },
           "foilstones": [
             {
@@ -4491,7 +4491,7 @@
           ],
           "prompt": {
             "PromptText": "kiry",
-            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malagasy/audios/k.mp3"
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malgache/audios/k.mp3"
           },
           "foilstones": [
             {
@@ -4523,7 +4523,7 @@
           ],
           "prompt": {
             "PromptText": "kiry",
-            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malagasy/audios/k.mp3"
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malgache/audios/k.mp3"
           },
           "foilstones": [
             {
@@ -4555,7 +4555,7 @@
           ],
           "prompt": {
             "PromptText": "ity",
-            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malagasy/audios/i.mp3"
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malgache/audios/i.mp3"
           },
           "foilstones": [
             {
@@ -4584,7 +4584,7 @@
           ],
           "prompt": {
             "PromptText": "ity",
-            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malagasy/audios/i.mp3"
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malgache/audios/i.mp3"
           },
           "foilstones": [
             {
@@ -4628,7 +4628,7 @@
           ],
           "prompt": {
             "PromptText": "ity",
-            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malagasy/audios/i.mp3"
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malgache/audios/i.mp3"
           },
           "foilstones": [
             {
@@ -4660,7 +4660,7 @@
           ],
           "prompt": {
             "PromptText": "ity",
-            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malagasy/audios/i.mp3"
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malgache/audios/i.mp3"
           },
           "foilstones": [
             {
@@ -4692,7 +4692,7 @@
           ],
           "prompt": {
             "PromptText": "ity",
-            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malagasy/audios/i.mp3"
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malgache/audios/i.mp3"
           },
           "foilstones": [
             {
@@ -4721,7 +4721,7 @@
           ],
           "prompt": {
             "PromptText": "kiry",
-            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malagasy/audios/k.mp3"
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malgache/audios/k.mp3"
           },
           "foilstones": [
             {
@@ -4753,7 +4753,7 @@
           ],
           "prompt": {
             "PromptText": "siny",
-            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malagasy/audios/s.mp3"
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malgache/audios/s.mp3"
           },
           "foilstones": [
             {
@@ -4794,7 +4794,7 @@
           ],
           "prompt": {
             "PromptText": "siny",
-            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malagasy/audios/s.mp3"
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malgache/audios/s.mp3"
           },
           "foilstones": [
             {
@@ -4826,7 +4826,7 @@
           ],
           "prompt": {
             "PromptText": "kiry",
-            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malagasy/audios/k.mp3"
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malgache/audios/k.mp3"
           },
           "foilstones": [
             {
@@ -4858,7 +4858,7 @@
           ],
           "prompt": {
             "PromptText": "siny",
-            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malagasy/audios/s.mp3"
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malgache/audios/s.mp3"
           },
           "foilstones": [
             {
@@ -4887,7 +4887,7 @@
           ],
           "prompt": {
             "PromptText": "vidy",
-            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malagasy/audios/v.mp3"
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malgache/audios/v.mp3"
           },
           "foilstones": [
             {
@@ -4919,7 +4919,7 @@
           ],
           "prompt": {
             "PromptText": "vidy",
-            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malagasy/audios/v.mp3"
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malgache/audios/v.mp3"
           },
           "foilstones": [
             {
@@ -4960,7 +4960,7 @@
           ],
           "prompt": {
             "PromptText": "vidy",
-            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malagasy/audios/v.mp3"
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malgache/audios/v.mp3"
           },
           "foilstones": [
             {
@@ -4992,7 +4992,7 @@
           ],
           "prompt": {
             "PromptText": "siny",
-            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malagasy/audios/s.mp3"
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malgache/audios/s.mp3"
           },
           "foilstones": [
             {
@@ -5024,7 +5024,7 @@
           ],
           "prompt": {
             "PromptText": "siny",
-            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malagasy/audios/s.mp3"
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malgache/audios/s.mp3"
           },
           "foilstones": [
             {
@@ -5053,7 +5053,7 @@
           ],
           "prompt": {
             "PromptText": "kiry",
-            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malagasy/audios/k.mp3"
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malgache/audios/k.mp3"
           },
           "foilstones": [
             {
@@ -5085,7 +5085,7 @@
           ],
           "prompt": {
             "PromptText": "ity",
-            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malagasy/audios/i.mp3"
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malgache/audios/i.mp3"
           },
           "foilstones": [
             {
@@ -5132,7 +5132,7 @@
           ],
           "prompt": {
             "PromptText": "izy",
-            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malagasy/audios/izy.mp3"
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malgache/audios/izy.mp3"
           },
           "foilstones": [
             {
@@ -5176,7 +5176,7 @@
           ],
           "prompt": {
             "PromptText": "ity",
-            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malagasy/audios/ity.mp3"
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malgache/audios/ity.mp3"
           },
           "foilstones": [
             {
@@ -5217,7 +5217,7 @@
           ],
           "prompt": {
             "PromptText": "ity",
-            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malagasy/audios/ity.mp3"
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malgache/audios/ity.mp3"
           },
           "foilstones": [
             {
@@ -5261,7 +5261,7 @@
           ],
           "prompt": {
             "PromptText": "izy",
-            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malagasy/audios/izy.mp3"
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malgache/audios/izy.mp3"
           },
           "foilstones": [
             {
@@ -5299,7 +5299,7 @@
           ],
           "prompt": {
             "PromptText": "ity",
-            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malagasy/audios/ity.mp3"
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malgache/audios/ity.mp3"
           },
           "foilstones": [
             {
@@ -5358,7 +5358,7 @@
           ],
           "prompt": {
             "PromptText": "izy",
-            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malagasy/audios/izy.mp3"
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malgache/audios/izy.mp3"
           },
           "foilstones": [
             {
@@ -5402,7 +5402,7 @@
           ],
           "prompt": {
             "PromptText": "vidy",
-            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malagasy/audios/vidy.mp3"
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malgache/audios/vidy.mp3"
           },
           "foilstones": [
             {
@@ -5449,7 +5449,7 @@
           ],
           "prompt": {
             "PromptText": "kiry",
-            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malagasy/audios/kiry.mp3"
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malgache/audios/kiry.mp3"
           },
           "foilstones": [
             {
@@ -5493,7 +5493,7 @@
           ],
           "prompt": {
             "PromptText": "ivy",
-            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malagasy/audios/ivy.mp3"
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malgache/audios/ivy.mp3"
           },
           "foilstones": [
             {
@@ -5543,7 +5543,7 @@
           ],
           "prompt": {
             "PromptText": "siny",
-            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malagasy/audios/siny.mp3"
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malgache/audios/siny.mp3"
           },
           "foilstones": [
             {
@@ -5596,7 +5596,7 @@
           ],
           "prompt": {
             "PromptText": "siny",
-            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malagasy/audios/siny.mp3"
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malgache/audios/siny.mp3"
           },
           "foilstones": [
             {
@@ -5643,7 +5643,7 @@
           ],
           "prompt": {
             "PromptText": "kiry",
-            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malagasy/audios/kiry.mp3"
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malgache/audios/kiry.mp3"
           },
           "foilstones": [
             {
@@ -5690,7 +5690,7 @@
           ],
           "prompt": {
             "PromptText": "ity",
-            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malagasy/audios/ity.mp3"
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malgache/audios/ity.mp3"
           },
           "foilstones": [
             {
@@ -5737,7 +5737,7 @@
           ],
           "prompt": {
             "PromptText": "vidy",
-            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malagasy/audios/vidy.mp3"
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malgache/audios/vidy.mp3"
           },
           "foilstones": [
             {
@@ -5781,7 +5781,7 @@
           ],
           "prompt": {
             "PromptText": "vidy",
-            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malagasy/audios/vidy.mp3"
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malgache/audios/vidy.mp3"
           },
           "foilstones": [
             {
@@ -5831,7 +5831,7 @@
           ],
           "prompt": {
             "PromptText": "r",
-            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malagasy/audios/r.mp3"
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malgache/audios/r.mp3"
           },
           "foilstones": [
             {
@@ -5869,7 +5869,7 @@
           ],
           "prompt": {
             "PromptText": "o",
-            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malagasy/audios/o.mp3"
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malgache/audios/o.mp3"
           },
           "foilstones": [
             {
@@ -5907,7 +5907,7 @@
           ],
           "prompt": {
             "PromptText": "n",
-            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malagasy/audios/n.mp3"
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malgache/audios/n.mp3"
           },
           "foilstones": [
             {
@@ -5945,7 +5945,7 @@
           ],
           "prompt": {
             "PromptText": "t",
-            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malagasy/audios/t.mp3"
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malgache/audios/t.mp3"
           },
           "foilstones": [
             {
@@ -5980,7 +5980,7 @@
           ],
           "prompt": {
             "PromptText": "s",
-            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malagasy/audios/s.mp3"
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malgache/audios/s.mp3"
           },
           "foilstones": [
             {
@@ -6033,7 +6033,7 @@
           ],
           "prompt": {
             "PromptText": "g",
-            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malagasy/audios/g.mp3"
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malgache/audios/g.mp3"
           },
           "foilstones": [
             {
@@ -6071,7 +6071,7 @@
           ],
           "prompt": {
             "PromptText": "n",
-            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malagasy/audios/n.mp3"
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malgache/audios/n.mp3"
           },
           "foilstones": [
             {
@@ -6109,7 +6109,7 @@
           ],
           "prompt": {
             "PromptText": "v",
-            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malagasy/audios/v.mp3"
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malgache/audios/v.mp3"
           },
           "foilstones": [
             {
@@ -6147,7 +6147,7 @@
           ],
           "prompt": {
             "PromptText": "r",
-            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malagasy/audios/r.mp3"
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malgache/audios/r.mp3"
           },
           "foilstones": [
             {
@@ -6188,7 +6188,7 @@
           ],
           "prompt": {
             "PromptText": "r",
-            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malagasy/audios/r.mp3"
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malgache/audios/r.mp3"
           },
           "foilstones": [
             {
@@ -6235,7 +6235,7 @@
           ],
           "prompt": {
             "PromptText": "v",
-            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malagasy/audios/v.mp3"
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malgache/audios/v.mp3"
           },
           "foilstones": [
             {
@@ -6273,7 +6273,7 @@
           ],
           "prompt": {
             "PromptText": "l",
-            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malagasy/audios/l.mp3"
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malgache/audios/l.mp3"
           },
           "foilstones": [
             {
@@ -6311,7 +6311,7 @@
           ],
           "prompt": {
             "PromptText": "f",
-            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malagasy/audios/f.mp3"
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malgache/audios/f.mp3"
           },
           "foilstones": [
             {
@@ -6349,7 +6349,7 @@
           ],
           "prompt": {
             "PromptText": "t",
-            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malagasy/audios/t.mp3"
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malgache/audios/t.mp3"
           },
           "foilstones": [
             {
@@ -6390,7 +6390,7 @@
           ],
           "prompt": {
             "PromptText": "v",
-            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malagasy/audios/v.mp3"
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malgache/audios/v.mp3"
           },
           "foilstones": [
             {
@@ -6437,7 +6437,7 @@
           ],
           "prompt": {
             "PromptText": "f",
-            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malagasy/audios/f.mp3"
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malgache/audios/f.mp3"
           },
           "foilstones": [
             {
@@ -6475,7 +6475,7 @@
           ],
           "prompt": {
             "PromptText": "s",
-            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malagasy/audios/s.mp3"
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malgache/audios/s.mp3"
           },
           "foilstones": [
             {
@@ -6513,7 +6513,7 @@
           ],
           "prompt": {
             "PromptText": "n",
-            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malagasy/audios/n.mp3"
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malgache/audios/n.mp3"
           },
           "foilstones": [
             {
@@ -6551,7 +6551,7 @@
           ],
           "prompt": {
             "PromptText": "n",
-            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malagasy/audios/n.mp3"
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malgache/audios/n.mp3"
           },
           "foilstones": [
             {
@@ -6592,7 +6592,7 @@
           ],
           "prompt": {
             "PromptText": "n",
-            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malagasy/audios/n.mp3"
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malgache/audios/n.mp3"
           },
           "foilstones": [
             {
@@ -6639,7 +6639,7 @@
           ],
           "prompt": {
             "PromptText": "h",
-            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malagasy/audios/h.mp3"
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malgache/audios/h.mp3"
           },
           "foilstones": [
             {
@@ -6677,7 +6677,7 @@
           ],
           "prompt": {
             "PromptText": "g",
-            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malagasy/audios/g.mp3"
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malgache/audios/g.mp3"
           },
           "foilstones": [
             {
@@ -6715,7 +6715,7 @@
           ],
           "prompt": {
             "PromptText": "v",
-            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malagasy/audios/v.mp3"
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malgache/audios/v.mp3"
           },
           "foilstones": [
             {
@@ -6753,7 +6753,7 @@
           ],
           "prompt": {
             "PromptText": "o",
-            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malagasy/audios/o.mp3"
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malgache/audios/o.mp3"
           },
           "foilstones": [
             {
@@ -6788,7 +6788,7 @@
           ],
           "prompt": {
             "PromptText": "s",
-            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malagasy/audios/s.mp3"
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malgache/audios/s.mp3"
           },
           "foilstones": [
             {
@@ -6841,7 +6841,7 @@
           ],
           "prompt": {
             "PromptText": "z",
-            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malagasy/audios/z.mp3"
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malgache/audios/z.mp3"
           },
           "foilstones": [
             {
@@ -6879,7 +6879,7 @@
           ],
           "prompt": {
             "PromptText": "t",
-            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malagasy/audios/t.mp3"
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malgache/audios/t.mp3"
           },
           "foilstones": [
             {
@@ -6917,7 +6917,7 @@
           ],
           "prompt": {
             "PromptText": "h",
-            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malagasy/audios/h.mp3"
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malgache/audios/h.mp3"
           },
           "foilstones": [
             {
@@ -6955,7 +6955,7 @@
           ],
           "prompt": {
             "PromptText": "h",
-            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malagasy/audios/h.mp3"
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malgache/audios/h.mp3"
           },
           "foilstones": [
             {
@@ -6990,7 +6990,7 @@
           ],
           "prompt": {
             "PromptText": "v",
-            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malagasy/audios/v.mp3"
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malgache/audios/v.mp3"
           },
           "foilstones": [
             {
@@ -7043,7 +7043,7 @@
           ],
           "prompt": {
             "PromptText": "kolo",
-            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malagasy/audios/k.mp3"
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malgache/audios/k.mp3"
           },
           "foilstones": [
             {
@@ -7081,7 +7081,7 @@
           ],
           "prompt": {
             "PromptText": "solo",
-            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malagasy/audios/s.mp3"
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malgache/audios/s.mp3"
           },
           "foilstones": [
             {
@@ -7119,7 +7119,7 @@
           ],
           "prompt": {
             "PromptText": "zoto",
-            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malagasy/audios/z.mp3"
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malgache/audios/z.mp3"
           },
           "foilstones": [
             {
@@ -7154,7 +7154,7 @@
           ],
           "prompt": {
             "PromptText": "gogo",
-            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malagasy/audios/g.mp3"
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malgache/audios/g.mp3"
           },
           "foilstones": [
             {
@@ -7195,7 +7195,7 @@
           ],
           "prompt": {
             "PromptText": "zoto",
-            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malagasy/audios/z.mp3"
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malgache/audios/z.mp3"
           },
           "foilstones": [
             {
@@ -7245,7 +7245,7 @@
           ],
           "prompt": {
             "PromptText": "solo",
-            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malagasy/audios/s.mp3"
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malgache/audios/s.mp3"
           },
           "foilstones": [
             {
@@ -7283,7 +7283,7 @@
           ],
           "prompt": {
             "PromptText": "zoto",
-            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malagasy/audios/z.mp3"
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malgache/audios/z.mp3"
           },
           "foilstones": [
             {
@@ -7321,7 +7321,7 @@
           ],
           "prompt": {
             "PromptText": "gogo",
-            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malagasy/audios/g.mp3"
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malgache/audios/g.mp3"
           },
           "foilstones": [
             {
@@ -7359,7 +7359,7 @@
           ],
           "prompt": {
             "PromptText": "hoho",
-            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malagasy/audios/h.mp3"
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malgache/audios/h.mp3"
           },
           "foilstones": [
             {
@@ -7394,7 +7394,7 @@
           ],
           "prompt": {
             "PromptText": "gogo",
-            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malagasy/audios/g.mp3"
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malgache/audios/g.mp3"
           },
           "foilstones": [
             {
@@ -7447,7 +7447,7 @@
           ],
           "prompt": {
             "PromptText": "zoto",
-            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malagasy/audios/z.mp3"
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malgache/audios/z.mp3"
           },
           "foilstones": [
             {
@@ -7485,7 +7485,7 @@
           ],
           "prompt": {
             "PromptText": "gogo",
-            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malagasy/audios/g.mp3"
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malgache/audios/g.mp3"
           },
           "foilstones": [
             {
@@ -7523,7 +7523,7 @@
           ],
           "prompt": {
             "PromptText": "hoho",
-            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malagasy/audios/h.mp3"
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malgache/audios/h.mp3"
           },
           "foilstones": [
             {
@@ -7561,7 +7561,7 @@
           ],
           "prompt": {
             "PromptText": "gogo",
-            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malagasy/audios/g.mp3"
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malgache/audios/g.mp3"
           },
           "foilstones": [
             {
@@ -7596,7 +7596,7 @@
           ],
           "prompt": {
             "PromptText": "zoto",
-            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malagasy/audios/z.mp3"
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malgache/audios/z.mp3"
           },
           "foilstones": [
             {
@@ -7649,7 +7649,7 @@
           ],
           "prompt": {
             "PromptText": "gogo",
-            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malagasy/audios/g.mp3"
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malgache/audios/g.mp3"
           },
           "foilstones": [
             {
@@ -7672,7 +7672,7 @@
           ],
           "prompt": {
             "PromptText": "zoto",
-            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malagasy/audios/z.mp3"
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malgache/audios/z.mp3"
           },
           "foilstones": [
             {
@@ -7695,7 +7695,7 @@
           ],
           "prompt": {
             "PromptText": "kolo",
-            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malagasy/audios/k.mp3"
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malgache/audios/k.mp3"
           },
           "foilstones": [
             {
@@ -7718,7 +7718,7 @@
           ],
           "prompt": {
             "PromptText": "volo",
-            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malagasy/audios/v.mp3"
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malgache/audios/v.mp3"
           },
           "foilstones": [
             {
@@ -7744,7 +7744,7 @@
           ],
           "prompt": {
             "PromptText": "volo",
-            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malagasy/audios/v.mp3"
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malgache/audios/v.mp3"
           },
           "foilstones": [
             {
@@ -7788,7 +7788,7 @@
           ],
           "prompt": {
             "PromptText": "kolo",
-            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malagasy/audios/kolo.mp3"
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malgache/audios/kolo.mp3"
           },
           "foilstones": [
             {
@@ -7820,7 +7820,7 @@
           ],
           "prompt": {
             "PromptText": "hono",
-            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malagasy/audios/hono.mp3"
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malgache/audios/hono.mp3"
           },
           "foilstones": [
             {
@@ -7852,7 +7852,7 @@
           ],
           "prompt": {
             "PromptText": "hono",
-            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malagasy/audios/hono.mp3"
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malgache/audios/hono.mp3"
           },
           "foilstones": [
             {
@@ -7884,7 +7884,7 @@
           ],
           "prompt": {
             "PromptText": "hoho",
-            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malagasy/audios/hoho.mp3"
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malgache/audios/hoho.mp3"
           },
           "foilstones": [
             {
@@ -7919,7 +7919,7 @@
           ],
           "prompt": {
             "PromptText": "gogo",
-            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malagasy/audios/gogo.mp3"
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malgache/audios/gogo.mp3"
           },
           "foilstones": [
             {
@@ -7963,7 +7963,7 @@
           ],
           "prompt": {
             "PromptText": "volo",
-            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malagasy/audios/volo.mp3"
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malgache/audios/volo.mp3"
           },
           "foilstones": [
             {
@@ -8010,7 +8010,7 @@
           ],
           "prompt": {
             "PromptText": "kolo",
-            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malagasy/audios/kolo.mp3"
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malgache/audios/kolo.mp3"
           },
           "foilstones": [
             {
@@ -8057,7 +8057,7 @@
           ],
           "prompt": {
             "PromptText": "kolo",
-            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malagasy/audios/kolo.mp3"
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malgache/audios/kolo.mp3"
           },
           "foilstones": [
             {
@@ -8101,7 +8101,7 @@
           ],
           "prompt": {
             "PromptText": "zoto",
-            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malagasy/audios/zoto.mp3"
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malgache/audios/zoto.mp3"
           },
           "foilstones": [
             {
@@ -8151,7 +8151,7 @@
           ],
           "prompt": {
             "PromptText": "hono",
-            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malagasy/audios/hono.mp3"
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malgache/audios/hono.mp3"
           },
           "foilstones": [
             {
@@ -8210,7 +8210,7 @@
           ],
           "prompt": {
             "PromptText": "solo",
-            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malagasy/audios/solo.mp3"
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malgache/audios/solo.mp3"
           },
           "foilstones": [
             {
@@ -8257,7 +8257,7 @@
           ],
           "prompt": {
             "PromptText": "gogo",
-            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malagasy/audios/gogo.mp3"
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malgache/audios/gogo.mp3"
           },
           "foilstones": [
             {
@@ -8304,7 +8304,7 @@
           ],
           "prompt": {
             "PromptText": "zoto",
-            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malagasy/audios/zoto.mp3"
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malgache/audios/zoto.mp3"
           },
           "foilstones": [
             {
@@ -8351,7 +8351,7 @@
           ],
           "prompt": {
             "PromptText": "solo",
-            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malagasy/audios/solo.mp3"
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malgache/audios/solo.mp3"
           },
           "foilstones": [
             {
@@ -8395,7 +8395,7 @@
           ],
           "prompt": {
             "PromptText": "volo",
-            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malagasy/audios/volo.mp3"
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malgache/audios/volo.mp3"
           },
           "foilstones": [
             {
@@ -8448,7 +8448,7 @@
           ],
           "prompt": {
             "PromptText": "n",
-            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malagasy/audios/n.mp3"
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malgache/audios/n.mp3"
           },
           "foilstones": [
             {
@@ -8486,7 +8486,7 @@
           ],
           "prompt": {
             "PromptText": "y",
-            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malagasy/audios/y.mp3"
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malgache/audios/y.mp3"
           },
           "foilstones": [
             {
@@ -8524,7 +8524,7 @@
           ],
           "prompt": {
             "PromptText": "y",
-            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malagasy/audios/y.mp3"
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malgache/audios/y.mp3"
           },
           "foilstones": [
             {
@@ -8559,7 +8559,7 @@
           ],
           "prompt": {
             "PromptText": "f",
-            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malagasy/audios/f.mp3"
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malgache/audios/f.mp3"
           },
           "foilstones": [
             {
@@ -8600,7 +8600,7 @@
           ],
           "prompt": {
             "PromptText": "s",
-            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malagasy/audios/s.mp3"
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malgache/audios/s.mp3"
           },
           "foilstones": [
             {
@@ -8650,7 +8650,7 @@
           ],
           "prompt": {
             "PromptText": "v",
-            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malagasy/audios/v.mp3"
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malgache/audios/v.mp3"
           },
           "foilstones": [
             {
@@ -8688,7 +8688,7 @@
           ],
           "prompt": {
             "PromptText": "n",
-            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malagasy/audios/n.mp3"
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malgache/audios/n.mp3"
           },
           "foilstones": [
             {
@@ -8729,7 +8729,7 @@
           ],
           "prompt": {
             "PromptText": "y",
-            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malagasy/audios/y.mp3"
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malgache/audios/y.mp3"
           },
           "foilstones": [
             {
@@ -8767,7 +8767,7 @@
           ],
           "prompt": {
             "PromptText": "v",
-            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malagasy/audios/v.mp3"
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malgache/audios/v.mp3"
           },
           "foilstones": [
             {
@@ -8802,7 +8802,7 @@
           ],
           "prompt": {
             "PromptText": "v",
-            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malagasy/audios/v.mp3"
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malgache/audios/v.mp3"
           },
           "foilstones": [
             {
@@ -8852,7 +8852,7 @@
           ],
           "prompt": {
             "PromptText": "v",
-            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malagasy/audios/v.mp3"
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malgache/audios/v.mp3"
           },
           "foilstones": [
             {
@@ -8890,7 +8890,7 @@
           ],
           "prompt": {
             "PromptText": "r",
-            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malagasy/audios/r.mp3"
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malgache/audios/r.mp3"
           },
           "foilstones": [
             {
@@ -8928,7 +8928,7 @@
           ],
           "prompt": {
             "PromptText": "f",
-            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malagasy/audios/f.mp3"
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malgache/audios/f.mp3"
           },
           "foilstones": [
             {
@@ -8966,7 +8966,7 @@
           ],
           "prompt": {
             "PromptText": "s",
-            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malagasy/audios/s.mp3"
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malgache/audios/s.mp3"
           },
           "foilstones": [
             {
@@ -9001,7 +9001,7 @@
           ],
           "prompt": {
             "PromptText": "n",
-            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malagasy/audios/n.mp3"
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malgache/audios/n.mp3"
           },
           "foilstones": [
             {
@@ -9054,7 +9054,7 @@
           ],
           "prompt": {
             "PromptText": "y",
-            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malagasy/audios/y.mp3"
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malgache/audios/y.mp3"
           },
           "foilstones": [
             {
@@ -9092,7 +9092,7 @@
           ],
           "prompt": {
             "PromptText": "s",
-            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malagasy/audios/s.mp3"
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malgache/audios/s.mp3"
           },
           "foilstones": [
             {
@@ -9130,7 +9130,7 @@
           ],
           "prompt": {
             "PromptText": "n",
-            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malagasy/audios/n.mp3"
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malgache/audios/n.mp3"
           },
           "foilstones": [
             {
@@ -9168,7 +9168,7 @@
           ],
           "prompt": {
             "PromptText": "n",
-            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malagasy/audios/n.mp3"
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malgache/audios/n.mp3"
           },
           "foilstones": [
             {
@@ -9203,7 +9203,7 @@
           ],
           "prompt": {
             "PromptText": "r",
-            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malagasy/audios/r.mp3"
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malgache/audios/r.mp3"
           },
           "foilstones": [
             {
@@ -9256,7 +9256,7 @@
           ],
           "prompt": {
             "PromptText": "s",
-            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malagasy/audios/s.mp3"
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malgache/audios/s.mp3"
           },
           "foilstones": [
             {
@@ -9294,7 +9294,7 @@
           ],
           "prompt": {
             "PromptText": "f",
-            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malagasy/audios/f.mp3"
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malgache/audios/f.mp3"
           },
           "foilstones": [
             {
@@ -9335,7 +9335,7 @@
           ],
           "prompt": {
             "PromptText": "n",
-            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malagasy/audios/n.mp3"
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malgache/audios/n.mp3"
           },
           "foilstones": [
             {
@@ -9373,7 +9373,7 @@
           ],
           "prompt": {
             "PromptText": "v",
-            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malagasy/audios/v.mp3"
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malgache/audios/v.mp3"
           },
           "foilstones": [
             {
@@ -9408,7 +9408,7 @@
           ],
           "prompt": {
             "PromptText": "s",
-            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malagasy/audios/s.mp3"
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malgache/audios/s.mp3"
           },
           "foilstones": [
             {
@@ -9458,7 +9458,7 @@
           ],
           "prompt": {
             "PromptText": "v",
-            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malagasy/audios/v.mp3"
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malgache/audios/v.mp3"
           },
           "foilstones": [
             {
@@ -9496,7 +9496,7 @@
           ],
           "prompt": {
             "PromptText": "r",
-            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malagasy/audios/r.mp3"
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malgache/audios/r.mp3"
           },
           "foilstones": [
             {
@@ -9534,7 +9534,7 @@
           ],
           "prompt": {
             "PromptText": "r",
-            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malagasy/audios/r.mp3"
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malgache/audios/r.mp3"
           },
           "foilstones": [
             {
@@ -9572,7 +9572,7 @@
           ],
           "prompt": {
             "PromptText": "r",
-            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malagasy/audios/r.mp3"
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malgache/audios/r.mp3"
           },
           "foilstones": [
             {
@@ -9607,7 +9607,7 @@
           ],
           "prompt": {
             "PromptText": "v",
-            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malagasy/audios/v.mp3"
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malgache/audios/v.mp3"
           },
           "foilstones": [
             {
@@ -9660,7 +9660,7 @@
           ],
           "prompt": {
             "PromptText": "siny",
-            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malagasy/audios/s.mp3"
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malgache/audios/s.mp3"
           },
           "foilstones": [
             {
@@ -9698,7 +9698,7 @@
           ],
           "prompt": {
             "PromptText": "siny",
-            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malagasy/audios/s.mp3"
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malgache/audios/s.mp3"
           },
           "foilstones": [
             {
@@ -9736,7 +9736,7 @@
           ],
           "prompt": {
             "PromptText": "vidy",
-            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malagasy/audios/v.mp3"
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malgache/audios/v.mp3"
           },
           "foilstones": [
             {
@@ -9774,7 +9774,7 @@
           ],
           "prompt": {
             "PromptText": "vidy",
-            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malagasy/audios/v.mp3"
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malgache/audios/v.mp3"
           },
           "foilstones": [
             {
@@ -9809,7 +9809,7 @@
           ],
           "prompt": {
             "PromptText": "vidy",
-            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malagasy/audios/v.mp3"
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malgache/audios/v.mp3"
           },
           "foilstones": [
             {
@@ -9862,7 +9862,7 @@
           ],
           "prompt": {
             "PromptText": "vidy",
-            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malagasy/audios/v.mp3"
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malgache/audios/v.mp3"
           },
           "foilstones": [
             {
@@ -9900,7 +9900,7 @@
           ],
           "prompt": {
             "PromptText": "siny",
-            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malagasy/audios/s.mp3"
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malgache/audios/s.mp3"
           },
           "foilstones": [
             {
@@ -9938,7 +9938,7 @@
           ],
           "prompt": {
             "PromptText": "vidy",
-            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malagasy/audios/v.mp3"
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malgache/audios/v.mp3"
           },
           "foilstones": [
             {
@@ -9973,7 +9973,7 @@
           ],
           "prompt": {
             "PromptText": "siny",
-            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malagasy/audios/s.mp3"
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malgache/audios/s.mp3"
           },
           "foilstones": [
             {
@@ -10011,7 +10011,7 @@
           ],
           "prompt": {
             "PromptText": "vidy",
-            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malagasy/audios/v.mp3"
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malgache/audios/v.mp3"
           },
           "foilstones": [
             {
@@ -10064,7 +10064,7 @@
           ],
           "prompt": {
             "PromptText": "siny",
-            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malagasy/audios/s.mp3"
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malgache/audios/s.mp3"
           },
           "foilstones": [
             {
@@ -10102,7 +10102,7 @@
           ],
           "prompt": {
             "PromptText": "vidy",
-            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malagasy/audios/v.mp3"
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malgache/audios/v.mp3"
           },
           "foilstones": [
             {
@@ -10140,7 +10140,7 @@
           ],
           "prompt": {
             "PromptText": "siny",
-            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malagasy/audios/s.mp3"
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malgache/audios/s.mp3"
           },
           "foilstones": [
             {
@@ -10175,7 +10175,7 @@
           ],
           "prompt": {
             "PromptText": "vidy",
-            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malagasy/audios/v.mp3"
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malgache/audios/v.mp3"
           },
           "foilstones": [
             {
@@ -10213,7 +10213,7 @@
           ],
           "prompt": {
             "PromptText": "vidy",
-            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malagasy/audios/v.mp3"
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malgache/audios/v.mp3"
           },
           "foilstones": [
             {
@@ -10266,7 +10266,7 @@
           ],
           "prompt": {
             "PromptText": "siny",
-            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malagasy/audios/s.mp3"
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malgache/audios/s.mp3"
           },
           "foilstones": [
             {
@@ -10304,7 +10304,7 @@
           ],
           "prompt": {
             "PromptText": "vidy",
-            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malagasy/audios/v.mp3"
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malgache/audios/v.mp3"
           },
           "foilstones": [
             {
@@ -10342,7 +10342,7 @@
           ],
           "prompt": {
             "PromptText": "vidy",
-            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malagasy/audios/v.mp3"
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malgache/audios/v.mp3"
           },
           "foilstones": [
             {
@@ -10377,7 +10377,7 @@
           ],
           "prompt": {
             "PromptText": "vidy",
-            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malagasy/audios/v.mp3"
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malgache/audios/v.mp3"
           },
           "foilstones": [
             {
@@ -10415,7 +10415,7 @@
           ],
           "prompt": {
             "PromptText": "vidy",
-            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malagasy/audios/v.mp3"
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malgache/audios/v.mp3"
           },
           "foilstones": [
             {
@@ -10474,7 +10474,7 @@
           ],
           "prompt": {
             "PromptText": "ity",
-            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malagasy/audios/ity.mp3"
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malgache/audios/ity.mp3"
           },
           "foilstones": [
             {
@@ -10518,7 +10518,7 @@
           ],
           "prompt": {
             "PromptText": "ity",
-            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malagasy/audios/ity.mp3"
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malgache/audios/ity.mp3"
           },
           "foilstones": [
             {
@@ -10565,7 +10565,7 @@
           ],
           "prompt": {
             "PromptText": "vidy",
-            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malagasy/audios/vidy.mp3"
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malgache/audios/vidy.mp3"
           },
           "foilstones": [
             {
@@ -10606,7 +10606,7 @@
           ],
           "prompt": {
             "PromptText": "ivy",
-            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malagasy/audios/ivy.mp3"
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malgache/audios/ivy.mp3"
           },
           "foilstones": [
             {
@@ -10650,7 +10650,7 @@
           ],
           "prompt": {
             "PromptText": "izy",
-            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malagasy/audios/izy.mp3"
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malgache/audios/izy.mp3"
           },
           "foilstones": [
             {
@@ -10709,7 +10709,7 @@
           ],
           "prompt": {
             "PromptText": "ivy",
-            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malagasy/audios/ivy.mp3"
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malgache/audios/ivy.mp3"
           },
           "foilstones": [
             {
@@ -10753,7 +10753,7 @@
           ],
           "prompt": {
             "PromptText": "ivy",
-            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malagasy/audios/ivy.mp3"
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malgache/audios/ivy.mp3"
           },
           "foilstones": [
             {
@@ -10800,7 +10800,7 @@
           ],
           "prompt": {
             "PromptText": "kiry",
-            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malagasy/audios/kiry.mp3"
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malgache/audios/kiry.mp3"
           },
           "foilstones": [
             {
@@ -10841,7 +10841,7 @@
           ],
           "prompt": {
             "PromptText": "ity",
-            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malagasy/audios/ity.mp3"
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malgache/audios/ity.mp3"
           },
           "foilstones": [
             {
@@ -10885,7 +10885,7 @@
           ],
           "prompt": {
             "PromptText": "izy",
-            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malagasy/audios/izy.mp3"
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malgache/audios/izy.mp3"
           },
           "foilstones": [
             {
@@ -10944,7 +10944,7 @@
           ],
           "prompt": {
             "PromptText": "ivy",
-            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malagasy/audios/ivy.mp3"
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malgache/audios/ivy.mp3"
           },
           "foilstones": [
             {
@@ -10988,7 +10988,7 @@
           ],
           "prompt": {
             "PromptText": "izy",
-            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malagasy/audios/izy.mp3"
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malgache/audios/izy.mp3"
           },
           "foilstones": [
             {
@@ -11032,7 +11032,7 @@
           ],
           "prompt": {
             "PromptText": "izy",
-            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malagasy/audios/izy.mp3"
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malgache/audios/izy.mp3"
           },
           "foilstones": [
             {
@@ -11073,7 +11073,7 @@
           ],
           "prompt": {
             "PromptText": "izy",
-            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malagasy/audios/izy.mp3"
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malgache/audios/izy.mp3"
           },
           "foilstones": [
             {
@@ -11117,7 +11117,7 @@
           ],
           "prompt": {
             "PromptText": "izy",
-            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malagasy/audios/izy.mp3"
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malgache/audios/izy.mp3"
           },
           "foilstones": [
             {
@@ -11170,7 +11170,7 @@
           ],
           "prompt": {
             "PromptText": "s",
-            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malagasy/audios/s.mp3"
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malgache/audios/s.mp3"
           },
           "foilstones": [
             {
@@ -11208,7 +11208,7 @@
           ],
           "prompt": {
             "PromptText": "a",
-            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malagasy/audios/a.mp3"
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malgache/audios/a.mp3"
           },
           "foilstones": [
             {
@@ -11246,7 +11246,7 @@
           ],
           "prompt": {
             "PromptText": "n",
-            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malagasy/audios/n.mp3"
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malgache/audios/n.mp3"
           },
           "foilstones": [
             {
@@ -11278,7 +11278,7 @@
           ],
           "prompt": {
             "PromptText": "g",
-            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malagasy/audios/g.mp3"
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malgache/audios/g.mp3"
           },
           "foilstones": [
             {
@@ -11313,7 +11313,7 @@
           ],
           "prompt": {
             "PromptText": "l",
-            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malagasy/audios/l.mp3"
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malgache/audios/l.mp3"
           },
           "foilstones": [
             {
@@ -11366,7 +11366,7 @@
           ],
           "prompt": {
             "PromptText": "a",
-            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malagasy/audios/a.mp3"
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malgache/audios/a.mp3"
           },
           "foilstones": [
             {
@@ -11404,7 +11404,7 @@
           ],
           "prompt": {
             "PromptText": "k",
-            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malagasy/audios/k.mp3"
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malgache/audios/k.mp3"
           },
           "foilstones": [
             {
@@ -11442,7 +11442,7 @@
           ],
           "prompt": {
             "PromptText": "g",
-            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malagasy/audios/g.mp3"
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malgache/audios/g.mp3"
           },
           "foilstones": [
             {
@@ -11480,7 +11480,7 @@
           ],
           "prompt": {
             "PromptText": "b",
-            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malagasy/audios/b.mp3"
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malgache/audios/b.mp3"
           },
           "foilstones": [
             {
@@ -11515,7 +11515,7 @@
           ],
           "prompt": {
             "PromptText": "b",
-            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malagasy/audios/b.mp3"
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malgache/audios/b.mp3"
           },
           "foilstones": [
             {
@@ -11568,7 +11568,7 @@
           ],
           "prompt": {
             "PromptText": "b",
-            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malagasy/audios/b.mp3"
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malgache/audios/b.mp3"
           },
           "foilstones": [
             {
@@ -11606,7 +11606,7 @@
           ],
           "prompt": {
             "PromptText": "l",
-            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malagasy/audios/l.mp3"
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malgache/audios/l.mp3"
           },
           "foilstones": [
             {
@@ -11644,7 +11644,7 @@
           ],
           "prompt": {
             "PromptText": "f",
-            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malagasy/audios/f.mp3"
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malgache/audios/f.mp3"
           },
           "foilstones": [
             {
@@ -11676,7 +11676,7 @@
           ],
           "prompt": {
             "PromptText": "k",
-            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malagasy/audios/k.mp3"
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malgache/audios/k.mp3"
           },
           "foilstones": [
             {
@@ -11711,7 +11711,7 @@
           ],
           "prompt": {
             "PromptText": "h",
-            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malagasy/audios/h.mp3"
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malgache/audios/h.mp3"
           },
           "foilstones": [
             {
@@ -11764,7 +11764,7 @@
           ],
           "prompt": {
             "PromptText": "v",
-            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malagasy/audios/v.mp3"
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malgache/audios/v.mp3"
           },
           "foilstones": [
             {
@@ -11802,7 +11802,7 @@
           ],
           "prompt": {
             "PromptText": "m",
-            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malagasy/audios/m.mp3"
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malgache/audios/m.mp3"
           },
           "foilstones": [
             {
@@ -11840,7 +11840,7 @@
           ],
           "prompt": {
             "PromptText": "d",
-            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malagasy/audios/d.mp3"
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malgache/audios/d.mp3"
           },
           "foilstones": [
             {
@@ -11878,7 +11878,7 @@
           ],
           "prompt": {
             "PromptText": "l",
-            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malagasy/audios/l.mp3"
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malgache/audios/l.mp3"
           },
           "foilstones": [
             {
@@ -11913,7 +11913,7 @@
           ],
           "prompt": {
             "PromptText": "s",
-            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malagasy/audios/s.mp3"
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malgache/audios/s.mp3"
           },
           "foilstones": [
             {
@@ -11966,7 +11966,7 @@
           ],
           "prompt": {
             "PromptText": "z",
-            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malagasy/audios/z.mp3"
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malgache/audios/z.mp3"
           },
           "foilstones": [
             {
@@ -12004,7 +12004,7 @@
           ],
           "prompt": {
             "PromptText": "s",
-            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malagasy/audios/s.mp3"
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malgache/audios/s.mp3"
           },
           "foilstones": [
             {
@@ -12042,7 +12042,7 @@
           ],
           "prompt": {
             "PromptText": "n",
-            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malagasy/audios/n.mp3"
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malgache/audios/n.mp3"
           },
           "foilstones": [
             {
@@ -12074,7 +12074,7 @@
           ],
           "prompt": {
             "PromptText": "v",
-            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malagasy/audios/v.mp3"
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malgache/audios/v.mp3"
           },
           "foilstones": [
             {
@@ -12109,7 +12109,7 @@
           ],
           "prompt": {
             "PromptText": "d",
-            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malagasy/audios/d.mp3"
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malgache/audios/d.mp3"
           },
           "foilstones": [
             {
@@ -12162,7 +12162,7 @@
           ],
           "prompt": {
             "PromptText": "n",
-            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malagasy/audios/n.mp3"
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malgache/audios/n.mp3"
           },
           "foilstones": [
             {
@@ -12200,7 +12200,7 @@
           ],
           "prompt": {
             "PromptText": "k",
-            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malagasy/audios/k.mp3"
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malgache/audios/k.mp3"
           },
           "foilstones": [
             {
@@ -12238,7 +12238,7 @@
           ],
           "prompt": {
             "PromptText": "s",
-            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malagasy/audios/s.mp3"
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malgache/audios/s.mp3"
           },
           "foilstones": [
             {
@@ -12276,7 +12276,7 @@
           ],
           "prompt": {
             "PromptText": "d",
-            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malagasy/audios/d.mp3"
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malgache/audios/d.mp3"
           },
           "foilstones": [
             {
@@ -12317,7 +12317,7 @@
           ],
           "prompt": {
             "PromptText": "g",
-            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malagasy/audios/g.mp3"
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malgache/audios/g.mp3"
           },
           "foilstones": [
             {
@@ -12364,7 +12364,7 @@
           ],
           "prompt": {
             "PromptText": "gana",
-            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malagasy/audios/g.mp3"
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malgache/audios/g.mp3"
           },
           "foilstones": [
             {
@@ -12402,7 +12402,7 @@
           ],
           "prompt": {
             "PromptText": "ala",
-            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malagasy/audios/a.mp3"
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malgache/audios/a.mp3"
           },
           "foilstones": [
             {
@@ -12440,7 +12440,7 @@
           ],
           "prompt": {
             "PromptText": "gana",
-            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malagasy/audios/g.mp3"
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malgache/audios/g.mp3"
           },
           "foilstones": [
             {
@@ -12472,7 +12472,7 @@
           ],
           "prompt": {
             "PromptText": "gana",
-            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malagasy/audios/g.mp3"
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malgache/audios/g.mp3"
           },
           "foilstones": [
             {
@@ -12507,7 +12507,7 @@
           ],
           "prompt": {
             "PromptText": "haba",
-            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malagasy/audios/h.mp3"
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malgache/audios/h.mp3"
           },
           "foilstones": [
             {
@@ -12560,7 +12560,7 @@
           ],
           "prompt": {
             "PromptText": "laza",
-            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malagasy/audios/l.mp3"
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malgache/audios/l.mp3"
           },
           "foilstones": [
             {
@@ -12598,7 +12598,7 @@
           ],
           "prompt": {
             "PromptText": "laza",
-            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malagasy/audios/l.mp3"
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malgache/audios/l.mp3"
           },
           "foilstones": [
             {
@@ -12636,7 +12636,7 @@
           ],
           "prompt": {
             "PromptText": "daba",
-            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malagasy/audios/d.mp3"
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malgache/audios/d.mp3"
           },
           "foilstones": [
             {
@@ -12674,7 +12674,7 @@
           ],
           "prompt": {
             "PromptText": "haba",
-            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malagasy/audios/h.mp3"
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malgache/audios/h.mp3"
           },
           "foilstones": [
             {
@@ -12709,7 +12709,7 @@
           ],
           "prompt": {
             "PromptText": "daba",
-            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malagasy/audios/d.mp3"
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malgache/audios/d.mp3"
           },
           "foilstones": [
             {
@@ -12762,7 +12762,7 @@
           ],
           "prompt": {
             "PromptText": "daba",
-            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malagasy/audios/d.mp3"
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malgache/audios/d.mp3"
           },
           "foilstones": [
             {
@@ -12800,7 +12800,7 @@
           ],
           "prompt": {
             "PromptText": "haba",
-            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malagasy/audios/h.mp3"
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malgache/audios/h.mp3"
           },
           "foilstones": [
             {
@@ -12838,7 +12838,7 @@
           ],
           "prompt": {
             "PromptText": "saka",
-            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malagasy/audios/s.mp3"
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malgache/audios/s.mp3"
           },
           "foilstones": [
             {
@@ -12876,7 +12876,7 @@
           ],
           "prompt": {
             "PromptText": "ala",
-            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malagasy/audios/a.mp3"
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malgache/audios/a.mp3"
           },
           "foilstones": [
             {
@@ -12911,7 +12911,7 @@
           ],
           "prompt": {
             "PromptText": "laza",
-            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malagasy/audios/l.mp3"
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malgache/audios/l.mp3"
           },
           "foilstones": [
             {
@@ -12964,7 +12964,7 @@
           ],
           "prompt": {
             "PromptText": "ala",
-            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malagasy/audios/a.mp3"
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malgache/audios/a.mp3"
           },
           "foilstones": [
             {
@@ -13002,7 +13002,7 @@
           ],
           "prompt": {
             "PromptText": "laza",
-            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malagasy/audios/l.mp3"
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malgache/audios/l.mp3"
           },
           "foilstones": [
             {
@@ -13040,7 +13040,7 @@
           ],
           "prompt": {
             "PromptText": "ala",
-            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malagasy/audios/a.mp3"
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malgache/audios/a.mp3"
           },
           "foilstones": [
             {
@@ -13072,7 +13072,7 @@
           ],
           "prompt": {
             "PromptText": "daba",
-            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malagasy/audios/d.mp3"
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malgache/audios/d.mp3"
           },
           "foilstones": [
             {
@@ -13107,7 +13107,7 @@
           ],
           "prompt": {
             "PromptText": "daba",
-            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malagasy/audios/d.mp3"
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malgache/audios/d.mp3"
           },
           "foilstones": [
             {
@@ -13166,7 +13166,7 @@
           ],
           "prompt": {
             "PromptText": "aza",
-            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malagasy/audios/aza.mp3"
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malgache/audios/aza.mp3"
           },
           "foilstones": [
             {
@@ -13213,7 +13213,7 @@
           ],
           "prompt": {
             "PromptText": "lava",
-            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malagasy/audios/lava.mp3"
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malgache/audios/lava.mp3"
           },
           "foilstones": [
             {
@@ -13260,7 +13260,7 @@
           ],
           "prompt": {
             "PromptText": "gana",
-            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malagasy/audios/gana.mp3"
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malgache/audios/gana.mp3"
           },
           "foilstones": [
             {
@@ -13307,7 +13307,7 @@
           ],
           "prompt": {
             "PromptText": "haba",
-            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malagasy/audios/haba.mp3"
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malgache/audios/haba.mp3"
           },
           "foilstones": [
             {
@@ -13348,7 +13348,7 @@
           ],
           "prompt": {
             "PromptText": "aza",
-            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malagasy/audios/aza.mp3"
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malgache/audios/aza.mp3"
           },
           "foilstones": [
             {
@@ -13410,7 +13410,7 @@
           ],
           "prompt": {
             "PromptText": "haba",
-            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malagasy/audios/haba.mp3"
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malgache/audios/haba.mp3"
           },
           "foilstones": [
             {
@@ -13454,7 +13454,7 @@
           ],
           "prompt": {
             "PromptText": "ala",
-            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malagasy/audios/ala.mp3"
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malgache/audios/ala.mp3"
           },
           "foilstones": [
             {
@@ -13501,7 +13501,7 @@
           ],
           "prompt": {
             "PromptText": "haba",
-            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malagasy/audios/haba.mp3"
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malgache/audios/haba.mp3"
           },
           "foilstones": [
             {
@@ -13545,7 +13545,7 @@
           ],
           "prompt": {
             "PromptText": "aza",
-            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malagasy/audios/aza.mp3"
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malgache/audios/aza.mp3"
           },
           "foilstones": [
             {
@@ -13592,7 +13592,7 @@
           ],
           "prompt": {
             "PromptText": "ala",
-            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malagasy/audios/ala.mp3"
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malgache/audios/ala.mp3"
           },
           "foilstones": [
             {
@@ -13648,7 +13648,7 @@
           ],
           "prompt": {
             "PromptText": "laza",
-            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malagasy/audios/laza.mp3"
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malgache/audios/laza.mp3"
           },
           "foilstones": [
             {
@@ -13692,7 +13692,7 @@
           ],
           "prompt": {
             "PromptText": "asa",
-            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malagasy/audios/asa.mp3"
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malgache/audios/asa.mp3"
           },
           "foilstones": [
             {
@@ -13739,7 +13739,7 @@
           ],
           "prompt": {
             "PromptText": "gana",
-            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malagasy/audios/gana.mp3"
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malgache/audios/gana.mp3"
           },
           "foilstones": [
             {
@@ -13780,7 +13780,7 @@
           ],
           "prompt": {
             "PromptText": "laza",
-            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malagasy/audios/laza.mp3"
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malgache/audios/laza.mp3"
           },
           "foilstones": [
             {
@@ -13824,7 +13824,7 @@
           ],
           "prompt": {
             "PromptText": "hafa",
-            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malagasy/audios/hafa.mp3"
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/malgache/audios/hafa.mp3"
           },
           "foilstones": [
             {
