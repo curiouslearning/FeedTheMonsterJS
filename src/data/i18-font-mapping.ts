@@ -26,7 +26,7 @@ const languageFontMapping: { [language: string]: string } = {
   Georgian: "Consolas",
   BrazilianPortuguese: "Consolas",
   Somali: "Consolas",
-  Hausa: "Consolas",
+  Hausa: "NotoSans-Regular",
   Igbo: "Consolas",
   HatianCreole: "Consolas",
   Oromo: "Consolas",
