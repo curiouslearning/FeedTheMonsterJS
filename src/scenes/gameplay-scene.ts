@@ -36,7 +36,7 @@ import {
 import { FirebaseIntegration } from "../Firebase/firebase-integration";
 
 
-export class GameplayScene {
+export class GameplayScene {  
   public width: number;
   public height: number;
   public monster: Monster;
@@ -69,7 +69,6 @@ export class GameplayScene {
     pillerImg: string;
     bgImg: string;
     hillImg: string;
-    grassImg: string;
     fenchImg: string;
     profileMonster: string;
   };
@@ -192,7 +191,6 @@ export class GameplayScene {
       pillerImg: "./assets/images/Totem_v02_v01.png",
       bgImg: "./assets/images/bg_v01.jpg",
       hillImg: "./assets/images/hill_v01.png",
-      grassImg: "./assets/images/FG_a_v01.png",
       fenchImg: "./assets/images/fence_v01.png",
       profileMonster: "./assets/images/idle4.png",
     };
@@ -242,9 +240,9 @@ export class GameplayScene {
       Math.sqrt(
         (x - self.monster.x - self.canvas.width / 4) *
           (x - self.monster.x - self.canvas.width / 4) +
-          (y - self.monster.y - self.canvas.height / 2.7) *
-            (y - self.monster.y - self.canvas.height / 2.7)
-      ) <= 60
+          (y - self.monster.y - self.canvas.height / 2.2) *
+            (y - self.monster.y - self.canvas.height / 2.2)
+      ) <= 100
     ) {
       if (this.pickedStone != null || this.pickedStone != null) {
         if (this.levelData.levelMeta.levelType == "LetterOnly") {
@@ -673,7 +671,7 @@ export class GameplayScene {
     this.pausePopup.addListner();
     this.audioPlayer.stopAllAudios();
   };
-
+  
   handleVisibilityChange = () => {
     this.audioPlayer.stopAllAudios();
     this.pauseGamePlay();

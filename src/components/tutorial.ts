@@ -33,7 +33,7 @@ export class Tutorial {
     this.startx = 0;
     this.starty = 0;
     this.endx = this.width / 2;
-    this.endy = this.height / 2 - 30;
+    this.endy = this.height / 2 ;
     this.puzzleNumber = (puzzleNumber>=0)?puzzleNumber:null;
     this.tutorialImg = new Image();
     this.tutorialImg.src = "./assets/images/tutorial_hand.png";
@@ -86,7 +86,7 @@ export class Tutorial {
       let monsterStoneDifferenceInPercentage=(100*distance/this.monsterStoneDifference);
       if (monsterStoneDifferenceInPercentage < 15) {
         if(monsterStoneDifferenceInPercentage>1){
-        this.createHandScaleAnimation(deltaTime,this.endx,this.endy,true)
+        this.createHandScaleAnimation(deltaTime,this.endx,this.endy+30,true)
       }else{
         this.x=this.startx; 
         this.y=this.starty;
@@ -120,16 +120,16 @@ sinusoidalInterpolation(time, minScale, maxScale, duration) {
   clickOnMonsterTutorial(deltaTime) {
     if (this.shouldPlayMonsterClickTutorialAnimation()) {
         const transitionDuration = 2000;
-        const bottomPosition = this.height /2.2 + (this.tutorialImg.height/0.8 );
-        const topPosition = this.height / 2.2 + (this.tutorialImg.height/0.8 )- this.tutorialImg.height;
+        const bottomPosition = this.height /1.9 + (this.tutorialImg.height/0.8 );
+        const topPosition = this.height / 1.9 + (this.tutorialImg.height/0.8 )- this.tutorialImg.height;
         let currentOffsetY;
         const offsetX = this.endx;
         if (this.totalTime < transitionDuration / 2) {
             currentOffsetY = topPosition + (this.totalTime / (transitionDuration / 2)) * (bottomPosition - topPosition);
-            this.drawRipple(offsetX, this.height / 2.2 + (this.tutorialImg.height / 1.8), true)
+            this.drawRipple(offsetX, this.height / 1.9 + (this.tutorialImg.height / 1.5), true)
         } else {
             currentOffsetY = bottomPosition - ((this.totalTime - transitionDuration / 2) / (transitionDuration / 2)) * (bottomPosition - topPosition);
-            this.drawRipple(offsetX, this.height/   2.2 + (this.tutorialImg.height)+ this.tutorialImg.height)
+            this.drawRipple(offsetX, this.height/   1.9 + (this.tutorialImg.height / 1.2)+ this.tutorialImg.height)
         }
         this.context.drawImage(
             this.tutorialImg,

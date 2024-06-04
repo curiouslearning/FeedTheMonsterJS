@@ -79,15 +79,7 @@ export class StoneConfig {
     }
 
     draw(deltaTime: number) {
-        if (this.frame < 100) {
-            this.frame = this.frame + 1;
-        }
-        else{
-            if(this.tutorialInstance!=null || this.tutorialInstance!=undefined)
-            {
-                this.tutorialInstance.draw(deltaTime,this.img,this.imageSize);
-            }
-        }
+
         this.context.drawImage(
             this.img,
             this.getX() - this.imageCenterOffsetX,
@@ -95,10 +87,16 @@ export class StoneConfig {
             this.imageSize,
             this.imageSize
         );
-
         this.context.fillStyle = "white";
         this.context.font = this.textFontSize + `px ${font}, monospace`;
         this.context.textAlign = "center";
         this.context.fillText(this.text, this.getX(), this.getY());
+        if (this.frame < 100) {
+            this.frame = this.frame + 1;
+        }
+        else if(this.tutorialInstance!=null || this.tutorialInstance!=undefined){
+                this.tutorialInstance.draw(deltaTime,this.img,this.imageSize);
+            }
+        
     }
 }
