@@ -335,7 +335,15 @@
         "appUrl": "https://feedthemonsterdev.curiouscontent.org/?cr_lang=arabic",
         "language": "عربي" ,
         "languageInEnglishName":"Arabic"
-      }
+      },
+      {
+          "appId": 43,
+          "appIconUrl": "https://devcuriousreader.wpcomstaging.com/container_app_manifest/icons/ftm_arabic_dev.png",
+          "title": "Feed The Monster Arabic",
+          "appUrl": "https://feedthemonsterdev.curiouscontent.org/?cr_lang=arabic",
+          "language": "عربي" ,
+          "languageInEnglishName":"Arabic"
+        }
      
     ]
   }
