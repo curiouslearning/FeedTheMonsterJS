@@ -172,7 +172,7 @@ For creating a new language version of Feed The Monster, we will need to replace
  
 5. Next Step is going to `home/global-variables.ts` and change the lang variable value with the appropriate value of the language desired.
 
-6.  Contents for the information that has to be displayed in the start scene(about company) and end scene(googleplay link to continue further)has to be added with keys 'aboutCompany' and 'descriptionText' with a value in their respective language in 'ftm_language.json' file.
+<!-- 6.  Contents for the information that has to be displayed in the start scene(about company) and end scene(googleplay link to continue further)has to be added with keys 'aboutCompany' and 'descriptionText' with a value in their respective language in 'ftm_language.json' file. -->
 Please note that above the language JSON in this JS file are meta variables that will help distinguish different language builds (e.g. LanguageName) and even versioning information (e.g. LanguageVersion) for the JSON itself that are helpful in maintaining the app or troubleshooting issues. Also note that all server URLs such as server.com/... and curiousreader.org/... will need to be replaced with the URLs where language-specific images or audio are uploaded ultimately. All existing [language-specific images and audio](https://github.com/curiouslearning/ftm-languagepacks) can be downloaded and used as Creative Commons.
 
 <p align="right">(<a href="#top">back to top</a>)</p>

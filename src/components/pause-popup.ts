@@ -1,94 +1,178 @@
-import { PausePopupLayer } from "../common/common.js";
-import { CanvasStack } from "../utility/canvas-stack.js";
-import CancelButton from "./buttons/cancel_button.js";
-import CloseButton from "./buttons/close_button.js";
-import RetryButton from "./buttons/retry_button.js";
-import { LevelStartScene } from "../scenes/level-start-scene.js";
-import { Game } from "../scenes/game.js";
-
+import CancelButton from "../components/buttons/cancel-button";
+import CloseButton from "../components/buttons/close-button";
+import RetryButton from "../components/buttons/retry-button";
+import { CLICK, VISIBILITY_CHANGE } from "../common/event-names";
+import { AudioPlayer } from "./audio-player";
+import AreYouSurePopUp from "./feedback-particle-effect/sure-popup";
+import { lang } from "../../global-variables";
 export default class PausePopUp {
-  public canvas: Game;
-  public levelStart: LevelStartScene;
+  public canvas: HTMLCanvasElement;
   public context: CanvasRenderingContext2D;
   public cancelButton: CancelButton;
   public retryButton: RetryButton;
   public closeButton: CloseButton;
+  public imagesLoaded: boolean = false;
+  public pop_up_image: HTMLImageElement;
 
-  public canvasStack: any;
-  public id: any;
-
-  constructor(canvas, levelStart) {
+  public callback: Function;
+  public switchToLevelSelection: Function;
+  public reloadScene: Function;
+  public gameplayData: any;
+  audioPlayer: AudioPlayer;
+  retrySurePopup: AreYouSurePopUp;
+  CloseSurePopup: AreYouSurePopUp;
+  isRetryButtonClicked: boolean = false;
+  isCloseButtonClicked: boolean = false;
+  constructor(
+    canvas,
+    callback,
+    switchToLevelSelection,
+    reloadScene,
+    gameplayData
+  ) {
     this.canvas = canvas;
-    this.levelStart = levelStart;
-    this.canvasStack = new CanvasStack("canvas");
-    this.createCanvas();
-  }
+    this.callback = callback;
+    this.gameplayData = gameplayData;
+    this.switchToLevelSelection = switchToLevelSelection;
+    this.reloadScene = reloadScene;
 
-  createCanvas() {
-    var self = this;
-    this.id = this.canvasStack.createLayer(
-      this.canvas.height,
-      this.canvas.width,
-      PausePopupLayer
-    );
-    const selfIdElement = document.getElementById(this.id) as HTMLCanvasElement;
+    const selfIdElement = document.getElementById(
+      "canvas"
+    ) as HTMLCanvasElement;
     this.context = selfIdElement.getContext("2d");
-    selfIdElement.style.zIndex = "11";
-    selfIdElement.style.backgroundColor = "rgba(0, 0, 0, 0.5)";
-    var pop_up_image = new Image();
-    pop_up_image.src = "./assets/images/popup_bg_v01.png";
-
-    pop_up_image.onload = function (e) {
-      self.context.drawImage(
-        pop_up_image,
-        self.canvas.width * 0.1,
-        self.canvas.height * 0.2,
-        self.canvas.width * 0.8,
-        self.canvas.width * 0.8
-      );
-      self.cancelButton = new CancelButton(self.context, self.canvas);
-      self.retryButton = new RetryButton(
-        self.context,
-        self.canvas,
-        self.canvas.width * 0.55,
-        self.canvas.height * 0.2 +
-          self.canvas.width * 0.4 -
-          (self.canvas.width * 0.19) / 2
-      );
-      self.closeButton = new CloseButton(
-        self.context,
-        self.canvas,
-        self.canvas.width * 0.25,
-        self.canvas.height * 0.2 +
-          self.canvas.width * 0.4 -
-          (self.canvas.width * 0.19) / 2
-      );
+    this.audioPlayer = new AudioPlayer();
+    this.cancelButton = new CancelButton(this.context, this.canvas);
+    this.retryButton = new RetryButton(
+      this.context,
+      this.canvas,
+      this.canvas.width * 0.55,
+      this.canvas.height * 0.2 +
+        this.canvas.width * 0.4 -
+        (this.canvas.width * 0.19) / 2
+    );
+    this.closeButton = new CloseButton(
+      this.context,
+      this.canvas,
+      this.canvas.width * 0.25,
+      this.canvas.height * 0.2 +
+        this.canvas.width * 0.4 -
+        (this.canvas.width * 0.19) / 2
+    );
+    this.pop_up_image = new Image();
+    this.pop_up_image.src = "./assets/images/popup_bg_v01.png";
+    this.pop_up_image.onload = (e) => {
+      this.pop_up_image = this.pop_up_image;
+      this.imagesLoaded = true;
     };
-    selfIdElement.addEventListener("click", function (event) {
-      var rect = selfIdElement.getBoundingClientRect();
-      const x = event.clientX - rect.left;
-      const y = event.clientY - rect.top;
-      if (self.cancelButton.onClick(x, y)) {
-        self.levelStart.timerTicking.resumeTimer();
-        self.levelStart.levelEndCallBack();
-        self.deleteCanvas(self);
+    this.retrySurePopup = new AreYouSurePopUp(
+      this.canvas,
+      this.yesRetryCallback,
+      this.noRetryCallback
+    );
+    this.CloseSurePopup = new AreYouSurePopUp(
+      this.canvas,
+      this.switchToLevelSelection,
+      this.noCloseCallback
+    );
+  }
+  yesRetryCallback = () => {
+    this.playClickSound();
+    console.log(" retry button clicked");
+    this.reloadScene(this.gameplayData, "GamePlay");
+  };
+  noRetryCallback = () => {
+    if (this.isRetryButtonClicked) {
+      this.isRetryButtonClicked = false;
+      this.callback();
+    }
+  };
+  noCloseCallback = () => {
+    if (this.isCloseButtonClicked) {
+      this.isCloseButtonClicked = false;
+      this.callback();
+    }
+  };
+  addListner = () => {
+    document
+      .getElementById("canvas")
+      .addEventListener(CLICK, this.handleMouseClick, false);
+  };
+
+  handleMouseClick = (event) => {
+    const selfElement = <HTMLElement>document.getElementById("canvas");
+    event.preventDefault();
+    var rect = selfElement.getBoundingClientRect();
+    const x = event.clientX - rect.left;
+    const y = event.clientY - rect.top;
+
+    if (this.cancelButton.onClick(x, y)) {
+      console.log(" cancel button clicked");
+      this.playClickSound();
+      this.callback();
+    }
+    if (this.retryButton.onClick(x, y)) {
+      if (lang == "english") {
+        this.playClickSound();
+        this.dispose();
+        this.isRetryButtonClicked = true;
+        console.log(" retry button clicked");
+        this.retrySurePopup.addListner();
+        this.playAreYouSureSound();
+      } else {
+        this.playClickSound();
+        this.dispose();
+        console.log(" retry button clicked");
+        this.reloadScene(this.gameplayData, "GamePlay");
       }
-      if (self.retryButton.onClick(x, y)) {
-        self.levelStart.levelEndCallBack("retry_button");
-        self.deleteCanvas(self);
+    }
+    if (this.closeButton.onClick(x, y)) {
+      if (lang == "english") {
+        this.playClickSound();
+        this.dispose();
+        this.isCloseButtonClicked = true;
+        this.CloseSurePopup.addListner();
+        console.log(" close button clicked");
+        this.playAreYouSureSound();
+      } else {
+        this.playClickSound();
+        this.dispose();
+        console.log(" close button clicked");
+        this.switchToLevelSelection("GamePlay");
       }
-      if (self.closeButton.onClick(x, y)) {
-        self.levelStart.levelEndCallBack("close_button");
-        self.deleteCanvas(self);
-      }
-    });
+    }
+  };
+
+  draw() {
+    if (this.imagesLoaded) {
+      this.context.fillStyle = "rgba(0,0,0,0.5)";
+      this.context.fillRect(0, 0, this.canvas.width, this.canvas.height);
+      this.context.drawImage(
+        this.pop_up_image,
+        this.canvas.width * 0.1,
+        this.canvas.height * 0.2,
+        this.canvas.width * 0.8,
+        this.canvas.width * 0.8
+      );
+      this.cancelButton.draw();
+      this.retryButton.draw();
+      this.closeButton.draw();
+      if (this.isRetryButtonClicked == true && lang == "english")
+        this.retrySurePopup.draw();
+      if (this.isCloseButtonClicked == true && lang == "english")
+        this.CloseSurePopup.draw();
+    }
   }
 
-  deleteCanvas(self) {
-    self.canvasStack.deleteLayer(this.id);
-  }
+  playClickSound = () => {
+    this.audioPlayer.playButtonClickSound("./assets/audios/ButtonClick.mp3");
+  };
+  playAreYouSureSound = () => {
+    this.audioPlayer.playAudio("./assets/audios/are-you-sure.mp3");
+  };
 
-  draw() {}
-
-  update() {}
+  dispose = () => {
+    document
+      .getElementById("canvas")
+      .removeEventListener(CLICK, this.handleMouseClick, false);
+  };
 }
