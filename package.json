@@ -70,6 +70,10 @@
               "type": "cont",
               "section": "Content Changes"
             },
+            {
+              "type": "other",
+              "section": "Other Minor Changes"
+            },
             {}
           ]
         }
