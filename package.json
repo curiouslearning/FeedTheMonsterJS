@@ -1,6 +1,6 @@
 {
   "name": "feedthemonsterjs",
-  "version": "1.0.31",
+  "version": "1.0.30",
   "description": "education app",
   "main": "feedTheMonster.js",
   "scripts": {
@@ -42,8 +42,7 @@
     "workbox": "^0.0.0",
     "workbox-cli": "^6.5.4",
     "workbox-window": "^4.3.1"
-  },
-  "release-it": {
+  },"release-it": {
     "git": {
       "commitMessage": "chore: release v${version}"
     },
