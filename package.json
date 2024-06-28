@@ -1,6 +1,6 @@
 {
   "name": "feedthemonsterjs",
-  "version": "1.0.0",
+  "version": "1.0.30",
   "description": "education app",
   "main": "feedTheMonster.js",
   "scripts": {
