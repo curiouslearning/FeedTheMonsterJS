@@ -66,6 +66,10 @@
               "type": "fix",
               "section": "Bug Fixes"
             },
+            {
+              "type": "cont",
+              "section": "Content Changes"
+            },
             {}
           ]
         }
