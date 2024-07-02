@@ -1,0 +1,33 @@
+name: Send Release Notes to Slack
+
+on:
+  release:
+    types: [published]
+
+jobs:
+  send_to_slack:
+    name: Send Release Notes to Slack
+    runs-on: ubuntu-latest
+    steps:
+          
+      - name: Checkout Code
+        uses: actions/checkout@v2
+
+      - name: Extract Release Notes
+        id: extract_release_notes
+        uses: ffurrer2/extract-release-notes@v2
+
+      - name: Extract version number
+        id: extract_version_number
+        run: |
+          version=$(jq -r '.version' package.json)
+          echo "::set-output name=version::$version"
+          
+      - name: Send to Slack
+        run: |
+          curl -X POST -H 'Content-type: application/json' --data '{
+            "text": "New Release Notes:\nVersion: ${{ steps.extract_version_number.outputs.version }}\n${{ steps.extract_release_notes.outputs.release_notes }}"
+          }' ${{ secrets.SLACK_WEBHOOK_URL }}
+        env:
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+

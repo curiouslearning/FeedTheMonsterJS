@@ -1,9 +1,9 @@
 {
-    "version": "1.26",
+    "version": "1.27",
     "web_apps": [
         {
         "appId": 0,
-        "appIconUrl": "https://devcuriousreader.wpcomstaging.com/container_app_manifest/icons/ftm_english_dev.png",
+        "appIconUrl": "https://feedthemonsterdev.curiouscontent.org/assets/container_app_icons/ftm_english_dev.png",
         "title": "Feed The Monster US English",
         "appUrl": "https://feedthemonsterdev.curiouscontent.org/?cr_lang=english",
         "language": "English",
@@ -11,7 +11,7 @@
       },
       {
         "appId": 1,
-        "appIconUrl": "https://devcuriousreader.wpcomstaging.com/container_app_manifest/icons/ftm_hindi_dev.png",
+        "appIconUrl": "https://feedthemonsterdev.curiouscontent.org/assets/container_app_icons/ftm_hindi_dev.png",
         "title": "Feed The Monster Hindi",
         "appUrl": "https://feedthemonsterdev.curiouscontent.org/?cr_lang=hindi",
         "language": "Hindi",
@@ -19,7 +19,7 @@
       },
       {
         "appId": 2,
-        "appIconUrl": "https://devcuriousreader.wpcomstaging.com/container_app_manifest/icons/ftm_brazilianportuguese_dev.png",
+        "appIconUrl": "https://feedthemonsterdev.curiouscontent.org/assets/container_app_icons/ftm_brazilianportuguese_dev.png",
         "title": "Feed The Monster Brazilianportuguese",
         "appUrl": "https://feedthemonsterdev.curiouscontent.org/?cr_lang=brazilianportuguese",
         "language": "Brazilianportuguese",
@@ -27,7 +27,7 @@
       },
       {
         "appId": 3,
-        "appIconUrl": "https://devcuriousreader.wpcomstaging.com/container_app_manifest/icons/ftm_georgian_dev.png",
+        "appIconUrl": "https://feedthemonsterdev.curiouscontent.org/assets/container_app_icons/ftm_georgian_dev.png",
         "title": "Feed The Monster Georgian",
         "appUrl": "https://feedthemonsterdev.curiouscontent.org/?cr_lang=georgian",
         "language": "Georgian",
@@ -35,7 +35,7 @@
       },
       {
         "appId": 4,
-        "appIconUrl": "https://devcuriousreader.wpcomstaging.com/container_app_manifest/icons/ftm_igbo_dev.png",
+        "appIconUrl": "https://feedthemonsterdev.curiouscontent.org/assets/container_app_icons/ftm_igbo_dev.png",
         "title": "Feed The Monster Igbo",
         "appUrl": "https://feedthemonsterdev.curiouscontent.org/?cr_lang=igbo",
         "language": "Igbo",
@@ -43,7 +43,7 @@
       },
       {
         "appId": 5,
-        "appIconUrl": "https://devcuriousreader.wpcomstaging.com/container_app_manifest/icons/ftm_turkish_dev.png",
+        "appIconUrl": "https://feedthemonsterdev.curiouscontent.org/assets/container_app_icons/ftm_turkish_dev.png",
         "title": "Feed The Monster Turkish",
         "appUrl": "https://feedthemonsterdev.curiouscontent.org/?cr_lang=turkish",
         "language": "Turkish",
@@ -51,7 +51,7 @@
       },
       {
         "appId": 6,
-        "appIconUrl": "https://devcuriousreader.wpcomstaging.com/container_app_manifest/icons/ftm_ukrainian_dev.png",
+        "appIconUrl": "https://feedthemonsterdev.curiouscontent.org/assets/container_app_icons/ftm_ukrainian_dev.png",
         "title": "Feed The Monster Ukrainian",
         "appUrl": "https://feedthemonsterdev.curiouscontent.org/?cr_lang=ukranian",
         "language": "Ukrainian",
@@ -59,7 +59,7 @@
       },
       {
         "appId": 7,
-        "appIconUrl": "https://devcuriousreader.wpcomstaging.com/container_app_manifest/icons/ftm_vietnamese_dev.png",
+        "appIconUrl": "https://feedthemonsterdev.curiouscontent.org/assets/container_app_icons/ftm_vietnamese_dev.png",
         "title": "Feed The Monster Vietnamese",
         "appUrl": "https://feedthemonsterdev.curiouscontent.org/?cr_lang=vietnamese",
         "language": "Vietnamese",
@@ -67,7 +67,7 @@
       },
       {
         "appId": 8,
-        "appIconUrl": "https://devcuriousreader.wpcomstaging.com/container_app_manifest/icons/LetsFly_dev.png",
+        "appIconUrl": "https://feedthemonsterdev.curiouscontent.org/assets/container_app_icons/LetsFly_dev.png",
         "title": "Let's FLy Curious Reader",
         "appUrl": "https://curiousreaderdev.curiouscontent.org/",
         "language": "English",
@@ -75,7 +75,7 @@
       },
       {
         "appId": 9,
-        "appIconUrl": "https://devcuriousreader.wpcomstaging.com/container_app_manifest/icons/ftm_sepedi_dev.png",
+        "appIconUrl": "https://feedthemonsterdev.curiouscontent.org/assets/container_app_icons/ftm_sepedi_dev.png",
         "title": "Feed The Monster Sepedi",
         "appUrl": "https://feedthemonsterdev.curiouscontent.org/?cr_lang=sepedi",
         "language": "SePedi",
@@ -83,7 +83,7 @@
       },
       {
         "appId": 10,
-        "appIconUrl": "https://devcuriousreader.wpcomstaging.com/container_app_manifest/icons/ftm_kinyarwanda_dev.png",
+        "appIconUrl": "https://feedthemonsterdev.curiouscontent.org/assets/container_app_icons/ftm_kinyarwanda_dev.png",
         "title": "Feed The Monster Kinyarwanda",
         "appUrl": "https://feedthemonsterdev.curiouscontent.org/?cr_lang=kinyarwanda",
         "language": "Kinyarwanda",
@@ -91,7 +91,7 @@
       },
       {
         "appId": 11,
-        "appIconUrl": "https://devcuriousreader.wpcomstaging.com/container_app_manifest/icons/ftm_nepali_dev.png",
+        "appIconUrl": "https://feedthemonsterdev.curiouscontent.org/assets/container_app_icons/ftm_nepali_dev.png",
         "title": "Feed The Monster Nepali",
         "appUrl": "https://feedthemonsterdev.curiouscontent.org/?cr_lang=nepali",
         "language": "नेपाली",
@@ -99,7 +99,7 @@
       },
       {
         "appId": 13,
-        "appIconUrl": "https://devcuriousreader.wpcomstaging.com/container_app_manifest/icons/ftm_zulu_dev.png",
+        "appIconUrl": "https://feedthemonsterdev.curiouscontent.org/assets/container_app_icons/ftm_zulu_dev.png",
         "title": "Feed The Monster Zulu",
         "appUrl": "https://feedthemonsterdev.curiouscontent.org/?cr_lang=zulu",
         "language": "isiZulu",
@@ -107,7 +107,7 @@
       },
       {
         "appId": 14,
-        "appIconUrl": "https://devcuriousreader.wpcomstaging.com/container_app_manifest/icons/ftm_malay_dev.png",
+        "appIconUrl": "https://feedthemonsterdev.curiouscontent.org/assets/container_app_icons/ftm_malay_dev.png",
         "title": "Feed The Monster Malay",
         "appUrl": "https://feedthemonsterdev.curiouscontent.org/?cr_lang=malay",
         "language": "Malay",
@@ -115,7 +115,7 @@
       },
       {
         "appId": 15,
-        "appIconUrl": "https://devcuriousreader.wpcomstaging.com/container_app_manifest/icons/ftm_thai_dev.png",
+        "appIconUrl": "https://feedthemonsterdev.curiouscontent.org/assets/container_app_icons/ftm_thai_dev.png",
         "title": "Feed The Monster Thai",
         "appUrl": "https://feedthemonsterdev.curiouscontent.org/?cr_lang=thai",
         "language": "ไทย",
@@ -123,7 +123,7 @@
       },
       {
         "appId": 16,
-        "appIconUrl": "https://devcuriousreader.wpcomstaging.com/container_app_manifest/icons/ftm_marathi_dev.png",
+        "appIconUrl": "https://feedthemonsterdev.curiouscontent.org/assets/container_app_icons/ftm_marathi_dev.png",
         "title": "Feed The Monster Marathi",
         "appUrl": "https://feedthemonsterdev.curiouscontent.org/?cr_lang=marathi",
         "language": "मराठी",
@@ -131,7 +131,7 @@
       },
       {
         "appId": 17,
-        "appIconUrl": "https://devcuriousreader.wpcomstaging.com/container_app_manifest/icons/ftm_siswati_dev.png",
+        "appIconUrl": "https://feedthemonsterdev.curiouscontent.org/assets/container_app_icons/ftm_siswati_dev.png",
         "title": "Feed The Monster Siswati",
         "appUrl": "https://feedthemonsterdev.curiouscontent.org/?cr_lang=siswati",
         "language": "siSwati",
@@ -139,14 +139,14 @@
       },
       {
         "appId": 18,
-        "appIconUrl": "https://devcuriousreader.wpcomstaging.com/container_app_manifest/icons/ftm_englishwestafrican_dev.png",
+        "appIconUrl": "https://feedthemonsterdev.curiouscontent.org/assets/container_app_icons/ftm_englishwestafrican_dev.png",
         "title": "Feed The Monster English West African",
         "appUrl": "https://feedthemonsterdev.curiouscontent.org/?cr_lang=englishwestafrican",
         "language": "English-African",
         "languageInEnglishName":"English African"
       }, {
         "appId": 19,
-        "appIconUrl": "https://devcuriousreader.wpcomstaging.com/container_app_manifest/icons/hideandseek_dev.png",
+        "appIconUrl": "https://feedthemonsterdev.curiouscontent.org/assets/container_app_icons/hideandseek_dev.png",
         "title": "Curious Reader Hide And Seek",
         "appUrl": "https://curiousreaderdev.curiouscontent.org/?book=HideAndSeekLevel4En",
         "language": "English",
@@ -154,7 +154,7 @@
       },
       {
         "appId": 20,
-        "appIconUrl": "https://devcuriousreader.wpcomstaging.com/container_app_manifest/icons/ftm_azerbaijani_dev.png",
+        "appIconUrl": "https://feedthemonsterdev.curiouscontent.org/assets/container_app_icons/ftm_azerbaijani_dev.png",
         "title": "Feed The Monster Azerbaijani",
         "appUrl": "https://feedthemonsterdev.curiouscontent.org/?cr_lang=azerbaijani",
         "language": "Azarbaycan dili",
@@ -162,7 +162,7 @@
       },
       {
         "appId": 21,
-        "appIconUrl": "https://devcuriousreader.wpcomstaging.com/container_app_manifest/icons/ftm_saenglish_dev.png",
+        "appIconUrl": "https://feedthemonsterdev.curiouscontent.org/assets/container_app_icons/ftm_saenglish_dev.png",
         "title": "Feed The Monster English South African English",
         "appUrl": "https://feedthemonsterdev.curiouscontent.org/?cr_lang=southafricanenglish",
         "language": "South African English",
@@ -170,7 +170,7 @@
       },
       {
         "appId": 22,
-        "appIconUrl": "https://devcuriousreader.wpcomstaging.com/container_app_manifest/icons/ftm_twi_dev.png",
+        "appIconUrl": "https://feedthemonsterdev.curiouscontent.org/assets/container_app_icons/ftm_twi_dev.png",
         "title": "Feed The Monster Twi",
         "appUrl": "https://feedthemonsterdev.curiouscontent.org/?cr_lang=twi",
         "language": "Twi",
@@ -178,7 +178,7 @@
       },
       {
         "appId": 23,
-        "appIconUrl": "https://devcuriousreader.wpcomstaging.com/container_app_manifest/icons/ftm_swahili_dev.png",
+        "appIconUrl": "https://feedthemonsterdev.curiouscontent.org/assets/container_app_icons/ftm_swahili_dev.png",
         "title": "Feed The Monster Swahili",
         "appUrl": "https://feedthemonsterdev.curiouscontent.org/?cr_lang=swahili",
         "language": "Swahili",
@@ -186,7 +186,7 @@
       },
       {
         "appId": 24,
-        "appIconUrl": "https://devcuriousreader.wpcomstaging.com/container_app_manifest/icons/ftm_venda_dev.png",
+        "appIconUrl": "https://feedthemonsterdev.curiouscontent.org/assets/container_app_icons/ftm_venda_dev.png",
         "title": "Feed The Monster Venda",
         "appUrl": "https://feedthemonsterdev.curiouscontent.org/?cr_lang=venda",
         "language": "Tshivenda",
@@ -194,7 +194,7 @@
       },
       {
         "appId": 25,
-        "appIconUrl": "https://devcuriousreader.wpcomstaging.com/container_app_manifest/icons/ftm_french_dev.png",
+        "appIconUrl": "https://feedthemonsterdev.curiouscontent.org/assets/container_app_icons/ftm_french_dev.png",
         "title": "Feed The Monster French",
         "appUrl": "https://feedthemonsterdev.curiouscontent.org/?cr_lang=french",
         "language": "Français",
@@ -202,7 +202,7 @@
       },
       {
         "appId": 26,
-        "appIconUrl": "https://devcuriousreader.wpcomstaging.com/container_app_manifest/icons/ftm_sesotho_dev.png",
+        "appIconUrl": "https://feedthemonsterdev.curiouscontent.org/assets/container_app_icons/ftm_sesotho_dev.png",
         "title": "Feed The Monster Sesotho",
         "appUrl": "https://feedthemonsterdev.curiouscontent.org/?cr_lang=sesotho",
         "language": "Sesotho",
@@ -210,7 +210,7 @@
       },
       {
         "appId": 27,
-        "appIconUrl": "https://devcuriousreader.wpcomstaging.com/container_app_manifest/icons/ftm_tajik_dev.png",
+        "appIconUrl": "https://feedthemonsterdev.curiouscontent.org/assets/container_app_icons/ftm_tajik_dev.png",
         "title": "Feed The Monster Tajik",
         "appUrl": "https://feedthemonsterdev.curiouscontent.org/?cr_lang=tajik",
         "language": "тоҷикӣ",
@@ -218,7 +218,7 @@
       },
       {
         "appId": 28,
-        "appIconUrl": "https://devcuriousreader.wpcomstaging.com/container_app_manifest/icons/ftm_tswana_dev.png",
+        "appIconUrl": "https://feedthemonsterdev.curiouscontent.org/assets/container_app_icons/ftm_tswana_dev.png",
         "title": "Feed The Monster Tswana",
         "appUrl": "https://feedthemonsterdev.curiouscontent.org/?cr_lang=tswana",
         "language": "Tswana",
@@ -226,7 +226,7 @@
       },
       {
         "appId": 29,
-        "appIconUrl": "https://devcuriousreader.wpcomstaging.com/container_app_manifest/icons/ftm_kurdish_dev.png",
+        "appIconUrl": "https://feedthemonsterdev.curiouscontent.org/assets/container_app_icons/ftm_kurdish_dev.png",
         "title": "Feed The Monster Kurdish",
         "appUrl": "https://feedthemonsterdev.curiouscontent.org/?cr_lang=kurdish",
         "language": "کوردی",
@@ -234,7 +234,7 @@
       },
       {
         "appId": 30,
-        "appIconUrl": "https://devcuriousreader.wpcomstaging.com/container_app_manifest/icons/ftm_ndebele_dev.png",
+        "appIconUrl": "https://feedthemonsterdev.curiouscontent.org/assets/container_app_icons/ftm_ndebele_dev.png",
         "title": "Feed The Monster Ndebele",
         "appUrl": "https://feedthemonsterdev.curiouscontent.org/?cr_lang=ndebele",
         "language": "Ndebele",
@@ -242,7 +242,7 @@
       },
       {
         "appId": 31,
-        "appIconUrl": "https://devcuriousreader.wpcomstaging.com/container_app_manifest/icons/ftm_spanish_dev.png",
+        "appIconUrl": "https://feedthemonsterdev.curiouscontent.org/assets/container_app_icons/ftm_spanish_dev.png",
         "title": "Feed The Monster Spanish",
         "appUrl": "https://feedthemonsterdev.curiouscontent.org/?cr_lang=spanish",
         "language": "Español",
@@ -250,7 +250,7 @@
       },
       {
         "appId": 32,
-        "appIconUrl": "https://devcuriousreader.wpcomstaging.com/container_app_manifest/icons/ftm_bangla_dev.png",
+        "appIconUrl": "https://feedthemonsterdev.curiouscontent.org/assets/container_app_icons/ftm_bangla_dev.png",
         "title": "Feed The Monster Bangla",
         "appUrl": "https://feedthemonsterdev.curiouscontent.org/?cr_lang=bangla",
         "language": "বাংলা",
@@ -258,7 +258,7 @@
       },
       {
         "appId": 33,
-        "appIconUrl": "https://devcuriousreader.wpcomstaging.com/container_app_manifest/icons/ftm_lugandan_dev.png",
+        "appIconUrl": "https://feedthemonsterdev.curiouscontent.org/assets/container_app_icons/ftm_lugandan_dev.png",
         "title": "Feed The Monster Lugandan",
         "appUrl": "https://feedthemonsterdev.curiouscontent.org/?cr_lang=lugandan",
         "language": "Oluganda",
@@ -266,7 +266,7 @@
       },
       {
         "appId": 34,
-        "appIconUrl": "https://devcuriousreader.wpcomstaging.com/container_app_manifest/icons/ftm_hausa_dev.png",
+        "appIconUrl": "https://feedthemonsterdev.curiouscontent.org/assets/container_app_icons/ftm_hausa_dev.png",
         "title": "Feed The Monster Hausa",
         "appUrl": "https://feedthemonsterdev.curiouscontent.org/?cr_lang=hausa",
         "language": "Hausa",
@@ -274,7 +274,7 @@
       },
       {
         "appId": 35,
-        "appIconUrl": "https://devcuriousreader.wpcomstaging.com/container_app_manifest/icons/ftm_pashto_dev.png",
+        "appIconUrl": "https://feedthemonsterdev.curiouscontent.org/assets/container_app_icons/ftm_pashto_dev.png",
         "title": "Feed The Monster Pashto",
         "appUrl": "https://feedthemonsterdev.curiouscontent.org/?cr_lang=pashto",
         "language": "پښتو",
@@ -282,7 +282,7 @@
       },
       {
         "appId": 36,
-        "appIconUrl": "https://devcuriousreader.wpcomstaging.com/container_app_manifest/icons/ftm_igbo_dev.png",
+        "appIconUrl": "https://feedthemonsterdev.curiouscontent.org/assets/container_app_icons/ftm_igbo_dev.png",
         "title": "Feed The Monster Igbo",
         "appUrl": "https://feedthemonsterdev.curiouscontent.org/?cr_lang=igbo",
         "language": "Igbo",
@@ -290,7 +290,7 @@
       },
       {
         "appId": 37,
-        "appIconUrl": "https://devcuriousreader.wpcomstaging.com/container_app_manifest/icons/ftm_indianenglish_dev.png",
+        "appIconUrl": "https://feedthemonsterdev.curiouscontent.org/assets/container_app_icons/ftm_indianenglish_dev.png",
         "title": "Feed The Monster Indian English",
         "appUrl": "https://feedthemonsterdev.curiouscontent.org/?cr_lang=indianenglish",
         "language": "Indian English",
@@ -298,7 +298,7 @@
       },
       {
         "appId": 38,
-        "appIconUrl": "https://devcuriousreader.wpcomstaging.com/container_app_manifest/icons/ftm_austrailianenglish_dev.png",
+        "appIconUrl": "https://feedthemonsterdev.curiouscontent.org/assets/container_app_icons/ftm_austrailianenglish_dev.png",
         "title": "Feed The Monster Australian English",
         "appUrl": "https://feedthemonsterdev.curiouscontent.org/?cr_lang=australianenglish",
         "language": "Australian English",
@@ -306,7 +306,7 @@
       },
       {
         "appId": 39,
-        "appIconUrl": "https://devcuriousreader.wpcomstaging.com/container_app_manifest/icons/ftm_tsonga_dev.png",
+        "appIconUrl": "https://feedthemonsterdev.curiouscontent.org/assets/container_app_icons/ftm_tsonga_dev.png",
         "title": "Feed The Monster Tsonga",
         "appUrl": "https://feedthemonsterdev.curiouscontent.org/?cr_lang=tsonga",
         "language": "Xitsonga",
@@ -314,7 +314,7 @@
       },
       {
         "appId": 40,
-        "appIconUrl": "https://devcuriousreader.wpcomstaging.com/container_app_manifest/icons/ftm_english_dev.png",
+        "appIconUrl": "https://feedthemonsterdev.curiouscontent.org/assets/container_app_icons/ftm_english_dev.png",
         "title": "Feed The Monster Javanese",
         "appUrl": "https://feedthemonsterdev.curiouscontent.org/?cr_lang=javanese",
         "language": "Javanese",
@@ -322,7 +322,7 @@
       },
       {
         "appId": 41,
-        "appIconUrl": "https://devcuriousreader.wpcomstaging.com/container_app_manifest/icons/ftm_farsi_dev.png",
+        "appIconUrl": "https://feedthemonsterdev.curiouscontent.org/assets/container_app_icons/ftm_farsi_dev.png",
         "title": "Feed The Monster Farsi",
         "appUrl": "https://feedthemonsterdev.curiouscontent.org/?cr_lang=farsi",
         "language": "فارسی",
@@ -330,12 +330,36 @@
       },
     {
         "appId": 42,
-        "appIconUrl": "https://devcuriousreader.wpcomstaging.com/container_app_manifest/icons/ftm_arabic_dev.png",
+        "appIconUrl": "https://feedthemonsterdev.curiouscontent.org/assets/container_app_icons/ftm_arabic_dev.png",
         "title": "Feed The Monster Arabic",
         "appUrl": "https://feedthemonsterdev.curiouscontent.org/?cr_lang=arabic",
         "language": "عربي" ,
         "languageInEnglishName":"Arabic"
-      }
+      },
+      {
+          "appId": 43,
+          "appIconUrl": "https://feedthemonsterdev.curiouscontent.org/assets/container_app_icons/ftm_arabic_dev.png",
+          "title": "Feed The Monster Arabic",
+          "appUrl": "https://feedthemonsterdev.curiouscontent.org/?cr_lang=arabic",
+          "language": "عربي" ,
+          "languageInEnglishName":"Arabic"
+        },
+        {
+          "appId": 44,
+          "appIconUrl": "https://feedthemonsterdev.curiouscontent.org/assets/container_app_icons/ftm_Colours_dev.png",
+          "title": "Curious Reader ColoursWolofLv4",
+          "appUrl": "https://curiousreaderdev.curiouscontent.org/?book=ColoursWolofLv4",
+          "language": "Wolof",
+          "languageInEnglishName":"Wolof"
+        },
+        {
+          "appId": 45,
+          "appIconUrl": "https://feedthemonsterdev.curiouscontent.org/assets/container_app_icons/ftm_Colours_dev.png",
+          "title": "Curious Reader LetsFlyPashto",
+          "appUrl": "https://curiousreaderdev.curiouscontent.org/?book=LetsFlyPashto",
+          "language":"Pashto",
+          "languageInEnglishName":"Pashto"
+        }
      
     ]
   }
