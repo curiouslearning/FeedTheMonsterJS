@@ -43,12 +43,14 @@ export class StartScene {
     data: DataModal,
     switchSceneToLevelSelection: Function
   ) {
+    console.log("start scene loaded");
     this.canvas = canvas;
     this.data = data;
     this.width = canvas.width;
     this.height = canvas.height;
     this.canavsElement = document.getElementById("canvas") as HTMLCanvasElement;
     this.context = this.canavsElement.getContext("2d");
+    // console.log(this.context,"testing canvas");
     this.toggleBtn = document.getElementById("toggle-btn") as HTMLElement;
     this.monster = new Monster(this.canvas, 4);
     this.switchSceneToLevelSelection = switchSceneToLevelSelection;

@@ -40,6 +40,7 @@ export class SceneHandler {
     canvas: HTMLCanvasElement,
     data: DataModal,
   ) {
+    console.log("when is this screen loaded?");
     this.canvas = canvas;
     this.data = data;
     this.width = canvas.width;

@@ -69,6 +69,7 @@ export class TestGameplayScene {
         firebase_analytics: { logEvent: any },
         switchSceneToLevelSelection
     ) {
+        console.log("test gameplay loaded");
         // this = this;
         this.canvas = canvas;
         this.data = data;
@@ -106,7 +107,7 @@ export class TestGameplayScene {
         this.devToggle();
         this.createPlayButton();
         this.firebase_analytics = firebase_analytics;
-        console.log(this.data);
+        // console.log(this.data);
         // StartScene.SceneName = StartScene1;
 
         this.animation(0);
@@ -124,13 +125,13 @@ export class TestGameplayScene {
             console.log(" thisisallloadedimages ", this.loadedImages);
             this.imagesLoaded = true;
         });
-        console.log(this, "<--thiiiss");
+        // console.log(this, "<--thiiiss");
 
     }
 
     timeOverCallback = () => {
         // time to load new puzzle
-        console.log("timeOver");
+        // console.log("timeOver");
         this.timerTicking.readyTimer();
         this.timerTicking.startTimer();
         this.timerTicking.isMyTimerOver = false;
@@ -155,7 +156,7 @@ export class TestGameplayScene {
 
 
     handleMouseUp = (event) => {
-        console.log(" upping mouse like a pro ");
+        // console.log(" upping mouse like a pro ");
         let self = this;
         const selfElement = <HTMLElement>document.getElementById("canvas");
         var rect = selfElement.getBoundingClientRect();
@@ -171,7 +172,7 @@ export class TestGameplayScene {
             ) <= 60
         ) {
             // self.checkDraggedOption();
-            console.log(" drooped iniside moooooonster");
+            // console.log(" drooped iniside moooooonster");
         } else {
             self.monster.changeToIdleAnimation();
         }

@@ -104,6 +104,7 @@ export class GameplayScene {
     jsonVersionNumber,
     feedbackAudios
   ) {
+    console.log("gameplay loaded");
     this.width = canvas.width;
     this.height = canvas.height;
     this.rightToLeft = rightToLeft;
@@ -229,7 +230,7 @@ export class GameplayScene {
   }
 
   handleMouseUp = (event) => {
-    console.log(" upping mouse like a pro ");
+    // console.log(" upping mouse like a pro ");
     let self = this;
     const selfElement = <HTMLElement>document.getElementById("canvas");
     var rect = selfElement.getBoundingClientRect();
@@ -292,7 +293,7 @@ export class GameplayScene {
     const y = event.clientY - rect.top;
     for (let sc of self.stoneHandler.foilStones) {
       if (Math.sqrt((x - sc.x) * (x - sc.x) + (y - sc.y) * (y - sc.y)) <= 40) {
-        console.log(" clickkedon stone", sc);
+        // console.log(" clickkedon stone", sc);
         this.pickedStoneObject = sc;
         this.pickedStone = sc;
         this.audioPlayer.playAudio("./assets/audios/onDrag.mp3");
@@ -327,7 +328,7 @@ export class GameplayScene {
     }
 
     if (this.pauseButton.onClick(x, y)) {
-      console.log(" pause button getting click from gameplay");
+      // console.log(" pause button getting click from gameplay");
       this.audioPlayer.playButtonClickSound("./assets/audios/ButtonClick.mp3");
       this.pauseGamePlay();
     }
@@ -349,7 +350,7 @@ export class GameplayScene {
   };
 
   handleTouchMove = (event) => {
-    console.log("itstouchmove");
+    // console.log("itstouchmove");
     var touch = event.touches[0];
     var mouseEvent = new MouseEvent("mousemove", {
       clientX: touch.clientX,
@@ -584,7 +585,7 @@ export class GameplayScene {
 
   private handleCorrectStoneDrop = (feedbackIndex: number): void => {
     this.score += 100;
-    console.log("handleCorrectStone->");
+    // console.log("handleCorrectStone->");
     // this.audioPlayer.playAudio(false, "./assets/audios/Eat.mp3","./assets/audios/Cheering-02.mp3", "./assets/audios/fantastic.WAV");
     console.log(this.getRandomFeedBackText(feedbackIndex));
     this.feedbackTextEffects.wrapText(

@@ -31,6 +31,7 @@ export class LevelSelectionScreen {
   private minVersion:string;
   private firebaseIntegration: FirebaseIntegration;
   constructor(canvas: HTMLCanvasElement, data: any, callBack: Function) {
+    // console.log("level selection loaded");
     this.canvas = canvas;
     this.data = data;
     let self = this;

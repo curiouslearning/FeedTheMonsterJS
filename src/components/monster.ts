@@ -66,7 +66,7 @@ export class Monster extends EventManager {
 
       this.imagesLoaded = true;
       if (callBackFunction) {
-        console.log(this.imagesLoaded);
+        // console.log(this.imagesLoaded);
         callBackFunction();
       }
     });

@@ -60,7 +60,7 @@ class App {
     const dataModal = this.createDataModal(data);
     this.globalInitialization(data);
      this.logSessionStartFirebaseEvent();
-    console.log(data);
+    // console.log(data);
     window.addEventListener("resize", async () => {
       this.handleResize(dataModal);
     });
@@ -171,7 +171,9 @@ class App {
 
   private setupCanvas() {
     this.canvas.height = window.innerHeight;
-    this.canvas.width = window.screen.width > 420 ? 420 : window.innerWidth;
+    console.log(this.canvas.height,"CHECK CANVAS HEIGHT");
+    this.canvas.width = (window.screen.width >= 1024 || (window.screen.width > 991 && window.screen.width < 1024)) ? 1024 : (window.screen.width >= 991 || (window.screen.width > 768 && window.screen.width < 991)) ? 991 : (window.screen.width >= 768 || (window.screen.width > 500 && window.screen.width < 768)) ? 768: window.innerWidth;
+    console.log(this.canvas.width,"CHECK CANVAS WIDTH");
   }
 
   private createDataModal(data: any): DataModal {
