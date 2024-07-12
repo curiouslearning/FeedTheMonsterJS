@@ -631,8 +631,8 @@ export class GameplayScene {
       level_number: this.levelData.levelMeta.levelNumber,
       puzzle_number: this.counter,
       item_selected: puzzleType == "Word"
-        ? this.tempWordforWordPuzzle
-        : this.pickedStone?.text,
+        ? (this.tempWordforWordPuzzle==null ||this.tempWordforWordPuzzle==undefined)?"TIMEOUT":this.tempWordforWordPuzzle
+        : (this.pickedStone==null||this.pickedStone==undefined)?"TIMEOUT":this.pickedStone?.text,
       target: this.stoneHandler.getCorrectTargetStone(),
       foils: this.stoneHandler.getFoilStones(),
       response_time: (endTime - this.puzzleTime) / 1000,

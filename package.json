@@ -1,9 +1,10 @@
 {
   "name": "feedthemonsterjs",
-  "version": "1.0.0",
+  "version": "1.0.32",
   "description": "education app",
   "main": "feedTheMonster.js",
   "scripts": {
+    "release": "release-it",
     "dev": "webpack"
   },
   "repository": {
@@ -20,6 +21,7 @@
     "@capacitor/android": "^4.4.0",
     "@capacitor/core": "^4.4.0",
     "@octokit/rest": "^20.0.1",
+    "@release-it/conventional-changelog": "^8.0.1",
     "@sentry/browser": "^7.47.0",
     "@types/firebase": "^3.2.1",
     "@types/workbox-window": "^4.3.4",
@@ -33,10 +35,49 @@
     "howler": "^2.2.3",
     "node-fetch": "^3.3.1",
     "path": "^0.12.7",
+    "release-it": "^17.4.0",
     "simple-git": "^3.19.1",
     "ts-loader": "^9.4.1",
     "workbox": "^0.0.0",
     "workbox-window": "^4.3.1"
+  },
+  "release-it": {
+    "git": {
+      "commitMessage": "chore: release v${version}"
+    },
+    "github": {
+      "release": true
+    },
+    "npm": {
+      "publish": false
+    },
+    "plugins": {
+      "@release-it/conventional-changelog": {
+        "infile": "CHANGELOG.md",
+        "preset": {
+          "name": "conventionalcommits",
+          "types": [
+            {
+              "type": "feat",
+              "section": "Features"
+            },
+            {
+              "type": "fix",
+              "section": "Bug Fixes"
+            },
+            {
+              "type": "cont",
+              "section": "Content Changes"
+            },
+            {
+              "type": "other",
+              "section": "Other Minor Changes"
+            },
+            {}
+          ]
+        }
+      }
+    }
   },
   "devDependencies": {
     "@capacitor/cli": "^4.4.0",

@@ -6684,7 +6684,6 @@ class StartScene {
     toggleBtn;
     pwa_install_status;
     constructor(canvas, data, switchSceneToLevelSelection) {
-        console.log("start scene loaded");
         this.canvas = canvas;
         this.data = data;
         this.width = canvas.width;
