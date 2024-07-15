@@ -53,7 +53,7 @@ export class PromptText extends EventManager {
         this.promptPlayButton = new Image();
 
         this.loadImages().then(()=>{
-            console.log('Images loaded');
+            // console.log('Images loaded');
         });
 
         this.time = 0;
@@ -73,7 +73,7 @@ export class PromptText extends EventManager {
         const x = event.clientX - rect.left;
         const y = event.clientY - rect.top;
         if (self.onClick(x, y)) {
-            console.log('Clicked on Play prompt audio');
+            // console.log('Clicked on Play prompt audio');
             this.playSound();
         }
     }
@@ -83,7 +83,7 @@ export class PromptText extends EventManager {
     }
 
     playSound = () => {
-        console.log('PromptAudio',  Utils.getConvertedDevProdURL(this.currentPuzzleData.prompt.promptAudio));
+        // console.log('PromptAudio',  Utils.getConvertedDevProdURL(this.currentPuzzleData.prompt.promptAudio));
         if (this.isAppForeground) {
             this.audioPlayer.playPromptAudio(Utils.getConvertedDevProdURL(this.currentPuzzleData.prompt.promptAudio));
         }

@@ -60,6 +60,9 @@ img {
   color: white;
   text-align: center;
 }
+#monster{
+  border:1px solid;
+}
 #discription-text p {
   margin-top: 10%;
   line-height: 1.8;
@@ -116,7 +119,7 @@ img {
 
 @media (min-width: 420px) {
   #loading-screen {
-    max-width: 420px;
+    max-width: 100%;
   }
 }
 

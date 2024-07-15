@@ -45,7 +45,7 @@ export class FeedbackTextEffects {
     );
   }
   public wrapText(text: string): void {
-    console.log(text, ">>>>>>>>>");
+    // console.log(text, ">>>>>>>>>");
     const gradient = this.context.createLinearGradient(
       0,
       0,
@@ -84,7 +84,7 @@ export class FeedbackTextEffects {
     lineArray.forEach((text, index) => {
       let x = initialX;
       let lastSpaceIndex=text.lastIndexOf(" ",text.lastIndexOf(" ")-1);
-      console.log(text.length);
+      // console.log(text.length);
       if(this.fontSize*text.length > this.canvasWidth*1.7 &&lastSpaceIndex!=-1) {
         let initialText=text.slice(0,lastSpaceIndex);
         let lastText=" "+text.slice(lastSpaceIndex+1);

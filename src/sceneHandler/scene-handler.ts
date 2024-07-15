@@ -7,7 +7,7 @@ import {
 } from "../common/common";
 import { StartScene } from "../scenes/start-scene";
 import { DataModal } from "../data/data-modal";
-import { TestGameplayScene } from "../scenes/test-gameplay-scene";
+// import { TestGameplayScene } from "../scenes/test-gameplay-scene";
 import { LevelSelectionScreen } from "../scenes/level-selection-scene";
 import { Debugger } from "../../global-variables";
 import { GameplayScene } from "../scenes/gameplay-scene";
@@ -25,7 +25,7 @@ export class SceneHandler {
   public levelSelectionScene: LevelSelectionScreen;
   public gameplayScene: GameplayScene;
   public levelEndScene: LevelEndScene;
-  public testGameplayScene: TestGameplayScene;
+  // public testGameplayScene: TestGameplayScene;
   public canavsElement: HTMLCanvasElement;
   public context: CanvasRenderingContext2D;
   public static SceneName: string;
@@ -56,7 +56,17 @@ export class SceneHandler {
       
     SceneHandler.SceneName = StartScene1;
     this.loadingScreen = new LoadingScene(this.width, this.height,this.removeLoading);
-    this.animation(0);
+    this.startAnimationLoop();
+  }
+
+  startAnimationLoop() {
+    const animate = (timeStamp: number) => {
+      this.animation(timeStamp);
+      requestAnimationFrame(animate);
+    };
+
+    requestAnimationFrame(animate);
+
   }
 
   devToggle() {
@@ -97,7 +107,6 @@ export class SceneHandler {
       this.loading ? this.loadingScreen.draw(deltaTime) : null;
       this.levelEndScene.draw(deltaTime);
     }
-    requestAnimationFrame(this.animation);
   };
 
   switchSceneToGameplay = (gamePlayData, changeSceneRequestFrom?: string) => {
@@ -129,7 +138,7 @@ export class SceneHandler {
     currentLevelNumber,
     isTimerEnded:boolean,
   ) => {
-    console.log(" currentlevelPlayed: ", currentlevelPlayed);
+    // console.log(" currentlevelPlayed: ", currentlevelPlayed);
     this.loadingScreen.initCloud();
     var self = this;
     function createEndLevelScene(){

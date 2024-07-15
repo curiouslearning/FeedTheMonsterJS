@@ -60,7 +60,7 @@ class App {
     const dataModal = this.createDataModal(data);
     this.globalInitialization(data);
      this.logSessionStartFirebaseEvent();
-    console.log(data);
+    // console.log(data);
     window.addEventListener("resize", async () => {
       this.handleResize(dataModal);
     });
@@ -171,7 +171,7 @@ class App {
 
   private setupCanvas() {
     this.canvas.height = window.innerHeight;
-    this.canvas.width = window.screen.width > 420 ? 420 : window.innerWidth;
+    this.canvas.width = window.screen.width > 1024 ? 1024: window.innerWidth;
   }
 
   private createDataModal(data: any): DataModal {
@@ -323,7 +323,7 @@ class App {
       
       Promise.all(preloadPromises)
         .then(() => {
-          console.log("All Game audios files have been preloaded and are ready to use.");
+          // console.log("All Game audios files have been preloaded and are ready to use.");
           resolve();
         })
         .catch((error) => {

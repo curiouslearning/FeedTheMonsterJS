@@ -188,7 +188,7 @@ export class LevelEndScene {
   }
 
   handleMouseClick = (event) => {
-    console.log(" levelend mouseclick ");
+    // console.log(" levelend mouseclick ");
     const selfElement:HTMLElement =document.getElementById("canvas");
     var rect = selfElement.getBoundingClientRect();
     const x = event.clientX - rect.left;
@@ -196,13 +196,13 @@ export class LevelEndScene {
 
     if (this.closeButton.onClick(x, y)) {
       this.audioPlayer.playButtonClickSound("./assets/audios/ButtonClick.mp3");
-      console.log(" close button clicked");
+      // console.log(" close button clicked");
 
       this.switchToLevelSelectionCB("LevelEnd");
     }
     if (this.retryButton.onClick(x, y)) {
       this.audioPlayer.playButtonClickSound("./assets/audios/ButtonClick.mp3");
-      console.log(" retry button clicked");
+      // console.log(" retry button clicked");
       let gamePlayData = {
         currentLevelData: this.data.levels[this.currentLevel],
         selectedLevelNumber: this.currentLevel,
@@ -213,7 +213,7 @@ export class LevelEndScene {
     if (this.nextButton.onClick(x, y) && this.starCount >= 2) {
       this.audioPlayer.playButtonClickSound("./assets/audios/ButtonClick.mp3");
       let next = Number(this.currentLevel) + 1;
-      console.log(typeof next, " next button clicked", next);
+      // console.log(typeof next, " next button clicked", next);
       let gamePlayData = {
         currentLevelData: this.data.levels[next],
         selectedLevelNumber: next,
