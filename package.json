@@ -84,6 +84,7 @@
   "devDependencies": {
     "@capacitor/cli": "^4.4.0",
     "@types/howler": "^2.2.7",
+    "compression-webpack-plugin": "^11.1.0",
     "css-loader": "^7.1.2",
     "mini-css-extract-plugin": "^2.9.0",
     "style-loader": "^4.0.0",
