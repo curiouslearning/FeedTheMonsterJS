@@ -1,0 +1,1 @@
+export const ASSETS_PATH_STONE_PINK_BG = "./assets/images/stone_pink_v02.png"

@@ -482,7 +482,7 @@ export class GameplayScene {
 
   public letterInWordPuzzle(droppedStone: string) {
     const feedBackIndex = this.getRandomInt(0, 1);
-    const isCorrect = this.stoneHandler.isStoneDroppedCorrectForLetterInWord(
+    const isCorrect = this.stoneHandler.isStoneLetterDropCorrect(
       droppedStone,
       feedBackIndex
     );
@@ -496,7 +496,7 @@ export class GameplayScene {
 
   public letterOnlyPuzzle(droppedStone: string) {
     const feedBackIndex = this.getRandomInt(0, 1);
-    const isCorrect = this.stoneHandler.isStoneDroppedCorrectForLetterOnly(
+    const isCorrect = this.stoneHandler.isStoneLetterDropCorrect(
       droppedStone,
       feedBackIndex
     );
