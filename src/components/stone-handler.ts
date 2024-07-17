@@ -192,17 +192,14 @@ export default class StoneHandler extends EventManager {
 
   public isStoneLetterDropCorrect(
     droppedStone: string,
-    feedBackIndex: number
+    feedBackIndex: number,
+    isWord:boolean = false
   ): boolean {
-    const isLetterDropCorrect = droppedStone == this.correctTargetStone
-    console.log('isStoneLetterDropCorrect ', isLetterDropCorrect)
-    this.processLetterDropFeedbackAudio(
-      feedBackIndex, isLetterDropCorrect,
-      false,
-      AUDIO_PATH_EATS,
-      AUDIO_PATH_MONSTER_SPIT,
-      Math.round(Math.random()) > 0 ? AUDIO_PATH_MONSTER_DISSAPOINTED : null
-    );
+    const isLetterDropCorrect = isWord
+      ? droppedStone == this.correctTargetStone.substring(0, droppedStone.length)
+      : droppedStone == this.correctTargetStone;
+
+    this.processLetterDropFeedbackAudio( feedBackIndex, isLetterDropCorrect );
 
     return isLetterDropCorrect
   }
@@ -210,31 +207,17 @@ export default class StoneHandler extends EventManager {
   private processLetterDropFeedbackAudio(
     feedBackIndex: number,
     isLetterDropCorrect:boolean,
-    ...feebbackAudioParams
   ) {
     if (isLetterDropCorrect) {
        this.playCorrectAnswerFeedbackSound(feedBackIndex);
     } else {
       this.audioPlayer.playFeedbackAudios(
-        ...feebbackAudioParams
+        false,
+        AUDIO_PATH_EATS,
+        AUDIO_PATH_MONSTER_SPIT,
+        Math.round(Math.random()) > 0 ? AUDIO_PATH_MONSTER_DISSAPOINTED : null
       );
     }
-  }
-
-  public isStonDroppedCorrectForWord(
-    droppedStone: string,
-    feedBackIndex: number
-  ): boolean {
-    const isLetterDropCorrect = droppedStone == this.correctTargetStone.substring(0, droppedStone.length)
-    this.processLetterDropFeedbackAudio(
-      feedBackIndex,
-      isLetterDropCorrect,
-      false,
-      AUDIO_PATH_EATS,
-      AUDIO_PATH_CHEERING_FUNC(2)
-    );
-
-    return isLetterDropCorrect;
   }
 
   public getCorrectTargetStone(): string {

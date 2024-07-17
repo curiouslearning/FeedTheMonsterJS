@@ -4,3 +4,5 @@ export const AUDIO_PATH_MONSTER_DISSAPOINTED = "./assets/audios/Disapointed-05.m
 export const AUDIO_PATH_POINTS_ADD = "assets/audios/PointsAdd.wav";
 export const AUDIO_PATH_CORRECT_STONE = "assets/audios/CorrectStoneFinal.mp3"
 export const AUDIO_PATH_CHEERING_FUNC = (randomNumber) => `./assets/audios/Cheering-0${randomNumber}.mp3`;
+export const AUDIO_PATH_BTN_CLICK = "./assets/audios/ButtonClick.mp3"
+export const AUDIO_PATH_ON_DRAG = "./assets/audios/onDrag.mp3"
