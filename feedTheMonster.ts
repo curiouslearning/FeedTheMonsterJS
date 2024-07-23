@@ -44,6 +44,7 @@ class App {
     this.channel.addEventListener("message", this.handleServiceWorkerMessage);
     window.addEventListener("beforeunload", this.handleBeforeUnload);
     document.addEventListener(VISIBILITY_CHANGE, this.handleVisibilityChange);
+    window.addEventListener("resize", this.handleResize.bind(this));
   }
 
   private async init() {
@@ -265,6 +266,7 @@ class App {
 
   private handleBeforeUnload = async (event: BeforeUnloadEvent): Promise<void> => {
     this.logSessionEndFirebaseEvent();
+    this.dispose();
   }
 
   private preloadGameAudios = async () => {
@@ -296,6 +298,20 @@ class App {
         });
     });
   }
+
+    // Add the dispose method
+    public dispose(): void {
+      this.channel.removeEventListener("message", this.handleServiceWorkerMessage);
+      window.removeEventListener("beforeunload", this.handleBeforeUnload);
+      document.removeEventListener(VISIBILITY_CHANGE, this.handleVisibilityChange);
+      window.removeEventListener("resize", this.handleResize);
+  
+      if (navigator.serviceWorker) {
+        navigator.serviceWorker.removeEventListener("message", this.handleServiceWorkerMessage);
+      }
+  
+      // Perform additional cleanup if necessary
+    }
 }
 
 const app = new App(lang);

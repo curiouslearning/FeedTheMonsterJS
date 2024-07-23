@@ -7,7 +7,6 @@ import {
 } from "../common/common";
 import { StartScene } from "../scenes/start-scene";
 import { DataModal } from "../data/data-modal";
-// import { TestGameplayScene } from "../scenes/test-gameplay-scene";
 import { LevelSelectionScreen } from "../scenes/level-selection-scene";
 import { Debugger } from "../../global-variables";
 import { GameplayScene } from "../scenes/gameplay-scene";
@@ -25,7 +24,6 @@ export class SceneHandler {
   public levelSelectionScene: LevelSelectionScreen;
   public gameplayScene: GameplayScene;
   public levelEndScene: LevelEndScene;
-  // public testGameplayScene: TestGameplayScene;
   public canavsElement: HTMLCanvasElement;
   public context: CanvasRenderingContext2D;
   public static SceneName: string;
@@ -53,7 +51,7 @@ export class SceneHandler {
       data,
       this.switchSceneToLevelSelection
     );
-      
+
     SceneHandler.SceneName = StartScene1;
     this.loadingScreen = new LoadingScene(this.width, this.height,this.removeLoading);
     this.startAnimationLoop();
@@ -112,7 +110,7 @@ export class SceneHandler {
   switchSceneToGameplay = (gamePlayData, changeSceneRequestFrom?: string) => {
     this.showLoading();
     this.dispose(changeSceneRequestFrom, "GamePlay");
-    let jsonVersionNumber= !!this.data.majVersion && !!this.data.minVersion  ? this.data.majVersion.toString() +"."+this.data.minVersion.toString() : "";
+    let jsonVersionNumber= !!this.data.majVersion && !!this.data.minVersion ? this.data.majVersion.toString() + "." + this.data.minVersion.toString() : "";
     setTimeout(() => {
       this.gameplayScene = new GameplayScene(
         this.canvas,
@@ -132,35 +130,32 @@ export class SceneHandler {
   };
 
   switchSceneToEndLevel = (
-    currentlevelPlayed,
     starCount: number,
     monsterPhaseNumber: number,
     currentLevelNumber,
-    isTimerEnded:boolean,
+    isTimerEnded: boolean,
   ) => {
-    // console.log(" currentlevelPlayed: ", currentlevelPlayed);
     this.loadingScreen.initCloud();
-    var self = this;
-    function createEndLevelScene(){
-      self.gameplayScene.dispose();
+    function createEndLevelScene() {
+      this.gameplayScene.dispose();
       document.getElementById("feedback-text").style.zIndex = "0";
-      self.levelEndScene = new LevelEndScene(
-        self.canvas,
-        self.height,
-        self.width,
-        self.context,
+      this.levelEndScene = new LevelEndScene(
+        this.canvas,
+        this.height,
+        this.width,
+        this.context,
         starCount,
         currentLevelNumber,
-        self.switchSceneToGameplay,
-        self.switchSceneToLevelSelection,
-        self.data,
+        this.switchSceneToGameplay,
+        this.switchSceneToLevelSelection,
+        this.data,
         monsterPhaseNumber
       );
       SceneHandler.SceneName = EndScene1;
-  }
-    if(isTimerEnded){
+    }
+    if (isTimerEnded) {
       createEndLevelScene();
-    }else{
+    } else {
       setTimeout(() => {
         createEndLevelScene();
       }, 4000);

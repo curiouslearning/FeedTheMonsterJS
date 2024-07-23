@@ -7,7 +7,7 @@ const TerserPlugin = require('terser-webpack-plugin');
 const CompressionPlugin = require('compression-webpack-plugin');
 
 var config = {
-  mode: 'production',
+  mode: 'development',
   watch: true,
   entry: './feedTheMonster.ts',
   module: {

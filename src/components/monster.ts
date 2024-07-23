@@ -46,9 +46,9 @@ export class Monster extends EventManager {
     this.frameX = 0;
     this.frameY = 0;
     this.maxFrame = 6;
-    // console.log(this.game);
     this.x = this.game.width / 2 - this.game.width * 0.243;
     this.y = this.game.width / 3;
+    // console.log(this.x,this.y); 
     this.fps = 10;
     this.countFrame = 0;
     this.frameInterval = 1000 / this.fps;
