@@ -98,6 +98,7 @@ export class GameplayScene {
   firebaseIntegration: FirebaseIntegration;
   startTime: number;
   puzzleTime: number;
+  isDisposing: boolean
 
   constructor(
     canvas,
@@ -126,7 +127,7 @@ export class GameplayScene {
     this.jsonVersionNumber = jsonVersionNumber;
     this.startGameTime();
     this.startPuzzleTime();
-
+    this.isDisposing = false;
     this.pauseButton = new PauseButton(this.context, this.canvas);
     this.timerTicking = new TimerTicking(
       this.width,
@@ -248,7 +249,6 @@ export class GameplayScene {
     );
 
     if (distance <= 100 && this.pickedStone) {
-      console.log("Picked Stone:", this.pickedStone); // Debugging statement
       const { text } = this.pickedStone; // Use destructuring for clarity
       switch (this.levelData.levelMeta.levelType) {
         case "LetterOnly":
@@ -411,10 +411,11 @@ export class GameplayScene {
 
   loadPuzzle = (isTimerEnded?: boolean | undefined) => {
     this.stonesCount = 1;
-    const timerEnded = !isTimerEnded === undefined;
+    const timerEnded = isTimerEnded !== undefined;
     if (timerEnded) {
       this.logPuzzleEndFirebaseEvent(false);
     }
+
     this.removeEventListeners();
     this.counter += 1; //increment Puzzle
     this.isGameStarted = false;
@@ -424,7 +425,6 @@ export class GameplayScene {
       this.logLevelEndFirebaseEvent();
       GameScore.setGameLevelScore(this.levelData, this.score);
       this.switchSceneToEnd(
-        this.levelData,
         GameScore.calculateStarCount(this.score),
         this.monsterPhaseNumber,
         this.levelNumber,
@@ -438,20 +438,23 @@ export class GameplayScene {
       });
 
       setTimeout(() => {
-        this.initNewPuzzle(loadPuzzleEvent);
+        if (!this.isDisposing) {
+          this.initNewPuzzle(loadPuzzleEvent);
+        }
       }, timerEnded ? 0 : 4500);
     }
   };
 
   public dispose = () => {
+    this.isDisposing = true;
     this.audioPlayer.stopAllAudios();
     this.removeEventListeners();
     this.feedbackTextEffects.unregisterEventListener();
-    this.monster.unregisterEventListener();
-    this.timerTicking.unregisterEventListener();
-    this.levelIndicators.unregisterEventListener();
-    this.stoneHandler.unregisterEventListener();
-    this.promptText.unregisterEventListener();
+    this.monster.dispose();
+    this.timerTicking.dispose();
+    this.levelIndicators.dispose();
+    this.stoneHandler.dispose();
+    this.promptText.dispose();
     document.removeEventListener(
       VISIBILITY_CHANGE,
       this.handleVisibilityChange,
@@ -502,6 +505,7 @@ export class GameplayScene {
         : this.tempWordforWordPuzzle.length
       )
       this.stonesCount++;
+
       setTimeout(() => {
         this.monster.changeToIdleAnimation();
       }, 1500);
@@ -529,7 +533,7 @@ export class GameplayScene {
     const dropStoneEvent = new CustomEvent(STONEDROP, {
       detail: { isCorrect: isCorrect },
     });
-    console.log('dropStoneEvent ', dropStoneEvent)
+
     document.dispatchEvent(dropStoneEvent);
   }
 

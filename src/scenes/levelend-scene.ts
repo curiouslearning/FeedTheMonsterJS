@@ -138,7 +138,6 @@ export class LevelEndScene {
       { delay: 1000, count: 2 },
       { delay: 1500, count: 3 },
     ];
-
     this.timeouts = animations.map((animation) => {
       return setTimeout(() => {
         this.starDrawnCount = animation.count;
@@ -196,13 +195,10 @@ export class LevelEndScene {
 
     if (this.closeButton.onClick(x, y)) {
       this.audioPlayer.playButtonClickSound("./assets/audios/ButtonClick.mp3");
-      // console.log(" close button clicked");
-
       this.switchToLevelSelectionCB("LevelEnd");
     }
     if (this.retryButton.onClick(x, y)) {
       this.audioPlayer.playButtonClickSound("./assets/audios/ButtonClick.mp3");
-      // console.log(" retry button clicked");
       let gamePlayData = {
         currentLevelData: this.data.levels[this.currentLevel],
         selectedLevelNumber: this.currentLevel,
@@ -232,6 +228,7 @@ export class LevelEndScene {
     }
   };
   dispose = () => {
+    this.monster.dispose()
     this.audioPlayer.stopAllAudios();
     this.timeouts.forEach((timeout) => clearTimeout(timeout));
     document
