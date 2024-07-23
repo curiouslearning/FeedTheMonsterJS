@@ -106,7 +106,7 @@ export class TestGameplayScene {
         this.devToggle();
         this.createPlayButton();
         this.firebase_analytics = firebase_analytics;
-        console.log(this.data);
+        // console.log(this.data);
         // StartScene.SceneName = StartScene1;
 
         this.animation(0);
@@ -121,16 +121,16 @@ export class TestGameplayScene {
 
         loadImages(this.images, (images) => {
             this.loadedImages = Object.assign({}, images);
-            console.log(" thisisallloadedimages ", this.loadedImages);
+            // console.log(" thisisallloadedimages ", this.loadedImages);
             this.imagesLoaded = true;
         });
-        console.log(this, "<--thiiiss");
+        // console.log(this, "<--thiiiss");
 
     }
 
     timeOverCallback = () => {
         // time to load new puzzle
-        console.log("timeOver");
+        // console.log("timeOver");
         this.timerTicking.readyTimer();
         this.timerTicking.startTimer();
         this.timerTicking.isMyTimerOver = false;
@@ -155,7 +155,7 @@ export class TestGameplayScene {
 
 
     handleMouseUp = (event) => {
-        console.log(" upping mouse like a pro ");
+        // console.log(" upping mouse like a pro ");
         let self = this;
         const selfElement = <HTMLElement>document.getElementById("canvas");
         var rect = selfElement.getBoundingClientRect();
@@ -171,20 +171,20 @@ export class TestGameplayScene {
             ) <= 60
         ) {
             // self.checkDraggedOption();
-            console.log(" drooped iniside moooooonster");
+            // console.log(" drooped iniside moooooonster");
         } else {
             self.monster.changeToIdleAnimation();
         }
 
         self.pickedStone = null;
-        console.log(" self.pickedStone : ", self.pickedStone);
+        // console.log(" self.pickedStone : ", self.pickedStone);
 
     }
 
     handleMouseDown = (event) => {
 
         let self = this;
-        console.log(" downing mouse like a pro ");
+        // console.log(" downing mouse like a pro ");
         const selfElement = <HTMLElement>document.getElementById("canvas");
         var rect = selfElement.getBoundingClientRect();
         const x = event.clientX - rect.left;
@@ -194,7 +194,7 @@ export class TestGameplayScene {
             if (
                 Math.sqrt((x - sc.x) * (x - sc.x) + (y - sc.y) * (y - sc.y)) <= 40
             ) {
-                console.log(" clickkedon stone", sc);
+                // console.log(" clickkedon stone", sc);
                 this.pickedStone = sc;
                 // console.log("this.pickedStone : ", this.pickedStone);
             }
@@ -205,7 +205,7 @@ export class TestGameplayScene {
 
     handleMouseMove = (event) => {
         let self = this;
-        console.log(" mmoving mouse like a pro ");
+        // console.log(" mmoving mouse like a pro ");
         // this.levelIndicator.setIndicators(1);
         const selfElement = <HTMLElement>document.getElementById("canvas");
         // event.preventDefault();
@@ -345,7 +345,7 @@ export class TestGameplayScene {
         this.handler.addEventListener(
             "touchmove",
             function (e) {
-                console.log(" itstouchmove ");
+                // console.log(" itstouchmove ");
                 var touch = e.touches[0];
                 var mouseEvent = new MouseEvent("mousemove", {
                   clientX: touch.clientX,
@@ -371,7 +371,7 @@ export class TestGameplayScene {
 
     handleMouseClick = (event) => {
         let self = this;
-        console.log(" startScene Listner ", this);
+        // console.log(" startScene Listner ", this);
         // this.levelIndicator.setIndicators(1);
         const selfElement = <HTMLElement>document.getElementById("canvas");
         event.preventDefault();
@@ -380,7 +380,7 @@ export class TestGameplayScene {
         const y = event.clientY - rect.top;
         // console.log(self, "thiiiss->>>", this);
         if (self.playButton.onClick(x, y)) {
-            console.log(" booomer inside");
+            // console.log(" booomer inside");
             self.firebase_analytics
                 ? self.firebase_analytics.logEvent(FirebaseUserClicked, "click")
                 : null;
@@ -397,7 +397,7 @@ export class TestGameplayScene {
     }
 
     dispose() {
-        console.log("Disposing current listner startscene1", this);
+        // console.log("Disposing current listner startscene1", this);
         this.handler.removeEventListener("click", this.handleMouseClick, false);
     }
 }

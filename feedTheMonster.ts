@@ -44,9 +44,9 @@ class App {
     this.channel.addEventListener("message", this.handleServiceWorkerMessage);
     window.addEventListener("beforeunload", this.handleBeforeUnload);
     document.addEventListener(VISIBILITY_CHANGE, this.handleVisibilityChange);
-    
+    window.addEventListener("resize", this.handleResize.bind(this));
   }
-   
+
   private async init() {
     const font = Utils.getLanguageSpecificFont(this.lang);
     await this.loadAndCacheFont(font, `./assets/fonts/${font}.ttf`);
@@ -54,13 +54,12 @@ class App {
     this.handleLoadingScreen();
     this.registerWorkbox();
     this.setupCanvas();
-     const data = await getData();
-     this.majVersion = data.majversion;
-     this.minVersion = data.minversion
+    const data = await getData();
+    this.majVersion = data.majversion;
+    this.minVersion = data.minversion;
     const dataModal = this.createDataModal(data);
     this.globalInitialization(data);
-     this.logSessionStartFirebaseEvent();
-    console.log(data);
+    this.logSessionStartFirebaseEvent();
     window.addEventListener("resize", async () => {
       this.handleResize(dataModal);
     });
@@ -69,45 +68,43 @@ class App {
       this.handleCachedScenario(dataModal);
     }
   }
- 
-  private logSessionStartFirebaseEvent(){
-    let lastSessionEndTime = localStorage.getItem("lastSessionEndTime");
 
+  private logSessionStartFirebaseEvent() {
+    let lastSessionEndTime = localStorage.getItem("lastSessionEndTime");
     let lastTime = 0;
     this.startSessionTime = new Date().getTime();
     if (lastSessionEndTime) {
-        let parsedTimestamp = parseInt(lastSessionEndTime);
-    
-        if (!isNaN(parsedTimestamp)) {
-          lastTime = Math.abs(new Date().getTime() - parsedTimestamp);
-        }}
-        const daysSinceLast = lastTime ? lastTime / (1000 * 60 * 60 * 24) : 0;
-        const roundedDaysSinceLast = parseFloat(daysSinceLast.toFixed(3));
+      let parsedTimestamp = parseInt(lastSessionEndTime);
+      if (!isNaN(parsedTimestamp)) {
+        lastTime = Math.abs(new Date().getTime() - parsedTimestamp);
+      }
+    }
+    const daysSinceLast = lastTime ? lastTime / (1000 * 60 * 60 * 24) : 0;
+    const roundedDaysSinceLast = parseFloat(daysSinceLast.toFixed(3));
     const sessionStartData: SessionStart = {
       cr_user_id: pseudoId,
       ftm_language: lang,
       profile_number: 0,
-      version_number: document.getElementById("version-info-id").innerHTML,
-      json_version_number: !!this.majVersion && !!this.minVersion  ? this.majVersion.toString() +"."+this.minVersion.toString() : "",
-      days_since_last:roundedDaysSinceLast,
-
+      version_number: this.versionInfoElement.innerHTML,
+      json_version_number: !!this.majVersion && !!this.minVersion ? this.majVersion.toString() + "." + this.minVersion.toString() : "",
+      days_since_last: roundedDaysSinceLast,
     };
-    
     this.firebaseIntegration.sendSessionStartEvent(sessionStartData);
   }
-  private logSessionEndFirebaseEvent(){
+
+  private logSessionEndFirebaseEvent() {
     const sessionEndData: SessionEnd = {
       cr_user_id: pseudoId,
       ftm_language: lang,
       profile_number: 0,
-      version_number: document.getElementById("version-info-id").innerHTML,
-      json_version_number: !!this.majVersion && !!this.minVersion  ? this.majVersion.toString() +"."+this.minVersion.toString() : "",
-      duration:  (new Date().getTime() - this.startSessionTime)/1000,
-
+      version_number: this.versionInfoElement.innerHTML,
+      json_version_number: !!this.majVersion && !!this.minVersion ? this.majVersion.toString() + "." + this.minVersion.toString() : "",
+      duration: (new Date().getTime() - this.startSessionTime) / 1000,
     };
-    localStorage.setItem("lastSessionEndTime",new Date().getTime().toString());
-  this.firebaseIntegration.sendSessionEndEvent(sessionEndData);
-}
+    localStorage.setItem("lastSessionEndTime", new Date().getTime().toString());
+    this.firebaseIntegration.sendSessionEndEvent(sessionEndData);
+  }
+
   private initializeCachedData(): Map<string, boolean> {
     const storedData = localStorage.getItem(IsCached);
     return storedData ? new Map(JSON.parse(storedData)) : new Map();
@@ -117,36 +114,29 @@ class App {
     try {
       const cache = await caches.open('fontCache');
       const response = await cache.match(fontPath);
-  
       if (!response) {
         const fontResponse = await fetch(fontPath);
         const fontBlob = await fontResponse.blob();
-        
         await cache.put(fontPath, new Response(fontBlob));
-        
-        const font = new FontFace(fontName, `url(${fontPath}) format('truetype')`);
-        await font.load();
-        document.fonts.add(font);
-      } else {
-        const font = new FontFace(fontName, `url(${fontPath}) format('truetype')`);
-        await font.load();
-        document.fonts.add(font);
       }
+      const font = new FontFace(fontName, `url(${fontPath}) format('truetype')`);
+      await font.load();
+      document.fonts.add(font);
     } catch (error) {
       console.error(`Failed to load and cache font: ${error}`);
     }
   }
 
   private handleLoadingScreen = () => {
-    if(this.is_cached.get(lang)){
+    if (this.is_cached.get(lang)) {
       this.loadingElement.style.zIndex = '-1';
       this.loadingElement.style.display = 'none';
-      this.progressBarContainer.style.display="none";
-      this.progressBar.style.display="none";
-    }else{
-      this.progressBarContainer.style.display="flex";
-      this.progressBar.style.display="flex";
-      this.progressBar.style.width="30%";
+      this.progressBarContainer.style.display = "none";
+      this.progressBar.style.display = "none";
+    } else {
+      this.progressBarContainer.style.display = "flex";
+      this.progressBar.style.display = "flex";
+      this.progressBar.style.width = "30%";
     }
   }
 
@@ -154,14 +144,11 @@ class App {
     if ("serviceWorker" in navigator) {
       try {
         const wb = new Workbox("./sw.js", {});
-  
         await wb.register();
         await navigator.serviceWorker.ready;
-  
         if (!this.is_cached.has(this.lang)) {
           this.channel.postMessage({ command: "Cache", data: this.lang });
         }
-  
         navigator.serviceWorker.addEventListener("message", this.handleServiceWorkerMessage);
       } catch (error) {
         console.error(`Failed to register service worker: ${error}`);
@@ -171,7 +158,7 @@ class App {
 
   private setupCanvas() {
     this.canvas.height = window.innerHeight;
-    this.canvas.width = window.screen.width > 420 ? 420 : window.innerWidth;
+    this.canvas.width = window.screen.width > 1024 ? 1024 : window.innerWidth;
   }
 
   private createDataModal(data: any): DataModal {
@@ -202,7 +189,6 @@ class App {
     }
   }
 
-
   private reinitializeSceneHandler(dataModal: DataModal): void {
     delete this.sceneHandler;
     this.sceneHandler = new SceneHandler(this.canvas, dataModal);
@@ -217,11 +203,7 @@ class App {
 
   public passingDataToContainer = (): void => {
     if (window.Android) {
-      if (this.is_cached.get(this.lang) == true) {
-        window.Android.cachedStatus(true);
-      } else {
-        window.Android.cachedStatus(false);
-      }
+      window.Android.cachedStatus(this.is_cached.get(this.lang) == true);
     }
   }
 
@@ -234,11 +216,8 @@ class App {
   private handleUpdateFoundMessage(): void {
     let text: string = "Update Found\nPress ok to update";
     const userConfirmed: boolean = confirm(text);
-  
     if (userConfirmed) {
       window.location.reload();
-    } else {
-      text = "You canceled!";
     }
   }
 
@@ -253,31 +232,19 @@ class App {
 
       if (data.data % 100 === 0 && !this.is_cached.get(this.lang)) {
         this.is_cached.set(this.lang, true);
-        localStorage.setItem(
-          IsCached,
-          JSON.stringify(Array.from(this.is_cached.entries()))
-        );
+        localStorage.setItem(IsCached, JSON.stringify(Array.from(this.is_cached.entries())));
         const download_completed: DownloadCompleted = {
           cr_user_id: pseudoId,
           ftm_language: lang,
           profile_number: 0,
-          version_number: document.getElementById("version-info-id").innerHTML,
-          json_version_number: !!this.majVersion && !!this.minVersion  ? this.majVersion.toString() +"."+this.minVersion.toString() : "",
+          version_number: this.versionInfoElement.innerHTML,
+          json_version_number: !!this.majVersion && !!this.minVersion ? this.majVersion.toString() + "." + this.minVersion.toString() : "",
         };
         this.firebaseIntegration.sendDownloadCompletedEvent(download_completed);
         localStorage.setItem("version" + this.lang, data.version);
         window.location.reload();
       }
       this.progressBar.style.width = `${data.data}%`;
-    }
-  }
-
-  private handleServiceWorkerRegistration = (registration: ServiceWorkerRegistration): void => {
-    if (registration.installing) {
-      registration.installing.postMessage({
-        type: "Registration",
-        value: this.lang,
-      });
     }
   }
 
@@ -288,18 +255,21 @@ class App {
       this.handleUpdateFoundMessage();
     }
   }
+
   private handleVisibilityChange = () => {
     if (document.visibilityState === "visible") {
-    this.logSessionStartFirebaseEvent();
-    }else{
+      this.logSessionStartFirebaseEvent();
+    } else {
       this.logSessionEndFirebaseEvent();
     }
   };
+
   private handleBeforeUnload = async (event: BeforeUnloadEvent): Promise<void> => {
     this.logSessionEndFirebaseEvent();
+    this.dispose();
   }
 
-  private preloadGameAudios = async() => {
+  private preloadGameAudios = async () => {
     let audioUrls = [
       "./assets/audios/intro.mp3",
       "./assets/audios/Cheering-02.mp3",
@@ -317,22 +287,31 @@ class App {
       "./assets/audios/PointsAdd.wav",
       "./assets/audios/are-you-sure.mp3"
     ];
-  
+
     return new Promise<void>((resolve, reject) => {
       const preloadPromises = audioUrls.map((audioSrc) => new AudioPlayer().preloadGameAudio(audioSrc));
-      
       Promise.all(preloadPromises)
-        .then(() => {
-          console.log("All Game audios files have been preloaded and are ready to use.");
-          resolve();
-        })
+        .then(() => resolve())
         .catch((error) => {
           console.error("Error preloading audio:", error);
           reject(error);
         });
     });
   }
+
+    // Add the dispose method
+    public dispose(): void {
+      this.channel.removeEventListener("message", this.handleServiceWorkerMessage);
+      window.removeEventListener("beforeunload", this.handleBeforeUnload);
+      document.removeEventListener(VISIBILITY_CHANGE, this.handleVisibilityChange);
+      window.removeEventListener("resize", this.handleResize);
   
+      if (navigator.serviceWorker) {
+        navigator.serviceWorker.removeEventListener("message", this.handleServiceWorkerMessage);
+      }
+  
+      // Perform additional cleanup if necessary
+    }
 }
 
 const app = new App(lang);
