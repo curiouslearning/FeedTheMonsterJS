@@ -172,11 +172,9 @@ img {
 
 #version-info-id {
   position: absolute;
-  height: 10px;
-  width: 10%;
-  left: 60%;
-  top: 2%;
-  color: white;
+  right: 20px;
+  bottom: 20px;
+  color: #ffffff45;
   font-size: small;
   z-index: 9;
 }
