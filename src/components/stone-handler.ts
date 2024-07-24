@@ -199,7 +199,12 @@ export default class StoneHandler extends EventManager {
       ? droppedStone == this.correctTargetStone.substring(0, droppedStone.length)
       : droppedStone == this.correctTargetStone;
 
-    this.processLetterDropFeedbackAudio( feedBackIndex, isLetterDropCorrect );
+    this.processLetterDropFeedbackAudio(
+      feedBackIndex,
+      isLetterDropCorrect,
+      isWord,
+      droppedStone
+    );
 
     return isLetterDropCorrect
   }
@@ -207,16 +212,31 @@ export default class StoneHandler extends EventManager {
   private processLetterDropFeedbackAudio(
     feedBackIndex: number,
     isLetterDropCorrect:boolean,
+    isWord:boolean,
+    droppedStone: string,
   ) {
+
     if (isLetterDropCorrect) {
-       this.playCorrectAnswerFeedbackSound(feedBackIndex);
+      const condition = isWord
+        ? droppedStone === this.getCorrectTargetStone() // condition for word puzzle
+        : isLetterDropCorrect // for letter and letter for word puzzle
+
+      if (condition) {
+        this.playCorrectAnswerFeedbackSound(feedBackIndex);
+      } else {
+        this.audioPlayer.playFeedbackAudios(
+          false,
+          AUDIO_PATH_EATS,
+          AUDIO_PATH_CHEERING_FUNC(2),
+        );
+      }
     } else {
-      this.audioPlayer.playFeedbackAudios(
-        false,
-        AUDIO_PATH_EATS,
-        AUDIO_PATH_MONSTER_SPIT,
-        Math.round(Math.random()) > 0 ? AUDIO_PATH_MONSTER_DISSAPOINTED : null
-      );
+       this.audioPlayer.playFeedbackAudios(
+          false,
+          AUDIO_PATH_EATS,
+          AUDIO_PATH_MONSTER_SPIT,
+          Math.round(Math.random()) > 0 ? AUDIO_PATH_MONSTER_DISSAPOINTED : null
+        );
     }
   }
 
