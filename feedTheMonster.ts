@@ -158,7 +158,7 @@ class App {
 
   private setupCanvas() {
     this.canvas.height = window.innerHeight;
-    this.canvas.width = window.screen.width > 1024 ? 1024 : window.innerWidth;
+    this.canvas.width = window.screen.width > 1080 ? 768 : window.innerWidth;
   }
 
   private createDataModal(data: any): DataModal {
