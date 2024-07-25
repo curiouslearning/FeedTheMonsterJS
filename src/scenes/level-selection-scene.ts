@@ -230,7 +230,7 @@ export class LevelSelectionScreen {
             "./assets/audios/ButtonClick.mp3"
           );
           this.levelNumber = s.index + this.levelSelectionPageIndex - 1;
-          console.log(this.levelNumber);
+          // console.log(this.levelNumber);
           this.startGame(this.levelNumber);
         } else if (
           s.index + this.levelSelectionPageIndex - 1 <=
