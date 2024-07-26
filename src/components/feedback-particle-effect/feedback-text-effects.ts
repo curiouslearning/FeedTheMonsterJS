@@ -43,7 +43,14 @@ export class FeedbackTextEffects {
   }
 
   public wrapText(text: string): void {
-    const gradient = this.context.createLinearGradient(0, 0, this.canvasWidth, this.canvasHeight);
+    console.log(text,text.length,"<<<<<<FEEDBACK MESSAGE");
+    
+    const gradient = this.context.createLinearGradient(
+      0,
+      0,
+      this.canvasWidth,
+      this.canvasHeight
+    );
     gradient.addColorStop(0.3, "#F8E218");
     gradient.addColorStop(0.5, "#F8E218");
     gradient.addColorStop(0.7, "#E39D37");
@@ -52,32 +59,49 @@ export class FeedbackTextEffects {
     this.context.textBaseline = "middle";
     this.context.lineWidth = 3;
     this.context.strokeStyle = "#A46225";
-    this.context.font = `${this.fontSize - text.length * 0.3}px ${font}, monospace`;
-
-    const words = text.split(" ");
+    this.context.font = `${this.fontSize-text.length*0.3}px ${font}, monospace`;
+    // break multiline text
+    let lineArray: string[] = [];
+    let words = text.split(" ");
+    let lineCounter = 0;
     let line = "";
-    const lineArray: string[] = [];
-
-    words.forEach(word => {
-      const testLine = line + word + " ";
+    for (let i = 0; i < words.length; i++) {
+      let testLine = line + words[i] + " ";
       if (this.context.measureText(testLine).width > this.maxTextWidth) {
-        lineArray.push(line.trim());
-        line = word + " ";
+        line = words[i] + "";
+        lineCounter++;
       } else {
         line = testLine;
       }
+      lineArray[lineCounter] = line;
+    }
+    let textHeight = this.lineHeight * lineCounter;
+    this.textY = this.canvasHeight / 4.2 - textHeight / 2;
+    const initialX = 50;
+    // const spacing = 0.3;
+    text = text.trim();
+    lineArray.forEach((text, index) => {
+      let lastSpaceIndex=text.lastIndexOf(" ",text.lastIndexOf(" ")-1);
+      if(this.fontSize*text.length > this.canvasWidth*1.7 &&lastSpaceIndex!=-1) {
+        let initialText=text.slice(0,lastSpaceIndex);
+        let lastText=" "+text.slice(lastSpaceIndex+1);
+        this.context.fillText(
+          initialText,
+          this.textX,
+          this.textY + index * this.lineHeight 
+        );
+        this.context.fillText(
+          lastText,
+          this.textX,
+          this.textY + index * this.lineHeight +this.canvasHeight/12
+        );
+      }else{
+      this.context.fillText(
+        text,
+        this.textX,
+        this.textY + index * this.lineHeight
+      );}
     });
-
-    if (line) lineArray.push(line.trim());
-
-    this.textY = this.canvasHeight / 4.2 - (lineArray.length - 1) * this.lineHeight / 2;
-
-    lineArray.forEach((line, index) => {
-      const y = this.textY + index * this.lineHeight;
-      this.context.fillText(line, this.textX, y);
-      this.context.strokeText(line, this.textX, y);
-    });
-
     this.convertToParticle();
   }
 
@@ -114,7 +138,7 @@ export class FeedbackTextEffects {
     });
   }
 
-  public clearParticles(): void {
+  public clearParticle(): void {
     this.particles = [];
   }
 

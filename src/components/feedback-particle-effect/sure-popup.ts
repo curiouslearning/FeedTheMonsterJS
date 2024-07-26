@@ -84,7 +84,7 @@ export default class AreYouSurePopUp {
       );
       const textY = this.canvas.height * 0.2 + 80;
       this.context.fillStyle = "white";
-      this.context.font = "28px Arial";
+      this.context.font = "24px Arial";
       this.context.fillText(
         "Are you sure?",
         this.canvas.width / 2,

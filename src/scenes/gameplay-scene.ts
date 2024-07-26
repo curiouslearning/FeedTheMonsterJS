@@ -366,7 +366,7 @@ export class GameplayScene {
       this.pausePopup.draw();
     }
     if (!this.isPauseButtonClicked && !this.isGameStarted) {
-      // this.feedbackTextEffects.render();
+      this.feedbackTextEffects.render();
       (this.counter == 0) ? this.tutorial.clickOnMonsterTutorial(deltaTime) : undefined;
     }
     if (this.isPauseButtonClicked && !this.isGameStarted) {
@@ -401,17 +401,17 @@ export class GameplayScene {
     this.handler.removeEventListener("mousedown", this.handleMouseDown, false);
     this.handler.removeEventListener("touchstart",this.handleTouchStart,false);
     this.handler.removeEventListener("touchmove", this.handleTouchMove, false);
-    this.handler.removeEventListener("touchend", this.handleTouchEnd, false);
+    this.handler.removeEventListener("touchend", this.handleTouchEnd, false); 
   }
 
   loadPuzzle = (isTimerEnded?) => {
+    this.removeEventListeners();
+    console.log("removed listeners from load puzzle");
     this.stonesCount = 1;
     const timerEnded = Boolean(isTimerEnded);
     if (timerEnded) {
       this.logPuzzleEndFirebaseEvent(false);
     }
-
-    this.removeEventListeners();
     this.counter += 1; //increment Puzzle
     this.isGameStarted = false;
 
@@ -443,7 +443,6 @@ export class GameplayScene {
   public dispose = () => {
     this.isDisposing = true;
     this.audioPlayer.stopAllAudios();
-    this.removeEventListeners();
     this.feedbackTextEffects.unregisterEventListener();
     this.monster.dispose();
     this.timerTicking.dispose();
@@ -455,6 +454,9 @@ export class GameplayScene {
       this.handleVisibilityChange,
       false
     );
+    this.removeEventListeners();
+    console.log("removed listeners from dispose");
+    
   };
 
   public letterPuzzle(droppedStone: string) {
@@ -533,11 +535,13 @@ export class GameplayScene {
   }
 
   private initNewPuzzle(loadPuzzleEvent) {
+    this.removeEventListeners();
+    console.log("removed listeners from init new puzzle");
     this.isGameStarted = false;
     this.time = 0;
     this.tempWordforWordPuzzle = "";
     this.pickedStone = null;
-    this.feedbackTextEffects.clearParticles();
+    this.feedbackTextEffects.clearParticle();
     this.feedBackTextCanavsElement.style.zIndex = "0";
     document.dispatchEvent(loadPuzzleEvent);
     this.addEventListeners();
@@ -592,9 +596,10 @@ export class GameplayScene {
   }
 
   public pauseGamePlay = () => {
+    this.removeEventListeners();
+    console.log("removed listeners from pause puzzle");
     this.isPauseButtonClicked = true;
     this.stoneHandler.setGamePause(true);
-    this.removeEventListeners();
     this.pausePopup.addListner();
     this.audioPlayer.stopAllAudios();
   };
