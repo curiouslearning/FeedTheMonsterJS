@@ -406,7 +406,6 @@ export class GameplayScene {
 
   loadPuzzle = (isTimerEnded?) => {
     this.removeEventListeners();
-    console.log("removed listeners from load puzzle");
     this.stonesCount = 1;
     const timerEnded = Boolean(isTimerEnded);
     if (timerEnded) {
@@ -455,8 +454,6 @@ export class GameplayScene {
       false
     );
     this.removeEventListeners();
-    console.log("removed listeners from dispose");
-    
   };
 
   public letterPuzzle(droppedStone: string) {
@@ -536,7 +533,6 @@ export class GameplayScene {
 
   private initNewPuzzle(loadPuzzleEvent) {
     this.removeEventListeners();
-    console.log("removed listeners from init new puzzle");
     this.isGameStarted = false;
     this.time = 0;
     this.tempWordforWordPuzzle = "";
@@ -597,7 +593,6 @@ export class GameplayScene {
 
   public pauseGamePlay = () => {
     this.removeEventListeners();
-    console.log("removed listeners from pause puzzle");
     this.isPauseButtonClicked = true;
     this.stoneHandler.setGamePause(true);
     this.pausePopup.addListner();

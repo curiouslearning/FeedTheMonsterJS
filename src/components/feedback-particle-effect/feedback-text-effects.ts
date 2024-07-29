@@ -43,8 +43,6 @@ export class FeedbackTextEffects {
   }
 
   public wrapText(text: string): void {
-    console.log(text,text.length,"<<<<<<FEEDBACK MESSAGE");
-    
     const gradient = this.context.createLinearGradient(
       0,
       0,
