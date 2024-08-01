@@ -63,6 +63,10 @@ img {
 #monster{
   border:1px solid;
 }
+#monster-rive{
+  position: absolute;
+  z-index: 9;
+}
 #discription-text p {
   margin-top: 10%;
   line-height: 1.8;

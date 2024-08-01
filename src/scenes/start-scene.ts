@@ -12,12 +12,14 @@ import { AudioPlayer } from "../components/audio-player";
 import { FirebaseIntegration } from "../Firebase/firebase-integration";
 import { Utils } from "../common/utils";
 import PlayButton from "../components/play-button";
+import { RiveMonster } from "../components";
 export class StartScene {
   public canvas: HTMLCanvasElement;
   public data: any;
   public width: number;
   public height: number;
   public monster: Monster;
+  public riveMonster: RiveMonster;
   public pickedStone: StoneConfig;
   public pwa_status: string;
   public firebase_analytics: { logEvent: any };
@@ -51,10 +53,11 @@ export class StartScene {
     this.context = this.canavsElement.getContext("2d");
     this.toggleBtn = document.getElementById("toggle-btn") as HTMLElement;
     this.monster = new Monster(this.canvas, 4);
+    this.riveMonster = new RiveMonster();
     this.switchSceneToLevelSelection = switchSceneToLevelSelection;
     this.background1 = new Background(this.context, this.width, this.height, 1);
     this.audioPlayer = new AudioPlayer();
-
+    this.riveMonster.initialiseRiveMonster();
     this.pwa_status = localStorage.getItem(PWAInstallStatus);
     this.handler = document.getElementById("canvas") as HTMLCanvasElement;
     this.devToggle();
@@ -79,20 +82,18 @@ export class StartScene {
 
   animation = (deltaTime: number) => {
     this.titleFont = this.getFontWidthOfTitle();
-
+    // console.log(deltaTime);
+    
     this.context.clearRect(0, 0, this.width, this.height);
     if (StartScene.SceneName == StartScene1) {
       this.background1.draw();
       this.context.font = `${this.titleFont}px ${font}, monospace`;
       this.context.fillStyle = "white";
       this.context.textAlign = "center";
-      this.context.fillText(
-        this.data.title,
-        this.width * 0.5,
-        this.height / 10
-      );
-      this.monster.update(deltaTime);
+      this.context.fillText(this.data.title, this.width * 0.5, this.height / 10);
+      // this.monster.update(deltaTime);
       this.playButton.draw();
+      // console.log("called monster");
     }
   };
 
@@ -138,7 +139,7 @@ export class StartScene {
   }
 
   getFontWidthOfTitle() {
-    return (this.width + 200) / this.data.title.length;
+    return (this.width + 200) / Math.max(this.data.title.length, 1); // Avoid division by zero
   }
 
   handlerInstallPrompt = (event) => {

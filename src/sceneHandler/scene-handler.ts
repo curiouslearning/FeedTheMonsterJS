@@ -64,6 +64,7 @@ export class SceneHandler {
 
   startAnimationLoop() {
     const animate = (timeStamp: number) => {
+      // console.log(timeStamp);
       this.animation(timeStamp);
       requestAnimationFrame(animate);
     };

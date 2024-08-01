@@ -74,7 +74,7 @@ export class Monster extends EventManager {
   }
 
 
-  update(deltaTime) {
+  update(deltaTime ?) {
     if (this.frameTimer >= this.frameInterval) {
       this.frameTimer = 0;
       if (this.frameX < this.maxFrame) {
@@ -83,13 +83,15 @@ export class Monster extends EventManager {
         this.frameX = 0;
       }
     } else {
-      this.frameTimer += deltaTime;
+      this.frameTimer += deltaTime ? deltaTime : 0;
     }
 
     this.draw();
   }
 
   draw() {
+    console.log('draw monster');
+    
     if (this.imagesLoaded) {
       this.context.drawImage(
         this.image,

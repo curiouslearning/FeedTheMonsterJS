@@ -24,6 +24,8 @@
 
 /*! ../common/utils */
 
+/*! ../components */
+
 /*! ../components/ */
 
 /*! ../components/audio-player */
@@ -90,6 +92,8 @@
 
 /*! ./prompt-text */
 
+/*! ./rive-monster */
+
 /*! ./src/Firebase/firebase-integration */
 
 /*! ./src/common/common */
@@ -131,6 +135,8 @@
 /*! @firebase/logger */
 
 /*! @firebase/util */
+
+/*! @rive-app/canvas */
 
 /*! firebase/analytics */
 
@@ -244,6 +250,10 @@
   !*** ./src/components/audio-player.ts ***!
   \****************************************/
 
+/*!****************************************!*\
+  !*** ./src/components/rive-monster.ts ***!
+  \****************************************/
+
 /*!*****************************************!*\
   !*** ./node_modules/idb/build/index.js ***!
   \*****************************************/
@@ -283,6 +293,10 @@
 /*!**********************************************!*\
   !*** ./src/components/buttons/yes-button.ts ***!
   \**********************************************/
+
+/*!***********************************************!*\
+  !*** ./node_modules/@rive-app/canvas/rive.js ***!
+  \***********************************************/
 
 /*!***********************************************!*\
   !*** ./src/components/buttons/next-button.ts ***!

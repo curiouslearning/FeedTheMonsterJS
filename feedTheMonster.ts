@@ -17,6 +17,7 @@ declare const window: any;
 
 class App {
   private canvas: HTMLCanvasElement;
+  private monsterCanvas: HTMLCanvasElement;
   private versionInfoElement: HTMLElement;
   private lang: string;
   private is_cached: Map<string, boolean>;
@@ -32,6 +33,7 @@ class App {
   constructor(lang: string) {
     this.lang = lang;
     this.canvas = document.getElementById("canvas") as HTMLCanvasElement;
+    this.monsterCanvas = document.getElementById("newcanvas") as HTMLCanvasElement;
     this.channel = new BroadcastChannel("my-channel");
     this.progressBar = document.getElementById("progress-bar") as HTMLElement;
     this.progressBarContainer = document.getElementById("progress-bar-container") as HTMLElement;
@@ -159,6 +161,8 @@ class App {
   private setupCanvas() {
     this.canvas.height = window.innerHeight;
     this.canvas.width = window.screen.width > 1080 ? 768 : window.innerWidth;
+    this.monsterCanvas.width = this.canvas.width;
+    this.monsterCanvas.height = (this.canvas.height / 3) * 1.5;
   }
 
   private createDataModal(data: any): DataModal {
