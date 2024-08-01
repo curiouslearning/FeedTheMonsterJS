@@ -6,7 +6,7 @@ export class Animation {
   private fpsInterval: number;
   private then: number;
 
-  constructor(sceneHandler: SceneHandler, fps: number = 30) {
+  constructor(sceneHandler: SceneHandler, fps: number = 23) {
     this.sceneHandler = sceneHandler;
     this.fpsInterval = 1000 / fps;
     this.then = Date.now();
