@@ -14,6 +14,7 @@ import { GameplayScene } from "../scenes/gameplay-scene";
 import { GameScore } from "../data/game-score";
 import { LoadingScene } from "../scenes/loading-scene";
 import { LevelEndScene } from "../scenes/levelend-scene";
+import { Animation } from "../common/animation";
 
 export class SceneHandler {
   public canvas: HTMLCanvasElement;
@@ -31,9 +32,10 @@ export class SceneHandler {
   public loadingScreen: LoadingScene;
   public loading: boolean = false;
 
-  private lastTime: number = 0;
   private pwaInstallStatus: Event;
   private toggleBtn: HTMLElement;
+  private feedbackTextElement: HTMLElement;
+  private loadingElement: HTMLElement;
 
   constructor(canvas: HTMLCanvasElement, data: DataModal) {
     this.canvas = canvas;
@@ -42,25 +44,22 @@ export class SceneHandler {
     this.height = canvas.height;
     this.canvasElement = document.getElementById("canvas") as HTMLCanvasElement;
     this.toggleBtn = document.getElementById("toggleBtn") as HTMLElement;
+    this.feedbackTextElement = document.getElementById("feedback-text") as HTMLElement;
+    this.loadingElement = document.getElementById("loading") as HTMLElement;
     window.addEventListener("beforeinstallprompt", this.handleInstallPrompt);
     this.context = this.canvasElement.getContext("2d")!;
-    this.startScene = new StartScene(
-      canvas,
-      data,
-      this.switchSceneToLevelSelection
-    );
+    this.startScene = new StartScene(canvas, data, this.switchSceneToLevelSelection);
 
     SceneHandler.SceneName = StartScene1;
     this.loadingScreen = new LoadingScene(this.width, this.height, this.removeLoading);
-    this.animation(0);
 
+    new Animation(this);
     this.devToggle();
   }
 
   private devToggle() {
     this.toggleBtn.addEventListener("click", () => {
       this.toggleBtn.classList.toggle("on");
-
       Debugger.DebugMode = this.toggleBtn.classList.contains("on");
       this.toggleBtn.innerText = "Dev";
     });
@@ -68,34 +67,8 @@ export class SceneHandler {
 
   private checkMonsterPhaseUpdation(): number {
     const totalStarCount = GameScore.getTotalStarCount();
-    const monsterPhaseNumber = Math.min(Math.floor(totalStarCount / 12) + 1, 4);
-    return monsterPhaseNumber;
+    return Math.min(Math.floor(totalStarCount / 12) + 1, 4);
   }
-
-  private animation = (timeStamp: number) => {
-    const deltaTime = timeStamp - this.lastTime;
-    this.lastTime = timeStamp;
-
-    this.context.clearRect(0, 0, this.width, this.height);
-    this.loading && this.loadingScreen.draw(deltaTime);
-
-    switch (SceneHandler.SceneName) {
-      case StartScene1:
-        this.startScene.animation(deltaTime);
-        break;
-      case LevelSelection1:
-        this.levelSelectionScene.drawLevelSelection();
-        break;
-      case GameScene1:
-        this.gameplayScene.draw(deltaTime);
-        break;
-      case EndScene1:
-        this.levelEndScene.draw(deltaTime);
-        break;
-    }
-
-    requestAnimationFrame(this.animation);
-  };
 
   private switchSceneToGameplay = (gamePlayData: any, changeSceneRequestFrom?: string) => {
     this.showLoading();
@@ -120,10 +93,10 @@ export class SceneHandler {
         this.data.FeedbackAudios
       );
       SceneHandler.SceneName = GameScene1;
+      this.removeLoading();
     }, 800);
   };
-  
-  // this is to switch tp another level after playing the game.
+
   private switchSceneToEndLevel = (
     currentLevelPlayed: any,
     starCount: number,
@@ -136,7 +109,7 @@ export class SceneHandler {
 
     const createEndLevelScene = () => {
       this.gameplayScene.dispose();
-      document.getElementById("feedback-text")!.style.zIndex = "0";
+      this.feedbackTextElement.style.zIndex = "0";
       this.levelEndScene = new LevelEndScene(
         this.canvas,
         this.height,
@@ -150,43 +123,51 @@ export class SceneHandler {
         monsterPhaseNumber
       );
       SceneHandler.SceneName = EndScene1;
+      this.removeLoading();
     };
 
-    isTimerEnded ? createEndLevelScene() : setTimeout(createEndLevelScene, 4000);
+    if (isTimerEnded) {
+      createEndLevelScene();
+    } else {
+      setTimeout(createEndLevelScene, 4000);
+    }
   };
 
   private switchSceneToLevelSelection = (changeSceneRequestFrom?: string) => {
     this.showLoading();
     this.dispose(changeSceneRequestFrom, "LevelSelection");
     setTimeout(() => {
-      this.levelSelectionScene = new LevelSelectionScreen(
-        this.canvas,
-        this.data,
-        this.switchSceneToGameplay
-      );
+      this.levelSelectionScene = new LevelSelectionScreen(this.canvas, this.data, this.switchSceneToGameplay);
       SceneHandler.SceneName = LevelSelection1;
+      this.removeLoading();
     }, 800);
   };
 
   private dispose(lastSceneName: string, nextSceneName: string): void {
-    const scenes = {
-      "LevelSelection": () => this.levelSelectionScene.dispose(),
-      "GamePlay": () => this.gameplayScene.dispose(),
-      "StartScene": () => this.startScene.dispose(),
-      "LevelEnd": () => this.levelEndScene.dispose(),
-    };
-
-    scenes[lastSceneName]?.();
+    switch (lastSceneName) {
+      case "LevelSelection":
+        this.levelSelectionScene.dispose();
+        break;
+      case "GamePlay":
+        this.gameplayScene.dispose();
+        break;
+      case "StartScene":
+        this.startScene.dispose();
+        break;
+      case "LevelEnd":
+        this.levelEndScene.dispose();
+        break;
+    }
   }
 
   private showLoading = (): void => {
     this.loadingScreen.initCloud();
     this.loading = true;
-    document.getElementById("loading")!.style.zIndex = "3";
+    this.loadingElement.style.zIndex = "3";
   };
 
   private removeLoading = (): void => {
-    document.getElementById("loading")!.style.zIndex = "-1";
+    this.loadingElement.style.zIndex = "-1";
     this.loading = false;
   };
 
@@ -196,3 +177,5 @@ export class SceneHandler {
     localStorage.setItem(PWAInstallStatus, "false");
   };
 }
+export { StartScene1, LevelSelection1, GameScene1, EndScene1 };
+
