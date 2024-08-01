@@ -43,7 +43,7 @@ export class SceneHandler {
     this.width = canvas.width;
     this.height = canvas.height;
     this.canvasElement = document.getElementById("canvas") as HTMLCanvasElement;
-    this.toggleBtn = document.getElementById("toggleBtn") as HTMLElement;
+    this.toggleBtn = document.getElementById("toggle-btn") as HTMLElement;
     this.feedbackTextElement = document.getElementById("feedback-text") as HTMLElement;
     this.loadingElement = document.getElementById("loading") as HTMLElement;
     window.addEventListener("beforeinstallprompt", this.handleInstallPrompt);
@@ -53,6 +53,7 @@ export class SceneHandler {
     SceneHandler.SceneName = StartScene1;
     this.loadingScreen = new LoadingScene(this.width, this.height, this.removeLoading);
 
+    console.log(this)
     new Animation(this);
     this.devToggle();
   }
@@ -79,6 +80,7 @@ export class SceneHandler {
       : "";
 
     setTimeout(() => {
+      console.log('setTimeout 800')
       this.gameplayScene = new GameplayScene(
         this.canvas,
         gamePlayData.currentLevelData,
@@ -108,6 +110,7 @@ export class SceneHandler {
     this.loadingScreen.initCloud();
 
     const createEndLevelScene = () => {
+      console.log('createEndLevelScene')
       this.gameplayScene.dispose();
       this.feedbackTextElement.style.zIndex = "0";
       this.levelEndScene = new LevelEndScene(
