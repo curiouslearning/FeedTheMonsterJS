@@ -43,15 +43,20 @@ export class RiveMonster{
 
       const r = new rive.Rive({
         src: "./assets/chimple",
-        // OR the path to a discoverable and public Rive asset
-        // src: '/public/example.riv',
         canvas: this.canvasElement,
         autoplay: true,
-        animations:'idle_1',
-        stateMachines: "bumpy",
-        // onLoad: () => {
-        //   r.resizeDrawingSurfaceToCanvas();
-        // },
+        // animations:'idle_1',
+        stateMachines: "State Machine 1",
+        onLoad: () => {
+          const states = r.stateMachineInputs('State Machine 1');
+          console.log(states);
+          
+        // trigger.fire();
+        },
+        onStateChange: (event)=>{
+          console.log(event);
+          
+        }
       });
        // Update the layout
       // Constrain the Rive content to (minX, minY), (maxX, maxY) in the canvas
