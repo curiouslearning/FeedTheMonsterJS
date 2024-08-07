@@ -50,6 +50,7 @@ export class GameplayScene {
   public monster: Monster;
   public jsonVersionNumber: string;
   public canvas: HTMLCanvasElement;
+  public monsterCanvas: HTMLCanvasElement;
   public levelData: any;
   public timerTicking: TimerTicking;
   public promptText: PromptText;
@@ -117,6 +118,8 @@ export class GameplayScene {
     this.rightToLeft = rightToLeft;
     this.canvas = canvas;
     this.context = this.canvas.getContext("2d", { willReadFrequently: true });
+    this.monsterCanvas = document.getElementById("newcanvas") as HTMLCanvasElement;
+    this.monsterCanvas.style.zIndex = "9";
     this.monsterPhaseNumber = monsterPhaseNumber || 1;
     this.levelData = levelData;
     this.switchSceneToEnd = switchSceneToEnd;
@@ -358,7 +361,7 @@ export class GameplayScene {
     this.pauseButton.draw();
     this.levelIndicators.draw();
     this.promptText.draw(deltaTime);
-    this.monster.update(deltaTime);
+    // this.monster.update(deltaTime);
     this.timerTicking.draw();
 
     if (this.isPauseButtonClicked && this.isGameStarted) {

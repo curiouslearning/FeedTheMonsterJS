@@ -30,10 +30,13 @@ export class LevelSelectionScreen {
   private majVersion:string;
   private minVersion:string;
   private firebaseIntegration: FirebaseIntegration;
+  public monsterCanvas : HTMLCanvasElement;
   constructor(canvas: HTMLCanvasElement, data: any, callBack: Function) {
     this.canvas = canvas;
     this.data = data;
     let self = this;
+    this.monsterCanvas = document.getElementById("newcanvas") as HTMLCanvasElement;
+    this.monsterCanvas.style.zIndex = "-1";
     this.callBack = callBack;
     this.levelsSectionCount =
       self.data.levels.length / 10 > Math.floor(self.data.levels.length / 10)

@@ -75,8 +75,25 @@
     <canvas id="feedback-text"></canvas>
     <canvas id="canvas"></canvas>
     <canvas id="newcanvas"></canvas>
+    <div class="btnholder">
+      <button id="animation1">Idle 1</button>
+      <button id="animation2">Idle 2</button>
+      <button id="animation3">Talking</button>
+      <button id="animation4">Win</button>
+      <button id="animation5">Lose</button>
+    </div>
+    <p id="statecheck"></p>
   </div>
   <style>
+    .btnholder{
+      z-index: 9;
+      position: absolute;
+      width: 100%;
+    }
+    .btnholder button{
+      width: calc(100% / 5.25);
+      margin: auto;
+    }
     #newcanvas {
       /* display: none; */
       position: absolute;
@@ -87,48 +104,20 @@
       top: 0;
       bottom: 0;
     }
+    #statecheck{
+      bottom: 38px;
+      position: absolute;
+      margin: auto;
+      left: 0;
+      right: 0;
+      font-size: 43px;
+      z-index: 9;
+      text-align: center;
+      color: #fff;
+    }
   </style>
   <script type="module" src="feedTheMonster.js"></script>
-  <script src="https://unpkg.com/@rive-app/canvas@2.9.1"></script>
   <script type="module" src="https://storage.googleapis.com/workbox-cdn/releases/6.4.1/workbox-sw.js"></script>
-  <script>
-    // Fit to the width and align to the top of the canvas
-  //  let layout = new rive.Layout({
-  //     fit: rive.Fit.FitWidth,
-  //     alignment: rive.Alignment.TopCenter,
-  //   });
-
-    // const r = new rive.Rive({
-    //   src: "https://cdn.rive.app/animations/vehicles.riv",
-    //   // OR the path to a discoverable and public Rive asset
-    //   // src: '/public/example.riv',
-    //   canvas: document.getElementById("newcanvas"),
-    //   autoplay: true,
-    //   // stateMachines: "bumpy",
-    //   // onLoad: () => {
-    //   //   r.resizeDrawingSurfaceToCanvas();
-    //   // },
-    // });
-    //  // Update the layout
-    // // Constrain the Rive content to (minX, minY), (maxX, maxY) in the canvas
-    // r.layout = new rive.Layout({
-    //   fit: rive.Fit.FitWidth,
-    //   // minX: 50,
-    //   // minY: 50,
-    //   // maxX: 100,
-    //   // maxY: 100,
-    // });
-    // let boolCheck = false;
-    // const buttonEl = document.getElementById("newcanvas");
-    // buttonEl.onclick = function() {
-      
-    //   boolCheck= !boolCheck;
-    //   console.log(boolCheck ? "bumped" : "stopped bumping");
-    //   // Play the 'bumpy' state machine
-    //   boolCheck ? r.play("bumpy") : r.pause("bumpy");
-      
-    // };
-  </script>
 </body>
 
 </html>
