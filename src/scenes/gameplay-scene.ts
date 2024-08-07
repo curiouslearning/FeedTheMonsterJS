@@ -98,7 +98,8 @@ export class GameplayScene {
   firebaseIntegration: FirebaseIntegration;
   startTime: number;
   puzzleTime: number;
-  isDisposing: boolean
+  isDisposing: boolean;
+  resetAnimationID: number | NodeJS.Timeout;
 
   constructor(
     canvas,
@@ -217,6 +218,7 @@ export class GameplayScene {
       )
       : localStorage.setItem(PreviousPlayedLevel + lang, previousPlayedLevel);
     this.addEventListeners();
+    this.resetAnimationID = 0;
   }
 
   resumeGame = () => {
@@ -433,7 +435,6 @@ export class GameplayScene {
           counter: this.counter,
         },
       });
-
       setTimeout(() => {
         if (!this.isDisposing) {
           this.initNewPuzzle(loadPuzzleEvent);
@@ -502,14 +503,22 @@ export class GameplayScene {
           : this.tempWordforWordPuzzle.length
       )
       this.stonesCount++;
-
-      setTimeout(() => {
+      this.resetToIdleAnimation(() => {
         this.monster.changeToIdleAnimation();
-      }, 1500);
+      }, 2000)
+
     } else {
       this.handleStoneDropEnd(isCorrect, "Word");
       this.stonesCount = 1;
     }
+  }
+
+  resetToIdleAnimation(callback: () => void, delay: number) {
+    if (this.resetAnimationID !== undefined) {
+      clearTimeout(this.resetAnimationID)
+    }
+
+    this.resetAnimationID = setTimeout(callback, delay)
   }
 
   private handleStoneDropEnd(isCorrect, puzzleType: string | null = null) {
