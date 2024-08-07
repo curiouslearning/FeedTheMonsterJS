@@ -485,7 +485,7 @@ export class GameplayScene {
       this.stoneHandler.getCorrectTargetStone() == this.tempWordforWordPuzzle &&
       isCorrect
     ) {
-      this.handleCorrectStoneDrop(feedBackIndex); //handle what text
+      this.handleCorrectStoneDrop(feedBackIndex);
       this.handleStoneDropEnd(isCorrect, "Word");
       this.stonesCount = 1;
       return;
