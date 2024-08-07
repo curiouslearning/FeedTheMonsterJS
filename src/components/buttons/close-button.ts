@@ -5,7 +5,7 @@ import {
   Canvas,
   ImagesLoaded,
   ButtonInterface,
-  CloseButtonImage,
+  ButtonImage,
 } from "../../types/buttons";
 
 export default class CloseButton implements ButtonInterface {
@@ -14,7 +14,7 @@ export default class CloseButton implements ButtonInterface {
   public context: Context;
   public canvas: Canvas;
   public imagesLoaded: ImagesLoaded = false;
-  public button_image: CloseButtonImage;
+  public button_image: ButtonImage;
 
   constructor(context: Context, canvas: Canvas, posX: PosX, posY: PosY) {
     this.posX = posX;

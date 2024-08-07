@@ -1,18 +1,25 @@
-// import { Game } from "../../../scenes/game";
+import {
+  Context,
+  ImagesLoaded,
+  ButtonImage,
+  ButtonInterface,
+  PosX,
+  PosY,
+} from "../../types/buttons";
 
-export default class NextButton {
-  public posX: number;
-  public posY: number;
-  public context: CanvasRenderingContext2D;
+export default class NextButton implements ButtonInterface {
+  public posX: PosX;
+  public posY: PosY;
+  public context: Context;
   public width: number;
   public height: number;
-  public imagesLoaded: boolean = false;
-  public next_button_image: HTMLImageElement;
+  public imagesLoaded: ImagesLoaded = false;
+  public button_image: ButtonImage;
 
   constructor(
-    context: CanvasRenderingContext2D,
-    width,
-    height,
+    context: Context,
+    width: number,
+    height: number,
     posX: number,
     posY: number
   ) {
@@ -21,17 +28,18 @@ export default class NextButton {
     this.context = context;
     this.width = width;
     this.height = height;
-    this.next_button_image = new Image();
-    this.next_button_image.src = "./assets/images/next_btn.png";
-    this.next_button_image.onload = (e) => {
+    this.button_image = new Image();
+    this.button_image.src = "./assets/images/next_btn.png";
+    this.button_image.onload = (e) => {
       this.imagesLoaded = true;
-      this.next_button_image = this.next_button_image;
+      this.button_image = this.button_image;
     };
   }
+
   draw() {
     if (this.imagesLoaded) {
       this.context.drawImage(
-        this.next_button_image,
+        this.button_image,
         this.posX,
         this.posY,
         this.width * 0.19,
@@ -39,6 +47,7 @@ export default class NextButton {
       );
     }
   }
+
   onClick(xClick: number, yClick: number): boolean {
     console.log("next button clicked");
     const distance = Math.sqrt(
@@ -50,5 +59,6 @@ export default class NextButton {
     if (distance < (this.width * 0.19) / 2) {
       return true;
     }
+    return false; // Added return statement to avoid potential runtime error
   }
 }

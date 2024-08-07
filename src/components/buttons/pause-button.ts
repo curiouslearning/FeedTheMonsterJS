@@ -1,47 +1,58 @@
-export default class PauseButton {
-    public posX: number;
-    public posY: number;
-    public context: CanvasRenderingContext2D;
-    public canvas: { height: number };
-    public imagesLoaded: boolean = false;
-    public pause_button_image: HTMLImageElement;
+import {
+  Context,
+  Canvas,
+  ImagesLoaded,
+  ButtonImage,
+  ButtonInterface,
+  PosX,
+  PosY,
+} from "../../types/buttons";
 
-    constructor(
-        context: CanvasRenderingContext2D,
-        canvas: { width?: number; height: number }
-    ) {
-        this.posX = canvas.width - canvas.height * 0.09;
-        this.posY = 0;
-        this.context = context;
-        this.canvas = canvas;
+export default class PauseButton implements ButtonInterface {
+  public posX: PosX;
+  public posY: PosY;
+  public context: Context;
+  public canvas: Canvas;
+  public imagesLoaded: ImagesLoaded = false;
+  public button_image: ButtonImage;
 
-        this.pause_button_image = new Image();
-        this.pause_button_image.src = "./assets/images/pause_v01.png";
-        this.pause_button_image.onload = (e) => {
-            this.imagesLoaded = true;
-            this.pause_button_image = this.pause_button_image;
-        }
+  constructor(context: Context, canvas: Canvas) {
+    this.posX = (canvas.width ?? 0) - canvas.height * 0.09;
+    this.posY = 0;
+    this.context = context;
+    this.canvas = canvas;
+
+    this.button_image = new Image();
+    this.button_image.src = "./assets/images/pause_v01.png";
+    this.button_image.onload = (e) => {
+      this.imagesLoaded = true;
+      this.button_image = this.button_image;
+    };
+  }
+
+  draw() {
+    if (this.imagesLoaded) {
+      this.context.drawImage(
+        this.button_image,
+        this.posX,
+        this.posY,
+        this.canvas.height * 0.09,
+        this.canvas.height * 0.09
+      );
     }
-    draw() {
-        if (this.imagesLoaded) {
-            this.context.drawImage(
-                this.pause_button_image,
-                this.posX,
-                this.posY,
-                this.canvas.height * 0.09,
-                this.canvas.height * 0.09
-            );
-        }
+  }
+
+  onClick(xClick: number, yClick: number): boolean {
+    console.log("pause button clicked");
+    const distance = Math.sqrt(
+      (xClick - this.posX - (this.canvas.height * 0.09) / 2) *
+        (xClick - this.posX - (this.canvas.height * 0.09) / 2) +
+        (yClick - this.posY - (this.canvas.height * 0.09) / 2) *
+          (yClick - this.posY - (this.canvas.height * 0.09) / 2)
+    );
+    if (distance < (this.canvas.height * 0.09) / 2) {
+      return true;
     }
-    onClick(xClick: number, yClick: number): boolean {
-        const distance = Math.sqrt(
-            (xClick - this.posX - (this.canvas.height * 0.09) / 2) *
-            (xClick - this.posX - (this.canvas.height * 0.09) / 2) +
-            (yClick - this.posY - (this.canvas.height * 0.09) / 2) *
-            (yClick - this.posY - (this.canvas.height * 0.09) / 2)
-        );
-        if (distance < (this.canvas.height * 0.09) / 2) {
-            return true;
-        }
-    }
+    return false; // Added return statement to avoid potential runtime error
+  }
 }

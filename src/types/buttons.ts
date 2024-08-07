@@ -3,14 +3,13 @@ export type PosY = number;
 export type Context = CanvasRenderingContext2D;
 export type Canvas = HTMLCanvasElement | { width: number; height?: number };
 export type ImagesLoaded = boolean;
-export type CloseButtonImage = HTMLImageElement;
 export type ButtonImage = HTMLImageElement;
 
 export interface ButtonInterface {
-  posX: number;
-  posY: number;
+  posX: PosX;
+  posY: PosY;
   context: Context;
-  canvas: Canvas;
+  canvas?: Canvas;
   imagesLoaded: ImagesLoaded;
   button_image: ButtonImage;
   draw(): void;

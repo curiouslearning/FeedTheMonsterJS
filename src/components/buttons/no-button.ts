@@ -1,34 +1,39 @@
-export default class NoButton {
-  public posX: number;
-  public posY: number;
-  public context: CanvasRenderingContext2D;
-  public canvas: { width: any; height?: number };
-  public imagesLoaded: boolean = false;
-  public no_button_image: HTMLImageElement;
+import {
+  Context,
+  Canvas,
+  ImagesLoaded,
+  ButtonImage,
+  ButtonInterface,
+  PosX,
+  PosY,
+} from "../../types/buttons";
 
-  constructor(
-    context: CanvasRenderingContext2D,
-    canvas: HTMLCanvasElement,
-    posX: number,
-    posY: number
-  ) {
+export default class NoButton implements ButtonInterface {
+  public posX: PosX;
+  public posY: PosY;
+  public context: Context;
+  public canvas: Canvas;
+  public imagesLoaded: ImagesLoaded = false;
+  public button_image: ButtonImage;
+
+  constructor(context: Context, canvas: Canvas, posX: number, posY: number) {
     this.posX = posX;
     this.posY = posY;
     this.context = context;
     this.canvas = canvas;
 
-    this.no_button_image = new Image();
-    this.no_button_image.src = "./assets/images/close_btn.png";
-    this.no_button_image.onload = (e) => {
+    this.button_image = new Image();
+    this.button_image.src = "./assets/images/close_btn.png";
+    this.button_image.onload = (e) => {
       this.imagesLoaded = true;
-      this.no_button_image = this.no_button_image;
+      this.button_image = this.button_image;
     };
   }
 
   draw() {
     if (this.imagesLoaded) {
       this.context.drawImage(
-        this.no_button_image,
+        this.button_image,
         this.posX + 5,
         this.posY + 10,
         this.canvas.width * 0.18,
@@ -38,6 +43,7 @@ export default class NoButton {
   }
 
   onClick(xClick: number, yClick: number): boolean {
+    console.log("no button clicked");
     const distance = Math.sqrt(
       (xClick - this.posX - (this.canvas.width * 0.15) / 2) *
         (xClick - this.posX - (this.canvas.width * 0.15) / 2) +
@@ -47,5 +53,6 @@ export default class NoButton {
     if (distance < (this.canvas.width * 0.15) / 2) {
       return true;
     }
+    return false; // Added return statement to avoid potential runtime error
   }
 }
