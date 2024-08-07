@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="AutoImportSettings">
+    <option name="autoReloadType" value="NONE" />
+  </component>
+  <component name="ChangeListManager">
+    <list default="true" id="4a36215a-7fb3-4013-9cca-59fc401a441a" name="Changes" comment="">
+      <change beforePath="$PROJECT_DIR$/feedTheMonster.js" beforeDir="false" afterPath="$PROJECT_DIR$/feedTheMonster.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/index.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/sw.js" beforeDir="false" afterPath="$PROJECT_DIR$/sw.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../feedTheMonster.ts" beforeDir="false" afterPath="$PROJECT_DIR$/../feedTheMonster.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../index.html" beforeDir="false" afterPath="$PROJECT_DIR$/../index.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../package-lock.json" beforeDir="false" afterPath="$PROJECT_DIR$/../package-lock.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../package.json" beforeDir="false" afterPath="$PROJECT_DIR$/../package.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../src/components/feedback-particle-effect/feedback-text-effects.ts" beforeDir="false" afterPath="$PROJECT_DIR$/../src/components/feedback-particle-effect/feedback-text-effects.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../src/components/monster.ts" beforeDir="false" afterPath="$PROJECT_DIR$/../src/components/monster.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../src/sceneHandler/scene-handler.ts" beforeDir="false" afterPath="$PROJECT_DIR$/../src/sceneHandler/scene-handler.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../src/scenes/gameplay-scene.ts" beforeDir="false" afterPath="$PROJECT_DIR$/../src/scenes/gameplay-scene.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../src/scenes/level-selection-scene.ts" beforeDir="false" afterPath="$PROJECT_DIR$/../src/scenes/level-selection-scene.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../src/scenes/levelend-scene.ts" beforeDir="false" afterPath="$PROJECT_DIR$/../src/scenes/levelend-scene.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../src/scenes/loading-scene.ts" beforeDir="false" afterPath="$PROJECT_DIR$/../src/scenes/loading-scene.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../src/scenes/start-scene.ts" beforeDir="false" afterPath="$PROJECT_DIR$/../src/scenes/start-scene.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../src/scenes/test-gameplay-scene.ts" beforeDir="false" afterPath="$PROJECT_DIR$/../src/scenes/test-gameplay-scene.ts" afterDir="false" />
+    </list>
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="ClangdSettings">
+    <option name="formatViaClangd" value="false" />
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$/.." />
+  </component>
+  <component name="ProjectColorInfo"><![CDATA[{
+  "associatedIndex": 4
+}]]></component>
+  <component name="ProjectId" id="2iwnm4Cre6hDDJHiYMNAOpDWbmN" />
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "AnalyzeApkAction.lastApkPath": "C:/Users/Lenovo/Projects/FeedTheMonsterJS/build/APK/development-curious-reader-QA.apk",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "RunOnceActivity.cidr.known.project.marker": "true",
+    "RunOnceActivity.readMode.enableVisualFormatting": "true",
+    "cf.first.check.clang-format": "false",
+    "cidr.known.project.marker": "true",
+    "git-widget-placeholder": "ashwin",
+    "kotlin-language-version-configured": "true",
+    "last_opened_file_path": "C:/Users/Lenovo/Projects/FeedTheMonsterJS"
+  }
+}]]></component>
+  <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="4a36215a-7fb3-4013-9cca-59fc401a441a" name="Changes" comment="" />
+      <created>1720410664711</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1720410664711</updated>
+    </task>
+    <servers />
+  </component>
+</project>

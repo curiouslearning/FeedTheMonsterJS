@@ -46,8 +46,8 @@ export class AudioPlayer {
   }
 
   playFeedbackAudios = (loop: boolean = false, ...fileUrl: string[]): void => {
-    this.audioQueue = fileUrl;
-    if (this.audioQueue.length > 0) {
+    if (fileUrl.length > 0) {
+      this.audioQueue = fileUrl;
       this.playFetch(0, loop);
     }
   }
@@ -91,7 +91,7 @@ export class AudioPlayer {
     this.audioSourcs.forEach((sourceNode) => {
       sourceNode.stop();
     });
-    this.audioSourcs = [];    
+    this.audioSourcs = [];
   }
 
   private playFetch = (index: number, loop: boolean) => {
@@ -99,7 +99,9 @@ export class AudioPlayer {
       this.stopFeedbackAudio();
       return;
     }
-    fetch(this.audioQueue[index])
+
+    if (this.audioQueue[index]) {
+      fetch(this.audioQueue[index])
       .then((response) => response.arrayBuffer())
       .then((buffer) => {
         this.audioContext?.decodeAudioData(buffer, (audioBuffer) => {
@@ -111,10 +113,10 @@ export class AudioPlayer {
           this.sourceNode.start();
         });
       });
+    }
   }
 
   private handleAudioEnded = (index: number, loop: boolean): void => {
-    // this.sourceNode.removeEventListener("ended", this.handleAudioEnded, false);
     if (this.sourceNode) {
       this.sourceNode.onended = null;
       this.sourceNode.stop();

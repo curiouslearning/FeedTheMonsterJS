@@ -77,7 +77,7 @@ export default class PausePopUp {
   }
   yesRetryCallback = () => {
     this.playClickSound();
-    console.log(" retry button clicked");
+    // console.log(" retry button clicked");
     this.reloadScene(this.gameplayData, "GamePlay");
   };
   noRetryCallback = () => {
@@ -106,7 +106,7 @@ export default class PausePopUp {
     const y = event.clientY - rect.top;
 
     if (this.cancelButton.onClick(x, y)) {
-      console.log(" cancel button clicked");
+      // console.log(" cancel button clicked");
       this.playClickSound();
       this.callback();
     }
@@ -115,13 +115,13 @@ export default class PausePopUp {
         this.playClickSound();
         this.dispose();
         this.isRetryButtonClicked = true;
-        console.log(" retry button clicked");
+        // console.log(" retry button clicked");
         this.retrySurePopup.addListner();
         this.playAreYouSureSound();
       } else {
         this.playClickSound();
         this.dispose();
-        console.log(" retry button clicked");
+        // console.log(" retry button clicked");
         this.reloadScene(this.gameplayData, "GamePlay");
       }
     }
@@ -131,12 +131,12 @@ export default class PausePopUp {
         this.dispose();
         this.isCloseButtonClicked = true;
         this.CloseSurePopup.addListner();
-        console.log(" close button clicked");
+        // console.log(" close button clicked");
         this.playAreYouSureSound();
       } else {
         this.playClickSound();
         this.dispose();
-        console.log(" close button clicked");
+        // console.log(" close button clicked");
         this.switchToLevelSelection("GamePlay");
       }
     }

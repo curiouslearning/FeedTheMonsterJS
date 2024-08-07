@@ -1,11 +1,11 @@
 {
   "name": "feedthemonsterjs",
-  "version": "1.0.30",
+  "version": "1.0.32",
   "description": "education app",
   "main": "feedTheMonster.js",
   "scripts": {
     "release": "release-it",
-    "dev": "webpack"
+    "dev": "webpack --config webpack.config.js"
   },
   "repository": {
     "type": "git",
@@ -42,7 +42,8 @@
     "workbox": "^0.0.0",
     "workbox-cli": "^6.5.4",
     "workbox-window": "^4.3.1"
-  },"release-it": {
+  },
+  "release-it": {
     "git": {
       "commitMessage": "chore: release v${version}"
     },
@@ -83,6 +84,11 @@
   "devDependencies": {
     "@capacitor/cli": "^4.4.0",
     "@types/howler": "^2.2.7",
+    "compression-webpack-plugin": "^11.1.0",
+    "css-loader": "^7.1.2",
+    "mini-css-extract-plugin": "^2.9.0",
+    "style-loader": "^4.0.0",
+    "terser-webpack-plugin": "^5.3.10",
     "typescript": "^4.9.5",
     "webpack-cli": "^4.10.0"
   }

@@ -53,7 +53,7 @@ def find_prompt_audios(json_path, prompt_audio_urls=None):
         return prompt_audio_urls
 
 if __name__ == "__main__":
-    root_folder = r"D:\curious leraning\FeedTheMonsterJS\lang"
+    root_folder = r"R:/project/FeedTheMonsterJS/lang"
    
     language = input("Enter the language: ")
     

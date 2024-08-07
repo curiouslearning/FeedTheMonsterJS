@@ -131,6 +131,7 @@ export class StartScene {
   };
 
   dispose() {
+    this.monster.dispose()
     this.audioPlayer.stopAllAudios();
     this.handler.removeEventListener("click", this.handleMouseClick, false);
     window.removeEventListener("beforeinstallprompt", this.handlerInstallPrompt, false);

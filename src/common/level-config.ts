@@ -12,7 +12,7 @@ export class LevelConfig {
     this.img = new Image();
     this.img.src = "./assets/images/mapIcon.png";
     this.img.onload = function(){
-      console.log("mapIcon loadededed");
+      // console.log("mapIcon loadededed");
     }
   }
 }

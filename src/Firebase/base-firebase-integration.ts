@@ -10,7 +10,7 @@ export class BaseFirebaseIntegration {
     }
     protected customEvents(eventName: string, event: object): void {
         try {
-            console.log(`Sending custom event ${eventName} with data:`, event);
+            //console.log(`Sending custom event ${eventName} with data:`, event);
             logEvent(this.analytics, eventName, event);
         } catch (error) {
             console.error("Error while logging custom event:", error);

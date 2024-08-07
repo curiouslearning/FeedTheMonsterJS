@@ -1,11 +1,18 @@
-import { StoneConfig } from "../common/stone-config";
+import {StoneConfig, VISIBILITY_CHANGE, Utils} from '../common'
 import { EventManager } from "../events/EventManager";
 import { Tutorial } from "./tutorial";
 import { AudioPlayer } from "./audio-player";
-import { VISIBILITY_CHANGE } from "../common/event-names";
-import { Utils } from "../common/utils";
 import { TimerTicking } from "./timer-ticking";
 import { GameScore } from "../data/game-score";
+import {
+  AUDIO_PATH_EATS,
+  AUDIO_PATH_MONSTER_SPIT,
+  AUDIO_PATH_MONSTER_DISSAPOINTED,
+  AUDIO_PATH_POINTS_ADD,
+  AUDIO_PATH_CORRECT_STONE,
+  AUDIO_PATH_CHEERING_FUNC,
+  ASSETS_PATH_STONE_PINK_BG
+} from '../constants';
 
 export default class StoneHandler extends EventManager {
   public context: CanvasRenderingContext2D;
@@ -48,7 +55,7 @@ export default class StoneHandler extends EventManager {
     this.levelData = levelData;
     this.setTargetStone(this.puzzleNumber);
     this.initializeStonePos();
-    this.correctStoneAudio = new Audio("assets/audios/CorrectStoneFinal.mp3");
+    this.correctStoneAudio = new Audio(AUDIO_PATH_CORRECT_STONE);
     this.correctStoneAudio.loop = false;
     this.feedbackAudios = this.convertFeedBackAudiosToList(feedbackAudios);
     this.puzzleStartTime = new Date();
@@ -59,7 +66,7 @@ export default class StoneHandler extends EventManager {
       puzzleNumber
     );
     this.stonebg = new Image();
-    this.stonebg.src = "./assets/images/stone_pink_v02.png";
+    this.stonebg.src = ASSETS_PATH_STONE_PINK_BG;
     this.audioPlayer = new AudioPlayer();
     this.stonebg.onload = (e) => {
       this.createStones(this.stonebg);
@@ -75,7 +82,7 @@ export default class StoneHandler extends EventManager {
 
   createStones(img) {
     const foilStones = this.getFoilStones();
-    for (var i = 0; i < foilStones.length; i++) {
+    for (let i = 0; i < foilStones.length; i++) {
       if (foilStones[i] == this.correctTargetStone) {
         this.tutorial.updateTargetStonePositions(this.stonePos[i]);
       }
@@ -97,7 +104,7 @@ export default class StoneHandler extends EventManager {
   }
 
   draw(deltaTime: number) {
-    for (var i = 0; i < this.foilStones.length; i++) {
+    for (let i = 0; i < this.foilStones.length; i++) {
       this.foilStones[i].draw(deltaTime);
     }
 
@@ -110,8 +117,8 @@ export default class StoneHandler extends EventManager {
   }
 
   initializeStonePos() {
-    var offsetCoordinateValue = 32;
-    
+    let offsetCoordinateValue = 32;
+
     this.stonePos = [
       [
         this.canvas.width / 5 - offsetCoordinateValue,
@@ -158,16 +165,11 @@ export default class StoneHandler extends EventManager {
     this.targetStones = [...this.currentPuzzleData.targetStones];
     this.correctTargetStone = this.targetStones.join("");
   }
-  public isDroppedStoneCorrect(droppedStone: string) {
-    if (droppedStone == this.correctTargetStone) {
-      return true;
-    } else {
-      return false;
-    }
+  public isDroppedStoneCorrect(droppedStone: string) {//Not in use.
+    return droppedStone == this.correctTargetStone
   }
 
   public handleStoneDrop(event) {
-    // this.isStoneDropped = true;
     this.foilStones = [];
   }
   public handleLoadPuzzle(event) {
@@ -188,61 +190,53 @@ export default class StoneHandler extends EventManager {
     this.unregisterEventListener();
   }
 
-  public isStoneDroppedCorrectForLetterOnly(
+  public isStoneLetterDropCorrect(
     droppedStone: string,
-    feedBackIndex: number
+    feedBackIndex: number,
+    isWord:boolean = false
   ): boolean {
-    if (droppedStone == this.correctTargetStone) {
-      this.playCorrectAnswerFeedbackSound(feedBackIndex);
-      return true;
-    } else {
-      if(Math.round(Math.random())>0){
-        this.audioPlayer.playFeedbackAudios(false, "./assets/audios/Eat.mp3","./assets/audios/Disapointed-05.mp3","./assets/audios/MonsterSpit.mp3");
-      }else{
-        this.audioPlayer.playFeedbackAudios(false, "./assets/audios/Eat.mp3","./assets/audios/MonsterSpit.mp3");
-      }
-      return false;
-    }
+    const isLetterDropCorrect = isWord
+      ? droppedStone == this.correctTargetStone.substring(0, droppedStone.length)
+      : droppedStone == this.correctTargetStone;
+
+    this.processLetterDropFeedbackAudio(
+      feedBackIndex,
+      isLetterDropCorrect,
+      isWord,
+      droppedStone
+    );
+
+    return isLetterDropCorrect
   }
 
-  public isStoneDroppedCorrectForLetterInWord(
+  private processLetterDropFeedbackAudio(
+    feedBackIndex: number,
+    isLetterDropCorrect:boolean,
+    isWord:boolean,
     droppedStone: string,
-    feedBackIndex: number
-  ): boolean {
-    
-    if (droppedStone == this.correctTargetStone) {
-      this.playCorrectAnswerFeedbackSound(feedBackIndex);
-      return true;
-    } else {
-      if(Math.round(Math.random())>0){
-        this.audioPlayer.playFeedbackAudios(false, "./assets/audios/Eat.mp3","./assets/audios/Disapointed-05.mp3","./assets/audios/MonsterSpit.mp3");
-      }else{
-        this.audioPlayer.playFeedbackAudios(false, "./assets/audios/Eat.mp3","./assets/audios/MonsterSpit.mp3");
-      }
-       return false;
-    }
-  }
+  ) {
 
-  public isStonDroppedCorrectForWord(
-    droppedStone: string,
-    feedBackIndex: number
-  ): boolean {
-    if (
-      droppedStone == this.correctTargetStone.substring(0, droppedStone.length)
-    ) {
-      if (droppedStone == this.getCorrectTargetStone()) {
+    if (isLetterDropCorrect) {
+      const condition = isWord
+        ? droppedStone === this.getCorrectTargetStone() // condition for word puzzle
+        : isLetterDropCorrect // for letter and letter for word puzzle
+
+      if (condition) {
         this.playCorrectAnswerFeedbackSound(feedBackIndex);
       } else {
         this.audioPlayer.playFeedbackAudios(
           false,
-          "./assets/audios/Eat.mp3",
-          "./assets/audios/Cheering-02.mp3"
+          AUDIO_PATH_EATS,
+          AUDIO_PATH_CHEERING_FUNC(2),
         );
-        this.correctStoneAudio.play();
       }
-      return true;
     } else {
-      return false;
+       this.audioPlayer.playFeedbackAudios(
+          false,
+          AUDIO_PATH_EATS,
+          AUDIO_PATH_MONSTER_SPIT,
+          Math.round(Math.random()) > 0 ? AUDIO_PATH_MONSTER_DISSAPOINTED : null
+        );
     }
   }
 
@@ -280,26 +274,24 @@ export default class StoneHandler extends EventManager {
   };
 
   convertFeedBackAudiosToList(feedbackAudios): string[] {
-    let feedBackAudioArray = [];
-    feedBackAudioArray.push(
+    return [
       feedbackAudios["fantastic"],
       feedbackAudios["great"],
-      feedbackAudios["amazing"],
-    );
-    return feedBackAudioArray;
+      feedbackAudios["amazing"]
+    ];
   }
 
   setGamePause(isGamePaused:boolean){
-    this.isGamePaused  = isGamePaused; 
+    this.isGamePaused  = isGamePaused;
   }
 
   playCorrectAnswerFeedbackSound(feedBackIndex: number) {
     const randomNumber = Utils.getRandomNumber(1, 3).toString();
     this.audioPlayer.playFeedbackAudios(
       false,
-      "./assets/audios/Eat.mp3",
-      `./assets/audios/Cheering-0${randomNumber}.mp3`,
-      "assets/audios/PointsAdd.wav",
+      AUDIO_PATH_EATS,
+      AUDIO_PATH_CHEERING_FUNC(randomNumber),
+      AUDIO_PATH_POINTS_ADD,
       Utils.getConvertedDevProdURL(this.feedbackAudios[feedBackIndex]),
     );
     // to play the audio parrallely.
