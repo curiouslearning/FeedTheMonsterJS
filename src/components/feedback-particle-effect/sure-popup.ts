@@ -50,6 +50,11 @@ export default class AreYouSurePopUp {
       .addEventListener(CLICK, this.handleMouseClick, false);
   };
 
+  addListener = () => {
+    this.canvas
+      .addEventListener(CLICK, this.handleMouseClick, false);
+  };
+
   handleMouseClick = (event) => {
     const selfElement = <HTMLElement>document.getElementById("canvas");
     event.preventDefault();

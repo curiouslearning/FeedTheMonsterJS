@@ -52,7 +52,13 @@ export class StartScene {
     this.toggleBtn = document.getElementById("toggle-btn") as HTMLElement;
     this.monster = new Monster(this.canvas, 4);
     this.switchSceneToLevelSelection = switchSceneToLevelSelection;
-    this.background1 = new Background(this.context, this.width, this.height, 1);
+    this.background1 = new Background({
+      context: this.context,
+      width: this.width,
+      height: this.height,
+      levelNumber: 1,
+    });
+
     this.audioPlayer = new AudioPlayer();
 
     this.pwa_status = localStorage.getItem(PWAInstallStatus);
@@ -75,7 +81,7 @@ export class StartScene {
         this.toggleBtn.innerText = "Dev";
       }
     });
-  }
+  };
 
   animation = (deltaTime: number) => {
     this.titleFont = this.getFontWidthOfTitle();
@@ -96,13 +102,12 @@ export class StartScene {
     }
   };
 
-
   createPlayButton() {
     this.playButton = new PlayButton(
       this.context,
       this.canvas,
       this.canvas.width * 0.35,
-      this.canvas.height / 7,
+      this.canvas.height / 7
     );
     document.addEventListener("selectstart", function (e) {
       e.preventDefault();
@@ -111,13 +116,17 @@ export class StartScene {
   }
 
   handleMouseClick = (event) => {
+    console.log("play click in any canvas");
     let self = this;
     const selfElement = document.getElementById("canvas") as HTMLCanvasElement;
     event.preventDefault();
     var rect = selfElement.getBoundingClientRect();
     const x = event.clientX - rect.left;
     const y = event.clientY - rect.top;
-    const {excludeX, excludeY} = Utils.getExcludedCoordinates(selfElement, 15);
+    const { excludeX, excludeY } = Utils.getExcludedCoordinates(
+      selfElement,
+      15
+    );
     if (!(x < excludeX && y < excludeY)) {
       FirebaseIntegration.getInstance().sendUserClickedOnPlayEvent();
       // @ts-ignore
@@ -131,10 +140,14 @@ export class StartScene {
   };
 
   dispose() {
-    this.monster.dispose()
+    this.monster.dispose();
     this.audioPlayer.stopAllAudios();
     this.handler.removeEventListener("click", this.handleMouseClick, false);
-    window.removeEventListener("beforeinstallprompt", this.handlerInstallPrompt, false);
+    window.removeEventListener(
+      "beforeinstallprompt",
+      this.handlerInstallPrompt,
+      false
+    );
   }
 
   getFontWidthOfTitle() {
@@ -145,5 +158,5 @@ export class StartScene {
     event.preventDefault();
     this.pwa_install_status = event;
     localStorage.setItem(PWAInstallStatus, "false");
-  }
+  };
 }

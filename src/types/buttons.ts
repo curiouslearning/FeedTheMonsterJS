@@ -10,8 +10,8 @@ export interface ButtonInterface {
   posY: PosY;
   context: Context;
   canvas?: Canvas;
-  imagesLoaded: ImagesLoaded;
-  button_image: ButtonImage;
-  draw(): void;
-  onClick(xClick: number, yClick: number): boolean;
+  imagesLoaded?: ImagesLoaded;
+  button_image?: ButtonImage;
+  draw?(): void;
+  onClick?(xClick: number, yClick: number): boolean;
 }

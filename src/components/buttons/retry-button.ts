@@ -6,7 +6,7 @@ import {
   ButtonInterface,
   PosX,
   PosY,
-} from "../../types/buttons";
+} from "src/types/buttons";
 
 export default class RetryButton implements ButtonInterface {
   public posX: PosX;
