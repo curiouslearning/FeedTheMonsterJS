@@ -3,7 +3,7 @@ import { loadImages } from "../common/common";
 import { FirebaseIntegration } from "../Firebase/firebase-integration";
 import { lang, pseudoId } from "../../global-variables";
 import { getData } from "../data/api-data";
-import { Canvas, PosX, PosY, ImagesLoaded } from "src/types/buttons";
+import { Canvas, PosX, PosY, ImagesLoaded } from "src/interfaces/buttons";
 
 interface LoadedImages {
   pause_button_image: HTMLImageElement;

@@ -1,7 +1,10 @@
+// FeedbackTextEffects.ts
+
 import { TextParticle } from "./text-particle";
 import { font } from "../../../global-variables";
+import { FeedbackTextEffectsInterface } from "src/interfaces/feedbackTextEffectsInterface";
 
-export class FeedbackTextEffects {
+export class FeedbackTextEffects implements FeedbackTextEffectsInterface {
   public context: CanvasRenderingContext2D;
   public canvasWidth: number;
   public canvasHeight: number;
@@ -57,8 +60,10 @@ export class FeedbackTextEffects {
     this.context.textBaseline = "middle";
     this.context.lineWidth = 3;
     this.context.strokeStyle = "#A46225";
-    this.context.font = `${this.fontSize-text.length*0.3}px ${font}, monospace`;
-    // break multiline text
+    this.context.font = `${
+      this.fontSize - text.length * 0.3
+    }px ${font}, monospace`;
+
     let lineArray: string[] = [];
     let words = text.split(" ");
     let lineCounter = 0;
@@ -76,29 +81,33 @@ export class FeedbackTextEffects {
     let textHeight = this.lineHeight * lineCounter;
     this.textY = this.canvasHeight / 4.2 - textHeight / 2;
     const initialX = 50;
-    // const spacing = 0.3;
+
     text = text.trim();
     lineArray.forEach((text, index) => {
-      let lastSpaceIndex=text.lastIndexOf(" ",text.lastIndexOf(" ")-1);
-      if(this.fontSize*text.length > this.canvasWidth*1.7 &&lastSpaceIndex!=-1) {
-        let initialText=text.slice(0,lastSpaceIndex);
-        let lastText=" "+text.slice(lastSpaceIndex+1);
+      let lastSpaceIndex = text.lastIndexOf(" ", text.lastIndexOf(" ") - 1);
+      if (
+        this.fontSize * text.length > this.canvasWidth * 1.7 &&
+        lastSpaceIndex != -1
+      ) {
+        let initialText = text.slice(0, lastSpaceIndex);
+        let lastText = " " + text.slice(lastSpaceIndex + 1);
         this.context.fillText(
           initialText,
           this.textX,
-          this.textY + index * this.lineHeight 
+          this.textY + index * this.lineHeight
         );
         this.context.fillText(
           lastText,
           this.textX,
-          this.textY + index * this.lineHeight +this.canvasHeight/12
+          this.textY + index * this.lineHeight + this.canvasHeight / 12
         );
-      }else{
-      this.context.fillText(
-        text,
-        this.textX,
-        this.textY + index * this.lineHeight
-      );}
+      } else {
+        this.context.fillText(
+          text,
+          this.textX,
+          this.textY + index * this.lineHeight
+        );
+      }
     });
     this.convertToParticle();
   }
@@ -110,7 +119,12 @@ export class FeedbackTextEffects {
   }
 
   private convertToParticle(): void {
-    const imageData = this.context.getImageData(0, 0, this.canvasWidth, this.canvasHeight);
+    const imageData = this.context.getImageData(
+      0,
+      0,
+      this.canvasWidth,
+      this.canvasHeight
+    );
     this.context.clearRect(0, 0, this.canvasWidth, this.canvasHeight);
     this.textWorker.postMessage({
       canvasWidth: this.canvasWidth,
@@ -122,7 +136,7 @@ export class FeedbackTextEffects {
 
   public render(): void {
     this.context.clearRect(0, 0, this.canvasWidth, this.canvasHeight);
-    this.particles.forEach(particle => {
+    this.particles.forEach((particle) => {
       particle.draw();
       particle.update();
     });
@@ -141,7 +155,10 @@ export class FeedbackTextEffects {
   }
 
   public unregisterEventListener(): void {
-    this.textWorker.removeEventListener("message", this.handleTextWorkerMessage);
+    this.textWorker.removeEventListener(
+      "message",
+      this.handleTextWorkerMessage
+    );
     this.textWorker.terminate();
   }
 }

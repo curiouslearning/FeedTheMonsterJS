@@ -150,7 +150,11 @@ export class GameplayScene {
       this.rightToLeft
     );
 
-    this.levelIndicators = new LevelIndicators(this.context, this.canvas, 0);
+    this.levelIndicators = new LevelIndicators({
+      context: this.context,
+      canvas: this.canvas,
+      activeIndicators: 0,
+    });
 
     this.levelIndicators.setIndicators(this.counter);
     this.monster = new Monster(this.canvas, this.monsterPhaseNumber);

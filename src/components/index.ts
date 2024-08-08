@@ -1,6 +1,6 @@
 import PauseButton from './buttons/pause-button';
 import { LevelIndicators } from './level-indicator';
-import PausePopUp from './pause-popup';
+import PausePopUp from './popups/pause-popup';
 import { PromptText } from './prompt-text';
 import StoneHandler from './stone-handler';
 import { Tutorial } from './tutorial';

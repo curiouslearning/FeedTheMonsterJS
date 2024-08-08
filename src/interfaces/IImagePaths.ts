@@ -14,12 +14,3 @@ export interface ImagePaths {
   winterFenceImg: string;
   winterPillerImg: string;
 }
-
-export type LoadedImages = Record<keyof ImagePaths, HTMLImageElement>;
-
-export interface BackgroundProps {
-  context: CanvasRenderingContext2D;
-  width: number;
-  height: number;
-  levelNumber: number;
-}

@@ -5,7 +5,7 @@ import {
   ButtonInterface,
   PosX,
   PosY,
-} from "src/types/buttons";
+} from "src/interfaces/buttons";
 
 export default class NextButton implements ButtonInterface {
   public posX: PosX;

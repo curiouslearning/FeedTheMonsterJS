@@ -8,7 +8,7 @@ import {
   ButtonInterface,
   PosX,
   PosY,
-} from "src/types/buttons";
+} from "src/interfaces/buttons";
 
 export default class YesButton implements ButtonInterface {
   public posX: PosX;

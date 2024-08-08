@@ -6,7 +6,7 @@ import {
   ImagesLoaded,
   ButtonInterface,
   ButtonImage,
-} from "src/types/buttons";
+} from "src/interfaces/buttons";
 
 export default class CancelButton implements ButtonInterface {
   public posX: PosX;

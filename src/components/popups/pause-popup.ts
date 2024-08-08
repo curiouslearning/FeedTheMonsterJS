@@ -1,10 +1,10 @@
-import CancelButton from "../components/buttons/cancel-button";
-import CloseButton from "../components/buttons/close-button";
-import RetryButton from "../components/buttons/retry-button";
-import { CLICK, VISIBILITY_CHANGE } from "../common/event-names";
-import { AudioPlayer } from "./audio-player";
-import AreYouSurePopUp from "./feedback-particle-effect/sure-popup";
-import { lang } from "../../global-variables";
+import CancelButton from "../buttons/cancel-button";
+import CloseButton from "../buttons/close-button";
+import RetryButton from "../buttons/retry-button";
+import { CLICK, VISIBILITY_CHANGE } from "../../common/event-names";
+import { AudioPlayer } from "../audio-player";
+import AreYouSurePopUp from "./sure-popup";
+import { lang } from "../../../global-variables";
 export default class PausePopUp {
   public canvas: HTMLCanvasElement;
   public context: CanvasRenderingContext2D;

@@ -50,12 +50,12 @@ export class LevelEndScene {
       monsterPhaseNumber,
       this.switchToReactionAnimation
     );
-    this.background = new Background(
-      this.context,
-      this.width,
-      this.height,
-      currentLevel
-    );
+    this.background = new Background({
+      context: this.context,
+      width: this.width,
+      height: this.height,
+      levelNumber: currentLevel,
+    });
 
     this.switchToGameplayCB = switchToGameplayCB;
     this.switchToLevelSelectionCB = switchToLevelSelectionCB;
@@ -65,20 +65,20 @@ export class LevelEndScene {
       context,
       canvas,
       this.width * 0.2 - (this.width * 0.19) / 2,
-      this.height /1.25
+      this.height / 1.25
     );
     this.retryButton = new RetryButton(
       this.context,
       this.canvas,
       this.width * 0.5 - (this.width * 0.19) / 2,
-      this.height /1.25
+      this.height / 1.25
     );
     this.nextButton = new NextButton(
       this.context,
       this.width,
       this.height,
       this.width * 0.8 - (this.width * 0.19) / 2,
-      this.height /1.25
+      this.height / 1.25
     );
     this.audioPlayer = new AudioPlayer();
     this.starCount = starCount;
@@ -120,7 +120,7 @@ export class LevelEndScene {
         0,
         0,
         this.width,
-        this.height+this.height*0.12
+        this.height + this.height * 0.12
       );
       this.drawStars();
 
@@ -188,7 +188,7 @@ export class LevelEndScene {
 
   handleMouseClick = (event) => {
     // console.log(" levelend mouseclick ");
-    const selfElement:HTMLElement =document.getElementById("canvas");
+    const selfElement: HTMLElement = document.getElementById("canvas");
     var rect = selfElement.getBoundingClientRect();
     const x = event.clientX - rect.left;
     const y = event.clientY - rect.top;
@@ -228,7 +228,7 @@ export class LevelEndScene {
     }
   };
   dispose = () => {
-    this.monster.dispose()
+    this.monster.dispose();
     this.audioPlayer.stopAllAudios();
     this.timeouts.forEach((timeout) => clearTimeout(timeout));
     document

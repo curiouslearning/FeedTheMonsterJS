@@ -1,14 +1,44 @@
-// Background.ts
-
+import {
+  BG_IM,
+  HILL_IMG,
+  PILLER_IMG,
+  FENCE_IMG,
+  AUTUMN_BG,
+  AUTUMN_HILL_IMG,
+  AUTUMB_PILE_IMG,
+  AUTUMN_SIGN_IMG,
+  AUTUMN_FENCE_IMG,
+  WINTER_BG_IMG,
+  WINTER_HILL_IMG,
+  WINTER_SIGN_IMG,
+  WINTER_FENCE_IMG,
+  WINTER_PILE_IMG,
+} from "../constants";
 import { loadImages } from "../common/common";
 import {
-  ImagePaths,
-  LoadedImages,
+  BackgroundInterface,
   BackgroundProps,
-} from "src/types/commonTypes";
-import { images } from "src/constants";
+  LoadedImages,
+} from "src/interfaces/backgroundInterface";
 
-export class Background {
+const backgroundImages = {
+  bgImg: BG_IM,
+  hillImg: HILL_IMG,
+  pillerImg: PILLER_IMG,
+  fenchImg: FENCE_IMG,
+  autumnBgImg: AUTUMN_BG,
+  autumnHillImg: AUTUMN_HILL_IMG,
+  autumnPillerImg: AUTUMB_PILE_IMG,
+  autumnSignImg: AUTUMN_SIGN_IMG,
+  autumnFenceImg: AUTUMN_FENCE_IMG,
+  winterBgImg: WINTER_BG_IMG,
+  winterHillImg: WINTER_HILL_IMG,
+  winterSignImg: WINTER_SIGN_IMG,
+  winterFenceImg: WINTER_FENCE_IMG,
+  winterPillerImg: WINTER_PILE_IMG,
+};
+
+export class Background implements BackgroundInterface {
   public width: number;
   public height: number;
   public context: CanvasRenderingContext2D;
@@ -30,7 +60,7 @@ export class Background {
       this.backgroundType = this.backgroundType % 3;
     }
 
-    loadImages(images, (images) => {
+    loadImages(backgroundImages, (images) => {
       this.loadedImages = images as LoadedImages;
       this.imagesLoaded = true;
     });
