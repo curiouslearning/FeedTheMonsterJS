@@ -1,15 +1,18 @@
-import { TappedStart } from "../Firebase/firebase-event-interface";
-import { loadImages } from "../common/common";
-import { FirebaseIntegration } from "../Firebase/firebase-integration";
-import { lang, pseudoId } from "../../global-variables";
-import { getData } from "../data/api-data";
-import { Canvas, PosX, PosY, ImagesLoaded } from "src/interfaces/buttons";
-
-interface LoadedImages {
-  pause_button_image: HTMLImageElement;
-}
-
-export default class PlayButton {
+import { TappedStart } from "../../Firebase/firebase-event-interface";
+import { loadImages } from "../../common/common";
+import { FirebaseIntegration } from "../../Firebase/firebase-integration";
+import { lang, pseudoId } from "../../../global-variables";
+import { getData } from "../../data/api-data";
+import {
+  Canvas,
+  PosX,
+  PosY,
+  ImagesLoaded,
+  ButtonInterface,
+  LoadedImages,
+} from "src/interfaces/buttons";
+import { PLAY_BUTTON_IMG } from "../../constants";
+export default class PlayButton implements ButtonInterface {
   public posX: PosX;
   public posY: PosY;
   public context: CanvasRenderingContext2D;
@@ -33,7 +36,7 @@ export default class PlayButton {
     this.canvas = canvas;
     this.firebaseIntegration = new FirebaseIntegration();
     this.images = {
-      pause_button_image: "./assets/images/Play_button.png",
+      pause_button_image: PLAY_BUTTON_IMG,
     };
     this.loadImages();
     this.init();
@@ -68,7 +71,6 @@ export default class PlayButton {
     }
   }
 
-  // not being used...
   public onClick(xClick: number, yClick: number): boolean {
     console.log("play button clicked");
     const distance = Math.sqrt(
@@ -83,7 +85,6 @@ export default class PlayButton {
     return false;
   }
 
-  // not being used...
   private logTappedStartFirebaseEvent() {
     const endTime = Date.now();
     const tappedStartData: TappedStart = {

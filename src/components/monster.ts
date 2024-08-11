@@ -1,13 +1,8 @@
-import { Debugger, lang } from "../../global-variables";
-import {
-  StoreMonsterPhaseNumber,
-  loadImages,
-} from "../common/common";
-
+import { MonsterInterface } from "src/interfaces/monsterInterface";
+import { loadImages } from "../common/common";
 import { EventManager } from "../events/EventManager";
 
-
-export class Monster extends EventManager {
+export class Monster extends EventManager implements MonsterInterface {
   public zindex: number;
   public width: number;
   public height: number;
@@ -25,12 +20,12 @@ export class Monster extends EventManager {
   public canavsElement: HTMLCanvasElement;
   public context: CanvasRenderingContext2D;
   public game: any;
-  public images: Object;
-  public loadedImages: any;
+  public images: { [key: string]: string };
+  public loadedImages: { [key: string]: HTMLImageElement };
   public imagesLoaded: boolean = false;
   public monsterPhase: number;
 
-  constructor(game, monsterPhase, callBackFunction?) {
+  constructor(game: any, monsterPhase: number, callBackFunction?: () => void) {
     super({
       stoneDropCallbackHandler: (event) => this.handleStoneDrop(event),
       loadPuzzleCallbackHandler: (event) => this.handleLoadPuzzle(event),
@@ -40,15 +35,13 @@ export class Monster extends EventManager {
     this.width = this.game.width;
     this.height = this.game.height;
     this.canavsElement = document.getElementById("canvas") as HTMLCanvasElement;
-    this.context = this.canavsElement.getContext("2d");
+    this.context = this.canavsElement.getContext("2d")!;
     this.image = document.getElementById("monster") as HTMLImageElement;
-    // console.log(this.image);
     this.frameX = 0;
     this.frameY = 0;
     this.maxFrame = 6;
     this.x = this.game.width / 2 - this.game.width * 0.243;
     this.y = this.game.width / 3;
-    // console.log(this.x,this.y); 
     this.fps = 10;
     this.countFrame = 0;
     this.frameInterval = 1000 / this.fps;
@@ -67,14 +60,12 @@ export class Monster extends EventManager {
 
       this.imagesLoaded = true;
       if (callBackFunction) {
-        // console.log(this.imagesLoaded);
         callBackFunction();
       }
     });
   }
 
-
-  update(deltaTime) {
+  update(deltaTime: number) {
     if (this.frameTimer >= this.frameInterval) {
       this.frameTimer = 0;
       if (this.frameX < this.maxFrame) {
@@ -85,7 +76,6 @@ export class Monster extends EventManager {
     } else {
       this.frameTimer += deltaTime;
     }
-
     this.draw();
   }
 
@@ -105,39 +95,39 @@ export class Monster extends EventManager {
     }
   }
 
-  changeImage(src) {
+  changeImage(src: string) {
     this.image.src = src;
   }
-  
 
   changeToDragAnimation() {
-    this.maxFrame=6
+    this.maxFrame = 6;
     this.image = this.loadedImages.dragImg;
   }
 
   changeToEatAnimation() {
-    this.maxFrame=12
+    this.maxFrame = 12;
     this.image = this.loadedImages.eatImg;
   }
 
   changeToIdleAnimation() {
-    this.maxFrame=6;
+    this.maxFrame = 6;
     this.image = this.loadedImages.idleImg;
   }
 
   changeToSpitAnimation() {
-    this.maxFrame=12;
+    this.maxFrame = 12;
     this.image = this.loadedImages.spitImg;
   }
 
-  public handleStoneDrop(event) {
-    if (event.detail.isCorrect) {
+  public handleStoneDrop(event: Event) {
+    if ((event as CustomEvent).detail.isCorrect) {
       this.changeToEatAnimation();
     } else {
       this.changeToSpitAnimation();
     }
   }
-  public handleLoadPuzzle(event) {
+
+  public handleLoadPuzzle(event: Event) {
     this.changeToIdleAnimation();
   }
 
@@ -151,8 +141,6 @@ export class Monster extends EventManager {
         (yClick - this.y - this.height / 2.2) *
           (yClick - this.y - this.height / 2.2)
     );
-    if (distance <= 100) {
-      return true;
-    }
+    return distance <= 100;
   }
 }

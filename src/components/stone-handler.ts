@@ -13,8 +13,11 @@ import {
   AUDIO_PATH_CHEERING_FUNC,
   ASSETS_PATH_STONE_PINK_BG,
 } from "../constants";
-
-export default class StoneHandler extends EventManager {
+import { StoneHandlerInterface } from "src/interfaces/StoneHandlerInterface";
+export default class StoneHandler
+  extends EventManager
+  implements StoneHandlerInterface
+{
   public context: CanvasRenderingContext2D;
   public canvas: { width: number; height?: number };
   public currentPuzzleData: any;
@@ -31,12 +34,13 @@ export default class StoneHandler extends EventManager {
     GameScore.getDatafromStorage().length == undefined ? true : false;
   public correctStoneAudio: HTMLAudioElement;
   public tutorial: Tutorial;
-  correctTargetStone: string;
-  stonebg: HTMLImageElement;
+  public correctTargetStone: string;
+  public stonebg: HTMLImageElement;
   public audioPlayer: AudioPlayer;
   public feedbackAudios: string[];
   public timerTickingInstance: TimerTicking;
-  isGamePaused: boolean = false;
+  public isGamePaused: boolean = false;
+
   constructor(
     context: CanvasRenderingContext2D,
     canvas: { width: number; height?: number },
@@ -46,8 +50,10 @@ export default class StoneHandler extends EventManager {
     timerTickingInstance: TimerTicking
   ) {
     super({
-      stoneDropCallbackHandler: (event) => this.handleStoneDrop(event),
-      loadPuzzleCallbackHandler: (event) => this.handleLoadPuzzle(event),
+      stoneDropCallbackHandler: (event) =>
+        this.handleStoneDrop(event as CustomEvent),
+      loadPuzzleCallbackHandler: (event) =>
+        this.handleLoadPuzzle(event as CustomEvent),
     });
     this.context = context;
     this.canvas = canvas;
@@ -80,7 +86,7 @@ export default class StoneHandler extends EventManager {
     );
   }
 
-  createStones(img) {
+  createStones(img: HTMLImageElement) {
     const foilStones = this.getFoilStones();
     for (let i = 0; i < foilStones.length; i++) {
       if (foilStones[i] == this.correctTargetStone) {
@@ -160,20 +166,19 @@ export default class StoneHandler extends EventManager {
     this.stonePos = this.stonePos.sort(() => Math.random() - 0.5);
   }
 
-  public setTargetStone(puzzleNumber) {
+  public setTargetStone(puzzleNumber: number) {
     this.currentPuzzleData = this.levelData.puzzles[puzzleNumber];
     this.targetStones = [...this.currentPuzzleData.targetStones];
     this.correctTargetStone = this.targetStones.join("");
   }
   public isDroppedStoneCorrect(droppedStone: string) {
-    //Not in use.
     return droppedStone == this.correctTargetStone;
   }
 
-  public handleStoneDrop(event) {
+  public handleStoneDrop(event: CustomEvent) {
     this.foilStones = [];
   }
-  public handleLoadPuzzle(event) {
+  public handleLoadPuzzle(event: CustomEvent) {
     this.foilStones = [];
     this.tutorial.setPuzzleNumber(event.detail.counter);
     this.puzzleNumber = event.detail.counter;
@@ -219,8 +224,8 @@ export default class StoneHandler extends EventManager {
   ) {
     if (isLetterDropCorrect) {
       const condition = isWord
-        ? droppedStone === this.getCorrectTargetStone() // condition for word puzzle
-        : isLetterDropCorrect; // for letter and letter for word puzzle
+        ? droppedStone === this.getCorrectTargetStone()
+        : isLetterDropCorrect;
 
       if (condition) {
         this.playCorrectAnswerFeedbackSound(feedBackIndex);
@@ -274,7 +279,7 @@ export default class StoneHandler extends EventManager {
     this.correctStoneAudio.pause();
   };
 
-  convertFeedBackAudiosToList(feedbackAudios): string[] {
+  convertFeedBackAudiosToList(feedbackAudios: any): string[] {
     return [
       feedbackAudios["fantastic"],
       feedbackAudios["great"],
@@ -295,7 +300,6 @@ export default class StoneHandler extends EventManager {
       AUDIO_PATH_POINTS_ADD,
       Utils.getConvertedDevProdURL(this.feedbackAudios[feedBackIndex])
     );
-    // to play the audio parrallely.
     this.correctStoneAudio.play();
   }
 }

@@ -1,6 +1,14 @@
 /*! ../../../global-variables */
 
+/*! ../../Firebase/firebase-integration */
+
+/*! ../../common/common */
+
 /*! ../../common/event-names */
+
+/*! ../../constants */
+
+/*! ../../data/api-data */
 
 /*! ../../global-variables */
 
@@ -40,11 +48,11 @@
 
 /*! ../components/buttons/next-button */
 
+/*! ../components/buttons/play-button */
+
 /*! ../components/buttons/retry-button */
 
 /*! ../components/monster */
-
-/*! ../components/play-button */
 
 /*! ../constants */
 
@@ -233,10 +241,6 @@
   \**************************************/
 
 /*!***************************************!*\
-  !*** ./src/components/play-button.ts ***!
-  \***************************************/
-
-/*!***************************************!*\
   !*** ./src/components/prompt-text.ts ***!
   \***************************************/
 
@@ -294,6 +298,10 @@
 
 /*!***********************************************!*\
   !*** ./src/components/buttons/next-button.ts ***!
+  \***********************************************/
+
+/*!***********************************************!*\
+  !*** ./src/components/buttons/play-button.ts ***!
   \***********************************************/
 
 /*!************************************************!*\

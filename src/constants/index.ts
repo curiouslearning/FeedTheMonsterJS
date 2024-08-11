@@ -1,5 +1,3 @@
-import { ImagePaths } from "src/interfaces/IImagePaths";
-
 // Audio paths
 export const AUDIO_PATH_EATS = "./assets/audios/Eat.mp3";
 export const AUDIO_PATH_MONSTER_SPIT = "./assets/audios/MonsterSpit.mp3";
@@ -44,3 +42,5 @@ export const WINTER_PILE_IMG = "./assets/images/Winter_sign_v01.png";
 export const LEVEL_INDICATOR = "./assets/images/levels_v01.png";
 export const BAR_EMPTY = "./assets/images/bar_empty_v01.png";
 export const BAR_FULL = "./assets/images/bar_full_v01.png";
+
+export const PLAY_BUTTON_IMG = "./assets/images/Play_button.png";

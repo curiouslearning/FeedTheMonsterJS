@@ -16,7 +16,7 @@ import { DataModal } from "../data/data-modal";
 import { LevelSelectionScreen } from "../scenes/level-selection-scene";
 import { Debugger, lang } from "../../global-variables";
 import { Tutorial } from "../components/tutorial";
-import PlayButton from "../components/play-button";
+import PlayButton from "../components/buttons/play-button";
 // var this: any;
 let lastTime = 0;
 let pwa_install_status: any;
