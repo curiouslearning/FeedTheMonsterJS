@@ -3,7 +3,7 @@ import { Utils } from "../common/utils";
 import { AudioPlayer } from "./audio-player";
 import { VISIBILITY_CHANGE } from "../common/event-names";
 import { font, lang } from "../../global-variables";
-import { PromptTextInterface } from "src/interfaces/promptTextInterface";
+import { PromptTextInterface } from "../interfaces/promptTextInterface";
 
 // Define a custom event type
 interface CustomEventWithDetail<T> extends Event {

@@ -1,8 +1,6 @@
-// FeedbackTextEffects.ts
-
 import { TextParticle } from "./text-particle";
 import { font } from "../../../global-variables";
-import { FeedbackTextEffectsInterface } from "src/interfaces/feedbackTextEffectsInterface";
+import { FeedbackTextEffectsInterface } from "../../interfaces/feedbackTextEffectsInterface";
 
 export class FeedbackTextEffects implements FeedbackTextEffectsInterface {
   public context: CanvasRenderingContext2D;

@@ -1,4 +1,4 @@
-import { MonsterInterface } from "src/interfaces/monsterInterface";
+import { MonsterInterface } from "../interfaces/monsterInterface";
 import { loadImages } from "../common/common";
 import { EventManager } from "../events/EventManager";
 

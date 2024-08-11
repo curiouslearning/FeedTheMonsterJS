@@ -42,8 +42,9 @@ import {
   ASSETS_PATH_FENCE,
   ASSETS_PATH_MONSTER_IDLE,
 } from "../constants";
+import { GameplaySceneInterface } from "src/interfaces/gameplaySceneInterface";
 
-export class GameplayScene {
+export class GameplayScene implements GameplaySceneInterface {
   public width: number;
   public height: number;
   public monster: Monster;
@@ -99,23 +100,23 @@ export class GameplayScene {
   isDisposing: boolean;
 
   constructor(
-    canvas,
-    levelData,
-    monsterPhaseNumber,
-    feedBackTexts,
-    rightToLeft,
-    switchSceneToEnd,
-    levelNumber,
-    switchToLevelSelection,
-    reloadScene,
-    jsonVersionNumber,
-    feedbackAudios
+    canvas: HTMLCanvasElement,
+    levelData: any,
+    monsterPhaseNumber: number,
+    feedBackTexts: any,
+    rightToLeft: boolean,
+    switchSceneToEnd: Function,
+    levelNumber: Function,
+    switchToLevelSelection: Function,
+    reloadScene: Function,
+    jsonVersionNumber: string,
+    feedbackAudios: any
   ) {
     this.width = canvas.width;
     this.height = canvas.height;
     this.rightToLeft = rightToLeft;
     this.canvas = canvas;
-    this.context = this.canvas.getContext("2d", { willReadFrequently: true });
+    this.context = this.canvas.getContext("2d", { willReadFrequently: true })!;
     this.monsterPhaseNumber = monsterPhaseNumber || 1;
     this.levelData = levelData;
     this.switchSceneToEnd = switchSceneToEnd;
@@ -186,13 +187,13 @@ export class GameplayScene {
     this.feedbackTextEffects = new FeedbackTextEffects(
       this.feedBackTextCanavsElement.getContext("2d", {
         willReadFrequently: true,
-      }),
+      })!,
       this.width,
       this.height
     );
 
     this.audioPlayer = new AudioPlayer();
-    this.handler = document.getElementById("canvas");
+    this.handler = document.getElementById("canvas")!;
     this.puzzleData = levelData.puzzles;
     this.feedBackTexts = feedBackTexts;
 
@@ -238,7 +239,7 @@ export class GameplayScene {
     return Math.floor(Math.random() * (definedValuesMaxCount - min + 1)) + min;
   }
 
-  handleMouseUp = (event) => {
+  handleMouseUp = (event: MouseEvent) => {
     // Remove unnecessary logging
     let rect = this.canvas.getBoundingClientRect();
     const x = event.clientX - rect.left;
@@ -285,7 +286,7 @@ export class GameplayScene {
   };
 
   // Event to identify mouse moved down on the canvas
-  handleMouseDown = (event) => {
+  handleMouseDown = (event: MouseEvent) => {
     let rect = this.canvas.getBoundingClientRect();
     const x = event.clientX - rect.left;
     const y = event.clientY - rect.top;
@@ -301,7 +302,7 @@ export class GameplayScene {
     }
   };
 
-  handleMouseMove = (event) => {
+  handleMouseMove = (event: MouseEvent) => {
     if (this.pickedStone) {
       let rect = this.canvas.getBoundingClientRect();
       const x = event.clientX - rect.left;
@@ -312,7 +313,7 @@ export class GameplayScene {
     }
   };
 
-  handleMouseClick = (event) => {
+  handleMouseClick = (event: MouseEvent) => {
     let rect = this.canvas.getBoundingClientRect();
     const x = event.clientX - rect.left;
     const y = event.clientY - rect.top;
@@ -334,24 +335,33 @@ export class GameplayScene {
   };
 
   // Event to identify touch on the canvas
-  handleTouchStart = (event) => {
+  handleTouchStart = (event: TouchEvent) => {
     const touch = event.touches[0];
-    this.handleMouseDown({ clientX: touch.clientX, clientY: touch.clientY });
+    this.handleMouseDown({
+      clientX: touch.clientX,
+      clientY: touch.clientY,
+    } as MouseEvent);
   };
 
-  handleTouchMove = (event) => {
+  handleTouchMove = (event: TouchEvent) => {
     const touch = event.touches[0];
-    this.handleMouseMove({ clientX: touch.clientX, clientY: touch.clientY });
+    this.handleMouseMove({
+      clientX: touch.clientX,
+      clientY: touch.clientY,
+    } as MouseEvent);
   };
 
-  handleTouchEnd = (event) => {
+  handleTouchEnd = (event: TouchEvent) => {
     const touch = event.changedTouches[0];
-    this.handleMouseUp({ clientX: touch.clientX, clientY: touch.clientY });
+    this.handleMouseUp({
+      clientX: touch.clientX,
+      clientY: touch.clientY,
+    } as MouseEvent);
   };
 
   draw(deltaTime: number) {
     if (!this.isGameStarted && !this.isPauseButtonClicked) {
-      this.time = this.time + deltaTime;
+      this.time += deltaTime;
       if (this.time >= 5000) {
         this.isGameStarted = true;
         this.time = 0;
@@ -374,9 +384,9 @@ export class GameplayScene {
     }
     if (!this.isPauseButtonClicked && !this.isGameStarted) {
       this.feedbackTextEffects.render();
-      this.counter == 0
-        ? this.tutorial.clickOnMonsterTutorial(deltaTime)
-        : undefined;
+      if (this.counter === 0) {
+        this.tutorial.clickOnMonsterTutorial(deltaTime);
+      }
     }
     if (this.isPauseButtonClicked && !this.isGameStarted) {
       this.pausePopup.draw();
@@ -405,26 +415,22 @@ export class GameplayScene {
   removeEventListeners() {
     // Remove event listeners using the defined functions
     this.handler.removeEventListener(CLICK, this.handleMouseClick, false);
-    this.handler.removeEventListener("mouseup", this.handleMouseUp, false);
-    this.handler.removeEventListener("mousemove", this.handleMouseMove, false);
-    this.handler.removeEventListener("mousedown", this.handleMouseDown, false);
-    this.handler.removeEventListener(
-      "touchstart",
-      this.handleTouchStart,
-      false
-    );
-    this.handler.removeEventListener("touchmove", this.handleTouchMove, false);
-    this.handler.removeEventListener("touchend", this.handleTouchEnd, false);
+    this.handler.removeEventListener(MOUSEUP, this.handleMouseUp, false);
+    this.handler.removeEventListener(MOUSEMOVE, this.handleMouseMove, false);
+    this.handler.removeEventListener(MOUSEDOWN, this.handleMouseDown, false);
+    this.handler.removeEventListener(TOUCHSTART, this.handleTouchStart, false);
+    this.handler.removeEventListener(TOUCHMOVE, this.handleTouchMove, false);
+    this.handler.removeEventListener(TOUCHEND, this.handleTouchEnd, false);
   }
 
-  loadPuzzle = (isTimerEnded?) => {
+  loadPuzzle = (isTimerEnded?: boolean) => {
     this.removeEventListeners();
     this.stonesCount = 1;
     const timerEnded = Boolean(isTimerEnded);
     if (timerEnded) {
       this.logPuzzleEndFirebaseEvent(false);
     }
-    this.counter += 1; //increment Puzzle
+    this.counter += 1; // increment Puzzle
     this.isGameStarted = false;
 
     if (this.counter === this.levelData.puzzles.length) {
@@ -489,7 +495,7 @@ export class GameplayScene {
     droppedStoneInstance.x = -999;
     droppedStoneInstance.y = -999;
     const feedBackIndex = this.getRandomInt(0, 1);
-    this.tempWordforWordPuzzle = this.tempWordforWordPuzzle + droppedStone;
+    this.tempWordforWordPuzzle += droppedStone;
 
     const isCorrect = this.stoneHandler.isStoneLetterDropCorrect(
       this.tempWordforWordPuzzle,
@@ -497,7 +503,8 @@ export class GameplayScene {
       true
     );
     if (
-      this.stoneHandler.getCorrectTargetStone() == this.tempWordforWordPuzzle &&
+      this.stoneHandler.getCorrectTargetStone() ===
+        this.tempWordforWordPuzzle &&
       isCorrect
     ) {
       this.handleCorrectStoneDrop(feedBackIndex);
@@ -510,7 +517,7 @@ export class GameplayScene {
       this.timerTicking.startTimer();
       this.monster.changeToEatAnimation();
       this.promptText.droppedStoneIndex(
-        lang == "arabic" ? this.stonesCount : this.tempWordforWordPuzzle.length
+        lang === "arabic" ? this.stonesCount : this.tempWordforWordPuzzle.length
       );
       this.stonesCount++;
 
@@ -523,19 +530,22 @@ export class GameplayScene {
     }
   }
 
-  private handleStoneDropEnd(isCorrect, puzzleType: string | null = null) {
+  private handleStoneDropEnd(
+    isCorrect: boolean,
+    puzzleType: string | null = null
+  ) {
     this.logPuzzleEndFirebaseEvent(isCorrect, puzzleType);
     this.dispatchStoneDropEvent(isCorrect);
     this.loadPuzzle();
   }
 
-  private handleCorrectStoneDrop = (feedbackIndex: number): void => {
+  private handleCorrectStoneDrop(feedbackIndex: number): void {
     this.score += 100;
     this.feedbackTextEffects.wrapText(
       this.getRandomFeedBackText(feedbackIndex)
     );
     this.feedBackTextCanavsElement.style.zIndex = "2";
-  };
+  }
 
   private dispatchStoneDropEvent(isCorrect: boolean): void {
     const dropStoneEvent = new CustomEvent(STONEDROP, {
@@ -545,7 +555,7 @@ export class GameplayScene {
     document.dispatchEvent(dropStoneEvent);
   }
 
-  private initNewPuzzle(loadPuzzleEvent) {
+  private initNewPuzzle(loadPuzzleEvent: CustomEvent) {
     this.removeEventListeners();
     this.isGameStarted = false;
     this.time = 0;
@@ -565,20 +575,16 @@ export class GameplayScene {
       cr_user_id: pseudoId,
       ftm_language: lang,
       profile_number: 0,
-      version_number: document.getElementById("version-info-id").innerHTML,
+      version_number:
+        document.getElementById("version-info-id")?.innerHTML || "",
       json_version_number: this.jsonVersionNumber,
       success_or_failure: isCorrect ? "success" : "failure",
       level_number: this.levelData.levelMeta.levelNumber,
       puzzle_number: this.counter,
       item_selected:
-        puzzleType == "Word"
-          ? this.tempWordforWordPuzzle == null ||
-            this.tempWordforWordPuzzle == undefined
-            ? "TIMEOUT"
-            : this.tempWordforWordPuzzle
-          : this.pickedStone == null || this.pickedStone == undefined
-          ? "TIMEOUT"
-          : this.pickedStone?.text,
+        puzzleType === "Word"
+          ? this.tempWordforWordPuzzle ?? "TIMEOUT"
+          : this.pickedStone?.text ?? "TIMEOUT",
       target: this.stoneHandler.getCorrectTargetStone(),
       foils: this.stoneHandler.getFoilStones(),
       response_time: (endTime - this.puzzleTime) / 1000,
@@ -592,7 +598,8 @@ export class GameplayScene {
       cr_user_id: pseudoId,
       ftm_language: lang,
       profile_number: 0,
-      version_number: document.getElementById("version-info-id").innerHTML,
+      version_number:
+        document.getElementById("version-info-id")?.innerHTML || "",
       json_version_number: this.jsonVersionNumber,
       success_or_failure:
         GameScore.calculateStarCount(this.score) >= 3 ? "success" : "failure",

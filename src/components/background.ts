@@ -19,7 +19,7 @@ import {
   BackgroundInterface,
   BackgroundProps,
   LoadedImages,
-} from "src/interfaces/backgroundInterface";
+} from "../interfaces/backgroundInterface";
 
 const backgroundImages = {
   bgImg: BG_IM,

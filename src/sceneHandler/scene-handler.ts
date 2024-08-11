@@ -19,9 +19,9 @@ import {
   SCENE_NAME_GAME_PLAY,
   SCENE_NAME_LEVEL_END
 } from '../constants';
+import { SceneHandlerInterface } from "src/interfaces/sceneHandlerInterface";
 
-
-export class SceneHandler {
+export class SceneHandler implements SceneHandlerInterface {
   public canvas: HTMLCanvasElement;
   public data: DataModal;
   public width: number;
@@ -58,7 +58,7 @@ export class SceneHandler {
       this.switchSceneToLevelSelection
     );
     SceneHandler.SceneName = StartScene1;
-    this.loadingScreen = new LoadingScene(this.width, this.height,this.removeLoading);
+    this.loadingScreen = new LoadingScene(this.width, this.height, this.removeLoading);
     this.startAnimationLoop();
   }
 
@@ -74,7 +74,7 @@ export class SceneHandler {
   devToggle() {
     this.toggleBtn.addEventListener("click", () => {
       this.toggleBtn.classList.toggle("on");
-      Debugger.DebugMode = this.toggleBtn.classList.contains("on")
+      Debugger.DebugMode = this.toggleBtn.classList.contains("on");
       this.toggleBtn.innerText = "Dev";
     });
   }
@@ -90,7 +90,9 @@ export class SceneHandler {
     this.lastTime = timeStamp;
 
     this.context.clearRect(0, 0, this.width, this.height);
-    this.loading ? this.loadingScreen.draw(deltaTime) : null;
+    if (this.loading) {
+      this.loadingScreen.draw(deltaTime);
+    }
 
     if (SceneHandler.SceneName === StartScene1) {
       this.startScene.animation(deltaTime);
@@ -103,10 +105,12 @@ export class SceneHandler {
     }
   };
 
-  switchSceneToGameplay = (gamePlayData, changeSceneRequestFrom?: string) => {
+  switchSceneToGameplay = (gamePlayData: any, changeSceneRequestFrom?: string) => {
     this.showLoading();
     this.dispose(changeSceneRequestFrom);
-    let jsonVersionNumber= !!this.data.majVersion && !!this.data.minVersion  ? this.data.majVersion.toString() +"."+this.data.minVersion.toString() : "";
+    let jsonVersionNumber = !!this.data.majVersion && !!this.data.minVersion
+      ? this.data.majVersion.toString() + "." + this.data.minVersion.toString()
+      : "";
     setTimeout(() => {
       this.gameplayScene = new GameplayScene(
         this.canvas,
@@ -116,7 +120,7 @@ export class SceneHandler {
         this.data.rightToLeft,
         this.switchSceneToEndLevel,
         gamePlayData.selectedLevelNumber,
-        () => {this.switchSceneToLevelSelection(SCENE_NAME_GAME_PLAY)},
+        () => { this.switchSceneToLevelSelection(SCENE_NAME_GAME_PLAY) },
         this.switchSceneToGameplay,
         jsonVersionNumber,
         this.data.FeedbackAudios
@@ -128,7 +132,7 @@ export class SceneHandler {
   switchSceneToEndLevel = (
     starCount: number,
     monsterPhaseNumber: number,
-    currentLevelNumber,
+    currentLevelNumber: number,
     isTimerEnded: boolean,
   ) => {
     this.loadingScreen.initCloud();
@@ -169,8 +173,7 @@ export class SceneHandler {
     if (lastSceneName == SCENE_NAME_LEVEL_SELECT) {
       this.levelSelectionScene.dispose();
     }
-    else if (
-      lastSceneName === SCENE_NAME_GAME_PLAY) {
+    else if (lastSceneName === SCENE_NAME_GAME_PLAY) {
       this.gameplayScene.dispose();
     }
     else if (lastSceneName === SCENE_NAME_START) {
@@ -192,8 +195,7 @@ export class SceneHandler {
     this.loading = false;
   };
 
-  private handleInstallPrompt = (event: Event) => {
-    //currently not in use
+  public handleInstallPrompt = (event: Event) => {
     event.preventDefault();
     this.pwa_install_status = event;
     localStorage.setItem(PWAInstallStatus, "false");

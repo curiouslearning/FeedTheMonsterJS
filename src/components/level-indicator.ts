@@ -5,7 +5,7 @@ import {
   LevelIndicatorsInterface,
   LevelIndicatorsProps,
   LoadedImages,
-} from "src/interfaces/levelIndicatorsInterface";
+} from "../interfaces/levelIndicatorsInterface";
 
 export class LevelIndicators
   extends EventManager

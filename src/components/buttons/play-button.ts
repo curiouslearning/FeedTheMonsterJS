@@ -10,7 +10,7 @@ import {
   ImagesLoaded,
   ButtonInterface,
   LoadedImages,
-} from "src/interfaces/buttons";
+} from "../../interfaces/buttons";
 import { PLAY_BUTTON_IMG } from "../../constants";
 export default class PlayButton implements ButtonInterface {
   public posX: PosX;

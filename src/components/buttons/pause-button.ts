@@ -6,7 +6,7 @@ import {
   ButtonInterface,
   PosX,
   PosY,
-} from "src/interfaces/buttons";
+} from "../../interfaces/buttons";
 
 export default class PauseButton implements ButtonInterface {
   public posX: PosX;
