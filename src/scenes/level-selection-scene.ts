@@ -7,44 +7,46 @@ import { getData } from "../data/api-data";
 import { GameScore } from "../data/game-score";
 import { SelectedLevel } from "../Firebase/firebase-event-interface";
 import { FirebaseIntegration } from "../Firebase/firebase-integration";
-export class LevelSelectionScreen {
-  private canvas: HTMLCanvasElement;
-  private data: any;
-  private levelButtonPos: [number, number][][];
-  private canvasElement: HTMLCanvasElement;
-  private context: CanvasRenderingContext2D;
-  private levels: any;
-  private gameLevelData: any;
+import { LevelSelectionScreenInterface } from "../interfaces/levelSelectionScreenInterface";
+
+export class LevelSelectionScreen implements LevelSelectionScreenInterface {
+  public canvas: HTMLCanvasElement;
+  public data: any;
+  public levelButtonPos: [number, number][][];
+  public canvasElement: HTMLCanvasElement;
+  public context: CanvasRenderingContext2D;
+  public levels: any;
+  public gameLevelData: any;
   public callBack: Function;
-  private audioPlayer: AudioPlayer;
-  private images: object;
-  private loadedImages: any;
-  private imagesLoaded: boolean = false;
-  private xDown: number;
-  private yDown: number;
-  private previousPlayedLevelNumber: number;
-  private levelSelectionPageIndex: number = 0;
-  private levelNumber: number;
-  private levelsSectionCount: number;
-  private unlockLevelIndex: number;
-  private majVersion:string;
-  private minVersion:string;
-  private firebaseIntegration: FirebaseIntegration;
+  public audioPlayer: AudioPlayer;
+  public images: object;
+  public loadedImages: any;
+  public imagesLoaded: boolean = false;
+  public xDown: number;
+  public yDown: number;
+  public previousPlayedLevelNumber: number;
+  public levelSelectionPageIndex: number = 0;
+  public levelNumber: number;
+  public levelsSectionCount: number;
+  public unlockLevelIndex: number;
+  public majVersion: string;
+  public minVersion: string;
+  public firebaseIntegration: FirebaseIntegration;
+
   constructor(canvas: HTMLCanvasElement, data: any, callBack: Function) {
     this.canvas = canvas;
     this.data = data;
-    let self = this;
     this.callBack = callBack;
     this.levelsSectionCount =
-      self.data.levels.length / 10 > Math.floor(self.data.levels.length / 10)
-        ? Math.floor(self.data.levels.length / 10) + 1
-        : Math.floor(self.data.levels.length / 10);
+      this.data.levels.length / 10 > Math.floor(this.data.levels.length / 10)
+        ? Math.floor(this.data.levels.length / 10) + 1
+        : Math.floor(this.data.levels.length / 10);
     this.initialiseButtonPos();
-    this.levels = [];  
+    this.levels = [];
     this.firebaseIntegration = new FirebaseIntegration();
     this.init();
     this.canvasElement = document.getElementById("canvas") as HTMLCanvasElement;
-    this.context = this.canvasElement.getContext("2d");
+    this.context = this.canvasElement.getContext("2d")!;
     this.createLevelButtons(this.levelButtonPos);
     this.gameLevelData = GameScore.getAllGameLevelInfo();
     this.callBack = callBack;
@@ -55,12 +57,11 @@ export class LevelSelectionScreen {
         Debugger.DebugMode
           ? localStorage.getItem(PreviousPlayedLevel + lang + "Debug")
           : localStorage.getItem(PreviousPlayedLevel + lang)
-      ) | 0;
+      ) || 0;
     if (this.previousPlayedLevelNumber != null) {
       this.levelSelectionPageIndex =
         10 * Math.floor(this.previousPlayedLevelNumber / 10);
     }
-    // loading images
     this.images = {
       mapIcon: "./assets/images/mapIcon.png",
       mapIconSpecial: "./assets/images/map_icon_monster_level_v01.png",
@@ -79,12 +80,14 @@ export class LevelSelectionScreen {
     });
     this.addListeners();
   }
-  private async init() {     
+
+  public async init() {
     const data = await getData();
     this.majVersion = data.majversion;
-    this.minVersion = data.minversion
+    this.minVersion = data.minversion;
   }
-  private initialiseButtonPos() {
+
+  public initialiseButtonPos() {
     this.levelButtonPos = [
       [
         [this.canvas.width / 10, this.canvas.height / 10],
@@ -109,7 +112,8 @@ export class LevelSelectionScreen {
       ],
     ];
   }
-  private createLevelButtons(levelButtonpos: any) {
+
+  public createLevelButtons(levelButtonpos: any) {
     let poss = levelButtonpos[0];
     let i = 0;
     for (let s = 0; s < 10; s++) {
@@ -118,44 +122,39 @@ export class LevelSelectionScreen {
       i += 1;
     }
   }
-  private addListeners() {
-    // next prev button listner #1
+
+  public addListeners() {
     document
-      .getElementById("canvas")
+      .getElementById("canvas")!
       .addEventListener("mousedown", this.handleMouseDown, false);
-
-    // when app goes background #2
     document.addEventListener("visibilitychange", this.pausePlayAudios, false);
-
-    /// swipe listener #3
     document
-      .getElementById("canvas")
+      .getElementById("canvas")!
       .addEventListener("touchstart", this.handleTouchStart, false);
-    // #4
     document
-      .getElementById("canvas")
+      .getElementById("canvas")!
       .addEventListener("touchmove", this.handleTouchMove, false);
   }
-  private pausePlayAudios = () => {
+
+  public pausePlayAudios = () => {
     if (document.visibilityState === "visible") {
       this.audioPlayer.playAudio("./assets/audios/intro.mp3");
     } else {
       this.audioPlayer.stopAllAudios();
     }
   };
-  private getTouches(evt) {
-    return (
-      evt.touches || // browser API
-      evt.originalEvent.touches
-    ); // jQuery
+
+  public getTouches(evt: TouchEvent) {
+    return evt.touches || evt.touches;
   }
-  private handleTouchStart = (evt) => {
+
+  public handleTouchStart = (evt: TouchEvent) => {
     const firstTouch = this.getTouches(evt)[0];
     this.xDown = firstTouch.clientX;
     this.yDown = firstTouch.clientY;
   };
 
-  private handleTouchMove = (evt) => {
+  public handleTouchMove = (evt: TouchEvent) => {
     if (!this.xDown || !this.yDown) {
       return;
     }
@@ -167,30 +166,25 @@ export class LevelSelectionScreen {
     let yDiff = this.yDown - yUp;
 
     if (Math.abs(xDiff) > Math.abs(yDiff)) {
-      /*most significant*/
       if (xDiff > 0) {
         if (this.levelSelectionPageIndex != this.levelsSectionCount * 10 - 10) {
           this.levelSelectionPageIndex = this.levelSelectionPageIndex + 10;
           this.downButton(this.levelSelectionPageIndex);
         }
-        /* right swipe */
       } else {
         if (this.levelSelectionPageIndex != 0) {
           this.levelSelectionPageIndex = this.levelSelectionPageIndex - 10;
         }
         this.downButton(this.levelSelectionPageIndex);
-        /* left swipe */
       }
     }
-    /* reset values */
-    this.xDown = null;
-    this.yDown = null;
+    this.xDown = null!;
+    this.yDown = null!;
   };
 
-  private handleMouseDown = (event) => {
-    // return function (event) {
+  public handleMouseDown = (event: MouseEvent) => {
     event.preventDefault();
-    let rect = document.getElementById("canvas").getBoundingClientRect();
+    let rect = document.getElementById("canvas")!.getBoundingClientRect();
     const x = event.clientX - rect.left;
     const y = event.clientY - rect.top;
     if (
@@ -230,7 +224,6 @@ export class LevelSelectionScreen {
             "./assets/audios/ButtonClick.mp3"
           );
           this.levelNumber = s.index + this.levelSelectionPageIndex - 1;
-          // console.log(this.levelNumber);
           this.startGame(this.levelNumber);
         } else if (
           s.index + this.levelSelectionPageIndex - 1 <=
@@ -246,7 +239,7 @@ export class LevelSelectionScreen {
     }
   };
 
-  private drawLevel(s: any, canvas: { height: number }) {
+  public drawLevel(s: any, canvas: { height: number }) {
     let imageSize = canvas.height / 5;
     let textFontSize = imageSize / 6;
     const specialLevels = [5, 13, 20, 30, 42];
@@ -255,16 +248,17 @@ export class LevelSelectionScreen {
       const levelNumber = s.index + this.levelSelectionPageIndex;
       const isSpecialLevel = specialLevels.includes(levelNumber);
       this.context.drawImage(
-        isSpecialLevel ? this.loadedImages.mapIconSpecial : this.loadedImages.mapIcon,
+        isSpecialLevel
+          ? this.loadedImages.mapIconSpecial
+          : this.loadedImages.mapIcon,
         s.x,
         s.y,
-        isSpecialLevel ?imageSize*0.9 : imageSize,
-        isSpecialLevel ?imageSize*0.9 : imageSize
+        isSpecialLevel ? imageSize * 0.9 : imageSize,
+        isSpecialLevel ? imageSize * 0.9 : imageSize
       );
 
       this.context.fillStyle = "white";
-      this.context.font =
-        textFontSize + `px ${font}, monospace`;
+      this.context.font = textFontSize + `px ${font}, monospace`;
       this.context.textAlign = "center";
       this.context.fillText(
         s.index + this.levelSelectionPageIndex,
@@ -272,9 +266,7 @@ export class LevelSelectionScreen {
         s.y + imageSize / 3
       );
       this.context.font =
-        textFontSize -
-        imageSize / 30 +
-        `px ${font}, monospace`;
+        textFontSize - imageSize / 30 + `px ${font}, monospace`;
       Debugger.DebugMode
         ? this.context.fillText(
             this.data.levels[s.index + this.levelSelectionPageIndex - 1]
@@ -285,12 +277,14 @@ export class LevelSelectionScreen {
         : null;
     }
   }
-  private draw() {
+
+  public draw() {
     for (let s of this.levels) {
       this.drawLevel(s, this.canvas);
     }
   }
-  private downButton(level: number) {
+
+  public downButton(level: number) {
     let imageSize = this.canvas.height / 10;
     if (level != this.levelsSectionCount * 10 - 10) {
       this.context.drawImage(
@@ -311,8 +305,8 @@ export class LevelSelectionScreen {
       );
     }
   }
-  // draw stars on top of level number
-  private drawStars(gameLevelData) {
+
+  public drawStars(gameLevelData: any) {
     if (gameLevelData != null) {
       if (gameLevelData.length != undefined) {
         for (let game of gameLevelData) {
@@ -355,7 +349,13 @@ export class LevelSelectionScreen {
       }
     }
   }
-  private drawStar(s: any, canvas: any, starCount: number, context) {
+
+  public drawStar(
+    s: any,
+    canvas: any,
+    starCount: number,
+    context: CanvasRenderingContext2D
+  ) {
     let imageSize = canvas.height / 5;
     if (starCount >= 1) {
       context.drawImage(
@@ -385,10 +385,10 @@ export class LevelSelectionScreen {
       );
     }
   }
-  private startGame(level_number: string | number) {
+
+  public startGame(level_number: string | number) {
     this.dispose();
     this.audioPlayer.stopAllAudios();
-    // StartScene.SceneName = GameScene1;
     let gamePlayData = {
       currentLevelData: this.data.levels[level_number],
       selectedLevelNumber: level_number,
@@ -396,17 +396,22 @@ export class LevelSelectionScreen {
     this.logSelectedLevelEvent();
     this.callBack(gamePlayData, "LevelSelection");
   }
+
   public logSelectedLevelEvent() {
     const selectedLeveltData: SelectedLevel = {
       cr_user_id: pseudoId,
       ftm_language: lang,
       profile_number: 0,
-      version_number: document.getElementById("version-info-id").innerHTML,
-      json_version_number:  !!this.majVersion && !!this.minVersion  ? this.majVersion.toString() +"."+this.minVersion.toString() : "",
-      level_selected:this.levelNumber,
+      version_number: document.getElementById("version-info-id")!.innerHTML,
+      json_version_number:
+        !!this.majVersion && !!this.minVersion
+          ? this.majVersion.toString() + "." + this.minVersion.toString()
+          : "",
+      level_selected: this.levelNumber,
     };
     this.firebaseIntegration.sendSelectedLevelEvent(selectedLeveltData);
   }
+
   public drawLevelSelection() {
     if (this.imagesLoaded) {
       this.context.drawImage(
@@ -421,26 +426,20 @@ export class LevelSelectionScreen {
       this.drawStars(this.gameLevelData);
     }
   }
+
   public dispose() {
     this.audioPlayer.stopAllAudios();
     document
-      .getElementById("canvas")
+      .getElementById("canvas")!
       .removeEventListener("mousedown", this.handleMouseDown, false);
 
-    // when app goes background #2
-    document.removeEventListener(
-      "visibilitychange",
-      this.pausePlayAudios,
-      false
-    );
+    document.removeEventListener("visibilitychange", this.pausePlayAudios);
 
-    /// swipe listener #3
     document
-      .getElementById("canvas")
+      .getElementById("canvas")!
       .removeEventListener("touchstart", this.handleTouchStart, false);
-    // #4
     document
-      .getElementById("canvas")
+      .getElementById("canvas")!
       .removeEventListener("touchmove", this.handleTouchMove, false);
   }
 }

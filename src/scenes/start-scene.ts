@@ -12,7 +12,10 @@ import { AudioPlayer } from "../components/audio-player";
 import { FirebaseIntegration } from "../Firebase/firebase-integration";
 import { Utils } from "../common/utils";
 import PlayButton from "../components/buttons/play-button";
-export class StartScene {
+import { StartSceneInterface } from "src/interfaces/startSceneInterface";
+
+
+export class StartScene implements StartSceneInterface {
   public canvas: HTMLCanvasElement;
   public data: any;
   public width: number;
@@ -34,9 +37,9 @@ export class StartScene {
   public switchSceneToLevelSelection: Function;
   public titleFont: number;
   public background1: Background;
-  audioPlayer: AudioPlayer;
-  private toggleBtn: HTMLElement;
-  private pwa_install_status: Event;
+  public audioPlayer: AudioPlayer;
+  public toggleBtn: HTMLElement;
+  public pwa_install_status: Event;
 
   constructor(
     canvas: HTMLCanvasElement,
@@ -48,7 +51,7 @@ export class StartScene {
     this.width = canvas.width;
     this.height = canvas.height;
     this.canavsElement = document.getElementById("canvas") as HTMLCanvasElement;
-    this.context = this.canavsElement.getContext("2d");
+    this.context = this.canavsElement.getContext("2d")!;
     this.toggleBtn = document.getElementById("toggle-btn") as HTMLElement;
     this.monster = new Monster(this.canvas, 4);
     this.switchSceneToLevelSelection = switchSceneToLevelSelection;
@@ -68,6 +71,7 @@ export class StartScene {
     StartScene.SceneName = StartScene1;
     window.addEventListener("beforeinstallprompt", this.handlerInstallPrompt);
   }
+  SceneName: string;
 
   devToggle = () => {
     this.toggleBtn.addEventListener("click", () => {
@@ -115,7 +119,7 @@ export class StartScene {
     this.handler.addEventListener("click", this.handleMouseClick, false);
   }
 
-  handleMouseClick = (event) => {
+  handleMouseClick = (event: MouseEvent) => {
     console.log("play click in any canvas");
     let self = this;
     const selfElement = document.getElementById("canvas") as HTMLCanvasElement;
@@ -154,7 +158,7 @@ export class StartScene {
     return (this.width + 200) / this.data.title.length;
   }
 
-  handlerInstallPrompt = (event) => {
+  handlerInstallPrompt = (event: Event) => {
     event.preventDefault();
     this.pwa_install_status = event;
     localStorage.setItem(PWAInstallStatus, "false");

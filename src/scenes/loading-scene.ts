@@ -1,24 +1,27 @@
+import { LoadingSceneInterface } from "src/interfaces/loadingSceneInterface";
 import { loadImages } from "../common/common";
-export class LoadingScene {
+
+export class LoadingScene implements LoadingSceneInterface {
   public canvas: HTMLCanvasElement;
-  height: number;
-  width: number;
-  context: CanvasRenderingContext2D;
-  images: any;
-  loadedImages: any;
-  imagesLoaded: boolean;
-  cloudXPosition: number = -500;
-  stopCloudMoving: boolean = false;
-  cloudMovingTimeOut: number = 0;
-  public removeLoading;
-  constructor(width: number, height: number,removeLoading) {
+  public height: number;
+  public width: number;
+  public context: CanvasRenderingContext2D;
+  public images: any;
+  public loadedImages: any;
+  public imagesLoaded: boolean;
+  public cloudXPosition: number = -500;
+  public stopCloudMoving: boolean = false;
+  public cloudMovingTimeOut: number = 0;
+  public removeLoading: () => void;
+
+  constructor(width: number, height: number, removeLoading: () => void) {
     this.canvas = document.getElementById("loading") as HTMLCanvasElement;
     this.canvas.height = height;
     this.canvas.width = width;
     this.height = height;
     this.width = width;
-    this.removeLoading=removeLoading;
-    this.context = this.canvas.getContext("2d");
+    this.removeLoading = removeLoading;
+    this.context = this.canvas.getContext("2d")!;
     this.images = {
       cloud6: "./assets/images/cloud_01.png",
       cloud7: "./assets/images/cloud_02.png",
@@ -29,11 +32,12 @@ export class LoadingScene {
       this.imagesLoaded = true;
     });
   }
+
   draw(deltaTime: number) {
     this.context.clearRect(0, 0, this.width, this.height);
     this.cloudXPosition += deltaTime * 0.75;
     this.cloudMovingTimeOut += deltaTime;
-    if(this.cloudMovingTimeOut>2983){
+    if (this.cloudMovingTimeOut > 2983) {
       this.removeLoading();
     }
     if (this.cloudXPosition >= this.width * 0.5 && !this.stopCloudMoving) {
@@ -195,7 +199,7 @@ export class LoadingScene {
           this.width * 0.5 + this.cloudXPosition,
           this.height * 0.4,
           this.width,
-          this.height * 0.4
+          this.height * 4
         );
         this.context.drawImage(
           this.loadedImages.cloud7,
@@ -222,9 +226,9 @@ export class LoadingScene {
     }
   }
 
-  public initCloud = ():void => {
+  public initCloud = (): void => {
     this.cloudXPosition = -500;
     this.stopCloudMoving = false;
     this.cloudMovingTimeOut = 0;
-  }
+  };
 }
