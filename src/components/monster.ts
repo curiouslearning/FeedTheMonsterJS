@@ -90,8 +90,6 @@ export class Monster extends EventManager {
   }
 
   draw() {
-    console.log('draw monster');
-    
     if (this.imagesLoaded) {
       this.context.drawImage(
         this.image,

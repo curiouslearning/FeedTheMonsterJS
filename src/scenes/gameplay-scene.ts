@@ -549,7 +549,7 @@ export class GameplayScene {
     this.time = 0;
     this.tempWordforWordPuzzle = "";
     this.pickedStone = null;
-    this.feedbackTextEffects.clearParticle();
+    // this.feedbackTextEffects.clearParticle();
     this.feedBackTextCanavsElement.style.zIndex = "0";
     document.dispatchEvent(loadPuzzleEvent);
     this.addEventListeners();

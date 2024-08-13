@@ -34,7 +34,7 @@ export class RiveMonster {
 
   initialiseRiveMonster() {
     const riveMonster = new rive.Rive({
-      src: "./assets/chimple",
+      src: "./assets/chimplenew.riv",
       canvas: this.canvasElement,
       autoplay: false,
       animations:'idle_1',

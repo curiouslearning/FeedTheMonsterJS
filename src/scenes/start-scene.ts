@@ -90,6 +90,7 @@ export class StartScene {
       this.context.font = `${this.titleFont}px ${font}, monospace`;
       this.context.fillStyle = "white";
       this.context.textAlign = "center";
+      console.log(this.data.title);
       this.context.fillText(this.data.title, this.width * 0.5, this.height / 10);
       // this.monster.update(deltaTime);
       this.playButton.draw();
