@@ -1,0 +1,11 @@
+{
+    "liveServer.settings.port": 5500,
+    "liveServer.settings.root": "/",
+    "liveServer.settings.https": {
+      "enable": true,
+      "cert": "/Users/sheerwoodc/code/FeedTheMonsterJS/https/localhost.pem",
+      "key": "/Users/sheerwoodc/code/FeedTheMonsterJS/https/localhost.key",
+      "passphrase": "password"
+    
+  }
+}
