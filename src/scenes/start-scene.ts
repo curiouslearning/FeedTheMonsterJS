@@ -12,6 +12,8 @@ import { AudioPlayer } from "../components/audio-player";
 import { FirebaseIntegration } from "../Firebase/firebase-integration";
 import { Utils } from "../common/utils";
 import PlayButton from "../components/play-button";
+import { createBackground } from '../compositions/background';
+
 export class StartScene {
   public canvas: HTMLCanvasElement;
   public data: any;
@@ -37,6 +39,7 @@ export class StartScene {
   audioPlayer: AudioPlayer;
   private toggleBtn: HTMLElement;
   private pwa_install_status: Event;
+  test:any
 
   constructor(
     canvas: HTMLCanvasElement,
@@ -54,13 +57,25 @@ export class StartScene {
     this.switchSceneToLevelSelection = switchSceneToLevelSelection;
     this.background1 = new Background(this.context, this.width, this.height, 1);
     this.audioPlayer = new AudioPlayer();
-
+    console.log('background1 ', this.background1)
     this.pwa_status = localStorage.getItem(PWAInstallStatus);
     this.handler = document.getElementById("canvas") as HTMLCanvasElement;
     this.devToggle();
     this.createPlayButton();
     StartScene.SceneName = StartScene1;
     window.addEventListener("beforeinstallprompt", this.handlerInstallPrompt);
+     this.testing()
+    console.log('constructor test ', this.test)
+  }
+
+  testing = async () => {
+    this.test = await createBackground(
+      this.context,
+      this.width,
+      this.height,
+      1
+    )
+    console.log('test ', this.test)
   }
 
   devToggle = () => {
@@ -82,7 +97,8 @@ export class StartScene {
 
     this.context.clearRect(0, 0, this.width, this.height);
     if (StartScene.SceneName == StartScene1) {
-      this.background1.draw();
+      //this.background1.draw();
+      this.test?.draw()
       this.context.font = `${this.titleFont}px ${font}, monospace`;
       this.context.fillStyle = "white";
       this.context.textAlign = "center";

@@ -1,12 +1,9 @@
 export function loadImages(sources: any, callback: any) {
-  var images = {};
-  var loadedImages = 0;
-  var numImages = 0;
-  // get num of sources
-  for (var src in sources) {
-    numImages++;
-  }
-  for (var src in sources) {
+  const images = {};
+  let loadedImages = 0;
+  const numImages = Object.keys(sources).length;
+
+  for (let src in sources) {
     images[src] = new Image();
     images[src].onload = function () {
       if (++loadedImages >= numImages) {
@@ -16,6 +13,7 @@ export function loadImages(sources: any, callback: any) {
     images[src].src = sources[src];
   }
 }
+
 export const FirebaseUserClicked = "user_clicked";
 export const FirebaseUserInstall = "user_installed";
 export const PWAInstallStatus = "pwa_installed_status";

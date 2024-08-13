@@ -2,7 +2,11 @@
 
 /*! ../../common/event-names */
 
+/*! ../../constants/ */
+
 /*! ../../global-variables */
+
+/*! ../../util/util */
 
 /*! ../Firebase/firebase-integration */
 
@@ -41,6 +45,8 @@
 /*! ../components/monster */
 
 /*! ../components/play-button */
+
+/*! ../compositions/background */
 
 /*! ../constants */
 
@@ -139,6 +145,10 @@
 /*! idb */
 
 /*! workbox-window */
+
+/*!**************************!*\
+  !*** ./src/util/util.ts ***!
+  \**************************/
 
 /*!***************************!*\
   !*** ./feedTheMonster.ts ***!
@@ -282,6 +292,10 @@
 
 /*!**********************************************!*\
   !*** ./src/components/buttons/yes-button.ts ***!
+  \**********************************************/
+
+/*!**********************************************!*\
+  !*** ./src/compositions/background/index.ts ***!
   \**********************************************/
 
 /*!***********************************************!*\
