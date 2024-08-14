@@ -49,7 +49,7 @@ export class SceneHandler {
     this.width = canvas.width;
     this.height = canvas.height;
     this.canavsElement = document.getElementById("canvas") as HTMLCanvasElement;
-    this.toggleBtn = document.getElementById("this.toggleBtn") as HTMLElement;
+    this.toggleBtn = document.getElementById("toggleBtn") as HTMLElement;
     window.addEventListener("beforeinstallprompt", this.handleInstallPrompt);
     this.context = this.canavsElement.getContext("2d");
     this.startScene = new StartScene(
@@ -74,8 +74,13 @@ export class SceneHandler {
   devToggle() {
     this.toggleBtn.addEventListener("click", () => {
       this.toggleBtn.classList.toggle("on");
-      Debugger.DebugMode = this.toggleBtn.classList.contains("on")
-      this.toggleBtn.innerText = "Dev";
+      if (this.toggleBtn.classList.contains("on")) {
+        Debugger.DebugMode = true;
+        this.toggleBtn.innerText = "Dev";
+      } else {
+        Debugger.DebugMode = false;
+        this.toggleBtn.innerText = "Dev";
+      }
     });
   }
 
