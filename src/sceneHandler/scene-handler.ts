@@ -74,8 +74,13 @@ export class SceneHandler {
   devToggle() {
     this.toggleBtn.addEventListener("click", () => {
       this.toggleBtn.classList.toggle("on");
-      Debugger.DebugMode = this.toggleBtn.classList.contains("on")
-      this.toggleBtn.innerText = "Dev";
+      if (this.toggleBtn.classList.contains("on")) {
+        Debugger.DebugMode = true;
+        this.toggleBtn.innerText = "Dev";
+      } else {
+        Debugger.DebugMode = false;
+        this.toggleBtn.innerText = "Dev";
+      }
     });
   }
 
