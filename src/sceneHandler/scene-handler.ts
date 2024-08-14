@@ -49,7 +49,7 @@ export class SceneHandler {
     this.width = canvas.width;
     this.height = canvas.height;
     this.canavsElement = document.getElementById("canvas") as HTMLCanvasElement;
-    this.toggleBtn = document.getElementById("this.toggleBtn") as HTMLElement;
+    this.toggleBtn = document.getElementById("toggleBtn") as HTMLElement;
     window.addEventListener("beforeinstallprompt", this.handleInstallPrompt);
     this.context = this.canavsElement.getContext("2d");
     this.startScene = new StartScene(
