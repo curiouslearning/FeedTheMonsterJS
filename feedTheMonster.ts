@@ -74,8 +74,6 @@ class App {
       this.handleResize(dataModal);
     });
 
-    console.log(this.is_cached.has(this.lang));
-
     if (this.is_cached.has(this.lang)) {
       this.handleCachedScenario(dataModal);
     }
@@ -162,7 +160,6 @@ class App {
   }
 
   private handleLoadingScreen = () => {
-    console.log(this.is_cached.get(lang));
     if (this.is_cached.get(lang)) {
       this.loadingElement.style.zIndex = "-1";
       this.loadingElement.style.display = "none";
@@ -227,7 +224,6 @@ class App {
   }
 
   private updateVersionInfoElement(dataModal: DataModal): void {
-    console.log("updateVersionInfoElement");
     if (this.is_cached.has(this.lang) && Debugger.DevelopmentLink) {
       if (dataModal.majVersion && dataModal.minVersion) {
         this.versionInfoElement.innerHTML += `/j.v${dataModal.majVersion}.${dataModal.minVersion}`;
@@ -385,5 +381,4 @@ class App {
   }
 }
 
-console.log(lang);
 const app = new App(lang);
