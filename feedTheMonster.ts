@@ -8,11 +8,12 @@ import { Debugger, lang, pseudoId } from "./global-variables";
 import { FirebaseIntegration } from "./src/Firebase/firebase-integration";
 import { Utils } from "./src/common/utils";
 import { AudioPlayer } from "./src/components/audio-player";
-import { SessionStart,
-SessionEnd,
-DownloadCompleted
+import {
+  SessionStart,
+  SessionEnd,
+  DownloadCompleted,
 } from "./src/Firebase/firebase-event-interface";
-import { VISIBILITY_CHANGE } from "./src/common/event-names"; 
+import { VISIBILITY_CHANGE } from "./src/common/event-names";
 declare const window: any;
 
 class App {
@@ -25,21 +26,29 @@ class App {
   private channel: BroadcastChannel;
   private sceneHandler: SceneHandler;
   private loadingElement: HTMLElement;
-  private majVersion:string;
-  private minVersion:string;
-  private startSessionTime:number;
+  private majVersion: string;
+  private minVersion: string;
+  private startSessionTime: number;
+  private toggleBtn: HTMLElement;
   firebaseIntegration: FirebaseIntegration;
   constructor(lang: string) {
     this.lang = lang;
     this.canvas = document.getElementById("canvas") as HTMLCanvasElement;
     this.channel = new BroadcastChannel("my-channel");
     this.progressBar = document.getElementById("progress-bar") as HTMLElement;
-    this.progressBarContainer = document.getElementById("progress-bar-container") as HTMLElement;
-    this.versionInfoElement = document.getElementById("version-info-id") as HTMLElement;
-    this.loadingElement = document.getElementById('loading-screen') as HTMLElement;
+    this.progressBarContainer = document.getElementById(
+      "progress-bar-container"
+    ) as HTMLElement;
+    this.versionInfoElement = document.getElementById(
+      "version-info-id"
+    ) as HTMLElement;
+    this.loadingElement = document.getElementById(
+      "loading-screen"
+    ) as HTMLElement;
     this.is_cached = this.initializeCachedData();
     this.firebaseIntegration = new FirebaseIntegration();
     this.startSessionTime = 0;
+    this.toggleBtn = document.getElementById("toggle-btn") as HTMLElement;
     this.init();
     this.channel.addEventListener("message", this.handleServiceWorkerMessage);
     window.addEventListener("beforeunload", this.handleBeforeUnload);
@@ -49,6 +58,7 @@ class App {
 
   private async init() {
     const font = Utils.getLanguageSpecificFont(this.lang);
+    await this.devToggle();
     await this.loadAndCacheFont(font, `./assets/fonts/${font}.ttf`);
     await this.preloadGameAudios();
     this.handleLoadingScreen();
@@ -64,10 +74,25 @@ class App {
       this.handleResize(dataModal);
     });
 
+    console.log(this.is_cached.has(this.lang));
+
     if (this.is_cached.has(this.lang)) {
       this.handleCachedScenario(dataModal);
     }
   }
+
+  devToggle = () => {
+    if (!this.toggleBtn) {
+      console.error("Toggle button not found!");
+      return;
+    }
+
+    this.toggleBtn.addEventListener("click", () => {
+      const isDevModeOn = this.toggleBtn.classList.toggle("on");
+      Debugger.DebugMode = isDevModeOn;
+      this.toggleBtn.innerText = isDevModeOn ? "Dev (On)" : "Dev (Off)";
+    });
+  };
 
   private logSessionStartFirebaseEvent() {
     let lastSessionEndTime = localStorage.getItem("lastSessionEndTime");
@@ -86,7 +111,10 @@ class App {
       ftm_language: lang,
       profile_number: 0,
       version_number: this.versionInfoElement.innerHTML,
-      json_version_number: !!this.majVersion && !!this.minVersion ? this.majVersion.toString() + "." + this.minVersion.toString() : "",
+      json_version_number:
+        !!this.majVersion && !!this.minVersion
+          ? this.majVersion.toString() + "." + this.minVersion.toString()
+          : "",
       days_since_last: roundedDaysSinceLast,
     };
     this.firebaseIntegration.sendSessionStartEvent(sessionStartData);
@@ -98,7 +126,10 @@ class App {
       ftm_language: lang,
       profile_number: 0,
       version_number: this.versionInfoElement.innerHTML,
-      json_version_number: !!this.majVersion && !!this.minVersion ? this.majVersion.toString() + "." + this.minVersion.toString() : "",
+      json_version_number:
+        !!this.majVersion && !!this.minVersion
+          ? this.majVersion.toString() + "." + this.minVersion.toString()
+          : "",
       duration: (new Date().getTime() - this.startSessionTime) / 1000,
     };
     localStorage.setItem("lastSessionEndTime", new Date().getTime().toString());
@@ -106,20 +137,23 @@ class App {
   }
 
   private initializeCachedData(): Map<string, boolean> {
-    const storedData = localStorage.getItem(IsCached);
+    const storedData = localStorage.getItem(IsCached) || '[["english",true]]';
     return storedData ? new Map(JSON.parse(storedData)) : new Map();
   }
 
   private async loadAndCacheFont(fontName: string, fontPath: string) {
     try {
-      const cache = await caches.open('fontCache');
+      const cache = await caches.open("fontCache");
       const response = await cache.match(fontPath);
       if (!response) {
         const fontResponse = await fetch(fontPath);
         const fontBlob = await fontResponse.blob();
         await cache.put(fontPath, new Response(fontBlob));
       }
-      const font = new FontFace(fontName, `url(${fontPath}) format('truetype')`);
+      const font = new FontFace(
+        fontName,
+        `url(${fontPath}) format('truetype')`
+      );
       await font.load();
       document.fonts.add(font);
     } catch (error) {
@@ -128,9 +162,10 @@ class App {
   }
 
   private handleLoadingScreen = () => {
+    console.log(this.is_cached.get(lang));
     if (this.is_cached.get(lang)) {
-      this.loadingElement.style.zIndex = '-1';
-      this.loadingElement.style.display = 'none';
+      this.loadingElement.style.zIndex = "-1";
+      this.loadingElement.style.display = "none";
       this.progressBarContainer.style.display = "none";
       this.progressBar.style.display = "none";
     } else {
@@ -138,7 +173,7 @@ class App {
       this.progressBar.style.display = "flex";
       this.progressBar.style.width = "30%";
     }
-  }
+  };
 
   private async registerWorkbox(): Promise<void> {
     if ("serviceWorker" in navigator) {
@@ -149,7 +184,10 @@ class App {
         if (!this.is_cached.has(this.lang)) {
           this.channel.postMessage({ command: "Cache", data: this.lang });
         }
-        navigator.serviceWorker.addEventListener("message", this.handleServiceWorkerMessage);
+        navigator.serviceWorker.addEventListener(
+          "message",
+          this.handleServiceWorkerMessage
+        );
       } catch (error) {
         console.error(`Failed to register service worker: ${error}`);
       }
@@ -162,7 +200,17 @@ class App {
   }
 
   private createDataModal(data: any): DataModal {
-    return new DataModal(data.title, data.OtherAudios, data.Levels, data.FeedbackTexts, data.RightToLeft, data.FeedbackAudios, data.majversion, data.minversion, data.version);
+    return new DataModal(
+      data.title,
+      data.OtherAudios,
+      data.Levels,
+      data.FeedbackTexts,
+      data.RightToLeft,
+      data.FeedbackAudios,
+      data.majversion,
+      data.minversion,
+      data.version
+    );
   }
 
   private globalInitialization(data: any) {
@@ -179,6 +227,7 @@ class App {
   }
 
   private updateVersionInfoElement(dataModal: DataModal): void {
+    console.log("updateVersionInfoElement");
     if (this.is_cached.has(this.lang) && Debugger.DevelopmentLink) {
       if (dataModal.majVersion && dataModal.minVersion) {
         this.versionInfoElement.innerHTML += `/j.v${dataModal.majVersion}.${dataModal.minVersion}`;
@@ -205,7 +254,7 @@ class App {
     if (window.Android) {
       window.Android.cachedStatus(this.is_cached.get(this.lang) == true);
     }
-  }
+  };
 
   public setContainerAppOrientation(): void {
     if (window.Android) {
@@ -221,7 +270,10 @@ class App {
     }
   }
 
-  private handleLoadingMessage = (data: { data: number, version: string }): void => {
+  private handleLoadingMessage = (data: {
+    data: number;
+    version: string;
+  }): void => {
     if (this.progressBarContainer && this.progressBar) {
       this.progressBarContainer.style.display = "flex";
       this.progressBar.style.display = "flex";
@@ -232,13 +284,19 @@ class App {
 
       if (data.data % 100 === 0 && !this.is_cached.get(this.lang)) {
         this.is_cached.set(this.lang, true);
-        localStorage.setItem(IsCached, JSON.stringify(Array.from(this.is_cached.entries())));
+        localStorage.setItem(
+          IsCached,
+          JSON.stringify(Array.from(this.is_cached.entries()))
+        );
         const download_completed: DownloadCompleted = {
           cr_user_id: pseudoId,
           ftm_language: lang,
           profile_number: 0,
           version_number: this.versionInfoElement.innerHTML,
-          json_version_number: !!this.majVersion && !!this.minVersion ? this.majVersion.toString() + "." + this.minVersion.toString() : "",
+          json_version_number:
+            !!this.majVersion && !!this.minVersion
+              ? this.majVersion.toString() + "." + this.minVersion.toString()
+              : "",
         };
         this.firebaseIntegration.sendDownloadCompletedEvent(download_completed);
         localStorage.setItem("version" + this.lang, data.version);
@@ -246,7 +304,7 @@ class App {
       }
       this.progressBar.style.width = `${data.data}%`;
     }
-  }
+  };
 
   private handleServiceWorkerMessage = (event: MessageEvent): void => {
     if (event.data.msg === "Loading") {
@@ -254,7 +312,7 @@ class App {
     } else if (event.data.msg === "Update Found") {
       this.handleUpdateFoundMessage();
     }
-  }
+  };
 
   private handleVisibilityChange = () => {
     if (document.visibilityState === "visible") {
@@ -264,10 +322,12 @@ class App {
     }
   };
 
-  private handleBeforeUnload = async (event: BeforeUnloadEvent): Promise<void> => {
+  private handleBeforeUnload = async (
+    event: BeforeUnloadEvent
+  ): Promise<void> => {
     this.logSessionEndFirebaseEvent();
     this.dispose();
-  }
+  };
 
   private preloadGameAudios = async () => {
     let audioUrls = [
@@ -285,11 +345,13 @@ class App {
       "./assets/audios/MonsterSpit.mp3",
       "./assets/audios/Eat.mp3",
       "./assets/audios/PointsAdd.wav",
-      "./assets/audios/are-you-sure.mp3"
+      "./assets/audios/are-you-sure.mp3",
     ];
 
     return new Promise<void>((resolve, reject) => {
-      const preloadPromises = audioUrls.map((audioSrc) => new AudioPlayer().preloadGameAudio(audioSrc));
+      const preloadPromises = audioUrls.map((audioSrc) =>
+        new AudioPlayer().preloadGameAudio(audioSrc)
+      );
       Promise.all(preloadPromises)
         .then(() => resolve())
         .catch((error) => {
@@ -297,22 +359,31 @@ class App {
           reject(error);
         });
     });
-  }
+  };
 
-    // Add the dispose method
-    public dispose(): void {
-      this.channel.removeEventListener("message", this.handleServiceWorkerMessage);
-      window.removeEventListener("beforeunload", this.handleBeforeUnload);
-      document.removeEventListener(VISIBILITY_CHANGE, this.handleVisibilityChange);
-      window.removeEventListener("resize", this.handleResize);
-  
-      if (navigator.serviceWorker) {
-        navigator.serviceWorker.removeEventListener("message", this.handleServiceWorkerMessage);
-      }
-  
-      // Perform additional cleanup if necessary
+  // Add the dispose method
+  public dispose(): void {
+    this.channel.removeEventListener(
+      "message",
+      this.handleServiceWorkerMessage
+    );
+    window.removeEventListener("beforeunload", this.handleBeforeUnload);
+    document.removeEventListener(
+      VISIBILITY_CHANGE,
+      this.handleVisibilityChange
+    );
+    window.removeEventListener("resize", this.handleResize);
+
+    if (navigator.serviceWorker) {
+      navigator.serviceWorker.removeEventListener(
+        "message",
+        this.handleServiceWorkerMessage
+      );
     }
+
+    // Perform additional cleanup if necessary
+  }
 }
 
+console.log(lang);
 const app = new App(lang);
-

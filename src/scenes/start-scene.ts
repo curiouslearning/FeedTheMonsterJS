@@ -58,23 +58,9 @@ export class StartScene {
 
     this.pwa_status = localStorage.getItem(PWAInstallStatus);
     this.handler = document.getElementById("canvas") as HTMLCanvasElement;
-    this.devToggle();
     this.createPlayButton();
     StartScene.SceneName = StartScene1;
     window.addEventListener("beforeinstallprompt", this.handlerInstallPrompt);
-  }
-
-  devToggle = () => {
-    if (!this.toggleBtn) {
-      console.error("Toggle button not found!");
-      return;
-    }
-
-    this.toggleBtn.addEventListener("click", () => {
-      const isDevModeOn = this.toggleBtn.classList.toggle("on");
-      Debugger.DebugMode = isDevModeOn;
-      this.toggleBtn.innerText = isDevModeOn ? "Dev (On)" : "Dev (Off)";
-    });
   }
 
   animation = (deltaTime: number) => {
@@ -101,7 +87,7 @@ export class StartScene {
       this.context,
       this.canvas,
       this.canvas.width * 0.35,
-      this.canvas.height / 7,
+      this.canvas.height / 7
     );
     document.addEventListener("selectstart", function (e) {
       e.preventDefault();
@@ -116,7 +102,10 @@ export class StartScene {
     var rect = selfElement.getBoundingClientRect();
     const x = event.clientX - rect.left;
     const y = event.clientY - rect.top;
-    const {excludeX, excludeY} = Utils.getExcludedCoordinates(selfElement, 15);
+    const { excludeX, excludeY } = Utils.getExcludedCoordinates(
+      selfElement,
+      15
+    );
     if (!(x < excludeX && y < excludeY)) {
       FirebaseIntegration.getInstance().sendUserClickedOnPlayEvent();
       // @ts-ignore
@@ -130,13 +119,14 @@ export class StartScene {
   };
 
   dispose() {
-    this.monster.dispose()
+    this.monster.dispose();
     this.audioPlayer.stopAllAudios();
     this.handler.removeEventListener("click", this.handleMouseClick, false);
-    window.removeEventListener("beforeinstallprompt", this.handlerInstallPrompt, false);
-    if (this.toggleBtn) {
-      this.toggleBtn.removeEventListener("click", this.devToggle);
-    }
+    window.removeEventListener(
+      "beforeinstallprompt",
+      this.handlerInstallPrompt,
+      false
+    );
   }
 
   getFontWidthOfTitle() {
@@ -147,5 +137,5 @@ export class StartScene {
     event.preventDefault();
     this.pwa_install_status = event;
     localStorage.setItem(PWAInstallStatus, "false");
-  }
+  };
 }
