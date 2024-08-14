@@ -57,37 +57,15 @@ export class Background {
         this.backgroundType =
             Math.floor(this.levelNumber / 10) %
             this.availableBackgroundTypes.length;
-        console.log('1 this.backgroundType ', this.backgroundType)
         if (this.levelNumber >= 30) {
             this.backgroundType = this.backgroundType % 3;
         }
-        console.log('2 this.backgroundType ', this.backgroundType)
-        //  this.loadedImages = {
-        //     bgImg: DEFAULT_BACKGROUND_1,
-        //     hillImg: HILL_IMAGE_1,
-        //     pillerImg: PILLAR_IMAGE_1,
-        //     fenchImg: FENCE_IMAGE_1,
-
-        //     autumnBgImg: AUTUMN_BACKGROUND_1,
-        //     autumnHillImg: AUTUMN_HILL_1,
-        //     autumnPillerImg: AUTUMN_PILLAR_1,
-        //     autumnSignImg: AUTUMN_SIGN_1,
-        //     autumnFenceImg: AUTUMN_FENCE_1,
-        
-        //     winterBgImg: WINTER_BACKGROUND_1,
-        //     winterHillImg: WINTER_HILL_1,
-        //     winterSignImg: WINTER_SIGN_1,
-        //     winterFenceImg: WINTER_FENCE_1,
-        //     winterPillerImg: WINTER_PILLAR_1,
-        //  }
 
         loadImages(images, (images) => {
             this.loadedImages = Object.assign({}, images);
-            //console.log('loadedImages ', this.loadedImages)
             this.imagesLoaded = true;
         });
     }
-
 
     draw() {
         if (this.imagesLoaded) {

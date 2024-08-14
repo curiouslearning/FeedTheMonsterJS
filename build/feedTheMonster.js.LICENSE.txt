@@ -2,8 +2,6 @@
 
 /*! ../../common/event-names */
 
-/*! ../../constants/ */
-
 /*! ../../global-variables */
 
 /*! ../../util/util */
@@ -49,6 +47,8 @@
 /*! ../compositions/background */
 
 /*! ../constants */
+
+/*! ../constants/ */
 
 /*! ../data/api-data */
 

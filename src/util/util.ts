@@ -9,8 +9,8 @@ const createImg = async (image) => {
 
 export const loadImages = async (images: object) => {
     const loadImgPromises = Object.keys(images).map(async (arrKey) => {
-        const img = await createImg(images[arrKey])
-        return { [arrKey]: img }
+        const img = await createImg(images[arrKey]);
+        return { [arrKey]: img };
     })
 
     const resolvedImage = await Promise.all(loadImgPromises);
