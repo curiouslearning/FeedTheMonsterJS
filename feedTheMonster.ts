@@ -54,7 +54,6 @@ class App {
     this.handleLoadingScreen();
     this.registerWorkbox();
     this.setupCanvas();
-    document.getElementById("toggle-btn").style.display = "block";
     const data = await getData();
     this.majVersion = data.majversion;
     this.minVersion = data.minversion;
@@ -186,6 +185,7 @@ class App {
       } else if (dataModal.version) {
         this.versionInfoElement.innerHTML += `/j.v${dataModal.version}`;
       }
+      document.getElementById("toggle-btn").style.display = "block";
     }
   }
 
