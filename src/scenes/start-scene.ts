@@ -12,6 +12,7 @@ import { AudioPlayer } from "../components/audio-player";
 import { FirebaseIntegration } from "../Firebase/firebase-integration";
 import { Utils } from "../common/utils";
 import PlayButton from "../components/play-button";
+
 export class StartScene {
   public canvas: HTMLCanvasElement;
   public data: any;
@@ -57,24 +58,9 @@ export class StartScene {
 
     this.pwa_status = localStorage.getItem(PWAInstallStatus);
     this.handler = document.getElementById("canvas") as HTMLCanvasElement;
-    this.devToggle();
     this.createPlayButton();
     StartScene.SceneName = StartScene1;
     window.addEventListener("beforeinstallprompt", this.handlerInstallPrompt);
-  }
-
-  devToggle = () => {
-    this.toggleBtn.addEventListener("click", () => {
-      this.toggleBtn.classList.toggle("on");
-
-      if (this.toggleBtn.classList.contains("on")) {
-        Debugger.DebugMode = true;
-        this.toggleBtn.innerText = "Dev";
-      } else {
-        Debugger.DebugMode = false;
-        this.toggleBtn.innerText = "Dev";
-      }
-    });
   }
 
   animation = (deltaTime: number) => {
@@ -96,13 +82,12 @@ export class StartScene {
     }
   };
 
-
   createPlayButton() {
     this.playButton = new PlayButton(
       this.context,
       this.canvas,
       this.canvas.width * 0.35,
-      this.canvas.height / 7,
+      this.canvas.height / 7
     );
     document.addEventListener("selectstart", function (e) {
       e.preventDefault();
@@ -110,14 +95,17 @@ export class StartScene {
     this.handler.addEventListener("click", this.handleMouseClick, false);
   }
 
-  handleMouseClick = (event) => {
+  handleMouseClick = (event: MouseEvent) => {
     let self = this;
     const selfElement = document.getElementById("canvas") as HTMLCanvasElement;
     event.preventDefault();
     var rect = selfElement.getBoundingClientRect();
     const x = event.clientX - rect.left;
     const y = event.clientY - rect.top;
-    const {excludeX, excludeY} = Utils.getExcludedCoordinates(selfElement, 15);
+    const { excludeX, excludeY } = Utils.getExcludedCoordinates(
+      selfElement,
+      15
+    );
     if (!(x < excludeX && y < excludeY)) {
       FirebaseIntegration.getInstance().sendUserClickedOnPlayEvent();
       // @ts-ignore
@@ -131,19 +119,23 @@ export class StartScene {
   };
 
   dispose() {
-    this.monster.dispose()
+    this.monster.dispose();
     this.audioPlayer.stopAllAudios();
     this.handler.removeEventListener("click", this.handleMouseClick, false);
-    window.removeEventListener("beforeinstallprompt", this.handlerInstallPrompt, false);
+    window.removeEventListener(
+      "beforeinstallprompt",
+      this.handlerInstallPrompt,
+      false
+    );
   }
 
   getFontWidthOfTitle() {
-    return (this.width + 200) / this.data.title.length;
+    return (this.width + 200) / this.data?.title?.length;
   }
 
-  handlerInstallPrompt = (event) => {
+  handlerInstallPrompt = (event: Event) => {
     event.preventDefault();
     this.pwa_install_status = event;
     localStorage.setItem(PWAInstallStatus, "false");
-  }
+  };
 }
