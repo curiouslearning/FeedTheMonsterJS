@@ -2,6 +2,8 @@
 
 /*! ../../common/event-names */
 
+/*! ../../constants/ */
+
 /*! ../../global-variables */
 
 /*! ../../util/util */
@@ -29,8 +31,6 @@
 /*! ../components/ */
 
 /*! ../components/audio-player */
-
-/*! ../components/background */
 
 /*! ../components/buttons/cancel-button */
 
