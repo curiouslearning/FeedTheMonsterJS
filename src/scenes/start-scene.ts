@@ -62,7 +62,7 @@ export class StartScene {
     this.setupBg();
   }
 
-  setupBg = async () => {
+  private setupBg = async () => {
     this.background = await createBackground(
       this.context,
       this.width,

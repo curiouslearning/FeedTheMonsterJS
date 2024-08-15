@@ -55,7 +55,6 @@ export class LevelSelectionScreen {
     this.context = this.canvasElement.getContext("2d");
     this.createLevelButtons(this.levelButtonPos);
     this.gameLevelData = GameScore.getAllGameLevelInfo();
-    this.callBack = callBack;
     this.audioPlayer = new AudioPlayer();
     this.unlockLevelIndex = -1;
     this.previousPlayedLevelNumber =
@@ -88,7 +87,13 @@ export class LevelSelectionScreen {
     this.addListeners();
   }
 
-  setupBg = async () => {
+  private async init() {
+    const data = await getData();
+    this.majVersion = data.majversion;
+    this.minVersion = data.minversion
+  }
+
+  private setupBg = async () => {
     this.background = await createBackground(
       this.context,
       this.width,
@@ -98,11 +103,6 @@ export class LevelSelectionScreen {
     );
   }
 
-  private async init() {
-    const data = await getData();
-    this.majVersion = data.majversion;
-    this.minVersion = data.minversion
-  }
   private initialiseButtonPos() {
     this.levelButtonPos = [
       [
@@ -249,7 +249,6 @@ export class LevelSelectionScreen {
             "./assets/audios/ButtonClick.mp3"
           );
           this.levelNumber = s.index + this.levelSelectionPageIndex - 1;
-          // console.log(this.levelNumber);
           this.startGame(this.levelNumber);
         } else if (
           s.index + this.levelSelectionPageIndex - 1 <=
@@ -407,9 +406,11 @@ export class LevelSelectionScreen {
   private startGame(level_number: string | number) {
     this.dispose();
     this.audioPlayer.stopAllAudios();
-    // StartScene.SceneName = GameScene1;
-    let gamePlayData = {
-      currentLevelData: this.data.levels[level_number],
+    const gamePlayData = {
+      currentLevelData: {
+        ...this.data.levels[level_number],
+        levelNumber: level_number,
+      },
       selectedLevelNumber: level_number,
     };
     this.logSelectedLevelEvent();

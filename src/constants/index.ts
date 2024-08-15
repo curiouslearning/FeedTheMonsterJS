@@ -29,10 +29,17 @@ export const WINTER_HILL_1 = "./assets/images/Winter_hill_v01.png";
 export const WINTER_SIGN_1 = "./assets/images/Winter_sign_v01.png";
 export const WINTER_FENCE_1 = "./assets/images/Winter_fence_v01.png";
 export const WINTER_PILLAR_1 = "./assets/images/Winter_sign_v01.png";
-
 export const LEVEL_SELECTION_BACKGROUND = "./assets/images/map.jpg";
 
 //Background Group Images
+export const GAMEPLAY_BG_GROUP_IMGS = {
+    ASSETS_PATH_TOTEM,
+    ASSETS_PATH_BG_01,
+    ASSETS_PATH_HILL,
+    ASSETS_PATH_FENCE,
+    ASSETS_PATH_MONSTER_IDLE
+};
+
 export const DEFAULT_BG_GROUP_IMGS = {
     DEFAULT_BACKGROUND_1,
     HILL_IMAGE_1,

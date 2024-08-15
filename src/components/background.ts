@@ -53,14 +53,12 @@ export class Background {
         this.height = height;
         this.context = context;
         this.levelNumber = levelNumber;
-
         this.backgroundType =
             Math.floor(this.levelNumber / 10) %
             this.availableBackgroundTypes.length;
         if (this.levelNumber >= 30) {
             this.backgroundType = this.backgroundType % 3;
         }
-
         loadImages(images, (images) => {
             this.loadedImages = Object.assign({}, images);
             this.imagesLoaded = true;
