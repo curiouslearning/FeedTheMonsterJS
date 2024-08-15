@@ -98,6 +98,7 @@ export class GameplayScene implements GameplaySceneInterface {
   startTime: number;
   puzzleTime: number;
   isDisposing: boolean;
+  resetAnimationID: number | NodeJS.Timeout;
 
   constructor(
     canvas: HTMLCanvasElement,
@@ -217,6 +218,7 @@ export class GameplayScene implements GameplaySceneInterface {
         )
       : localStorage.setItem(PreviousPlayedLevel + lang, previousPlayedLevel);
     this.addEventListeners();
+    this.resetAnimationID = 0;
   }
 
   resumeGame = () => {
@@ -449,15 +451,11 @@ export class GameplayScene implements GameplaySceneInterface {
           counter: this.counter,
         },
       });
-
-      setTimeout(
-        () => {
-          if (!this.isDisposing) {
-            this.initNewPuzzle(loadPuzzleEvent);
-          }
-        },
-        timerEnded ? 0 : 4500
-      );
+      setTimeout(() => {
+        if (!this.isDisposing) {
+          this.initNewPuzzle(loadPuzzleEvent);
+        }
+      }, timerEnded ? 0 : 4500);
     }
   };
 
@@ -520,20 +518,25 @@ export class GameplayScene implements GameplaySceneInterface {
         lang === "arabic" ? this.stonesCount : this.tempWordforWordPuzzle.length
       );
       this.stonesCount++;
-
-      setTimeout(() => {
+      this.resetToIdleAnimation(() => {
         this.monster.changeToIdleAnimation();
-      }, 1500);
+      }, 2000)
+
     } else {
       this.handleStoneDropEnd(isCorrect, "Word");
       this.stonesCount = 1;
     }
   }
 
-  private handleStoneDropEnd(
-    isCorrect: boolean,
-    puzzleType: string | null = null
-  ) {
+  resetToIdleAnimation(callback: () => void, delay: number) {
+    if (this.resetAnimationID !== undefined) {
+      clearTimeout(this.resetAnimationID)
+    }
+
+    this.resetAnimationID = setTimeout(callback, delay)
+  }
+
+  private handleStoneDropEnd(isCorrect, puzzleType: string | null = null) {
     this.logPuzzleEndFirebaseEvent(isCorrect, puzzleType);
     this.dispatchStoneDropEvent(isCorrect);
     this.loadPuzzle();
