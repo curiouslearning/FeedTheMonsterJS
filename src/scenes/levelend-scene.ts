@@ -221,7 +221,7 @@ export class LevelEndScene {
     if (this.retryButton.onClick(x, y)) {
       this.audioPlayer.playButtonClickSound("./assets/audios/ButtonClick.mp3");
       let gamePlayData = {
-        currentLevelData: this.data.levels[this.currentLevel],
+        currentLevelData: { ...this.data.levels[this.currentLevel], levelNumber: this.currentLevel },
         selectedLevelNumber: this.currentLevel,
       };
       // pass same data as level is same
