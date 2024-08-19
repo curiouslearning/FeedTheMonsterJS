@@ -1,9 +1,0 @@
-[{
-    "relation": ["delegate_permission/common.handle_all_urls"],
-    "target": {
-      "namespace": "android_app",
-      "package_name": "org.curiouslearning.container",
-      "sha256_cert_fingerprints":
-      ["BA:AA:58:49:C7:12:C9:66:30:7B:FB:82:D6:86:8A:8E:14:B4:80:36:07:B6:7B:0E:A5:FD:F0:99:55:DF:13:C6"]
-    }
-  }]
