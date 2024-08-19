@@ -1,5 +1,5 @@
 
-import { loadImages } from '../../util/util';
+import { syncLoadingImages } from '../../common/';
 import {
     DEFAULT_BG_GROUP_IMGS,
     AUTUMN_BG_GROUP_IMGS,
@@ -19,7 +19,7 @@ export async function createBackground(
  backgroundImg,
  drawMethod
 ) {
-    const loadedImages = { ...await loadImages(backgroundImg) };
+    const loadedImages = { ...await syncLoadingImages(backgroundImg) };
     const obj = {
         ...drawMethod(
             context,

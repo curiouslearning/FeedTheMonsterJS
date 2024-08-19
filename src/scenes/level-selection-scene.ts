@@ -1,5 +1,5 @@
 import { Debugger, font, lang, pseudoId } from "../../global-variables";
-import { PreviousPlayedLevel, loadImages } from "../common/common";
+import { loadImages } from "../common/";
 import { LevelConfig } from "../common/level-config";
 import { Utils } from "../common/utils";
 import { AudioPlayer } from "../components/audio-player";
@@ -8,7 +8,7 @@ import { GameScore } from "../data/game-score";
 import { SelectedLevel } from "../Firebase/firebase-event-interface";
 import { FirebaseIntegration } from "../Firebase/firebase-integration";
 import { createBackground, levelSelectBgDrawing } from '../compositions/background';
-import { LEVEL_SELECTION_BACKGROUND } from '../constants';
+import { PreviousPlayedLevel, LEVEL_SELECTION_BACKGROUND } from '../constants';
 export class LevelSelectionScreen {
   private canvas: HTMLCanvasElement;
   private data: any;

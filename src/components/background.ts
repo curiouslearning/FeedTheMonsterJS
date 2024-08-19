@@ -1,4 +1,4 @@
-import { loadImages } from "../common/common";
+import { loadImages } from "../common";
 import {
     DEFAULT_BACKGROUND_1,
     HILL_IMAGE_1,

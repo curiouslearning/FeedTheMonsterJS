@@ -1,8 +1,8 @@
+import { loadImages } from "../common/";
 import {
     FirebaseUserClicked,
     PWAInstallStatus,
-    loadImages
-} from "../common/common";
+} from "../constants/";
 import { LevelIndicators } from "../components/level-indicator";
 import { PromptText } from "../components/prompt-text"
 // import { Tutorial } from "../components/tutorial";

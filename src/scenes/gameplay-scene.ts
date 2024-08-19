@@ -13,7 +13,6 @@ import {
 } from '../components/';
 import {
   loadImages,
-  PreviousPlayedLevel,
   StoneConfig,
   CLICK,
   LOADPUZZLE,
@@ -38,9 +37,7 @@ import {
   AUDIO_PATH_BTN_CLICK,
   AUDIO_PATH_ON_DRAG,
   ASSETS_PATH_MONSTER_IDLE,
-  DEFAULT_BG_GROUP_IMGS,
-  AUTUMN_BG_GROUP_IMGS,
-  WINTER_BG_GROUP_IMGS
+  PreviousPlayedLevel,
 } from '../constants';
 import {
   BACKGROUND_ASSET_LIST,

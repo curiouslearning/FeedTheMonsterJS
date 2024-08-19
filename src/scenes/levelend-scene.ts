@@ -1,4 +1,4 @@
-import { loadImages } from "../common/common";
+import { loadImages } from "../common/";
 import { CLICK } from "../common/event-names";
 import { AudioPlayer } from "../components/audio-player";
 import CloseButton from "../components/buttons/close-button";

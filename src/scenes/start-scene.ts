@@ -1,7 +1,3 @@
-import {
-  FirebaseUserClicked,
-  PWAInstallStatus,
-} from "../common/common";
 import { StoneConfig } from "../common/stone-config";
 import { Monster } from "../components/monster";
 import { DataModal } from "../data/data-modal";
@@ -11,7 +7,11 @@ import { FirebaseIntegration } from "../Firebase/firebase-integration";
 import { Utils } from "../common/utils";
 import PlayButton from "../components/play-button";
 import { createBackground, defaultBgDrawing } from '../compositions/background';
-import { DEFAULT_BG_GROUP_IMGS } from '../constants/';
+import {
+  FirebaseUserClicked,
+  PWAInstallStatus,
+  DEFAULT_BG_GROUP_IMGS
+} from '../constants/';
 
 export class StartScene {
   public canvas: HTMLCanvasElement;
