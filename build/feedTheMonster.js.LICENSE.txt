@@ -1,12 +1,12 @@
 /*! ../../../global-variables */
 
+/*! ../../common/ */
+
 /*! ../../common/event-names */
 
 /*! ../../constants/ */
 
 /*! ../../global-variables */
-
-/*! ../../util/util */
 
 /*! ../Firebase/firebase-integration */
 
@@ -19,8 +19,6 @@
 /*! ../common */
 
 /*! ../common/ */
-
-/*! ../common/common */
 
 /*! ../common/event-names */
 
@@ -76,8 +74,6 @@
 
 /*! ./buttons/pause-button */
 
-/*! ./common */
-
 /*! ./event-names */
 
 /*! ./feedback-particle-effect/feedback-text-effects */
@@ -98,13 +94,13 @@
 
 /*! ./src/Firebase/firebase-integration */
 
-/*! ./src/common/common */
-
 /*! ./src/common/event-names */
 
 /*! ./src/common/utils */
 
 /*! ./src/components/audio-player */
+
+/*! ./src/constants/ */
 
 /*! ./src/data/api-data */
 
@@ -146,10 +142,6 @@
 
 /*! workbox-window */
 
-/*!**************************!*\
-  !*** ./src/util/util.ts ***!
-  \**************************/
-
 /*!***************************!*\
   !*** ./feedTheMonster.ts ***!
   \***************************/
@@ -165,10 +157,6 @@
 /*!*****************************!*\
   !*** ./src/common/utils.ts ***!
   \*****************************/
-
-/*!******************************!*\
-  !*** ./src/common/common.ts ***!
-  \******************************/
 
 /*!******************************!*\
   !*** ./src/data/api-data.ts ***!
