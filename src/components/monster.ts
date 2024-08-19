@@ -1,9 +1,6 @@
 import { Debugger, lang } from "../../global-variables";
-import {
-  StoreMonsterPhaseNumber,
-  loadImages,
-} from "../common/common";
-
+import { StoreMonsterPhaseNumber } from '../constants/'
+import { loadImages } from "../common";
 import { EventManager } from "../events/EventManager";
 
 

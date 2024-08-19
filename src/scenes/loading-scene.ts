@@ -1,4 +1,4 @@
-import { loadImages } from "../common/common";
+import { loadImages } from "../common";
 export class LoadingScene {
   public canvas: HTMLCanvasElement;
   height: number;

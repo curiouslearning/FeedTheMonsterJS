@@ -1,6 +1,8 @@
-export { loadImages, PreviousPlayedLevel } from './common'
-export { StoneConfig } from './stone-config'
-export { Utils } from './utils'
+export { StoneConfig } from './stone-config';
+export {
+  Utils,loadImages,
+  syncLoadingImages
+} from './utils';
 export {
   CLICK,
   LOADPUZZLE,

@@ -13,7 +13,6 @@ import {
 } from '../components/';
 import {
   loadImages,
-  PreviousPlayedLevel,
   StoneConfig,
   CLICK,
   LOADPUZZLE,
@@ -37,12 +36,17 @@ import { FirebaseIntegration } from "../Firebase/firebase-integration";
 import {
   AUDIO_PATH_BTN_CLICK,
   AUDIO_PATH_ON_DRAG,
-  ASSETS_PATH_TOTEM,
-  ASSETS_PATH_BG_01,
-  ASSETS_PATH_HILL,
-  ASSETS_PATH_FENCE,
-  ASSETS_PATH_MONSTER_IDLE
+  ASSETS_PATH_MONSTER_IDLE,
+  PreviousPlayedLevel,
 } from '../constants';
+import {
+  BACKGROUND_ASSET_LIST,
+  createBackground,
+  loadDynamicBgAssets,
+  defaultBgDrawing,
+  autumBgDrawing,
+  winterBgDrawing
+} from '../compositions/background';
 
 export class GameplayScene {
   public width: number;
@@ -74,17 +78,13 @@ export class GameplayScene {
   stoneHandler: StoneHandler;
   public counter: number = 0;
   images: {
-    pillerImg: string;
-    bgImg: string;
-    hillImg: string;
-    fenchImg: string;
     profileMonster: string;
   };
   handler: HTMLElement;
   pickedStoneObject: StoneConfig;
   pausePopup: PausePopUp;
   isPauseButtonClicked: boolean = false;
-  public background1: Background;
+  public background: Background;
   feedBackTextCanavsElement: HTMLCanvasElement;
   feedbackTextEffects: FeedbackTextEffects;
   public isGameStarted: boolean = false;
@@ -171,13 +171,6 @@ export class GameplayScene {
         selectedLevelNumber: levelNumber,
       }
     );
-
-    this.background1 = new Background(
-      this.context,
-      this.width,
-      this.height,
-      this.levelData.levelNumber
-    );
     this.firebaseIntegration = new FirebaseIntegration();
     this.feedBackTextCanavsElement = document.getElementById(
       "feedback-text"
@@ -196,10 +189,6 @@ export class GameplayScene {
     this.feedBackTexts = feedBackTexts;
 
     this.images = {
-      pillerImg: ASSETS_PATH_TOTEM,
-      bgImg: ASSETS_PATH_BG_01,
-      hillImg: ASSETS_PATH_HILL,
-      fenchImg: ASSETS_PATH_FENCE,
       profileMonster: ASSETS_PATH_MONSTER_IDLE,
     };
 
@@ -216,6 +205,21 @@ export class GameplayScene {
       : localStorage.setItem(PreviousPlayedLevel + lang, previousPlayedLevel);
     this.addEventListeners();
     this.resetAnimationID = 0;
+    this.setupBg();
+  }
+
+  private setupBg = async () => {
+    const { BG_GROUP_IMGS, draw } = loadDynamicBgAssets(
+      this.levelData.levelNumber,
+      BACKGROUND_ASSET_LIST
+    );
+    this.background = await createBackground(
+      this.context,
+      this.width,
+      this.height,
+      BG_GROUP_IMGS,
+      draw
+    );
   }
 
   resumeGame = () => {
@@ -353,9 +357,8 @@ export class GameplayScene {
         this.tutorial.setPlayMonsterClickAnimation(false);
       }
     }
-
     if (this.imagesLoaded) {
-      this.background1.draw();
+      this.background?.draw();
     }
     this.pauseButton.draw();
     this.levelIndicators.draw();

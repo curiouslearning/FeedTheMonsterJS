@@ -3,7 +3,7 @@ import { EventManager } from "../events/EventManager";
 import { Utils } from "../common/utils";
 import { AudioPlayer } from "./audio-player";
 import { VISIBILITY_CHANGE } from "../common/event-names";
-import { PromptAudio } from "../common/common";
+import { PromptAudio } from "../constants/";
 import { font, lang } from "../../global-variables";
 
 
