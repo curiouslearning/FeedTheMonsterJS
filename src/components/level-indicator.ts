@@ -6,9 +6,10 @@ import {
   LevelIndicatorsProps,
   LoadedImages,
 } from "../interfaces/levelIndicatorsInterface";
+import { BaseComponent } from "./base-components";
 
 export class LevelIndicators
-  extends EventManager
+  extends BaseComponent
   implements LevelIndicatorsInterface
 {
   public context: CanvasRenderingContext2D;
@@ -20,7 +21,6 @@ export class LevelIndicators
 
   constructor({ context, canvas, activeIndicators }: LevelIndicatorsProps) {
     super({
-      stoneDropCallbackHandler: (event) => this.handleStoneDrop(event),
       loadPuzzleCallbackHandler: (event) => this.handleLoadPuzzle(event),
     });
     this.context = context;
@@ -79,11 +79,7 @@ export class LevelIndicators
   }
 
   public dispose(): void {
-    this.unregisterEventListener();
-  }
-
-  public handleStoneDrop(event: Event): void {
-    // this.isStoneDropped = true;
+    this.disposeHandler();
   }
 
   public handleLoadPuzzle(event: CustomEvent): void {

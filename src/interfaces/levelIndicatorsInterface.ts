@@ -24,6 +24,5 @@ export interface LevelIndicatorsInterface {
   addDropStoneEvent(): void;
   draw(): void;
   dispose(): void;
-  handleStoneDrop(event: Event): void;
   handleLoadPuzzle(event: CustomEvent): void;
 }

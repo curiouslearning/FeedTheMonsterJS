@@ -14,8 +14,9 @@ import {
   ASSETS_PATH_STONE_PINK_BG,
 } from "../constants";
 import { StoneHandlerInterface } from "src/interfaces/StoneHandlerInterface";
+import { BaseComponent } from "./base-components";
 export default class StoneHandler
-  extends EventManager
+  extends BaseComponent
   implements StoneHandlerInterface
 {
   public context: CanvasRenderingContext2D;
@@ -193,7 +194,7 @@ export default class StoneHandler
       this.handleVisibilityChange,
       false
     );
-    this.unregisterEventListener();
+    this.disposeHandler();
   }
 
   public isStoneLetterDropCorrect(

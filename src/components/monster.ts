@@ -1,8 +1,8 @@
 import { MonsterInterface } from "../interfaces/monsterInterface";
 import { loadImages } from "../common/common";
-import { EventManager } from "../events/EventManager";
+import { BaseComponent } from "./base-components";
 
-export class Monster extends EventManager implements MonsterInterface {
+export class Monster extends BaseComponent implements MonsterInterface {
   public zindex: number;
   public width: number;
   public height: number;
@@ -132,7 +132,7 @@ export class Monster extends EventManager implements MonsterInterface {
   }
 
   public dispose() {
-    this.unregisterEventListener();
+    this.disposeHandler();
   }
 
   onClick(xClick: number, yClick: number): boolean {

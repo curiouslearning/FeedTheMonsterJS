@@ -1,16 +1,16 @@
-import { EventManager } from "../events/EventManager";
 import { Utils } from "../common/utils";
 import { AudioPlayer } from "./audio-player";
 import { VISIBILITY_CHANGE } from "../common/event-names";
 import { font, lang } from "../../global-variables";
 import { PromptTextInterface } from "../interfaces/promptTextInterface";
+import { BaseComponent } from "./base-components";
 
 // Define a custom event type
 interface CustomEventWithDetail<T> extends Event {
   detail: T;
 }
 
-export class PromptText extends EventManager implements PromptTextInterface {
+export class PromptText extends BaseComponent implements PromptTextInterface {
   public width: number;
   public height: number;
   public levelData: any;
@@ -43,7 +43,7 @@ export class PromptText extends EventManager implements PromptTextInterface {
     rightToLeft: boolean
   ) {
     super({
-      stoneDropCallbackHandler: (event) => this.handleStoneDrop(event),
+      stoneDropCallbackHandler: () => this.handleStoneDrop(),
       loadPuzzleCallbackHandler: (event) => this.handleLoadPuzzle(event),
     });
     this.width = width;
@@ -305,8 +305,8 @@ export class PromptText extends EventManager implements PromptTextInterface {
     }
   }
 
-  public handleStoneDrop(event: CustomEventWithDetail<any>) {
-    this.isStoneDropped = true;
+  public handleStoneDrop() {
+    this.stoneDropHandler(this, true);
   }
 
   public handleLoadPuzzle(event: CustomEventWithDetail<{ counter: number }>) {
@@ -315,7 +315,7 @@ export class PromptText extends EventManager implements PromptTextInterface {
     this.currentPromptText = this.currentPuzzleData.prompt.promptText;
     this.targetStones = this.currentPuzzleData.targetStones;
     this.audioPlayer.preloadPromptAudio(this.getPromptAudioUrl());
-    this.isStoneDropped = false;
+    this.stoneDropHandler(this, false);
     this.time = 0;
   }
 
@@ -325,7 +325,7 @@ export class PromptText extends EventManager implements PromptTextInterface {
       this.handleVisibilityChange,
       false
     );
-    this.unregisterEventListener();
+    this.disposeHandler();
   }
 
   droppedStoneIndex(index: number) {

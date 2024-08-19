@@ -1,4 +1,4 @@
-import { StoneConfig } from "src/common";
+import { StoneConfig } from "../common";
 import { Monster, Background, AudioPlayer } from "src/components";
 import PlayButton from "src/components/buttons/play-button";
 

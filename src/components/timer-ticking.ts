@@ -1,10 +1,10 @@
 import { TimerTickingInterface } from "../interfaces/timeTickingInterface";
 import { loadImages } from "../common/common";
-import { EventManager } from "../events/EventManager";
 import { AudioPlayer } from "./audio-player";
+import { BaseComponent } from "./base-components";
 
 export class TimerTicking
-  extends EventManager
+  extends BaseComponent
   implements TimerTickingInterface
 {
   public width: number;
@@ -32,10 +32,8 @@ export class TimerTicking
 
   constructor(width: number, height: number, callback: Function) {
     super({
-      stoneDropCallbackHandler: (event) =>
-        this.handleStoneDrop(event as CustomEvent),
-      loadPuzzleCallbackHandler: (event) =>
-        this.handleLoadPuzzle(event as CustomEvent),
+      stoneDropCallbackHandler: () => this.handleStoneDrop(),
+      loadPuzzleCallbackHandler: () => this.handleLoadPuzzle(),
     });
     this.width = width;
     this.height = height;
@@ -126,17 +124,17 @@ export class TimerTicking
     }
   }
 
-  public handleStoneDrop(event: CustomEvent) {
-    this.isStoneDropped = true;
+  public handleStoneDrop() {
+    this.stoneDropHandler(this, true);
   }
 
-  public handleLoadPuzzle(event: CustomEvent) {
+  public handleLoadPuzzle() {
     this.playLevelEndAudioOnce = true;
-    this.isStoneDropped = false;
+    this.stoneDropHandler(this, false);
     this.startTimer();
   }
 
   public dispose() {
-    this.unregisterEventListener();
+    this.disposeHandler();
   }
 }

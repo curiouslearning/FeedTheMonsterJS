@@ -30,6 +30,5 @@ export interface MonsterInterface {
   changeToSpitAnimation(): void;
   handleStoneDrop(event: Event): void;
   handleLoadPuzzle(event: Event): void;
-  dispose(): void;
   onClick(xClick: number, yClick: number): boolean;
 }
