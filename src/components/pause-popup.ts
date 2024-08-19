@@ -164,7 +164,7 @@ export default class PausePopUp {
   }
 
   playClickSound = () => {
-    this.audioPlayer.playButtonClickSound("./assets/audios/ButtonClick.mp3");
+    this.audioPlayer.playButtonClickSound();
   };
   playAreYouSureSound = () => {
     this.audioPlayer.playAudio("./assets/audios/are-you-sure.mp3");
