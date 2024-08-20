@@ -215,11 +215,11 @@ export class LevelEndScene {
     const y = event.clientY - rect.top;
 
     if (this.closeButton.onClick(x, y)) {
-      this.audioPlayer.playButtonClickSound("./assets/audios/ButtonClick.mp3");
+      this.audioPlayer.playButtonClickSound();
       this.switchToLevelSelectionCB("LevelEnd");
     }
     if (this.retryButton.onClick(x, y)) {
-      this.audioPlayer.playButtonClickSound("./assets/audios/ButtonClick.mp3");
+      this.audioPlayer.playButtonClickSound();
       let gamePlayData = {
         currentLevelData: { ...this.data.levels[this.currentLevel], levelNumber: this.currentLevel },
         selectedLevelNumber: this.currentLevel,
@@ -228,7 +228,7 @@ export class LevelEndScene {
       this.switchToGameplayCB(gamePlayData, "LevelEnd");
     }
     if (this.nextButton.onClick(x, y) && this.starCount >= 2) {
-      this.audioPlayer.playButtonClickSound("./assets/audios/ButtonClick.mp3");
+      this.audioPlayer.playButtonClickSound();
       let next = Number(this.currentLevel) + 1;
       let gamePlayData = {
         currentLevelData: { ...this.data.levels[next], levelNumber: next, },

@@ -245,18 +245,14 @@ export class LevelSelectionScreen {
         ) < 45
       ) {
         if (Debugger.DebugMode) {
-          this.audioPlayer.playButtonClickSound(
-            "./assets/audios/ButtonClick.mp3"
-          );
+          this.audioPlayer.playButtonClickSound();
           this.levelNumber = s.index + this.levelSelectionPageIndex - 1;
           this.startGame(this.levelNumber);
         } else if (
           s.index + this.levelSelectionPageIndex - 1 <=
           this.unlockLevelIndex + 1
         ) {
-          this.audioPlayer.playButtonClickSound(
-            "./assets/audios/ButtonClick.mp3"
-          );
+          this.audioPlayer.playButtonClickSound();
           this.levelNumber = s.index + this.levelSelectionPageIndex - 1;
           this.startGame(this.levelNumber);
         }
