@@ -212,24 +212,29 @@ export class LevelSelectionScreen {
     let rect = document.getElementById("canvas").getBoundingClientRect();
     const x = event.clientX - rect.left;
     const y = event.clientY - rect.top;
+
+    // right button
     if (
       x >= this.canvas.width * 0.7 &&
       x < this.canvas.width * 0.7 + this.canvas.height / 10 &&
       y > this.canvas.height / 1.3 &&
       y < this.canvas.height / 1.3 + this.canvas.height / 10
     ) {
+      this.audioPlayer.playButtonClickSound();
       if (this.levelSelectionPageIndex != this.levelsSectionCount * 10 - 10) {
         this.levelSelectionPageIndex = this.levelSelectionPageIndex + 10;
         this.downButton(this.levelSelectionPageIndex);
       }
     }
 
+    // left button
     if (
       x >= this.canvas.width / 10 &&
       x < this.canvas.width / 10 + this.canvas.height / 10 &&
       y > this.canvas.height / 1.3 &&
       y < this.canvas.height / 1.3 + this.canvas.height / 10
     ) {
+      this.audioPlayer.playButtonClickSound();
       if (this.levelSelectionPageIndex != 0) {
         this.levelSelectionPageIndex = this.levelSelectionPageIndex - 10;
       }
@@ -245,18 +250,14 @@ export class LevelSelectionScreen {
         ) < 45
       ) {
         if (Debugger.DebugMode) {
-          this.audioPlayer.playButtonClickSound(
-            "./assets/audios/ButtonClick.mp3"
-          );
+          this.audioPlayer.playButtonClickSound();
           this.levelNumber = s.index + this.levelSelectionPageIndex - 1;
           this.startGame(this.levelNumber);
         } else if (
           s.index + this.levelSelectionPageIndex - 1 <=
           this.unlockLevelIndex + 1
         ) {
-          this.audioPlayer.playButtonClickSound(
-            "./assets/audios/ButtonClick.mp3"
-          );
+          this.audioPlayer.playButtonClickSound();
           this.levelNumber = s.index + this.levelSelectionPageIndex - 1;
           this.startGame(this.levelNumber);
         }
