@@ -1,14 +1,17 @@
 import { Debugger, font, lang, pseudoId } from "../../global-variables";
 import { loadImages } from "../common/";
 import { LevelConfig } from "../common/level-config";
-import { Utils } from "../common/utils";
+import { disposeEventListeners, Utils } from "../common/utils";
 import { AudioPlayer } from "../components/audio-player";
 import { getData } from "../data/api-data";
 import { GameScore } from "../data/game-score";
 import { SelectedLevel } from "../Firebase/firebase-event-interface";
 import { FirebaseIntegration } from "../Firebase/firebase-integration";
-import { createBackground, levelSelectBgDrawing } from '../compositions/background';
-import { PreviousPlayedLevel, LEVEL_SELECTION_BACKGROUND } from '../constants';
+import {
+  createBackground,
+  levelSelectBgDrawing,
+} from "../compositions/background";
+import { PreviousPlayedLevel, LEVEL_SELECTION_BACKGROUND } from "../constants";
 export class LevelSelectionScreen {
   private canvas: HTMLCanvasElement;
   private data: any;
@@ -31,8 +34,8 @@ export class LevelSelectionScreen {
   private levelNumber: number;
   private levelsSectionCount: number;
   private unlockLevelIndex: number;
-  private majVersion:string;
-  private minVersion:string;
+  private majVersion: string;
+  private minVersion: string;
   private firebaseIntegration: FirebaseIntegration;
   public background: any;
 
@@ -48,7 +51,7 @@ export class LevelSelectionScreen {
         ? Math.floor(self.data.levels.length / 10) + 1
         : Math.floor(self.data.levels.length / 10);
     this.initialiseButtonPos();
-    this.levels = [];  
+    this.levels = [];
     this.firebaseIntegration = new FirebaseIntegration();
     this.init();
     this.canvasElement = document.getElementById("canvas") as HTMLCanvasElement;
@@ -90,7 +93,7 @@ export class LevelSelectionScreen {
   private async init() {
     const data = await getData();
     this.majVersion = data.majversion;
-    this.minVersion = data.minversion
+    this.minVersion = data.minversion;
   }
 
   private setupBg = async () => {
@@ -101,7 +104,7 @@ export class LevelSelectionScreen {
       { LEVEL_SELECTION_BACKGROUND },
       levelSelectBgDrawing
     );
-  }
+  };
 
   private initialiseButtonPos() {
     this.levelButtonPos = [
@@ -274,16 +277,17 @@ export class LevelSelectionScreen {
       const levelNumber = s.index + this.levelSelectionPageIndex;
       const isSpecialLevel = specialLevels.includes(levelNumber);
       this.context.drawImage(
-        isSpecialLevel ? this.loadedImages.mapIconSpecial : this.loadedImages.mapIcon,
+        isSpecialLevel
+          ? this.loadedImages.mapIconSpecial
+          : this.loadedImages.mapIcon,
         s.x,
         s.y,
-        isSpecialLevel ?imageSize*0.9 : imageSize,
-        isSpecialLevel ?imageSize*0.9 : imageSize
+        isSpecialLevel ? imageSize * 0.9 : imageSize,
+        isSpecialLevel ? imageSize * 0.9 : imageSize
       );
 
       this.context.fillStyle = "white";
-      this.context.font =
-        textFontSize + `px ${font}, monospace`;
+      this.context.font = textFontSize + `px ${font}, monospace`;
       this.context.textAlign = "center";
       this.context.fillText(
         s.index + this.levelSelectionPageIndex,
@@ -291,9 +295,7 @@ export class LevelSelectionScreen {
         s.y + imageSize / 3
       );
       this.context.font =
-        textFontSize -
-        imageSize / 30 +
-        `px ${font}, monospace`;
+        textFontSize - imageSize / 30 + `px ${font}, monospace`;
       Debugger.DebugMode
         ? this.context.fillText(
             this.data.levels[s.index + this.levelSelectionPageIndex - 1]
@@ -423,14 +425,17 @@ export class LevelSelectionScreen {
       ftm_language: lang,
       profile_number: 0,
       version_number: document.getElementById("version-info-id").innerHTML,
-      json_version_number:  !!this.majVersion && !!this.minVersion  ? this.majVersion.toString() +"."+this.minVersion.toString() : "",
-      level_selected:this.levelNumber,
+      json_version_number:
+        !!this.majVersion && !!this.minVersion
+          ? this.majVersion.toString() + "." + this.minVersion.toString()
+          : "",
+      level_selected: this.levelNumber,
     };
     this.firebaseIntegration.sendSelectedLevelEvent(selectedLeveltData);
   }
   public drawLevelSelection() {
     if (this.imagesLoaded) {
-      this.background?.draw()
+      this.background?.draw();
       this.draw();
       this.downButton(this.levelSelectionPageIndex);
       this.drawStars(this.gameLevelData);
@@ -438,24 +443,19 @@ export class LevelSelectionScreen {
   }
   public dispose() {
     this.audioPlayer.stopAllAudios();
-    document
-      .getElementById("canvas")
-      .removeEventListener("mousedown", this.handleMouseDown, false);
+    const canvasElement = document.getElementById("canvas");
+    if (canvasElement) {
+      disposeEventListeners(canvasElement, [
+        { type: "mousedown", listener: this.handleMouseDown },
+        { type: "touchstart", listener: this.handleTouchStart },
+        { type: "touchmove", listener: this.handleTouchMove },
+      ]);
+    }
 
-    // when app goes background #2
     document.removeEventListener(
       "visibilitychange",
       this.pausePlayAudios,
       false
     );
-
-    /// swipe listener #3
-    document
-      .getElementById("canvas")
-      .removeEventListener("touchstart", this.handleTouchStart, false);
-    // #4
-    document
-      .getElementById("canvas")
-      .removeEventListener("touchmove", this.handleTouchMove, false);
   }
 }

@@ -1,8 +1,8 @@
 import { Debugger, lang } from "../../global-variables";
-import { StoreMonsterPhaseNumber } from '../constants/'
+import { StoreMonsterPhaseNumber } from "../constants/";
 import { loadImages } from "../common";
 import { EventManager } from "../events/EventManager";
-
+import { drawImageOnCanvas } from "../common/utils";
 
 export class Monster extends EventManager {
   public zindex: number;
@@ -45,7 +45,7 @@ export class Monster extends EventManager {
     this.maxFrame = 6;
     this.x = this.game.width / 2 - this.game.width * 0.243;
     this.y = this.game.width / 3;
-    // console.log(this.x,this.y); 
+    // console.log(this.x,this.y);
     this.fps = 10;
     this.countFrame = 0;
     this.frameInterval = 1000 / this.fps;
@@ -70,7 +70,6 @@ export class Monster extends EventManager {
     });
   }
 
-
   update(deltaTime) {
     if (this.frameTimer >= this.frameInterval) {
       this.frameTimer = 0;
@@ -88,7 +87,8 @@ export class Monster extends EventManager {
 
   draw() {
     if (this.imagesLoaded) {
-      this.context.drawImage(
+      drawImageOnCanvas(
+        this.context,
         this.image,
         770 * this.frameX,
         1386 * this.frameY,
@@ -105,25 +105,24 @@ export class Monster extends EventManager {
   changeImage(src) {
     this.image.src = src;
   }
-  
 
   changeToDragAnimation() {
-    this.maxFrame=6
+    this.maxFrame = 6;
     this.image = this.loadedImages.dragImg;
   }
 
   changeToEatAnimation() {
-    this.maxFrame=12
+    this.maxFrame = 12;
     this.image = this.loadedImages.eatImg;
   }
 
   changeToIdleAnimation() {
-    this.maxFrame=6;
+    this.maxFrame = 6;
     this.image = this.loadedImages.idleImg;
   }
 
   changeToSpitAnimation() {
-    this.maxFrame=12;
+    this.maxFrame = 12;
     this.image = this.loadedImages.spitImg;
   }
 

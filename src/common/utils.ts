@@ -1,4 +1,5 @@
 import { Debugger, lang } from "../../global-variables";
+import { AudioPlayer } from "../components";
 import languageFontMapping from "../data/i18-font-mapping";
 
 export class Utils {
@@ -42,10 +43,12 @@ export class Utils {
   }
 }
 
-export function createRippleEffect(context: CanvasRenderingContext2D): (x: number, y: number, restart?: boolean) => void {
+export function createRippleEffect(
+  context: CanvasRenderingContext2D
+): (x: number, y: number, restart?: boolean) => void {
   const ctx = context as unknown as CanvasRenderingContext2D;
   if (!ctx) {
-      throw new Error("Canvas context is null");
+    throw new Error("Canvas context is null");
   }
 
   let centerX: number = 0;
@@ -59,33 +62,33 @@ export function createRippleEffect(context: CanvasRenderingContext2D): (x: numbe
   let innerRadius: number = initialInnerRadius;
 
   function drawRipple(x: number, y: number, restart?: boolean): void {
-      if (restart) {
-        outerRadius = 0
-        innerRadius = 0
-      }
-      centerX = x;
-      centerY = y
-      ctx.beginPath();
-      ctx.arc(centerX, centerY, outerRadius, 0, 2 * Math.PI);
-      ctx.strokeStyle = "white";
-      ctx.lineWidth = 2;
-      ctx.stroke();
-      ctx.closePath();
+    if (restart) {
+      outerRadius = 0;
+      innerRadius = 0;
+    }
+    centerX = x;
+    centerY = y;
+    ctx.beginPath();
+    ctx.arc(centerX, centerY, outerRadius, 0, 2 * Math.PI);
+    ctx.strokeStyle = "white";
+    ctx.lineWidth = 2;
+    ctx.stroke();
+    ctx.closePath();
 
-      ctx.beginPath();
-      ctx.arc(centerX, centerY, innerRadius, 0, 2 * Math.PI);
-      ctx.strokeStyle = "white";
-      ctx.lineWidth = 2;
-      ctx.stroke();
-      ctx.closePath();
+    ctx.beginPath();
+    ctx.arc(centerX, centerY, innerRadius, 0, 2 * Math.PI);
+    ctx.strokeStyle = "white";
+    ctx.lineWidth = 2;
+    ctx.stroke();
+    ctx.closePath();
 
-      outerRadius += increment;
-      innerRadius += increment;
+    outerRadius += increment;
+    innerRadius += increment;
 
-      if (outerRadius >= maxRadius || innerRadius >= maxRadius) {
-          outerRadius = initialOuterRadius;
-          innerRadius = initialInnerRadius;
-      }
+    if (outerRadius >= maxRadius || innerRadius >= maxRadius) {
+      outerRadius = initialOuterRadius;
+      innerRadius = initialInnerRadius;
+    }
   }
 
   return drawRipple;
@@ -108,24 +111,69 @@ export function loadImages(sources: any, callback: any) {
 }
 
 const createImg = async (image) => {
-    const newImage = new Image()
+  const newImage = new Image();
 
-    return new Promise((resolve) => {
-        newImage.onload = () => resolve(newImage)
-        newImage.src = image
-    });
+  return new Promise((resolve) => {
+    newImage.onload = () => resolve(newImage);
+    newImage.src = image;
+  });
 };
 
 export const syncLoadingImages = async (images: object) => {
-    const loadImgPromises = Object.keys(images).map(async (arrKey) => {
-        const img = await createImg(images[arrKey]);
-        return { [arrKey]: img };
-    })
+  const loadImgPromises = Object.keys(images).map(async (arrKey) => {
+    const img = await createImg(images[arrKey]);
+    return { [arrKey]: img };
+  });
 
-    const resolvedImage = await Promise.all(loadImgPromises);
-    const loadedImages = resolvedImage.reduce((accumulator, current) => {
-        return {...accumulator, ...current}
-    }, {});
+  const resolvedImage = await Promise.all(loadImgPromises);
+  const loadedImages = resolvedImage.reduce((accumulator, current) => {
+    return { ...accumulator, ...current };
+  }, {});
 
-    return loadedImages;
+  return loadedImages;
 };
+
+export function disposeEventListeners(
+  element: HTMLElement,
+  listeners: Array<{ type: string; listener: EventListener }>
+) {
+  listeners.forEach(({ type, listener }) => {
+    element.removeEventListener(type, listener, false);
+  });
+}
+
+export function drawImageOnCanvas(
+  context: CanvasRenderingContext2D,
+  image: HTMLImageElement,
+  sxOrX: number, // source x or destination x
+  syOrY: number, // source y or destination y
+  sWidthOrWidth: number, // source width or destination width
+  sHeightOrHeight: number, // source height or destination height
+  dx?: number, // destination x (optional)
+  dy?: number, // destination y (optional)
+  dWidth?: number, // destination width (optional)
+  dHeight?: number // destination height (optional)
+) {
+  if (
+    dx !== undefined &&
+    dy !== undefined &&
+    dWidth !== undefined &&
+    dHeight !== undefined
+  ) {
+    // Use all nine parameters version of drawImage
+    context.drawImage(
+      image,
+      sxOrX,
+      syOrY,
+      sWidthOrWidth,
+      sHeightOrHeight,
+      dx,
+      dy,
+      dWidth,
+      dHeight
+    );
+  } else {
+    // Use the simpler version of drawImage
+    context.drawImage(image, sxOrX, syOrY, sWidthOrWidth, sHeightOrHeight);
+  }
+}
