@@ -1,5 +1,5 @@
 import { Debugger, font, lang, pseudoId } from "../../global-variables";
-import { PreviousPlayedLevel, loadImages } from "../common/common";
+import { loadImages } from "../common/";
 import { LevelConfig } from "../common/level-config";
 import { Utils } from "../common/utils";
 import { AudioPlayer } from "../components/audio-player";
@@ -7,9 +7,13 @@ import { getData } from "../data/api-data";
 import { GameScore } from "../data/game-score";
 import { SelectedLevel } from "../Firebase/firebase-event-interface";
 import { FirebaseIntegration } from "../Firebase/firebase-integration";
+import { createBackground, levelSelectBgDrawing } from '../compositions/background';
+import { PreviousPlayedLevel, LEVEL_SELECTION_BACKGROUND } from '../constants';
 export class LevelSelectionScreen {
   private canvas: HTMLCanvasElement;
   private data: any;
+  public width: number;
+  public height: number;
   private levelButtonPos: [number, number][][];
   private canvasElement: HTMLCanvasElement;
   private context: CanvasRenderingContext2D;
@@ -30,9 +34,13 @@ export class LevelSelectionScreen {
   private majVersion:string;
   private minVersion:string;
   private firebaseIntegration: FirebaseIntegration;
+  public background: any;
+
   constructor(canvas: HTMLCanvasElement, data: any, callBack: Function) {
     this.canvas = canvas;
     this.data = data;
+    this.width = canvas.width;
+    this.height = canvas.height;
     let self = this;
     this.callBack = callBack;
     this.levelsSectionCount =
@@ -47,7 +55,6 @@ export class LevelSelectionScreen {
     this.context = this.canvasElement.getContext("2d");
     this.createLevelButtons(this.levelButtonPos);
     this.gameLevelData = GameScore.getAllGameLevelInfo();
-    this.callBack = callBack;
     this.audioPlayer = new AudioPlayer();
     this.unlockLevelIndex = -1;
     this.previousPlayedLevelNumber =
@@ -60,12 +67,12 @@ export class LevelSelectionScreen {
       this.levelSelectionPageIndex =
         10 * Math.floor(this.previousPlayedLevelNumber / 10);
     }
+    this.setupBg();
     // loading images
     this.images = {
       mapIcon: "./assets/images/mapIcon.png",
       mapIconSpecial: "./assets/images/map_icon_monster_level_v01.png",
       mapLock: "./assets/images/mapLock.png",
-      map: "./assets/images/map.jpg",
       star: "./assets/images/star.png",
       nextbtn: "./assets/images/next_btn.png",
       backbtn: "./assets/images/back_btn.png",
@@ -79,11 +86,23 @@ export class LevelSelectionScreen {
     });
     this.addListeners();
   }
-  private async init() {     
+
+  private async init() {
     const data = await getData();
     this.majVersion = data.majversion;
     this.minVersion = data.minversion
   }
+
+  private setupBg = async () => {
+    this.background = await createBackground(
+      this.context,
+      this.width,
+      this.height,
+      { LEVEL_SELECTION_BACKGROUND },
+      levelSelectBgDrawing
+    );
+  }
+
   private initialiseButtonPos() {
     this.levelButtonPos = [
       [
@@ -230,7 +249,6 @@ export class LevelSelectionScreen {
             "./assets/audios/ButtonClick.mp3"
           );
           this.levelNumber = s.index + this.levelSelectionPageIndex - 1;
-          // console.log(this.levelNumber);
           this.startGame(this.levelNumber);
         } else if (
           s.index + this.levelSelectionPageIndex - 1 <=
@@ -388,9 +406,11 @@ export class LevelSelectionScreen {
   private startGame(level_number: string | number) {
     this.dispose();
     this.audioPlayer.stopAllAudios();
-    // StartScene.SceneName = GameScene1;
-    let gamePlayData = {
-      currentLevelData: this.data.levels[level_number],
+    const gamePlayData = {
+      currentLevelData: {
+        ...this.data.levels[level_number],
+        levelNumber: level_number,
+      },
       selectedLevelNumber: level_number,
     };
     this.logSelectedLevelEvent();
@@ -409,13 +429,7 @@ export class LevelSelectionScreen {
   }
   public drawLevelSelection() {
     if (this.imagesLoaded) {
-      this.context.drawImage(
-        this.loadedImages.map,
-        0,
-        0,
-        this.canvas.width,
-        this.canvas.height
-      );
+      this.background?.draw()
       this.draw();
       this.downButton(this.levelSelectionPageIndex);
       this.drawStars(this.gameLevelData);

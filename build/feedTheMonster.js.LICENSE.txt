@@ -1,6 +1,10 @@
 /*! ../../../global-variables */
 
+/*! ../../common/ */
+
 /*! ../../common/event-names */
+
+/*! ../../constants/ */
 
 /*! ../../global-variables */
 
@@ -16,8 +20,6 @@
 
 /*! ../common/ */
 
-/*! ../common/common */
-
 /*! ../common/event-names */
 
 /*! ../common/level-config */
@@ -27,8 +29,6 @@
 /*! ../components/ */
 
 /*! ../components/audio-player */
-
-/*! ../components/background */
 
 /*! ../components/buttons/cancel-button */
 
@@ -42,7 +42,11 @@
 
 /*! ../components/play-button */
 
+/*! ../compositions/background */
+
 /*! ../constants */
+
+/*! ../constants/ */
 
 /*! ../data/api-data */
 
@@ -70,8 +74,6 @@
 
 /*! ./buttons/pause-button */
 
-/*! ./common */
-
 /*! ./event-names */
 
 /*! ./feedback-particle-effect/feedback-text-effects */
@@ -92,13 +94,13 @@
 
 /*! ./src/Firebase/firebase-integration */
 
-/*! ./src/common/common */
-
 /*! ./src/common/event-names */
 
 /*! ./src/common/utils */
 
 /*! ./src/components/audio-player */
+
+/*! ./src/constants/ */
 
 /*! ./src/data/api-data */
 
@@ -155,10 +157,6 @@
 /*!*****************************!*\
   !*** ./src/common/utils.ts ***!
   \*****************************/
-
-/*!******************************!*\
-  !*** ./src/common/common.ts ***!
-  \******************************/
 
 /*!******************************!*\
   !*** ./src/data/api-data.ts ***!
@@ -282,6 +280,10 @@
 
 /*!**********************************************!*\
   !*** ./src/components/buttons/yes-button.ts ***!
+  \**********************************************/
+
+/*!**********************************************!*\
+  !*** ./src/compositions/background/index.ts ***!
   \**********************************************/
 
 /*!***********************************************!*\

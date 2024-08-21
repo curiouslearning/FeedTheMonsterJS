@@ -1,4 +1,4 @@
-import { loadImages } from "../common/common";
+import { loadImages } from "../common";
 import { EventManager } from "../events/EventManager";
 
 

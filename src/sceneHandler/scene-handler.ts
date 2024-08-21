@@ -1,10 +1,3 @@
-import {
-  PWAInstallStatus,
-  StartScene1,
-  LevelSelection1,
-  GameScene1,
-  EndScene1,
-} from "../common/common";
 import { StartScene } from "../scenes/start-scene";
 import { DataModal } from "../data/data-modal";
 import { LevelSelectionScreen } from "../scenes/level-selection-scene";
@@ -17,7 +10,12 @@ import {
   SCENE_NAME_START,
   SCENE_NAME_LEVEL_SELECT,
   SCENE_NAME_GAME_PLAY,
-  SCENE_NAME_LEVEL_END
+  SCENE_NAME_LEVEL_END,
+  PWAInstallStatus,
+  StartScene1,
+  LevelSelection1,
+  GameScene1,
+  EndScene1,
 } from '../constants';
 
 

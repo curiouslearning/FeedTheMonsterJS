@@ -1,17 +1,18 @@
-import {
-  FirebaseUserClicked,
-  PWAInstallStatus,
-  StartScene1,
-} from "../common/common";
 import { StoneConfig } from "../common/stone-config";
 import { Monster } from "../components/monster";
 import { DataModal } from "../data/data-modal";
 import { Debugger, font, lang } from "../../global-variables";
-import { Background } from "../components/background";
 import { AudioPlayer } from "../components/audio-player";
 import { FirebaseIntegration } from "../Firebase/firebase-integration";
 import { Utils } from "../common/utils";
 import PlayButton from "../components/play-button";
+import { createBackground, defaultBgDrawing } from '../compositions/background';
+import {
+  FirebaseUserClicked,
+  PWAInstallStatus,
+  DEFAULT_BG_GROUP_IMGS
+} from '../constants/';
+
 export class StartScene {
   public canvas: HTMLCanvasElement;
   public data: any;
@@ -33,7 +34,7 @@ export class StartScene {
   public static SceneName: string;
   public switchSceneToLevelSelection: Function;
   public titleFont: number;
-  public background1: Background;
+  public background: any;
   audioPlayer: AudioPlayer;
   private toggleBtn: HTMLElement;
   private pwa_install_status: Event;
@@ -52,15 +53,23 @@ export class StartScene {
     this.toggleBtn = document.getElementById("toggle-btn") as HTMLElement;
     this.monster = new Monster(this.canvas, 4);
     this.switchSceneToLevelSelection = switchSceneToLevelSelection;
-    this.background1 = new Background(this.context, this.width, this.height, 1);
     this.audioPlayer = new AudioPlayer();
-
     this.pwa_status = localStorage.getItem(PWAInstallStatus);
     this.handler = document.getElementById("canvas") as HTMLCanvasElement;
     this.devToggle();
     this.createPlayButton();
-    StartScene.SceneName = StartScene1;
     window.addEventListener("beforeinstallprompt", this.handlerInstallPrompt);
+    this.setupBg();
+  }
+
+  private setupBg = async () => {
+    this.background = await createBackground(
+      this.context,
+      this.width,
+      this.height,
+      DEFAULT_BG_GROUP_IMGS,
+      defaultBgDrawing
+    );
   }
 
   devToggle = () => {
@@ -79,21 +88,18 @@ export class StartScene {
 
   animation = (deltaTime: number) => {
     this.titleFont = this.getFontWidthOfTitle();
-
     this.context.clearRect(0, 0, this.width, this.height);
-    if (StartScene.SceneName == StartScene1) {
-      this.background1.draw();
-      this.context.font = `${this.titleFont}px ${font}, monospace`;
-      this.context.fillStyle = "white";
-      this.context.textAlign = "center";
-      this.context.fillText(
-        this.data.title,
-        this.width * 0.5,
-        this.height / 10
-      );
-      this.monster.update(deltaTime);
-      this.playButton.draw();
-    }
+    this.background?.draw();
+    this.context.font = `${this.titleFont}px ${font}, monospace`;
+    this.context.fillStyle = "white";
+    this.context.textAlign = "center";
+    this.context.fillText(
+      this.data.title,
+      this.width * 0.5,
+      this.height / 10
+    );
+    this.monster.update(deltaTime);
+    this.playButton.draw();
   };
 
 
