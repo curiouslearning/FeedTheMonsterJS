@@ -322,7 +322,7 @@ export class GameplayScene {
     }
 
     if (this.pauseButton.onClick(x, y)) {
-      this.audioPlayer.playButtonClickSound(AUDIO_PATH_BTN_CLICK);
+      this.audioPlayer.playButtonClickSound();
       this.pauseGamePlay();
     }
 

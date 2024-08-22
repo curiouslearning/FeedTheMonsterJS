@@ -95,7 +95,7 @@ export default class AreYouSurePopUp {
     }
   }
   playClickSound = () => {
-    this.audioPlayer.playButtonClickSound("./assets/audios/ButtonClick.mp3");
+    this.audioPlayer.playButtonClickSound();
   };
   dispose = () => {
     this.canvas
