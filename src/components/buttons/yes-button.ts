@@ -1,3 +1,5 @@
+import { drawImageOnCanvas, loadImages } from "../../common/utils";
+
 export default class YesButton {
   public posX: number;
   public posY: number;
@@ -17,17 +19,19 @@ export default class YesButton {
     this.context = context;
     this.canvas = canvas;
 
-    this.yes_button_image = new Image();
-    this.yes_button_image.src = "./assets/images/confirm_btn.png";
-    this.yes_button_image.onload = (e) => {
-      this.imagesLoaded = true;
-      this.yes_button_image = this.yes_button_image;
-    };
+    loadImages(
+      { yes_button_image: "./assets/images/confirm_btn.png" },
+      (images) => {
+        this.yes_button_image = images["yes_button_image"];
+        this.imagesLoaded = true;
+      }
+    );
   }
 
   draw() {
     if (this.imagesLoaded) {
-      this.context.drawImage(
+      drawImageOnCanvas(
+        this.context,
         this.yes_button_image,
         this.posX - 5,
         this.posY,

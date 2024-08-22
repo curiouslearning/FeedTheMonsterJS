@@ -1,7 +1,11 @@
 import { Debugger, font, lang, pseudoId } from "../../global-variables";
 import { loadImages } from "../common/";
 import { LevelConfig } from "../common/level-config";
-import { disposeEventListeners, Utils } from "../common/utils";
+import {
+  disposeEventListeners,
+  drawImageOnCanvas,
+  Utils,
+} from "../common/utils";
 import { AudioPlayer } from "../components/audio-player";
 import { getData } from "../data/api-data";
 import { GameScore } from "../data/game-score";
@@ -276,7 +280,8 @@ export class LevelSelectionScreen {
     if (s.index + this.levelSelectionPageIndex <= this.data.levels.length) {
       const levelNumber = s.index + this.levelSelectionPageIndex;
       const isSpecialLevel = specialLevels.includes(levelNumber);
-      this.context.drawImage(
+      drawImageOnCanvas(
+        this.context,
         isSpecialLevel
           ? this.loadedImages.mapIconSpecial
           : this.loadedImages.mapIcon,
@@ -314,7 +319,8 @@ export class LevelSelectionScreen {
   private downButton(level: number) {
     let imageSize = this.canvas.height / 10;
     if (level != this.levelsSectionCount * 10 - 10) {
-      this.context.drawImage(
+      drawImageOnCanvas(
+        this.context,
         this.loadedImages.nextbtn,
         this.canvas.width * 0.7,
         this.canvas.height / 1.3,
@@ -323,7 +329,8 @@ export class LevelSelectionScreen {
       );
     }
     if (level != 0) {
-      this.context.drawImage(
+      drawImageOnCanvas(
+        this.context,
         this.loadedImages.backbtn,
         this.canvas.width / 10,
         this.canvas.height / 1.3,
@@ -349,7 +356,8 @@ export class LevelSelectionScreen {
           if (!Debugger.DebugMode) {
             s.index + this.levelSelectionPageIndex - 1 >
             this.unlockLevelIndex + 1
-              ? this.context.drawImage(
+              ? drawImageOnCanvas(
+                  this.context,
                   this.loadedImages.mapLock,
                   s.x,
                   s.y,
@@ -379,7 +387,8 @@ export class LevelSelectionScreen {
   private drawStar(s: any, canvas: any, starCount: number, context) {
     let imageSize = canvas.height / 5;
     if (starCount >= 1) {
-      context.drawImage(
+      drawImageOnCanvas(
+        context,
         this.loadedImages.star,
         s.x,
         s.y - imageSize * 0.01,
@@ -388,7 +397,8 @@ export class LevelSelectionScreen {
       );
     }
     if (starCount > 1) {
-      context.drawImage(
+      drawImageOnCanvas(
+        context,
         this.loadedImages.star,
         s.x + imageSize / 2.5,
         s.y - imageSize * 0.01,
@@ -397,7 +407,8 @@ export class LevelSelectionScreen {
       );
     }
     if (starCount == 3) {
-      context.drawImage(
+      drawImageOnCanvas(
+        context,
         this.loadedImages.star,
         s.x + imageSize / 5,
         s.y - imageSize * 0.1,

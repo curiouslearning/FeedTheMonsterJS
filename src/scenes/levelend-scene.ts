@@ -8,16 +8,17 @@ import { Monster } from "../components/monster";
 import {
   DEFAULT_BG_GROUP_IMGS,
   AUTUMN_BG_GROUP_IMGS,
-  WINTER_BG_GROUP_IMGS
-} from '../constants';
+  WINTER_BG_GROUP_IMGS,
+} from "../constants";
 import {
   BACKGROUND_ASSET_LIST,
   createBackground,
   loadDynamicBgAssets,
   defaultBgDrawing,
   autumBgDrawing,
-  winterBgDrawing
-} from '../compositions/background';
+  winterBgDrawing,
+} from "../compositions/background";
+import { drawImageOnCanvas } from "../common/utils";
 
 export class LevelEndScene {
   public canvas: HTMLCanvasElement;
@@ -71,20 +72,20 @@ export class LevelEndScene {
       context,
       canvas,
       this.width * 0.2 - (this.width * 0.19) / 2,
-      this.height /1.25
+      this.height / 1.25
     );
     this.retryButton = new RetryButton(
       this.context,
       this.canvas,
       this.width * 0.5 - (this.width * 0.19) / 2,
-      this.height /1.25
+      this.height / 1.25
     );
     this.nextButton = new NextButton(
       this.context,
       this.width,
       this.height,
       this.width * 0.8 - (this.width * 0.19) / 2,
-      this.height /1.25
+      this.height / 1.25
     );
     this.audioPlayer = new AudioPlayer();
     this.starCount = starCount;
@@ -109,7 +110,8 @@ export class LevelEndScene {
   private setupBg = async () => {
     const { BG_GROUP_IMGS, draw } = loadDynamicBgAssets(
       this.currentLevel,
-     BACKGROUND_ASSET_LIST);
+      BACKGROUND_ASSET_LIST
+    );
     this.background = await createBackground(
       this.context,
       this.width,
@@ -117,7 +119,7 @@ export class LevelEndScene {
       BG_GROUP_IMGS,
       draw
     );
-  }
+  };
 
   switchToReactionAnimation = () => {
     if (this.starCount <= 1) {
@@ -136,12 +138,13 @@ export class LevelEndScene {
   draw(deltaTime: number) {
     this.background?.draw();
     if (this.imagesLoaded) {
-      this.context.drawImage(
+      drawImageOnCanvas(
+        this.context,
         this.loadedImages.backgroundImg,
         0,
         0,
         this.width,
-        this.height+this.height*0.12
+        this.height + this.height * 0.12
       );
       this.drawStars();
 
@@ -167,7 +170,8 @@ export class LevelEndScene {
   }
   drawStars() {
     if (this.starCount >= 1 && this.starDrawnCount >= 1) {
-      this.context.drawImage(
+      drawImageOnCanvas(
+        this.context,
         this.loadedImages.star1Img,
         this.width * 0.2 - (this.width * 0.19) / 2,
         this.height * 0.2,
@@ -181,7 +185,8 @@ export class LevelEndScene {
         this.starDrawnCount <= 3 &&
         this.starDrawnCount > 1
       ) {
-        this.context.drawImage(
+        drawImageOnCanvas(
+          this.context,
           this.loadedImages.star2Img,
           this.width * 0.5 - (this.width * 0.19) / 2,
           this.height * 0.15,
@@ -189,7 +194,8 @@ export class LevelEndScene {
           this.width * 0.19
         );
         if (this.starCount >= 3 && this.starDrawnCount >= 3) {
-          this.context.drawImage(
+          drawImageOnCanvas(
+            this.context,
             this.loadedImages.star3Img,
             this.width * 0.82 - (this.width * 0.19) / 2,
             this.height * 0.2,
@@ -209,7 +215,7 @@ export class LevelEndScene {
 
   handleMouseClick = (event) => {
     // console.log(" levelend mouseclick ");
-    const selfElement:HTMLElement =document.getElementById("canvas");
+    const selfElement: HTMLElement = document.getElementById("canvas");
     var rect = selfElement.getBoundingClientRect();
     const x = event.clientX - rect.left;
     const y = event.clientY - rect.top;
@@ -221,7 +227,10 @@ export class LevelEndScene {
     if (this.retryButton.onClick(x, y)) {
       this.audioPlayer.playButtonClickSound();
       let gamePlayData = {
-        currentLevelData: { ...this.data.levels[this.currentLevel], levelNumber: this.currentLevel },
+        currentLevelData: {
+          ...this.data.levels[this.currentLevel],
+          levelNumber: this.currentLevel,
+        },
         selectedLevelNumber: this.currentLevel,
       };
       // pass same data as level is same
@@ -231,7 +240,7 @@ export class LevelEndScene {
       this.audioPlayer.playButtonClickSound();
       let next = Number(this.currentLevel) + 1;
       let gamePlayData = {
-        currentLevelData: { ...this.data.levels[next], levelNumber: next, },
+        currentLevelData: { ...this.data.levels[next], levelNumber: next },
         selectedLevelNumber: next,
       };
 
@@ -248,7 +257,7 @@ export class LevelEndScene {
     }
   };
   dispose = () => {
-    this.monster.dispose()
+    this.monster.dispose();
     this.audioPlayer.stopAllAudios();
     this.timeouts.forEach((timeout) => clearTimeout(timeout));
     document

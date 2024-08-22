@@ -197,3 +197,17 @@ export function calculateOffsetPosition(
 ) {
   return { x: xOffset * width, y: yOffset * height };
 }
+
+export function isClickWithinButton(
+  xClick: number,
+  yClick: number,
+  buttonCenterX: number,
+  buttonCenterY: number,
+  buttonRadius: number
+): boolean {
+  const distance = Math.sqrt(
+    (xClick - buttonCenterX) * (xClick - buttonCenterX) +
+      (yClick - buttonCenterY) * (yClick - buttonCenterY)
+  );
+  return distance < buttonRadius;
+}

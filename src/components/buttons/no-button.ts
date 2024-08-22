@@ -1,3 +1,5 @@
+import { drawImageOnCanvas, loadImages } from "../../common/utils";
+
 export default class NoButton {
   public posX: number;
   public posY: number;
@@ -17,17 +19,19 @@ export default class NoButton {
     this.context = context;
     this.canvas = canvas;
 
-    this.no_button_image = new Image();
-    this.no_button_image.src = "./assets/images/close_btn.png";
-    this.no_button_image.onload = (e) => {
-      this.imagesLoaded = true;
-      this.no_button_image = this.no_button_image;
-    };
+    loadImages(
+      { no_button_image: "./assets/images/close_btn.png" },
+      (images) => {
+        this.no_button_image = images["no_button_image"];
+        this.imagesLoaded = true;
+      }
+    );
   }
 
   draw() {
     if (this.imagesLoaded) {
-      this.context.drawImage(
+      drawImageOnCanvas(
+        this.context,
         this.no_button_image,
         this.posX + 5,
         this.posY + 10,
