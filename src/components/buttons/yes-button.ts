@@ -1,4 +1,8 @@
-import { drawImageOnCanvas, loadImages } from "../../common/utils";
+import {
+  drawImageOnCanvas,
+  isClickInsideButton,
+  loadImages,
+} from "../../common/utils";
 
 export default class YesButton {
   public posX: number;
@@ -42,14 +46,12 @@ export default class YesButton {
   }
 
   onClick(xClick: number, yClick: number): boolean {
-    const distance = Math.sqrt(
-      (xClick - this.posX - (this.canvas.width * 0.15) / 2) *
-        (xClick - this.posX - (this.canvas.width * 0.15) / 2) +
-        (yClick - this.posY - (this.canvas.width * 0.15) / 2) *
-          (yClick - this.posY - (this.canvas.width * 0.15) / 2)
+    return isClickInsideButton(
+      xClick,
+      yClick,
+      this.posX,
+      this.posY,
+      this.canvas.width * 0.15
     );
-    if (distance < (this.canvas.width * 0.15) / 2) {
-      return true;
-    }
   }
 }

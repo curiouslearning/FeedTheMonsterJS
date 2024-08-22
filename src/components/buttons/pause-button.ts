@@ -1,6 +1,6 @@
 import {
   drawImageOnCanvas,
-  isClickWithinButton,
+  isClickInsideButton,
   loadImages,
 } from "../../common/utils";
 
@@ -42,21 +42,12 @@ export default class PauseButton {
     }
   }
   onClick(xClick: number, yClick: number): boolean {
-    // const distance = Math.sqrt(
-    //   (xClick - this.posX - (this.canvas.height * 0.09) / 2) *
-    //     (xClick - this.posX - (this.canvas.height * 0.09) / 2) +
-    //     (yClick - this.posY - (this.canvas.height * 0.09) / 2) *
-    //       (yClick - this.posY - (this.canvas.height * 0.09) / 2)
-    // );
-    // if (distance < (this.canvas.height * 0.09) / 2) {
-    //   return true;
-    // }
-    return isClickWithinButton(
+    return isClickInsideButton(
       xClick,
       yClick,
-      this.posX + (this.canvas.height * 0.09) / 2,
-      this.posY + (this.canvas.height * 0.09) / 2,
-      (this.canvas.height * 0.09) / 2
+      this.posX,
+      this.posY,
+      this.canvas.height * 0.09
     );
   }
 }

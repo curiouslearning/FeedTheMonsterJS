@@ -1,6 +1,10 @@
 // import { Game } from "../../../scenes/game";
 
-import { drawImageOnCanvas, isClickWithinButton, loadImages } from "../../common/utils";
+import {
+  drawImageOnCanvas,
+  isClickInsideButton,
+  loadImages,
+} from "../../common/utils";
 
 export default class NextButton {
   public posX: number;
@@ -45,22 +49,12 @@ export default class NextButton {
     }
   }
   onClick(xClick: number, yClick: number): boolean {
-    // const distance = Math.sqrt(
-    //   (xClick - this.posX - (this.width * 0.19) / 2) *
-    //     (xClick - this.posX - (this.width * 0.19) / 2) +
-    //     (yClick - this.posY - (this.width * 0.19) / 2) *
-    //       (yClick - this.posY - (this.width * 0.19) / 2)
-    // );
-    // if (distance < (this.width * 0.19) / 2) {
-    //   return true;
-    // }
-
-    return isClickWithinButton(
+    return isClickInsideButton(
       xClick,
       yClick,
-      this.posX + (this.width * 0.19) / 2,
-      this.posY + (this.width * 0.19) / 2,
-      (this.width * 0.19) / 2
+      this.posX,
+      this.posY,
+      this.width * 0.19
     );
   }
 }

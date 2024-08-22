@@ -1,6 +1,6 @@
 import {
   drawImageOnCanvas,
-  isClickWithinButton,
+  isClickInsideButton,
   loadImages,
 } from "../../common/utils";
 
@@ -44,12 +44,12 @@ export default class CancelButton {
   }
 
   onClick(xClick: number, yClick: number): boolean {
-    return isClickWithinButton(
+    return isClickInsideButton(
       xClick,
       yClick,
-      this.posX + (this.canvas.width * 0.15) / 2,
-      this.posY + (this.canvas.width * 0.15) / 2,
-      (this.canvas.width * 0.15) / 2
+      this.posX,
+      this.posY,
+      this.canvas.width * 0.15
     );
   }
 }
