@@ -1,10 +1,9 @@
-import { Debugger, lang } from "../../global-variables";
-import { StoreMonsterPhaseNumber } from "../constants/";
 import { loadImages } from "../common";
 import { EventManager } from "../events/EventManager";
 import { drawImageOnCanvas } from "../common/utils";
+import { MonsterInterface } from "../interfaces/monsterInterface";
 
-export class Monster extends EventManager {
+export class Monster extends EventManager implements MonsterInterface {
   public zindex: number;
   public width: number;
   public height: number;
@@ -22,7 +21,7 @@ export class Monster extends EventManager {
   public canavsElement: HTMLCanvasElement;
   public context: CanvasRenderingContext2D;
   public game: any;
-  public images: Object;
+  public images: { [key: string]: string };
   public loadedImages: any;
   public imagesLoaded: boolean = false;
   public monsterPhase: number;

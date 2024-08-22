@@ -16,6 +16,7 @@ import {
   WINTER_FENCE_1,
   WINTER_PILLAR_1,
 } from "../constants";
+import { BackgroundInterface } from "../interfaces/backgroundInterface";
 
 // to do need to optimize more
 var images = {
@@ -36,8 +37,7 @@ var images = {
   winterFenceImg: WINTER_FENCE_1,
   winterPillerImg: WINTER_PILLAR_1,
 };
-
-export class Background {
+export class Background implements BackgroundInterface {
   public width: number;
   public height: number;
   public context: CanvasRenderingContext2D;

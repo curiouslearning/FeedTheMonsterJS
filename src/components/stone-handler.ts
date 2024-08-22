@@ -1,4 +1,4 @@
-import {StoneConfig, VISIBILITY_CHANGE, Utils} from '../common'
+import { StoneConfig, VISIBILITY_CHANGE, Utils } from "../common";
 import { EventManager } from "../events/EventManager";
 import { Tutorial } from "./tutorial";
 import { AudioPlayer } from "./audio-player";
@@ -11,10 +11,14 @@ import {
   AUDIO_PATH_POINTS_ADD,
   AUDIO_PATH_CORRECT_STONE,
   AUDIO_PATH_CHEERING_FUNC,
-  ASSETS_PATH_STONE_PINK_BG
-} from '../constants';
+  ASSETS_PATH_STONE_PINK_BG,
+} from "../constants";
+import { StoneHandlerInterface } from "../interfaces/StoneHandlerInterface";
 
-export default class StoneHandler extends EventManager {
+export default class StoneHandler
+  extends EventManager
+  implements StoneHandlerInterface
+{
   public context: CanvasRenderingContext2D;
   public canvas: { width: number; height?: number };
   public currentPuzzleData: any;
@@ -136,7 +140,7 @@ export default class StoneHandler extends EventManager {
         this.canvas.width / 4 - offsetCoordinateValue,
         this.canvas.height / 1.28 - offsetCoordinateValue,
       ],
-       [
+      [
         this.canvas.width / 7 - offsetCoordinateValue,
         this.canvas.height / 1.5 - offsetCoordinateValue,
       ],
@@ -165,8 +169,9 @@ export default class StoneHandler extends EventManager {
     this.targetStones = [...this.currentPuzzleData.targetStones];
     this.correctTargetStone = this.targetStones.join("");
   }
-  public isDroppedStoneCorrect(droppedStone: string) {//Not in use.
-    return droppedStone == this.correctTargetStone
+  public isDroppedStoneCorrect(droppedStone: string) {
+    //Not in use.
+    return droppedStone == this.correctTargetStone;
   }
 
   public handleStoneDrop(event) {
@@ -193,10 +198,11 @@ export default class StoneHandler extends EventManager {
   public isStoneLetterDropCorrect(
     droppedStone: string,
     feedBackIndex: number,
-    isWord:boolean = false
+    isWord: boolean = false
   ): boolean {
     const isLetterDropCorrect = isWord
-      ? droppedStone == this.correctTargetStone.substring(0, droppedStone.length)
+      ? droppedStone ==
+        this.correctTargetStone.substring(0, droppedStone.length)
       : droppedStone == this.correctTargetStone;
 
     this.processLetterDropFeedbackAudio(
@@ -206,20 +212,19 @@ export default class StoneHandler extends EventManager {
       droppedStone
     );
 
-    return isLetterDropCorrect
+    return isLetterDropCorrect;
   }
 
   private processLetterDropFeedbackAudio(
     feedBackIndex: number,
-    isLetterDropCorrect:boolean,
-    isWord:boolean,
-    droppedStone: string,
+    isLetterDropCorrect: boolean,
+    isWord: boolean,
+    droppedStone: string
   ) {
-
     if (isLetterDropCorrect) {
       const condition = isWord
         ? droppedStone === this.getCorrectTargetStone() // condition for word puzzle
-        : isLetterDropCorrect // for letter and letter for word puzzle
+        : isLetterDropCorrect; // for letter and letter for word puzzle
 
       if (condition) {
         this.playCorrectAnswerFeedbackSound(feedBackIndex);
@@ -227,16 +232,16 @@ export default class StoneHandler extends EventManager {
         this.audioPlayer.playFeedbackAudios(
           false,
           AUDIO_PATH_EATS,
-          AUDIO_PATH_CHEERING_FUNC(2),
+          AUDIO_PATH_CHEERING_FUNC(2)
         );
       }
     } else {
-       this.audioPlayer.playFeedbackAudios(
-          false,
-          AUDIO_PATH_EATS,
-          AUDIO_PATH_MONSTER_SPIT,
-          Math.round(Math.random()) > 0 ? AUDIO_PATH_MONSTER_DISSAPOINTED : null
-        );
+      this.audioPlayer.playFeedbackAudios(
+        false,
+        AUDIO_PATH_EATS,
+        AUDIO_PATH_MONSTER_SPIT,
+        Math.round(Math.random()) > 0 ? AUDIO_PATH_MONSTER_DISSAPOINTED : null
+      );
     }
   }
 
@@ -277,12 +282,12 @@ export default class StoneHandler extends EventManager {
     return [
       feedbackAudios["fantastic"],
       feedbackAudios["great"],
-      feedbackAudios["amazing"]
+      feedbackAudios["amazing"],
     ];
   }
 
-  setGamePause(isGamePaused:boolean){
-    this.isGamePaused  = isGamePaused;
+  setGamePause(isGamePaused: boolean) {
+    this.isGamePaused = isGamePaused;
   }
 
   playCorrectAnswerFeedbackSound(feedBackIndex: number) {
@@ -292,7 +297,7 @@ export default class StoneHandler extends EventManager {
       AUDIO_PATH_EATS,
       AUDIO_PATH_CHEERING_FUNC(randomNumber),
       AUDIO_PATH_POINTS_ADD,
-      Utils.getConvertedDevProdURL(this.feedbackAudios[feedBackIndex]),
+      Utils.getConvertedDevProdURL(this.feedbackAudios[feedBackIndex])
     );
     // to play the audio parrallely.
     this.correctStoneAudio.play();

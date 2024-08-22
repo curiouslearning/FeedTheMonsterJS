@@ -1,9 +1,13 @@
 import { loadImages } from "../common/";
 import { drawImageOnCanvas } from "../common/utils";
 import { EventManager } from "../events/EventManager";
+import { TimerTickingInterface } from "../interfaces/timeTickingInterface";
 import { AudioPlayer } from "./audio-player";
 
-export class TimerTicking extends EventManager {
+export class TimerTicking
+  extends EventManager
+  implements TimerTickingInterface
+{
   public width: number;
   public height: number;
   public timerWidth: number;

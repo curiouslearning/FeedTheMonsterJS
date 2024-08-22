@@ -37,6 +37,10 @@ import {
   AUDIO_PATH_ON_DRAG,
   ASSETS_PATH_MONSTER_IDLE,
   PreviousPlayedLevel,
+  ASSETS_PATH_BG_01,
+  ASSETS_PATH_FENCE,
+  ASSETS_PATH_HILL,
+  ASSETS_PATH_TOTEM,
 } from "../constants";
 import {
   BACKGROUND_ASSET_LIST,
@@ -47,8 +51,9 @@ import {
   winterBgDrawing,
 } from "../compositions/background";
 import { disposeEventListeners } from "../common/utils";
+import { GameplaySceneInterface } from "../interfaces/gameplaySceneInterface";
 
-export class GameplayScene {
+export class GameplayScene implements GameplaySceneInterface {
   public width: number;
   public height: number;
   public monster: Monster;
@@ -78,6 +83,10 @@ export class GameplayScene {
   stoneHandler: StoneHandler;
   public counter: number = 0;
   images: {
+    pillerImg: string;
+    bgImg: string;
+    hillImg: string;
+    fenchImg: string;
     profileMonster: string;
   };
   handler: HTMLElement;
@@ -187,6 +196,10 @@ export class GameplayScene {
     this.feedBackTexts = feedBackTexts;
 
     this.images = {
+      pillerImg: ASSETS_PATH_TOTEM,
+      bgImg: ASSETS_PATH_BG_01,
+      hillImg: ASSETS_PATH_HILL,
+      fenchImg: ASSETS_PATH_FENCE,
       profileMonster: ASSETS_PATH_MONSTER_IDLE,
     };
 

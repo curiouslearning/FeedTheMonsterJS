@@ -3,14 +3,15 @@ import {
   isClickInsideButton,
   loadImages,
 } from "../../common/utils";
+import { ButtonInterface } from "../../interfaces/buttons";
 
-export default class CancelButton {
+export default class CancelButton implements ButtonInterface {
   public posX: number;
   public posY: number;
   public context: CanvasRenderingContext2D;
   public canvas: { width: any; height?: number };
   public imagesLoaded: boolean = false;
-  public cancel_button_image: HTMLImageElement;
+  public button_image: HTMLImageElement;
 
   constructor(
     context: CanvasRenderingContext2D,
@@ -21,20 +22,17 @@ export default class CancelButton {
     this.context = context;
     this.canvas = canvas;
 
-    loadImages(
-      { cancel_button_image: "./assets/images/close_btn.png" },
-      (images) => {
-        this.cancel_button_image = images["cancel_button_image"];
-        this.imagesLoaded = true;
-      }
-    );
+    loadImages({ button_image: "./assets/images/close_btn.png" }, (images) => {
+      this.button_image = images["button_image"];
+      this.imagesLoaded = true;
+    });
   }
 
   draw() {
     if (this.imagesLoaded) {
       drawImageOnCanvas(
         this.context,
-        this.cancel_button_image,
+        this.button_image,
         this.posX,
         this.posY,
         this.canvas.width * 0.15,

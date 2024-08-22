@@ -16,7 +16,8 @@ import {
   levelSelectBgDrawing,
 } from "../compositions/background";
 import { PreviousPlayedLevel, LEVEL_SELECTION_BACKGROUND } from "../constants";
-export class LevelSelectionScreen {
+import { ILevelSelectionScreen } from "../interfaces/levelSelectionScreenInterface";
+export class LevelSelectionScreen implements ILevelSelectionScreen {
   private canvas: HTMLCanvasElement;
   private data: any;
   public width: number;
@@ -28,7 +29,7 @@ export class LevelSelectionScreen {
   private gameLevelData: any;
   public callBack: Function;
   private audioPlayer: AudioPlayer;
-  private images: object;
+  private images: { [key: string]: string };
   private loadedImages: any;
   private imagesLoaded: boolean = false;
   private xDown: number;

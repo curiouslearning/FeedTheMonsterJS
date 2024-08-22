@@ -1,8 +1,12 @@
 import { loadImages } from "../common";
 import { drawImageOnCanvas } from "../common/utils";
 import { EventManager } from "../events/EventManager";
+import { LevelIndicatorsInterface } from "../interfaces/levelIndicatorsInterface";
 
-export class LevelIndicators extends EventManager {
+export class LevelIndicators
+  extends EventManager
+  implements LevelIndicatorsInterface
+{
   public context: CanvasRenderingContext2D;
   public canvas: HTMLCanvasElement;
   public activeIndicators: number;

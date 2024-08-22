@@ -3,14 +3,23 @@ import {
   isClickInsideButton,
   loadImages,
 } from "../../common/utils";
+import {
+  ButtonImage,
+  ButtonInterface,
+  Canvas,
+  ImagesLoaded,
+  PosX,
+  PosY,
+  Context,
+} from "../../interfaces/buttons";
 
-export default class NoButton {
-  public posX: number;
-  public posY: number;
-  public context: CanvasRenderingContext2D;
-  public canvas: { width: any; height?: number };
-  public imagesLoaded: boolean = false;
-  public no_button_image: HTMLImageElement;
+export default class NoButton implements ButtonInterface {
+  public posX: PosX;
+  public posY: PosY;
+  public context: Context;
+  public canvas: Canvas;
+  public imagesLoaded: ImagesLoaded = false;
+  public button_image: ButtonImage;
 
   constructor(
     context: CanvasRenderingContext2D,
@@ -23,20 +32,17 @@ export default class NoButton {
     this.context = context;
     this.canvas = canvas;
 
-    loadImages(
-      { no_button_image: "./assets/images/close_btn.png" },
-      (images) => {
-        this.no_button_image = images["no_button_image"];
-        this.imagesLoaded = true;
-      }
-    );
+    loadImages({ button_image: "./assets/images/close_btn.png" }, (images) => {
+      this.button_image = images["button_image"];
+      this.imagesLoaded = true;
+    });
   }
 
   draw() {
     if (this.imagesLoaded) {
       drawImageOnCanvas(
         this.context,
-        this.no_button_image,
+        this.button_image,
         this.posX + 5,
         this.posY + 10,
         this.canvas.width * 0.18,

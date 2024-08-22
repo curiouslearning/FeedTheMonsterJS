@@ -1,6 +1,7 @@
 import { loadImages } from "../common";
 import { drawImageOnCanvas } from "../common/utils";
-export class LoadingScene {
+import { LoadingSceneInterface } from "../interfaces/loadingSceneInterface";
+export class LoadingScene implements LoadingSceneInterface {
   public canvas: HTMLCanvasElement;
   height: number;
   width: number;

@@ -5,15 +5,16 @@ import {
   isClickInsideButton,
   loadImages,
 } from "../../common/utils";
+import { ButtonInterface } from "../../interfaces/buttons";
 
-export default class NextButton {
+export default class NextButton implements ButtonInterface {
   public posX: number;
   public posY: number;
   public context: CanvasRenderingContext2D;
   public width: number;
   public height: number;
   public imagesLoaded: boolean = false;
-  public next_button_image: HTMLImageElement;
+  public button_image: HTMLImageElement;
 
   constructor(
     context: CanvasRenderingContext2D,
@@ -28,19 +29,16 @@ export default class NextButton {
     this.width = width;
     this.height = height;
 
-    loadImages(
-      { next_button_image: "./assets/images/next_btn.png" },
-      (images) => {
-        this.next_button_image = images["next_button_image"];
-        this.imagesLoaded = true;
-      }
-    );
+    loadImages({ button_image: "./assets/images/next_btn.png" }, (images) => {
+      this.button_image = images["button_image"];
+      this.imagesLoaded = true;
+    });
   }
   draw() {
     if (this.imagesLoaded) {
       drawImageOnCanvas(
         this.context,
-        this.next_button_image,
+        this.button_image,
         this.posX,
         this.posY,
         this.width * 0.19,

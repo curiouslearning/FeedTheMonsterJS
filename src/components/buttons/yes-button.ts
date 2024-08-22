@@ -3,14 +3,23 @@ import {
   isClickInsideButton,
   loadImages,
 } from "../../common/utils";
+import {
+  ButtonImage,
+  ButtonInterface,
+  Canvas,
+  Context,
+  ImagesLoaded,
+  PosX,
+  PosY,
+} from "../../interfaces/buttons";
 
-export default class YesButton {
-  public posX: number;
-  public posY: number;
-  public context: CanvasRenderingContext2D;
-  public canvas: { width: any; height?: number };
-  public imagesLoaded: boolean = false;
-  public yes_button_image: HTMLImageElement;
+export default class YesButton implements ButtonInterface {
+  public posX: PosX;
+  public posY: PosY;
+  public context: Context;
+  public canvas: Canvas;
+  public imagesLoaded: ImagesLoaded = false;
+  public button_image: ButtonImage;
 
   constructor(
     context: CanvasRenderingContext2D,
@@ -24,9 +33,9 @@ export default class YesButton {
     this.canvas = canvas;
 
     loadImages(
-      { yes_button_image: "./assets/images/confirm_btn.png" },
+      { button_image: "./assets/images/confirm_btn.png" },
       (images) => {
-        this.yes_button_image = images["yes_button_image"];
+        this.button_image = images["button_image"];
         this.imagesLoaded = true;
       }
     );
@@ -36,7 +45,7 @@ export default class YesButton {
     if (this.imagesLoaded) {
       drawImageOnCanvas(
         this.context,
-        this.yes_button_image,
+        this.button_image,
         this.posX - 5,
         this.posY,
         this.canvas.width * 0.2,

@@ -1,17 +1,25 @@
-import { TappedStart } from "../Firebase/firebase-event-interface";
-import { loadImages } from "../common/";
-import { FirebaseIntegration } from "../Firebase/firebase-integration";
-import { lang, pseudoId } from "../../global-variables";
-import { getData } from "../data/api-data";
-import { drawImageOnCanvas } from "../common/utils";
-export default class PlayButton {
-  public posX: number;
-  public posY: number;
+import { TappedStart } from "../../Firebase/firebase-event-interface";
+import { loadImages } from "../../common";
+import { FirebaseIntegration } from "../../Firebase/firebase-integration";
+import { lang, pseudoId } from "../../../global-variables";
+import { getData } from "../../data/api-data";
+import { drawImageOnCanvas } from "../../common/utils";
+import {
+  ButtonInterface,
+  Canvas,
+  ImagesLoaded,
+  LoadedImages,
+  PosX,
+  PosY,
+} from "../../interfaces/buttons";
+export default class PlayButton implements ButtonInterface {
+  public posX: PosX;
+  public posY: PosY;
   public context: CanvasRenderingContext2D;
-  public canvas: { width: number; height: number };
-  public images: Object;
-  public loadedImages: any;
-  public imagesLoaded: boolean = false;
+  public canvas: Canvas;
+  public images: { pause_button_image: string };
+  public loadedImages: LoadedImages;
+  public imagesLoaded: ImagesLoaded = false;
   private majVersion: string;
   private minVersion: string;
   private firebaseIntegration: FirebaseIntegration;

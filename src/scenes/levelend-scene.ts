@@ -19,8 +19,9 @@ import {
   winterBgDrawing,
 } from "../compositions/background";
 import { drawImageOnCanvas } from "../common/utils";
+import { LevelEndSceneInterface } from "../interfaces/levelEndSceneInterface";
 
-export class LevelEndScene {
+export class LevelEndScene implements LevelEndSceneInterface {
   public canvas: HTMLCanvasElement;
   public height: number;
   public width: number;

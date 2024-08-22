@@ -9,8 +9,9 @@ import { AudioPlayer } from "./audio-player";
 import { VISIBILITY_CHANGE } from "../common/event-names";
 import { PromptAudio } from "../constants/";
 import { font, lang } from "../../global-variables";
+import { PromptTextInterface } from "../interfaces/promptTextInterface";
 
-export class PromptText extends EventManager {
+export class PromptText extends EventManager implements PromptTextInterface {
   public width: number;
   public height: number;
   public levelData: any;

@@ -3,14 +3,23 @@ import {
   isClickInsideButton,
   loadImages,
 } from "../../common/utils";
+import {
+  ButtonImage,
+  ButtonInterface,
+  Canvas,
+  Context,
+  ImagesLoaded,
+  PosX,
+  PosY,
+} from "../../interfaces/buttons";
 
-export default class RetryButton {
-  public posX: number;
-  public posY: number;
-  public context: CanvasRenderingContext2D;
-  public canvas: HTMLCanvasElement;
-  public imagesLoaded: boolean = false;
-  public retry_button_image: HTMLImageElement;
+export default class RetryButton implements ButtonInterface {
+  public posX: PosX;
+  public posY: PosY;
+  public context: Context;
+  public canvas: Canvas;
+  public imagesLoaded: ImagesLoaded = false;
+  public button_image: ButtonImage;
 
   constructor(
     context: CanvasRenderingContext2D,
@@ -23,20 +32,17 @@ export default class RetryButton {
     this.context = context;
     this.canvas = canvas;
 
-    loadImages(
-      { retry_button_image: "./assets/images/retry_btn.png" },
-      (images) => {
-        this.retry_button_image = images["retry_button_image"];
-        this.imagesLoaded = true;
-      }
-    );
+    loadImages({ button_image: "./assets/images/retry_btn.png" }, (images) => {
+      this.button_image = images["button_image"];
+      this.imagesLoaded = true;
+    });
   }
 
   draw() {
     if (this.imagesLoaded) {
       drawImageOnCanvas(
         this.context,
-        this.retry_button_image,
+        this.button_image,
         this.posX,
         this.posY,
         this.canvas.width * 0.19,
