@@ -5,6 +5,7 @@ import { CLICK, VISIBILITY_CHANGE } from "../common/event-names";
 import { AudioPlayer } from "./audio-player";
 import AreYouSurePopUp from "./feedback-particle-effect/sure-popup";
 import { lang } from "../../global-variables";
+import { drawImageOnCanvas } from "../common/utils";
 export default class PausePopUp {
   public canvas: HTMLCanvasElement;
   public context: CanvasRenderingContext2D;
@@ -146,7 +147,8 @@ export default class PausePopUp {
     if (this.imagesLoaded) {
       this.context.fillStyle = "rgba(0,0,0,0.5)";
       this.context.fillRect(0, 0, this.canvas.width, this.canvas.height);
-      this.context.drawImage(
+      drawImageOnCanvas(
+        this.context,
         this.pop_up_image,
         this.canvas.width * 0.1,
         this.canvas.height * 0.2,

@@ -48,6 +48,7 @@ export class AudioPlayer {
   
 
   private async loadAndDecodeAudio(audioSrc: string): Promise<AudioBuffer> {
+    console.log(audioSrc);
     return new Promise<AudioBuffer>(async (resolve, reject) => {
       try {
         const response = await fetch(audioSrc);
