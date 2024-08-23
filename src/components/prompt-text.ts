@@ -1,13 +1,7 @@
 import { EventManager } from "../events/EventManager";
-import {
-  calculateCenterPosition,
-  calculateOffsetPosition,
-  drawImageOnCanvas,
-  Utils,
-} from "../common/utils";
+import { drawImageOnCanvas, Utils } from "../common/utils";
 import { AudioPlayer } from "./audio-player";
 import { VISIBILITY_CHANGE } from "../common/event-names";
-import { PromptAudio } from "../constants/";
 import { font, lang } from "../../global-variables";
 import { PromptTextInterface } from "../interfaces/promptTextInterface";
 
@@ -98,13 +92,35 @@ export class PromptText extends EventManager implements PromptTextInterface {
     }
   };
 
+  private calculateOffsetPosition(
+    xOffset: number,
+    yOffset: number,
+    width: number,
+    height: number
+  ) {
+    return { x: xOffset * width, y: yOffset * height };
+  }
+
+  private calculateCenterPosition(
+    width: number,
+    height: number,
+    containerWidth: number,
+    containerHeight: number
+  ) {
+    const x = (containerWidth - width) / 2;
+    const y = (containerHeight - height) / 2;
+    return { x, y };
+  }
+
   onClick(xClick, yClick) {
     return (
       Math.sqrt(
-        calculateOffsetPosition(1 / 3, 0, this.width, this.height).x - xClick
+        this.calculateOffsetPosition(1 / 3, 0, this.width, this.height).x -
+          xClick
       ) < 12 &&
       Math.sqrt(
-        calculateOffsetPosition(0, 1 / 5.5, this.width, this.height).y - yClick
+        this.calculateOffsetPosition(0, 1 / 5.5, this.width, this.height).y -
+          yClick
       ) < 10
     );
   }
@@ -115,9 +131,20 @@ export class PromptText extends EventManager implements PromptTextInterface {
     this.targetStones = this.currentPuzzleData.targetStones;
   }
 
+  private defaultPromptPlayButton(y, scaledWidth, scaledHeight) {
+    return drawImageOnCanvas(
+      this.context,
+      this.promptPlayButton,
+      this.width / 2.4,
+      y / 1.15,
+      scaledWidth / 4,
+      scaledHeight / 4
+    );
+  }
+
   drawRTLLang() {
-    var x = calculateCenterPosition(0, 0, this.width, this.height).x;
-    const y = calculateOffsetPosition(0, 0.26, this.width, this.height).y;
+    var x = this.calculateCenterPosition(0, 0, this.width, this.height).x;
+    const y = this.calculateOffsetPosition(0, 0.26, this.width, this.height).y;
 
     this.context.textAlign = "center";
     var fontSize = this.calculateFont();
@@ -136,6 +163,7 @@ export class PromptText extends EventManager implements PromptTextInterface {
           x + this.context.measureText(letterInWord).width / 2,
           y
         );
+
         this.context.fillStyle = "black";
         this.context.fillText(
           letterInWord,
@@ -143,14 +171,7 @@ export class PromptText extends EventManager implements PromptTextInterface {
           y
         );
       } else {
-        drawImageOnCanvas(
-          this.context,
-          this.promptPlayButton,
-          this.width / 2.4,
-          y / 1.15,
-          scaledWidth / 4,
-          scaledHeight / 4
-        );
+        this.defaultPromptPlayButton(y, scaledWidth, scaledHeight);
       }
     } else if (this.levelData.levelMeta.levelType == "Word") {
       if (this.levelData.levelMeta.protoType == "Visible") {
@@ -166,14 +187,7 @@ export class PromptText extends EventManager implements PromptTextInterface {
           x = x + this.context.measureText(this.targetStones[i]).width + 5;
         }
       } else {
-        drawImageOnCanvas(
-          this.context,
-          this.promptPlayButton,
-          this.width / 2.4,
-          y / 1.15,
-          scaledWidth / 4,
-          scaledHeight / 4
-        );
+        this.defaultPromptPlayButton(y, scaledWidth, scaledHeight);
       }
     } else if (this.levelData.levelMeta.levelType == "audioPlayerWord") {
       const offsetX = (this.width - scaledWidth) * 1.25;
@@ -191,17 +205,11 @@ export class PromptText extends EventManager implements PromptTextInterface {
         this.context.fillStyle = "black";
         this.context.fillText(this.currentPromptText, x, y);
       } else {
-        drawImageOnCanvas(
-          this.context,
-          this.promptPlayButton,
-          this.width / 2.4,
-          y / 1.15,
-          scaledWidth / 4,
-          scaledHeight / 4
-        );
+        this.defaultPromptPlayButton(y, scaledWidth, scaledHeight);
       }
     }
   }
+
   drawOthers() {
     const promptTextLetters = this.currentPromptText.split("");
     const x = this.width / 2;
@@ -310,7 +318,7 @@ export class PromptText extends EventManager implements PromptTextInterface {
     if (!this.isStoneDropped) {
       const scaledWidth = this.promptImageWidth * this.scale;
       const scaledHeight = this.promptImageHeight * this.scale;
-      const offsetX = calculateCenterPosition(
+      const offsetX = this.calculateCenterPosition(
         scaledWidth,
         0,
         this.width,

@@ -147,8 +147,8 @@ export function drawImageOnCanvas(
   image: HTMLImageElement | CanvasImageSource,
   sxOrX: number, // source x or destination x
   syOrY: number, // source y or destination y
-  sWidthOrWidth: number, // source width or destination width
-  sHeightOrHeight: number, // source height or destination height
+  sWidthOrWidth?: number, // source width or destination width
+  sHeightOrHeight?: number, // source height or destination height
   dx?: number, // destination x (optional)
   dy?: number, // destination y (optional)
   dWidth?: number, // destination width (optional)
@@ -176,26 +176,6 @@ export function drawImageOnCanvas(
     // Use the simpler version of drawImage
     context.drawImage(image, sxOrX, syOrY, sWidthOrWidth, sHeightOrHeight);
   }
-}
-
-export function calculateCenterPosition(
-  width: number,
-  height: number,
-  containerWidth: number,
-  containerHeight: number
-) {
-  const x = (containerWidth - width) / 2;
-  const y = (containerHeight - height) / 2;
-  return { x, y };
-}
-
-export function calculateOffsetPosition(
-  xOffset: number,
-  yOffset: number,
-  width: number,
-  height: number
-) {
-  return { x: xOffset * width, y: yOffset * height };
 }
 
 export function isClickInsideButton(

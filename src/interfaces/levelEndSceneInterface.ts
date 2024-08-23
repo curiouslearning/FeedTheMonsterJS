@@ -28,7 +28,6 @@ export interface LevelEndSceneInterface {
   draw(deltaTime: number): void;
   switchToReactionAnimation: () => void;
   starAnimation(): void;
-  drawStars(): void;
   addEventListener(): void;
   handleMouseClick: (event: MouseEvent) => void;
   pauseAudios: () => void;

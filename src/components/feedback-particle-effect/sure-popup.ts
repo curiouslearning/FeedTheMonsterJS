@@ -2,7 +2,7 @@ import { CLICK } from "../../common/event-names";
 import { AudioPlayer } from "../audio-player";
 import YesButton from "../buttons/yes-button";
 import NoButton from "../buttons/no-button";
-import { drawImageOnCanvas } from "../../common/utils";
+import { drawImageOnCanvas, loadImages } from "../../common/utils";
 
 export default class AreYouSurePopUp {
   public canvas: HTMLCanvasElement;
@@ -38,15 +38,13 @@ export default class AreYouSurePopUp {
         (this.canvas.width * 0.15) / 2
     );
 
-    this.pop_up_image = new Image();
-    this.pop_up_image.src = "./assets/images/popup_bg_v01.png";
-    this.pop_up_image.onload = (e) => {
-      this.pop_up_image = this.pop_up_image;
+    loadImages({ popupImage: "./assets/images/popup_bg_v01.png" }, (images) => {
+      this.pop_up_image = images.popupImage;
       this.imagesLoaded = true;
-    };
+    });
   }
 
-  addListner = () => {
+  addListener = () => {
     this.canvas.addEventListener(CLICK, this.handleMouseClick, false);
   };
 

@@ -1,6 +1,7 @@
 import { loadImages } from "../common";
 import { drawImageOnCanvas } from "../common/utils";
 import { LoadingSceneInterface } from "../interfaces/loadingSceneInterface";
+
 export class LoadingScene implements LoadingSceneInterface {
   public canvas: HTMLCanvasElement;
   height: number;
@@ -13,6 +14,7 @@ export class LoadingScene implements LoadingSceneInterface {
   stopCloudMoving: boolean = false;
   cloudMovingTimeOut: number = 0;
   public removeLoading;
+
   constructor(width: number, height: number, removeLoading) {
     this.canvas = document.getElementById("loading") as HTMLCanvasElement;
     this.canvas.height = height;
@@ -31,6 +33,7 @@ export class LoadingScene implements LoadingSceneInterface {
       this.imagesLoaded = true;
     });
   }
+
   draw(deltaTime: number) {
     this.context.clearRect(0, 0, this.width, this.height);
     this.cloudXPosition += deltaTime * 0.75;
@@ -46,203 +49,118 @@ export class LoadingScene implements LoadingSceneInterface {
       }
     }
     if (this.imagesLoaded) {
-      if (!this.stopCloudMoving) {
-        drawImageOnCanvas(
-          this.context,
-          this.loadedImages.cloud6,
-          this.cloudXPosition >= 0 ? 0 : this.cloudXPosition,
-          this.height * 0.6,
-          this.width,
-          this.height * 0.5
-        );
-        drawImageOnCanvas(
-          this.context,
-          this.loadedImages.cloud6,
+      this.drawClouds();
+    }
+  }
+
+  private drawClouds() {
+    const cloudPositions = [
+      {
+        img: this.loadedImages.cloud6,
+        x: this.cloudXPosition >= 0 ? 0 : this.cloudXPosition,
+        y: this.height * 0.6,
+      },
+      {
+        img: this.loadedImages.cloud6,
+        x:
           this.cloudXPosition >= this.width * 0.4
             ? this.width * 0.4
             : this.cloudXPosition,
-          this.height * 0.15,
-          this.width,
-          this.height * 0.5
-        );
-        drawImageOnCanvas(
-          this.context,
-          this.loadedImages.cloud7,
-          this.cloudXPosition >= 0 ? 0 : this.cloudXPosition,
-          this.height * 0.15,
-          this.width,
-          this.height * 0.5
-        );
-        drawImageOnCanvas(
-          this.context,
-          this.loadedImages.cloud8,
+        y: this.height * 0.15,
+      },
+      {
+        img: this.loadedImages.cloud7,
+        x: this.cloudXPosition >= 0 ? 0 : this.cloudXPosition,
+        y: this.height * 0.15,
+      },
+      {
+        img: this.loadedImages.cloud8,
+        x:
           this.cloudXPosition >= -this.width * 0.4
             ? -this.width * 0.4
             : this.cloudXPosition,
-          -this.height * 0.15,
-          this.width,
-          this.height * 0.5
-        );
-        drawImageOnCanvas(
-          this.context,
-          this.loadedImages.cloud8,
+        y: -this.height * 0.15,
+      },
+      {
+        img: this.loadedImages.cloud8,
+        x:
           this.cloudXPosition >= this.width * 0.4
             ? this.width * 0.4
             : this.cloudXPosition,
-          -this.height * 0.15,
-          this.width,
-          this.height * 0.5
-        );
-        drawImageOnCanvas(
-          this.context,
-          this.loadedImages.cloud8,
+        y: -this.height * 0.15,
+      },
+      {
+        img: this.loadedImages.cloud8,
+        x:
           this.cloudXPosition >= this.width * 0.05
             ? this.width * 0.05
             : this.cloudXPosition,
-          -this.height * 0.2,
-          this.width,
-          this.height * 0.5
-        );
-        drawImageOnCanvas(
-          this.context,
-          this.loadedImages.cloud8,
+        y: -this.height * 0.2,
+      },
+      {
+        img: this.loadedImages.cloud8,
+        x:
           this.cloudXPosition >= -this.width * 0.6
             ? -this.width * 0.6
             : this.cloudXPosition,
-          this.height * 0.3,
-          this.width,
-          this.height * 0.5
-        );
-        drawImageOnCanvas(
-          this.context,
-          this.loadedImages.cloud7,
+        y: this.height * 0.3,
+      },
+      {
+        img: this.loadedImages.cloud7,
+        x:
           this.cloudXPosition >= this.width * 0.5
             ? this.width * 0.5
             : this.cloudXPosition,
-          this.height * 0.4,
-          this.width,
-          this.height * 0.4
-        );
-        drawImageOnCanvas(
-          this.context,
-          this.loadedImages.cloud7,
+        y: this.height * 0.4,
+      },
+      {
+        img: this.loadedImages.cloud7,
+        x:
           this.cloudXPosition >= -this.width * 0.4
             ? -this.width * 0.4
             : this.cloudXPosition,
-          this.height * 0.7,
-          this.width,
-          this.height * 0.5
-        );
-        drawImageOnCanvas(
-          this.context,
-          this.loadedImages.cloud8,
+        y: this.height * 0.7,
+      },
+      {
+        img: this.loadedImages.cloud8,
+        x:
           this.cloudXPosition >= this.width * 0.4
             ? this.width * 0.4
             : this.cloudXPosition,
-          this.height * 0.7,
-          this.width,
-          this.height * 0.5
-        );
-        drawImageOnCanvas(
-          this.context,
-          this.loadedImages.cloud6,
+        y: this.height * 0.7,
+      },
+      {
+        img: this.loadedImages.cloud6,
+        x:
           this.cloudXPosition >= -this.width * 0.2
             ? -this.width * 0.2
             : this.cloudXPosition,
-          this.height * 0.2,
+        y: this.height * 0.2,
+      },
+    ];
+
+    if (!this.stopCloudMoving) {
+      cloudPositions.forEach((cloud) => {
+        drawImageOnCanvas(
+          this.context,
+          cloud.img,
+          cloud.x,
+          cloud.y,
           this.width,
           this.height * 0.5
         );
-      } else {
+      });
+    } else {
+      cloudPositions.forEach((cloud) => {
         drawImageOnCanvas(
           this.context,
-          this.loadedImages.cloud6,
-          0 + this.cloudXPosition,
-          this.height * 0.6,
+          cloud.img,
+          cloud.x + this.cloudXPosition,
+          cloud.y,
           this.width,
           this.height * 0.5
         );
-        drawImageOnCanvas(
-          this.context,
-          this.loadedImages.cloud6,
-          this.width * 0.4 + this.cloudXPosition,
-          this.height * 0.15,
-          this.width,
-          this.height * 0.5
-        );
-        drawImageOnCanvas(
-          this.context,
-          this.loadedImages.cloud7,
-          0 + this.cloudXPosition,
-          this.height * 0.15,
-          this.width,
-          this.height * 0.5
-        );
-        drawImageOnCanvas(
-          this.context,
-          this.loadedImages.cloud8,
-          -this.width * 0.4 + this.cloudXPosition,
-          -this.height * 0.15,
-          this.width,
-          this.height * 0.5
-        );
-        drawImageOnCanvas(
-          this.context,
-          this.loadedImages.cloud8,
-          this.width * 0.4 + this.cloudXPosition,
-          -this.height * 0.15,
-          this.width,
-          this.height * 0.5
-        );
-        drawImageOnCanvas(
-          this.context,
-          this.loadedImages.cloud8,
-          this.width * 0.05 + this.cloudXPosition,
-          -this.height * 0.2,
-          this.width,
-          this.height * 0.5
-        );
-        drawImageOnCanvas(
-          this.context,
-          this.loadedImages.cloud8,
-          -this.width * 0.6 + this.cloudXPosition,
-          this.height * 0.3,
-          this.width,
-          this.height * 0.5
-        );
-        drawImageOnCanvas(
-          this.context,
-          this.loadedImages.cloud7,
-          this.width * 0.5 + this.cloudXPosition,
-          this.height * 0.4,
-          this.width,
-          this.height * 0.4
-        );
-        drawImageOnCanvas(
-          this.context,
-          this.loadedImages.cloud7,
-          -this.width * 0.4 + this.cloudXPosition,
-          this.height * 0.7,
-          this.width,
-          this.height * 0.5
-        );
-        drawImageOnCanvas(
-          this.context,
-          this.loadedImages.cloud8,
-          this.width * 0.4 + this.cloudXPosition,
-          this.height * 0.7,
-          this.width,
-          this.height * 0.5
-        );
-        drawImageOnCanvas(
-          this.context,
-          this.loadedImages.cloud6,
-          -this.width * 0.2 + this.cloudXPosition,
-          this.height * 0.2,
-          this.width,
-          this.height * 0.5
-        );
-      }
+      });
     }
   }
 

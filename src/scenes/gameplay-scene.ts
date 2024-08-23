@@ -635,7 +635,7 @@ export class GameplayScene implements GameplaySceneInterface {
     this.removeEventListeners();
     this.isPauseButtonClicked = true;
     this.stoneHandler.setGamePause(true);
-    this.pausePopup.addListner();
+    this.pausePopup.addListener();
     this.audioPlayer.stopAllAudios();
   };
 
