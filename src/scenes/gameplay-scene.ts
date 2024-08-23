@@ -9,7 +9,8 @@ import {
   PausePopUp,
   Background,
   FeedbackTextEffects,
-  AudioPlayer
+  AudioPlayer,
+  TrailEffect
 } from '../components/';
 import {
   loadImages,
@@ -30,11 +31,9 @@ import { GameScore } from "../data/game-score";
 import {
   LevelCompletedEvent,
   PuzzleCompletedEvent,
-
 } from "../Firebase/firebase-event-interface";
 import { FirebaseIntegration } from "../Firebase/firebase-integration";
 import {
-  AUDIO_PATH_BTN_CLICK,
   AUDIO_PATH_ON_DRAG,
   ASSETS_PATH_MONSTER_IDLE,
   PreviousPlayedLevel,
@@ -43,9 +42,6 @@ import {
   BACKGROUND_ASSET_LIST,
   createBackground,
   loadDynamicBgAssets,
-  defaultBgDrawing,
-  autumBgDrawing,
-  winterBgDrawing
 } from '../compositions/background';
 
 export class GameplayScene {
@@ -99,6 +95,8 @@ export class GameplayScene {
   puzzleTime: number;
   isDisposing: boolean;
   resetAnimationID: number | NodeJS.Timeout;
+  trailParticles: any;
+  clickTrailToggle: boolean;
 
   constructor(
     canvas,
@@ -118,6 +116,7 @@ export class GameplayScene {
     this.rightToLeft = rightToLeft;
     this.canvas = canvas;
     this.context = this.canvas.getContext("2d", { willReadFrequently: true });
+    this.trailParticles = new TrailEffect(canvas);
     this.monsterPhaseNumber = monsterPhaseNumber || 1;
     this.levelData = levelData;
     this.switchSceneToEnd = switchSceneToEnd;
@@ -206,6 +205,8 @@ export class GameplayScene {
     this.addEventListeners();
     this.resetAnimationID = 0;
     this.setupBg();
+    this.trailParticles?.init();
+    this.clickTrailToggle = false;
   }
 
   private setupBg = async () => {
@@ -280,6 +281,7 @@ export class GameplayScene {
       }
     }
     this.pickedStone = null;
+    this.clickTrailToggle = false;
   };
 
   // Event to identify mouse moved down on the canvas
@@ -297,6 +299,8 @@ export class GameplayScene {
         break;
       }
     }
+
+    this.clickTrailToggle = true;
   };
 
   handleMouseMove = (event) => {
@@ -307,6 +311,9 @@ export class GameplayScene {
       this.monster.changeToDragAnimation();
       this.pickedStone.x = x;
       this.pickedStone.y = y;
+      this.trailParticles?.addTrailParticles(x, y);
+    } else {
+      this.clickTrailToggle && this.trailParticles?.addTrailParticles(event.clientX, event.clientY);
     }
   };
 
@@ -335,16 +342,19 @@ export class GameplayScene {
   handleTouchStart = (event) => {
     const touch = event.touches[0];
     this.handleMouseDown({ clientX: touch.clientX, clientY: touch.clientY });
+    this.trailParticles?.resetParticles();
   };
 
   handleTouchMove = (event) => {
     const touch = event.touches[0];
     this.handleMouseMove({ clientX: touch.clientX, clientY: touch.clientY });
+    this.trailParticles?.addTrailParticles(touch.clientX, touch.clientY);
   };
 
   handleTouchEnd = (event) => {
     const touch = event.changedTouches[0];
     this.handleMouseUp({ clientX: touch.clientX, clientY: touch.clientY });
+    this.trailParticles?.resetParticles();
   };
 
 
@@ -365,7 +375,7 @@ export class GameplayScene {
     this.promptText.draw(deltaTime);
     this.monster.update(deltaTime);
     this.timerTicking.draw();
-
+    this.trailParticles?.draw();
     if (this.isPauseButtonClicked && this.isGameStarted) {
       this.stoneHandler.draw(deltaTime);
       this.pausePopup.draw();
@@ -378,8 +388,11 @@ export class GameplayScene {
       this.pausePopup.draw();
     }
     if (!this.isPauseButtonClicked && this.isGameStarted) {
+      
       this.stoneHandler.draw(deltaTime);
     }
+
+    
   }
 
   addEventListeners() {
