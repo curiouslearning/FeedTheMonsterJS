@@ -76,23 +76,26 @@
     <canvas id="canvas"></canvas>
     <canvas id="newcanvas"></canvas>
     <div class="btnholder">
-      <button id="animation1">Idle 1</button>
-      <button id="animation2">Idle 2</button>
-      <button id="animation3">Talking</button>
-      <button id="animation4">Win</button>
-      <button id="animation5">Lose</button>
+      <button id="animation1">Idle</button>
+      <button id="animation4">Open Mouth</button>
+      <button id="animation2">Eat Disgust</button>
+      <button id="animation3">Eat Happy</button>
     </div>
     <p id="statecheck"></p>
   </div>
   <style>
     .btnholder{
       z-index: 9;
-      position: absolute;
-      width: 100%;
+    position: absolute;
+    width: 100%;
+    justify-content: center;
+    align-items: center;
+    display: none;
     }
     .btnholder button{
-      width: calc(100% / 5.25);
+      width: calc(100% / 4);
       margin: auto;
+      padding: 5px;
     }
     #newcanvas {
       /* display: none; */

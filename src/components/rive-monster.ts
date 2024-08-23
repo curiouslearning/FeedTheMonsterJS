@@ -34,10 +34,10 @@ export class RiveMonster {
 
   initialiseRiveMonster() {
     const riveMonster = new rive.Rive({
-      src: "./assets/chimplenew.riv",
+      src: "./assets/ftmmonster.riv",
       canvas: this.canvasElement,
-      autoplay: false,
-      animations:'idle_1',
+      autoplay: true,
+      animations:'Idle',
       stateMachines: "State Machine 1",
       layout: new rive.Layout({ fit: rive.Fit.Cover, alignment: rive.Alignment.Center }),
       onLoad: () => {
@@ -47,11 +47,10 @@ export class RiveMonster {
 
         // Mapping of button IDs to animation names
         const animationMapping: { [key: string]: string } = {
-          'animation1': 'idle_1',
-          'animation2': 'idle_2',
-          'animation3': 'talking',
-          'animation4': 'win',
-          'animation5': 'lose',
+          'animation1': 'Idle',
+          'animation2': 'Eat Disgust',
+          'animation3': 'Eat Happy',
+          'animation4': 'Opening Mouth Eat',
         };
 
         let currentAnimation: string = null;
@@ -59,6 +58,10 @@ export class RiveMonster {
         // Function to play the specific animation
         const playAnimation = (animationName: string) => {
           if (animationName !== currentAnimation) {
+            // Stop the current animation before playing the new one
+            if (currentAnimation) {
+              riveMonster.stop(currentAnimation);
+            }
             // Trigger custom event for animation change
             const event = new CustomEvent('animationchange', {
               detail: { previousAnimation: currentAnimation, newAnimation: animationName }
