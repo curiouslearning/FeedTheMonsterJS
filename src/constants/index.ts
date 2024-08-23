@@ -33,7 +33,7 @@ export const AUDIO_PATH_BTN_CLICK = "./assets/audios/ButtonClick.mp3"
 export const AUDIO_PATH_ON_DRAG = "./assets/audios/onDrag.mp3"
 
 //Image paths
-export const ASSETS_PATH_STONE_PINK_BG = "./assets/images/stone_pink_v02.png";
+export const ASSETS_PATH_STONE_PINK_BG = "./assets/images/stone_pink.png"; //stone_pink_v02.png
 export const ASSETS_PATH_TOTEM = "./assets/images/Totem_v02_v01.png";
 export const ASSETS_PATH_BG_01 = "./assets/images/bg_v01.jpg";
 export const ASSETS_PATH_HILL = "./assets/images/hill_v01.png";

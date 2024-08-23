@@ -42,15 +42,15 @@ export class StoneConfig {
     calculateImageAndFontSize() {
         if (
             this.context.measureText(this.text).width * 1.4 >
-            this.canvasHeight / 13
+            this.canvasHeight / 9.5
         ) {
             this.imageSize = this.context.measureText(this.text).width * 1.1;
             this.textFontSize = this.canvasHeight / 25;
             if (this.text.length >= 3  && this.origx<50 && this.origx< this.canvasWidth/2 ) {
-                  this.x = this.origx + 25;
+                  this.x = this.origx + 21;
             }
         } else {
-            this.imageSize = this.canvasHeight / 13;
+            this.imageSize = this.canvasHeight / 9.5;
             this.textFontSize = this.canvasHeight / 20;
         }
     }
@@ -80,10 +80,11 @@ export class StoneConfig {
 
     draw(deltaTime: number) {
         // Apply shadow properties
-        this.context.shadowColor = 'rgba(255, 255, 255, 0.8)'; // Color of the shadow
-        this.context.shadowBlur = 6; // Blur level of the shadow
-        this.context.shadowOffsetX = 2; // Horizontal shadow offset
-        this.context.shadowOffsetY = 2; // Vertical shadow offset
+        this.context.fillStyle = 'red';
+        this.context.shadowColor = 'rgba(255, 255, 255, 1)'; // Color of the shadow
+        this.context.shadowBlur = 12; // Blur level of the shadow
+        this.context.shadowOffsetX = 0; // Horizontal shadow offset
+        this.context.shadowOffsetY = 0; // Vertical shadow offset
         this.context.drawImage(
             this.img,
             this.getX() - this.imageCenterOffsetX,
