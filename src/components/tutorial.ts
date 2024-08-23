@@ -1,5 +1,5 @@
-import { createRippleEffect, drawImageOnCanvas } from "../common/utils";
-import { GameScore } from "../data/game-score";
+import { createRippleEffect, drawImageOnCanvas } from "@common/index";
+import { GameScore } from "@data/game-score";
 
 export class Tutorial {
   public width: number;

@@ -1,9 +1,9 @@
 import { EventManager } from "../events/EventManager";
-import { drawImageOnCanvas, Utils } from "../common/utils";
+import { drawImageOnCanvas, Utils } from "@common/index";
 import { AudioPlayer } from "./audio-player";
-import { VISIBILITY_CHANGE } from "../common/event-names";
+import { VISIBILITY_CHANGE } from "@common/event-names";
 import { font, lang } from "../../global-variables";
-import { PromptTextInterface } from "../interfaces/promptTextInterface";
+import { PromptTextInterface } from "@interfaces/promptTextInterface";
 
 export class PromptText extends EventManager implements PromptTextInterface {
   public width: number;

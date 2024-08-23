@@ -1,9 +1,9 @@
 import { StartScene } from "../scenes/start-scene";
-import { DataModal } from "../data/data-modal";
+import { DataModal } from "@data/data-modal";
 import { LevelSelectionScreen } from "../scenes/level-selection-scene";
 import { Debugger } from "../../global-variables";
 import { GameplayScene } from "../scenes/gameplay-scene";
-import { GameScore } from "../data/game-score";
+import { GameScore } from "@data/game-score";
 import { LoadingScene } from "../scenes/loading-scene";
 import { LevelEndScene } from "../scenes/levelend-scene";
 import {
@@ -17,7 +17,7 @@ import {
   GameScene1,
   EndScene1,
 } from "../constants";
-import { SceneHandlerInterface } from "../interfaces/sceneHandlerInterface";
+import { SceneHandlerInterface } from "@interfaces/sceneHandlerInterface";
 
 export class SceneHandler implements SceneHandlerInterface {
   public canvas: HTMLCanvasElement;

@@ -2,8 +2,8 @@ import {
   drawImageOnCanvas,
   isClickInsideButton,
   loadImages,
-} from "../../common/utils";
-import { ButtonInterface } from "../../interfaces/buttons";
+} from "@common/index";
+import { ButtonInterface } from "@interfaces/buttons";
 
 export default class CancelButton implements ButtonInterface {
   public posX: number;

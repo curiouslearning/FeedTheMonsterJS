@@ -1,5 +1,5 @@
 import { StartScene } from "../scenes/start-scene";
-import { DataModal } from "../data/data-modal";
+import { DataModal } from "@data/data-modal";
 import { LevelSelectionScreen } from "../scenes/level-selection-scene";
 import { GameplayScene } from "../scenes/gameplay-scene";
 import { LoadingScene } from "../scenes/loading-scene";

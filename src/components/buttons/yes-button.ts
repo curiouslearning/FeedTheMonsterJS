@@ -2,7 +2,7 @@ import {
   drawImageOnCanvas,
   isClickInsideButton,
   loadImages,
-} from "../../common/utils";
+} from "@common/index";
 import {
   ButtonImage,
   ButtonInterface,
@@ -11,7 +11,7 @@ import {
   ImagesLoaded,
   PosX,
   PosY,
-} from "../../interfaces/buttons";
+} from "@interfaces/buttons";
 
 export default class YesButton implements ButtonInterface {
   public posX: PosX;

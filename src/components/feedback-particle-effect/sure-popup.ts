@@ -1,8 +1,8 @@
-import { CLICK } from "../../common/event-names";
+import { CLICK } from "@common/event-names";
 import { AudioPlayer } from "../audio-player";
 import YesButton from "../buttons/yes-button";
 import NoButton from "../buttons/no-button";
-import { drawImageOnCanvas, loadImages } from "../../common/utils";
+import { drawImageOnCanvas, loadImages } from "@common/index";
 
 export default class AreYouSurePopUp {
   public canvas: HTMLCanvasElement;

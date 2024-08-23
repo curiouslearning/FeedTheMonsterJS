@@ -2,8 +2,8 @@ import { TappedStart } from "../../Firebase/firebase-event-interface";
 import { loadImages } from "../../common";
 import { FirebaseIntegration } from "../../Firebase/firebase-integration";
 import { lang, pseudoId } from "../../../global-variables";
-import { getData } from "../../data/api-data";
-import { drawImageOnCanvas } from "../../common/utils";
+import { getData } from "@data/api-data";
+import { drawImageOnCanvas } from "@common/index";
 import {
   ButtonInterface,
   Canvas,
@@ -11,7 +11,7 @@ import {
   LoadedImages,
   PosX,
   PosY,
-} from "../../interfaces/buttons";
+} from "@interfaces/buttons";
 export default class PlayButton implements ButtonInterface {
   public posX: PosX;
   public posY: PosY;

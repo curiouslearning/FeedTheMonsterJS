@@ -1,17 +1,17 @@
-import { loadImages } from "../common/";
-import { CLICK } from "../common/event-names";
-import { AudioPlayer } from "../components/audio-player";
-import CloseButton from "../components/buttons/close-button";
-import NextButton from "../components/buttons/next-button";
-import RetryButton from "../components/buttons/retry-button";
-import { Monster } from "../components/monster";
+import { loadImages } from "@common/index";
+import { CLICK } from "@common/event-names";
+import { AudioPlayer } from "@components/audio-player";
+import CloseButton from "@components/buttons/close-button";
+import NextButton from "@components/buttons/next-button";
+import RetryButton from "@components/buttons/retry-button";
+import { Monster } from "@components/monster";
 import {
   BACKGROUND_ASSET_LIST,
   createBackground,
   loadDynamicBgAssets,
 } from "../compositions/background";
-import { drawImageOnCanvas } from "../common/utils";
-import { LevelEndSceneInterface } from "../interfaces/levelEndSceneInterface";
+import { drawImageOnCanvas } from "@common/index";
+import { LevelEndSceneInterface } from "@interfaces/levelEndSceneInterface";
 
 export class LevelEndScene implements LevelEndSceneInterface {
   public canvas: HTMLCanvasElement;

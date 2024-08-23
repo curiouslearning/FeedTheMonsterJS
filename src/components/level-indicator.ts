@@ -1,7 +1,7 @@
 import { loadImages } from "../common";
-import { drawImageOnCanvas } from "../common/utils";
+import { drawImageOnCanvas } from "@common/index";
 import { EventManager } from "../events/EventManager";
-import { LevelIndicatorsInterface } from "../interfaces/levelIndicatorsInterface";
+import { LevelIndicatorsInterface } from "@interfaces/levelIndicatorsInterface";
 
 export class LevelIndicators
   extends EventManager

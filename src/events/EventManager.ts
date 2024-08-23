@@ -1,4 +1,4 @@
-import { LOADPUZZLE, STONEDROP } from "../common/event-names";
+import { LOADPUZZLE, STONEDROP } from "@common/event-names";
 
 export class EventManager {
     private stoneDropCallbackHandler: Function;

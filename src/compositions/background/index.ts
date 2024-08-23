@@ -1,5 +1,5 @@
-import { syncLoadingImages } from "../../common/";
-import { drawImageOnCanvas } from "../../common/utils";
+import { syncLoadingImages } from "@common/index";
+import { drawImageOnCanvas } from "@common/index";
 import {
   DEFAULT_BG_GROUP_IMGS,
   AUTUMN_BG_GROUP_IMGS,

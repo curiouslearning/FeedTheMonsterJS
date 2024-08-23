@@ -1,11 +1,11 @@
-import CancelButton from "../components/buttons/cancel-button";
-import CloseButton from "../components/buttons/close-button";
-import RetryButton from "../components/buttons/retry-button";
-import { CLICK } from "../common/event-names";
+import CancelButton from "@components/buttons/cancel-button";
+import CloseButton from "@components/buttons/close-button";
+import RetryButton from "@components/buttons/retry-button";
+import { CLICK } from "@common/event-names";
 import { AudioPlayer } from "./audio-player";
 import AreYouSurePopUp from "./feedback-particle-effect/sure-popup";
 import { lang } from "../../global-variables";
-import { drawImageOnCanvas, loadImages } from "../common/utils";
+import { drawImageOnCanvas, loadImages } from "@common/index";
 
 export default class PausePopUp {
   public canvas: HTMLCanvasElement;
@@ -49,11 +49,24 @@ export default class PausePopUp {
   }
 
   private initializeButtons() {
-    const buttonYPosition = this.canvas.height * 0.2 + this.canvas.width * 0.4 - (this.canvas.width * 0.19) / 2;
-    
+    const buttonYPosition =
+      this.canvas.height * 0.2 +
+      this.canvas.width * 0.4 -
+      (this.canvas.width * 0.19) / 2;
+
     this.cancelButton = new CancelButton(this.context, this.canvas);
-    this.retryButton = new RetryButton(this.context, this.canvas, this.canvas.width * 0.55, buttonYPosition);
-    this.closeButton = new CloseButton(this.context, this.canvas, this.canvas.width * 0.25, buttonYPosition);
+    this.retryButton = new RetryButton(
+      this.context,
+      this.canvas,
+      this.canvas.width * 0.55,
+      buttonYPosition
+    );
+    this.closeButton = new CloseButton(
+      this.context,
+      this.canvas,
+      this.canvas.width * 0.25,
+      buttonYPosition
+    );
   }
 
   private initializePopups() {

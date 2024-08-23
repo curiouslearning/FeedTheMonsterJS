@@ -1,7 +1,7 @@
 import { Monster, Background, AudioPlayer } from "../components";
-import CloseButton from "../components/buttons/close-button";
-import NextButton from "../components/buttons/next-button";
-import RetryButton from "../components/buttons/retry-button";
+import CloseButton from "@components/buttons/close-button";
+import NextButton from "@components/buttons/next-button";
+import RetryButton from "@components/buttons/retry-button";
 
 export interface LevelEndSceneInterface {
   canvas: HTMLCanvasElement;

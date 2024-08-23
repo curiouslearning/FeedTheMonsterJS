@@ -1,6 +1,6 @@
 import { StoneConfig } from "../common";
 import { Monster, Background, AudioPlayer } from "../components";
-import PlayButton from "../components/buttons/play-button";
+import PlayButton from "@components/buttons/play-button";
 
 export interface StartSceneInterface {
   canvas: HTMLCanvasElement;

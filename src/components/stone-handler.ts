@@ -3,7 +3,7 @@ import { EventManager } from "../events/EventManager";
 import { Tutorial } from "./tutorial";
 import { AudioPlayer } from "./audio-player";
 import { TimerTicking } from "./timer-ticking";
-import { GameScore } from "../data/game-score";
+import { GameScore } from "@data/game-score";
 import {
   AUDIO_PATH_EATS,
   AUDIO_PATH_MONSTER_SPIT,
@@ -13,7 +13,7 @@ import {
   AUDIO_PATH_CHEERING_FUNC,
   ASSETS_PATH_STONE_PINK_BG,
 } from "../constants";
-import { StoneHandlerInterface } from "../interfaces/StoneHandlerInterface";
+import { StoneHandlerInterface } from "@interfaces/StoneHandlerInterface";
 
 export default class StoneHandler
   extends EventManager

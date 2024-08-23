@@ -1,8 +1,13 @@
-export { StoneConfig } from './stone-config';
+export { StoneConfig } from "./stone-config";
 export {
-  Utils,loadImages,
-  syncLoadingImages
-} from './utils';
+  Utils,
+  loadImages,
+  syncLoadingImages,
+  createRippleEffect,
+  disposeEventListeners,
+  drawImageOnCanvas,
+  isClickInsideButton,
+} from "./utils";
 export {
   CLICK,
   LOADPUZZLE,

@@ -1,14 +1,10 @@
 import { Debugger, font, lang, pseudoId } from "../../global-variables";
-import { loadImages } from "../common/";
-import { LevelConfig } from "../common/level-config";
-import {
-  disposeEventListeners,
-  drawImageOnCanvas,
-  Utils,
-} from "../common/utils";
-import { AudioPlayer } from "../components/audio-player";
-import { getData } from "../data/api-data";
-import { GameScore } from "../data/game-score";
+import { loadImages } from "@common/index";
+import { LevelConfig } from "@common/level-config";
+import { drawImageOnCanvas } from "@common/index";
+import { AudioPlayer } from "@components/audio-player";
+import { getData } from "@data/api-data";
+import { GameScore } from "@data/game-score";
 import { SelectedLevel } from "../Firebase/firebase-event-interface";
 import { FirebaseIntegration } from "../Firebase/firebase-integration";
 import {
@@ -16,7 +12,7 @@ import {
   levelSelectBgDrawing,
 } from "../compositions/background";
 import { PreviousPlayedLevel, LEVEL_SELECTION_BACKGROUND } from "../constants";
-import { ILevelSelectionScreen } from "../interfaces/levelSelectionScreenInterface";
+import { ILevelSelectionScreen } from "@interfaces/levelSelectionScreenInterface";
 export class LevelSelectionScreen implements ILevelSelectionScreen {
   private canvas: HTMLCanvasElement;
   private data: any;
@@ -424,7 +420,12 @@ export class LevelSelectionScreen implements ILevelSelectionScreen {
     }
   }
 
-  private drawStar(s: any, canvas: any, starCount: number, context?: CanvasRenderingContext2D) {
+  private drawStar(
+    s: any,
+    canvas: any,
+    starCount: number,
+    context?: CanvasRenderingContext2D
+  ) {
     let imageSize = canvas.height / 5;
     const positions = [
       [0, -imageSize * 0.01],

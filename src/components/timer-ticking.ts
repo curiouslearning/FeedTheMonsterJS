@@ -1,7 +1,7 @@
-import { loadImages } from "../common/";
-import { drawImageOnCanvas } from "../common/utils";
+import { loadImages } from "@common/index";
+import { drawImageOnCanvas } from "@common/index";
 import { EventManager } from "../events/EventManager";
-import { TimerTickingInterface } from "../interfaces/timeTickingInterface";
+import { TimerTickingInterface } from "@interfaces/timeTickingInterface";
 import { AudioPlayer } from "./audio-player";
 
 export class TimerTicking

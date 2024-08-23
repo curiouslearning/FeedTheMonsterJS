@@ -1,20 +1,20 @@
-import { loadImages } from "../common/";
+import { loadImages } from "@common/index";
 import { FirebaseUserClicked, PWAInstallStatus } from "../constants/";
-import { LevelIndicators } from "../components/level-indicator";
-import { PromptText } from "../components/prompt-text";
-// import { Tutorial } from "../components/tutorial";
-import { TimerTicking } from "../components/timer-ticking";
-// import PausePopUp from "../components/pause-popup"
-import StoneHandler from "../components/stone-handler";
-import { StoneConfig } from "../common/stone-config";
-import { Monster } from "../components/monster";
-import { DataModal } from "../data/data-modal";
+import { LevelIndicators } from "@components/level-indicator";
+import { PromptText } from "@components/prompt-text";
+// import { Tutorial } from "@components/tutorial";
+import { TimerTicking } from "@components/timer-ticking";
+// import PausePopUp from "@components/pause-popup"
+import StoneHandler from "@components/stone-handler";
+import { StoneConfig } from "@common/stone-config";
+import { Monster } from "@components/monster";
+import { DataModal } from "@data/data-modal";
 // import { CanvasStack } from "../../utility/canvas-stack";
 import { LevelSelectionScreen } from "../scenes/level-selection-scene";
 import { Debugger, lang } from "../../global-variables";
-import { Tutorial } from "../components/tutorial";
-import PlayButton from "../components/buttons/play-button";
-import { drawImageOnCanvas } from "../common/utils";
+import { Tutorial } from "@components/tutorial";
+import PlayButton from "@components/buttons/play-button";
+import { drawImageOnCanvas } from "@common/index";
 // var this: any;
 let lastTime = 0;
 let pwa_install_status: any;

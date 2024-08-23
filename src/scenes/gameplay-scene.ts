@@ -10,7 +10,7 @@ import {
   Background,
   FeedbackTextEffects,
   AudioPlayer,
-} from "../components/";
+} from "@components/index";
 import {
   loadImages,
   StoneConfig,
@@ -24,9 +24,9 @@ import {
   TOUCHMOVE,
   TOUCHSTART,
   VISIBILITY_CHANGE,
-} from "../common/";
+} from "@common/index";
 import { Debugger, lang, pseudoId } from "../../global-variables";
-import { GameScore } from "../data/game-score";
+import { GameScore } from "@data/game-score";
 import {
   LevelCompletedEvent,
   PuzzleCompletedEvent,
@@ -50,8 +50,8 @@ import {
   autumBgDrawing,
   winterBgDrawing,
 } from "../compositions/background";
-import { disposeEventListeners } from "../common/utils";
-import { GameplaySceneInterface } from "../interfaces/gameplaySceneInterface";
+import { disposeEventListeners } from "@common/index";
+import { GameplaySceneInterface } from "@interfaces/gameplaySceneInterface";
 
 export class GameplayScene implements GameplaySceneInterface {
   public width: number;

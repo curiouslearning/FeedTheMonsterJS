@@ -1,4 +1,4 @@
-import { TextParticle } from "../components/feedback-particle-effect/text-particle";
+import { TextParticle } from "@components/feedback-particle-effect/text-particle";
 
 export interface FeedbackTextEffectsInterface {
   context: CanvasRenderingContext2D;

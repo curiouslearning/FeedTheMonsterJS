@@ -1,7 +1,7 @@
 import { loadImages } from "../common";
 import { EventManager } from "../events/EventManager";
-import { drawImageOnCanvas } from "../common/utils";
-import { MonsterInterface } from "../interfaces/monsterInterface";
+import { drawImageOnCanvas } from "@common/index";
+import { MonsterInterface } from "@interfaces/monsterInterface";
 
 export class Monster extends EventManager implements MonsterInterface {
   public zindex: number;

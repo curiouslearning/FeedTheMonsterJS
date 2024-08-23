@@ -1,5 +1,5 @@
 import { loadImages } from "../common";
-import { drawImageOnCanvas } from "../common/utils";
+import { drawImageOnCanvas } from "@common/index";
 import {
   DEFAULT_BACKGROUND_1,
   HILL_IMAGE_1,
@@ -16,7 +16,7 @@ import {
   WINTER_FENCE_1,
   WINTER_PILLAR_1,
 } from "../constants";
-import { BackgroundInterface } from "../interfaces/backgroundInterface";
+import { BackgroundInterface } from "@interfaces/backgroundInterface";
 
 // to do need to optimize more
 var images = {
