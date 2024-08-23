@@ -13,6 +13,7 @@ SessionEnd,
 DownloadCompleted
 } from "./src/Firebase/firebase-event-interface";
 import { VISIBILITY_CHANGE } from "./src/common/event-names"; 
+import { URL } from "./src/data/api-data";
 declare const window: any;
 
 class App {
@@ -27,6 +28,7 @@ class App {
   private loadingElement: HTMLElement;
   private majVersion:string;
   private minVersion:string;
+  private dataModal :DataModal;
   private startSessionTime:number;
   firebaseIntegration: FirebaseIntegration;
   constructor(lang: string) {
@@ -52,21 +54,21 @@ class App {
     await this.loadAndCacheFont(font, `./assets/fonts/${font}.ttf`);
     await this.preloadGameAudios();
     this.handleLoadingScreen();
-    this.registerWorkbox();
     this.setupCanvas();
     const data = await getData();
     this.majVersion = data.majversion;
     this.minVersion = data.minversion;
-    const dataModal = this.createDataModal(data);
+    this.dataModal = this.createDataModal(data);
     this.globalInitialization(data);
     this.logSessionStartFirebaseEvent();
     window.addEventListener("resize", async () => {
-      this.handleResize(dataModal);
+      this.handleResize(this.dataModal);
     });
 
     if (this.is_cached.has(this.lang)) {
-      this.handleCachedScenario(dataModal);
+      this.handleCachedScenario(this.dataModal);
     }
+    this.registerWorkbox();
   }
 
   private logSessionStartFirebaseEvent() {
@@ -146,8 +148,45 @@ class App {
         const wb = new Workbox("./sw.js", {});
         await wb.register();
         await navigator.serviceWorker.ready;
+       
         if (!this.is_cached.has(this.lang)) {
           this.channel.postMessage({ command: "Cache", data: this.lang });
+        }else{
+          fetch(URL + '?cache-bust=' + new Date().getTime(), {
+            method: 'GET',
+            headers: {
+              'Content-Type': 'application/json',
+              'Cache-Control': 'no-store',
+            },
+            cache: 'no-store',
+          }).then(async (response) => {
+            if (!response.ok) {
+              console.error('Failed to fetch the content file from the server!');
+              return;
+            }
+            const newContentFileData = await response.json();
+            console.log(newContentFileData);
+            const aheadContentVersion = newContentFileData['majversion'] + '.' + newContentFileData['minversion'];
+            const cachedVersion = localStorage.getItem("version"+lang.toLowerCase());
+            console.log('No Cache Content version: ' + aheadContentVersion);
+            console.log("cached version :"+ cachedVersion);
+            // We need to check here for the content version updates
+            // If there's a new content version, we need to remove the cached content and reload
+            // We are comparing here the contentVersion with the aheadContentVersion
+            if (aheadContentVersion && cachedVersion != aheadContentVersion) {
+              console.log('Content version mismatch! Reloading...');
+              var cachedItem = JSON.parse(localStorage.getItem('is_cached'));
+              console.log("current lang  "+ lang);
+              var newCachedItem = cachedItem.filter((e)=> !(e.toString().includes(lang)));
+              localStorage.setItem(IsCached, JSON.stringify(newCachedItem));
+              localStorage.removeItem('version'+lang.toLowerCase());
+              // Clear the cache for tht particular content
+              caches.delete(lang);
+              this.handleUpdateFoundMessage();
+            }
+          }).catch((error) => {
+            console.error('Error fetching the content file: ' + error);
+          });
         }
         navigator.serviceWorker.addEventListener("message", this.handleServiceWorkerMessage);
       } catch (error) {
@@ -241,8 +280,11 @@ class App {
           json_version_number: !!this.majVersion && !!this.minVersion ? this.majVersion.toString() + "." + this.minVersion.toString() : "",
         };
         this.firebaseIntegration.sendDownloadCompletedEvent(download_completed);
-        localStorage.setItem("version" + this.lang, data.version);
-        window.location.reload();
+        localStorage.setItem("version" + this.lang, this.majVersion+"."+this.minVersion);
+        // window.location.reload();
+        this.loadingElement.style.display="none";
+        this.handleResize(this.dataModal);
+        console.log("hide progress");
       }
       this.progressBar.style.width = `${data.data}%`;
     }
