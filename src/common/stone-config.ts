@@ -79,7 +79,11 @@ export class StoneConfig {
     }
 
     draw(deltaTime: number) {
-
+        // Apply shadow properties
+        this.context.shadowColor = 'rgba(255, 255, 255, 0.8)'; // Color of the shadow
+        this.context.shadowBlur = 6; // Blur level of the shadow
+        this.context.shadowOffsetX = 2; // Horizontal shadow offset
+        this.context.shadowOffsetY = 2; // Vertical shadow offset
         this.context.drawImage(
             this.img,
             this.getX() - this.imageCenterOffsetX,
@@ -90,7 +94,13 @@ export class StoneConfig {
         this.context.fillStyle = "white";
         this.context.font = this.textFontSize + `px ${font}, monospace`;
         this.context.textAlign = "center";
+         // Set shadow properties
+         this.context.shadowOffsetX = 0; // Move shadow to the right by 10 pixels
+         this.context.shadowOffsetY = 0; // Move shadow down by 10 pixels
+         this.context.shadowBlur = 0;    // Blur the shadow by 15 pixels
+         this.context.shadowColor = 'transparent '; // Semi-transparent white shadow
         this.context.fillText(this.text, this.getX(), this.getY());
+       
         if (this.frame < 100) {
             this.frame = this.frame + 1;
         }
