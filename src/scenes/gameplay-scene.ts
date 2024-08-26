@@ -311,9 +311,9 @@ export class GameplayScene {
       this.monster.changeToDragAnimation();
       this.pickedStone.x = x;
       this.pickedStone.y = y;
-      this.trailParticles?.addTrailParticles(x, y);
+      this.trailParticles?.addTrailParticlesOnMove(x, y);
     } else {
-      this.clickTrailToggle && this.trailParticles?.addTrailParticles(event.clientX, event.clientY);
+      this.clickTrailToggle && this.trailParticles?.addTrailParticlesOnMove(event.clientX, event.clientY);
     }
   };
 
@@ -348,7 +348,7 @@ export class GameplayScene {
   handleTouchMove = (event) => {
     const touch = event.touches[0];
     this.handleMouseMove({ clientX: touch.clientX, clientY: touch.clientY });
-    this.trailParticles?.addTrailParticles(touch.clientX, touch.clientY);
+    this.trailParticles?.addTrailParticlesOnMove(touch.clientX, touch.clientY);
   };
 
   handleTouchEnd = (event) => {
@@ -388,11 +388,8 @@ export class GameplayScene {
       this.pausePopup.draw();
     }
     if (!this.isPauseButtonClicked && this.isGameStarted) {
-      
       this.stoneHandler.draw(deltaTime);
     }
-
-    
   }
 
   addEventListeners() {

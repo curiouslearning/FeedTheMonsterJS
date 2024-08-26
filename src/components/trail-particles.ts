@@ -1,6 +1,6 @@
 export default class TrailEffect {
-    canvas: any;
-    ctx: any
+    canvas: HTMLCanvasElement;
+    ctx: CanvasRenderingContext2D
     particles: any;
     mouse: {
         x: undefined | number,
@@ -17,11 +17,11 @@ export default class TrailEffect {
         };
     }
 
-     init() {
+    init() {
         this.draw();
     }
 
-     draw() {
+    draw() {
         this.drawTrail();
 
         let temp = [];
@@ -40,14 +40,11 @@ export default class TrailEffect {
         }
     }
 
-    addTrailParticles(x, y) {
+    addTrailParticlesOnMove(x, y) {
         this.mouse.x = x;
         this.mouse.y = y;
         this.particles.push(
-            new Particles(
-                this.ctx,
-                this.mouse
-            )
+            new Particles( this.ctx, this.mouse)
         );
     }
 
@@ -55,26 +52,33 @@ export default class TrailEffect {
         this.mouse.x = undefined;
         this.mouse.y = undefined;
     }
-}
+};
 
 class Particles {
-    ctx: any;
-    start: any;
-    end: any
-    size: any
-    style: any
-    time: any
-    ttl: any
-    x: any
-    y: any
-    rgb: any
+    ctx: CanvasRenderingContext2D;
+    start: {
+        x: number,
+        y: number,
+        size: number
+    };
+    end: {
+        x: number,
+        y: number,
+    };
+    size: number;
+    style: string;
+    time: number;
+    ttl: number;
+    x: number;
+    y: number;
+    rgb: string[];
 
     constructor(ctx, mouse) {
         this.ctx = ctx;
         this.rgb = [
             "rgb(255,255,255,255)",
-           "rgb(243,208,144,255)",
-           "rgb(229,170,100,255)"
+            "rgb(243,208,144,255)",
+            "rgb(229,170,100,255)"
         ];
         this.start = {
             x: mouse.x + this.getRandomInt(-5, 5),
@@ -89,12 +93,11 @@ class Particles {
         this.y = this.start.y;
         this.size = this.start.size;
         this.style = this.rgb[this.getRandomInt(0, this.rgb.length - 1)];
-        //this.style = "rgb(243,208,144,255)";
         this.time = 0;
         this.ttl = 45;
     }
 
-    draw() {
+    public draw() {
         this.ctx.fillStyle = this.style;
         this.ctx.beginPath();
         this.ctx.arc(this.x, this.y, this.size, 0, Math.PI * 1);
@@ -102,7 +105,7 @@ class Particles {
         this.ctx.fill();
     }
 
-    update() {
+    public update() {
         if (this.time <= this.ttl) {
             const progress = 1 - (this.ttl - this.time) / this.ttl;
             this.size = this.start.size * (1 - this.easeOutQuart(progress));
