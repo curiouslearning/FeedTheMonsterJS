@@ -72,6 +72,10 @@ class Particles {
     x: number;
     y: number;
     rgb: string[];
+    hyp: number;
+    starX: number;
+    starY: number;
+    starAngle: number;
 
     constructor(ctx, mouse) {
         this.ctx = ctx;
@@ -95,14 +99,10 @@ class Particles {
         this.style = this.rgb[this.getRandomInt(0, this.rgb.length - 1)];
         this.time = 0;
         this.ttl = 45;
-    }
-
-    public draw() {
-        this.ctx.fillStyle = this.style;
-        this.ctx.beginPath();
-        this.ctx.arc(this.x, this.y, this.size, 0, Math.PI * 1);
-        this.ctx.closePath();
-        this.ctx.fill();
+        this.hyp = 0;
+        this.starX = 0;
+        this.starY = 0;
+        this.starAngle = 0;
     }
 
     public update() {
@@ -115,6 +115,30 @@ class Particles {
         this.time++;
     }
 
+    public draw() {
+        this.circleParticle(); //default particle shape.
+        //this.starParticle(); //alt particle.
+    }
+
+    private circleParticle() {
+        this.ctx.fillStyle = this.style;
+        this.ctx.beginPath();
+        this.ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+        this.ctx.closePath();
+        this.ctx.fill();
+    }
+
+    private starParticle() {
+        this.ctx.fillStyle = this.style;
+        this.ctx.beginPath();
+        this.ctx.moveTo(this.x, this.y - this.size); // Top point
+        this.ctx.lineTo(this.x + this.size, this.y); // Right point
+        this.ctx.lineTo(this.x, this.y + this.size); // Bottom point
+        this.ctx.lineTo(this.x - this.size, this.y); // Left point
+        this.ctx.closePath();
+        this.ctx.fill();
+    }
+
     private getRandomInt(min, max) {
         return Math.round(Math.random() * (max - min)) + min;
     }
@@ -122,4 +146,5 @@ class Particles {
     private easeOutQuart(x) {
         return 1 - Math.pow(1 - x, 4);
     }
-}
+
+};
