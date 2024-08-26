@@ -5,6 +5,7 @@ import { lang, pseudoId } from "../../../global-variables";
 import { getData } from "@data/api-data";
 import { drawImageOnCanvas } from "@common/index";
 import {
+  ButtonImage,
   ButtonInterface,
   Canvas,
   ImagesLoaded,
@@ -17,7 +18,7 @@ export default class PlayButton implements ButtonInterface {
   public posY: PosY;
   public context: CanvasRenderingContext2D;
   public canvas: Canvas;
-  public images: { pause_button_image: string };
+  public button_image: ButtonImage;
   public loadedImages: LoadedImages;
   public imagesLoaded: ImagesLoaded = false;
   private majVersion: string;
@@ -35,14 +36,16 @@ export default class PlayButton implements ButtonInterface {
     this.canvas = canvas;
     this.firebaseIntegration = new FirebaseIntegration();
     this.init();
-    this.images = {
-      pause_button_image: "./assets/images/Play_button.png",
-    };
 
-    loadImages(this.images, (images) => {
-      this.loadedImages = Object.assign({}, images);
-      this.imagesLoaded = true;
-    });
+    loadImages(
+      {
+        button_image: "./assets/images/Play_button.png",
+      },
+      (images) => {
+        this.button_image = images["button_image"];
+        this.imagesLoaded = true;
+      }
+    );
   }
   private async init() {
     const data = await getData();
@@ -53,7 +56,7 @@ export default class PlayButton implements ButtonInterface {
     if (this.imagesLoaded) {
       drawImageOnCanvas(
         this.context,
-        this.loadedImages.pause_button_image,
+        this.button_image,
         this.posX,
         this.posY,
         this.canvas.width / 3,
