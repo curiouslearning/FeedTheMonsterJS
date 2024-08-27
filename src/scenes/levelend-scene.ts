@@ -1,4 +1,4 @@
-import { loadImages } from "@common/index";
+import { loadImages } from "@common";
 import { CLICK } from "@common/event-names";
 import { AudioPlayer } from "@components/audio-player";
 import CloseButton from "@components/buttons/close-button";
@@ -9,8 +9,8 @@ import {
   BACKGROUND_ASSET_LIST,
   createBackground,
   loadDynamicBgAssets,
-} from "../compositions/background";
-import { drawImageOnCanvas } from "@common/index";
+} from "@compositions/background";
+import { drawImageOnCanvas } from "@common";
 import { LevelEndSceneInterface } from "@interfaces/levelEndSceneInterface";
 
 export class LevelEndScene implements LevelEndSceneInterface {

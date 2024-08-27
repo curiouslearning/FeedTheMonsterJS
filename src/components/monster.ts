@@ -1,6 +1,6 @@
 import { loadImages } from "../common";
 import { EventManager } from "../events/EventManager";
-import { drawImageOnCanvas } from "@common/index";
+import { drawImageOnCanvas } from "@common";
 import { MonsterInterface } from "@interfaces/monsterInterface";
 
 export class Monster extends EventManager implements MonsterInterface {

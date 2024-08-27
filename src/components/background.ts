@@ -1,5 +1,5 @@
 import { loadImages } from "../common";
-import { drawImageOnCanvas } from "@common/index";
+import { drawImageOnCanvas } from "@common";
 import {
   DEFAULT_BACKGROUND_1,
   HILL_IMAGE_1,

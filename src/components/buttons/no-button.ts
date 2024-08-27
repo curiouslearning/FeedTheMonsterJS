@@ -2,7 +2,7 @@ import {
   drawImageOnCanvas,
   isClickInsideButton,
   loadImages,
-} from "@common/index";
+} from "@common";
 import {
   ButtonImage,
   ButtonInterface,

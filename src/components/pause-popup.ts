@@ -5,7 +5,7 @@ import { CLICK } from "@common/event-names";
 import { AudioPlayer } from "./audio-player";
 import AreYouSurePopUp from "./feedback-particle-effect/sure-popup";
 import { lang } from "../../global-variables";
-import { drawImageOnCanvas, loadImages } from "@common/index";
+import { drawImageOnCanvas, loadImages } from "@common";
 
 export default class PausePopUp {
   public canvas: HTMLCanvasElement;

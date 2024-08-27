@@ -1,5 +1,5 @@
 import { StoneConfig } from "../common";
-import { AudioPlayer, TimerTicking, Tutorial } from "../components";
+import { AudioPlayer, TimerTicking, Tutorial } from @components";
 
 export interface StoneHandlerInterface {
   context: CanvasRenderingContext2D;

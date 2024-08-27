@@ -1,4 +1,4 @@
-import { AudioPlayer } from "../components";
+import { AudioPlayer } from @components";
 
 export interface TimerTickingInterface {
   width: number;

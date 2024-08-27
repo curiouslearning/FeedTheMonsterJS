@@ -1,5 +1,5 @@
-import { loadImages } from "@common/index";
-import { drawImageOnCanvas } from "@common/index";
+import { loadImages } from "@common";
+import { drawImageOnCanvas } from "@common";
 import { EventManager } from "../events/EventManager";
 import { TimerTickingInterface } from "@interfaces/timeTickingInterface";
 import { AudioPlayer } from "./audio-player";

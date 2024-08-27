@@ -10,7 +10,7 @@ import { FirebaseIntegration } from "../Firebase/firebase-integration";
 import {
   createBackground,
   levelSelectBgDrawing,
-} from "../compositions/background";
+} from "@compositions/background";
 import { PreviousPlayedLevel, LEVEL_SELECTION_BACKGROUND } from "../constants";
 import { ILevelSelectionScreen } from "@interfaces/levelSelectionScreenInterface";
 export class LevelSelectionScreen implements ILevelSelectionScreen {
@@ -233,59 +233,65 @@ export class LevelSelectionScreen implements ILevelSelectionScreen {
     this.yDown = null;
   };
 
-  private handleMouseDown = (event) => {
-    // return function (event) {
+  private handleMouseDown = (event: MouseEvent): void => {
     event.preventDefault();
-    let rect = document.getElementById("canvas").getBoundingClientRect();
+
+    const rect = this.canvas.getBoundingClientRect();
     const x = event.clientX - rect.left;
     const y = event.clientY - rect.top;
 
-    // right button
-    if (
-      x >= this.canvas.width * 0.7 &&
-      x < this.canvas.width * 0.7 + this.canvas.height / 10 &&
-      y > this.canvas.height / 1.3 &&
-      y < this.canvas.height / 1.3 + this.canvas.height / 10
-    ) {
+    const buttonWidth = this.canvas.height / 10;
+    const buttonHeight = this.canvas.height / 10;
+    const rightButtonX = this.canvas.width * 0.7;
+    const rightButtonY = this.canvas.height / 1.3;
+    const leftButtonX = this.canvas.width / 10;
+    const leftButtonY = this.canvas.height / 1.3;
+
+    // Function to handle button clicks
+    const handleButtonClick = (newPageIndex: number) => {
       this.audioPlayer.playButtonClickSound();
-      if (this.levelSelectionPageIndex != this.levelsSectionCount * 10 - 10) {
-        this.levelSelectionPageIndex = this.levelSelectionPageIndex + 10;
-        this.downButton(this.levelSelectionPageIndex);
+      this.levelSelectionPageIndex = newPageIndex;
+      this.downButton(newPageIndex);
+    };
+
+    // Right button
+    if (
+      x >= rightButtonX &&
+      x < rightButtonX + buttonWidth &&
+      y > rightButtonY &&
+      y < rightButtonY + buttonHeight
+    ) {
+      if (this.levelSelectionPageIndex < this.levelsSectionCount * 10 - 10) {
+        handleButtonClick(this.levelSelectionPageIndex + 10);
       }
     }
 
-    // left button
+    // Left button
     if (
-      x >= this.canvas.width / 10 &&
-      x < this.canvas.width / 10 + this.canvas.height / 10 &&
-      y > this.canvas.height / 1.3 &&
-      y < this.canvas.height / 1.3 + this.canvas.height / 10
+      x >= leftButtonX &&
+      x < leftButtonX + buttonWidth &&
+      y > leftButtonY &&
+      y < leftButtonY + buttonHeight
     ) {
-      this.audioPlayer.playButtonClickSound();
-      if (this.levelSelectionPageIndex != 0) {
-        this.levelSelectionPageIndex = this.levelSelectionPageIndex - 10;
+      if (this.levelSelectionPageIndex > 0) {
+        handleButtonClick(this.levelSelectionPageIndex - 10);
       }
-      this.downButton(this.levelSelectionPageIndex);
     }
+
+    // Handle level selection
+    const radius = 45;
+    const canvasOffset = this.canvas.height / 20;
     for (let s of this.levels) {
-      if (
-        Math.sqrt(
-          (x - s.x - this.canvas.height / 20) *
-            (x - s.x - this.canvas.height / 20) +
-            (y - s.y - this.canvas.height / 20) *
-              (y - s.y - this.canvas.height / 20)
-        ) < 45
-      ) {
-        if (Debugger.DebugMode) {
+      const dist = Math.sqrt(
+        Math.pow(x - s.x - canvasOffset, 2) +
+          Math.pow(y - s.y - canvasOffset, 2)
+      );
+
+      if (dist < radius) {
+        const levelIndex = s.index + this.levelSelectionPageIndex - 1;
+        if (Debugger.DebugMode || levelIndex <= this.unlockLevelIndex + 1) {
           this.audioPlayer.playButtonClickSound();
-          this.levelNumber = s.index + this.levelSelectionPageIndex - 1;
-          this.startGame(this.levelNumber);
-        } else if (
-          s.index + this.levelSelectionPageIndex - 1 <=
-          this.unlockLevelIndex + 1
-        ) {
-          this.audioPlayer.playButtonClickSound();
-          this.levelNumber = s.index + this.levelSelectionPageIndex - 1;
+          this.levelNumber = levelIndex;
           this.startGame(this.levelNumber);
         }
       }
@@ -309,40 +315,51 @@ export class LevelSelectionScreen implements ILevelSelectionScreen {
     );
   }
 
-  private drawLevel(s: any, canvas: { height: number }) {
-    let imageSize = canvas.height / 5;
-    let textFontSize = imageSize / 6;
-    const specialLevels = [5, 13, 20, 30, 42];
+  private drawLevel(
+    s: { x: number; y: number; index: number },
+    canvas: { height: number }
+  ): void {
+    const imageSize = canvas.height / 5;
+    const textFontSize = imageSize / 6;
+    const specialLevels = new Set([5, 13, 20, 30, 42]);
     const levelNumber = s.index + this.levelSelectionPageIndex;
 
-    if (levelNumber <= this.data.levels.length) {
-      const isSpecialLevel = specialLevels.includes(levelNumber);
-      this.drawImage(
-        isSpecialLevel ? "mapIconSpecial" : "mapIcon",
-        s.x,
-        s.y,
-        isSpecialLevel ? imageSize * 0.9 : imageSize,
-        isSpecialLevel ? imageSize * 0.9 : imageSize
-      );
+    if (levelNumber > this.data.levels.length) return;
 
-      this.context.fillStyle = "white";
-      this.context.font = `${textFontSize}px ${font}, monospace`;
-      this.context.textAlign = "center";
+    const isSpecialLevel = specialLevels.has(levelNumber);
+    const adjustedImageSize = isSpecialLevel ? imageSize * 0.9 : imageSize;
+    const font = "monospace";
+
+    // Draw the level icon
+    this.drawImage(
+      isSpecialLevel ? "mapIconSpecial" : "mapIcon",
+      s.x,
+      s.y,
+      adjustedImageSize,
+      adjustedImageSize
+    );
+
+    // Set up text styling
+    this.context.fillStyle = "white";
+    this.context.textAlign = "center";
+
+    // Draw the level number
+    this.context.font = `${textFontSize}px ${font}`;
+    this.context.fillText(
+      levelNumber.toString(),
+      s.x + imageSize / 3.5,
+      s.y + imageSize / 3
+    );
+
+    // Draw level type if in debug mode
+    if (Debugger.DebugMode) {
+      const levelTypeFontSize = textFontSize - imageSize / 30;
+      this.context.font = `${levelTypeFontSize}px ${font}`;
       this.context.fillText(
-        levelNumber,
+        this.data.levels[levelNumber - 1].levelMeta.levelType,
         s.x + imageSize / 3.5,
-        s.y + imageSize / 3
+        s.y + imageSize / 1.3
       );
-      this.context.font = `${
-        textFontSize - imageSize / 30
-      }px ${font}, monospace`;
-      if (Debugger.DebugMode) {
-        this.context.fillText(
-          this.data.levels[levelNumber - 1].levelMeta.levelType,
-          s.x + imageSize / 3.5,
-          s.y + imageSize / 1.3
-        );
-      }
     }
   }
 
@@ -452,6 +469,7 @@ export class LevelSelectionScreen implements ILevelSelectionScreen {
     this.logSelectedLevelEvent();
     this.callBack(gamePlayData, "LevelSelection");
   }
+
   public logSelectedLevelEvent() {
     const selectedLeveltData: SelectedLevel = {
       cr_user_id: pseudoId,
@@ -466,6 +484,7 @@ export class LevelSelectionScreen implements ILevelSelectionScreen {
     };
     this.firebaseIntegration.sendSelectedLevelEvent(selectedLeveltData);
   }
+  
   public drawLevelSelection() {
     if (this.imagesLoaded) {
       this.background?.draw();

@@ -1,4 +1,4 @@
-import { loadImages } from "@common/index";
+import { loadImages } from "@common";
 import { FirebaseUserClicked, PWAInstallStatus } from "../constants/";
 import { LevelIndicators } from "@components/level-indicator";
 import { PromptText } from "@components/prompt-text";
@@ -14,7 +14,7 @@ import { LevelSelectionScreen } from "../scenes/level-selection-scene";
 import { Debugger, lang } from "../../global-variables";
 import { Tutorial } from "@components/tutorial";
 import PlayButton from "@components/buttons/play-button";
-import { drawImageOnCanvas } from "@common/index";
+import { drawImageOnCanvas } from "@common";
 // var this: any;
 let lastTime = 0;
 let pwa_install_status: any;

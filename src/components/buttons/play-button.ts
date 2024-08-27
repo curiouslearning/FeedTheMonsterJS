@@ -3,7 +3,7 @@ import { loadImages } from "../../common";
 import { FirebaseIntegration } from "../../Firebase/firebase-integration";
 import { lang, pseudoId } from "../../../global-variables";
 import { getData } from "@data/api-data";
-import { drawImageOnCanvas } from "@common/index";
+import { drawImageOnCanvas } from "@common";
 import {
   ButtonImage,
   ButtonInterface,

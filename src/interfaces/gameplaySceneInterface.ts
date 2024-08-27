@@ -11,7 +11,7 @@ import {
   StoneHandler,
   TimerTicking,
   Tutorial,
-} from "../components";
+} from @components";
 import { FirebaseIntegration } from "../Firebase/firebase-integration";
 
 export interface GameplaySceneInterface {

@@ -4,9 +4,9 @@ import { DataModal } from "@data/data-modal";
 import { Debugger, font, lang } from "../../global-variables";
 import { AudioPlayer } from "@components/audio-player";
 import { FirebaseIntegration } from "../Firebase/firebase-integration";
-import { Utils } from "@common/index";
+import { Utils } from "@common";
 import PlayButton from "@components/buttons/play-button";
-import { createBackground, defaultBgDrawing } from "../compositions/background";
+import { createBackground, defaultBgDrawing } from "@compositions/background";
 import {
   FirebaseUserClicked,
   PWAInstallStatus,

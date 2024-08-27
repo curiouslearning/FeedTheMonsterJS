@@ -1,5 +1,5 @@
 import { loadImages } from "../common";
-import { drawImageOnCanvas } from "@common/index";
+import { drawImageOnCanvas } from "@common";
 import { EventManager } from "../events/EventManager";
 import { LevelIndicatorsInterface } from "@interfaces/levelIndicatorsInterface";
 

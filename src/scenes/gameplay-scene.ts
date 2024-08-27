@@ -10,7 +10,7 @@ import {
   Background,
   FeedbackTextEffects,
   AudioPlayer,
-} from "@components/index";
+} from "@components";
 import {
   loadImages,
   StoneConfig,
@@ -24,7 +24,7 @@ import {
   TOUCHMOVE,
   TOUCHSTART,
   VISIBILITY_CHANGE,
-} from "@common/index";
+} from "@common";
 import { Debugger, lang, pseudoId } from "../../global-variables";
 import { GameScore } from "@data/game-score";
 import {
@@ -46,11 +46,8 @@ import {
   BACKGROUND_ASSET_LIST,
   createBackground,
   loadDynamicBgAssets,
-  defaultBgDrawing,
-  autumBgDrawing,
-  winterBgDrawing,
-} from "../compositions/background";
-import { disposeEventListeners } from "@common/index";
+} from "@compositions/background";
+import { disposeEventListeners } from "@common";
 import { GameplaySceneInterface } from "@interfaces/gameplaySceneInterface";
 
 export class GameplayScene implements GameplaySceneInterface {

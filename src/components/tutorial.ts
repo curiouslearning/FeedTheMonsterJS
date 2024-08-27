@@ -1,4 +1,4 @@
-import { createRippleEffect, drawImageOnCanvas } from "@common/index";
+import { createRippleEffect, drawImageOnCanvas } from "@common";
 import { GameScore } from "@data/game-score";
 
 export class Tutorial {

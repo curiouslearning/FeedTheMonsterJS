@@ -1,5 +1,5 @@
 import { loadImages } from "../common";
-import { drawImageOnCanvas } from "@common/index";
+import { drawImageOnCanvas } from "@common";
 import { LoadingSceneInterface } from "@interfaces/loadingSceneInterface";
 
 export class LoadingScene implements LoadingSceneInterface {

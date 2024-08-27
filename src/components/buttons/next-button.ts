@@ -4,7 +4,7 @@ import {
   drawImageOnCanvas,
   isClickInsideButton,
   loadImages,
-} from "@common/index";
+} from "@common";
 import { ButtonInterface } from "@interfaces/buttons";
 
 export default class NextButton implements ButtonInterface {
