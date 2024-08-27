@@ -11,7 +11,7 @@ import {
   createBackground,
   levelSelectBgDrawing,
 } from "@compositions/background";
-import { PreviousPlayedLevel, LEVEL_SELECTION_BACKGROUND } from "../constants";
+import { PreviousPlayedLevel, LEVEL_SELECTION_BACKGROUND } from "@constants";
 import { ILevelSelectionScreen } from "@interfaces/levelSelectionScreenInterface";
 export class LevelSelectionScreen implements ILevelSelectionScreen {
   private canvas: HTMLCanvasElement;

@@ -11,7 +11,7 @@ import {
   FirebaseUserClicked,
   PWAInstallStatus,
   DEFAULT_BG_GROUP_IMGS,
-} from "../constants/";
+} from "@constants";
 import { StartSceneInterface } from "@interfaces/startSceneInterface";
 
 export class StartScene implements StartSceneInterface {

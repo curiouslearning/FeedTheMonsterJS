@@ -1,10 +1,4 @@
-// import { Game } from "../../../scenes/game";
-
-import {
-  drawImageOnCanvas,
-  isClickInsideButton,
-  loadImages,
-} from "@common";
+import { drawImageOnCanvas, isClickInsideButton, loadImages } from "@common";
 import { ButtonInterface } from "@interfaces/buttons";
 
 export default class NextButton implements ButtonInterface {

@@ -1,5 +1,5 @@
-import { loadImages } from "../common";
-import { EventManager } from "../events/EventManager";
+import { loadImages } from "@common";
+import { EventManager } from "@events/EventManager";
 import { drawImageOnCanvas } from "@common";
 import { MonsterInterface } from "@interfaces/monsterInterface";
 

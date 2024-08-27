@@ -41,7 +41,7 @@ import {
   ASSETS_PATH_FENCE,
   ASSETS_PATH_HILL,
   ASSETS_PATH_TOTEM,
-} from "../constants";
+} from "@constants";
 import {
   BACKGROUND_ASSET_LIST,
   createBackground,

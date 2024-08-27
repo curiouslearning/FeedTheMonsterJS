@@ -1,4 +1,4 @@
-import { loadImages } from "../common";
+import { loadImages } from "@common";
 import { drawImageOnCanvas } from "@common";
 import { LoadingSceneInterface } from "@interfaces/loadingSceneInterface";
 

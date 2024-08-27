@@ -1,4 +1,4 @@
-import { StoneConfig } from "../common";
+import { StoneConfig } from "@common";
 import {
   AudioPlayer,
   Background,
@@ -11,7 +11,7 @@ import {
   StoneHandler,
   TimerTicking,
   Tutorial,
-} from @components";
+} from "@components";
 import { FirebaseIntegration } from "../Firebase/firebase-integration";
 
 export interface GameplaySceneInterface {

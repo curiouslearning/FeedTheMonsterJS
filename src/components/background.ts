@@ -1,4 +1,4 @@
-import { loadImages } from "../common";
+import { loadImages } from "@common";
 import { drawImageOnCanvas } from "@common";
 import {
   DEFAULT_BACKGROUND_1,
@@ -15,7 +15,7 @@ import {
   WINTER_SIGN_1,
   WINTER_FENCE_1,
   WINTER_PILLAR_1,
-} from "../constants";
+} from "@constants";
 import { BackgroundInterface } from "@interfaces/backgroundInterface";
 
 // to do need to optimize more

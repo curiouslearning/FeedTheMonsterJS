@@ -1,7 +1,7 @@
 import { CLICK } from "@common/event-names";
-import { AudioPlayer } from "../audio-player";
-import YesButton from "../buttons/yes-button";
-import NoButton from "../buttons/no-button";
+import { AudioPlayer } from "@components/audio-player";
+import YesButton from "@components/buttons/yes-button";
+import NoButton from "@components/buttons/no-button";
 import { drawImageOnCanvas, loadImages } from "@common";
 
 export default class AreYouSurePopUp {

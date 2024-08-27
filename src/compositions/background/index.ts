@@ -4,7 +4,7 @@ import {
   DEFAULT_BG_GROUP_IMGS,
   AUTUMN_BG_GROUP_IMGS,
   WINTER_BG_GROUP_IMGS,
-} from "../../constants/";
+} from "@constants";
 
 export const BACKGROUND_ASSET_LIST = {
   summer: { BG_GROUP_IMGS: DEFAULT_BG_GROUP_IMGS, draw: defaultBgDrawing },

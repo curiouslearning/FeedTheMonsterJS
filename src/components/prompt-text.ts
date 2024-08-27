@@ -1,4 +1,4 @@
-import { EventManager } from "../events/EventManager";
+import { EventManager } from "@events/EventManager";
 import { drawImageOnCanvas, Utils } from "@common";
 import { AudioPlayer } from "./audio-player";
 import { VISIBILITY_CHANGE } from "@common/event-names";

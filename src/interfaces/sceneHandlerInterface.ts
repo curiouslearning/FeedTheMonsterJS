@@ -1,9 +1,9 @@
-import { StartScene } from "../scenes/start-scene";
+import { StartScene } from "@scenes/start-scene";
 import { DataModal } from "@data/data-modal";
-import { LevelSelectionScreen } from "../scenes/level-selection-scene";
-import { GameplayScene } from "../scenes/gameplay-scene";
-import { LoadingScene } from "../scenes/loading-scene";
-import { LevelEndScene } from "../scenes/levelend-scene";
+import { LevelSelectionScreen } from "@scenes/level-selection-scene";
+import { GameplayScene } from "@scenes/gameplay-scene";
+import { LoadingScene } from "@scenes/loading-scene";
+import { LevelEndScene } from "@scenes/levelend-scene";
 
 export interface SceneHandlerInterface {
   canvas: HTMLCanvasElement;

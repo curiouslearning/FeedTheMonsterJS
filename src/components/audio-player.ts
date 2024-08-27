@@ -1,5 +1,5 @@
 import { Window } from "../../global-variables";
-import { AUDIO_PATH_BTN_CLICK } from "../constants";
+import { AUDIO_PATH_BTN_CLICK } from "@constants";
 
 export class AudioPlayer {
   private audioContext: AudioContext | null;

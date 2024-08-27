@@ -1,5 +1,5 @@
 import { loadImages } from "@common";
-import { FirebaseUserClicked, PWAInstallStatus } from "../constants/";
+import { FirebaseUserClicked, PWAInstallStatus } from "@constants";
 import { LevelIndicators } from "@components/level-indicator";
 import { PromptText } from "@components/prompt-text";
 // import { Tutorial } from "@components/tutorial";
@@ -9,8 +9,6 @@ import StoneHandler from "@components/stone-handler";
 import { StoneConfig } from "@common/stone-config";
 import { Monster } from "@components/monster";
 import { DataModal } from "@data/data-modal";
-// import { CanvasStack } from "../../utility/canvas-stack";
-import { LevelSelectionScreen } from "../scenes/level-selection-scene";
 import { Debugger, lang } from "../../global-variables";
 import { Tutorial } from "@components/tutorial";
 import PlayButton from "@components/buttons/play-button";

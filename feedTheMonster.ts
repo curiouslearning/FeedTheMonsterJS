@@ -2,7 +2,7 @@ import * as Sentry from "@sentry/browser";
 import { getData } from "@data/api-data";
 import { DataModal } from "@data/data-modal";
 import { SceneHandler } from "@sceneHandler/scene-handler";
-import { IsCached } from "@constants/index";
+import { IsCached } from "@constants";
 import { Workbox } from "workbox-window";
 import { Debugger, lang, pseudoId } from "./global-variables";
 import { FirebaseIntegration } from "./src/Firebase/firebase-integration";

@@ -1,5 +1,5 @@
-import { StoneConfig, VISIBILITY_CHANGE, Utils } from "../common";
-import { EventManager } from "../events/EventManager";
+import { StoneConfig, VISIBILITY_CHANGE, Utils } from "@common";
+import { EventManager } from "@events/EventManager";
 import { Tutorial } from "./tutorial";
 import { AudioPlayer } from "./audio-player";
 import { TimerTicking } from "./timer-ticking";
@@ -12,7 +12,7 @@ import {
   AUDIO_PATH_CORRECT_STONE,
   AUDIO_PATH_CHEERING_FUNC,
   ASSETS_PATH_STONE_PINK_BG,
-} from "../constants";
+} from "@constants";
 import { StoneHandlerInterface } from "@interfaces/StoneHandlerInterface";
 
 export default class StoneHandler
