@@ -1,7 +1,7 @@
 import { TappedStart } from "../../Firebase/firebase-event-interface";
 import { loadImages } from "@common";
 import { FirebaseIntegration } from "../../Firebase/firebase-integration";
-import { lang, pseudoId } from "../../../global-variables";
+import { lang, pseudoId } from "@constants/global-variables";
 import { getData } from "@data/api-data";
 import { drawImageOnCanvas } from "@common";
 import {

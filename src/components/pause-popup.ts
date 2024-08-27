@@ -4,7 +4,7 @@ import RetryButton from "@components/buttons/retry-button";
 import { CLICK } from "@common/event-names";
 import { AudioPlayer } from "./audio-player";
 import AreYouSurePopUp from "./feedback-particle-effect/sure-popup";
-import { lang } from "../../global-variables";
+import { lang } from "@constants/global-variables";
 import { drawImageOnCanvas, loadImages } from "@common";
 
 export default class PausePopUp {

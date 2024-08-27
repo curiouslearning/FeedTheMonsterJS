@@ -2,7 +2,7 @@ import { EventManager } from "@events/EventManager";
 import { drawImageOnCanvas, Utils } from "@common";
 import { AudioPlayer } from "./audio-player";
 import { VISIBILITY_CHANGE } from "@common/event-names";
-import { font, lang } from "../../global-variables";
+import { font, lang } from "@constants/global-variables";
 import { PromptTextInterface } from "@interfaces/promptTextInterface";
 
 export class PromptText extends EventManager implements PromptTextInterface {

@@ -25,7 +25,7 @@ import {
   TOUCHSTART,
   VISIBILITY_CHANGE,
 } from "@common";
-import { Debugger, lang, pseudoId } from "../../global-variables";
+import { Debugger, lang, pseudoId } from "@constants/global-variables";
 import { GameScore } from "@data/game-score";
 import {
   LevelCompletedEvent,

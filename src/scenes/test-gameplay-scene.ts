@@ -9,7 +9,7 @@ import StoneHandler from "@components/stone-handler";
 import { StoneConfig } from "@common/stone-config";
 import { Monster } from "@components/monster";
 import { DataModal } from "@data/data-modal";
-import { Debugger, lang } from "../../global-variables";
+import { Debugger, lang } from "@constants/global-variables";
 import { Tutorial } from "@components/tutorial";
 import PlayButton from "@components/buttons/play-button";
 import { drawImageOnCanvas } from "@common";

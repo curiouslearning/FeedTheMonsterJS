@@ -1,4 +1,4 @@
-import { font, lang } from "../../global-variables";
+import { font, lang } from "@constants/global-variables";
 import { TimerTicking } from "@components/timer-ticking";
 import { Tutorial } from "@components/tutorial";
 import { drawImageOnCanvas } from "@common";

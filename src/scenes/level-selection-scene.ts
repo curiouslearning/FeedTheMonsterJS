@@ -1,4 +1,4 @@
-import { Debugger, font, lang, pseudoId } from "../../global-variables";
+import { Debugger, font, lang, pseudoId } from "@constants/global-variables";
 import { loadImages } from "@common/index";
 import { LevelConfig } from "@common/level-config";
 import { drawImageOnCanvas } from "@common/index";

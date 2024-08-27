@@ -1,5 +1,5 @@
 import { TextParticle } from "./text-particle";
-import { font } from "../../../global-variables";
+import { font } from "@constants/global-variables";
 import { FeedbackTextEffectsInterface } from "@interfaces/feedbackTextEffectsInterface";
 
 export class FeedbackTextEffects implements FeedbackTextEffectsInterface {

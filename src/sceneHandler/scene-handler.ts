@@ -1,7 +1,7 @@
 import { StartScene } from "@scenes/start-scene";
 import { DataModal } from "@data/data-modal";
 import { LevelSelectionScreen } from "@scenes/level-selection-scene";
-import { Debugger } from "../../global-variables";
+import { Debugger } from "@constants/global-variables";
 import { GameplayScene } from "@scenes/gameplay-scene";
 import { GameScore } from "@data/game-score";
 import { LoadingScene } from "@scenes/loading-scene";

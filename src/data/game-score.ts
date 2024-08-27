@@ -1,4 +1,4 @@
-import { Debugger, lang } from "../../global-variables";
+import { Debugger, lang } from "@constants/global-variables";
 
 export class GameScore {
   public static currentlanguage: string = lang;

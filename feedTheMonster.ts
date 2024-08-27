@@ -4,7 +4,7 @@ import { DataModal } from "@data/data-modal";
 import { SceneHandler } from "@sceneHandler/scene-handler";
 import { IsCached } from "@constants";
 import { Workbox } from "workbox-window";
-import { Debugger, lang, pseudoId } from "./global-variables";
+import { Debugger, lang, pseudoId } from "@constants/global-variables";
 import { FirebaseIntegration } from "./src/Firebase/firebase-integration";
 import { Utils } from "@common/utils";
 import { AudioPlayer } from "@components/audio-player";

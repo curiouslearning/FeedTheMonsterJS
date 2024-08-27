@@ -1,4 +1,4 @@
-import { Debugger, lang } from "../../global-variables";
+import { Debugger, lang } from "@constants/global-variables";
 import languageFontMapping from "@data/i18-font-mapping";
 
 export class Utils {

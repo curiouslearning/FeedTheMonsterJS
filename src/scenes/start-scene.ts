@@ -1,7 +1,7 @@
 import { StoneConfig } from "@common/stone-config";
 import { Monster } from "@components/monster";
 import { DataModal } from "@data/data-modal";
-import { Debugger, font, lang } from "../../global-variables";
+import { Debugger, font, lang } from "@constants/global-variables";
 import { AudioPlayer } from "@components/audio-player";
 import { FirebaseIntegration } from "../Firebase/firebase-integration";
 import { Utils } from "@common";
