@@ -35,8 +35,6 @@ var config = {
     //   test: /\.(js|css|html|svg|mp3|ttf|jpe?g|png)$/, // File types to compress
     //   threshold: 8192, // Minimum size (in bytes) for a file to be compressed
     //   minRatio: 0.8, // Minimum compression ratio
-    //    // Add this line to avoid generating .gz files
-    //   //  exclude: /\.(js|css|html|svg|mp3|ttf|jpe?g|png)$/,
     // }),
     new CopyPlugin({
       patterns: [
