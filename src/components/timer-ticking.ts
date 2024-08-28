@@ -1,6 +1,7 @@
-import { loadImages } from "../common/";
-import { EventManager } from "../events/EventManager";
-import { AudioPlayer } from "./audio-player";
+import { loadImages } from "@common";
+import { EventManager } from "@events";
+import { AudioPlayer } from "@components";
+import { TIMER_EMPTY, ROTATING_CLOCK, TIMER_FULL, AUDIO_TIMEOUT } from "@constants";
 
 export class TimerTicking extends EventManager {
     public width: number;
@@ -46,9 +47,9 @@ export class TimerTicking extends EventManager {
         this.audioPlayer = new AudioPlayer();
         this.playLevelEndAudioOnce = true;
         this.images = {
-            timer_empty: "./assets/images/timer_empty.png",
-            rotating_clock: "./assets/images/timer.png",
-            timer_full: "./assets/images/timer_full.png"
+            timer_empty: TIMER_EMPTY,
+            rotating_clock: ROTATING_CLOCK,
+            timer_full: TIMER_FULL
         }
 
         loadImages(this.images, (images) => {
@@ -73,7 +74,7 @@ export class TimerTicking extends EventManager {
             this.timer += deltaTime * 0.008;
         }
         if (Math.floor(this.width * 0.87 - (this.width * 0.87 * this.timer * 0.01)) == 40 && !this.isMyTimerOver) {
-            this.playLevelEndAudioOnce?this.audioPlayer.playAudio('./assets/audios/timeout.mp3'):null;
+            this.playLevelEndAudioOnce?this.audioPlayer.playAudio(AUDIO_TIMEOUT):null;
             this.playLevelEndAudioOnce = false;
         }
         if ((this.width * 0.87 - (this.width * 0.87 * this.timer * 0.01)) < 0 && !this.isMyTimerOver) {

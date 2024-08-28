@@ -1,8 +1,8 @@
+import { PLAY_BUTTON } from "@constants";
 import { TappedStart } from "../Firebase/firebase-event-interface";
-import { loadImages } from "../common/";
 import { FirebaseIntegration } from "../Firebase/firebase-integration";
-import { lang, pseudoId } from "../../global-variables";
-import { getData } from "../data/api-data";
+import { loadImages, pseudoId, lang } from "@common";
+import { getData } from "@data";
 export default class PlayButton {
     public posX: number;
     public posY: number;
@@ -27,7 +27,7 @@ export default class PlayButton {
         this.firebaseIntegration = new FirebaseIntegration();
         this.init();
         this.images = {
-            pause_button_image: "./assets/images/Play_button.png"
+            pause_button_image: PLAY_BUTTON
         }
 
         loadImages(this.images, (images) => {

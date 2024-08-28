@@ -1,9 +1,7 @@
-import {StoneConfig, VISIBILITY_CHANGE, Utils} from '../common'
-import { EventManager } from "../events/EventManager";
-import { Tutorial } from "./tutorial";
-import { AudioPlayer } from "./audio-player";
-import { TimerTicking } from "./timer-ticking";
-import { GameScore } from "../data/game-score";
+import {StoneConfig, VISIBILITY_CHANGE, Utils} from '@common'
+import { EventManager } from "@events";
+import { Tutorial, AudioPlayer, TimerTicking } from "@components"
+import { GameScore } from "@data";
 import {
   AUDIO_PATH_EATS,
   AUDIO_PATH_MONSTER_SPIT,

@@ -1,10 +1,8 @@
-import CancelButton from "../components/buttons/cancel-button";
-import CloseButton from "../components/buttons/close-button";
-import RetryButton from "../components/buttons/retry-button";
-import { CLICK, VISIBILITY_CHANGE } from "../common/event-names";
-import { AudioPlayer } from "./audio-player";
-import AreYouSurePopUp from "./feedback-particle-effect/sure-popup";
-import { lang } from "../../global-variables";
+import { CloseButton, CancelButton, RetryButton } from "@buttons";
+import { CLICK, lang } from "@common";
+import { AudioPlayer } from "@components";
+import { AreYouSurePopUp } from "@components";
+import { AUDIO_ARE_YOU_SURE, SURE_AND_PAUSE_POPUP } from "@constants";
 export default class PausePopUp {
   public canvas: HTMLCanvasElement;
   public context: CanvasRenderingContext2D;
@@ -59,7 +57,7 @@ export default class PausePopUp {
         (this.canvas.width * 0.19) / 2
     );
     this.pop_up_image = new Image();
-    this.pop_up_image.src = "./assets/images/popup_bg_v01.png";
+    this.pop_up_image.src = SURE_AND_PAUSE_POPUP;
     this.pop_up_image.onload = (e) => {
       this.pop_up_image = this.pop_up_image;
       this.imagesLoaded = true;
@@ -167,7 +165,7 @@ export default class PausePopUp {
     this.audioPlayer.playButtonClickSound();
   };
   playAreYouSureSound = () => {
-    this.audioPlayer.playAudio("./assets/audios/are-you-sure.mp3");
+    this.audioPlayer.playAudio(AUDIO_ARE_YOU_SURE);
   };
 
   dispose = () => {

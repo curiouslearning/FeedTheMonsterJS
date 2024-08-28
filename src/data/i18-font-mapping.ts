@@ -1,4 +1,4 @@
-const languageFontMapping: { [language: string]: string } = {
+export const languageFontMapping: { [language: string]: string } = {
   english: "Consolas",
   swahili: "Consolas",
   wolof: "Consolas",
@@ -50,5 +50,3 @@ const languageFontMapping: { [language: string]: string } = {
   Twi: "NotoSans-Regular",
   Arabic:"Adobe-Arabic-Bold"
 };
-
-export default languageFontMapping;

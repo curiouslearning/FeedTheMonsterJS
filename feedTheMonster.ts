@@ -1,18 +1,16 @@
 import * as Sentry from "@sentry/browser";
-import { getData } from "./src/data/api-data";
-import { DataModal } from "./src/data/data-modal";
-import { SceneHandler } from "./src/sceneHandler/scene-handler";
-import { IsCached } from "./src/constants/";
+import { getData, DataModal } from "@data";
+import { SceneHandler } from "@sceneHandler";
+import { AUDIO_URL_PRELOAD, IsCached } from "@constants";
 import { Workbox } from "workbox-window";
-import { Debugger, lang, pseudoId } from "./global-variables";
+import { Debugger, lang, pseudoId } from "@common";
 import { FirebaseIntegration } from "./src/Firebase/firebase-integration";
-import { Utils } from "./src/common/utils";
-import { AudioPlayer } from "./src/components/audio-player";
+import { Utils, VISIBILITY_CHANGE } from "@common";
+import { AudioPlayer } from "@components";
 import { SessionStart,
 SessionEnd,
 DownloadCompleted
 } from "./src/Firebase/firebase-event-interface";
-import { VISIBILITY_CHANGE } from "./src/common/event-names"; 
 declare const window: any;
 
 class App {
@@ -48,7 +46,7 @@ class App {
   }
 
   private async init() {
-    const font = Utils.getLanguageSpecificFont(this.lang);
+    const font = await Utils.getLanguageSpecificFont(this.lang);
     await this.loadAndCacheFont(font, `./assets/fonts/${font}.ttf`);
     await this.preloadGameAudios();
     this.handleLoadingScreen();
@@ -270,23 +268,7 @@ class App {
   }
 
   private preloadGameAudios = async () => {
-    let audioUrls = [
-      "./assets/audios/intro.mp3",
-      "./assets/audios/Cheering-02.mp3",
-      "./assets/audios/Cheering-03.mp3",
-      "./assets/audios/Cheering-01.mp3",
-      "./assets/audios/onDrag.mp3",
-      "./assets/audios/timeout.mp3",
-      "./assets/audios/LevelWinFanfare.mp3",
-      "./assets/audios/LevelLoseFanfare.mp3",
-      "./assets/audios/ButtonClick.mp3",
-      "./assets/audios/Monster Spits wrong stones-01.mp3",
-      "./assets/audios/Disapointed-05.mp3",
-      "./assets/audios/MonsterSpit.mp3",
-      "./assets/audios/Eat.mp3",
-      "./assets/audios/PointsAdd.wav",
-      "./assets/audios/are-you-sure.mp3"
-    ];
+    let audioUrls = AUDIO_URL_PRELOAD;
 
     return new Promise<void>((resolve, reject) => {
       const preloadPromises = audioUrls.map((audioSrc) => new AudioPlayer().preloadGameAudio(audioSrc));

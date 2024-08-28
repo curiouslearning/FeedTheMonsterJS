@@ -1,4 +1,4 @@
-import { lang } from "../../global-variables";
+import { lang } from "@common";
 
 const URL = "./lang/" + lang + "/ftm_" + lang + ".json";
 

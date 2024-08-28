@@ -1,3 +1,4 @@
+import { CLOSE_BUTTON } from "@constants";
 
 export default class CloseButton {
     public posX: number;
@@ -18,7 +19,7 @@ export default class CloseButton {
         this.context = context;
         this.canvas = canvas;
         this.close_button_image = new Image();
-        this.close_button_image.src = "./assets/images/map_btn.png";
+        this.close_button_image.src = CLOSE_BUTTON;
         this.close_button_image.onload = (e) => {
             this.imagesLoaded = true;
             this.close_button_image = this.close_button_image;

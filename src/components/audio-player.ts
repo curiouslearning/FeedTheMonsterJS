@@ -1,5 +1,5 @@
-import { Window } from "../../global-variables";
-import { AUDIO_PATH_BTN_CLICK } from "../constants";
+import { Window } from "@common";
+import { AUDIO_PATH_BTN_CLICK } from "@constants";
 
 export class AudioPlayer {
   private audioContext: AudioContext | null;
@@ -22,7 +22,7 @@ export class AudioPlayer {
 
   async playButtonClickSound() {
     const audioSrc: string = AUDIO_PATH_BTN_CLICK;
-  
+
     if (!this.isClickSoundLoaded) {
       // Load and decode the audio on demand if it hasn't been loaded
       try {
@@ -34,7 +34,7 @@ export class AudioPlayer {
         return;
       }
     }
-  
+
     // Play the audio using the buffer if it exists
     if (this.clickSoundBuffer) {
       const sourceNode = this.audioContext!.createBufferSource();
@@ -45,7 +45,6 @@ export class AudioPlayer {
       console.error("Click sound buffer is not available.");
     }
   }
-  
 
   private async loadAndDecodeAudio(audioSrc: string): Promise<AudioBuffer> {
     return new Promise<AudioBuffer>(async (resolve, reject) => {

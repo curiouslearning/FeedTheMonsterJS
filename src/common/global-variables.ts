@@ -1,14 +1,14 @@
 const urlParams = new URLSearchParams(window.location.search);
 
-import { DevelopmentServer } from "./src/constants/";
-import { Utils } from "./src/common/utils";
+import { DevelopmentServer } from "@constants";
+import { Utils } from "./utils";
 
 export var pseudoId = urlParams.get("cr_user_id");
 
 export var lang =
   urlParams.get("cr_lang") == null ? "english" : urlParams.get("cr_lang");
 
-  export const font = Utils.getLanguageSpecificFont(lang);
+export const font = Utils.getLanguageSpecificFont(lang);
 export const Debugger = {
   DevelopmentLink: window.location.href.includes(DevelopmentServer)
     ? true
@@ -21,9 +21,8 @@ declare global {
   }
 }
 
-window.feedbackTextWorkerPath = './workers/feedback-text-worker.js';
+window.feedbackTextWorkerPath = "./workers/feedback-text-worker.js";
 
 export interface Window {
   webkitAudioContext?: typeof AudioContext;
 }
-

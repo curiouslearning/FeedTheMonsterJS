@@ -10,7 +10,7 @@ import {
   Background,
   FeedbackTextEffects,
   AudioPlayer
-} from '../components/';
+} from '@components';
 import {
   loadImages,
   StoneConfig,
@@ -24,9 +24,9 @@ import {
   TOUCHMOVE,
   TOUCHSTART,
   VISIBILITY_CHANGE,
-} from "../common/";
-import { Debugger, lang, pseudoId } from "../../global-variables";
-import { GameScore } from "../data/game-score";
+} from "@common";
+import { Debugger, lang, pseudoId } from "@common";
+import { GameScore } from "@data";
 import {
   LevelCompletedEvent,
   PuzzleCompletedEvent,
@@ -38,7 +38,7 @@ import {
   AUDIO_PATH_ON_DRAG,
   ASSETS_PATH_MONSTER_IDLE,
   PreviousPlayedLevel,
-} from '../constants';
+} from '@constants';
 import {
   BACKGROUND_ASSET_LIST,
   createBackground,
@@ -46,7 +46,7 @@ import {
   defaultBgDrawing,
   autumBgDrawing,
   winterBgDrawing
-} from '../compositions/background';
+} from '@compositions/background';
 
 export class GameplayScene {
   public width: number;

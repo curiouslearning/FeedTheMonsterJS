@@ -1,3 +1,4 @@
+import { RETRY_BUTTON } from "@constants";
 
 
 export default class RetryButton {
@@ -20,7 +21,7 @@ export default class RetryButton {
         this.canvas = canvas;
 
         this.retry_button_image = new Image();
-        this.retry_button_image.src = "./assets/images/retry_btn.png";
+        this.retry_button_image.src = RETRY_BUTTON;
         this.retry_button_image.onload = (e) => {
             this.imagesLoaded = true;
             this.retry_button_image = this.retry_button_image;

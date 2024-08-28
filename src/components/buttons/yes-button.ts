@@ -1,3 +1,5 @@
+import { YES_BUTTON } from "@constants";
+
 export default class YesButton {
   public posX: number;
   public posY: number;
@@ -18,7 +20,7 @@ export default class YesButton {
     this.canvas = canvas;
 
     this.yes_button_image = new Image();
-    this.yes_button_image.src = "./assets/images/confirm_btn.png";
+    this.yes_button_image.src = YES_BUTTON;
     this.yes_button_image.onload = (e) => {
       this.imagesLoaded = true;
       this.yes_button_image = this.yes_button_image;
