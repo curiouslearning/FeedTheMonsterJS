@@ -54,6 +54,16 @@ export const WINTER_SIGN_1 = "./assets/images/Winter_sign_v01.png";
 export const WINTER_FENCE_1 = "./assets/images/Winter_fence_v01.png";
 export const WINTER_PILLAR_1 = "./assets/images/Winter_sign_v01.png";
 export const LEVEL_SELECTION_BACKGROUND = "./assets/images/map.jpg";
+export const PLAY_BUTTON_IMAGE = "./assets/images/Play_button.png";
+
+export const MAP_ICON_IMAGE = "./assets/images/mapIcon.png";
+export const MAP_ICON_SPECIAL_IMAGE = "./assets/images/map_icon_monster_level_v01.png";
+export const MAP_LOCK_IMAGE = "./assets/images/mapLock.png";
+export const STAR_IMAGE = "./assets/images/star.png";
+export const NEXT_BTN_IMAGE = "./assets/images/next_btn.png";
+export const BACK_BTN_IMAGE = "./assets/images/back_btn.png";
+
+
 
 //Background Group Images
 export const GAMEPLAY_BG_GROUP_IMGS = {

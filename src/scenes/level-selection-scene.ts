@@ -8,7 +8,16 @@ import { GameScore } from "../data/game-score";
 import { SelectedLevel } from "../Firebase/firebase-event-interface";
 import { FirebaseIntegration } from "../Firebase/firebase-integration";
 import { createBackground, levelSelectBgDrawing } from '../compositions/background';
-import { PreviousPlayedLevel, LEVEL_SELECTION_BACKGROUND } from '../constants';
+import {
+  PreviousPlayedLevel,
+  LEVEL_SELECTION_BACKGROUND,
+  MAP_ICON_IMAGE,
+  MAP_ICON_SPECIAL_IMAGE,
+  MAP_LOCK_IMAGE,
+  STAR_IMAGE,
+  NEXT_BTN_IMAGE,
+  BACK_BTN_IMAGE
+} from '../constants';
 export class LevelSelectionScreen {
   private canvas: HTMLCanvasElement;
   private data: any;
@@ -35,6 +44,8 @@ export class LevelSelectionScreen {
   private minVersion:string;
   private firebaseIntegration: FirebaseIntegration;
   public background: any;
+  private rightBtnSize: any;
+  private leftBtnSize: number;
 
   constructor(canvas: HTMLCanvasElement, data: any, callBack: Function) {
     this.canvas = canvas;
@@ -68,14 +79,13 @@ export class LevelSelectionScreen {
         10 * Math.floor(this.previousPlayedLevelNumber / 10);
     }
     this.setupBg();
-    // loading images
     this.images = {
-      mapIcon: "./assets/images/mapIcon.png",
-      mapIconSpecial: "./assets/images/map_icon_monster_level_v01.png",
-      mapLock: "./assets/images/mapLock.png",
-      star: "./assets/images/star.png",
-      nextbtn: "./assets/images/next_btn.png",
-      backbtn: "./assets/images/back_btn.png",
+      mapIcon: MAP_ICON_IMAGE,
+      mapIconSpecial: MAP_ICON_SPECIAL_IMAGE,
+      mapLock: MAP_LOCK_IMAGE,
+      star: STAR_IMAGE,
+      nextbtn: NEXT_BTN_IMAGE,
+      backbtn: BACK_BTN_IMAGE,
     };
     loadImages(this.images, (images) => {
       this.loadedImages = Object.assign({}, images);
@@ -85,6 +95,8 @@ export class LevelSelectionScreen {
       }
     });
     this.addListeners();
+    this.rightBtnSize = 10;
+    this.leftBtnSize = 10;
   }
 
   private async init() {
@@ -207,39 +219,33 @@ export class LevelSelectionScreen {
   };
 
   private handleMouseDown = (event) => {
-    // return function (event) {
     event.preventDefault();
     let rect = document.getElementById("canvas").getBoundingClientRect();
     const x = event.clientX - rect.left;
     const y = event.clientY - rect.top;
 
-    // right button
-    if (
-      x >= this.canvas.width * 0.7 &&
-      x < this.canvas.width * 0.7 + this.canvas.height / 10 &&
-      y > this.canvas.height / 1.3 &&
-      y < this.canvas.height / 1.3 + this.canvas.height / 10
-    ) {
-      this.audioPlayer.playButtonClickSound();
-      if (this.levelSelectionPageIndex != this.levelsSectionCount * 10 - 10) {
-        this.levelSelectionPageIndex = this.levelSelectionPageIndex + 10;
-        this.downButton(this.levelSelectionPageIndex);
-      }
+    const isWithinButtonArea = (btnX, btnY = 1.3) => {
+      return x >= btnX &&
+      x < btnX + this.canvas.height / 10 &&
+      y > this.canvas.height / btnY &&
+      y < this.canvas.height / btnY + this.canvas.height / 10
     }
+    const isRight = isWithinButtonArea(this.canvas.width * 0.7);
+    const isLeft = isWithinButtonArea(this.canvas.width / 10);
 
-    // left button
-    if (
-      x >= this.canvas.width / 10 &&
-      x < this.canvas.width / 10 + this.canvas.height / 10 &&
-      y > this.canvas.height / 1.3 &&
-      y < this.canvas.height / 1.3 + this.canvas.height / 10
-    ) {
+    if (isLeft || isRight) {
       this.audioPlayer.playButtonClickSound();
-      if (this.levelSelectionPageIndex != 0) {
-        this.levelSelectionPageIndex = this.levelSelectionPageIndex - 10;
+      const pageIndex = this.levelSelectionPageIndex
+      if (isRight && pageIndex != this.levelsSectionCount * 10 - 10) {
+        this.levelSelectionPageIndex = pageIndex + 10;
+        this.rightBtnSize = 11;
+      } else if (isLeft && pageIndex != 0) {
+        this.levelSelectionPageIndex = pageIndex - 10;
+        this.leftBtnSize = 11;
       }
       this.downButton(this.levelSelectionPageIndex);
     }
+
     for (let s of this.levels) {
       if (
         Math.sqrt(
@@ -309,25 +315,38 @@ export class LevelSelectionScreen {
       this.drawLevel(s, this.canvas);
     }
   }
+
+  private renderArrowBtn(img, width, size) {
+    this.context.drawImage(
+      img,
+       width,
+      this.canvas.height / 1.3,
+      size,
+      size
+    );
+  }
+
   private downButton(level: number) {
-    let imageSize = this.canvas.height / 10;
     if (level != this.levelsSectionCount * 10 - 10) {
-      this.context.drawImage(
+      this.renderArrowBtn(
         this.loadedImages.nextbtn,
         this.canvas.width * 0.7,
-        this.canvas.height / 1.3,
-        imageSize,
-        imageSize
-      );
+        this.canvas.height / this.rightBtnSize
+      )
+      if (this.rightBtnSize > 10.1) {
+        this.rightBtnSize = this.rightBtnSize - 0.1;
+      }
     }
+
     if (level != 0) {
-      this.context.drawImage(
+      this.renderArrowBtn(
         this.loadedImages.backbtn,
         this.canvas.width / 10,
-        this.canvas.height / 1.3,
-        imageSize,
-        imageSize
+        this.canvas.height / this.leftBtnSize
       );
+      if ( this.leftBtnSize > 10.1) {
+        this.leftBtnSize = this.leftBtnSize - 0.1;
+      }
     }
   }
   // draw stars on top of level number
