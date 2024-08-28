@@ -1,8 +1,4 @@
-import {
-  drawImageOnCanvas,
-  isClickInsideButton,
-  loadImages,
-} from "@common";
+import { drawImageOnCanvas, isClickInsideButton, loadImages } from "@common";
 import { ButtonInterface } from "@interfaces/buttons";
 
 export default class CancelButton implements ButtonInterface {
@@ -42,11 +38,13 @@ export default class CancelButton implements ButtonInterface {
   }
 
   onClick(xClick: number, yClick: number): boolean {
+    console.log("cancel button clicked");
     return isClickInsideButton(
       xClick,
       yClick,
       this.posX,
       this.posY,
+      this.canvas.width * 0.15,
       this.canvas.width * 0.15
     );
   }

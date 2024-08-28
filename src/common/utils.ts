@@ -180,18 +180,14 @@ export function drawImageOnCanvas(
 export function isClickInsideButton(
   xClick: number,
   yClick: number,
-  buttonPosX: number,
-  buttonPosY: number,
-  buttonSize: number
+  buttonX: number,
+  buttonY: number,
+  buttonWidth: number,
+  buttonHeight: number
 ): boolean {
-  const centerX = buttonPosX + buttonSize / 2;
-  const centerY = buttonPosY + buttonSize / 2;
-  const radius = buttonSize / 2;
-
   const distance = Math.sqrt(
-    (xClick - centerX) * (xClick - centerX) +
-      (yClick - centerY) * (yClick - centerY)
+    (xClick - buttonX - buttonWidth / 2) ** 2 +
+      (yClick - buttonY - buttonHeight / 2) ** 2
   );
-
-  return distance < radius;
+  return distance < buttonWidth / 2;
 }

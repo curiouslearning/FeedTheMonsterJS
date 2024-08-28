@@ -1,17 +1,13 @@
-import {
-  drawImageOnCanvas,
-  isClickInsideButton,
-  loadImages,
-} from "@common";
+import { drawImageOnCanvas, isClickInsideButton, loadImages } from "@common";
 import { ButtonInterface } from "@interfaces/buttons";
 
 export default class CloseButton implements ButtonInterface {
-  public posX: number;
-  public posY: number;
-  public context: CanvasRenderingContext2D;
-  public canvas: HTMLCanvasElement;
-  public imagesLoaded: boolean = false;
-  public button_image: HTMLImageElement;
+  posX: number;
+  posY: number;
+  context: CanvasRenderingContext2D;
+  canvas: HTMLCanvasElement;
+  imagesLoaded: boolean = false;
+  button_image: HTMLImageElement;
 
   constructor(
     context: CanvasRenderingContext2D,
@@ -47,6 +43,7 @@ export default class CloseButton implements ButtonInterface {
       yClick,
       this.posX,
       this.posY,
+      this.canvas.width * 0.19,
       this.canvas.width * 0.19
     );
   }

@@ -1,8 +1,4 @@
-import {
-  drawImageOnCanvas,
-  isClickInsideButton,
-  loadImages,
-} from "@common";
+import { drawImageOnCanvas, isClickInsideButton, loadImages } from "@common";
 import {
   ButtonImage,
   ButtonInterface,
@@ -50,6 +46,7 @@ export default class PauseButton implements ButtonInterface {
       yClick,
       this.posX,
       this.posY,
+      this.canvas.height * 0.09,
       this.canvas.height * 0.09
     );
   }

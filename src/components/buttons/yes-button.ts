@@ -1,8 +1,4 @@
-import {
-  drawImageOnCanvas,
-  isClickInsideButton,
-  loadImages,
-} from "@common";
+import { drawImageOnCanvas, isClickInsideButton, loadImages } from "@common";
 import {
   ButtonImage,
   ButtonInterface,
@@ -60,6 +56,7 @@ export default class YesButton implements ButtonInterface {
       yClick,
       this.posX,
       this.posY,
+      this.canvas.width * 0.15,
       this.canvas.width * 0.15
     );
   }

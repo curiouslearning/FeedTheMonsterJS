@@ -46,6 +46,7 @@ export default class NextButton implements ButtonInterface {
       yClick,
       this.posX,
       this.posY,
+      this.width * 0.19,
       this.width * 0.19
     );
   }
