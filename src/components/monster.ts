@@ -1,4 +1,4 @@
-import * as rive from "@rive-app/canvas";
+import { Rive, Layout, Fit, Alignment } from "@rive-app/canvas";
 import { loadImages } from "../common";
 import { EventManager } from "../events/EventManager";
 
@@ -58,20 +58,35 @@ export class Monster extends EventManager {
     // const targetY = 150; // Y coordinate where the animation should start
     // const targetWidth = 300; // Desired width of the animation
     // const targetHeight = 200; // Desired height of the animation
-    const riveMonster = new rive.Rive({
+    const riveMonster = new Rive({
       src: "./assets/monsterrive.riv",
-      canvas: this.canavsElement,
+      //canvas: document.getElementById("canvas-test"),
+      canvas: document.querySelector("canvas"),
       autoplay: true,
       stateMachines: "State Machine 1",
-      layout: new rive.Layout({ fit: rive.Fit.ScaleDown, alignment: rive.Alignment.Center }),
+      layout: new Layout({ fit: Fit.Contain, alignment: Alignment.TopCenter }),
       onLoad: () => {
-        this.clearCanvas();
+        //this.clearCanvas();
         riveMonster.drawFrame();
         console.log('Rive animation loaded now');
         riveMonster.play("Eat Happy")
       }
+    }) 
+    // const riveMonster = new Rive({
+    //   src: "./assets/monsterrive.riv",
+    //   canvas: this.canavsElement,
+    //   autoplay: true,
+    //   stateMachines: "State Machine 1",
+    //   layout: new Layout({ fit: Fit.Contain, alignment: Alignment.TopCenter }),
+    //   // layout: new rive.Layout({ fit: rive.Fit.ScaleDown, alignment: rive.Alignment.Center }),
+    //   onLoad: () => {
+    //     // this.clearCanvas();
+    //     riveMonster.drawFrame();
+    //     console.log('Rive animation loaded now');
+    //     riveMonster.play("Eat Happy")
+    //   }
 
-    })
+    // })
   }
 
   clearCanvas() {
