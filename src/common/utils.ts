@@ -133,7 +133,7 @@ export const syncLoadingImages = async (images: object) => {
 };
 
 export function disposeEventListeners(
-  element: HTMLElement,
+  element: EventTarget,
   listeners: Array<{ type: string; listener: EventListener }>
 ) {
   listeners.forEach(({ type, listener }) => {

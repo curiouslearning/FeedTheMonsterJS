@@ -1,3 +1,4 @@
+import { disposeEventListeners } from "@common/utils";
 import { TextParticle } from "./text-particle";
 import { font } from "@constants/global-variables";
 import { FeedbackTextEffectsInterface } from "@interfaces/feedbackTextEffectsInterface";
@@ -153,10 +154,9 @@ export class FeedbackTextEffects implements FeedbackTextEffectsInterface {
   }
 
   public unregisterEventListener(): void {
-    this.textWorker.removeEventListener(
-      "message",
-      this.handleTextWorkerMessage
-    );
+    disposeEventListeners(this.textWorker, [
+      { type: "message", listener: this.handleTextWorkerMessage },
+    ]);
     this.textWorker.terminate();
   }
 }
