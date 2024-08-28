@@ -51,13 +51,14 @@ export class StartScene {
     this.canavsElement = document.getElementById("canvas") as HTMLCanvasElement;
     this.context = this.canavsElement.getContext("2d");
     this.toggleBtn = document.getElementById("toggle-btn") as HTMLElement;
-    this.monster = new Monster(this.canvas, 4);
+    this.monster = new Monster(this.canvas,1);
     this.switchSceneToLevelSelection = switchSceneToLevelSelection;
     this.audioPlayer = new AudioPlayer();
     this.pwa_status = localStorage.getItem(PWAInstallStatus);
     this.handler = document.getElementById("canvas") as HTMLCanvasElement;
     this.devToggle();
     this.createPlayButton();
+    this.monster.initialiseRiveMonster();
     window.addEventListener("beforeinstallprompt", this.handlerInstallPrompt);
     this.setupBg();
   }
@@ -98,8 +99,9 @@ export class StartScene {
       this.width * 0.5,
       this.height / 10
     );
-    this.monster.update(deltaTime);
     this.playButton.draw();
+    console.log("called bg and playbtn");
+    
   };
 
 
