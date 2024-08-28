@@ -59,7 +59,7 @@ export class Monster extends EventManager {
     // const targetWidth = 300; // Desired width of the animation
     // const targetHeight = 200; // Desired height of the animation
     const riveMonster = new rive.Rive({
-      src: "./assets/chimplenew.riv",
+      src: "./assets/monsterrive.riv",
       canvas: this.canavsElement,
       autoplay: true,
       stateMachines: "State Machine 1",
