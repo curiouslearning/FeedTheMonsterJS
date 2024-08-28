@@ -44,10 +44,6 @@ export interface GameplaySceneInterface {
   stoneHandler: StoneHandler;
   counter: number;
   images: {
-    pillerImg: string;
-    bgImg: string;
-    hillImg: string;
-    fenchImg: string;
     profileMonster: string;
   };
   handler: HTMLElement;

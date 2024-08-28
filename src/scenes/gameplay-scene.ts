@@ -80,10 +80,6 @@ export class GameplayScene implements GameplaySceneInterface {
   stoneHandler: StoneHandler;
   public counter: number = 0;
   images: {
-    pillerImg: string;
-    bgImg: string;
-    hillImg: string;
-    fenchImg: string;
     profileMonster: string;
   };
   handler: HTMLElement;
@@ -193,10 +189,6 @@ export class GameplayScene implements GameplaySceneInterface {
     this.feedBackTexts = feedBackTexts;
 
     this.images = {
-      pillerImg: ASSETS_PATH_TOTEM,
-      bgImg: ASSETS_PATH_BG_01,
-      hillImg: ASSETS_PATH_HILL,
-      fenchImg: ASSETS_PATH_FENCE,
       profileMonster: ASSETS_PATH_MONSTER_IDLE,
     };
 
