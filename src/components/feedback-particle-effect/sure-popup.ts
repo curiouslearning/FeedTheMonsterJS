@@ -58,13 +58,13 @@ export default class AreYouSurePopUp {
     const y = event.clientY - rect.top;
 
     if (this.yesButton.onClick(x, y)) {
-      console.log(" Yes button clicked");
+      // console.log(" Yes button clicked");
       this.playClickSound();
       this.dispose();
       this.yesCallback();
     }
     if (this.noButton.onClick(x, y)) {
-      console.log(" No button clicked");
+      // console.log(" No button clicked");
       this.playClickSound();
       this.dispose();
       this.noCallback();
@@ -84,9 +84,9 @@ export default class AreYouSurePopUp {
       );
       const textY = this.canvas.height * 0.2 + 80;
       this.context.fillStyle = "white";
-      this.context.font = "28px Arial";
+      this.context.font = "24px Arial";
       this.context.fillText(
-        "are you sure?",
+        "Are you sure?",
         this.canvas.width / 2,
         this.canvas.height / 2.8
       );
@@ -95,7 +95,7 @@ export default class AreYouSurePopUp {
     }
   }
   playClickSound = () => {
-    this.audioPlayer.playButtonClickSound("./assets/audios/ButtonClick.mp3");
+    this.audioPlayer.playButtonClickSound();
   };
   dispose = () => {
     this.canvas

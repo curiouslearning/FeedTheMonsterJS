@@ -91,3 +91,41 @@ export function createRippleEffect(context: CanvasRenderingContext2D): (x: numbe
   return drawRipple;
 }
 
+export function loadImages(sources: any, callback: any) {
+  const images = {};
+  let loadedImages = 0;
+  const numImages = Object.keys(sources).length;
+
+  for (let src in sources) {
+    images[src] = new Image();
+    images[src].onload = function () {
+      if (++loadedImages >= numImages) {
+        callback(images);
+      }
+    };
+    images[src].src = sources[src];
+  }
+}
+
+const createImg = async (image) => {
+    const newImage = new Image()
+
+    return new Promise((resolve) => {
+        newImage.onload = () => resolve(newImage)
+        newImage.src = image
+    });
+};
+
+export const syncLoadingImages = async (images: object) => {
+    const loadImgPromises = Object.keys(images).map(async (arrKey) => {
+        const img = await createImg(images[arrKey]);
+        return { [arrKey]: img };
+    })
+
+    const resolvedImage = await Promise.all(loadImgPromises);
+    const loadedImages = resolvedImage.reduce((accumulator, current) => {
+        return {...accumulator, ...current}
+    }, {});
+
+    return loadedImages;
+};

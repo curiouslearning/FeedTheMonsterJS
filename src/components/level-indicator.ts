@@ -1,4 +1,4 @@
-import { loadImages } from "../common/common";
+import { loadImages } from "../common";
 import { EventManager } from "../events/EventManager";
 
 
@@ -35,7 +35,7 @@ export class LevelIndicators extends EventManager{
 
     addDropStoneEvent() {
         document.addEventListener('dropstone', (event) => {
-            console.log("Yeee recived from level-indicator");
+            // console.log("Yeee recived from level-indicator");
             this.setIndicators(2);
 
         });

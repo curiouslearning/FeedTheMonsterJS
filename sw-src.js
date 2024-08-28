@@ -6,12 +6,13 @@ workbox.precaching.precacheAndRoute(self.__WB_MANIFEST, {
   exclude: [/^lang\//],
 });
 var number = 0;
-var version = 1.25;
+var version = 1.26;
 // self.addEventListener('activate', function(e) {
 //     console.log("activated");
 //
 //
 // });
+
 self.addEventListener("install", async function (e) {
   // self.addEventListener("message", async (event) => {
   //   console.log("message event inside install event");
@@ -107,7 +108,7 @@ async function getCacheName(language) {
 async function getALLAudioUrls(cacheName, language) {
   // await cacheCommonAssets(language);
   let audioList = [];
-  audioList.push("./lang/" + language + "/ftm_" + language + ".json");
+  audioList.push("/lang/" + language + "/ftm_" + language + ".json");
   fetch("./lang/" + language + "/ftm_" + language + ".json", {
     method: "GET",
     headers: {
@@ -162,7 +163,7 @@ async function cacheAudiosFiles(audioList, language) {
     const part = uniqueAudioURLs.slice(startIndex, endIndex);
 
     try {
-      const cache = await caches.open(workbox.core.cacheNames.precache + language);
+      const cache = await caches.open(language);
       const timeoutPromises = part.map(async (url) => {
         try {
           const timeoutPromise = new Promise((resolve, reject) => {
@@ -202,28 +203,49 @@ async function cacheCommonAssets(language) {
     `./lang/${language}/images/title.png`,
   ];
 
-  const timeoutMultiplier = 0.6; // Adjust multiplier based on device performance
-  const timeoutValue = 3000; // Adjust timeout value as needed (in milliseconds)
+  const timeoutMultiplier = 1; // Adjust multiplier based on device performance
+  const timeoutValue = 4000; // Adjust timeout value as needed (in milliseconds)
 
   try {
-    const cacheName = workbox.core.cacheNames.precache + language;
+    const cacheName = language;
     const cache = await caches.open(cacheName);
+    
+    const timeoutPromises = assetUrls.map((url) => {
+      return new Promise((resolve, reject) => {
+        const timeoutId = setTimeout(() => {
+          reject(new Error("Timeout while caching audio: " + url));
+        }, timeoutValue * timeoutMultiplier);
 
-    await Promise.all(assetUrls.map(async (url) => {
-      try {
-        const timeoutPromise = new Promise((resolve, reject) => {
-          const timeoutId = setTimeout(() => {
+        cache.add(url)
+          .then(() => {
             clearTimeout(timeoutId);
-            reject(new Error("Timeout while caching asset: " + url));
-          }, timeoutValue * timeoutMultiplier);
-        });
+            resolve();
+          })
+          .catch((error) => {
+            clearTimeout(timeoutId);
+            reject(error);
+          });
+      });
+    });
 
-        await Promise.race([timeoutPromise, cache.add(url)]);
-        console.log('Cached:', url);
-      } catch (e) {
-        console.log('Error caching asset:', url, e);
-      }
-    }));
+    await Promise.all(timeoutPromises);
+    // await Promise.all(assetUrls.map(async (url) => {
+      // try {
+        
+      //     // return cache.add(url)
+      //   // const timeoutPromise = new Promise((resolve, reject) => {
+      //   //   const timeoutId = setTimeout(() => {
+      //   //     clearTimeout(timeoutId);
+      //   //     reject(new Error("Timeout while caching asset: " + url));
+      //   //   }, timeoutValue * timeoutMultiplier);
+      //   // });
+
+      //   // await Promise.race([timeoutPromise, cache.add(url)]);
+      //   // console.log('Cached:', url);
+      // } catch (e) {
+      //   console.log('Error caching asset:', url, e);
+      // }
+    // }));
   } catch (e) {
     console.log('Could not open cache:', e);
   }
@@ -240,7 +262,7 @@ async function cacheFeedBackAudio(feedBackAudios, language) {
   const timeoutValue = 3000; // Adjust timeout value as needed (in milliseconds)
 
   try {
-    const cacheName = workbox.core.cacheNames.precache + language;
+    const cacheName =  language;
     const cache = await caches.open(cacheName);
 
     await Promise.all(audioUrls.map(async (url) => {
@@ -265,6 +287,10 @@ async function cacheFeedBackAudio(feedBackAudios, language) {
 
 
 self.addEventListener("fetch", function (event) {
+  const requestUrl = new URL(event.request.url);
+  if (requestUrl.searchParams.has('cache-bust')) {
+    return event.respondWith(fetch(event.request));
+  }
   event.respondWith(
     caches.match(event.request).then(function (response) {
       if (response) {

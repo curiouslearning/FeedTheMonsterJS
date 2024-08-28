@@ -1,11 +1,23 @@
-import { loadImages } from "../common/common";
+import { loadImages } from "../common/";
 import { CLICK } from "../common/event-names";
 import { AudioPlayer } from "../components/audio-player";
-import { Background } from "../components/background";
 import CloseButton from "../components/buttons/close-button";
 import NextButton from "../components/buttons/next-button";
 import RetryButton from "../components/buttons/retry-button";
 import { Monster } from "../components/monster";
+import {
+  DEFAULT_BG_GROUP_IMGS,
+  AUTUMN_BG_GROUP_IMGS,
+  WINTER_BG_GROUP_IMGS
+} from '../constants';
+import {
+  BACKGROUND_ASSET_LIST,
+  createBackground,
+  loadDynamicBgAssets,
+  defaultBgDrawing,
+  autumBgDrawing,
+  winterBgDrawing
+} from '../compositions/background';
 
 export class LevelEndScene {
   public canvas: HTMLCanvasElement;
@@ -25,7 +37,7 @@ export class LevelEndScene {
   public switchToGameplayCB: Function;
   public switchToLevelSelectionCB: Function;
   public data: any;
-  public background: Background;
+  public background: any;
   public audioPlayer: AudioPlayer;
   public timeouts: any[];
   public starDrawnCount: number;
@@ -49,12 +61,6 @@ export class LevelEndScene {
       this.canvas,
       monsterPhaseNumber,
       this.switchToReactionAnimation
-    );
-    this.background = new Background(
-      this.context,
-      this.width,
-      this.height,
-      currentLevel
     );
 
     this.switchToGameplayCB = switchToGameplayCB;
@@ -97,7 +103,22 @@ export class LevelEndScene {
     });
     this.addEventListener();
     this.audioPlayer = new AudioPlayer();
+    this.setupBg();
   }
+
+  private setupBg = async () => {
+    const { BG_GROUP_IMGS, draw } = loadDynamicBgAssets(
+      this.currentLevel,
+     BACKGROUND_ASSET_LIST);
+    this.background = await createBackground(
+      this.context,
+      this.width,
+      this.height,
+      BG_GROUP_IMGS,
+      draw
+    );
+  }
+
   switchToReactionAnimation = () => {
     if (this.starCount <= 1) {
       if (document.visibilityState === "visible") {
@@ -113,7 +134,7 @@ export class LevelEndScene {
     }
   };
   draw(deltaTime: number) {
-    this.background.draw();
+    this.background?.draw();
     if (this.imagesLoaded) {
       this.context.drawImage(
         this.loadedImages.backgroundImg,
@@ -138,7 +159,6 @@ export class LevelEndScene {
       { delay: 1000, count: 2 },
       { delay: 1500, count: 3 },
     ];
-
     this.timeouts = animations.map((animation) => {
       return setTimeout(() => {
         this.starDrawnCount = animation.count;
@@ -188,34 +208,30 @@ export class LevelEndScene {
   }
 
   handleMouseClick = (event) => {
-    console.log(" levelend mouseclick ");
+    // console.log(" levelend mouseclick ");
     const selfElement:HTMLElement =document.getElementById("canvas");
     var rect = selfElement.getBoundingClientRect();
     const x = event.clientX - rect.left;
     const y = event.clientY - rect.top;
 
     if (this.closeButton.onClick(x, y)) {
-      this.audioPlayer.playButtonClickSound("./assets/audios/ButtonClick.mp3");
-      console.log(" close button clicked");
-
+      this.audioPlayer.playButtonClickSound();
       this.switchToLevelSelectionCB("LevelEnd");
     }
     if (this.retryButton.onClick(x, y)) {
-      this.audioPlayer.playButtonClickSound("./assets/audios/ButtonClick.mp3");
-      console.log(" retry button clicked");
+      this.audioPlayer.playButtonClickSound();
       let gamePlayData = {
-        currentLevelData: this.data.levels[this.currentLevel],
+        currentLevelData: { ...this.data.levels[this.currentLevel], levelNumber: this.currentLevel },
         selectedLevelNumber: this.currentLevel,
       };
       // pass same data as level is same
       this.switchToGameplayCB(gamePlayData, "LevelEnd");
     }
     if (this.nextButton.onClick(x, y) && this.starCount >= 2) {
-      this.audioPlayer.playButtonClickSound("./assets/audios/ButtonClick.mp3");
+      this.audioPlayer.playButtonClickSound();
       let next = Number(this.currentLevel) + 1;
-      console.log(typeof next, " next button clicked", next);
       let gamePlayData = {
-        currentLevelData: this.data.levels[next],
+        currentLevelData: { ...this.data.levels[next], levelNumber: next, },
         selectedLevelNumber: next,
       };
 
@@ -232,6 +248,7 @@ export class LevelEndScene {
     }
   };
   dispose = () => {
+    this.monster.dispose()
     this.audioPlayer.stopAllAudios();
     this.timeouts.forEach((timeout) => clearTimeout(timeout));
     document

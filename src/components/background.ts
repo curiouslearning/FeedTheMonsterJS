@@ -1,25 +1,39 @@
-import { loadImages } from "../common/common";
+import { loadImages } from "../common";
+import {
+    DEFAULT_BACKGROUND_1,
+    HILL_IMAGE_1,
+    PILLAR_IMAGE_1,
+    FENCE_IMAGE_1,
+    AUTUMN_BACKGROUND_1,
+    AUTUMN_HILL_1,
+    AUTUMN_PILLAR_1,
+    AUTUMN_SIGN_1,
+    AUTUMN_FENCE_1,
+    WINTER_BACKGROUND_1,
+    WINTER_HILL_1,
+    WINTER_SIGN_1,
+    WINTER_FENCE_1,
+    WINTER_PILLAR_1
+} from '../constants';
 
 // to do need to optimize more
 var images = {
-    bgImg: "./assets/images/bg_v01.jpg",
-    hillImg: "./assets/images/hill_v01.png",
-    pillerImg: "./assets/images/Totem_v02_v01.png",
-    fenchImg: "./assets/images/fence_v01.png",
+    bgImg: DEFAULT_BACKGROUND_1,
+    hillImg: HILL_IMAGE_1,
+    pillerImg: PILLAR_IMAGE_1,
+    fenchImg: FENCE_IMAGE_1,
 
+    autumnBgImg: AUTUMN_BACKGROUND_1,
+    autumnHillImg: AUTUMN_HILL_1,
+    autumnPillerImg: AUTUMN_PILLAR_1,
+    autumnSignImg: AUTUMN_SIGN_1,
+    autumnFenceImg: AUTUMN_FENCE_1,
 
-    autumnBgImg: "./assets/images/Autumn_bg_v01.jpg",
-    autumnHillImg: "./assets/images/Autumn_hill_v01.png",
-    autumnPillerImg: "./assets/images/Autumn_sign_v01.png",
-    autumnSignImg: "./assets/images/Autumn_sign_v01.png",
-    autumnFenceImg: "./assets/images/Autumn_fence_v01.png",
-
-
-    winterBgImg: "./assets/images/Winter_bg_01.jpg",
-    winterHillImg: "./assets/images/Winter_hill_v01.png",
-    winterSignImg: "./assets/images/Winter_sign_v01.png",
-    winterFenceImg: "./assets/images/Winter_fence_v01.png",
-    winterPillerImg: "./assets/images/Winter_sign_v01.png",
+    winterBgImg: WINTER_BACKGROUND_1,
+    winterHillImg: WINTER_HILL_1,
+    winterSignImg: WINTER_SIGN_1,
+    winterFenceImg: WINTER_FENCE_1,
+    winterPillerImg: WINTER_PILLAR_1,
 };
 
 
@@ -39,27 +53,30 @@ export class Background {
         this.height = height;
         this.context = context;
         this.levelNumber = levelNumber;
-
         this.backgroundType =
             Math.floor(this.levelNumber / 10) %
             this.availableBackgroundTypes.length;
         if (this.levelNumber >= 30) {
             this.backgroundType = this.backgroundType % 3;
         }
-
         loadImages(images, (images) => {
             this.loadedImages = Object.assign({}, images);
             this.imagesLoaded = true;
         });
     }
 
-
     draw() {
         if (this.imagesLoaded) {
             switch (this.availableBackgroundTypes[this.backgroundType]) {
                 case "Winter":
                     {
-                        this.context.drawImage(this.loadedImages.winterBgImg, 0, 0, this.width, this.height);
+                        this.context.drawImage(
+                            this.loadedImages.winterBgImg,
+                            0,
+                            0,
+                            this.width,
+                            this.height
+                        );
                         this.context.drawImage(
                             this.loadedImages.winterPillerImg,
                             this.width * 0.38,

@@ -16,36 +16,33 @@ export class FeedbackTextEffects {
   public gap: number;
   public mouse: { radius: number; x: number; y: number };
   public textWorker: Worker;
+
   constructor(
     context: CanvasRenderingContext2D,
     canvasWidth: number,
     canvasHeight: number
   ) {
-    this.context = context
+    this.context = context;
     this.canvasWidth = canvasWidth;
-    this.canvasHeight = canvasHeight
+    this.canvasHeight = canvasHeight;
     this.textX = this.canvasWidth / 1.8;
     this.textY = this.canvasHeight / 2;
-    this.fontSize =this.canvasWidth/7.5;
+    this.fontSize = this.canvasWidth / 7.5;
     this.lineHeight = this.fontSize * 0.8;
     this.maxTextWidth = this.canvasWidth * 5;
     this.particleDuration = 5000;
     this.startTime = null;
     this.particles = [];
     this.gap = 3;
-    this.mouse = {
-      radius: 2000,
-      x: 0,
-      y: 0,
-    };
-    this.textWorker = new Worker(window.feedbackTextWorkerPath)
+    this.mouse = { radius: 2000, x: 0, y: 0 };
+    this.textWorker = new Worker(window.feedbackTextWorkerPath);
     this.textWorker.addEventListener(
       "message",
       this.handleTextWorkerMessage.bind(this)
     );
   }
+
   public wrapText(text: string): void {
-    console.log(text, ">>>>>>>>>");
     const gradient = this.context.createLinearGradient(
       0,
       0,
@@ -69,7 +66,7 @@ export class FeedbackTextEffects {
     for (let i = 0; i < words.length; i++) {
       let testLine = line + words[i] + " ";
       if (this.context.measureText(testLine).width > this.maxTextWidth) {
-        line = words[i] + " ";
+        line = words[i] + "";
         lineCounter++;
       } else {
         line = testLine;
@@ -79,12 +76,10 @@ export class FeedbackTextEffects {
     let textHeight = this.lineHeight * lineCounter;
     this.textY = this.canvasHeight / 4.2 - textHeight / 2;
     const initialX = 50;
-    const spacing = 0.3;
-    text =text.trim();
+    // const spacing = 0.3;
+    text = text.trim();
     lineArray.forEach((text, index) => {
-      let x = initialX;
       let lastSpaceIndex=text.lastIndexOf(" ",text.lastIndexOf(" ")-1);
-      console.log(text.length);
       if(this.fontSize*text.length > this.canvasWidth*1.7 &&lastSpaceIndex!=-1) {
         let initialText=text.slice(0,lastSpaceIndex);
         let lastText=" "+text.slice(lastSpaceIndex+1);
@@ -107,48 +102,32 @@ export class FeedbackTextEffects {
     });
     this.convertToParticle();
   }
-  public handleTextWorkerMessage = (event: MessageEvent): void => {
-    const particles = event.data;
-    this.particles = particles.map(
+
+  private handleTextWorkerMessage(event: MessageEvent): void {
+    this.particles = event.data.map(
       ({ x, y, color }) => new TextParticle(this, x, y, color)
     );
   }
-  public convertToParticle(): void {
-    const pixels = this.context.getImageData(
-      0,
-      0,
-      this.canvasWidth,
-      this.canvasHeight
-    ).data;
+
+  private convertToParticle(): void {
+    const imageData = this.context.getImageData(0, 0, this.canvasWidth, this.canvasHeight);
     this.context.clearRect(0, 0, this.canvasWidth, this.canvasHeight);
     this.textWorker.postMessage({
       canvasWidth: this.canvasWidth,
       canvasHeight: this.canvasHeight,
       gap: this.gap,
-      pixels,
+      pixels: imageData.data,
     });
   }
+
   public render(): void {
     this.context.clearRect(0, 0, this.canvasWidth, this.canvasHeight);
-    this.particles.forEach((particle) => {
+    this.particles.forEach(particle => {
       particle.draw();
       particle.update();
     });
-    // if (this.startTime === null) {
-    //   this.startTime = Date.now();
-    // }
-    // const currentTime = Date.now();
-    // const elapsedTime = currentTime - this.startTime;
-    // if (elapsedTime >= this.particleDuration) {
-    //   this.startTime = null;
-    //   // this.particles = [];
-    // } else {
-    //   this.particles.forEach((particle) => {
-    //     particle.draw();
-    //     particle.update();
-    //   });
-    // }
   }
+
   public updateParticles(): void {
     this.textWorker.postMessage({
       particles: this.particles,
@@ -161,7 +140,8 @@ export class FeedbackTextEffects {
     this.particles = [];
   }
 
-  public unregisterEventListener = () => {
+  public unregisterEventListener(): void {
     this.textWorker.removeEventListener("message", this.handleTextWorkerMessage);
+    this.textWorker.terminate();
   }
 }

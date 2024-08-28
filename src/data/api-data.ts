@@ -1,6 +1,6 @@
 import { lang } from "../../global-variables";
 
-const URL = "./lang/" + lang + "/ftm_" + lang + ".json";
+export const URL = "./lang/" + lang + "/ftm_" + lang + ".json";
 
 export function getFtmData() {
   return fetch(URL, {
