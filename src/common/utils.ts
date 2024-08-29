@@ -147,3 +147,15 @@ export function isClickInsideButton(
 }
 
 export const isDocumentVisible = (): boolean => document.visibilityState === "visible";
+
+export const toggleDebugMode = (toggleBtn: HTMLElement): void => {
+  toggleBtn.classList.toggle("on");
+
+  if (toggleBtn.classList.contains("on")) {
+    Debugger.DebugMode = true;
+    toggleBtn.innerText = "Dev";
+  } else {
+    Debugger.DebugMode = false;
+    toggleBtn.innerText = "Dev";
+  }
+};

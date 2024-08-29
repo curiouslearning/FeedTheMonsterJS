@@ -6,6 +6,7 @@ import {
   createRippleEffect,
   isClickInsideButton,
   isDocumentVisible,
+  toggleDebugMode
 } from "./utils";
 import { Debugger, lang, font, pseudoId, Window } from "./global-variables";
 import {
@@ -46,4 +47,5 @@ export {
   LevelConfig,
   isClickInsideButton,
   isDocumentVisible,
+  toggleDebugMode
 };

@@ -17,7 +17,7 @@ import {
   PlayButton,
 } from "@components";
 import { DataModal } from "@data";
-import { Debugger, loadImages, StoneConfig } from "@common";
+import { Debugger, loadImages, StoneConfig, toggleDebugMode } from "@common";
 // var this: any;
 let lastTime = 0;
 let pwa_install_status: any;
@@ -154,19 +154,12 @@ export class TestGameplayScene {
     // this.counter += 1;
     this.levelIndicator.setIndicators(this.counter++);
   };
-  devToggle() {
-    toggleBtn.addEventListener("click", () => {
-      toggleBtn.classList.toggle("on");
 
-      if (toggleBtn.classList.contains("on")) {
-        Debugger.DebugMode = true;
-        toggleBtn.innerText = "Dev";
-      } else {
-        Debugger.DebugMode = false;
-        toggleBtn.innerText = "Dev";
-      }
-    });
-  }
+  devToggle = () => {
+    toggleBtn.addEventListener("click", () =>
+      toggleDebugMode(toggleBtn)
+    );
+  };
 
   handleMouseUp = (event) => {
     // console.log(" upping mouse like a pro ");

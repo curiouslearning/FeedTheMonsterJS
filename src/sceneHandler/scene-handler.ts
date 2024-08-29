@@ -6,7 +6,7 @@ import {
   LevelEndScene,
 } from "@scenes";
 import { DataModal, GameScore } from "@data";
-import { Debugger } from "@common";
+import { Debugger, toggleDebugMode } from "@common";
 import {
   SCENE_NAME_START,
   SCENE_NAME_LEVEL_SELECT,
@@ -70,18 +70,11 @@ export class SceneHandler {
     requestAnimationFrame(animate);
   }
 
-  devToggle() {
-    this.toggleBtn.addEventListener("click", () => {
-      this.toggleBtn.classList.toggle("on");
-      if (this.toggleBtn.classList.contains("on")) {
-        Debugger.DebugMode = true;
-        this.toggleBtn.innerText = "Dev";
-      } else {
-        Debugger.DebugMode = false;
-        this.toggleBtn.innerText = "Dev";
-      }
-    });
-  }
+  devToggle = () => {
+    this.toggleBtn.addEventListener("click", () =>
+      toggleDebugMode(this.toggleBtn)
+    );
+  };
 
   public checkMonsterPhaseUpdation(): number {
     let totalStarCount = GameScore.getTotalStarCount();
