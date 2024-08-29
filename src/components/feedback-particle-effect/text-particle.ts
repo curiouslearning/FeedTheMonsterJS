@@ -1,4 +1,4 @@
-import { FeedbackTextEffects } from "./feedback-text-effects";
+import { FeedbackTextEffects } from "@feedbackParticleEffect";
 
 export class TextParticle {
   private feedbackTextEffects: FeedbackTextEffects;

@@ -1,4 +1,4 @@
-import { TextParticle } from "./text-particle";
+import { TextParticle } from "@feedbackParticleEffect";
 import { font } from "@common";
 
 export class FeedbackTextEffects {

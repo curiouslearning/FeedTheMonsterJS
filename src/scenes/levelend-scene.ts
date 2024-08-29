@@ -1,7 +1,6 @@
 import { loadImages, CLICK, isDocumentVisible } from "@common";
-import { AudioPlayer } from "@components";
+import { AudioPlayer, Monster } from "@components";
 import { CloseButton, NextButton, RetryButton } from "@buttons";
-import { Monster } from "@components";
 import {
   BACKGROUND_ASSET_LIST,
   createBackground,

@@ -57,19 +57,20 @@ export const AUDIO_URL_PRELOAD = [
 ];
 
 //Image paths
-export const ASSETS_PATH_STONE_PINK_BG = "./assets/images/stone_pink_v02.png";
+export const ASSETS_PATH_STONE_PINK_BG = "./assets/images/stone_pink.png"; //stone_pink_v02.png
 export const ASSETS_PATH_TOTEM = "./assets/images/Totem_v02_v01.webp";
+export const ASSETS_PATH_BG_01 = "./assets/images/bg_v01.webp";
 export const ASSETS_PATH_HILL = "./assets/images/hill_v01.webp";
 export const ASSETS_PATH_FENCE = "./assets/images/fence_v01.webp";
 export const ASSETS_PATH_MONSTER_IDLE = "./assets/images/idle4.png";
 export const DEFAULT_BACKGROUND_1 = "./assets/images/bg_v01.webp";
 export const AUTUMN_BACKGROUND_1 = "./assets/images/Autumn_bg_v01.webp";
-export const AUTUMN_HILL_1 = "./assets/images/Autumn_hill_v01.png";
+export const AUTUMN_HILL_1 = "./assets/images/Autumn_hill_v01.webp";
 export const AUTUMN_PILLAR_1 = "./assets/images/Autumn_sign_v01.png";
 export const AUTUMN_SIGN_1 = "./assets/images/Autumn_sign_v01.png";
 export const AUTUMN_FENCE_1 = "./assets/images/Autumn_fence_v01.png";
 export const WINTER_BACKGROUND_1 = "./assets/images/Winter_bg_01.webp";
-export const WINTER_HILL_1 = "./assets/images/Winter_hill_v01.png";
+export const WINTER_HILL_1 = "./assets/images/Winter_hill_v01.webp";
 export const WINTER_SIGN_1 = "./assets/images/Winter_sign_v01.png";
 export const WINTER_FENCE_1 = "./assets/images/Winter_fence_v01.png";
 export const WINTER_PILLAR_1 = "./assets/images/Winter_sign_v01.png";

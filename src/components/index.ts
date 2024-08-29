@@ -9,8 +9,9 @@ import { TimerTicking } from "./timer-ticking";
 import { Background } from "./background";
 import { FeedbackTextEffects } from "./feedback-particle-effect/feedback-text-effects";
 import { AudioPlayer } from "./audio-player";
+import TrailEffect from "./trail-particles";
 import PlayButton from "./play-button";
-import { AreYouSurePopUp } from "./feedback-particle-effect";
+import { AreYouSurePopUp, TextParticle } from "./feedback-particle-effect";
 
 export {
   Monster,
@@ -24,6 +25,8 @@ export {
   Background,
   FeedbackTextEffects,
   AudioPlayer,
+  TrailEffect,
   PlayButton,
   AreYouSurePopUp,
+  TextParticle,
 };

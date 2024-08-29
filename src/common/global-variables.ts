@@ -1,7 +1,7 @@
 const urlParams = new URLSearchParams(window.location.search);
 
 import { DevelopmentServer } from "@constants";
-import { Utils } from "./utils";
+import { Utils } from "@common";
 
 export var pseudoId = urlParams.get("cr_user_id");
 

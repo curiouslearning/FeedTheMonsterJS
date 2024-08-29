@@ -1,4 +1,4 @@
-import { getFtmData, getData } from "./api-data";
+import { getFtmData, getData, URL } from "./api-data";
 import {
   DataModal,
   OtherAudios,
@@ -29,4 +29,5 @@ export {
   LevelMeta,
   GameScore,
   languageFontMapping,
+  URL,
 };
