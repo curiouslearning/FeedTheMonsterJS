@@ -1,4 +1,4 @@
-import { CLICK } from "@common";
+import { CLICK, loadImages } from "@common";
 import { AudioPlayer } from "@components";
 import { YesButton, NoButton } from "@buttons";
 import { SURE_AND_PAUSE_POPUP } from "@constants";
@@ -37,12 +37,10 @@ export default class AreYouSurePopUp {
         (this.canvas.width * 0.15) / 2
     );
 
-    this.pop_up_image = new Image();
-    this.pop_up_image.src = SURE_AND_PAUSE_POPUP;
-    this.pop_up_image.onload = (e) => {
-      this.pop_up_image = this.pop_up_image;
+    loadImages({ pop_up_image: SURE_AND_PAUSE_POPUP }, (images) => {
+      this.pop_up_image = images["pop_up_image"];
       this.imagesLoaded = true;
-    };
+    });
   }
 
   addListner = () => {

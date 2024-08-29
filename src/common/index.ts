@@ -1,5 +1,12 @@
 import { StoneConfig } from "./stone-config";
-import { Utils, loadImages, syncLoadingImages, createRippleEffect } from "./utils";
+import {
+  Utils,
+  loadImages,
+  syncLoadingImages,
+  createRippleEffect,
+  isClickInsideButton,
+  isDocumentVisible,
+} from "./utils";
 import { Debugger, lang, font, pseudoId, Window } from "./global-variables";
 import {
   CLICK,
@@ -37,4 +44,6 @@ export {
   TOUCHSTART,
   VISIBILITY_CHANGE,
   LevelConfig,
+  isClickInsideButton,
+  isDocumentVisible,
 };

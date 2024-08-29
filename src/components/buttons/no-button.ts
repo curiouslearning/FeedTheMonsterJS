@@ -1,3 +1,4 @@
+import { isClickInsideButton, loadImages } from "@common";
 import { NO_BUTTON } from "@constants";
 
 export default class NoButton {
@@ -19,12 +20,10 @@ export default class NoButton {
     this.context = context;
     this.canvas = canvas;
 
-    this.no_button_image = new Image();
-    this.no_button_image.src = NO_BUTTON;
-    this.no_button_image.onload = (e) => {
+    loadImages({ no_button_image: NO_BUTTON }, (images) => {
+      this.no_button_image = images["no_button_image"];
       this.imagesLoaded = true;
-      this.no_button_image = this.no_button_image;
-    };
+    });
   }
 
   draw() {
@@ -40,14 +39,13 @@ export default class NoButton {
   }
 
   onClick(xClick: number, yClick: number): boolean {
-    const distance = Math.sqrt(
-      (xClick - this.posX - (this.canvas.width * 0.15) / 2) *
-        (xClick - this.posX - (this.canvas.width * 0.15) / 2) +
-        (yClick - this.posY - (this.canvas.width * 0.15) / 2) *
-          (yClick - this.posY - (this.canvas.width * 0.15) / 2)
+    return isClickInsideButton(
+      xClick,
+      yClick,
+      this.posX,
+      this.posY,
+      this.canvas.width * 0.15,
+      this.canvas.width * 0.15
     );
-    if (distance < (this.canvas.width * 0.15) / 2) {
-      return true;
-    }
   }
 }

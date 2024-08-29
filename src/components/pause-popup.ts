@@ -1,5 +1,5 @@
 import { CloseButton, CancelButton, RetryButton } from "@buttons";
-import { CLICK, lang } from "@common";
+import { CLICK, lang, loadImages } from "@common";
 import { AudioPlayer } from "@components";
 import { AreYouSurePopUp } from "@components";
 import { AUDIO_ARE_YOU_SURE, SURE_AND_PAUSE_POPUP } from "@constants";
@@ -56,12 +56,12 @@ export default class PausePopUp {
         this.canvas.width * 0.4 -
         (this.canvas.width * 0.19) / 2
     );
-    this.pop_up_image = new Image();
-    this.pop_up_image.src = SURE_AND_PAUSE_POPUP;
-    this.pop_up_image.onload = (e) => {
-      this.pop_up_image = this.pop_up_image;
+
+    loadImages({ pop_up_image: SURE_AND_PAUSE_POPUP }, (images) => {
+      this.pop_up_image = images["pop_up_image"];
       this.imagesLoaded = true;
-    };
+    });
+
     this.retrySurePopup = new AreYouSurePopUp(
       this.canvas,
       this.yesRetryCallback,

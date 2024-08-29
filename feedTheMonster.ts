@@ -3,7 +3,7 @@ import { getData, DataModal } from "@data";
 import { SceneHandler } from "@sceneHandler";
 import { AUDIO_URL_PRELOAD, IsCached } from "@constants";
 import { Workbox } from "workbox-window";
-import { Debugger, lang, pseudoId } from "@common";
+import { Debugger, lang, pseudoId, visibilityState } from "@common";
 import { FirebaseIntegration } from "./src/Firebase/firebase-integration";
 import { Utils, VISIBILITY_CHANGE } from "@common";
 import { AudioPlayer } from "@components";
@@ -255,7 +255,7 @@ class App {
   }
 
   private handleVisibilityChange = () => {
-    if (document.visibilityState === "visible") {
+    if (visibilityState) {
       this.logSessionStartFirebaseEvent();
     } else {
       this.logSessionEndFirebaseEvent();

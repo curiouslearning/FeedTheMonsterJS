@@ -130,3 +130,20 @@ export const syncLoadingImages = async (images: object) => {
 
   return loadedImages;
 };
+
+export function isClickInsideButton(
+  xClick: number,
+  yClick: number,
+  buttonX: number,
+  buttonY: number,
+  buttonWidth: number,
+  buttonHeight: number
+): boolean {
+  const distance = Math.sqrt(
+    (xClick - buttonX - buttonWidth / 2) ** 2 +
+      (yClick - buttonY - buttonHeight / 2) ** 2
+  );
+  return distance < buttonWidth / 2;
+}
+
+export const isDocumentVisible = (): boolean => document.visibilityState === "visible";

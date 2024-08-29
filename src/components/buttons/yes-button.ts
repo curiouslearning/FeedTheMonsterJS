@@ -1,3 +1,4 @@
+import { isClickInsideButton, loadImages } from "@common";
 import { YES_BUTTON } from "@constants";
 
 export default class YesButton {
@@ -19,12 +20,10 @@ export default class YesButton {
     this.context = context;
     this.canvas = canvas;
 
-    this.yes_button_image = new Image();
-    this.yes_button_image.src = YES_BUTTON;
-    this.yes_button_image.onload = (e) => {
+    loadImages({ yes_button_image: YES_BUTTON }, (images) => {
+      this.yes_button_image = images["yes_button_image"];
       this.imagesLoaded = true;
-      this.yes_button_image = this.yes_button_image;
-    };
+    });
   }
 
   draw() {
@@ -40,14 +39,13 @@ export default class YesButton {
   }
 
   onClick(xClick: number, yClick: number): boolean {
-    const distance = Math.sqrt(
-      (xClick - this.posX - (this.canvas.width * 0.15) / 2) *
-        (xClick - this.posX - (this.canvas.width * 0.15) / 2) +
-        (yClick - this.posY - (this.canvas.width * 0.15) / 2) *
-          (yClick - this.posY - (this.canvas.width * 0.15) / 2)
+    return isClickInsideButton(
+      xClick,
+      yClick,
+      this.posX,
+      this.posY,
+      this.canvas.width * 0.15,
+      this.canvas.width * 0.15
     );
-    if (distance < (this.canvas.width * 0.15) / 2) {
-      return true;
-    }
   }
 }

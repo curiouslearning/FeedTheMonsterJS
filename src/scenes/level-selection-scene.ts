@@ -5,6 +5,7 @@ import {
   pseudoId,
   loadImages,
   LevelConfig,
+  isDocumentVisible,
 } from "@common";
 import { AudioPlayer } from "@components";
 import { getData, GameScore } from "@data";
@@ -96,7 +97,7 @@ export class LevelSelectionScreen {
     loadImages(this.images, (images) => {
       this.loadedImages = Object.assign({}, images);
       this.imagesLoaded = true;
-      if (document.visibilityState === "visible") {
+      if (isDocumentVisible()) {
         this.audioPlayer.playAudio(AUDIO_INTRO);
       }
     });
@@ -172,7 +173,7 @@ export class LevelSelectionScreen {
       .addEventListener("touchmove", this.handleTouchMove, false);
   }
   private pausePlayAudios = () => {
-    if (document.visibilityState === "visible") {
+    if (isDocumentVisible()) {
       this.audioPlayer.playAudio(AUDIO_INTRO);
     } else {
       this.audioPlayer.stopAllAudios();
@@ -222,59 +223,66 @@ export class LevelSelectionScreen {
     this.yDown = null;
   };
 
-  private handleMouseDown = (event) => {
-    // return function (event) {
+  private handleMouseDown = (event: MouseEvent): void => {
+    console.log("handleMouseDown");
     event.preventDefault();
-    let rect = document.getElementById("canvas").getBoundingClientRect();
+
+    const rect = this.canvas.getBoundingClientRect();
     const x = event.clientX - rect.left;
     const y = event.clientY - rect.top;
 
-    // right button
-    if (
-      x >= this.canvas.width * 0.7 &&
-      x < this.canvas.width * 0.7 + this.canvas.height / 10 &&
-      y > this.canvas.height / 1.3 &&
-      y < this.canvas.height / 1.3 + this.canvas.height / 10
-    ) {
+    const buttonWidth = this.canvas.height / 10;
+    const buttonHeight = this.canvas.height / 10;
+    const rightButtonX = this.canvas.width * 0.7;
+    const rightButtonY = this.canvas.height / 1.3;
+    const leftButtonX = this.canvas.width / 10;
+    const leftButtonY = this.canvas.height / 1.3;
+
+    // Function to handle button clicks
+    const handleButtonClick = (newPageIndex: number) => {
       this.audioPlayer.playButtonClickSound();
-      if (this.levelSelectionPageIndex != this.levelsSectionCount * 10 - 10) {
-        this.levelSelectionPageIndex = this.levelSelectionPageIndex + 10;
-        this.downButton(this.levelSelectionPageIndex);
+      this.levelSelectionPageIndex = newPageIndex;
+      this.downButton(newPageIndex);
+    };
+
+    // Right button
+    if (
+      x >= rightButtonX &&
+      x < rightButtonX + buttonWidth &&
+      y > rightButtonY &&
+      y < rightButtonY + buttonHeight
+    ) {
+      if (this.levelSelectionPageIndex < this.levelsSectionCount * 10 - 10) {
+        handleButtonClick(this.levelSelectionPageIndex + 10);
       }
     }
 
-    // left button
+    // Left button
     if (
-      x >= this.canvas.width / 10 &&
-      x < this.canvas.width / 10 + this.canvas.height / 10 &&
-      y > this.canvas.height / 1.3 &&
-      y < this.canvas.height / 1.3 + this.canvas.height / 10
+      x >= leftButtonX &&
+      x < leftButtonX + buttonWidth &&
+      y > leftButtonY &&
+      y < leftButtonY + buttonHeight
     ) {
-      this.audioPlayer.playButtonClickSound();
-      if (this.levelSelectionPageIndex != 0) {
-        this.levelSelectionPageIndex = this.levelSelectionPageIndex - 10;
+      if (this.levelSelectionPageIndex > 0) {
+        handleButtonClick(this.levelSelectionPageIndex - 10);
       }
-      this.downButton(this.levelSelectionPageIndex);
     }
+
+    // Handle level selection
+    const radius = 45;
+    const canvasOffset = this.canvas.height / 20;
     for (let s of this.levels) {
-      if (
-        Math.sqrt(
-          (x - s.x - this.canvas.height / 20) *
-            (x - s.x - this.canvas.height / 20) +
-            (y - s.y - this.canvas.height / 20) *
-              (y - s.y - this.canvas.height / 20)
-        ) < 45
-      ) {
-        if (Debugger.DebugMode) {
+      const dist = Math.sqrt(
+        Math.pow(x - s.x - canvasOffset, 2) +
+          Math.pow(y - s.y - canvasOffset, 2)
+      );
+
+      if (dist < radius) {
+        const levelIndex = s.index + this.levelSelectionPageIndex - 1;
+        if (Debugger.DebugMode || levelIndex <= this.unlockLevelIndex + 1) {
           this.audioPlayer.playButtonClickSound();
-          this.levelNumber = s.index + this.levelSelectionPageIndex - 1;
-          this.startGame(this.levelNumber);
-        } else if (
-          s.index + this.levelSelectionPageIndex - 1 <=
-          this.unlockLevelIndex + 1
-        ) {
-          this.audioPlayer.playButtonClickSound();
-          this.levelNumber = s.index + this.levelSelectionPageIndex - 1;
+          this.levelNumber = levelIndex;
           this.startGame(this.levelNumber);
         }
       }
