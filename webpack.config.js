@@ -38,7 +38,8 @@ var config = {
       '@interfaces': path.resolve(__dirname, 'src/interfaces/'),
       '@sceneHandler': path.resolve(__dirname, 'src/sceneHandler/'),
       '@scenes': path.resolve(__dirname, 'src/scenes/'),
-      '@events': path.resolve(__dirname, 'src/events/')
+      '@events': path.resolve(__dirname, 'src/events/'),
+      '@feedbackParticleEffect': path.resolve(__dirname, 'src/components/feedback-particle-effect/')
     },
     extensions: ['.tsx', '.ts', '.js', '.json', '.css', '.sh', '.babelrc', '.eslintignore', '.gitignore', '.d'],
   },
