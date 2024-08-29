@@ -3,6 +3,7 @@ import { loadImages } from "../common/";
 import { FirebaseIntegration } from "../Firebase/firebase-integration";
 import { lang, pseudoId } from "../../global-variables";
 import { getData } from "../data/api-data";
+import {PLAY_BUTTON_IMAGE} from '../constants/'
 export default class PlayButton {
     public posX: number;
     public posY: number;
@@ -27,19 +28,23 @@ export default class PlayButton {
         this.firebaseIntegration = new FirebaseIntegration();
         this.init();
         this.images = {
-            pause_button_image: "./assets/images/Play_button.png"
+            pause_button_image: PLAY_BUTTON_IMAGE
         }
 
         loadImages(this.images, (images) => {
             this.loadedImages = Object.assign({}, images);
             this.imagesLoaded = true;
         });
+        console.log('posX, posY ', {
+            posX, posY
+        })
     }
     private async init() {
          const data = await getData();
          this.majVersion = data.majversion;
          this.minVersion = data.minversion 
     }
+
     draw() {
         if (this.imagesLoaded) {
             this.context.drawImage(
@@ -51,7 +56,7 @@ export default class PlayButton {
             );
         }
     }
-  
+
     onClick(xClick: number, yClick: number): boolean {
         const distance = Math.sqrt(
             (xClick - this.posX - this.canvas.width / 6) *
@@ -63,6 +68,7 @@ export default class PlayButton {
         if (distance < this.canvas.width / 8) {
             return true;
         }
+        console.log('start onClick')
     }
     public logTappedStartFirebaseEvent() {
         

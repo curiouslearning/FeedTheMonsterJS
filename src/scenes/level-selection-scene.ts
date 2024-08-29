@@ -316,37 +316,35 @@ export class LevelSelectionScreen {
     }
   }
 
-  private renderArrowBtn(img, width, size) {
-    this.context.drawImage(
-      img,
-       width,
-      this.canvas.height / 1.3,
-      size,
-      size
-    );
-  }
-
   private downButton(level: number) {
     if (level != this.levelsSectionCount * 10 - 10) {
-      this.renderArrowBtn(
+      this.context.drawImage(
         this.loadedImages.nextbtn,
         this.canvas.width * 0.7,
+        this.canvas.height / 1.3,
+        this.canvas.height / this.rightBtnSize,
         this.canvas.height / this.rightBtnSize
-      )
+      );
       if (this.rightBtnSize > 10.1) {
-        this.rightBtnSize = this.rightBtnSize - 0.1;
+        this.rightBtnSize = this.rightBtnSize - 0.048;
       }
+    } else {
+      this.rightBtnSize = 10;
     }
 
     if (level != 0) {
-      this.renderArrowBtn(
+      this.context.drawImage(
         this.loadedImages.backbtn,
         this.canvas.width / 10,
+        this.canvas.height / 1.3,
+        this.canvas.height / this.leftBtnSize,
         this.canvas.height / this.leftBtnSize
       );
-      if ( this.leftBtnSize > 10.1) {
-        this.leftBtnSize = this.leftBtnSize - 0.1;
+      if (this.leftBtnSize > 10.1) {
+        this.leftBtnSize = this.leftBtnSize - 0.048;
       }
+    } else {
+      this.leftBtnSize = 10;
     }
   }
   // draw stars on top of level number
