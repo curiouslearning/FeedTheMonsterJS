@@ -94,10 +94,10 @@ export class TimerTicking extends EventManager {
             );
             this.context.drawImage(
                 this.loadedImages.rotating_clock,
-                5,
+                0,
                 this.height * 0.09,
-                this.width * 0.12,
-                this.height * 0.06
+                this.width * 0.14,
+                this.height * 0.065
             );
             this.context.drawImage(
                 this.loadedImages.timer_full,

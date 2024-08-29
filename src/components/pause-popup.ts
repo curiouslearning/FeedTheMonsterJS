@@ -1,7 +1,7 @@
 import { CloseButton, CancelButton, RetryButton } from "@buttons";
 import { CLICK, lang } from "@common";
 import { AudioPlayer } from "@components";
-import { AreYouSurePopUp } from "@components";
+import { AreYouSurePopUp } from "@components/feedback-particle-effect";
 import { AUDIO_ARE_YOU_SURE, SURE_AND_PAUSE_POPUP } from "@constants";
 export default class PausePopUp {
   public canvas: HTMLCanvasElement;

@@ -40,15 +40,15 @@ export class StoneConfig {
     calculateImageAndFontSize() {
         if (
             this.context.measureText(this.text).width * 1.4 >
-            this.canvasHeight / 13
+            this.canvasHeight / 9.5
         ) {
             this.imageSize = this.context.measureText(this.text).width * 1.1;
             this.textFontSize = this.canvasHeight / 25;
             if (this.text.length >= 3  && this.origx<50 && this.origx< this.canvasWidth/2 ) {
-                  this.x = this.origx + 25;
+                  this.x = this.origx + 21;
             }
         } else {
-            this.imageSize = this.canvasHeight / 13;
+            this.imageSize = this.canvasHeight / 9.5;
             this.textFontSize = this.canvasHeight / 20;
         }
     }
@@ -77,7 +77,12 @@ export class StoneConfig {
     }
 
     draw(deltaTime: number) {
-
+        // Apply shadow properties
+        this.context.fillStyle = 'red';
+        this.context.shadowColor = 'rgba(255, 255, 255, 1)'; // Color of the shadow
+        this.context.shadowBlur = 12; // Blur level of the shadow
+        this.context.shadowOffsetX = 0; // Horizontal shadow offset
+        this.context.shadowOffsetY = 0; // Vertical shadow offset
         this.context.drawImage(
             this.img,
             this.getX() - this.imageCenterOffsetX,
@@ -88,7 +93,13 @@ export class StoneConfig {
         this.context.fillStyle = "white";
         this.context.font = this.textFontSize + `px ${font}, monospace`;
         this.context.textAlign = "center";
+         // Set shadow properties
+         this.context.shadowOffsetX = 0; // Move shadow to the right by 10 pixels
+         this.context.shadowOffsetY = 0; // Move shadow down by 10 pixels
+         this.context.shadowBlur = 0;    // Blur the shadow by 15 pixels
+         this.context.shadowColor = 'transparent '; // Semi-transparent white shadow
         this.context.fillText(this.text, this.getX(), this.getY());
+       
         if (this.frame < 100) {
             this.frame = this.frame + 1;
         }
