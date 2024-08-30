@@ -1,8 +1,6 @@
-import { Debugger, lang } from "../../global-variables";
-import { StoreMonsterPhaseNumber } from '../constants/'
-import { loadImages } from "../common";
+// import { loadImages } from "../common";
 import { EventManager } from "../events/EventManager";
-
+import { Rive, Layout, Fit, Alignment } from "@rive-app/canvas";
 
 export class Monster extends EventManager {
   public zindex: number;
@@ -26,7 +24,7 @@ export class Monster extends EventManager {
   public loadedImages: any;
   public imagesLoaded: boolean = false;
   public monsterPhase: number;
-
+  public riveMonster:any;
   constructor(game, monsterPhase, callBackFunction?) {
     super({
       stoneDropCallbackHandler: (event) => this.handleStoneDrop(event),
@@ -50,56 +48,79 @@ export class Monster extends EventManager {
     this.countFrame = 0;
     this.frameInterval = 1000 / this.fps;
     this.frameTimer = 0;
+    // this.images = {
+    //   eatImg: "./assets/images/eat1" + this.monsterPhase + ".png",
+    //   idleImg: "./assets/images/idle1" + this.monsterPhase + ".png",
+    //   spitImg: "./assets/images/spit1" + this.monsterPhase + ".png",
+    //   dragImg: "./assets/images/drag1" + this.monsterPhase + ".png",
+    // };
 
-    this.images = {
-      eatImg: "./assets/images/eat1" + this.monsterPhase + ".png",
-      idleImg: "./assets/images/idle1" + this.monsterPhase + ".png",
-      spitImg: "./assets/images/spit1" + this.monsterPhase + ".png",
-      dragImg: "./assets/images/drag1" + this.monsterPhase + ".png",
-    };
+    // loadImages(this.images, (images) => {
+    //   this.loadedImages = Object.assign({}, images);
+    //   this.changeToIdleAnimation();
 
-    loadImages(this.images, (images) => {
-      this.loadedImages = Object.assign({}, images);
-      this.changeToIdleAnimation();
-
-      this.imagesLoaded = true;
-      if (callBackFunction) {
-        // console.log(this.imagesLoaded);
-        callBackFunction();
+    //   this.imagesLoaded = true;
+    //   if (callBackFunction) {
+    //     // console.log(this.imagesLoaded);
+    //     callBackFunction();
+    //   }
+    // });
+  }
+  
+  initialiseRiveMonster() {
+    this.riveMonster = new Rive({
+      src: "./assets/monsterrive.riv",
+      //canvas: document.getElementById("canvas-test"),
+      canvas: document.querySelector("canvas"),
+      autoplay: true,
+      stateMachines: "State Machine 1",
+      layout: new Layout({ fit: Fit.Contain, alignment: Alignment.TopCenter }),
+      onLoad: (rive) => {
+        this.riveMonster.drawFrame();
+        console.log('Rive animation loaded now');
+        // this.riveMonster.play("Eat Happy")
       }
-    });
+    })
   }
 
+  stopRiveMonster() {
+    if (this.riveMonster) {
+      this.riveMonster.stop();
+      const riveLoaded = document.getElementById("newcanvas");
+      riveLoaded.style.zIndex = '0';
+      console.log("Rive Monster animation stopped.");
+    }
+  }
 
   update(deltaTime) {
-    if (this.frameTimer >= this.frameInterval) {
-      this.frameTimer = 0;
-      if (this.frameX < this.maxFrame) {
-        this.frameX++;
-      } else {
-        this.frameX = 0;
-      }
-    } else {
-      this.frameTimer += deltaTime;
-    }
+    // if (this.frameTimer >= this.frameInterval) {
+    //   this.frameTimer = 0;
+    //   if (this.frameX < this.maxFrame) {
+    //     this.frameX++;
+    //   } else {
+    //     this.frameX = 0;
+    //   }
+    // } else {
+    //   this.frameTimer += deltaTime;
+    // }
 
-    this.draw();
+    // this.draw();
   }
 
   draw() {
-    if (this.imagesLoaded) {
-      this.context.drawImage(
-        this.image,
-        770 * this.frameX,
-        1386 * this.frameY,
-        768,
-        1386,
-        this.x * 0.5,
-        this.y * 0.1,
-        (this.width / 2) * 1.5,
-        (this.height / 1.5) * 1.5
-      );
-    }
+    // if (this.imagesLoaded) {
+    //   this.context.drawImage(
+    //     this.image,
+    //     770 * this.frameX,
+    //     1386 * this.frameY,
+    //     768,
+    //     1386,
+    //     this.x * 0.5,
+    //     this.y * 0.1,
+    //     (this.width / 2) * 1.5,
+    //     (this.height / 1.5) * 1.5
+    //   );
+    // }
   }
 
   changeImage(src) {
@@ -109,22 +130,26 @@ export class Monster extends EventManager {
 
   changeToDragAnimation() {
     this.maxFrame=6
-    this.image = this.loadedImages.dragImg;
+    // this.image = this.loadedImages.dragImg;
+    this.riveMonster.play("Opening Mouth Eat");
   }
 
   changeToEatAnimation() {
     this.maxFrame=12
-    this.image = this.loadedImages.eatImg;
+    // this.image = this.loadedImages.eatImg;
+    this.riveMonster.play("Eat Happy");
   }
 
   changeToIdleAnimation() {
     this.maxFrame=6;
-    this.image = this.loadedImages.idleImg;
+    // this.image = this.loadedImages.idleImg;
+    this.riveMonster.play("Idle");
   }
 
   changeToSpitAnimation() {
     this.maxFrame=12;
-    this.image = this.loadedImages.spitImg;
+    // this.image = this.loadedImages.spitImg;
+    this.riveMonster.play("Eat Disgust");
   }
 
   public handleStoneDrop(event) {

@@ -160,7 +160,7 @@ export class GameplayScene {
 
     this.levelIndicators.setIndicators(this.counter);
     this.monster = new Monster(this.canvas, this.monsterPhaseNumber);
-
+    this.monster.initialiseRiveMonster();
     this.pausePopup = new PausePopUp(
       this.canvas,
       this.resumeGame,
@@ -363,7 +363,14 @@ export class GameplayScene {
     this.pauseButton.draw();
     this.levelIndicators.draw();
     this.promptText.draw(deltaTime);
-    this.monster.update(deltaTime);
+    if (this.monster.riveMonster) {
+      this.monster.riveMonster.drawFrame();
+      console.log("Rive monster initialized on gameplay");
+    } else {
+        // Optionally, log or attempt re-initialization
+        console.log("Rive monster not yet initialized");
+        // this.monster.initialiseRiveMonster(); // Reinitialize if needed
+    }
     this.timerTicking.draw();
 
     if (this.isPauseButtonClicked && this.isGameStarted) {
