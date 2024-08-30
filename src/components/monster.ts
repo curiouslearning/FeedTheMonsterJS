@@ -86,8 +86,8 @@ export class Monster extends EventManager {
   stopRiveMonster() {
     if (this.riveMonster) {
       this.riveMonster.stop();
-      const riveLoaded = document.getElementById("newcanvas");
-      riveLoaded.style.zIndex = '0';
+      // const riveLoaded = document.getElementById("newcanvas");
+      // riveLoaded.style.zIndex = '0';
       console.log("Rive Monster animation stopped.");
     }
   }

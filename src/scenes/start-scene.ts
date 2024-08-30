@@ -52,7 +52,18 @@ export class StartScene {
     this.context = this.canavsElement.getContext("2d");
     this.toggleBtn = document.getElementById("toggle-btn") as HTMLElement;
     this.monster = new Monster(this.canvas, 4);
-    this.monster.initialiseRiveMonster();
+    this.monster.initialiseRiveMonster(); // Reinitialize if needed
+    // Render the Rive monster animation
+    console.log(this.monster.riveMonster);
+    
+    if (this.monster.riveMonster) {
+      this.monster.riveMonster.drawFrame();
+      console.log("Rive monster initialized");
+    } else {
+        // Optionally, log or attempt re-initialization
+        console.log("Rive monster not yet initialized");
+    }
+
     this.switchSceneToLevelSelection = switchSceneToLevelSelection;
     this.audioPlayer = new AudioPlayer();
     this.pwa_status = localStorage.getItem(PWAInstallStatus);
@@ -100,17 +111,6 @@ export class StartScene {
       this.height / 10
     );
     // console.log(this.monster);
-    
-    // Render the Rive monster animation
-    if (this.monster.riveMonster) {
-      this.monster.riveMonster.drawFrame();
-      console.log("Rive monster initialized on start screen");
-    } else {
-        // Optionally, log or attempt re-initialization
-        console.log("Rive monster not yet initialized");
-        // this.monster.initialiseRiveMonster(); // Reinitialize if needed
-    }
-
     // this.monster.update(deltaTime);
     this.playButton.draw();
   };

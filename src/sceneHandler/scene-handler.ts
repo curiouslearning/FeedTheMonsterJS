@@ -92,7 +92,7 @@ export class SceneHandler {
     let deltaTime = timeStamp - this.lastTime;
     this.lastTime = timeStamp;
 
-    this.context.clearRect(0, 0, this.width, this.height);
+    // this.context.clearRect(0, 0, this.width, this.height);
     this.loading ? this.loadingScreen.draw(deltaTime) : null;
 
     if (SceneHandler.SceneName === StartScene1) {

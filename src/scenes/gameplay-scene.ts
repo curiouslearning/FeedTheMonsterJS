@@ -207,6 +207,15 @@ export class GameplayScene {
     this.setupBg();
     this.trailParticles?.init();
     this.clickTrailToggle = false;
+
+    if (this.monster.riveMonster) {
+      this.monster.riveMonster.drawFrame();
+      console.log("Rive monster initialized on gameplay");
+    } else {
+        // Optionally, log or attempt re-initialization
+        console.log("Rive monster not yet initialized");
+        // this.monster.initialiseRiveMonster(); // Reinitialize if needed
+    }
   }
 
   private setupBg = async () => {
@@ -373,14 +382,6 @@ export class GameplayScene {
     this.pauseButton.draw();
     this.levelIndicators.draw();
     this.promptText.draw(deltaTime);
-    if (this.monster.riveMonster) {
-      this.monster.riveMonster.drawFrame();
-      console.log("Rive monster initialized on gameplay");
-    } else {
-        // Optionally, log or attempt re-initialization
-        console.log("Rive monster not yet initialized");
-        // this.monster.initialiseRiveMonster(); // Reinitialize if needed
-    }
     this.timerTicking.draw();
     this.trailParticles?.draw();
     if (this.isPauseButtonClicked && this.isGameStarted) {
