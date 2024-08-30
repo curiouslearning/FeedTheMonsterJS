@@ -53,16 +53,13 @@ img {
   transform: translate(-50%, 0%);
 }
 
-
 #about-company p {
   margin-top: 10%;
   line-height: 1.8;
   color: white;
   text-align: center;
 }
-#monster{
-  border:1px solid;
-}
+
 #discription-text p {
   margin-top: 10%;
   line-height: 1.8;
@@ -80,6 +77,14 @@ img {
   z-index: 1;
   background-repeat: no-repeat;
   background-size: cover;
+}
+#newcanvas {
+  position: absolute;
+  left: 0;
+  right: 0;
+  z-index: 1;
+  margin: auto;
+  bottom: 20%;
 }
 
 #canvas-timer {

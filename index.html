@@ -95,7 +95,27 @@
       <canvas id="loading"></canvas>
       <canvas id="feedback-text"></canvas>
       <canvas id="canvas"></canvas>
+      <canvas id="newcanvas"></canvas>
+      <!-- <div class="btnholder">
+        <button id="animation1">Idle 1</button>
+        <button id="animation2">Idle 2</button>
+        <button id="animation3">Talking</button>
+        <button id="animation4">Win</button>
+        <button id="animation5">Lose</button>
+      </div> -->
     </div>
+    <style>
+      .btnholder{
+        z-index: 9;
+        position: absolute;
+        width: 100%;
+        display: none;
+      }
+      .btnholder button{
+        width: calc(100% / 5.25);
+        margin: auto;
+      }
+    </style>
     <script type="module" src="feedTheMonster.js"></script>
     <script
       type="module"

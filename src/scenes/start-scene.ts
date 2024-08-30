@@ -12,13 +12,14 @@ import {
   PWAInstallStatus,
   DEFAULT_BG_GROUP_IMGS
 } from '../constants/';
-
+import { RiveMonster } from "../components/rive-monster";
 export class StartScene {
   public canvas: HTMLCanvasElement;
   public data: any;
   public width: number;
   public height: number;
   public monster: Monster;
+  public riveMonster: RiveMonster;
   public pickedStone: StoneConfig;
   public pwa_status: string;
   public firebase_analytics: { logEvent: any };
@@ -51,14 +52,14 @@ export class StartScene {
     this.canavsElement = document.getElementById("canvas") as HTMLCanvasElement;
     this.context = this.canavsElement.getContext("2d");
     this.toggleBtn = document.getElementById("toggle-btn") as HTMLElement;
-    this.monster = new Monster(this.canvas,1);
+    this.riveMonster = new RiveMonster(this.canvas);
     this.switchSceneToLevelSelection = switchSceneToLevelSelection;
     this.audioPlayer = new AudioPlayer();
     this.pwa_status = localStorage.getItem(PWAInstallStatus);
     this.handler = document.getElementById("canvas") as HTMLCanvasElement;
     this.devToggle();
     this.createPlayButton();
-    this.monster.initialiseRiveMonster();
+    this.riveMonster.initialiseRiveMonster();
     window.addEventListener("beforeinstallprompt", this.handlerInstallPrompt);
     this.setupBg();
   }
@@ -99,9 +100,8 @@ export class StartScene {
       this.width * 0.5,
       this.height / 10
     );
-    this.playButton.draw();
-    console.log("called bg and playbtn");
-    
+    // this.monster.update()
+    this.playButton.draw(); 
   };
 
 
@@ -135,11 +135,14 @@ export class StartScene {
       this.toggleBtn.style.display = "none";
       this.audioPlayer.playButtonClickSound();
       self.switchSceneToLevelSelection("StartScene");
+      setTimeout(() => {
+        this.riveMonster.stopRiveMonster();
+      }, 500);
     }
   };
 
   dispose() {
-    this.monster.dispose()
+    // this.monster.dispose()
     this.audioPlayer.stopAllAudios();
     this.handler.removeEventListener("click", this.handleMouseClick, false);
     window.removeEventListener("beforeinstallprompt", this.handlerInstallPrompt, false);

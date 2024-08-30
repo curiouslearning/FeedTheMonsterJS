@@ -43,6 +43,7 @@ import {
   createBackground,
   loadDynamicBgAssets,
 } from '../compositions/background';
+import { RiveMonster } from '../components/rive-monster';
 
 export class GameplayScene {
   public width: number;
@@ -70,6 +71,7 @@ export class GameplayScene {
   public imagesLoaded: boolean = false;
   public switchSceneToEnd: Function;
   public levelNumber: Function;
+  public riveMonster: RiveMonster;
   loadedImages: any;
   stoneHandler: StoneHandler;
   public counter: number = 0;
@@ -116,6 +118,7 @@ export class GameplayScene {
     this.rightToLeft = rightToLeft;
     this.canvas = canvas;
     this.context = this.canvas.getContext("2d", { willReadFrequently: true });
+    this.riveMonster = new RiveMonster(this.canvas);
     this.trailParticles = new TrailEffect(canvas);
     this.monsterPhaseNumber = monsterPhaseNumber || 1;
     this.levelData = levelData;
@@ -124,6 +127,7 @@ export class GameplayScene {
     this.switchToLevelSelection = switchToLevelSelection;
     this.reloadScene = reloadScene;
     this.jsonVersionNumber = jsonVersionNumber;
+    this.riveMonster.initialiseRiveMonster();
     this.startGameTime();
     this.startPuzzleTime();
     this.isDisposing = false;
