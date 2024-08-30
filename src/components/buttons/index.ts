@@ -5,6 +5,7 @@ import NoButton from "./no-button";
 import PauseButton from "./pause-button";
 import RetryButton from "./retry-button";
 import YesButton from "./yes-button";
+import PlayButton from "./play-button";
 
 export {
   CloseButton,
@@ -14,4 +15,5 @@ export {
   PauseButton,
   RetryButton,
   YesButton,
+  PlayButton,
 };

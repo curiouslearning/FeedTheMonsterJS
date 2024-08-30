@@ -1,4 +1,5 @@
-import { Monster, AudioPlayer, PlayButton } from "@components";
+import { Monster, AudioPlayer } from "@components";
+import { PlayButton } from "@buttons";
 import { DataModal } from "@data";
 import { Debugger, font, lang, StoneConfig, Utils } from "@common";
 import { FirebaseIntegration } from "../Firebase/firebase-integration";

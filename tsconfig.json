@@ -45,6 +45,7 @@
       "@components/*": ["src/components/*"],
       "@components": ["src/components"],
       "@buttons": ["src/components/buttons"],
+      "@popups/*": ["src/components/popups/*"],
       "@common": ["src/common"],
       "@compositions/*": ["src/compositions/*"],
       "@constants": ["src/constants"],
@@ -53,7 +54,7 @@
       "@sceneHandler": ["src/sceneHandler"],
       "@scenes": ["src/scenes"],
       "@events": ["src/events"],
-      "@feedbackParticleEffect": ["src/components/feedback-particle-effect"]
+      "@feedbackParticleEffect/*": ["src/components/feedback-particle-effect/*"]
     },
     // "rootDirs": [],                        /* List of root folders whose combined content represents the structure of the project at runtime. */
     // "typeRoots": [],                       /* List of folders to include type definitions from. */
