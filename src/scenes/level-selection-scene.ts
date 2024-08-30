@@ -45,9 +45,11 @@ export class LevelSelectionScreen {
   private firebaseIntegration: FirebaseIntegration;
   public background: any;
   private rightBtnSize: any;
-  private leftBtnSize: number;
   private rightBtnX: number;
+  private rightBtnY: any;
+  private leftBtnSize: number;
   private leftBtnX: number;
+  private leftBtnY: number;
 
   constructor(canvas: HTMLCanvasElement, data: any, callBack: Function) {
     this.canvas = canvas;
@@ -98,9 +100,11 @@ export class LevelSelectionScreen {
     });
     this.addListeners();
     this.rightBtnSize = 10;
+    this.rightBtnX = 0.7;
+    this.rightBtnY = 1.3;
     this.leftBtnSize = 10;
-    this.rightBtnX = 0.9;
     this.leftBtnX = 10;
+    this.leftBtnY = 1.3;
   }
 
   private async init() {
@@ -242,11 +246,14 @@ export class LevelSelectionScreen {
       const pageIndex = this.levelSelectionPageIndex
       if (isRight && pageIndex != this.levelsSectionCount * 10 - 10) {
         this.levelSelectionPageIndex = pageIndex + 10;
-        this.rightBtnSize = 11;
-        this.rightBtnX = 0.75;
+        this.rightBtnSize = 10.5;
+        this.rightBtnX = 0.73;
+        this.rightBtnY = 1.299
       } else if (isLeft && pageIndex != 0) {
         this.levelSelectionPageIndex = pageIndex - 10;
-        this.leftBtnSize = 11;
+        this.leftBtnSize = 10.3;
+        this.leftBtnX = 10.3;
+        this.leftBtnY = 1.299
       }
       this.downButton(this.levelSelectionPageIndex);
     }
@@ -326,44 +333,44 @@ export class LevelSelectionScreen {
       this.context.drawImage(
         this.loadedImages.nextbtn,
         this.canvas.width * this.rightBtnX,
-        this.canvas.height / 1.3,
+        this.canvas.height / this.rightBtnY,
         this.canvas.height / this.rightBtnSize,
         this.canvas.height / this.rightBtnSize
       );
       if (this.rightBtnSize > 10) {
-        this.rightBtnSize = this.rightBtnSize - 0.015;
+        this.rightBtnSize = this.rightBtnSize - 0.0250;
+        this.rightBtnY = 1.29
       }
       if (this.rightBtnX > 0.7) {
-        this.rightBtnX = this.rightBtnX - 0.025;
+        this.rightBtnX = this.rightBtnX - 0.0300;
       }
+      this.rightBtnY = this.rightBtnSize > 10  ? 1.299 : 1.3
     } else {
       this.rightBtnSize = 10;
       this.rightBtnX = 0.7;
+      this.rightBtnY = 1.3
     }
 
     if (level != 0) {
       this.context.drawImage(
         this.loadedImages.backbtn,
         this.canvas.width / this.leftBtnX,
-        this.canvas.height / 1.3,
+        this.canvas.height / this.leftBtnY,
         this.canvas.height / this.leftBtnSize,
         this.canvas.height / this.leftBtnSize
       );
       if (this.leftBtnSize > 10) {
-        this.leftBtnSize = this.leftBtnSize - 0.025;
+        this.leftBtnSize = this.leftBtnSize - 0.0250;
       }
       if (this.leftBtnX > 10) {
-        this.leftBtnX = this.leftBtnX - 0.025
+        this.leftBtnX = this.leftBtnX - 0.0250;
       }
+      this.leftBtnY = this.leftBtnSize > 10  ? 1.299 : 1.3
     } else {
       this.leftBtnSize = 10;
+      this.leftBtnX = 10;
+      this.leftBtnY = 1.3
     }
-    console.log({
-      rightBtnX: this.rightBtnX,
-      rightBtnSize: this.rightBtnSize,
-      leftBtnSize: this.leftBtnSize,
-      leftBtnX: this.leftBtnSize
-    })
   }
   // draw stars on top of level number
   private drawStars(gameLevelData) {
