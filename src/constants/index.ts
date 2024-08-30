@@ -57,7 +57,7 @@ export const AUDIO_URL_PRELOAD = [
 ];
 
 //Image paths
-export const ASSETS_PATH_STONE_PINK_BG = "./assets/images/stone_pink.png"; //stone_pink_v02.png
+export const ASSETS_PATH_STONE_PINK_BG = "./assets/images/stone_pink.webp"; //stone_pink_v02.png
 export const ASSETS_PATH_TOTEM = "./assets/images/Totem_v02_v01.webp";
 export const ASSETS_PATH_BG_01 = "./assets/images/bg_v01.webp";
 export const ASSETS_PATH_HILL = "./assets/images/hill_v01.webp";
