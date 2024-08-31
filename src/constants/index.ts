@@ -55,6 +55,8 @@ export const WINTER_FENCE_1 = "./assets/images/Winter_fence_v01.png";
 export const WINTER_PILLAR_1 = "./assets/images/Winter_sign_v01.png";
 export const LEVEL_SELECTION_BACKGROUND = "./assets/images/map.jpg";
 export const PLAY_BUTTON_IMAGE = "./assets/images/Play_button.png";
+export const PAUSE_BUTTON_IMAGE = "./assets/images/pause_v01.png";
+export const CLOSE_BUTTON_IMAGE = "./assets/images/map_btn.png";
 
 export const MAP_ICON_IMAGE = "./assets/images/mapIcon.png";
 export const MAP_ICON_SPECIAL_IMAGE = "./assets/images/map_icon_monster_level_v01.png";
@@ -62,7 +64,11 @@ export const MAP_LOCK_IMAGE = "./assets/images/mapLock.png";
 export const STAR_IMAGE = "./assets/images/star.png";
 export const NEXT_BTN_IMAGE = "./assets/images/next_btn.png";
 export const BACK_BTN_IMAGE = "./assets/images/back_btn.png";
-
+export const RETRY_BTN_IMAGE = "./assets/images/retry_btn.png";
+export const CANCEL_BTN_IMAGE = "./assets/images/close_btn.png";
+export const YES_BTN_IMAGE = "./assets/images/confirm_btn.png";
+export const NO_BTN_IMAGE = "./assets/images/close_btn.png";
+export const POPUP_BG_IMAGE = "./assets/images/popup_bg_v01.png";
 
 
 //Background Group Images

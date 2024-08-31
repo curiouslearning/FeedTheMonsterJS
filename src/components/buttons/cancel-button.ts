@@ -1,3 +1,4 @@
+import { CANCEL_BTN_IMAGE } from '../../constants';
 export default class CancelButton {
     public posX: number;
     public posY: number;
@@ -5,6 +6,11 @@ export default class CancelButton {
     public canvas: { width: any; height?: number };
     public imagesLoaded: boolean = false;
     public cancel_button_image: HTMLImageElement;
+    private btnSize: number;
+    private orignalPos: {
+        x: number;
+        y: number
+    };
 
     constructor(
         context: CanvasRenderingContext2D,
@@ -16,11 +22,13 @@ export default class CancelButton {
         this.canvas = canvas;
 
         this.cancel_button_image = new Image();
-        this.cancel_button_image.src = "./assets/images/close_btn.png";
+        this.cancel_button_image.src = CANCEL_BTN_IMAGE;
         this.cancel_button_image.onload = (e) => {
             this.imagesLoaded = true;
             this.cancel_button_image = this.cancel_button_image;
         }
+        this.btnSize = 0.15;
+        this.orignalPos = { x: this.posX, y: this.posY };
     }
 
     draw() {
@@ -29,9 +37,15 @@ export default class CancelButton {
                 this.cancel_button_image,
                 this.posX,
                 this.posY,
-                this.canvas.width * 0.15,
-                this.canvas.width * 0.15
+                this.canvas.width * this.btnSize,
+                this.canvas.width * this.btnSize
             );
+            if (this.btnSize < 0.15) {
+                this.btnSize = this.btnSize + 0.0005;
+            }  else {
+                this.posX = this.orignalPos.x;
+                this.posY = this.orignalPos.y;
+            }
         }
     }
 
@@ -43,6 +57,10 @@ export default class CancelButton {
             (yClick - this.posY - (this.canvas.width * 0.15) / 2)
         );
         if (distance < (this.canvas.width * 0.15) / 2) {
+            this.btnSize = 0.14;
+            this.posX = this.posX + 1;
+            this.posY = this.posY + 1;
+
             return true;
         }
     }
