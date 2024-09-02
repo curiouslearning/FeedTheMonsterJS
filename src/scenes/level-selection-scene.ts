@@ -100,7 +100,7 @@ export class LevelSelectionScreen {
     });
     this.addListeners();
     this.rightBtnSize = 10;
-    this.rightBtnX = 0.7;
+    this.rightBtnX = 0.73;
     this.rightBtnY = 1.3;
     this.leftBtnSize = 10;
     this.leftBtnX = 10;
@@ -247,12 +247,10 @@ export class LevelSelectionScreen {
       if (isRight && pageIndex != this.levelsSectionCount * 10 - 10) {
         this.levelSelectionPageIndex = pageIndex + 10;
         this.rightBtnSize = 10.5;
-        this.rightBtnX = 0.73;
         this.rightBtnY = 1.299
       } else if (isLeft && pageIndex != 0) {
         this.levelSelectionPageIndex = pageIndex - 10;
         this.leftBtnSize = 10.3;
-        this.leftBtnX = 10.3;
         this.leftBtnY = 1.299
       }
       this.downButton(this.levelSelectionPageIndex);
@@ -339,10 +337,6 @@ export class LevelSelectionScreen {
       );
       if (this.rightBtnSize > 10) {
         this.rightBtnSize = this.rightBtnSize - 0.0250;
-        this.rightBtnY = 1.29
-      }
-      if (this.rightBtnX > 0.7) {
-        this.rightBtnX = this.rightBtnX - 0.0300;
       }
       this.rightBtnY = this.rightBtnSize > 10  ? 1.299 : 1.3
     } else {
@@ -361,9 +355,6 @@ export class LevelSelectionScreen {
       );
       if (this.leftBtnSize > 10) {
         this.leftBtnSize = this.leftBtnSize - 0.0250;
-      }
-      if (this.leftBtnX > 10) {
-        this.leftBtnX = this.leftBtnX - 0.0250;
       }
       this.leftBtnY = this.leftBtnSize > 10  ? 1.299 : 1.3
     } else {
