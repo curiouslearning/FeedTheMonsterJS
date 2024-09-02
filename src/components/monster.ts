@@ -1,5 +1,5 @@
-// import { loadImages } from "../common";
-import { EventManager } from "../events/EventManager";
+import { loadImages } from "@common";
+import { EventManager } from "@events";
 import { Rive, Layout, Fit, Alignment } from "@rive-app/canvas";
 
 export class Monster extends EventManager {

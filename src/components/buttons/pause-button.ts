@@ -1,3 +1,5 @@
+import { PAUSE_BUTTON } from "@constants";
+
 export default class PauseButton {
     public posX: number;
     public posY: number;
@@ -16,7 +18,7 @@ export default class PauseButton {
         this.canvas = canvas;
 
         this.pause_button_image = new Image();
-        this.pause_button_image.src = "./assets/images/pause_v01.png";
+        this.pause_button_image.src = PAUSE_BUTTON;
         this.pause_button_image.onload = (e) => {
             this.imagesLoaded = true;
             this.pause_button_image = this.pause_button_image;

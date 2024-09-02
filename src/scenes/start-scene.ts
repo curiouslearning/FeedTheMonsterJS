@@ -1,17 +1,14 @@
-import { StoneConfig } from "../common/stone-config";
-import { Monster } from "../components/monster";
-import { DataModal } from "../data/data-modal";
-import { Debugger, font, lang } from "../../global-variables";
-import { AudioPlayer } from "../components/audio-player";
+import { Monster, AudioPlayer } from "@components";
+import { PlayButton } from "@buttons";
+import { DataModal } from "@data";
+import { Debugger, font, lang, StoneConfig, Utils } from "@common";
 import { FirebaseIntegration } from "../Firebase/firebase-integration";
-import { Utils } from "../common/utils";
-import PlayButton from "../components/play-button";
-import { createBackground, defaultBgDrawing } from '../compositions/background';
+import { createBackground, defaultBgDrawing } from '@compositions/background';
 import {
   FirebaseUserClicked,
   PWAInstallStatus,
   DEFAULT_BG_GROUP_IMGS
-} from '../constants/';
+} from '@constants';
 
 export class StartScene {
   public canvas: HTMLCanvasElement;
