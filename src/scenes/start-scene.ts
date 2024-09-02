@@ -49,13 +49,14 @@ export class StartScene {
     this.context = this.canavsElement.getContext("2d");
     this.toggleBtn = document.getElementById("toggle-btn") as HTMLElement;
     this.monster = new Monster(this.canvas, 4);
+    this.context.clearRect(0, 0, this.width, this.height);
     this.monster.initialiseRiveMonster(); // Reinitialize if needed
     // Render the Rive monster animation
     console.log(this.monster.riveMonster);
     
     if (this.monster.riveMonster) {
       this.monster.riveMonster.drawFrame();
-      console.log("Rive monster initialized");
+      console.log("Rive monster initialized from start scene");
     } else {
         // Optionally, log or attempt re-initialization
         console.log("Rive monster not yet initialized");
@@ -108,7 +109,7 @@ export class StartScene {
       this.height / 10
     );
     // console.log(this.monster);
-    // this.monster.update(deltaTime);
+    this.monster.draw();
     this.playButton.draw();
   };
 

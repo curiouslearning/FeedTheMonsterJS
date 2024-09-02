@@ -181,7 +181,6 @@ class App {
                 return;
               }
               const newContentFileData = await response.json();
-              console.log(newContentFileData);
               const aheadContentVersion =
                 newContentFileData["majversion"] +
                 "." +

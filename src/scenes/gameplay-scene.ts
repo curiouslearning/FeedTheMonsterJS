@@ -157,6 +157,7 @@ export class GameplayScene {
 
     this.levelIndicators.setIndicators(this.counter);
     this.monster = new Monster(this.canvas, this.monsterPhaseNumber);
+    this.context.clearRect(0, 0, this.width, this.height);
     this.monster.initialiseRiveMonster();
     this.pausePopup = new PausePopUp(
       this.canvas,
@@ -377,6 +378,7 @@ export class GameplayScene {
   };
 
   draw(deltaTime: number) {
+    console.log("Rive animation hided")
     if (!this.isGameStarted && !this.isPauseButtonClicked) {
       this.time = this.time + deltaTime;
       if (this.time >= 5000) {

@@ -323,6 +323,7 @@ export class LevelSelectionScreen {
     for (let s of this.levels) {
       this.drawLevel(s, this.canvas);
     }
+    console.log("Rive animation hided");
   }
   private downButton(level: number) {
     let imageSize = this.canvas.height / 10;

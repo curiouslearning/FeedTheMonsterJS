@@ -37,7 +37,6 @@ export class Monster extends EventManager {
     this.canavsElement = document.getElementById("canvas") as HTMLCanvasElement;
     this.context = this.canavsElement.getContext("2d");
     this.image = document.getElementById("monster") as HTMLImageElement;
-    // console.log(this.image);
     this.frameX = 0;
     this.frameY = 0;
     this.maxFrame = 6;
@@ -68,6 +67,10 @@ export class Monster extends EventManager {
   }
   
   initialiseRiveMonster() {
+    // const ctx = this.canavsElement.getContext("2d");
+    // ctx.drawImage(this.image,0,0,320, 500);
+    // console.log("called");
+
     this.riveMonster = new Rive({
       src: "./assets/monsterrive.riv",
       //canvas: document.getElementById("canvas-test"),
@@ -76,8 +79,10 @@ export class Monster extends EventManager {
       stateMachines: "State Machine 1",
       layout: new Layout({ fit: Fit.Contain, alignment: Alignment.TopCenter }),
       onLoad: (rive) => {
+         // Start rendering loop after Rive has loaded
+        //  requestAnimationFrame(this.draw);
         this.riveMonster.drawFrame();
-        console.log('Rive animation loaded now');
+        console.log('Rive animation loaded now, Animation Drawed');
         // this.riveMonster.play("Eat Happy")
       }
     })
@@ -92,7 +97,7 @@ export class Monster extends EventManager {
     }
   }
 
-  update(deltaTime) {
+  update(deltaTime?) {
     // if (this.frameTimer >= this.frameInterval) {
     //   this.frameTimer = 0;
     //   if (this.frameX < this.maxFrame) {
@@ -108,6 +113,13 @@ export class Monster extends EventManager {
   }
 
   draw() {
+    console.log('Rive Animation Hided');
+    // this.riveMonster.draw();
+    // Request the next frame
+    // requestAnimationFrame(this.draw);
+    // ctx.drawImage(this.image,0,0,320, 500);
+    // console.log("called in itertion");
+    // this.initialiseRiveMonster();
     // if (this.imagesLoaded) {
     //   this.context.drawImage(
     //     this.image,
