@@ -1,3 +1,5 @@
+import { CANCEL_BUTTON } from "@constants";
+
 export default class CancelButton {
     public posX: number;
     public posY: number;
@@ -16,7 +18,7 @@ export default class CancelButton {
         this.canvas = canvas;
 
         this.cancel_button_image = new Image();
-        this.cancel_button_image.src = "./assets/images/close_btn.png";
+        this.cancel_button_image.src = CANCEL_BUTTON;
         this.cancel_button_image.onload = (e) => {
             this.imagesLoaded = true;
             this.cancel_button_image = this.cancel_button_image;
