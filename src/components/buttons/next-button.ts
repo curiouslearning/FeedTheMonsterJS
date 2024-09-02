@@ -1,4 +1,4 @@
-import { NEXT_BUTTON } from "@constants";
+import { NEXT_BTN_IMG } from "@constants";
 export default class NextButton {
     public posX: number;
     public posY: number;
@@ -20,7 +20,7 @@ export default class NextButton {
         this.width = width;
         this.height = height;
         this.next_button_image = new Image();
-        this.next_button_image.src = NEXT_BUTTON;
+        this.next_button_image.src = NEXT_BTN_IMG;
         this.next_button_image.onload = (e) => {
             this.imagesLoaded = true;
             this.next_button_image = this.next_button_image;

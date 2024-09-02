@@ -2,7 +2,7 @@ import { CloseButton, CancelButton, RetryButton } from "@buttons";
 import { CLICK, lang } from "@common";
 import { AudioPlayer } from "@components";
 import AreYouSurePopUp from "@popups/sure-popup";
-import { AUDIO_ARE_YOU_SURE, SURE_AND_PAUSE_POPUP } from "@constants";
+import { AUDIO_ARE_YOU_SURE, POPUP_BG_IMG } from "@constants";
 export default class PausePopUp {
   public canvas: HTMLCanvasElement;
   public context: CanvasRenderingContext2D;
@@ -57,7 +57,7 @@ export default class PausePopUp {
         (this.canvas.width * 0.19) / 2
     );
     this.pop_up_image = new Image();
-    this.pop_up_image.src = SURE_AND_PAUSE_POPUP;
+    this.pop_up_image.src = POPUP_BG_IMG;
     this.pop_up_image.onload = (e) => {
       this.pop_up_image = this.pop_up_image;
       this.imagesLoaded = true;

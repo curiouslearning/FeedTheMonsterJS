@@ -75,7 +75,6 @@ export const WINTER_SIGN_1 = "./assets/images/Winter_sign_v01.webp";
 export const WINTER_FENCE_1 = "./assets/images/Winter_fence_v01.webp";
 export const WINTER_PILLAR_1 = "./assets/images/Winter_sign_v01.webp";
 export const LEVEL_SELECTION_BACKGROUND = "./assets/images/map.webp";
-
 export const PROMPT_TEXT_BG = "./assets/images/promptTextBg.webp";
 export const PROMPT_PLAY_BUTTON = "./assets/images/promptPlayButton.webp";
 export const LEVEL_INDICATOR = "./assets/images/levels_v01.webp";
@@ -106,7 +105,6 @@ export const RETRY_BTN_IMG = "./assets/images/retry_btn.webp";
 export const CANCEL_BTN_IMG = "./assets/images/close_btn.webp";
 export const YES_BTN_IMG = "./assets/images/confirm_btn.webp";
 export const POPUP_BG_IMG = "./assets/images/popup_bg_v01.webp";
-
 
 //Background Group Images
 export const GAMEPLAY_BG_GROUP_IMGS = {
