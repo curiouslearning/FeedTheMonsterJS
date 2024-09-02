@@ -1,3 +1,5 @@
+import { NO_BUTTON } from "@constants";
+
 export default class NoButton {
   public posX: number;
   public posY: number;
@@ -18,7 +20,7 @@ export default class NoButton {
     this.canvas = canvas;
 
     this.no_button_image = new Image();
-    this.no_button_image.src = "./assets/images/close_btn.png";
+    this.no_button_image.src = NO_BUTTON;
     this.no_button_image.onload = (e) => {
       this.imagesLoaded = true;
       this.no_button_image = this.no_button_image;
