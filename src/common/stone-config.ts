@@ -1,7 +1,5 @@
-import { font, lang } from "../../global-variables";
-import { TimerTicking } from "../components/timer-ticking";
-import { Tutorial } from "../components/tutorial";
-import { Utils } from "./utils";
+import { font } from "@common";
+import { TimerTicking, Tutorial } from "@components";
 
 export class StoneConfig {
     public x: number;

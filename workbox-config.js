@@ -1,7 +1,7 @@
 module.exports = {
   globDirectory: "build/",
   globPatterns: [
-    "**/*.{wav,mp3,WAV,png,jpg,js,gif,css,html}",
+    "**/*.{wav,mp3,WAV,png,jpg,webp,js,gif,css,html}",
     
     "./manifest.json"
   ],
@@ -9,7 +9,7 @@ module.exports = {
   swDest: "build/sw.js",
   swSrc: "sw-src.js",
   globIgnores: [
-    "lang/**/*.{wav,mp3,WAV,png,jpg}",
+    "lang/**/*.{wav,mp3,WAV,png,jpg,webp}",
 
   ]
 };

@@ -1,7 +1,5 @@
-import { Debugger, lang } from "../../global-variables";
-import { StoreMonsterPhaseNumber } from '../constants/'
-import { loadImages } from "../common";
-import { EventManager } from "../events/EventManager";
+import { loadImages } from "@common";
+import { EventManager } from "@events";
 
 
 export class Monster extends EventManager {

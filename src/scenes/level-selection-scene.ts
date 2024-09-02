@@ -1,23 +1,28 @@
-import { Debugger, font, lang, pseudoId } from "../../global-variables";
-import { loadImages } from "../common/";
-import { LevelConfig } from "../common/level-config";
-import { Utils } from "../common/utils";
-import { AudioPlayer } from "../components/audio-player";
-import { getData } from "../data/api-data";
-import { GameScore } from "../data/game-score";
+import {
+  Debugger,
+  font,
+  lang,
+  pseudoId,
+  loadImages,
+  LevelConfig,
+} from "@common";
+import { AudioPlayer } from "@components";
+import { getData, GameScore } from "@data";
 import { SelectedLevel } from "../Firebase/firebase-event-interface";
 import { FirebaseIntegration } from "../Firebase/firebase-integration";
-import { createBackground, levelSelectBgDrawing } from '../compositions/background';
+import { createBackground, levelSelectBgDrawing } from '@compositions/background';
 import {
   PreviousPlayedLevel,
   LEVEL_SELECTION_BACKGROUND,
-  MAP_ICON_IMAGE,
-  MAP_ICON_SPECIAL_IMAGE,
-  MAP_LOCK_IMAGE,
-  STAR_IMAGE,
-  NEXT_BTN_IMAGE,
-  BACK_BTN_IMAGE
-} from '../constants';
+  MAP_ICON_IMG,
+  MAP_ICON_SPECIAL_IMG,
+  MAP_LOCK_IMG,
+  STAR_IMG,
+  NEXT_BTN_IMG,
+  BACK_BTN_IMG,
+   AUDIO_INTRO,
+} from '@constants';
+
 export class LevelSelectionScreen {
   private canvas: HTMLCanvasElement;
   private data: any;
@@ -40,8 +45,8 @@ export class LevelSelectionScreen {
   private levelNumber: number;
   private levelsSectionCount: number;
   private unlockLevelIndex: number;
-  private majVersion:string;
-  private minVersion:string;
+  private majVersion: string;
+  private minVersion: string;
   private firebaseIntegration: FirebaseIntegration;
   public background: any;
   private rightBtnSize: any;
@@ -84,18 +89,18 @@ export class LevelSelectionScreen {
     }
     this.setupBg();
     this.images = {
-      mapIcon: MAP_ICON_IMAGE,
-      mapIconSpecial: MAP_ICON_SPECIAL_IMAGE,
-      mapLock: MAP_LOCK_IMAGE,
-      star: STAR_IMAGE,
-      nextbtn: NEXT_BTN_IMAGE,
-      backbtn: BACK_BTN_IMAGE,
+      mapIcon: MAP_ICON_IMG,
+      mapIconSpecial: MAP_ICON_SPECIAL_IMG,
+      mapLock: MAP_LOCK_IMG,
+      star: STAR_IMG,
+      nextbtn: NEXT_BTN_IMG,
+      backbtn: BACK_BTN_IMG,
     };
     loadImages(this.images, (images) => {
       this.loadedImages = Object.assign({}, images);
       this.imagesLoaded = true;
       if (document.visibilityState === "visible") {
-        this.audioPlayer.playAudio("./assets/audios/intro.mp3");
+        this.audioPlayer.playAudio(AUDIO_INTRO);
       }
     });
     this.addListeners();
@@ -110,7 +115,7 @@ export class LevelSelectionScreen {
   private async init() {
     const data = await getData();
     this.majVersion = data.majversion;
-    this.minVersion = data.minversion
+    this.minVersion = data.minversion;
   }
 
   private setupBg = async () => {
@@ -121,7 +126,7 @@ export class LevelSelectionScreen {
       { LEVEL_SELECTION_BACKGROUND },
       levelSelectBgDrawing
     );
-  }
+  };
 
   private initialiseButtonPos() {
     this.levelButtonPos = [
@@ -177,7 +182,7 @@ export class LevelSelectionScreen {
   }
   private pausePlayAudios = () => {
     if (document.visibilityState === "visible") {
-      this.audioPlayer.playAudio("./assets/audios/intro.mp3");
+      this.audioPlayer.playAudio(AUDIO_INTRO);
     } else {
       this.audioPlayer.stopAllAudios();
     }
@@ -290,16 +295,17 @@ export class LevelSelectionScreen {
       const levelNumber = s.index + this.levelSelectionPageIndex;
       const isSpecialLevel = specialLevels.includes(levelNumber);
       this.context.drawImage(
-        isSpecialLevel ? this.loadedImages.mapIconSpecial : this.loadedImages.mapIcon,
+        isSpecialLevel
+          ? this.loadedImages.mapIconSpecial
+          : this.loadedImages.mapIcon,
         s.x,
         s.y,
-        isSpecialLevel ?imageSize*0.9 : imageSize,
-        isSpecialLevel ?imageSize*0.9 : imageSize
+        isSpecialLevel ? imageSize * 0.9 : imageSize,
+        isSpecialLevel ? imageSize * 0.9 : imageSize
       );
 
       this.context.fillStyle = "white";
-      this.context.font =
-        textFontSize + `px ${font}, monospace`;
+      this.context.font = textFontSize + `px ${font}, monospace`;
       this.context.textAlign = "center";
       this.context.fillText(
         s.index + this.levelSelectionPageIndex,
@@ -307,9 +313,7 @@ export class LevelSelectionScreen {
         s.y + imageSize / 3
       );
       this.context.font =
-        textFontSize -
-        imageSize / 30 +
-        `px ${font}, monospace`;
+        textFontSize - imageSize / 30 + `px ${font}, monospace`;
       Debugger.DebugMode
         ? this.context.fillText(
             this.data.levels[s.index + this.levelSelectionPageIndex - 1]
@@ -456,14 +460,17 @@ export class LevelSelectionScreen {
       ftm_language: lang,
       profile_number: 0,
       version_number: document.getElementById("version-info-id").innerHTML,
-      json_version_number:  !!this.majVersion && !!this.minVersion  ? this.majVersion.toString() +"."+this.minVersion.toString() : "",
-      level_selected:this.levelNumber,
+      json_version_number:
+        !!this.majVersion && !!this.minVersion
+          ? this.majVersion.toString() + "." + this.minVersion.toString()
+          : "",
+      level_selected: this.levelNumber,
     };
     this.firebaseIntegration.sendSelectedLevelEvent(selectedLeveltData);
   }
   public drawLevelSelection() {
     if (this.imagesLoaded) {
-      this.background?.draw()
+      this.background?.draw();
       this.draw();
       this.downButton(this.levelSelectionPageIndex);
       this.drawStars(this.gameLevelData);
