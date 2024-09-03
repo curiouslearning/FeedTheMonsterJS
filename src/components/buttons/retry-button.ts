@@ -1,5 +1,4 @@
-import { RETRY_BUTTON } from "@constants";
-
+import { RETRY_BTN_IMG } from "@constants";
 
 export default class RetryButton {
     public posX: number;
@@ -8,6 +7,11 @@ export default class RetryButton {
     public canvas: HTMLCanvasElement;
     public imagesLoaded: boolean = false;
     public retry_button_image: HTMLImageElement;
+    private btnSize: number;
+    private orignalPos: {
+        x: number;
+        y: number
+    };
 
     constructor(
         context: CanvasRenderingContext2D,
@@ -19,13 +23,14 @@ export default class RetryButton {
         this.posY = posY;
         this.context = context;
         this.canvas = canvas;
-
         this.retry_button_image = new Image();
-        this.retry_button_image.src = RETRY_BUTTON;
+        this.retry_button_image.src = RETRY_BTN_IMG;
         this.retry_button_image.onload = (e) => {
             this.imagesLoaded = true;
             this.retry_button_image = this.retry_button_image;
         }
+        this.btnSize = 0.19;
+        this.orignalPos = { x: posX, y: posY };
     }
 
     draw() {
@@ -34,9 +39,15 @@ export default class RetryButton {
                 this.retry_button_image,
                 this.posX,
                 this.posY,
-                this.canvas.width * 0.19,
-                this.canvas.width * 0.19
+                this.canvas.width * this.btnSize,
+                this.canvas.width * this.btnSize
             );
+            if (this.btnSize < 0.19) {
+                this.btnSize = this.btnSize + 0.0005;
+            } else {
+                this.posX = this.orignalPos.x;
+                this.posY = this.orignalPos.y;
+            }
         }
     }
 
@@ -47,7 +58,12 @@ export default class RetryButton {
             (yClick - this.posY - (this.canvas.width * 0.19) / 2) *
             (yClick - this.posY - (this.canvas.width * 0.19) / 2)
         );
+
         if (distance < (this.canvas.width * 0.19) / 2) {
+            this.btnSize = 0.18;
+            this.posX = this.posX + 1;
+            this.posY = this.posY + 1;
+
             return true;
         }
     }
