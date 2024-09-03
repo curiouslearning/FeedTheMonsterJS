@@ -1,4 +1,4 @@
-import { YES_BTN_IMG } from '@constants';
+import { YES_BTN_IMG } from "@constants";
 export default class YesButton {
   public posX: number;
   public posY: number;

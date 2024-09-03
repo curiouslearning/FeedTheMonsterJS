@@ -1,4 +1,4 @@
-import { PAUSE_BTN_IMG } from '@constants';
+import { PAUSE_BTN_IMG } from "@constants";
 export default class PauseButton {
     public posX: number;
     public posY: number;

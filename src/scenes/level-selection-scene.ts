@@ -10,7 +10,7 @@ import { AudioPlayer } from "@components";
 import { getData, GameScore } from "@data";
 import { SelectedLevel } from "../Firebase/firebase-event-interface";
 import { FirebaseIntegration } from "../Firebase/firebase-integration";
-import { createBackground, levelSelectBgDrawing } from '@compositions/background';
+import { createBackground, levelSelectBgDrawing } from "@compositions/background";
 import {
   PreviousPlayedLevel,
   LEVEL_SELECTION_BACKGROUND,
@@ -21,7 +21,7 @@ import {
   NEXT_BTN_IMG,
   BACK_BTN_IMG,
    AUDIO_INTRO,
-} from '@constants';
+} from "@constants";
 
 export class LevelSelectionScreen {
   private canvas: HTMLCanvasElement;

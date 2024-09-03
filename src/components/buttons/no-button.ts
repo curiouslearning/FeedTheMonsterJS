@@ -1,4 +1,4 @@
-import { CLOSE_BTN_IMG } from '@constants';
+import { CLOSE_BTN_IMG } from "@constants";
 export default class NoButton {
   public posX: number;
   public posY: number;

@@ -1,4 +1,4 @@
-import { RETRY_BTN_IMG } from '@constants';
+import { RETRY_BTN_IMG } from "@constants";
 
 export default class RetryButton {
     public posX: number;

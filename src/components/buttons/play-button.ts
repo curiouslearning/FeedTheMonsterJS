@@ -1,4 +1,4 @@
-import { PLAY_BTN_IMG } from '@constants'
+import { PLAY_BTN_IMG } from "@constants";
 import { TappedStart } from "../../Firebase/firebase-event-interface";
 import { FirebaseIntegration } from "../../Firebase/firebase-integration";
 import { loadImages, pseudoId, lang } from "@common";
