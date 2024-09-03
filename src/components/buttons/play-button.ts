@@ -1,4 +1,4 @@
-import { PLAY_BUTTON } from "@constants";
+import { PLAY_BTN_IMG } from "@constants";
 import { TappedStart } from "../../Firebase/firebase-event-interface";
 import { FirebaseIntegration } from "../../Firebase/firebase-integration";
 import { loadImages, pseudoId, lang } from "@common";
@@ -27,7 +27,7 @@ export default class PlayButton {
         this.firebaseIntegration = new FirebaseIntegration();
         this.init();
         this.images = {
-            pause_button_image: PLAY_BUTTON
+            pause_button_image: PLAY_BTN_IMG
         }
 
         loadImages(this.images, (images) => {
@@ -38,8 +38,9 @@ export default class PlayButton {
     private async init() {
          const data = await getData();
          this.majVersion = data.majversion;
-         this.minVersion = data.minversion 
+         this.minVersion = data.minversion;
     }
+
     draw() {
         if (this.imagesLoaded) {
             this.context.drawImage(
@@ -51,7 +52,7 @@ export default class PlayButton {
             );
         }
     }
-  
+
     onClick(xClick: number, yClick: number): boolean {
         const distance = Math.sqrt(
             (xClick - this.posX - this.canvas.width / 6) *
@@ -65,7 +66,6 @@ export default class PlayButton {
         }
     }
     public logTappedStartFirebaseEvent() {
-        
         let endTime = Date.now();
         const tappedStartData: TappedStart = {
           cr_user_id: pseudoId,

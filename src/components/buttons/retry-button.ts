@@ -1,5 +1,5 @@
 import { isClickInsideButton, loadImages } from "@common";
-import { RETRY_BUTTON } from "@constants";
+import { RETRY_BTN_IMG } from "@constants";
 
 export default class RetryButton {
   public posX: number;
@@ -8,6 +8,11 @@ export default class RetryButton {
   public canvas: HTMLCanvasElement;
   public imagesLoaded: boolean = false;
   public retry_button_image: HTMLImageElement;
+  private btnSize: number;
+  private orignalPos: {
+    x: number;
+    y: number;
+  };
 
   constructor(
     context: CanvasRenderingContext2D,
@@ -20,10 +25,13 @@ export default class RetryButton {
     this.context = context;
     this.canvas = canvas;
 
-    loadImages({ yes_button_image: RETRY_BUTTON }, (images) => {
-      this.retry_button_image = images["yes_button_image"];
+    loadImages({ retry_button_image: RETRY_BTN_IMG }, (images) => {
+      this.retry_button_image = images["retry_button_image"];
       this.imagesLoaded = true;
     });
+
+    this.btnSize = 0.19;
+    this.orignalPos = { x: posX, y: posY };
   }
 
   draw() {
@@ -32,20 +40,36 @@ export default class RetryButton {
         this.retry_button_image,
         this.posX,
         this.posY,
-        this.canvas.width * 0.19,
-        this.canvas.width * 0.19
+        this.canvas.width * this.btnSize,
+        this.canvas.width * this.btnSize
       );
+      if (this.btnSize < 0.19) {
+        this.btnSize = this.btnSize + 0.0005;
+      } else {
+        this.posX = this.orignalPos.x;
+        this.posY = this.orignalPos.y;
+      }
     }
   }
 
   onClick(xClick: number, yClick: number): boolean {
-    return isClickInsideButton(
+    const isInside = isClickInsideButton(
       xClick,
       yClick,
       this.posX,
       this.posY,
-      this.canvas.width * 0.19,
-      this.canvas.width * 0.19
+      this.canvas.height * this.btnSize,
+      this.canvas.height * this.btnSize,
+      true // Button is circular
     );
+
+    if (isInside) {
+      this.btnSize = 0.08;
+      this.posX = this.posX + 1;
+      this.posY = this.posY + 1;
+
+      return true;
+    }
+    return false;
   }
 }

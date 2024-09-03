@@ -137,16 +137,29 @@ export function isClickInsideButton(
   buttonX: number,
   buttonY: number,
   buttonWidth: number,
-  buttonHeight: number
+  buttonHeight: number,
+  isCircular: boolean = false
 ): boolean {
-  const distance = Math.sqrt(
-    (xClick - buttonX - buttonWidth / 2) ** 2 +
-      (yClick - buttonY - buttonHeight / 2) ** 2
-  );
-  return distance < buttonWidth / 2;
+  if (isCircular) {
+    // Check for circular button
+    const distance = Math.sqrt(
+      (xClick - (buttonX + buttonWidth / 2)) ** 2 +
+        (yClick - (buttonY + buttonHeight / 2)) ** 2
+    );
+    return distance < buttonWidth / 2;
+  } else {
+    // Check for rectangular button
+    return (
+      xClick >= buttonX &&
+      xClick <= buttonX + buttonWidth &&
+      yClick >= buttonY &&
+      yClick <= buttonY + buttonHeight
+    );
+  }
 }
 
-export const isDocumentVisible = (): boolean => document.visibilityState === "visible";
+export const isDocumentVisible = (): boolean =>
+  document.visibilityState === "visible";
 
 export const toggleDebugMode = (toggleBtn: HTMLElement): void => {
   toggleBtn.classList.toggle("on");

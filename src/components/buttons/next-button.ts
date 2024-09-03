@@ -1,5 +1,5 @@
 import { isClickInsideButton, loadImages } from "@common";
-import { NEXT_BUTTON } from "@constants";
+import { NEXT_BTN_IMG } from "@constants";
 export default class NextButton {
   public posX: number;
   public posY: number;
@@ -8,6 +8,11 @@ export default class NextButton {
   public height: number;
   public imagesLoaded: boolean = false;
   public next_button_image: HTMLImageElement;
+  private btnSize: number;
+  private orignalPos: {
+    x: number;
+    y: number;
+  };
 
   constructor(
     context: CanvasRenderingContext2D,
@@ -22,10 +27,13 @@ export default class NextButton {
     this.width = width;
     this.height = height;
 
-    loadImages({ next_button_image: NEXT_BUTTON }, (images) => {
+    loadImages({ next_button_image: NEXT_BTN_IMG }, (images) => {
       this.next_button_image = images["next_button_image"];
       this.imagesLoaded = true;
     });
+
+    this.btnSize = 0.19;
+    this.orignalPos = { x: this.posX, y: this.posY };
   }
   draw() {
     if (this.imagesLoaded) {
@@ -33,19 +41,34 @@ export default class NextButton {
         this.next_button_image,
         this.posX,
         this.posY,
-        this.width * 0.19,
-        this.width * 0.19
+        this.width * this.btnSize,
+        this.width * this.btnSize
       );
+      if (this.btnSize < 0.19) {
+        this.btnSize = this.btnSize + 0.0005;
+      } else {
+        this.posX = this.orignalPos.x;
+        this.posY = this.orignalPos.y;
+      }
     }
   }
   onClick(xClick: number, yClick: number): boolean {
-    return isClickInsideButton(
+    const isInside = isClickInsideButton(
       xClick,
       yClick,
       this.posX,
       this.posY,
-      this.width * 0.19,
-      this.width * 0.19
+      this.width * this.btnSize,
+      this.width * this.btnSize,
+      true // Button is circular
     );
+
+    if (isInside) {
+      this.btnSize = 0.18;
+      this.posX = this.posX + 1;
+      this.posY = this.posY + 1;
+      return true;
+    }
+    return false;
   }
 }
