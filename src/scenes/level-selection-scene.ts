@@ -24,7 +24,7 @@ import {
   NEXT_BUTTON,
   BACK_BUTTON,
   AUDIO_INTRO,
-} from "../constants";
+} from "@constants";
 export class LevelSelectionScreen {
   private canvas: HTMLCanvasElement;
   private data: any;

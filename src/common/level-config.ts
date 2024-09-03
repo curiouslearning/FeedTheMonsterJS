@@ -14,7 +14,6 @@ export class LevelConfig {
     this.img = new Image();
     this.img.src = MAP_ICON;
     this.img.onload = function(){
-      // console.log("mapIcon loadededed");
     }
   }
 }

@@ -18,13 +18,9 @@ import {
 import { PlayButton } from "@buttons";
 import { DataModal } from "@data";
 import { Debugger, loadImages, StoneConfig } from "@common";
-// var this: any;
-let lastTime = 0;
-let pwa_install_status: any;
 const toggleBtn = document.getElementById("toggle-btn") as HTMLElement;
 window.addEventListener("beforeinstallprompt", (e) => {
   e.preventDefault();
-  pwa_install_status = e;
   localStorage.setItem(PWAInstallStatus, "false");
 });
 
