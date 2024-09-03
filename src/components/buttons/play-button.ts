@@ -1,6 +1,6 @@
 import { PLAY_BUTTON } from "@constants";
-import { TappedStart } from "../Firebase/firebase-event-interface";
-import { FirebaseIntegration } from "../Firebase/firebase-integration";
+import { TappedStart } from "../../Firebase/firebase-event-interface";
+import { FirebaseIntegration } from "../../Firebase/firebase-integration";
 import { loadImages, pseudoId, lang } from "@common";
 import { getData } from "@data";
 export default class PlayButton {

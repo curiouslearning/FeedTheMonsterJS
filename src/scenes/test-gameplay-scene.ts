@@ -14,8 +14,8 @@ import {
   StoneHandler,
   Monster,
   Tutorial,
-  PlayButton,
 } from "@components";
+import { PlayButton } from "@buttons";
 import { DataModal } from "@data";
 import { Debugger, loadImages, StoneConfig, toggleDebugMode } from "@common";
 // var this: any;

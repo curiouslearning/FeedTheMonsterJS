@@ -31,6 +31,7 @@ var config = {
     alias: {
       '@components': path.resolve(__dirname, 'src/components/'),
       '@buttons': path.resolve(__dirname, 'src/components/buttons/'),
+      '@popups': path.resolve(__dirname, 'src/components/popups/'),
       '@common': path.resolve(__dirname, 'src/common/'),
       '@compositions': path.resolve(__dirname, 'src/compositions/'),
       '@constants': path.resolve(__dirname, 'src/constants/'),

@@ -6,12 +6,12 @@ import {
   LevelIndicators,
   StoneHandler,
   Tutorial,
-  PausePopUp,
   Background,
   FeedbackTextEffects,
   AudioPlayer,
   TrailEffect,
 } from "@components";
+import PausePopUp from "@popups/pause-popup";
 import {
   loadImages,
   StoneConfig,
