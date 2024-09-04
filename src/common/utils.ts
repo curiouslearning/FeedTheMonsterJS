@@ -130,3 +130,41 @@ export const syncLoadingImages = async (images: object) => {
 
   return loadedImages;
 };
+
+export function isClickInsideButton(
+  xClick: number,
+  yClick: number,
+  buttonX: number,
+  buttonY: number,
+  buttonWidth: number,
+  buttonHeight: number,
+  isCircular: boolean = false
+): boolean {
+  if (isCircular) {
+    // Check for circular button
+    const distance = Math.sqrt(
+      (xClick - (buttonX + buttonWidth / 2)) ** 2 +
+        (yClick - (buttonY + buttonHeight / 2)) ** 2
+    );
+    return distance < buttonWidth / 2;
+  } else {
+    // Check for rectangular button
+    return (
+      xClick >= buttonX &&
+      xClick <= buttonX + buttonWidth &&
+      yClick >= buttonY &&
+      yClick <= buttonY + buttonHeight
+    );
+  }
+}
+
+export const isDocumentVisible = (): boolean =>
+  document.visibilityState === "visible";
+
+export const toggleDebugMode = (toggleBtn: HTMLElement): void => {
+  toggleBtn.classList.toggle("on");
+
+  const isOn = toggleBtn.classList.contains("on");
+  Debugger.DebugMode = isOn;
+  toggleBtn.innerText = "Dev";
+};
