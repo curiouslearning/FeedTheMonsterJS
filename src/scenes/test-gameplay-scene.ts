@@ -153,7 +153,9 @@ export class TestGameplayScene {
   };
 
   devToggle = () => {
-    toggleBtn.addEventListener("click", () => toggleDebugMode(toggleBtn));
+    toggleBtn.addEventListener("click", () =>
+      toggleDebugMode(toggleBtn)
+    );
   };
 
   handleMouseUp = (event) => {
