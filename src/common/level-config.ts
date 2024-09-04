@@ -13,7 +13,5 @@ export class LevelConfig {
     this.drawready = false;
     this.img = new Image();
     this.img.src = MAP_ICON_IMG;
-    this.img.onload = function(){
-    }
   }
 }
