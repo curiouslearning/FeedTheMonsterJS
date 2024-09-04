@@ -94,7 +94,7 @@ export const CLOUD_8 = "./assets/images/cloud_03.png";
 
 export const PLAY_BTN_IMG = "./assets/images/Play_button.webp";
 export const PAUSE_BTN_IMG = "./assets/images/pause_v01.webp";
-export const CLOSE_BTN_IMG = "./assets/images/map_btn.webp";
+export const MAP_BTN_IMG = "./assets/images/map_btn.webp";
 export const MAP_ICON_IMG = "./assets/images/mapIcon.webp";
 export const MAP_ICON_SPECIAL_IMG = "./assets/images/map_icon_monster_level_v01.webp";
 export const MAP_LOCK_IMG = "./assets/images/mapLock.webp";

@@ -1,4 +1,4 @@
-import { loadImages, CLICK } from "@common";
+import { loadImages, CLICK, isDocumentVisible } from "@common";
 import { AudioPlayer, Monster } from "@components";
 import { CloseButton, NextButton, RetryButton } from "@buttons";
 import {
@@ -120,12 +120,12 @@ export class LevelEndScene {
 
   switchToReactionAnimation = () => {
     if (this.starCount <= 1) {
-      if (document.visibilityState === "visible") {
+      if (isDocumentVisible()) {
         this.audioPlayer.playAudio(AUDIO_LEVEL_LOSE);
       }
       this.monster.changeToSpitAnimation();
     } else {
-      if (document.visibilityState === "visible") {
+      if (isDocumentVisible()) {
         this.audioPlayer.playAudio(AUDIO_LEVEL_WIN);
         this.audioPlayer.playAudio(AUDIO_INTRO);
       }
@@ -240,7 +240,7 @@ export class LevelEndScene {
     }
   };
   pauseAudios = () => {
-    if (document.visibilityState === "visible") {
+    if (isDocumentVisible()) {
       if (this.starCount >= 2) {
         this.audioPlayer.playAudio(AUDIO_INTRO);
       }

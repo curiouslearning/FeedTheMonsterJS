@@ -4,7 +4,7 @@ import { SceneHandler } from "@sceneHandler";
 import { AUDIO_URL_PRELOAD, IsCached } from "@constants";
 import { Workbox } from "workbox-window";
 import { FirebaseIntegration } from "./src/Firebase/firebase-integration";
-import { Utils, VISIBILITY_CHANGE, Debugger, lang, pseudoId } from "@common";
+import { Utils, VISIBILITY_CHANGE, Debugger, lang, pseudoId, isDocumentVisible } from "@common";
 import { AudioPlayer } from "@components";
 import {
   SessionStart,
@@ -348,7 +348,7 @@ class App {
   };
 
   private handleVisibilityChange = () => {
-    if (document.visibilityState === "visible") {
+    if (isDocumentVisible()) {
       this.logSessionStartFirebaseEvent();
     } else {
       this.logSessionEndFirebaseEvent();
