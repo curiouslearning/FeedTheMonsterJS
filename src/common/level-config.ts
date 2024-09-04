@@ -1,4 +1,4 @@
-import { MAP_ICON } from "@constants";
+import { MAP_ICON_IMG } from "@constants";
 
 export class LevelConfig {
   public x: number;
@@ -12,7 +12,7 @@ export class LevelConfig {
     this.index = index;
     this.drawready = false;
     this.img = new Image();
-    this.img.src = MAP_ICON;
+    this.img.src = MAP_ICON_IMG;
     this.img.onload = function(){
     }
   }

@@ -1,8 +1,8 @@
 import { CloseButton, CancelButton, RetryButton } from "@buttons";
-import { CLICK, lang } from "@common";
+import { CLICK, lang, loadImages } from "@common";
 import { AudioPlayer } from "@components";
 import AreYouSurePopUp from "@popups/sure-popup";
-import { AUDIO_ARE_YOU_SURE, SURE_AND_PAUSE_POPUP } from "@constants";
+import { AUDIO_ARE_YOU_SURE, POPUP_BG_IMG } from "@constants";
 export default class PausePopUp {
   public canvas: HTMLCanvasElement;
   public context: CanvasRenderingContext2D;
@@ -56,12 +56,12 @@ export default class PausePopUp {
         this.canvas.width * 0.4 -
         (this.canvas.width * 0.19) / 2
     );
-    this.pop_up_image = new Image();
-    this.pop_up_image.src = SURE_AND_PAUSE_POPUP;
-    this.pop_up_image.onload = (e) => {
-      this.pop_up_image = this.pop_up_image;
+
+    loadImages({ pop_up_image: POPUP_BG_IMG }, (images) => {
+      this.pop_up_image = images["pop_up_image"];
       this.imagesLoaded = true;
-    };
+    });
+
     this.retrySurePopup = new AreYouSurePopUp(
       this.canvas,
       this.yesRetryCallback,
@@ -75,7 +75,6 @@ export default class PausePopUp {
   }
   yesRetryCallback = () => {
     this.playClickSound();
-    // console.log(" retry button clicked");
     this.reloadScene(this.gameplayData, "GamePlay");
   };
   noRetryCallback = () => {
@@ -104,7 +103,6 @@ export default class PausePopUp {
     const y = event.clientY - rect.top;
 
     if (this.cancelButton.onClick(x, y)) {
-      // console.log(" cancel button clicked");
       this.playClickSound();
       this.callback();
     }
@@ -113,13 +111,11 @@ export default class PausePopUp {
         this.playClickSound();
         this.dispose();
         this.isRetryButtonClicked = true;
-        // console.log(" retry button clicked");
         this.retrySurePopup.addListner();
         this.playAreYouSureSound();
       } else {
         this.playClickSound();
         this.dispose();
-        // console.log(" retry button clicked");
         this.reloadScene(this.gameplayData, "GamePlay");
       }
     }
@@ -129,12 +125,10 @@ export default class PausePopUp {
         this.dispose();
         this.isCloseButtonClicked = true;
         this.CloseSurePopup.addListner();
-        // console.log(" close button clicked");
         this.playAreYouSureSound();
       } else {
         this.playClickSound();
         this.dispose();
-        // console.log(" close button clicked");
         this.switchToLevelSelection("GamePlay");
       }
     }
