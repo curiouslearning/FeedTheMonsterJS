@@ -7,7 +7,8 @@ export default class PauseButton {
   public canvas: { height: number };
   public imagesLoaded: boolean = false;
   public pause_button_image: HTMLImageElement;
-  private btnSize: number;
+  private btnSizeAnimation: number;
+  private btnOriginalSize: number;
   private orignalPos: {
     x: number;
     y: number;
@@ -27,7 +28,8 @@ export default class PauseButton {
       this.imagesLoaded = true;
     });
 
-    this.btnSize = 0.09;
+    this.btnSizeAnimation = 0.09;
+    this.btnOriginalSize = this.btnSizeAnimation;
     this.orignalPos = { x: this.posX, y: this.posY };
   }
 
@@ -37,12 +39,12 @@ export default class PauseButton {
         this.pause_button_image,
         this.posX,
         this.posY,
-        this.canvas.height * this.btnSize,
-        this.canvas.height * this.btnSize
+        this.canvas.height * this.btnSizeAnimation,
+        this.canvas.height * this.btnSizeAnimation
       );
 
-      if (this.btnSize < 0.09) {
-        this.btnSize = this.btnSize + 0.0005;
+      if (this.btnSizeAnimation < 0.09) {
+        this.btnSizeAnimation = this.btnSizeAnimation + 0.0005;
       } else {
         this.posX = this.orignalPos.x;
         this.posY = this.orignalPos.y;
@@ -56,18 +58,17 @@ export default class PauseButton {
       yClick,
       this.posX,
       this.posY,
-      this.canvas.height * this.btnSize,
-      this.canvas.height * this.btnSize,
+      this.canvas.height * this.btnOriginalSize,
+      this.canvas.height * this.btnOriginalSize,
       true // Button is circular
     );
 
     if (isInside) {
-      this.btnSize = 0.08;
+      this.btnSizeAnimation = 0.08;
       this.posX = this.posX + 1;
       this.posY = this.posY + 1;
-
-      return true;
     }
-    return false;
+
+    return isInside;
   }
 }

@@ -1,5 +1,5 @@
 import { isClickInsideButton, loadImages } from "@common";
-import { CLOSE_BTN_IMG } from "@constants";
+import { CANCEL_BTN_IMG } from "@constants";
 export default class NoButton {
   public posX: number;
   public posY: number;
@@ -7,7 +7,8 @@ export default class NoButton {
   public canvas: { width: any; height?: number };
   public imagesLoaded: boolean = false;
   public no_button_image: HTMLImageElement;
-  private btnSize: number;
+  private btnSizeAnimation: number;
+  private btnOriginalSize: number;
   private orignalPos: {
     x: number;
     y: number;
@@ -24,12 +25,13 @@ export default class NoButton {
     this.context = context;
     this.canvas = canvas;
 
-    loadImages({ no_button_image: CLOSE_BTN_IMG }, (images) => {
+    loadImages({ no_button_image: CANCEL_BTN_IMG }, (images) => {
       this.no_button_image = images["no_button_image"];
       this.imagesLoaded = true;
     });
 
-    this.btnSize = 0.18;
+    this.btnSizeAnimation = 0.18;
+    this.btnOriginalSize = this.btnSizeAnimation;
     this.orignalPos = { x: this.posX, y: this.posY };
   }
 
@@ -39,12 +41,12 @@ export default class NoButton {
         this.no_button_image,
         this.posX,
         this.posY,
-        this.canvas.width * this.btnSize,
-        this.canvas.width * this.btnSize
+        this.canvas.width * this.btnSizeAnimation,
+        this.canvas.width * this.btnSizeAnimation
       );
 
-      if (this.btnSize < 0.18) {
-        this.btnSize = this.btnSize + 0.0005;
+      if (this.btnSizeAnimation < 0.18) {
+        this.btnSizeAnimation = this.btnSizeAnimation + 0.0005;
       } else {
         this.posX = this.orignalPos.x;
         this.posY = this.orignalPos.y;
@@ -58,18 +60,17 @@ export default class NoButton {
       yClick,
       this.posX,
       this.posY,
-      this.canvas.width * 0.15,
-      this.canvas.width * 0.15,
+      this.canvas.width * this.btnOriginalSize,
+      this.canvas.width * this.btnOriginalSize,
       true // Button is circular
     );
 
     if (isInside) {
-      this.btnSize = 0.17;
+      this.btnSizeAnimation = 0.17;
       this.posX = this.posX + 1;
       this.posY = this.posY + 1;
-
-      return true;
     }
-    return false;
+
+    return isInside;
   }
 }

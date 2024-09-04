@@ -164,11 +164,7 @@ export const isDocumentVisible = (): boolean =>
 export const toggleDebugMode = (toggleBtn: HTMLElement): void => {
   toggleBtn.classList.toggle("on");
 
-  if (toggleBtn.classList.contains("on")) {
-    Debugger.DebugMode = true;
-    toggleBtn.innerText = "Dev";
-  } else {
-    Debugger.DebugMode = false;
-    toggleBtn.innerText = "Dev";
-  }
+  const isOn = toggleBtn.classList.contains("on");
+  Debugger.DebugMode = isOn;
+  toggleBtn.innerText = "Dev";
 };

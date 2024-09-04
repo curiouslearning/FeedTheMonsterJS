@@ -7,7 +7,8 @@ export default class YesButton {
   public canvas: { width: any; height?: number };
   public imagesLoaded: boolean = false;
   public yes_button_image: HTMLImageElement;
-  private btnSize: number;
+  private btnSizeAnimation: number;
+  private btnOriginalSize: number;
   private orignalPos: {
     x: number;
     y: number;
@@ -29,7 +30,8 @@ export default class YesButton {
       this.imagesLoaded = true;
     });
 
-    this.btnSize = 0.205;
+    this.btnSizeAnimation = 0.205;
+    this.btnOriginalSize = this.btnSizeAnimation;
     this.orignalPos = { x: this.posX, y: this.posY };
   }
 
@@ -39,12 +41,12 @@ export default class YesButton {
         this.yes_button_image,
         this.posX,
         this.posY,
-        this.canvas.width * this.btnSize,
-        this.canvas.width * this.btnSize
+        this.canvas.width * this.btnSizeAnimation,
+        this.canvas.width * this.btnSizeAnimation
       );
 
-      if (this.btnSize < 0.205) {
-        this.btnSize = this.btnSize + 0.0005;
+      if (this.btnSizeAnimation < 0.205) {
+        this.btnSizeAnimation = this.btnSizeAnimation + 0.0005;
       } else {
         this.posX = this.orignalPos.x;
         this.posY = this.orignalPos.y;
@@ -58,17 +60,17 @@ export default class YesButton {
       yClick,
       this.posX,
       this.posY,
-      this.canvas.width * this.btnSize,
-      this.canvas.width * this.btnSize,
+      this.canvas.width * this.btnOriginalSize,
+      this.canvas.width * this.btnOriginalSize,
       true // Button is circular
     );
 
     if (isInside) {
-      this.btnSize = 0.19;
+      this.btnSizeAnimation = 0.19;
       this.posX = this.posX + 1;
       this.posY = this.posY + 1;
-
-      return true;
     }
+
+    return isInside;
   }
 }

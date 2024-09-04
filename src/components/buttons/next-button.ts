@@ -8,7 +8,8 @@ export default class NextButton {
   public height: number;
   public imagesLoaded: boolean = false;
   public next_button_image: HTMLImageElement;
-  private btnSize: number;
+  private btnSizeAnimation: number;
+  private btnOriginalSize: number;
   private orignalPos: {
     x: number;
     y: number;
@@ -32,7 +33,8 @@ export default class NextButton {
       this.imagesLoaded = true;
     });
 
-    this.btnSize = 0.19;
+    this.btnSizeAnimation = 0.19;
+    this.btnOriginalSize = this.btnSizeAnimation;
     this.orignalPos = { x: this.posX, y: this.posY };
   }
   draw() {
@@ -41,11 +43,11 @@ export default class NextButton {
         this.next_button_image,
         this.posX,
         this.posY,
-        this.width * this.btnSize,
-        this.width * this.btnSize
+        this.width * this.btnSizeAnimation,
+        this.width * this.btnSizeAnimation
       );
-      if (this.btnSize < 0.19) {
-        this.btnSize = this.btnSize + 0.0005;
+      if (this.btnSizeAnimation < 0.19) {
+        this.btnSizeAnimation = this.btnSizeAnimation + 0.0005;
       } else {
         this.posX = this.orignalPos.x;
         this.posY = this.orignalPos.y;
@@ -58,17 +60,17 @@ export default class NextButton {
       yClick,
       this.posX,
       this.posY,
-      this.width * this.btnSize,
-      this.width * this.btnSize,
+      this.width * this.btnOriginalSize,
+      this.width * this.btnOriginalSize,
       true // Button is circular
     );
 
     if (isInside) {
-      this.btnSize = 0.18;
+      this.btnSizeAnimation = 0.18;
       this.posX = this.posX + 1;
       this.posY = this.posY + 1;
-      return true;
     }
-    return false;
+
+    return isInside;
   }
 }
