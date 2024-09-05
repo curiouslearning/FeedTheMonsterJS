@@ -1,6 +1,6 @@
 import { loadImages } from "@common";
 import { EventManager } from "@events";
-
+import { RiveMonster } from '../components/rive-monster';
 
 export class Monster extends EventManager {
   public zindex: number;
@@ -24,7 +24,7 @@ export class Monster extends EventManager {
   public loadedImages: any;
   public imagesLoaded: boolean = false;
   public monsterPhase: number;
-
+  public riveMonster: RiveMonster;
   constructor(game, monsterPhase, callBackFunction?) {
     super({
       stoneDropCallbackHandler: (event) => this.handleStoneDrop(event),
@@ -58,7 +58,7 @@ export class Monster extends EventManager {
 
     loadImages(this.images, (images) => {
       this.loadedImages = Object.assign({}, images);
-      this.changeToIdleAnimation();
+      this.riveMonster.changeToIdleAnimation();
 
       this.imagesLoaded = true;
       if (callBackFunction) {
@@ -127,13 +127,13 @@ export class Monster extends EventManager {
 
   public handleStoneDrop(event) {
     if (event.detail.isCorrect) {
-      this.changeToEatAnimation();
+      this.riveMonster.changeToEatAnimation();
     } else {
-      this.changeToSpitAnimation();
+      this.riveMonster.changeToSpitAnimation();
     }
   }
   public handleLoadPuzzle(event) {
-    this.changeToIdleAnimation();
+    this.riveMonster.changeToIdleAnimation();
   }
 
   public dispose() {

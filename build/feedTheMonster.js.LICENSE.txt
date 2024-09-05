@@ -2,45 +2,10 @@
 
 /*! ../Firebase/firebase-integration */
 
-<<<<<<< HEAD
-/*! ../audio-player */
-
-/*! ../buttons/no-button */
-
-/*! ../buttons/yes-button */
-
-/*! ../common */
-
-/*! ../common/ */
-
-/*! ../common/event-names */
-
-/*! ../common/level-config */
-
-/*! ../common/utils */
-
-/*! ../components/ */
-
-/*! ../components/audio-player */
-
-/*! ../components/buttons/cancel-button */
-
-/*! ../components/buttons/close-button */
-
-/*! ../components/buttons/next-button */
-
-/*! ../components/buttons/retry-button */
-
-/*! ../components/monster */
-
-/*! ../components/play-button */
-
 /*! ../components/rive-monster */
 
 /*! ../compositions/background */
 
-=======
->>>>>>> 19cecadc3ccc31129fc14f16e97b6dd5684e8fe6
 /*! ../constants */
 
 /*! ./api-data */
@@ -149,17 +114,15 @@
 
 /*! @firebase/util */
 
-<<<<<<< HEAD
-/*! @rive-app/canvas */
-=======
 /*! @popups/pause-popup */
 
 /*! @popups/sure-popup */
 
+/*! @rive-app/canvas */
+
 /*! @sceneHandler */
 
 /*! @scenes */
->>>>>>> 19cecadc3ccc31129fc14f16e97b6dd5684e8fe6
 
 /*! firebase/analytics */
 
@@ -306,11 +269,7 @@
   \*******************************************/
 
 /*!*******************************************!*\
-<<<<<<< HEAD
-  !*** ./src/sceneHandler/scene-handler.ts ***!
-=======
   !*** ./src/scenes/test-gameplay-scene.ts ***!
->>>>>>> 19cecadc3ccc31129fc14f16e97b6dd5684e8fe6
   \*******************************************/
 
 /*!*********************************************!*\

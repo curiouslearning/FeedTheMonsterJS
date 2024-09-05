@@ -13,7 +13,7 @@ export class RiveMonster {
     // this.width = this.canvasElement.width; // Set width of canvas
     // this.height = this.canvasElement.height; // Set height of canvas
     this.canvasElement.width = 160;
-    this.canvasElement.height = 190;
+    this.canvasElement.height = 220;
   }
 
   initialiseRiveMonster() {
@@ -23,7 +23,7 @@ export class RiveMonster {
       autoplay: true,
       animations: 'Idle',
       stateMachines: "State Machine 1",
-      layout: new rive.Layout({ fit: rive.Fit.FitHeight, alignment: rive.Alignment.Center }),
+      layout: new rive.Layout({ fit: rive.Fit.Cover, alignment: rive.Alignment.Center }),
       onLoad: () => {
         const riveLoaded = document.getElementById("newcanvas");
         riveLoaded.style.zIndex = '1';
@@ -39,5 +39,25 @@ export class RiveMonster {
       riveLoaded.style.zIndex = '0';
       console.log("Rive Monster animation stopped.");
     }
+  }
+
+  changeToDragAnimation() {
+    console.log("Dragged");
+    this.riveMonster.play("Opening Mouth Eat");
+  }
+
+  changeToEatAnimation() {
+    console.log("Eat Happy");
+    this.riveMonster.play("Eat Happy");
+  }
+
+  changeToIdleAnimation() {
+    console.log("Idle");
+    this.riveMonster.play("Idle");
+  }
+
+  changeToSpitAnimation() {
+    console.log("Eat Disgust");
+    this.riveMonster.play("Eat Disgust");
   }
 }

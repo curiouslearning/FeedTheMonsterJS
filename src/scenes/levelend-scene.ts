@@ -16,7 +16,7 @@ import {
   PIN_STAR_3,
   WIN_BG,
 } from "@constants";
-
+import { RiveMonster } from '../components/rive-monster';
 export class LevelEndScene {
   public canvas: HTMLCanvasElement;
   public height: number;
@@ -27,6 +27,7 @@ export class LevelEndScene {
   public id: string;
   public context: CanvasRenderingContext2D;
   public monster: Monster;
+  public riveMonster: RiveMonster;
   public closeButton: CloseButton;
   public retryButton: RetryButton;
   public nextButton: NextButton;
@@ -123,13 +124,13 @@ export class LevelEndScene {
       if (isDocumentVisible()) {
         this.audioPlayer.playAudio(AUDIO_LEVEL_LOSE);
       }
-      this.monster.changeToSpitAnimation();
+      this.riveMonster.changeToSpitAnimation();
     } else {
       if (isDocumentVisible()) {
         this.audioPlayer.playAudio(AUDIO_LEVEL_WIN);
         this.audioPlayer.playAudio(AUDIO_INTRO);
       }
-      this.monster.changeToEatAnimation();
+      this.riveMonster.changeToEatAnimation();
     }
   };
   draw(deltaTime: number) {

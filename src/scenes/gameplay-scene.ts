@@ -318,7 +318,7 @@ export class GameplayScene {
       let rect = this.canvas.getBoundingClientRect();
       const x = event.clientX - rect.left;
       const y = event.clientY - rect.top;
-      this.monster.changeToDragAnimation();
+      this.riveMonster.changeToDragAnimation();
       this.pickedStone.x = x;
       this.pickedStone.y = y;
       this.trailParticles?.addTrailParticlesOnMove(x, y);
@@ -440,6 +440,7 @@ export class GameplayScene {
 
   loadPuzzle = (isTimerEnded?) => {
     this.removeEventListeners();
+    this.riveMonster.changeToIdleAnimation();
     this.stonesCount = 1;
     const timerEnded = Boolean(isTimerEnded);
     if (timerEnded) {
@@ -528,13 +529,13 @@ export class GameplayScene {
 
     if (isCorrect) {
       this.timerTicking.startTimer();
-      this.monster.changeToEatAnimation();
+      this.riveMonster.changeToEatAnimation();
       this.promptText.droppedStoneIndex(
         lang == "arabic" ? this.stonesCount : this.tempWordforWordPuzzle.length
       );
       this.stonesCount++;
       this.resetToIdleAnimation(() => {
-        this.monster.changeToIdleAnimation();
+        this.riveMonster.changeToIdleAnimation();
       }, 2000);
     } else {
       this.handleStoneDropEnd(isCorrect, "Word");
@@ -574,6 +575,7 @@ export class GameplayScene {
 
   private initNewPuzzle(loadPuzzleEvent) {
     this.removeEventListeners();
+    this.riveMonster.changeToIdleAnimation();
     this.isGameStarted = false;
     this.time = 0;
     this.tempWordforWordPuzzle = "";

@@ -25,7 +25,6 @@ import {
   BACK_BTN_IMG,
   AUDIO_INTRO,
 } from "@constants";
-
 export class LevelSelectionScreen {
   private canvas: HTMLCanvasElement;
   private data: any;
@@ -58,7 +57,6 @@ export class LevelSelectionScreen {
   private leftBtnSize: number;
   private leftBtnX: number;
   private leftBtnY: number;
-
   constructor(canvas: HTMLCanvasElement, data: any, callBack: Function) {
     this.canvas = canvas;
     this.data = data;

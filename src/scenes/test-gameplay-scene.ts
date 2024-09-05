@@ -180,7 +180,7 @@ export class TestGameplayScene {
       // self.checkDraggedOption();
       // console.log(" drooped iniside moooooonster");
     } else {
-      self.monster.changeToIdleAnimation();
+      // self.monster.changeToIdleAnimation();
     }
 
     self.pickedStone = null;
@@ -215,7 +215,7 @@ export class TestGameplayScene {
     const x = event.clientX - rect.left;
     const y = event.clientY - rect.top;
     if (self.pickedStone) {
-      self.monster.changeToDragAnimation();
+      // self.monster.changeToDragAnimation();
       self.pickedStone.x = x;
       self.pickedStone.y = y;
     }
