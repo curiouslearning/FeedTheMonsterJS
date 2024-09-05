@@ -77,8 +77,6 @@ export class FeedbackTextEffects {
     }
     let textHeight = this.lineHeight * lineCounter;
     this.textY = this.canvasHeight / 4.2 - textHeight / 2;
-    const initialX = 50;
-    // const spacing = 0.3;
     text = text.trim();
     lineArray.forEach((text, index) => {
       let lastSpaceIndex = text.lastIndexOf(" ", text.lastIndexOf(" ") - 1);

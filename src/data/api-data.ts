@@ -16,12 +16,5 @@ export function getFtmData() {
 }
 
 export async function getData() {
-  // let d = {
-  //     "OtherAudios": null,
-  //     "FeedbackTexts": null,
-  //     "Levels": null,
-  //     "FeedbackAudios": null,
-  //     "RightToLeft": null
-  // }
   return await getFtmData();
 }

@@ -35,7 +35,6 @@ export class SceneHandler {
   public loading: boolean = false;
 
   private lastTime: number = 0;
-  private pwa_install_status: Event;
   private toggleBtn: HTMLElement;
 
   constructor(canvas: HTMLCanvasElement, data: DataModal) {
@@ -205,7 +204,6 @@ export class SceneHandler {
   private handleInstallPrompt = (event: Event) => {
     //currently not in use
     event.preventDefault();
-    this.pwa_install_status = event;
     localStorage.setItem(PWAInstallStatus, "false");
   };
 }

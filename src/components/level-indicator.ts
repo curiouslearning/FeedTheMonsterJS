@@ -36,7 +36,6 @@ export class LevelIndicators extends EventManager{
 
     addDropStoneEvent() {
         document.addEventListener('dropstone', (event) => {
-            // console.log("Yeee recived from level-indicator");
             this.setIndicators(2);
 
         });
@@ -77,7 +76,6 @@ export class LevelIndicators extends EventManager{
     }
 
     public handleStoneDrop(event) {
-        // this.isStoneDropped = true;
     }
 
     public handleLoadPuzzle(event) {

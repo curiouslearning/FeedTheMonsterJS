@@ -37,13 +37,11 @@ export class Monster extends EventManager {
     this.canavsElement = document.getElementById("canvas") as HTMLCanvasElement;
     this.context = this.canavsElement.getContext("2d");
     this.image = document.getElementById("monster") as HTMLImageElement;
-    // console.log(this.image);
     this.frameX = 0;
     this.frameY = 0;
     this.maxFrame = 6;
     this.x = this.game.width / 2 - this.game.width * 0.243;
     this.y = this.game.width / 3;
-    // console.log(this.x,this.y); 
     this.fps = 10;
     this.countFrame = 0;
     this.frameInterval = 1000 / this.fps;
@@ -62,7 +60,6 @@ export class Monster extends EventManager {
 
       this.imagesLoaded = true;
       if (callBackFunction) {
-        // console.log(this.imagesLoaded);
         callBackFunction();
       }
     });
