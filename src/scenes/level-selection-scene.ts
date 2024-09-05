@@ -25,7 +25,6 @@ import {
   BACK_BTN_IMG,
   AUDIO_INTRO,
 } from "@constants";
-
 export class LevelSelectionScreen {
   private canvas: HTMLCanvasElement;
   private data: any;

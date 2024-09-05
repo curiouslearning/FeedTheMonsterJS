@@ -117,7 +117,6 @@ class Particles {
 
     public draw() {
         this.circleParticle(); //default particle shape.
-        //this.starParticle(); //alt particle.
     }
 
     private circleParticle() {

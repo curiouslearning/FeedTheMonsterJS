@@ -163,9 +163,6 @@ export default class StoneHandler extends EventManager {
     this.targetStones = [...this.currentPuzzleData.targetStones];
     this.correctTargetStone = this.targetStones.join("");
   }
-  public isDroppedStoneCorrect(droppedStone: string) {//Not in use.
-    return droppedStone == this.correctTargetStone
-  }
 
   public handleStoneDrop(event) {
     this.foilStones = [];

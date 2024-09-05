@@ -2,9 +2,7 @@ import { Monster, AudioPlayer } from "@components";
 import { PlayButton } from "@buttons";
 import { DataModal } from "@data";
 import {
-  Debugger,
   font,
-  lang,
   StoneConfig,
   toggleDebugMode,
   Utils,
