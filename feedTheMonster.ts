@@ -204,7 +204,17 @@ class App {
                 localStorage.setItem(IsCached, JSON.stringify(newCachedItem));
                 localStorage.removeItem("version" + lang.toLowerCase());
                 // Clear the cache for tht particular content
-                caches.delete(lang);
+                // caches.delete(lang);
+                caches.delete(lang).then((success)=> {
+                  if (success) {
+                    console.log('Cache deleted successfully.');
+                  } else {
+                    console.log('Cache not found.');
+                  }
+                }).catch((error) =>{
+                  console.error('Error deleting cache:', error);
+                });
+                
                 this.handleUpdateFoundMessage();
               }
             })
