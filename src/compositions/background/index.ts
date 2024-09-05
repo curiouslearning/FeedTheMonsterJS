@@ -1,10 +1,10 @@
 
-import { syncLoadingImages } from '../../common/';
+import { syncLoadingImages } from '@common';
 import {
     DEFAULT_BG_GROUP_IMGS,
     AUTUMN_BG_GROUP_IMGS,
     WINTER_BG_GROUP_IMGS
-} from '../../constants/';
+} from '@constants';
 
 export const BACKGROUND_ASSET_LIST = {
     summer: { BG_GROUP_IMGS: DEFAULT_BG_GROUP_IMGS, draw: defaultBgDrawing },
@@ -52,21 +52,21 @@ export function defaultBgDrawing(context,width, height, bgImages) {
                 height
             );
             context.drawImage(
-                bgImages?.PILLAR_IMAGE_1,
+                bgImages?.ASSETS_PATH_TOTEM,
                 width * 0.6,
                 height / 6,
                 width,
                 height / 2
             );
             context.drawImage(
-                bgImages?.FENCE_IMAGE_1,
+                bgImages?.ASSETS_PATH_FENCE,
                 -width * 0.4,
                 height / 3,
                 width,
                 height / 3
             );
             context.drawImage(
-                bgImages?.HILL_IMAGE_1,
+                bgImages?.ASSETS_PATH_HILL,
                 -width * 0.25,
                 height / 2,
                 width * 1.5,

@@ -28,6 +28,20 @@ var config = {
     filename: 'feedTheMonster.js',
   },
   resolve: {
+    alias: {
+      '@components': path.resolve(__dirname, 'src/components/'),
+      '@buttons': path.resolve(__dirname, 'src/components/buttons/'),
+      '@popups': path.resolve(__dirname, 'src/components/popups/'),
+      '@common': path.resolve(__dirname, 'src/common/'),
+      '@compositions': path.resolve(__dirname, 'src/compositions/'),
+      '@constants': path.resolve(__dirname, 'src/constants/'),
+      '@data': path.resolve(__dirname, 'src/data/'),
+      '@interfaces': path.resolve(__dirname, 'src/interfaces/'),
+      '@sceneHandler': path.resolve(__dirname, 'src/sceneHandler/'),
+      '@scenes': path.resolve(__dirname, 'src/scenes/'),
+      '@events': path.resolve(__dirname, 'src/events/'),
+      '@feedbackParticleEffect': path.resolve(__dirname, 'src/components/feedback-particle-effect/')
+    },
     extensions: ['.tsx', '.ts', '.js', '.json', '.css', '.sh', '.babelrc', '.eslintignore', '.gitignore', '.d'],
   },
   plugins: [

@@ -6,12 +6,12 @@ import {
   LevelIndicators,
   StoneHandler,
   Tutorial,
-  PausePopUp,
   Background,
   FeedbackTextEffects,
   AudioPlayer,
-  TrailEffect
-} from '../components/';
+  TrailEffect,
+} from "@components";
+import PausePopUp from "@popups/pause-popup";
 import {
   loadImages,
   StoneConfig,
@@ -25,9 +25,11 @@ import {
   TOUCHMOVE,
   TOUCHSTART,
   VISIBILITY_CHANGE,
-} from "../common/";
-import { Debugger, lang, pseudoId } from "../../global-variables";
-import { GameScore } from "../data/game-score";
+  Debugger,
+  lang,
+  pseudoId,
+} from "@common";
+import { GameScore } from "@data";
 import {
   LevelCompletedEvent,
   PuzzleCompletedEvent,
@@ -37,7 +39,7 @@ import {
   AUDIO_PATH_ON_DRAG,
   ASSETS_PATH_MONSTER_IDLE,
   PreviousPlayedLevel,
-} from '../constants';
+} from "@constants";
 import {
   BACKGROUND_ASSET_LIST,
   createBackground,
@@ -145,11 +147,7 @@ export class GameplayScene {
       feedbackAudios,
       this.timerTicking
     );
-    this.tutorial = new Tutorial(
-      this.context,
-      canvas.width,
-      canvas.height
-    );
+    this.tutorial = new Tutorial(this.context, canvas.width, canvas.height);
 
     this.promptText = new PromptText(
       this.width,
@@ -181,9 +179,11 @@ export class GameplayScene {
     this.feedBackTextCanavsElement.height = this.height;
     this.feedBackTextCanavsElement.width = this.width;
     this.feedbackTextEffects = new FeedbackTextEffects(
-      this.feedBackTextCanavsElement.getContext("2d", { willReadFrequently: true }),
+      this.feedBackTextCanavsElement.getContext("2d", {
+        willReadFrequently: true,
+      }),
       this.width,
-      this.height,
+      this.height
     );
 
     this.audioPlayer = new AudioPlayer();
@@ -202,9 +202,9 @@ export class GameplayScene {
     var previousPlayedLevel: string = this.levelData.levelMeta.levelNumber;
     Debugger.DebugMode
       ? localStorage.setItem(
-        PreviousPlayedLevel + lang + "Debug",
-        previousPlayedLevel
-      )
+          PreviousPlayedLevel + lang + "Debug",
+          previousPlayedLevel
+        )
       : localStorage.setItem(PreviousPlayedLevel + lang, previousPlayedLevel);
     this.addEventListeners();
     this.resetAnimationID = 0;
@@ -225,7 +225,7 @@ export class GameplayScene {
       BG_GROUP_IMGS,
       draw
     );
-  }
+  };
 
   resumeGame = () => {
     this.addEventListeners();
@@ -242,7 +242,8 @@ export class GameplayScene {
 
   getRandomInt(min: number, max: number): number {
     const feedbackValues = Object.values(this.feedBackTexts);
-    const definedValuesMaxCount = (feedbackValues.filter(value => value != undefined).length) - 1;
+    const definedValuesMaxCount =
+      feedbackValues.filter((value) => value != undefined).length - 1;
     return Math.floor(Math.random() * (definedValuesMaxCount - min + 1)) + min;
   }
 
@@ -255,7 +256,7 @@ export class GameplayScene {
     // Check if the click is within range of the monster
     const distance = Math.sqrt(
       (x - this.monster.x - this.canvas.width / 4) ** 2 +
-      (y - this.monster.y - this.canvas.height / 2.2) ** 2
+        (y - this.monster.y - this.canvas.height / 2.2) ** 2
     );
 
     if (distance <= 100 && this.pickedStone) {
@@ -272,15 +273,20 @@ export class GameplayScene {
       }
     } else {
       if (
-        this.pickedStone && this.pickedStoneObject &&
-        this.pickedStone.text && typeof this.pickedStoneObject.origx === 'number' &&
-        typeof this.pickedStoneObject.origy === 'number'
+        this.pickedStone &&
+        this.pickedStoneObject &&
+        this.pickedStone.text &&
+        typeof this.pickedStoneObject.origx === "number" &&
+        typeof this.pickedStoneObject.origy === "number"
       ) {
         const xLimit = 50;
         const halfWidth = this.width / 2;
-        this.pickedStone.x = (this.pickedStone.text.length <= 3 && this.pickedStoneObject.origx < xLimit && this.pickedStoneObject.origx < halfWidth)
-          ? this.pickedStoneObject.origx + 25
-          : this.pickedStoneObject.origx;
+        this.pickedStone.x =
+          this.pickedStone.text.length <= 3 &&
+          this.pickedStoneObject.origx < xLimit &&
+          this.pickedStoneObject.origx < halfWidth
+            ? this.pickedStoneObject.origx + 25
+            : this.pickedStoneObject.origx;
         this.pickedStone.y = this.pickedStoneObject.origy;
       }
     }
@@ -317,7 +323,11 @@ export class GameplayScene {
       this.pickedStone.y = y;
       this.trailParticles?.addTrailParticlesOnMove(x, y);
     } else {
-      this.clickTrailToggle && this.trailParticles?.addTrailParticlesOnMove(event.clientX, event.clientY);
+      this.clickTrailToggle &&
+        this.trailParticles?.addTrailParticlesOnMove(
+          event.clientX,
+          event.clientY
+        );
     }
   };
 
@@ -361,7 +371,6 @@ export class GameplayScene {
     this.trailParticles?.resetParticles();
   };
 
-
   draw(deltaTime: number) {
     if (!this.isGameStarted && !this.isPauseButtonClicked) {
       this.time = this.time + deltaTime;
@@ -386,7 +395,9 @@ export class GameplayScene {
     }
     if (!this.isPauseButtonClicked && !this.isGameStarted) {
       this.feedbackTextEffects.render();
-      (this.counter == 0) ? this.tutorial.clickOnMonsterTutorial(deltaTime) : undefined;
+      this.counter == 0
+        ? this.tutorial.clickOnMonsterTutorial(deltaTime)
+        : undefined;
     }
     if (this.isPauseButtonClicked && !this.isGameStarted) {
       this.pausePopup.draw();
@@ -418,9 +429,13 @@ export class GameplayScene {
     this.handler.removeEventListener("mouseup", this.handleMouseUp, false);
     this.handler.removeEventListener("mousemove", this.handleMouseMove, false);
     this.handler.removeEventListener("mousedown", this.handleMouseDown, false);
-    this.handler.removeEventListener("touchstart",this.handleTouchStart,false);
+    this.handler.removeEventListener(
+      "touchstart",
+      this.handleTouchStart,
+      false
+    );
     this.handler.removeEventListener("touchmove", this.handleTouchMove, false);
-    this.handler.removeEventListener("touchend", this.handleTouchEnd, false); 
+    this.handler.removeEventListener("touchend", this.handleTouchEnd, false);
   }
 
   loadPuzzle = (isTimerEnded?) => {
@@ -449,11 +464,14 @@ export class GameplayScene {
           counter: this.counter,
         },
       });
-      setTimeout(() => {
-        if (!this.isDisposing) {
-          this.initNewPuzzle(loadPuzzleEvent);
-        }
-      }, timerEnded ? 0 : 4500);
+      setTimeout(
+        () => {
+          if (!this.isDisposing) {
+            this.initNewPuzzle(loadPuzzleEvent);
+          }
+        },
+        timerEnded ? 0 : 4500
+      );
     }
   };
 
@@ -512,15 +530,12 @@ export class GameplayScene {
       this.timerTicking.startTimer();
       this.monster.changeToEatAnimation();
       this.promptText.droppedStoneIndex(
-        lang == "arabic"
-          ? this.stonesCount
-          : this.tempWordforWordPuzzle.length
-      )
+        lang == "arabic" ? this.stonesCount : this.tempWordforWordPuzzle.length
+      );
       this.stonesCount++;
       this.resetToIdleAnimation(() => {
         this.monster.changeToIdleAnimation();
-      }, 2000)
-
+      }, 2000);
     } else {
       this.handleStoneDropEnd(isCorrect, "Word");
       this.stonesCount = 1;
@@ -529,10 +544,10 @@ export class GameplayScene {
 
   resetToIdleAnimation(callback: () => void, delay: number) {
     if (this.resetAnimationID !== undefined) {
-      clearTimeout(this.resetAnimationID)
+      clearTimeout(this.resetAnimationID);
     }
 
-    this.resetAnimationID = setTimeout(callback, delay)
+    this.resetAnimationID = setTimeout(callback, delay);
   }
 
   private handleStoneDropEnd(isCorrect, puzzleType: string | null = null) {
@@ -582,13 +597,18 @@ export class GameplayScene {
       success_or_failure: isCorrect ? "success" : "failure",
       level_number: this.levelData.levelMeta.levelNumber,
       puzzle_number: this.counter,
-      item_selected: puzzleType == "Word"
-        ? (this.tempWordforWordPuzzle == null || this.tempWordforWordPuzzle == undefined) ? "TIMEOUT" : this.tempWordforWordPuzzle
-        : (this.pickedStone == null || this.pickedStone == undefined) ? "TIMEOUT" : this.pickedStone?.text,
+      item_selected:
+        puzzleType == "Word"
+          ? this.tempWordforWordPuzzle == null ||
+            this.tempWordforWordPuzzle == undefined
+            ? "TIMEOUT"
+            : this.tempWordforWordPuzzle
+          : this.pickedStone == null || this.pickedStone == undefined
+          ? "TIMEOUT"
+          : this.pickedStone?.text,
       target: this.stoneHandler.getCorrectTargetStone(),
       foils: this.stoneHandler.getFoilStones(),
       response_time: (endTime - this.puzzleTime) / 1000,
-
     };
     this.firebaseIntegration.sendPuzzleCompletedEvent(puzzleCompletedData);
   }

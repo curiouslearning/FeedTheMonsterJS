@@ -1,9 +1,5 @@
-import { Debugger, lang } from "../../global-variables";
-import {
-loadImages,
-} from "../common";
-
-import { EventManager } from "../events/EventManager";
+import { loadImages } from "@common";
+import { EventManager } from "@events";
 
 
 export class Monster extends EventManager {
