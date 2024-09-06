@@ -44,7 +44,7 @@ import {
   BACKGROUND_ASSET_LIST,
   createBackground,
   loadDynamicBgAssets,
-} from "@compositions/background";
+} from "@compositions";
 
 export class GameplayScene {
   public width: number;
