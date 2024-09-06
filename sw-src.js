@@ -39,17 +39,6 @@ channel.addEventListener("message", async function (event) {
     caches.delete(workbox.core.cacheNames.precache + event.data.data);
     await getCacheName(event.data.data);
   }
-  if(event.data.command === "delete-cache"){
-    caches.delete(event.data.data).then((success)=> {
-        if (success) {
-          console.log('Cache deleted successfully.');
-        } else {
-          console.log('Cache not found.');
-        }
-      }).catch((error) =>{
-        console.error('Error deleting cache:', error);
-      });
-  }
 });
 
 self.registration.addEventListener("updatefound", function (e) {
