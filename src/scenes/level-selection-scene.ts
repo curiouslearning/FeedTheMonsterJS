@@ -248,30 +248,6 @@ export class LevelSelectionScreen {
       this.downButton(this.levelSelectionPageIndex);
     }
 
-    // for (let s of this.levels) {
-    //   if (
-    //     Math.sqrt(
-    //       (x - s.x - this.canvas.height / 20) *
-    //         (x - s.x - this.canvas.height / 20) +
-    //         (y - s.y - this.canvas.height / 20) *
-    //           (y - s.y - this.canvas.height / 20)
-    //     ) < 45
-    //   ) {
-    //     if (Debugger.DebugMode) {
-    //       this.audioPlayer.playButtonClickSound();
-    //       this.levelNumber = s.index + this.levelSelectionPageIndex - 1;
-    //       this.startGame(this.levelNumber);
-    //     } else if (
-    //       s.index + this.levelSelectionPageIndex - 1 <=
-    //       this.unlockLevelIndex + 1
-    //     ) {
-    //       this.audioPlayer.playButtonClickSound();
-    //       this.levelNumber = s.index + this.levelSelectionPageIndex - 1;
-    //       this.startGame(this.levelNumber);
-    //     }
-    //   }
-    // }
-
     for(let btn of this.levelButtons) {
       btn.onClick(
         x,
