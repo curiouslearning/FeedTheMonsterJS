@@ -17,33 +17,23 @@ import {
 } from "@components";
 import { PlayButton } from "@buttons";
 import { DataModal } from "@data";
-import { Debugger, loadImages, StoneConfig, toggleDebugMode } from "@common";
-// var this: any;
-let lastTime = 0;
-let pwa_install_status: any;
+import { loadImages, StoneConfig, toggleDebugMode } from "@common";
 const toggleBtn = document.getElementById("toggle-btn") as HTMLElement;
 window.addEventListener("beforeinstallprompt", (e) => {
   e.preventDefault();
-  pwa_install_status = e;
   localStorage.setItem(PWAInstallStatus, "false");
 });
-
-// let SceneName = StartScene1;
 export class TestGameplayScene {
   public canvas: HTMLCanvasElement;
   public data: any;
   public width: number;
   public height: number;
-  // public canvasStack: any;
   public monster: Monster;
-  // public monster2: Monster;
   public levelIndicator: LevelIndicators;
   public promptText: PromptText;
   public timerTicking: TimerTicking;
-  // public pauseMenu: PausePopUp;
   public stoneHandler: StoneHandler;
   public pickedStone: StoneConfig;
-  // public stoneConfig: StoneConfig;
   public pwa_status: string;
   public firebase_analytics: { logEvent: any };
   public id: string;
@@ -62,7 +52,6 @@ export class TestGameplayScene {
   public counter: any = 0;
   tutorial: Tutorial;
 
-  // public tutorial: Tutorial;
 
   constructor(
     canvas: HTMLCanvasElement,
@@ -70,18 +59,14 @@ export class TestGameplayScene {
     firebase_analytics: { logEvent: any },
     switchSceneToLevelSelection
   ) {
-    // this = this;
     this.canvas = canvas;
     this.data = data;
     this.width = canvas.width;
     this.height = canvas.height;
     this.canavsElement = document.getElementById("canvas") as HTMLCanvasElement;
     this.context = this.canavsElement.getContext("2d");
-    // this.canvasStack = new CanvasStack("canvas");
     this.monster = new Monster(this.canvas, 0);
-    // this.monster2 = new Monster(this.canvas);
     console.log(Date.now, " ::: ", performance.now);
-    // this.monster2.x = 100;
     this.switchSceneToLevelSelection = switchSceneToLevelSelection;
     this.stoneHandler = new StoneHandler(
       this.context,
@@ -91,11 +76,6 @@ export class TestGameplayScene {
       this.data.feedbackAudios,
       this.timerTicking
     );
-    // var img = new Image();
-    // img.src = "./assets/images/stone_pink_v02.png";
-    // img.onload = (e) => {
-    //     this.stoneConfig = new StoneConfig(this.context, this.height, this.width, "text", 100, 100, img);
-    // }
 
     /// testing promptexr
     this.promptText = new PromptText(
@@ -110,12 +90,9 @@ export class TestGameplayScene {
       this.height,
       this.timeOverCallback
     );
-    // this.pauseMenu = new PausePopUp(this.canavsElement);
     //////////////////////end
     this.levelIndicator = new LevelIndicators(this.context, this.canvas, 0);
-    // this.tutorial = new Tutorial(this.context, this.width, this.height);
     this.levelIndicator.setIndicators(3);
-    // this.tutorial = new Tutorial(this.context, this.width, this.height);
     this.tutorial.updateTargetStonePositions([100, 100]);
 
     this.pwa_status = localStorage.getItem(PWAInstallStatus);
@@ -123,8 +100,6 @@ export class TestGameplayScene {
     this.devToggle();
     this.createPlayButton();
     this.firebase_analytics = firebase_analytics;
-    // console.log(this.data);
-    // StartScene.SceneName = StartScene1;
 
     this.animation(0);
 
@@ -138,20 +113,16 @@ export class TestGameplayScene {
 
     loadImages(this.images, (images) => {
       this.loadedImages = Object.assign({}, images);
-      // console.log(" thisisallloadedimages ", this.loadedImages);
       this.imagesLoaded = true;
     });
-    // console.log(this, "<--thiiiss");
   }
 
   timeOverCallback = () => {
     // time to load new puzzle
-    // console.log("timeOver");
     this.timerTicking.readyTimer();
     this.timerTicking.startTimer();
     this.timerTicking.isMyTimerOver = false;
     if (this.counter == 5) this.counter = 0;
-    // this.counter += 1;
     this.levelIndicator.setIndicators(this.counter++);
   };
 
@@ -162,13 +133,11 @@ export class TestGameplayScene {
   };
 
   handleMouseUp = (event) => {
-    // console.log(" upping mouse like a pro ");
     let self = this;
     const selfElement = <HTMLElement>document.getElementById("canvas");
     var rect = selfElement.getBoundingClientRect();
     const x = event.clientX - rect.left;
     const y = event.clientY - rect.top;
-    // event.preventDefault();
     if (
       Math.sqrt(
         (x - self.monster.x - self.canvas.width / 4) *
@@ -177,19 +146,15 @@ export class TestGameplayScene {
             (y - self.monster.y - self.canvas.height / 2.7)
       ) <= 60
     ) {
-      // self.checkDraggedOption();
-      // console.log(" drooped iniside moooooonster");
     } else {
       // self.monster.changeToIdleAnimation();
     }
 
     self.pickedStone = null;
-    // console.log(" self.pickedStone : ", self.pickedStone);
   };
 
   handleMouseDown = (event) => {
     let self = this;
-    // console.log(" downing mouse like a pro ");
     const selfElement = <HTMLElement>document.getElementById("canvas");
     var rect = selfElement.getBoundingClientRect();
     const x = event.clientX - rect.left;
@@ -197,9 +162,7 @@ export class TestGameplayScene {
     ///////// sending data to stone config
     for (let sc of self.stoneHandler.foilStones) {
       if (Math.sqrt((x - sc.x) * (x - sc.x) + (y - sc.y) * (y - sc.y)) <= 40) {
-        // console.log(" clickkedon stone", sc);
         this.pickedStone = sc;
-        // console.log("this.pickedStone : ", this.pickedStone);
       }
     }
     /////// end of stone data sending
@@ -207,10 +170,7 @@ export class TestGameplayScene {
 
   handleMouseMove = (event) => {
     let self = this;
-    // console.log(" mmoving mouse like a pro ");
-    // this.levelIndicator.setIndicators(1);
     const selfElement = <HTMLElement>document.getElementById("canvas");
-    // event.preventDefault();
     var rect = selfElement.getBoundingClientRect();
     const x = event.clientX - rect.left;
     const y = event.clientY - rect.top;
@@ -222,12 +182,6 @@ export class TestGameplayScene {
   };
 
   animation = (deltaTime) => {
-    // let deltaTime = timeStamp - lastTime;
-    // lastTime = timeStamp;
-    // console.log(this.loadedImages, " <> ", this.imagesLoaded, " ffffggg ", StartScene.SceneName);
-
-    // this.context.clearRect(0, 0, this.width, this.height);
-    // if (StartScene.SceneName == StartScene1) {
     if (this.imagesLoaded) {
       this.context.drawImage(
         this.loadedImages.bgImg,
@@ -240,7 +194,6 @@ export class TestGameplayScene {
         this.loadedImages.pillerImg,
         this.width * 0.6,
         this.height / 6,
-        // this.height / 3,
         this.width,
         this.height / 2
       );
@@ -267,51 +220,16 @@ export class TestGameplayScene {
         this.width * 0.5,
         this.height / 10
       );
-      // this.update(deltaTime);
-      // this.context.scale(1.5, 1.5);
       this.monster.update(deltaTime);
-      // this.monster2.animation(deltaTime);
-      // this.context.setTransform(1, 0, 0, 0, 0, 0);
-      // this.playButton.draw();
       this.promptText.draw(deltaTime);
       this.stoneHandler.draw(deltaTime);
-      // if (this.stoneConfig != undefined)
-      //     this.stoneConfig.draw();
-      //if(pause)
 
       this.levelIndicator.draw();
-      // this.levelIndicator.update(deltaTime);
-      // this.tutorial.draw(deltaTime);
       this.timerTicking.update(deltaTime);
-      // this.tutorial.draw(deltaTime);
-      // this.pauseMenu.draw();
     }
-    // }
-    // else if (StartScene.SceneName == LevelSelection1) {
-    //     // this.levelSelectionScene.draw(1);
-    //     this.levelSelectionScene.testDraw();
-
-    // }
-    // else {
-    // console.log(" rendering game scene", StartScene.SceneName);
-    // render gameplay screen for now
-    // }
-    // requestAnimationFrame(this.animation);
   };
 
   draw() {}
-
-  // switchSceneToLevelSelection() {
-  //     console.log(" checkingthisobj ", this);
-  //     // dispose previous scene
-  //     this.dispose();
-  //     // load in next scene
-  //     this.levelSelectionScene = new LevelSelectionScreen(this.canvas, this.data, (arg1, arg2) => {
-  //         StartScene.SceneName = arg2
-  //         console.log(arg1, arg2, StartScene.SceneName);
-  //     });
-  //     StartScene.SceneName = LevelSelection1;
-  // }
 
   createPlayButton = () => {
     this.playButton = new PlayButton(
@@ -320,11 +238,6 @@ export class TestGameplayScene {
       this.canvas.width * 0.35,
       this.canvas.height / 7
     );
-    // #1
-    // document.addEventListener("selectstart", function (e) {
-    //     e.preventDefault();
-    // });
-    // // #2
     this.handler.addEventListener("mouseup", this.handleMouseUp, false);
     this.handler.addEventListener("mousemove", this.handleMouseMove, false);
     this.handler.addEventListener("mousedown", this.handleMouseDown, false);
@@ -344,7 +257,6 @@ export class TestGameplayScene {
     this.handler.addEventListener(
       "touchmove",
       function (e) {
-        // console.log(" itstouchmove ");
         var touch = e.touches[0];
         var mouseEvent = new MouseEvent("mousemove", {
           clientX: touch.clientX,
@@ -370,16 +282,12 @@ export class TestGameplayScene {
 
   handleMouseClick = (event) => {
     let self = this;
-    // console.log(" startScene Listner ", this);
-    // this.levelIndicator.setIndicators(1);
     const selfElement = <HTMLElement>document.getElementById("canvas");
     event.preventDefault();
     var rect = selfElement.getBoundingClientRect();
     const x = event.clientX - rect.left;
     const y = event.clientY - rect.top;
-    // console.log(self, "thiiiss->>>", this);
     if (self.playButton.onClick(x, y)) {
-      // console.log(" booomer inside");
       self.firebase_analytics
         ? self.firebase_analytics.logEvent(FirebaseUserClicked, "click")
         : null;
@@ -388,13 +296,11 @@ export class TestGameplayScene {
         event: "click",
       });
       toggleBtn.style.display = "none";
-      // new Sound().playSound("./assets/audios/ButtonClick.mp3", ButtonClick);
       self.switchSceneToLevelSelection();
     }
   };
 
   dispose() {
-    // console.log("Disposing current listner startscene1", this);
     this.handler.removeEventListener("click", this.handleMouseClick, false);
   }
 }
