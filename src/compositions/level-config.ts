@@ -57,8 +57,8 @@ export const getdefaultCloudBtnsPos = (canvas) => {
     ];
 }
 
-export const loadLevelImages = async () => {
-    return await syncLoadingImages(
+export const loadLevelImages = () => {
+    return syncLoadingImages(
         {
             balloonImg: MAP_ICON_IMG,
             specialBloonImg: MAP_ICON_SPECIAL_IMG,
