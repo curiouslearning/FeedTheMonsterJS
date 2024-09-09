@@ -205,7 +205,6 @@ class App {
                 localStorage.removeItem("version" + lang.toLowerCase());
                 // Clear the cache for tht particular content
                 // caches.delete(lang);
-                
                 this.channel.postMessage({ command: "delete-cache", data: lang });
                 this.handleUpdateFoundMessage();
               }

@@ -31,6 +31,7 @@ self.addEventListener("activate", function (event) {
   event.waitUntil(self.clients.claim());
 });
 channel.addEventListener("message", async function (event) {
+  console.log('event data', event.data);
   if (event.data.command === "Cache") {
     number = 0;
     await getCacheName(event.data.data);
