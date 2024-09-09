@@ -205,14 +205,6 @@ class App {
                 localStorage.removeItem("version" + lang.toLowerCase());
                 // Clear the cache for tht particular content
                 // caches.delete(lang);
-                caches.keys().then(function(cacheNames) {
-                  console.log('Cache names:', cacheNames);
-                  cacheNames.forEach(function(cacheName) {
-                    console.log('Cache:', cacheName);
-                  });
-                }).catch(function(error) {
-                  console.error('Error getting cache names:', error);
-                });
                 this.channel.postMessage({ command: "delete-cache", data: lang });
                 this.handleUpdateFoundMessage();
               }
