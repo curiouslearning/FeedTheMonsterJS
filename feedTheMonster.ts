@@ -355,6 +355,22 @@ class App {
       );
       localStorage.setItem(IsCached, JSON.stringify(newCachedItem));
       localStorage.removeItem("version" + lang.toLowerCase());
+      caches.open(lang)
+    .then(function(cache) {
+      if (cache) {
+        console.log(`Cache "${lang}" exists. Contents:`);
+        return cache.keys();
+      } else {
+        console.log(`Cache "${lang}" does not exist.`);
+        return Promise.resolve([]);
+      }
+    })
+    .then(function(requests) {
+      requests.forEach(function(request, index) {
+        console.log(`${index + 1}. ${request.url}`);
+      });
+      console.log(`Total items in cache: ${requests.length}`);
+    })
       this.handleUpdateFoundMessage();
     }
   };
