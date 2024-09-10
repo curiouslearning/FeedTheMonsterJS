@@ -12,18 +12,15 @@ export class TextParticle {
 
   constructor(feedbackTextEffects: FeedbackTextEffects, x: number, y: number, color: string) {
     this.feedbackTextEffects = feedbackTextEffects;
-    this.x = Math.random() * this.feedbackTextEffects.canvasWidth;
     this.y = 0;
     this.color = color;
     this.originX = x;
     this.originY = y;
-    this.size = this.feedbackTextEffects.gap;
+    // this.size = this.feedbackTextEffects.gap;
     this.ease = Math.random() * 0.1 + 0.055;
   }
 
   public draw(): void {
-    this.feedbackTextEffects.context.fillStyle = this.color;
-    this.feedbackTextEffects.context.fillRect(this.x, this.y, this.size, this.size);
   }
 
   public update(): void {

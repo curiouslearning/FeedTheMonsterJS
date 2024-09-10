@@ -1,3 +1,8 @@
+@font-face {
+  font-family: AtmaSemiBold;
+  src: url(./assets/fonts/Atma-SemiBold.ttf);
+}
+
 * {
   margin: 0;
   padding: 0;
@@ -37,13 +42,15 @@ img {
   z-index: 100;
 }
 
-#feedback-text {
+/* #feedback-text {
   position: absolute;
   left: 50%;
-  top: 0%;
-  z-index: 0;
+  top: 21%;
   transform: translate(-50%, 0%);
-}
+  height: 50px;
+  width: 100%;
+  border: 1px solid red;
+} */
 
 #loading {
   position: absolute;
@@ -53,15 +60,14 @@ img {
   transform: translate(-50%, 0%);
 }
 
-
 #about-company p {
   margin-top: 10%;
   line-height: 1.8;
   color: white;
   text-align: center;
 }
-#monster{
-  border:1px solid;
+#monster {
+  border: 1px solid;
 }
 #discription-text p {
   margin-top: 10%;
@@ -115,7 +121,6 @@ img {
   background-color: rgba(0, 0, 0, 0.8);
   z-index: 1000;
 }
-
 
 @media (min-width: 420px) {
   #loading-screen {
@@ -201,4 +206,70 @@ img {
 
 #toggle-btn.off {
   background-color: #bbb;
+}
+
+.feedback-text {
+  font-family: "AtmaSemiBold", system-ui;
+  font-size: 52px;
+  font-weight: 700;
+  position: absolute;
+  top: 22%;
+  width: 100%;
+  color: #f8b618;
+  text-align: center;
+  line-height: 1.5;
+  white-space: nowrap;
+  opacity: 0;
+  pointer-events: none;
+  text-shadow: -2px -2px 0 white, 2px -2px 0 white, -2px 2px 0 white,
+    2px 2px 0 white, -3px 0 0 white, 3px 0 0 white, 0 -3px 0 white,
+    0 3px 0 white;
+  letter-spacing: 3px;
+}
+
+/* Animation for feedback text */
+@-webkit-keyframes tracking-in-expand-fwd {
+  0% {
+    letter-spacing: -0.5em;
+    -webkit-transform: translateZ(-700px);
+    transform: translateZ(-700px);
+    opacity: 0;
+  }
+  40% {
+    opacity: 0.6;
+  }
+  100% {
+    -webkit-transform: translateZ(0);
+    transform: translateZ(0);
+    opacity: 1;
+  }
+}
+@keyframes tracking-in-expand-fwd {
+  0% {
+    letter-spacing: -0.5em;
+    -webkit-transform: translateZ(-700px);
+    transform: translateZ(-700px);
+    opacity: 0;
+  }
+  40% {
+    opacity: 0.6;
+  }
+  100% {
+    -webkit-transform: translateZ(0);
+    transform: translateZ(0);
+    opacity: 1;
+  }
+}
+
+/* Apply the animation */
+/* .feedback-text {
+  display: none;
+} */
+.feedback-text.show {
+  /* animation: feedbackTextAnimation 3s ease-in-out; */
+  -webkit-animation: tracking-in-expand-fwd 0.4s
+    cubic-bezier(0.215, 0.61, 0.355, 1) both;
+  animation: tracking-in-expand-fwd 0.4s cubic-bezier(0.215, 0.61, 0.355, 1)
+    both;
+  opacity: 1;
 }

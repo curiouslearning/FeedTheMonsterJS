@@ -4,7 +4,14 @@ import { SceneHandler } from "@sceneHandler";
 import { AUDIO_URL_PRELOAD, IsCached } from "@constants";
 import { Workbox } from "workbox-window";
 import { FirebaseIntegration } from "./src/Firebase/firebase-integration";
-import { Utils, VISIBILITY_CHANGE, Debugger, lang, pseudoId, isDocumentVisible } from "@common";
+import {
+  Utils,
+  VISIBILITY_CHANGE,
+  Debugger,
+  lang,
+  pseudoId,
+  isDocumentVisible,
+} from "@common";
 import { AudioPlayer } from "@components";
 import {
   SessionStart,
@@ -54,12 +61,15 @@ class App {
   }
 
   private async init() {
+    console.log("init");
     const font = await Utils.getLanguageSpecificFont(this.lang);
+    console.log(font, this.lang);
     await this.loadAndCacheFont(font, `./assets/fonts/${font}.ttf`);
     await this.preloadGameAudios();
     this.handleLoadingScreen();
     this.setupCanvas();
     const data = await getData();
+    console.log(data);
     this.majVersion = data.majversion;
     this.minVersion = data.minversion;
     this.dataModal = this.createDataModal(data);

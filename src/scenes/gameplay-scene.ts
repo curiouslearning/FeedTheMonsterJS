@@ -169,18 +169,8 @@ export class GameplayScene {
       }
     );
     this.firebaseIntegration = new FirebaseIntegration();
-    this.feedBackTextCanavsElement = document.getElementById(
-      "feedback-text"
-    ) as HTMLCanvasElement;
-    this.feedBackTextCanavsElement.height = this.height;
-    this.feedBackTextCanavsElement.width = this.width;
-    this.feedbackTextEffects = new FeedbackTextEffects(
-      this.feedBackTextCanavsElement.getContext("2d", {
-        willReadFrequently: true,
-      }),
-      this.width,
-      this.height
-    );
+
+    this.feedbackTextEffects = new FeedbackTextEffects();
 
     this.audioPlayer = new AudioPlayer();
     this.handler = document.getElementById("canvas");
@@ -390,7 +380,7 @@ export class GameplayScene {
       this.pausePopup.draw();
     }
     if (!this.isPauseButtonClicked && !this.isGameStarted) {
-      this.feedbackTextEffects.render();
+      // this.feedbackTextEffects.render();
       this.counter == 0
         ? this.tutorial.clickOnMonsterTutorial(deltaTime)
         : undefined;
@@ -436,6 +426,9 @@ export class GameplayScene {
 
   loadPuzzle = (isTimerEnded?) => {
     this.removeEventListeners();
+    
+    // this.feedbackTextEffects.clearParticle();
+
     this.stonesCount = 1;
     const timerEnded = Boolean(isTimerEnded);
     if (timerEnded) {
@@ -474,7 +467,7 @@ export class GameplayScene {
   public dispose = () => {
     this.isDisposing = true;
     this.audioPlayer.stopAllAudios();
-    this.feedbackTextEffects.unregisterEventListener();
+    // this.feedbackTextEffects.unregisterEventListener();
     this.monster.dispose();
     this.timerTicking.dispose();
     this.levelIndicators.dispose();
@@ -554,10 +547,8 @@ export class GameplayScene {
 
   private handleCorrectStoneDrop = (feedbackIndex: number): void => {
     this.score += 100;
-    this.feedbackTextEffects.wrapText(
-      this.getRandomFeedBackText(feedbackIndex)
-    );
-    this.feedBackTextCanavsElement.style.zIndex = "2";
+    
+    this.feedbackTextEffects.wrapText(this.getRandomFeedBackText(feedbackIndex));
   };
 
   private dispatchStoneDropEvent(isCorrect: boolean): void {
@@ -574,8 +565,6 @@ export class GameplayScene {
     this.time = 0;
     this.tempWordforWordPuzzle = "";
     this.pickedStone = null;
-    this.feedbackTextEffects.clearParticle();
-    this.feedBackTextCanavsElement.style.zIndex = "0";
     document.dispatchEvent(loadPuzzleEvent);
     this.addEventListeners();
     this.audioPlayer.stopAllAudios();
