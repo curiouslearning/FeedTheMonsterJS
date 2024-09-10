@@ -196,16 +196,19 @@ class App {
               // We are comparing here the contentVersion with the aheadContentVersion
               if (aheadContentVersion && cachedVersion != aheadContentVersion) {
                 console.log("Content version mismatch! Reloading...");
-                var cachedItem = JSON.parse(localStorage.getItem("is_cached"));
-                console.log("current lang  " + lang);
-                var newCachedItem = cachedItem.filter(
-                  (e) => !e.toString().includes(lang)
-                );
-                localStorage.setItem(IsCached, JSON.stringify(newCachedItem));
-                localStorage.removeItem("version" + lang.toLowerCase());
+               
                 // Clear the cache for tht particular content
-                caches.delete(lang);
-                this.handleUpdateFoundMessage();
+                // caches.delete(lang);
+                // caches.keys().then(function(cacheNames) {
+                //   console.log('Cache names:', cacheNames);
+                //   cacheNames.forEach(function(cacheName) {
+                //     console.log('Cache:', cacheName);
+                //   });
+                // }).catch(function(error) {
+                //   console.error('Error getting cache names:', error);
+                // });
+                this.channel.postMessage({ command: "delete-cache", data: lang });
+                // this.handleUpdateFoundMessage();
               }
             })
             .catch((error) => {
@@ -343,6 +346,15 @@ class App {
     if (event.data.msg === "Loading") {
       this.handleLoadingMessage(event.data);
     } else if (event.data.msg === "Update Found") {
+      this.handleUpdateFoundMessage();
+    }else if(event.data.msg === 'Cache-deleted'){
+      var cachedItem = JSON.parse(localStorage.getItem("is_cached"));
+      console.log("cache-deleted lang  " + lang);
+      var newCachedItem = cachedItem.filter(
+        (e) => !e.toString().includes(lang)
+      );
+      localStorage.setItem(IsCached, JSON.stringify(newCachedItem));
+      localStorage.removeItem("version" + lang.toLowerCase());
       this.handleUpdateFoundMessage();
     }
   };
