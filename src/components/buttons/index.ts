@@ -6,6 +6,7 @@ import PauseButton from "./pause-button";
 import RetryButton from "./retry-button";
 import YesButton from "./yes-button";
 import PlayButton from "./play-button";
+import LevelBloonButton from './level-button';
 
 export {
   CloseButton,
@@ -16,4 +17,5 @@ export {
   RetryButton,
   YesButton,
   PlayButton,
+  LevelBloonButton
 };

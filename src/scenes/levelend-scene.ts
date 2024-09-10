@@ -5,7 +5,7 @@ import {
   BACKGROUND_ASSET_LIST,
   createBackground,
   loadDynamicBgAssets,
-} from "@compositions/background";
+} from "@compositions";
 import {
   AUDIO_INTRO,
   AUDIO_LEVEL_LOSE,

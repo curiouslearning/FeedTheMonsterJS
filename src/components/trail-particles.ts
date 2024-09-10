@@ -85,20 +85,20 @@ class Particles {
             "rgb(229,170,100,255)"
         ];
         this.start = {
-            x: mouse.x + this.getRandomInt(-5, 5),
-            y: mouse.y + this.getRandomInt(-5, 5),
-            size: 1
+            x: mouse.x + this.getRandomInt(-15, 15),
+            y: mouse.y + this.getRandomInt(-15, 15),
+            size: 5.5
         }
         this.end = {
-            x: this.start.x + this.getRandomInt(-10, 10),
-            y: this.start.y + this.getRandomInt(-20, 20)
+            x: this.start.x + this.getRandomInt(-25, 25),
+            y: this.start.y + this.getRandomInt(-30, 30)
         }
         this.x = this.start.x;
         this.y = this.start.y;
         this.size = this.start.size;
         this.style = this.rgb[this.getRandomInt(0, this.rgb.length - 1)];
         this.time = 0;
-        this.ttl = 45;
+        this.ttl = 90;
         this.hyp = 0;
         this.starX = 0;
         this.starY = 0;
@@ -109,15 +109,14 @@ class Particles {
         if (this.time <= this.ttl) {
             const progress = 1 - (this.ttl - this.time) / this.ttl;
             this.size = this.start.size * (1 - this.easeOutQuart(progress));
-            this.x = this.x + (this.end.x - this.x) * 0.001;
-            this.y = this.y + (this.end.y - this.y) * 0.001;
+            this.x = this.x + (this.end.x - this.x) * 0.01;
+            this.y = this.y + (this.end.y - this.y) * 0.01;
         }
         this.time++;
     }
 
     public draw() {
-        this.circleParticle(); //default particle shape.
-        //this.starParticle(); //alt particle.
+        this.starParticle(); //default particle shape.
     }
 
     private circleParticle() {

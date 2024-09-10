@@ -44,7 +44,7 @@ export default class PauseButton {
       );
 
       if (this.btnSizeAnimation < 0.09) {
-        this.btnSizeAnimation = this.btnSizeAnimation + 0.0005;
+        this.btnSizeAnimation = this.btnSizeAnimation + 0.00025;
       } else {
         this.posX = this.orignalPos.x;
         this.posY = this.orignalPos.y;
@@ -64,9 +64,9 @@ export default class PauseButton {
     );
 
     if (isInside) {
-      this.btnSizeAnimation = 0.08;
-      this.posX = this.posX + 1;
-      this.posY = this.posY + 1;
+      this.btnSizeAnimation = 0.085;
+      this.posX = this.posX + 0.9;
+      this.posY = this.posY + 0.9;
     }
 
     return isInside;
