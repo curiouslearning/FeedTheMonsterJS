@@ -48,6 +48,7 @@
       "@popups/*": ["src/components/popups/*"],
       "@common": ["src/common"],
       "@compositions/*": ["src/compositions/*"],
+      "@compositions": ["src/compositions"],
       "@constants": ["src/constants"],
       "@data/*": ["src/data/*"],
       "@data": ["src/data"],

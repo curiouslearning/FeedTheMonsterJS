@@ -21,7 +21,6 @@ import {
   TOUCHSTART,
   VISIBILITY_CHANGE,
 } from "./event-names";
-import { LevelConfig } from "./level-config";
 
 export {
   StoneConfig,
@@ -44,7 +43,6 @@ export {
   TOUCHMOVE,
   TOUCHSTART,
   VISIBILITY_CHANGE,
-  LevelConfig,
   isClickInsideButton,
   isDocumentVisible,
   toggleDebugMode
