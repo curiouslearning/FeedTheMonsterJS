@@ -41,14 +41,14 @@ channel.addEventListener("message", async function (event) {
   }
   if(event.data.command === "delete-cache"){
     console.log('Cache deleted in progress', event.data.data);
-    caches.open(cacheName)
+    caches.open(event.data.data)
     .then(cache => {
       return cache.keys()
         .then(keys => {
           return Promise.all(keys.map(key => cache.delete(key)));
         })
         .then(() => {
-          console.log(`Cache '${cacheName}' has been cleared`);
+          console.log(`Cache '${event.data.data}' has been cleared`);
           self.clients.matchAll().then((clients) => {
             clients.forEach((client) =>
               client.postMessage({ msg: "Cache-deleted" })
