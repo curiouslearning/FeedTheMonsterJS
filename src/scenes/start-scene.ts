@@ -109,29 +109,42 @@ export class StartScene {
 
   handleMouseClick = (event) => {
     let self = this;
-    const selfElement = document.getElementById("canvas") as HTMLCanvasElement;
+    
+    // Identify which canvas was clicked
+    const selfElement = event.target.id === "canvas" 
+      ? document.getElementById("canvas") as HTMLCanvasElement 
+      : document.getElementById("newcanvas") as HTMLCanvasElement;
+    
+    if (!selfElement) return; // Ensure the element exists
+    
     event.preventDefault();
     var rect = selfElement.getBoundingClientRect();
     const x = event.clientX - rect.left;
     const y = event.clientY - rect.top;
+    
     const { excludeX, excludeY } = Utils.getExcludedCoordinates(
       selfElement,
       15
     );
+    
     if (!(x < excludeX && y < excludeY)) {
       FirebaseIntegration.getInstance().sendUserClickedOnPlayEvent();
+      
       // @ts-ignore
       fbq("trackCustom", FirebaseUserClicked, {
         event: "click",
       });
+      
       this.toggleBtn.style.display = "none";
       this.audioPlayer.playButtonClickSound();
       self.switchSceneToLevelSelection("StartScene");
+      
       setTimeout(() => {
         this.riveMonster.stopRiveMonster();
       }, 500);
     }
   };
+
 
   dispose() {
     // this.monster.dispose()

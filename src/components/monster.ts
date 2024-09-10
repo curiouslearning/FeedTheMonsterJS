@@ -46,7 +46,7 @@ export class Monster extends EventManager {
     this.countFrame = 0;
     this.frameInterval = 1000 / this.fps;
     this.frameTimer = 0;
-
+    this.riveMonster = new RiveMonster(this.canavsElement);
     this.images = {
       eatImg: "./assets/images/eat1" + this.monsterPhase + ".png",
       idleImg: "./assets/images/idle1" + this.monsterPhase + ".png",
@@ -99,27 +99,6 @@ export class Monster extends EventManager {
 
   changeImage(src) {
     this.image.src = src;
-  }
-  
-
-  changeToDragAnimation() {
-    this.maxFrame=6
-    this.image = this.loadedImages.dragImg;
-  }
-
-  changeToEatAnimation() {
-    this.maxFrame=12
-    this.image = this.loadedImages.eatImg;
-  }
-
-  changeToIdleAnimation() {
-    this.maxFrame=6;
-    this.image = this.loadedImages.idleImg;
-  }
-
-  changeToSpitAnimation() {
-    this.maxFrame=12;
-    this.image = this.loadedImages.spitImg;
   }
 
   public handleStoneDrop(event) {
