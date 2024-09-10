@@ -44,9 +44,8 @@ import {
   BACKGROUND_ASSET_LIST,
   createBackground,
   loadDynamicBgAssets,
-} from '../compositions/background';
+} from "@compositions";
 import { RiveMonster } from '../components/rive-monster';
-
 export class GameplayScene {
   public width: number;
   public height: number;

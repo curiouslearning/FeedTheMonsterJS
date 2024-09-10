@@ -141,3 +141,6 @@ export const SCENE_NAME_START = "StartScene";
 export const SCENE_NAME_LEVEL_SELECT = "LevelSelection";
 export const SCENE_NAME_GAME_PLAY = "GamePlay";
 export const SCENE_NAME_LEVEL_END = "LevelEnd";
+
+//Levels
+export const SPECIAL_LEVELS = [5, 13, 20, 30, 42];

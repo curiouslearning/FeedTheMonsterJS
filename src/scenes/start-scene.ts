@@ -8,7 +8,7 @@ import {
   Utils,
 } from "@common";
 import { FirebaseIntegration } from "../Firebase/firebase-integration";
-import { createBackground, defaultBgDrawing } from "@compositions/background";
+import { createBackground, defaultBgDrawing } from '@compositions';
 import {
   FirebaseUserClicked,
   PWAInstallStatus,
