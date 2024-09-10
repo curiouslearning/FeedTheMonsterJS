@@ -42,15 +42,30 @@ channel.addEventListener("message", async function (event) {
   }
   if(event.data.command === "delete-cache"){
     console.log('Cache deleted in progress', event.data.data);
-    caches.delete(event.data.data).then((success)=> {
-        if (success) {
-          console.log('Cache deleted successfully.');
-        } else {
-          console.log('Cache not found.');
-        }
-      }).catch((error) =>{
-        console.error('Error deleting cache:', error);
-      });
+    caches.open(cacheName)
+    .then(cache => {
+      return cache.keys()
+        .then(keys => {
+          return Promise.all(keys.map(key => cache.delete(key)));
+        })
+        .then(() => {
+          console.log(`Cache '${cacheName}' has been cleared`);
+          self.clients.matchAll().then((clients) => {
+            clients.forEach((client) =>
+              client.postMessage({ msg: "Cache-deleted" })
+            );
+          });
+        });
+    });
+    // caches.delete(event.data.data).then((success)=> {
+    //     if (success) {
+    //       console.log('Cache deleted successfully.');
+    //     } else {
+    //       console.log('Cache not found.');
+    //     }
+    //   }).catch((error) =>{
+    //     console.error('Error deleting cache:', error);
+    //   });
   }
 });
 
