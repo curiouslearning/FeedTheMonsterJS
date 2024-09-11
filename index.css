@@ -215,15 +215,15 @@ img {
   position: absolute;
   top: 22%;
   width: 100%;
-  color: #f8b618;
+  color: #fff;
   text-align: center;
   line-height: 1.5;
   white-space: nowrap;
   opacity: 0;
   pointer-events: none;
-  text-shadow: -2px -2px 0 white, 2px -2px 0 white, -2px 2px 0 white,
-    2px 2px 0 white, -3px 0 0 white, 3px 0 0 white, 0 -3px 0 white,
-    0 3px 0 white;
+  text-shadow: -2px -2px 0 #f8b618, 2px -2px 0 #f8b618, -2px 2px 0 #f8b618,
+    2px 2px 0 #f8b618, -3px 0 0 #f8b618, 3px 0 0 #f8b618, 0 -3px 0 #f8b618,
+    0 3px 0 #f8b618;
   letter-spacing: 3px;
 }
 
