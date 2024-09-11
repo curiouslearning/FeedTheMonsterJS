@@ -52,8 +52,6 @@ export class FeedbackTextEffects {
   public wrapText(text: string): void {
     if (!this.isFeedbackElementAvailable()) return;
 
-    this.clearHideTimeout();
-
     this.feedbackTextElement.textContent = text;
     hideElement(false, this.feedbackTextElement);
 
@@ -61,16 +59,13 @@ export class FeedbackTextEffects {
   }
 
   private setHideTimeout(): void {
+    if (this.hideTimeoutId) {
+      clearTimeout(this.hideTimeoutId);
+    }
+
     this.hideTimeoutId = window.setTimeout(() => {
       hideElement(true, this.feedbackTextElement);
       this.hideTimeoutId = null;
     }, 4000);
-  }
-
-  private clearHideTimeout(): void {
-    if (this.hideTimeoutId) {
-      clearTimeout(this.hideTimeoutId);
-      this.hideTimeoutId = null;
-    }
   }
 }
