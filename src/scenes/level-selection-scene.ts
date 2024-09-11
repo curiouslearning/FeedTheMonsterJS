@@ -277,8 +277,8 @@ export class LevelSelectionScreen {
         ? this.context.fillText(
             this.data.levels[levelBtn.levelData.index + this.levelSelectionPageIndex - 1]
               .levelMeta.levelType,
-            levelBtn.levelData.x + levelBtn.levelData.size / 3.5,
-            levelBtn.levelData.y + levelBtn.levelData.size / 1.3
+            levelBtn.levelData.x + levelBtn.btnSize / 3.5,
+            levelBtn.levelData.y + levelBtn.btnSize / 1.3
           )
         : null;
     }
