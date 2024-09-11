@@ -21,6 +21,8 @@ export const StartScene1 = "StartScene1";
 export const LevelSelection1 = "LevelSelection1";
 export const GameScene1 = "GameScene1";
 export const EndScene1 = "EndScene1";
+export const FONT_BASE_PATH = './assets/fonts/';
+export const feedbackTextDefault = "Atma-SemiBold";
 
 //Audio paths
 export const AUDIO_PATH_EATS = "./assets/audios/Eat.mp3";
@@ -96,7 +98,8 @@ export const PLAY_BTN_IMG = "./assets/images/Play_button.webp";
 export const PAUSE_BTN_IMG = "./assets/images/pause_v01.webp";
 export const MAP_BTN_IMG = "./assets/images/map_btn.webp";
 export const MAP_ICON_IMG = "./assets/images/mapIcon.webp";
-export const MAP_ICON_SPECIAL_IMG = "./assets/images/map_icon_monster_level_v01.webp";
+export const MAP_ICON_SPECIAL_IMG =
+  "./assets/images/map_icon_monster_level_v01.webp";
 export const MAP_LOCK_IMG = "./assets/images/mapLock.webp";
 export const STAR_IMG = "./assets/images/star.webp";
 export const NEXT_BTN_IMG = "./assets/images/next_btn.webp";

@@ -6,7 +6,8 @@ import {
   createRippleEffect,
   isClickInsideButton,
   isDocumentVisible,
-  toggleDebugMode
+  toggleDebugMode,
+  hideElement,
 } from "./utils";
 import { Debugger, lang, font, pseudoId, Window } from "./global-variables";
 import {
@@ -45,5 +46,6 @@ export {
   VISIBILITY_CHANGE,
   isClickInsideButton,
   isDocumentVisible,
-  toggleDebugMode
+  toggleDebugMode,
+  hideElement
 };
