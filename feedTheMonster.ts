@@ -161,10 +161,12 @@ class App {
         const wb = new Workbox("./sw.js", {});
         await wb.register();
         await navigator.serviceWorker.ready;
-
+        console.log(this.is_cached.has(this.lang));
         if (!this.is_cached.has(this.lang)) {
+          console.log("sending Cache message");
           this.channel.postMessage({ command: "Cache", data: this.lang });
         } else {
+          console.log("sending no Cache message");
           fetch(URL + "?cache-bust=" + new Date().getTime(), {
             method: "GET",
             headers: {
