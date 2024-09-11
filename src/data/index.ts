@@ -13,6 +13,7 @@ import {
 } from "./data-modal";
 import { GameScore } from "./game-score";
 import { languageFontMapping } from "./i18-font-mapping";
+import { feedbackCustomFonts } from "./feedback-fonts";
 
 export {
   getFtmData,
@@ -30,4 +31,5 @@ export {
   GameScore,
   languageFontMapping,
   URL,
+  feedbackCustomFonts,
 };
