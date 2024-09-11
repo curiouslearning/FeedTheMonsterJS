@@ -165,7 +165,11 @@ class App {
         if (!this.is_cached.has(this.lang)) {
           this.channel.postMessage({ command: "Cache", data: this.lang });
         } else {
-          fetch(URL + "?cache-bust=" + new Date().getTime(), {
+          const time = new Date().getTime();
+          console.log(URL + "?cache-bust=" + time);
+          console.log(">>>>>>>");
+          console.log(time);
+          fetch(URL + "?cache-bust=" + time, {
             method: "GET",
             headers: {
               "Content-Type": "application/json",
