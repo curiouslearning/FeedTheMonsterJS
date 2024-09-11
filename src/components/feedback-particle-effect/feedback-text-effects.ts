@@ -4,10 +4,19 @@ import { feedbackCustomFonts } from "@data/feedback-fonts";
 
 export class FeedbackTextEffects {
   private feedbackTextElement: HTMLElement | null;
+  private hideTimeoutId: number | null = null; // Store the timeout ID
 
   constructor() {
     this.feedbackTextElement = document.getElementById("feedback-text");
 
+    // Call an initialization method to handle further logic
+    this.initialize();
+  }
+
+  /**
+   * Initializes the feedback text effects, loading the font if the element is found.
+   */
+  private initialize() {
     if (!this.feedbackTextElement) {
       console.error("Feedback text element not found!");
       return;
@@ -16,6 +25,9 @@ export class FeedbackTextEffects {
     this.loadFont();
   }
 
+  /**
+   * Loads the appropriate font based on the current language.
+   */
   private async loadFont() {
     const fontName = feedbackCustomFonts[lang] || feedbackTextDefault; // Determine the final font to use
     const fontPath = `./assets/fonts/${fontName}.ttf`; // Construct the font path
@@ -55,9 +67,19 @@ export class FeedbackTextEffects {
       return;
     }
 
+    // Clear any existing timeout to prevent memory leaks
+    if (this.hideTimeoutId) {
+      clearTimeout(this.hideTimeoutId);
+      this.hideTimeoutId = null;
+    }
+
     this.feedbackTextElement.textContent = text;
     hideShowElement(false, this.feedbackTextElement);
 
-    setTimeout(() => hideShowElement(true, this.feedbackTextElement), 3000);
+    // Set a new timeout and store its ID
+    this.hideTimeoutId = window.setTimeout(() => {
+      hideShowElement(true, this.feedbackTextElement);
+      this.hideTimeoutId = null; // Reset the timeout ID once the callback is executed
+    }, 4000);
   }
 }

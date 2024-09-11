@@ -69,7 +69,6 @@ class App {
     this.handleLoadingScreen();
     this.setupCanvas();
     const data = await getData();
-    console.log(data);
     this.majVersion = data.majversion;
     this.minVersion = data.minversion;
     this.dataModal = this.createDataModal(data);

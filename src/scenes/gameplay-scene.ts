@@ -380,7 +380,6 @@ export class GameplayScene {
       this.pausePopup.draw();
     }
     if (!this.isPauseButtonClicked && !this.isGameStarted) {
-      // this.feedbackTextEffects.render();
       this.counter == 0
         ? this.tutorial.clickOnMonsterTutorial(deltaTime)
         : undefined;
@@ -426,8 +425,6 @@ export class GameplayScene {
 
   loadPuzzle = (isTimerEnded?) => {
     this.removeEventListeners();
-    
-    // this.feedbackTextEffects.clearParticle();
 
     this.stonesCount = 1;
     const timerEnded = Boolean(isTimerEnded);
@@ -467,7 +464,6 @@ export class GameplayScene {
   public dispose = () => {
     this.isDisposing = true;
     this.audioPlayer.stopAllAudios();
-    // this.feedbackTextEffects.unregisterEventListener();
     this.monster.dispose();
     this.timerTicking.dispose();
     this.levelIndicators.dispose();
