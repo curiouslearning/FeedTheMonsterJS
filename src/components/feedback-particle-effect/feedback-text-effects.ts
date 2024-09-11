@@ -1,39 +1,26 @@
-import { hideShowElement, lang, Utils } from "@common";
+import { hideElement, lang } from "@common";
 import { feedbackTextDefault, FONT_BASE_PATH } from "@constants";
 import { feedbackCustomFonts } from "@data/feedback-fonts";
 
 export class FeedbackTextEffects {
   private feedbackTextElement: HTMLElement | null;
-  private hideTimeoutId: number | null = null;
+  private hideTimeoutId: number | null;
 
   constructor() {
     this.feedbackTextElement = document.getElementById("feedback-text");
+    this.hideTimeoutId = null;
     this.initialize();
   }
 
-  /**
-   * Initializes the feedback text effects, loading the font if the element is found.
-   */
   private initialize() {
     if (!this.isFeedbackElementAvailable()) return;
     this.loadFont();
   }
 
-  /**
-   * Checks if the feedback text element is available and logs an error if not.
-   * @returns A boolean indicating whether the element is available.
-   */
   private isFeedbackElementAvailable(): boolean {
-    if (!this.feedbackTextElement) {
-      console.error("Feedback text element not found!");
-      return false;
-    }
-    return true;
+    return !!this.feedbackTextElement;
   }
 
-  /**
-   * Loads the appropriate font based on the current language.
-   */
   private async loadFont() {
     const fontName = feedbackCustomFonts[lang] || feedbackTextDefault;
     const fontPath = `${FONT_BASE_PATH}${fontName}.ttf`;
@@ -62,24 +49,28 @@ export class FeedbackTextEffects {
     }
   }
 
-  /**
-   * Updates the feedback text with an animation.
-   * @param text - The text to display in the feedback element.
-   */
   public wrapText(text: string): void {
     if (!this.isFeedbackElementAvailable()) return;
 
+    this.clearHideTimeout();
+
+    this.feedbackTextElement.textContent = text;
+    hideElement(false, this.feedbackTextElement);
+
+    this.setHideTimeout();
+  }
+
+  private setHideTimeout(): void {
+    this.hideTimeoutId = window.setTimeout(() => {
+      hideElement(true, this.feedbackTextElement);
+      this.hideTimeoutId = null;
+    }, 4000);
+  }
+
+  private clearHideTimeout(): void {
     if (this.hideTimeoutId) {
       clearTimeout(this.hideTimeoutId);
       this.hideTimeoutId = null;
     }
-
-    this.feedbackTextElement.textContent = text;
-    hideShowElement(false, this.feedbackTextElement);
-
-    this.hideTimeoutId = window.setTimeout(() => {
-      hideShowElement(true, this.feedbackTextElement);
-      this.hideTimeoutId = null;
-    }, 4000);
   }
 }

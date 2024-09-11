@@ -169,15 +169,13 @@ export const toggleDebugMode = (toggleBtn: HTMLElement): void => {
   toggleBtn.innerText = "Dev";
 };
 
-export const hideShowElement = (
+export const hideElement = (
   isHide: boolean = false,
   element: HTMLElement
 ) => {
   if (isHide) {
     element.classList.remove("show");
-    element.style.zIndex = "0";
   } else {
     element.classList.add("show");
-    element.style.zIndex = "999";
   }
 };

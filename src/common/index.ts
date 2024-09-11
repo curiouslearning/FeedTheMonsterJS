@@ -7,7 +7,7 @@ import {
   isClickInsideButton,
   isDocumentVisible,
   toggleDebugMode,
-  hideShowElement,
+  hideElement,
 } from "./utils";
 import { Debugger, lang, font, pseudoId, Window } from "./global-variables";
 import {
@@ -47,5 +47,5 @@ export {
   isClickInsideButton,
   isDocumentVisible,
   toggleDebugMode,
-  hideShowElement
+  hideElement
 };
