@@ -4,12 +4,10 @@ import { feedbackCustomFonts } from "@data/feedback-fonts";
 
 export class FeedbackTextEffects {
   private feedbackTextElement: HTMLElement | null;
-  private hideTimeoutId: number | null = null; // Store the timeout ID
+  private hideTimeoutId: number | null = null;
 
   constructor() {
     this.feedbackTextElement = document.getElementById("feedback-text");
-
-    // Call an initialization method to handle further logic
     this.initialize();
   }
 
@@ -17,21 +15,28 @@ export class FeedbackTextEffects {
    * Initializes the feedback text effects, loading the font if the element is found.
    */
   private initialize() {
+    if (!this.isFeedbackElementAvailable()) return;
+    this.loadFont();
+  }
+
+  /**
+   * Checks if the feedback text element is available and logs an error if not.
+   * @returns A boolean indicating whether the element is available.
+   */
+  private isFeedbackElementAvailable(): boolean {
     if (!this.feedbackTextElement) {
       console.error("Feedback text element not found!");
-      return;
+      return false;
     }
-
-    this.loadFont();
+    return true;
   }
 
   /**
    * Loads the appropriate font based on the current language.
    */
   private async loadFont() {
-    const fontName = feedbackCustomFonts[lang] || feedbackTextDefault; // Determine the final font to use
-    const fontPath = `${FONT_BASE_PATH}${fontName}.ttf`; // Construct the font path
-
+    const fontName = feedbackCustomFonts[lang] || feedbackTextDefault;
+    const fontPath = `${FONT_BASE_PATH}${fontName}.ttf`;
     this.applyFontToElement(fontName, fontPath);
   }
 
@@ -52,8 +57,8 @@ export class FeedbackTextEffects {
       document.head.appendChild(style);
     }
 
-    if (this.feedbackTextElement) {
-      this.feedbackTextElement.style.fontFamily = `${fontName}, sans-serif`;
+    if (this.isFeedbackElementAvailable()) {
+      this.feedbackTextElement!.style.fontFamily = `${fontName}, sans-serif`;
     }
   }
 
@@ -62,12 +67,8 @@ export class FeedbackTextEffects {
    * @param text - The text to display in the feedback element.
    */
   public wrapText(text: string): void {
-    if (!this.feedbackTextElement) {
-      console.error("Feedback text element not found!");
-      return;
-    }
+    if (!this.isFeedbackElementAvailable()) return;
 
-    // Clear any existing timeout to prevent memory leaks
     if (this.hideTimeoutId) {
       clearTimeout(this.hideTimeoutId);
       this.hideTimeoutId = null;
@@ -76,10 +77,9 @@ export class FeedbackTextEffects {
     this.feedbackTextElement.textContent = text;
     hideShowElement(false, this.feedbackTextElement);
 
-    // Set a new timeout and store its ID
     this.hideTimeoutId = window.setTimeout(() => {
       hideShowElement(true, this.feedbackTextElement);
-      this.hideTimeoutId = null; // Reset the timeout ID once the callback is executed
+      this.hideTimeoutId = null;
     }, 4000);
   }
 }

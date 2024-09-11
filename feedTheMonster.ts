@@ -63,7 +63,6 @@ class App {
   private async init() {
     console.log("init");
     const font = await Utils.getLanguageSpecificFont(this.lang);
-    console.log(font, this.lang);
     await this.loadAndCacheFont(font, `./assets/fonts/${font}.ttf`);
     await this.preloadGameAudios();
     this.handleLoadingScreen();
