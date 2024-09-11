@@ -21,6 +21,7 @@ export const StartScene1 = "StartScene1";
 export const LevelSelection1 = "LevelSelection1";
 export const GameScene1 = "GameScene1";
 export const EndScene1 = "EndScene1";
+export const FONT_BASE_PATH = './assets/fonts/';
 export const feedbackTextDefault = "Atma-SemiBold";
 
 //Audio paths

@@ -1,5 +1,5 @@
 import { hideShowElement, lang, Utils } from "@common";
-import { feedbackTextDefault } from "@constants";
+import { feedbackTextDefault, FONT_BASE_PATH } from "@constants";
 import { feedbackCustomFonts } from "@data/feedback-fonts";
 
 export class FeedbackTextEffects {
@@ -30,7 +30,7 @@ export class FeedbackTextEffects {
    */
   private async loadFont() {
     const fontName = feedbackCustomFonts[lang] || feedbackTextDefault; // Determine the final font to use
-    const fontPath = `./assets/fonts/${fontName}.ttf`; // Construct the font path
+    const fontPath = `${FONT_BASE_PATH}${fontName}.ttf`; // Construct the font path
 
     this.applyFontToElement(fontName, fontPath);
   }
