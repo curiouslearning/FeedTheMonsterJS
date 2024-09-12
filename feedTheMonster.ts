@@ -171,7 +171,7 @@ class App {
         await navigator.serviceWorker.ready;
         console.log(!this.is_cached.has(this.lang));
         if (!this.is_cached.has(this.lang)) {
-          this.channel.postMessage({ command: "CacheUpdate", data: this.lang });
+          this.channel.postMessage({ command: "Cache", data: this.lang });
         } else {
           fetch(URL + "?cache-bust=" + new Date().getTime(), {
             method: "GET",
@@ -212,8 +212,8 @@ class App {
                 localStorage.setItem(IsCached, JSON.stringify(newCachedItem));
                 localStorage.removeItem("version" + lang.toLowerCase());
                 // Clear the cache for tht particular content
-                caches.delete(lang);
-                // channel.postMessage({ command: "Cache", data: this.lang });
+                await caches.delete(lang);
+                this.channel.postMessage({ command: "CacheUpdate", data: this.lang });
                 this.handleUpdateFoundMessage();
               }
             })
