@@ -215,7 +215,7 @@ img {
     2px 2px 0 #f8b618, -3px 0 0 #f8b618, 3px 0 0 #f8b618, 0 -3px 0 #f8b618,
     0 3px 0 #f8b618;
   letter-spacing: 3px;
-  z-index: 0;
+  /* z-index: 0; */
 }
 
 /* Animation for feedback text */
@@ -247,4 +247,19 @@ img {
   animation: scale-up-center 0.4s cubic-bezier(0.39, 0.575, 0.565, 1) both; */
   z-index: 999;
   opacity: 1;
+}
+
+.feedback-text .text-wrapper {
+  position: relative;
+  display: inline-block;
+  padding-top: 0.2em;
+  padding-right: 0.05em;
+  padding-bottom: 0.1em;
+  overflow: hidden;
+}
+
+.feedback-text .letter {
+  transform-origin: 50% 100%;
+  display: inline-block;
+  line-height: 1em;
 }
