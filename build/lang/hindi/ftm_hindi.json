@@ -7,12 +7,12 @@
     " उत्तम"
   ],
   "majversion": 3,
-  "minversion": 22,
+  "minversion": 21,
   "langname": "HINDI",
   "FeedbackAudios": [
-    "https://feedthemonster.curiouscontent.org/lang/zulu/audios/fantastic.mp3",
-    "https://feedthemonster.curiouscontent.org/lang/zulu/audios/great.mp3",
-    "https://feedthemonster.curiouscontent.org/lang/zulu/audios/amazing.mp3"
+    "https://feedthemonster.curiouscontent.org/lang/nepali/audios/fantastic.mp3",
+    "https://feedthemonster.curiouscontent.org/lang/nepali/audios/great.mp3",
+    "https://feedthemonster.curiouscontent.org/lang/nepali/audios/amazing.mp3"
   ],
   "OtherAudios": {
     "Select your player": "https://feedthemonster.curiouscontent.org/lang/hindi/audios/Select-your-player.mp3",
