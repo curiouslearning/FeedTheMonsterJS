@@ -170,9 +170,9 @@ class App {
         await wb.register();
         await navigator.serviceWorker.ready;
 
-        if (!this.is_cached.has(this.lang)) {
-          this.channel.postMessage({ command: "Cache", data: this.lang });
-        } else {
+        // if (!this.is_cached.has(this.lang)) {
+        //   this.channel.postMessage({ command: "Cache", data: this.lang });
+        // } else {
           fetch(URL + "?cache-bust=" + new Date().getTime(), {
             method: "GET",
             headers: {
@@ -219,7 +219,7 @@ class App {
             .catch((error) => {
               console.error("Error fetching the content file: " + error);
             });
-        }
+        // }
         navigator.serviceWorker.addEventListener(
           "message",
           this.handleServiceWorkerMessage
