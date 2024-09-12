@@ -67,8 +67,7 @@ class App {
     await this.preloadGameAudios();
     this.handleLoadingScreen();
     this.setupCanvas();
-    const isCachedFlag = this.is_cached.has(this.lang);
-    const data = await getData(!isCachedFlag);
+    const data = await getData();
     this.majVersion = data.majversion;
     this.minVersion = data.minversion;
     console.log("Data initialized");
