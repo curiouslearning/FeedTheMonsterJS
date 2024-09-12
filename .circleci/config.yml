@@ -13,6 +13,7 @@ jobs:
           arguments: |
             --acl public-read \
             --cache-control "max-age=86400"
+            --size-only
           aws-access-key-id: AWS_ACCESS_KEY
           aws-region: AWS_DEFAULT_REGION
           aws-secret-access-key: AWS_SECRET_ACCESS_KEY
