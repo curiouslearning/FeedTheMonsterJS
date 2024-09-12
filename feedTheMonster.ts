@@ -169,8 +169,7 @@ class App {
         const wb = new Workbox("./sw.js", {});
         await wb.register();
         await navigator.serviceWorker.ready;
-        console.log("is_cached>");
-        console.log(this.is_cached);
+
         if (!this.is_cached.has(this.lang)) {
           this.channel.postMessage({ command: "Cache", data: this.lang });
         } else {
@@ -204,9 +203,17 @@ class App {
               // If there's a new content version, we need to remove the cached content and reload
               // We are comparing here the contentVersion with the aheadContentVersion
               if (aheadContentVersion && cachedVersion != aheadContentVersion) {
-                console.log("version mismatch found, deleting cache");
-                this.channel.postMessage({ command: "delete-cache", data: this.lang });
-                // this.handleUpdateFoundMessage();
+                console.log("Content version mismatch! Reloading...");
+                var cachedItem = JSON.parse(localStorage.getItem("is_cached"));
+                console.log("current lang  " + lang);
+                var newCachedItem = cachedItem.filter(
+                  (e) => !e.toString().includes(lang)
+                );
+                localStorage.setItem(IsCached, JSON.stringify(newCachedItem));
+                localStorage.removeItem("version" + lang.toLowerCase());
+                // Clear the cache for tht particular content
+                caches.delete(lang);
+                this.handleUpdateFoundMessage();
               }
             })
             .catch((error) => {
@@ -344,18 +351,6 @@ class App {
     if (event.data.msg === "Loading") {
       this.handleLoadingMessage(event.data);
     } else if (event.data.msg === "Update Found") {
-      this.handleUpdateFoundMessage();
-    }else if (event.data.msg === 'Cache-deleted'){
-      // console.log("Content version mismatch! Reloading...");
-      var cachedItem = JSON.parse(localStorage.getItem("is_cached"));
-      console.log("current lang  " + lang);
-      var newCachedItem = cachedItem.filter(
-        (e) => !e.toString().includes(lang)
-      );
-      localStorage.setItem(IsCached, JSON.stringify(newCachedItem));
-      localStorage.removeItem("version" + lang.toLowerCase());
-      // Clear the cache for tht particular content
-      // await caches.delete(lang);
       this.handleUpdateFoundMessage();
     }
   };
