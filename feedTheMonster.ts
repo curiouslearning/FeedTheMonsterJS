@@ -170,7 +170,9 @@ class App {
         await wb.register();
         await navigator.serviceWorker.ready;
         console.log("is_cached>");
-        console.log(this.is_cached);
+        for (const [key, value] of this.is_cached) {
+          console.log(key, value);
+        }
         if (!this.is_cached.has(this.lang)) {
           this.channel.postMessage({ command: "Cache", data: this.lang });
         } else {
