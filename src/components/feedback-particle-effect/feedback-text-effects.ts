@@ -1,10 +1,12 @@
 import { hideElement, lang } from "@common";
 import { feedbackTextDefault, FONT_BASE_PATH } from "@constants";
 import { feedbackCustomFonts } from "@data/feedback-fonts";
+import anime from "animejs/lib/anime.es.js";
 
 export class FeedbackTextEffects {
   private feedbackTextElement: HTMLElement | null;
   private hideTimeoutId: number | null;
+  private animation: anime;
 
   constructor() {
     this.feedbackTextElement = document.getElementById("feedback-text");
@@ -46,6 +48,36 @@ export class FeedbackTextEffects {
 
     if (this.isFeedbackElementAvailable()) {
       this.feedbackTextElement!.style.fontFamily = `${fontName}, sans-serif`;
+
+      console.log(this.feedbackTextElement.textContent.replace(
+        /\S/g,
+        "<span class='letter'>$&</span>"
+      ));
+      
+      this.feedbackTextElement.innerHTML =
+        this.feedbackTextElement.textContent.replace(
+          /\S/g,
+          "<span class='letter'>$&</span>"
+        );
+
+      anime
+        .timeline()
+        .add({
+          targets: ".feedback-text",
+          scale: [4, 1],
+          opacity: [0, 1],
+          translateZ: 0,
+          easing: "easeOutExpo",
+          duration: 950,
+          delay: (el, i) => 70 * i,
+        })
+        // .add({
+        //   targets: ".feedback-text",
+        //   opacity: 0,
+        //   duration: 1000,
+        //   easing: "easeOutExpo",
+        //   delay: 1000,
+        // });
     }
   }
 
