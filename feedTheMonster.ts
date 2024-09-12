@@ -70,6 +70,8 @@ class App {
     const data = await getData();
     this.majVersion = data.majversion;
     this.minVersion = data.minversion;
+    console.log("Data initialized");
+    console.log(this.majVersion+"."+this.minVersion);
     this.dataModal = this.createDataModal(data);
     this.globalInitialization(data);
     this.logSessionStartFirebaseEvent();
