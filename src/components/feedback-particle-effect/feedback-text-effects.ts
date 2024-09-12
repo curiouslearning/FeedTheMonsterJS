@@ -48,36 +48,6 @@ export class FeedbackTextEffects {
 
     if (this.isFeedbackElementAvailable()) {
       this.feedbackTextElement!.style.fontFamily = `${fontName}, sans-serif`;
-
-      console.log(this.feedbackTextElement.textContent.replace(
-        /\S/g,
-        "<span class='letter'>$&</span>"
-      ));
-      
-      this.feedbackTextElement.innerHTML =
-        this.feedbackTextElement.textContent.replace(
-          /\S/g,
-          "<span class='letter'>$&</span>"
-        );
-
-      anime
-        .timeline()
-        .add({
-          targets: ".feedback-text",
-          scale: [4, 1],
-          opacity: [0, 1],
-          translateZ: 0,
-          easing: "easeOutExpo",
-          duration: 950,
-          delay: (el, i) => 70 * i,
-        })
-        // .add({
-        //   targets: ".feedback-text",
-        //   opacity: 0,
-        //   duration: 1000,
-        //   easing: "easeOutExpo",
-        //   delay: 1000,
-        // });
     }
   }
 
@@ -85,6 +55,39 @@ export class FeedbackTextEffects {
     if (!this.isFeedbackElementAvailable()) return;
 
     this.feedbackTextElement.textContent = text;
+
+    console.log(
+      this.feedbackTextElement.textContent.replace(
+        /\S/g,
+        "<span class='letter'>$&</span>"
+      )
+    );
+
+    this.feedbackTextElement.innerHTML =
+      this.feedbackTextElement.textContent.replace(
+        /\S/g,
+        "<span class='letter'>$&</span>"
+      );
+
+    anime
+      .timeline(
+        // { loop: true }
+      )
+      .add({
+        targets: ".feedback-text .letter",
+        scale: [0, 1],
+        duration: 1500,
+        elasticity: 600,
+        delay: (el, i) => 45 * (i + 1),
+      })
+      .add({
+        targets: ".feedback-text",
+        // opacity: 0,
+        duration: 1000,
+        easing: "easeOutExpo",
+        delay: 1000,
+      });
+
     hideElement(false, this.feedbackTextElement);
 
     this.setHideTimeout();
