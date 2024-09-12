@@ -168,3 +168,14 @@ export const toggleDebugMode = (toggleBtn: HTMLElement): void => {
   Debugger.DebugMode = isOn;
   toggleBtn.innerText = "Dev";
 };
+
+export const hideElement = (
+  isHide: boolean = false,
+  element: HTMLElement
+) => {
+  if (isHide) {
+    element.classList.remove("show");
+  } else {
+    element.classList.add("show");
+  }
+};
