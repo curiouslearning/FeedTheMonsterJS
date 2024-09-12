@@ -198,7 +198,7 @@ img {
   background-color: #bbb;
 }
 
-.feedback-text {
+#feedback-text {
   font-family: "AtmaSemiBold", system-ui;
   font-size: 52px;
   font-weight: 700;
@@ -241,7 +241,7 @@ img {
 }
 
 /* Apply the animation */
-.feedback-text.show {
+#feedback-text.show {
   /* -webkit-animation: scale-up-center 0.4s cubic-bezier(0.39, 0.575, 0.565, 1)
     both;
   animation: scale-up-center 0.4s cubic-bezier(0.39, 0.575, 0.565, 1) both; */
@@ -249,7 +249,7 @@ img {
   opacity: 1;
 }
 
-.feedback-text .text-wrapper {
+#feedback-text .text-wrapper {
   position: relative;
   display: inline-block;
   padding-top: 0.2em;
@@ -258,7 +258,7 @@ img {
   overflow: hidden;
 }
 
-.feedback-text .letter {
+#feedback-text .letter {
   transform-origin: 50% 100%;
   display: inline-block;
   line-height: 1em;

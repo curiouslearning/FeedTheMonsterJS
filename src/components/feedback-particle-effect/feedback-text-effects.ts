@@ -70,18 +70,18 @@ export class FeedbackTextEffects {
       );
 
     anime
-      .timeline(
-        // { loop: true }
-      )
+      .timeline
+      // { loop: true }
+      ()
       .add({
-        targets: ".feedback-text .letter",
+        targets: "#feedback-text .letter",
         scale: [0, 1],
         duration: 1500,
         elasticity: 600,
         delay: (el, i) => 45 * (i + 1),
       })
       .add({
-        targets: ".feedback-text",
+        targets: "#feedback-text",
         // opacity: 0,
         duration: 1000,
         easing: "easeOutExpo",
