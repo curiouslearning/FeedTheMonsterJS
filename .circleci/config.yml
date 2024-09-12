@@ -12,7 +12,7 @@ jobs:
       - aws-s3/sync:
           arguments: |
             --acl public-read \
-            --cache-control "max-age=86400" \
+            --cache-control "max-age=86400"
             --size-only
           aws-access-key-id: AWS_ACCESS_KEY
           aws-region: AWS_DEFAULT_REGION
