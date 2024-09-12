@@ -1,159 +1,71 @@
-import { TextParticle } from "@feedbackParticleEffect/text-particle";
-import { font } from "@common";
+import { hideElement, lang } from "@common";
+import { feedbackTextDefault, FONT_BASE_PATH } from "@constants";
+import { feedbackCustomFonts } from "@data/feedback-fonts";
 
 export class FeedbackTextEffects {
-  public context: CanvasRenderingContext2D;
-  public canvasWidth: number;
-  public canvasHeight: number;
-  public textX: number;
-  public textY: number;
-  public fontSize: number;
-  public lineHeight: number;
-  public maxTextWidth: number;
-  public particleDuration: number;
-  public startTime: number | null;
-  public particles: TextParticle[];
-  public gap: number;
-  public mouse: { radius: number; x: number; y: number };
-  public textWorker: Worker;
+  private feedbackTextElement: HTMLElement | null;
+  private hideTimeoutId: number | null;
 
-  constructor(
-    context: CanvasRenderingContext2D,
-    canvasWidth: number,
-    canvasHeight: number
-  ) {
-    this.context = context;
-    this.canvasWidth = canvasWidth;
-    this.canvasHeight = canvasHeight;
-    this.textX = this.canvasWidth / 1.8;
-    this.textY = this.canvasHeight / 2;
-    this.fontSize = this.canvasWidth / 7.5;
-    this.lineHeight = this.fontSize * 0.8;
-    this.maxTextWidth = this.canvasWidth * 5;
-    this.particleDuration = 5000;
-    this.startTime = null;
-    this.particles = [];
-    this.gap = 3;
-    this.mouse = { radius: 2000, x: 0, y: 0 };
-    this.textWorker = new Worker(window.feedbackTextWorkerPath);
-    this.textWorker.addEventListener(
-      "message",
-      this.handleTextWorkerMessage.bind(this)
-    );
+  constructor() {
+    this.feedbackTextElement = document.getElementById("feedback-text");
+    this.hideTimeoutId = null;
+    this.initialize();
+  }
+
+  private initialize() {
+    if (!this.isFeedbackElementAvailable()) return;
+    this.loadFont();
+  }
+
+  private isFeedbackElementAvailable(): boolean {
+    return !!this.feedbackTextElement;
+  }
+
+  private async loadFont() {
+    const fontName = feedbackCustomFonts[lang] || feedbackTextDefault;
+    const fontPath = `${FONT_BASE_PATH}${fontName}.ttf`;
+    this.applyFontToElement(fontName, fontPath);
+  }
+
+  /**
+   * Applies the specified font to the feedback text element and adds the necessary @font-face rule.
+   * @param fontName - The name of the font to apply.
+   * @param fontPath - The path to the font file.
+   */
+  private applyFontToElement(fontName: string, fontPath: string) {
+    if (fontPath) {
+      const style = document.createElement("style");
+      style.textContent = `
+        @font-face {
+          font-family: '${fontName}';
+          src: url('${fontPath}') format('truetype');
+        }
+      `;
+      document.head.appendChild(style);
+    }
+
+    if (this.isFeedbackElementAvailable()) {
+      this.feedbackTextElement!.style.fontFamily = `${fontName}, sans-serif`;
+    }
   }
 
   public wrapText(text: string): void {
-    const gradient = this.context.createLinearGradient(
-      0,
-      0,
-      this.canvasWidth,
-      this.canvasHeight
-    );
-    gradient.addColorStop(0.3, "#F8E218");
-    gradient.addColorStop(0.5, "#F8E218");
-    gradient.addColorStop(0.7, "#E39D37");
-    this.context.fillStyle = gradient;
-    this.context.textAlign = "center";
-    this.context.textBaseline = "middle";
-    this.context.lineWidth = 3;
-    this.context.strokeStyle = "#A46225";
-    this.context.font = `${
-      this.fontSize - text.length * 0.3
-    }px ${font}, monospace`;
-    // break multiline text
-    let lineArray: string[] = [];
-    let words = text.split(" ");
-    let lineCounter = 0;
-    let line = "";
-    for (let i = 0; i < words.length; i++) {
-      let testLine = line + words[i] + " ";
-      if (this.context.measureText(testLine).width > this.maxTextWidth) {
-        line = words[i] + "";
-        lineCounter++;
-      } else {
-        line = testLine;
-      }
-      lineArray[lineCounter] = line;
+    if (!this.isFeedbackElementAvailable()) return;
+
+    this.feedbackTextElement.textContent = text;
+    hideElement(false, this.feedbackTextElement);
+
+    this.setHideTimeout();
+  }
+
+  private setHideTimeout(): void {
+    if (this.hideTimeoutId) {
+      clearTimeout(this.hideTimeoutId);
     }
-    let textHeight = this.lineHeight * lineCounter;
-    this.textY = this.canvasHeight / 4.2 - textHeight / 2;
-    text = text.trim();
-    lineArray.forEach((text, index) => {
-      let lastSpaceIndex = text.lastIndexOf(" ", text.lastIndexOf(" ") - 1);
-      if (
-        this.fontSize * text.length > this.canvasWidth * 1.7 &&
-        lastSpaceIndex != -1
-      ) {
-        let initialText = text.slice(0, lastSpaceIndex);
-        let lastText = " " + text.slice(lastSpaceIndex + 1);
-        this.context.fillText(
-          initialText,
-          this.textX,
-          this.textY + index * this.lineHeight
-        );
-        this.context.fillText(
-          lastText,
-          this.textX,
-          this.textY + index * this.lineHeight + this.canvasHeight / 12
-        );
-      } else {
-        this.context.fillText(
-          text,
-          this.textX,
-          this.textY + index * this.lineHeight
-        );
-      }
-    });
-    this.convertToParticle();
-  }
 
-  private handleTextWorkerMessage(event: MessageEvent): void {
-    this.particles = event.data.map(
-      ({ x, y, color }) => new TextParticle(this, x, y, color)
-    );
-  }
-
-  private convertToParticle(): void {
-    const imageData = this.context.getImageData(
-      0,
-      0,
-      this.canvasWidth,
-      this.canvasHeight
-    );
-    this.context.clearRect(0, 0, this.canvasWidth, this.canvasHeight);
-    this.textWorker.postMessage({
-      canvasWidth: this.canvasWidth,
-      canvasHeight: this.canvasHeight,
-      gap: this.gap,
-      pixels: imageData.data,
-    });
-  }
-
-  public render(): void {
-    this.context.clearRect(0, 0, this.canvasWidth, this.canvasHeight);
-    this.particles.forEach((particle) => {
-      particle.draw();
-      particle.update();
-    });
-  }
-
-  public updateParticles(): void {
-    this.textWorker.postMessage({
-      particles: this.particles,
-      particleDuration: this.particleDuration,
-      startTime: this.startTime,
-    });
-  }
-
-  public clearParticle(): void {
-    this.particles = [];
-  }
-
-  public unregisterEventListener(): void {
-    this.textWorker.removeEventListener(
-      "message",
-      this.handleTextWorkerMessage
-    );
-    this.textWorker.terminate();
+    this.hideTimeoutId = window.setTimeout(() => {
+      hideElement(true, this.feedbackTextElement);
+      this.hideTimeoutId = null;
+    }, 4000);
   }
 }
