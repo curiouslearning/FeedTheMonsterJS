@@ -112,8 +112,8 @@ class Particles {
     }
 
     private determineValueByScreenWidth(bgScreenVal, smallScreenVal) {
-        /* 800 is the lowest width size of tablet -> Samsung Galaxy Tab 10 800 x 1280 */
-        return window.screen.width > 800 ? bgScreenVal : smallScreenVal;
+        /* 768 is the lowest width size of tablet */
+        return window.screen.width > 768 ? bgScreenVal : smallScreenVal;
     }
 
     public update() {
