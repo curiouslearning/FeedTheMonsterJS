@@ -39,6 +39,27 @@ channel.addEventListener("message", async function (event) {
     caches.delete(workbox.core.cacheNames.precache + event.data.data);
     await getCacheName(event.data.data);
   }
+  if(event.data.command === "delete-cache"){
+    console.log('Cache deleted in progress', event.data.data);
+    caches.open(event.data.data)
+    caches.open(cacheName)
+    .then(cache => {
+      return cache.keys()
+        .then(keys => {
+          return Promise.all(keys.map(key => cache.delete(key)));
+        })
+        .then(() => {
+          console.log(`Cache '${event.data.data}' has been cleared`);
+          console.log(`Cache '${cacheName}' has been cleared`);
+          self.clients.matchAll().then((clients) => {
+            clients.forEach((client) =>
+              client.postMessage({ msg: "Cache-deleted" })
+            );
+          });
+        });
+    });
+  }
+  
 });
 
 self.registration.addEventListener("updatefound", function (e) {

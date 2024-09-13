@@ -67,9 +67,12 @@ class App {
     await this.preloadGameAudios();
     this.handleLoadingScreen();
     this.setupCanvas();
-    const data = await getData();
+    const isCachedFlag = this.is_cached.has(this.lang);
+    const data = await getData(!isCachedFlag);
     this.majVersion = data.majversion;
     this.minVersion = data.minversion;
+    console.log("Data initialized");
+    console.log(this.majVersion+"."+this.minVersion);
     this.dataModal = this.createDataModal(data);
     this.globalInitialization(data);
     this.logSessionStartFirebaseEvent();
@@ -169,7 +172,10 @@ class App {
         const wb = new Workbox("./sw.js", {});
         await wb.register();
         await navigator.serviceWorker.ready;
-
+        console.log("is_cached>");
+        for (const [key, value] of this.is_cached) {
+          console.log(key, value);
+        }
         if (!this.is_cached.has(this.lang)) {
           this.channel.postMessage({ command: "Cache", data: this.lang });
         } else {
@@ -203,17 +209,9 @@ class App {
               // If there's a new content version, we need to remove the cached content and reload
               // We are comparing here the contentVersion with the aheadContentVersion
               if (aheadContentVersion && cachedVersion != aheadContentVersion) {
-                console.log("Content version mismatch! Reloading...");
-                var cachedItem = JSON.parse(localStorage.getItem("is_cached"));
-                console.log("current lang  " + lang);
-                var newCachedItem = cachedItem.filter(
-                  (e) => !e.toString().includes(lang)
-                );
-                localStorage.setItem(IsCached, JSON.stringify(newCachedItem));
-                localStorage.removeItem("version" + lang.toLowerCase());
-                // Clear the cache for tht particular content
-                caches.delete(lang);
-                this.handleUpdateFoundMessage();
+                console.log("version mismatch found, deleting cache");
+                this.channel.postMessage({ command: "delete-cache", data: this.lang });
+                // this.handleUpdateFoundMessage();
               }
             })
             .catch((error) => {
@@ -351,6 +349,18 @@ class App {
     if (event.data.msg === "Loading") {
       this.handleLoadingMessage(event.data);
     } else if (event.data.msg === "Update Found") {
+      this.handleUpdateFoundMessage();
+    }else if (event.data.msg === 'Cache-deleted'){
+      // console.log("Content version mismatch! Reloading...");
+      var cachedItem = JSON.parse(localStorage.getItem("is_cached"));
+      console.log("current lang  " + lang);
+      var newCachedItem = cachedItem.filter(
+        (e) => !e.toString().includes(lang)
+      );
+      localStorage.setItem(IsCached, JSON.stringify(newCachedItem));
+      localStorage.removeItem("version" + lang.toLowerCase());
+      // Clear the cache for tht particular content
+      // await caches.delete(lang);
       this.handleUpdateFoundMessage();
     }
   };
