@@ -128,11 +128,13 @@ async function getALLAudioUrls(cacheName, language) {
   // await cacheCommonAssets(language);
   let audioList = [];
   audioList.push("/lang/" + language + "/ftm_" + language + ".json");
-  fetch("./lang/" + language + "/ftm_" + language + ".json", {
+  fetch("/lang/" + language + "/ftm_" + language + ".json" + "?cache-bust=" + new Date().getTime(), {
     method: "GET",
     headers: {
       "Content-Type": "application/json",
+      "Cache-Control": "no-store",
     },
+    cache: "no-store",
   }).then((res) =>
     res.json().then(async (data) => {
       await cacheFeedBackAudio(data.FeedbackAudios,language);
