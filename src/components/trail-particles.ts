@@ -5,6 +5,7 @@ export default class TrailEffect {
         x: undefined | number,
         y: undefined | number
     };
+    isDiamond: boolean;
 
     constructor(canvas) {
         this.ctx = canvas.getContext("2d");
@@ -13,6 +14,7 @@ export default class TrailEffect {
             x: undefined,
             y: undefined
         };
+        this.isDiamond = false;
     }
 
     init() {
@@ -34,7 +36,8 @@ export default class TrailEffect {
     private drawTrail(){
         for (let i = 0; i < this.particles.length; i++) {
             this.particles[i].update();
-            this.particles[i].draw();
+            this.isDiamond = !this.isDiamond;
+            this.particles[i].draw(this.isDiamond);
         }
     }
 
@@ -74,23 +77,23 @@ class Particles {
     starX: number;
     starY: number;
     starAngle: number;
-    isDiamond: boolean;
 
     constructor(ctx, mouse) {
         const startPosX = this.determineValueByScreenWidth(30, 15);
         const startPosY = this.determineValueByScreenWidth(30, 15);
-        const endPosX = this.determineValueByScreenWidth(6, 3);
-        const endPosY = this.determineValueByScreenWidth(3, 1.5);
+        const endPosX = this.determineValueByScreenWidth(3, 0.5);
+        const endPosY = this.determineValueByScreenWidth(2, 0.5);
         this.ctx = ctx;
-        this.rgb = [
-            "rgb(255,255,255,255)",
-            "rgb(243,208,144,255)",
-            "rgb(229,170,100,255)"
+         this.rgb = [
+            "rgb(255,255,255)",
+            "rgb(249,217,170)",
+            "rgb(244,182,81)",
+            "rgb(244,159,34)",
         ];
         this.start = {
             x: mouse.x + this.getRandomInt(-startPosX, startPosX),
             y: mouse.y + this.getRandomInt(-startPosY, startPosY),
-            size:  this.determineValueByScreenWidth(6,3)
+            size:  this.determineValueByScreenWidth(3,2)
         }
         this.end = {
             x: this.start.x + this.getRandomInt(-endPosX, endPosX),
@@ -106,11 +109,10 @@ class Particles {
         this.starX = 0;
         this.starY = 0;
         this.starAngle = 0;
-        this.isDiamond = false;
     }
 
     private determineValueByScreenWidth(bgScreenVal, smallScreenVal) {
-        /* 800 is the lowest width size of tablet -> Samsung Galaxy Tab 10 800 x 1280 */ 
+        /* 800 is the lowest width size of tablet -> Samsung Galaxy Tab 10 800 x 1280 */
         return window.screen.width > 800 ? bgScreenVal : smallScreenVal;
     }
 
@@ -124,9 +126,12 @@ class Particles {
         this.time++;
     }
 
-    public draw() {
-        this.isDiamond ? this.starParticle() : this.circleParticle();
-        this.isDiamond = !this.isDiamond;
+    public draw(isDrawDiamond) {
+        if (isDrawDiamond) {
+            this.starParticle();
+        } else {
+            this.circleParticle();
+        };
     }
 
     private circleParticle() {
