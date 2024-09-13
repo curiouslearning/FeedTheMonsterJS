@@ -184,7 +184,7 @@ export default class LevelBloonButton {
             if (Debugger.DebugMode || (
                 this.levelData.index + levelSelectionPageIndex <= unlockLevelIndex
             )) {
-                this.btnSize = 179;
+                this.btnSize = this.bloonSize - 4;
                 this.posX = this.originalPosX + 0.5;
                 this.posY = this.originalPosY + 1;
                 
