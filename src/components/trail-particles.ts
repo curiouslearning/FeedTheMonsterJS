@@ -1,20 +1,20 @@
 export default class TrailEffect {
-    canvas: HTMLCanvasElement;
     ctx: CanvasRenderingContext2D
     particles: any;
     mouse: {
         x: undefined | number,
         y: undefined | number
     };
+    isDiamond: boolean;
 
     constructor(canvas) {
-        this.canvas = canvas;
         this.ctx = canvas.getContext("2d");
         this.particles = [];
         this.mouse = {
             x: undefined,
             y: undefined
         };
+        this.isDiamond = false;
     }
 
     init() {
@@ -36,7 +36,8 @@ export default class TrailEffect {
     private drawTrail(){
         for (let i = 0; i < this.particles.length; i++) {
             this.particles[i].update();
-            this.particles[i].draw();
+            this.isDiamond = !this.isDiamond;
+            this.particles[i].draw(this.isDiamond);
         }
     }
 
@@ -44,7 +45,7 @@ export default class TrailEffect {
         this.mouse.x = x;
         this.mouse.y = y;
         this.particles.push(
-            new Particles( this.ctx, this.mouse)
+            new Particles(this.ctx, this.mouse)
         );
     }
 
@@ -78,31 +79,41 @@ class Particles {
     starAngle: number;
 
     constructor(ctx, mouse) {
+        const startPosX = this.determineValueByScreenWidth(30, 15);
+        const startPosY = this.determineValueByScreenWidth(30, 15);
+        const endPosX = this.determineValueByScreenWidth(3, 0.5);
+        const endPosY = this.determineValueByScreenWidth(2, 0.5);
         this.ctx = ctx;
-        this.rgb = [
-            "rgb(255,255,255,255)",
-            "rgb(243,208,144,255)",
-            "rgb(229,170,100,255)"
+         this.rgb = [
+            "rgb(255,255,255)",
+            "rgb(249,217,170)",
+            "rgb(244,182,81)",
+            "rgb(244,159,34)",
         ];
         this.start = {
-            x: mouse.x + this.getRandomInt(-15, 15),
-            y: mouse.y + this.getRandomInt(-15, 15),
-            size: 5.5
+            x: mouse.x + this.getRandomInt(-startPosX, startPosX),
+            y: mouse.y + this.getRandomInt(-startPosY, startPosY),
+            size:  this.determineValueByScreenWidth(3,2)
         }
         this.end = {
-            x: this.start.x + this.getRandomInt(-25, 25),
-            y: this.start.y + this.getRandomInt(-30, 30)
+            x: this.start.x + this.getRandomInt(-endPosX, endPosX),
+            y: this.start.y + this.getRandomInt(-endPosY, endPosY)
         }
         this.x = this.start.x;
         this.y = this.start.y;
         this.size = this.start.size;
         this.style = this.rgb[this.getRandomInt(0, this.rgb.length - 1)];
         this.time = 0;
-        this.ttl = 90;
+        this.ttl = 75;
         this.hyp = 0;
         this.starX = 0;
         this.starY = 0;
         this.starAngle = 0;
+    }
+
+    private determineValueByScreenWidth(bgScreenVal, smallScreenVal) {
+        /* 768 is the lowest width size of tablet */
+        return window.screen.width > 768 ? bgScreenVal : smallScreenVal;
     }
 
     public update() {
@@ -115,8 +126,12 @@ class Particles {
         this.time++;
     }
 
-    public draw() {
-        this.starParticle(); //default particle shape.
+    public draw(isDrawDiamond) {
+        if (isDrawDiamond) {
+            this.starParticle();
+        } else {
+            this.circleParticle();
+        };
     }
 
     private circleParticle() {
