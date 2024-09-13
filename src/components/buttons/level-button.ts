@@ -19,6 +19,8 @@ export default class LevelBloonButton {
     }
     public posX: number;
     public posY: number;
+    private originalPosX: number;
+    private originalPosY: number;
     private size: number;
     private radiusOffSet: number;
     private bloonSize: number;
@@ -35,6 +37,8 @@ export default class LevelBloonButton {
         this.levelData = levelData;
         this.posX = this.levelData.x;
         this.posY = this.levelData.y;
+        this.originalPosX = this.posX;
+        this.originalPosY = this.posY;
         this.size = canvas.height / 5;
         this.radiusOffSet = canvas.height / 20;
         this.bloonSize = this.isLevelSpecial(this.size);
@@ -78,7 +82,7 @@ export default class LevelBloonButton {
         this.context.font = this.textFontSize - (this.size) / 30 + `px ${font}, monospace`;
 
         if (this.btnSize < this.bloonSize) {
-            this.btnSize = this.btnSize + 0.25;
+            this.btnSize = this.btnSize + 0.50;
         } else {
             this.btnSize = this.bloonSize;
             this.posX = this.levelData.x;
@@ -181,8 +185,9 @@ export default class LevelBloonButton {
                 this.levelData.index + levelSelectionPageIndex <= unlockLevelIndex
             )) {
                 this.btnSize = this.bloonSize - 4;
-                this.posX = this.posX + 0.75;
-                this.posY = this.posY + 0.75;
+                this.posX = this.originalPosX + 0.5;
+                this.posY = this.originalPosY + 1;
+                
                 callBack(this.levelData.index)
             }
       }
