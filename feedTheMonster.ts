@@ -67,9 +67,12 @@ class App {
     await this.preloadGameAudios();
     this.handleLoadingScreen();
     this.setupCanvas();
-    const data = await getData();
+    const isCachedFlag = this.is_cached.has(this.lang);
+    const data = await getData(!isCachedFlag);
     this.majVersion = data.majversion;
     this.minVersion = data.minversion;
+    console.log("Data initialized");
+    console.log(this.majVersion+"."+this.minVersion);
     this.dataModal = this.createDataModal(data);
     this.globalInitialization(data);
     this.logSessionStartFirebaseEvent();
@@ -170,7 +173,9 @@ class App {
         await wb.register();
         await navigator.serviceWorker.ready;
         console.log("is_cached>");
-        console.log(this.is_cached);
+        for (const [key, value] of this.is_cached) {
+          console.log(key, value);
+        }
         if (!this.is_cached.has(this.lang)) {
           this.channel.postMessage({ command: "Cache", data: this.lang });
         } else {
