@@ -22,6 +22,8 @@
 
 /*! ./event-names */
 
+/*! ./feedback-fonts */
+
 /*! ./feedback-particle-effect/feedback-text-effects */
 
 /*! ./firebase-config */
@@ -94,11 +96,11 @@
 
 /*! @data */
 
+/*! @data/feedback-fonts */
+
 /*! @data/i18-font-mapping */
 
 /*! @events */
-
-/*! @feedbackParticleEffect/text-particle */
 
 /*! @firebase/analytics */
 
@@ -198,6 +200,10 @@
 
 /*!************************************!*\
   !*** ./src/components/tutorial.ts ***!
+  \************************************/
+
+/*!************************************!*\
+  !*** ./src/data/feedback-fonts.ts ***!
   \************************************/
 
 /*!*************************************!*\
@@ -351,10 +357,6 @@
 /*!*****************************************************************!*\
   !*** ./node_modules/@firebase/logger/dist/esm/index.esm2017.js ***!
   \*****************************************************************/
-
-/*!******************************************************************!*\
-  !*** ./src/components/feedback-particle-effect/text-particle.ts ***!
-  \******************************************************************/
 
 /*!********************************************************************!*\
   !*** ./node_modules/@firebase/analytics/dist/esm/index.esm2017.js ***!
