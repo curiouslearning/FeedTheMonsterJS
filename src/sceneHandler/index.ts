@@ -146,7 +146,6 @@ export class SceneHandler {
     setTimeout(
       () => {
         this.dispose(SCENE_NAME_GAME_PLAY);
-        document.getElementById("feedback-text").style.zIndex = "0";
         this.levelEndScene = new LevelEndScene(
           this.canvas,
           this.height,
