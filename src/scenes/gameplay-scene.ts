@@ -99,6 +99,7 @@ export class GameplayScene {
   resetAnimationID: number | NodeJS.Timeout;
   trailParticles: any;
   clickTrailToggle: boolean;
+  hasFed: boolean;
 
   constructor(
     canvas,
@@ -197,6 +198,7 @@ export class GameplayScene {
     this.setupBg();
     this.trailParticles?.init();
     this.clickTrailToggle = false;
+    this.hasFed = false;
   }
 
   private setupBg = async () => {
@@ -354,6 +356,9 @@ export class GameplayScene {
   handleTouchEnd = (event) => {
     const touch = event.changedTouches[0];
     this.handleMouseUp({ clientX: touch.clientX, clientY: touch.clientY });
+    if(!this.hasFed) {
+      this.monster.changeToIdleAnimation();
+    }
     this.trailParticles?.resetParticles();
   };
 
@@ -477,9 +482,18 @@ export class GameplayScene {
     this.removeEventListeners();
   };
 
+  private checkStoneDropped(stone, feedBackIndex, isWord = false) {
+    this.hasFed = true; //To prevent idle animation from firing when stone is dropped.
+    return this.stoneHandler.isStoneLetterDropCorrect(
+      stone,
+      feedBackIndex,
+      isWord
+    );
+  }
+
   public letterPuzzle(droppedStone: string) {
     const feedBackIndex = this.getRandomInt(0, 1);
-    const isCorrect = this.stoneHandler.isStoneLetterDropCorrect(
+    const isCorrect = this.checkStoneDropped(
       droppedStone,
       feedBackIndex
     );
@@ -496,7 +510,7 @@ export class GameplayScene {
     const feedBackIndex = this.getRandomInt(0, 1);
     this.tempWordforWordPuzzle = this.tempWordforWordPuzzle + droppedStone;
 
-    const isCorrect = this.stoneHandler.isStoneLetterDropCorrect(
+    const isCorrect = this.checkStoneDropped(
       this.tempWordforWordPuzzle,
       feedBackIndex,
       true
@@ -520,6 +534,7 @@ export class GameplayScene {
       this.stonesCount++;
       this.resetToIdleAnimation(() => {
         this.monster.changeToIdleAnimation();
+        this.hasFed = false; //re-enables idle reset when stones are not fed.
       }, 2000);
     } else {
       this.handleStoneDropEnd(isCorrect, "Word");
@@ -565,6 +580,7 @@ export class GameplayScene {
     this.addEventListeners();
     this.audioPlayer.stopAllAudios();
     this.startPuzzleTime();
+    this.hasFed = false;
   }
 
   public logPuzzleEndFirebaseEvent(isCorrect: boolean, puzzleType?: string) {
