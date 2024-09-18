@@ -2,34 +2,70 @@ const path = require('path');
 var nodeEnv = process.env.NODE_ENV || 'development';
 var isDev = (nodeEnv !== 'production');
 const CopyPlugin = require("copy-webpack-plugin");
+const MiniCssExtractPlugin = require('mini-css-extract-plugin');
+const TerserPlugin = require('terser-webpack-plugin');
+// const CompressionPlugin = require('compression-webpack-plugin');
 
 var config = {
   mode: 'development',
   watch: true,
-  entry: {
-    dist: './feedTheMonster.js'
+  entry: './feedTheMonster.ts',
+  module: {
+    rules: [
+      {
+        test: /\.css$/,
+        use: [MiniCssExtractPlugin.loader, 'css-loader'],
+      },
+      {
+        test: /\.ts?$/,
+        use: 'ts-loader',
+        exclude: /node_modules/,
+      },
+    ],
   },
   output: {
     path: path.resolve(__dirname, './build'),
     filename: 'feedTheMonster.js',
   },
   resolve: {
-    extensions: [ '.tsx', '.ts', '.js', '.json', '.css','.sh','.babelrc','.eslintignore','.gitignore','.d' ],
+    alias: {
+      '@components': path.resolve(__dirname, 'src/components/'),
+      '@buttons': path.resolve(__dirname, 'src/components/buttons/'),
+      '@popups': path.resolve(__dirname, 'src/components/popups/'),
+      '@common': path.resolve(__dirname, 'src/common/'),
+      '@compositions': path.resolve(__dirname, 'src/compositions/'),
+      '@constants': path.resolve(__dirname, 'src/constants/'),
+      '@data': path.resolve(__dirname, 'src/data/'),
+      '@interfaces': path.resolve(__dirname, 'src/interfaces/'),
+      '@sceneHandler': path.resolve(__dirname, 'src/sceneHandler/'),
+      '@scenes': path.resolve(__dirname, 'src/scenes/'),
+      '@events': path.resolve(__dirname, 'src/events/'),
+      '@feedbackParticleEffect': path.resolve(__dirname, 'src/components/feedback-particle-effect/')
+    },
+    extensions: ['.tsx', '.ts', '.js', '.json', '.css', '.sh', '.babelrc', '.eslintignore', '.gitignore', '.d'],
   },
   plugins: [
+    // new CompressionPlugin({
+    //   test: /\.(js|css|html|svg|mp3|ttf|jpe?g|png)$/, // File types to compress
+    //   threshold: 8192, // Minimum size (in bytes) for a file to be compressed
+    //   minRatio: 0.8, // Minimum compression ratio
+    // }),
     new CopyPlugin({
       patterns: [
         { from: "./index.html", to: "./" },
         { from: "./index.css", to: "./" },
-       // { from: "./ftm_english.json", to: "./" },
         { from: "./assets", to: "./assets" },
         { from: "./lang", to: "./lang" },
       ],
     }),
-  ]
+  ],
+  optimization: {
+    minimize: true,
+    minimizer: [new TerserPlugin()],
+  },
 };
 
-if(isDev) {
+if (isDev) {
   config.devtool = 'inline-source-map';
 }
 

@@ -1,143 +1,130 @@
-import { TimeOver, TimetickerLayer } from "../common/common.js";
-import { CanvasStack } from "../utility/canvas-stack.js";
-import { Game } from "../scenes/game.js";
-import { LevelStartScene } from "../scenes/level-start-scene.js";
-import { Tutorial } from "./tutorial.js";
-declare global {
-  interface Window {
-    Android?: any;
-  }
-}
-export class TimerTicking {
-  public game: Game;
-  public width: number;
-  public height: number;
-  public widthToClear: number;
-  public maxLimitExhausted: boolean;
-  public timer: number;
-  public isTimerStarted: boolean;
-  public isTimerEnded: boolean;
-  public levelStart: LevelStartScene;
-  public isTimerRunningOut: boolean;
-  public canavsElement: HTMLCanvasElement;
-  public context: CanvasRenderingContext2D;
-  public timer_full: HTMLImageElement;
-  public pauseButtonClicked: boolean;
-  public canvasStack: any;
-  public id: string;
+import { loadImages } from "@common";
+import { EventManager } from "@events";
+import { AudioPlayer } from "@components";
+import { TIMER_EMPTY, ROTATING_CLOCK, TIMER_FULL, AUDIO_TIMEOUT } from "@constants";
 
-  constructor(game: Game, levelStart: LevelStartScene) {
-    this.game = game;
-    this.width = game.width;
-    this.height = game.height;
-    this.widthToClear = this.game.width / 3.4;
-    this.maxLimitExhausted = false;
-    this.canvasStack = new CanvasStack("canvas");
-    this.timer = 0;
-    this.isTimerStarted = false;
-    this.isTimerEnded = false;
-    this.levelStart = levelStart;
-    this.isTimerRunningOut = false;
-    var self = this;
-    this.createCanvas();
-  }
-  createCanvas() {
-    this.id = this.canvasStack.createLayer(
-      this.height,
-      this.width,
-      TimetickerLayer
-    );
-    this.canavsElement = document.getElementById(this.id) as HTMLCanvasElement;
-    this.context = this.canavsElement.getContext("2d");
-    this.canavsElement.style.zIndex = "4";
-    // this.animation(0);
-  }
-  deleteCanvas() {
-    this.canvasStack.deleteLayer(this.id);
-  }
+export class TimerTicking extends EventManager {
+    public width: number;
+    public height: number;
+    public timerWidth: number;
+    public timerHeight: number;
+    public widthToClear: number;
+    public timer: number;
+    public isTimerStarted: boolean;
+    public isTimerEnded: boolean;
+    public isTimerRunningOut: boolean;
+    public canavsElement: HTMLCanvasElement;
+    public context: CanvasRenderingContext2D;
+    public timer_full: HTMLImageElement;
+    public pauseButtonClicked: boolean;
+    public images: Object;
+    public loadedImages: any;
+    public callback: Function;
+    public imagesLoaded: boolean = false;
+    public startMyTimer: boolean = true;
+    public isMyTimerOver: boolean = false;
+    public isStoneDropped: boolean = false;
+    public audioPlayer: AudioPlayer;
+    public playLevelEndAudioOnce: boolean = true;
 
-  createBackgroud() {
-    var self = this;
-    this.timer_full = new Image();
-    this.timer_full.src = "./assets/images/timer_full.png";
-    this.timer_full.onload = function (e) {
-      self.draw();
-      self.beginTimerOnStart();
-    };
-  }
-  update() {
-    if (this.isTimerStarted) {
-      if (window.Android) {
-        this.timer += 0.2;
-      } else {
-        this.timer += 0.06;
-      }
-
-      if (this.game.width * 1.3 - this.widthToClear - 10 * this.timer > 55) {
-        this.context.clearRect(
-          this.game.width * 1.3 - this.widthToClear - 10 * this.timer,
-          0,
-          this.width,
-          this.height
-        );
-      }
-      if (
-        this.game.width * 1.3 - this.widthToClear - 10 * this.timer < 100 &&
-        this.game.width * 1.3 - this.widthToClear - 10 * this.timer > 54 &&
-        !this.isTimerRunningOut
-      ) {
-        this.isTimerRunningOut = true;
-        this.levelStart.audio.playSound(
-          "./assets/audios/timeout.mp3",
-          TimeOver
-        );
-      }
-      if (
-        this.game.width * 1.3 - this.widthToClear - 10 * this.timer < 55 &&
-        this.game.width * 1.3 - this.widthToClear - 10 * this.timer > 54
-      ) {
-        this.isTimerRunningOut = false;
-        this.isTimerEnded = true;
-        this.isTimerEnded ? this.levelStart.changePuzzle() : null;
+    constructor(width: number, height: number, callback: Function) {
+        super({
+            stoneDropCallbackHandler: (event) => this.handleStoneDrop(event),
+            loadPuzzleCallbackHandler: (event) => this.handleLoadPuzzle(event)
+        })
+        this.width = width;
+        this.height = height;
+        this.widthToClear = this.width / 3.4;
+        this.timerHeight = 112;
+        this.timerWidth = 888;
+        this.callback = callback;
+        this.canavsElement = document.getElementById("canvas") as HTMLCanvasElement;
+        this.context = this.canavsElement.getContext("2d");
         this.timer = 0;
-      }
-    }
-  }
-  beginTimerOnStart() {
-    var self = this;
-
-    setTimeout(() => {
-      if (!this.pauseButtonClicked) {
-        if (!self.isTimerStarted && self.timer == 0) {
-          self.timer = 0;
-          self.isTimerStarted = true;
+        this.isTimerStarted = false;
+        this.isTimerEnded = false;
+        this.isTimerRunningOut = false;
+        this.audioPlayer = new AudioPlayer();
+        this.playLevelEndAudioOnce = true;
+        this.images = {
+            timer_empty: TIMER_EMPTY,
+            rotating_clock: ROTATING_CLOCK,
+            timer_full: TIMER_FULL
         }
-      }
-    }, 3000);
-  }
-  stopTimer() {
-    this.isTimerStarted = false;
-    console.log("Timer Stopped");
-  }
-  pauseTimer() {
-    this.isTimerStarted = false;
-    this.pauseButtonClicked = true;
-  }
-  resumeTimer() {
-    this.isTimerStarted = true;
-    this.pauseButtonClicked = false;
-  }
-  draw() {
-    this.isTimerStarted = false;
-    this.context.clearRect(0, 0, this.width, this.height);
-    this.context.drawImage(
-      this.timer_full,
-      this.game.width * 0.12,
-      this.height * 0.099,
-      this.game.width - 50,
-      this.height * 0.05
-    );
-    this.timer = 0;
-    this.beginTimerOnStart();
-  }
+
+        loadImages(this.images, (images) => {
+            this.loadedImages = Object.assign({}, images);
+            this.imagesLoaded = true;
+        });
+    }
+
+    startTimer() {
+        // it will start timer immediatly
+        this.readyTimer();
+        this.startMyTimer = true;
+        this.isMyTimerOver = false
+    }
+
+    readyTimer() {
+        // make timer look full so as it get start signal..... it will start decreasing
+        this.timer = 0;
+    }
+    update(deltaTime) {
+        if (this.startMyTimer && !this.isStoneDropped) {
+            this.timer += deltaTime * 0.008;
+        }
+        if (Math.floor(this.width * 0.87 - (this.width * 0.87 * this.timer * 0.01)) == 40 && !this.isMyTimerOver) {
+            this.playLevelEndAudioOnce?this.audioPlayer.playAudio(AUDIO_TIMEOUT):null;
+            this.playLevelEndAudioOnce = false;
+        }
+        if ((this.width * 0.87 - (this.width * 0.87 * this.timer * 0.01)) < 0 && !this.isMyTimerOver) {
+            this.isMyTimerOver = true;
+            this.callback(true);
+        }
+    }
+
+    draw() {
+        if (this.imagesLoaded) {
+            this.context.drawImage(
+                this.loadedImages.timer_empty,
+                0,
+                this.height * 0.1,
+                this.width,
+                this.height * 0.05
+            );
+            this.context.drawImage(
+                this.loadedImages.rotating_clock,
+                0,
+                this.height * 0.09,
+                this.width * 0.14,
+                this.height * 0.065
+            );
+            this.context.drawImage(
+                this.loadedImages.timer_full,
+                0,
+                0,
+                this.timerWidth - (this.timerWidth * this.timer * 0.01),
+                this.timerHeight,
+                this.width * 0.14,
+                this.height * 0.099,
+                this.width * 0.87 - (this.width * 0.87 * this.timer * 0.01),
+                this.height * 0.05
+            );
+        }
+    }
+
+    public handleStoneDrop(event) {
+        this.isStoneDropped = true;
+    }
+    public handleLoadPuzzle(event) {
+        this.playLevelEndAudioOnce = true;
+        this.isStoneDropped = false;
+        this.startTimer();
+
+    }
+
+    public dispose() {
+        this.unregisterEventListener();
+    }
+
 }

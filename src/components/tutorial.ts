@@ -1,147 +1,170 @@
-import { TutorialLayer } from "../common/common.js";
-import { CanvasStack } from "../utility/canvas-stack.js";
-var self;
-var tutorialImg = new Image();
-tutorialImg.src = "./assets/images/tutorial_hand.png";
+import { createRippleEffect } from "@common";
+import { TUTORIAL_HAND } from "@constants";
+import { GameScore } from "@data";
 
-let startX = 0;
-let startY = 0;
-let endX = 200;
-let endY = 100;
 export class Tutorial {
-  public zindex: number;
   public width: number;
   public height: number;
-  public canvasStack: any;
-  public id: any;
-  public elementId: HTMLCanvasElement;
-  public canavsElement: HTMLCanvasElement;
   public context: CanvasRenderingContext2D;
-  public game: any;
+  public tutorialImg: any;
+  public imagesLoaded: boolean = false;
   public targetStonePositions: any;
-  public startx:number;
-  public starty:number;
-  public endx:number;
-  public endy:number;
-  public animationFrame: number;
+  public startx: number;
+  public starty: number;
+  public endx: number;
+  public endy: number;
+  public endTutorial: boolean = false;
+  public puzzleNumber: number;
+  public playMnstrClkTtrlAnim: boolean = true;
+  public totalTime: number = 0;
+  private monsterStoneDifference:number=0;
+  x: number;
+  y: number;
+  dx: number;
+  dy: number;
+  absdx: number;
+  absdy: number;
+  startRipple: boolean = false;
+  drawRipple: (x: number, y: number, restart?: boolean) => void;
 
-  constructor(game, zindex?) {
-    this.game = game;
-    self = this;
-    this.zindex = zindex;
-    this.width = this.game.width;
-    this.height = this.game.height
-    this.canvasStack = new CanvasStack("canvas");
-    this.startx = startX;
-    this.starty = startY;
-    this.endx = this.game.width/2;
-    this.endy = this.game.height / 2;
-    
+  constructor(context, width, height, puzzleNumber?) {
+    this.width = width;
+    this.height = height;
+    this.context = context;
+    this.startx = 0;
+    this.starty = 0;
+    this.endx = this.width / 2;
+    this.endy = this.height / 2 ;
+    this.puzzleNumber = (puzzleNumber>=0)?puzzleNumber:null;
+    this.tutorialImg = new Image();
+    this.tutorialImg.src = TUTORIAL_HAND;
+    this.drawRipple = createRippleEffect(this.context)
+    this.tutorialImg.onload = () => {
+      this.imagesLoaded = true;
+    };
   }
 
-  createCanvas() {
-    this.id = this.canvasStack.createLayer(
-      this.height,
-      this.width,
-      TutorialLayer
-    );
-    this.elementId = document.getElementById(
-        this.id
-      ) as HTMLCanvasElement;
-    this.canavsElement = document.getElementById(this.id) as HTMLCanvasElement;
-    this.context = this.canavsElement.getContext("2d");
-    this.canavsElement.style.zIndex = "6";
-    this.canavsElement.style.bottom = "0";
-   
-    endX = this.width/2;
-    endY = this.height / 2 ;
-    // this.animateImage();
-    self.elementId.addEventListener('click',function(event){
-
-        console.log('Clicked and touched');
-        self.deleteCanvas();
-    })
-  }
-
-  updateTargetStonePositions(targetStonePosition){
-    startX = targetStonePosition[0] - 22;
-    startY = targetStonePosition[1] - 50;
+  updateTargetStonePositions(targetStonePosition: number[]) {
     this.startx = targetStonePosition[0] - 22;
     this.starty = targetStonePosition[1] - 50;
-  }
-  
-  changeZindex(index) {
-    this.canavsElement.style.zIndex = index;
-  }
-
-  deleteCanvas() {
-    this.canvasStack.deleteLayer(this.id);
+    this.monsterStoneDifference = Math.sqrt((this.startx - this.endx) * (this.startx - this.endx) + (this.starty - this.endy) * (this.starty - this.endy));
+    this.animateImage();
   }
 
   isMobile() {
-    return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
-  } 
-
-  animateImage() {
-    let x = startX;
-    let y = startY;
-    const dx = (this.endx - this.startx) / 60;
-    const dy = (this.endy - this.starty) / 60;
-    let absdx = (this.isMobile())?Math.abs(dx)*3:Math.abs(dx);
-    let absdy = (this.isMobile())?Math.abs(dy)*3:Math.abs(dy);
-
-    function between(x, min, max) {
-      return x >= min && x <= max;
-    }
-  
-    setTimeout(() => {
-      const startTime = performance.now();
-  
-      const animate = () => {
-        if(between(x,this.startx-15,startX+15) && between(y,this.starty-15,startY+15))
-        {
-          this.changeZindex(7);
-        }
-        else{
-          this.changeZindex(6);
-        }
-        if (
-          (x <= this.endx + absdx && x >= this.endx - absdx) &&
-          (y <= this.endy + absdy && y >= this.endy - absdy)
-        ) {
-          // setTimeout(() => {
-            
-           setTimeout(()=>{
-            x = this.startx;
-            y = this.starty
-            cancelAnimationFrame(this.animationFrame);
-            this.changeZindex(0);
-            // this.animationFrame=requestAnimationFrame(animate)
-           },500)
-
-            // setTimeout(()=>{
-            //   this.deleteCanvas();
-            // },500)
-            // requestAnimationFrame(animate);
-            // this.deleteCanvas();
-          // }, 500);
-          return;
-        }
-  
-        x = (dx >= 0) ? x + absdx  : x - absdx;
-        y = (dy >= 0) ? y + absdy : y - absdy;
-  
-        this.draw(x, y);
-  
-        this.animationFrame=requestAnimationFrame(animate);
-        
-      };
-      this.animationFrame=requestAnimationFrame(animate);
-    }, 1500);
+    return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(
+      navigator.userAgent
+    );
   }
 
-  draw(x: number, y: number) {
-     this.context.clearRect(0, 0, this.width, this.height); // Clear the canvas
-     this.context.drawImage(tutorialImg, x, y); 
+  setTutorialEnd(endTutorial: boolean) {
+    this.endTutorial = endTutorial;
+  }
+
+  animateImage() {
+    this.x = this.startx;
+    this.y = this.starty;
+    this.dx = (this.endx - this.startx) / 5000;
+    this.dy = (this.endy - this.starty) / 5000;
+    this.absdx = this.isMobile() ? Math.abs(this.dx) * 3 : Math.abs(this.dx);
+    this.absdy = this.isMobile() ? Math.abs(this.dy) * 3 : Math.abs(this.dy);
+    this.setTutorialEnd(false);
+  }
+
+  draw(deltaTime: number,img:CanvasImageSource,imageSize:number) {
+    if (this.imagesLoaded && !this.endTutorial && this.shouldPlayTutorial()) {
+      this.x =
+        this.dx >= 0
+          ? this.x + this.absdx * deltaTime
+          : this.x - this.absdx * deltaTime;
+      this.y =
+        this.dy >= 0
+          ? this.y + this.absdy * deltaTime
+          : this.y - this.absdy * deltaTime;
+      const disx = this.x - this.endx + this.absdx;
+      const disy = this.y - this.endy + this.absdy;
+      const distance = Math.sqrt(disx * disx + disy * disy);
+      let monsterStoneDifferenceInPercentage=(100*distance/this.monsterStoneDifference);
+      if (monsterStoneDifferenceInPercentage < 15) {
+        if(monsterStoneDifferenceInPercentage>1){
+        this.createHandScaleAnimation(deltaTime,this.endx,this.endy+30,true)
+      }else{
+        this.x=this.startx; 
+        this.y=this.starty;
+      }}else if(monsterStoneDifferenceInPercentage>80){
+        this.createHandScaleAnimation(deltaTime,this.startx+15,this.starty+10,false);
+      }else{
+      let previousAlpha = this.context.globalAlpha;
+      this.context.globalAlpha = 0.4;
+      this.context.drawImage(img, this.x, this.y + 20, imageSize, imageSize);
+      this.context.globalAlpha = previousAlpha;
+      this.context.drawImage(this.tutorialImg, this.x + 15, this.y + 10);//draws the hand stone drag animation!
+    }}
+  }
+ createHandScaleAnimation(deltaTime:number,offsetX:number,offsetY:number,shouldCreateRipple:boolean) {
+    this.totalTime += Math.floor(deltaTime);
+    const transitionDuration = 500;
+    const scaleFactor = this.sinusoidalInterpolation(this.totalTime, 1, 1.5, transitionDuration);
+    const scaledWidth = this.tutorialImg.width * scaleFactor;
+    const scaledHeight = this.tutorialImg.height * scaleFactor;
+    this.context.drawImage(this.tutorialImg, offsetX, offsetY, scaledWidth, scaledHeight);
+    shouldCreateRipple?(null):(this.drawRipple(offsetX+this.width*0.02,offsetY+this.tutorialImg.height/2,false))
+    
+    
+}
+sinusoidalInterpolation(time, minScale, maxScale, duration) {
+    const amplitude = (maxScale - minScale) / 2;
+    const frequency = Math.PI / duration;
+    return minScale + amplitude * Math.sin(frequency * time);
+}
+  
+  clickOnMonsterTutorial(deltaTime) {
+    if (this.shouldPlayMonsterClickTutorialAnimation()) {
+        const transitionDuration = 2000;
+        const bottomPosition = this.height /1.9 + (this.tutorialImg.height/0.8 );
+        const topPosition = this.height / 1.9 + (this.tutorialImg.height/0.8 )- this.tutorialImg.height;
+        let currentOffsetY;
+        const offsetX = this.endx;
+        if (this.totalTime < transitionDuration / 2) {
+            currentOffsetY = topPosition + (this.totalTime / (transitionDuration / 2)) * (bottomPosition - topPosition);
+            this.drawRipple(offsetX, this.height / 1.9 + (this.tutorialImg.height / 1.5), true)
+        } else {
+            currentOffsetY = bottomPosition - ((this.totalTime - transitionDuration / 2) / (transitionDuration / 2)) * (bottomPosition - topPosition);
+            this.drawRipple(offsetX, this.height/   1.9 + (this.tutorialImg.height / 1.2)+ this.tutorialImg.height)
+        }
+        this.context.drawImage(
+            this.tutorialImg,
+            offsetX,
+            currentOffsetY,
+            this.tutorialImg.width,
+            this.tutorialImg.height
+        );
+  
+        if (currentOffsetY <= topPosition) {
+            this.totalTime = 0;
+        }
+        this.totalTime += deltaTime;
+    }
+  }
+
+
+  shouldPlayTutorial(): boolean {
+    let playDragAnimationForFirstPuzzle =
+      GameScore.getAllGameLevelInfo().length <= 0 && this.puzzleNumber == 0;
+    return playDragAnimationForFirstPuzzle;
+  }
+
+  shouldPlayMonsterClickTutorialAnimation(): boolean{
+    let playDragAnimationForFirstPuzzle =
+      GameScore.getAllGameLevelInfo().length <= 0 && this.playMnstrClkTtrlAnim;
+    return playDragAnimationForFirstPuzzle;
+  }
+
+  setPuzzleNumber(puzzleNumer: number) {
+    this.puzzleNumber = puzzleNumer;
+  }
+
+  setPlayMonsterClickAnimation(value: boolean) {
+    this.playMnstrClkTtrlAnim = value;
   }
 }

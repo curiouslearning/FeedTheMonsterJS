@@ -1,15 +1,8 @@
-import { DataModal } from "./data-modal.js";
-import { lang } from "../../global-variables.js";
+import { lang } from "@common";
 
-const URL = "./lang/" + lang + "/ftm_" + lang + ".json";
-const channel = new BroadcastChannel("my-channel");
+export const URL = "./lang/" + lang + "/ftm_" + lang + ".json";
 
 export function getFtmData() {
-  channel.postMessage({
-    command: "Recache",
-    data: lang,
-    version: localStorage.getItem("version" + lang),
-  });
   return fetch(URL, {
     method: "GET",
     headers: {
@@ -23,12 +16,5 @@ export function getFtmData() {
 }
 
 export async function getData() {
-  // let d = {
-  //     "OtherAudios": null,
-  //     "FeedbackTexts": null,
-  //     "Levels": null,
-  //     "FeedbackAudios": null,
-  //     "RightToLeft": null
-  // }
   return await getFtmData();
 }

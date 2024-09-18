@@ -1,2 +1,9 @@
 node_modules
 *.js
+ftm_web_json
+.env
+token.json
+credentials.json
+convertAudios
+.DS_Store
+.idea
