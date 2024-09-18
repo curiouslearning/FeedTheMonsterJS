@@ -169,13 +169,31 @@ export const toggleDebugMode = (toggleBtn: HTMLElement): void => {
   toggleBtn.innerText = "Dev";
 };
 
-export const hideElement = (
-  isHide: boolean = false,
-  element: HTMLElement
-) => {
+export const hideElement = (isHide: boolean = false, element: HTMLElement) => {
   if (isHide) {
     element.classList.remove("show");
   } else {
     element.classList.add("show");
   }
 };
+
+export function applyFontToElement(
+  element: HTMLElement | null,
+  fontName: string,
+  fontPath: string
+): void {
+  if (fontPath) {
+    const style = document.createElement("style");
+    style.textContent = `
+      @font-face {
+        font-family: '${fontName}';
+        src: url('${fontPath}') format('truetype');
+      }
+    `;
+    document.head.appendChild(style);
+  }
+
+  if (element) {
+    element.style.fontFamily = `${fontName}, sans-serif`;
+  }
+}

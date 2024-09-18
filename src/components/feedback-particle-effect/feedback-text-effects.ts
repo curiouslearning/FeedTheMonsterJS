@@ -1,4 +1,4 @@
-import { hideElement, lang } from "@common";
+import { applyFontToElement, hideElement, lang } from "@common";
 import { feedbackTextDefault, FONT_BASE_PATH } from "@constants";
 import { feedbackCustomFonts } from "@data/feedback-fonts";
 
@@ -33,30 +33,28 @@ export class FeedbackTextEffects {
    * @param fontPath - The path to the font file.
    */
   private applyFontToElement(fontName: string, fontPath: string) {
-    if (fontPath) {
-      const style = document.createElement("style");
-      style.textContent = `
-        @font-face {
-          font-family: '${fontName}';
-          src: url('${fontPath}') format('truetype');
-        }
-      `;
-      document.head.appendChild(style);
-    }
-
-    if (this.isFeedbackElementAvailable()) {
-      this.feedbackTextElement!.style.fontFamily = `${fontName}, sans-serif`;
-    }
+    applyFontToElement(this.feedbackTextElement, fontName, fontPath);
   }
 
   public wrapText(text: string): void {
     if (!this.isFeedbackElementAvailable()) return;
-
+  
+    // Set the text content
     this.feedbackTextElement.textContent = text;
+  
+    // Dynamically adjust the font size based on the length of the text
+    if (text.length >= 12) {
+      this.feedbackTextElement.style.fontSize = '30px';
+    } else {
+      this.feedbackTextElement.style.fontSize = ''; // Reset to default font size (or specify default if needed)
+    }
+  
+    // Show the feedback element
     hideElement(false, this.feedbackTextElement);
-
+  
+    // Set the timeout to hide the feedback text after a delay
     this.setHideTimeout();
-  }
+  }  
 
   private setHideTimeout(): void {
     if (this.hideTimeoutId) {
