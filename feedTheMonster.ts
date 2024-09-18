@@ -207,7 +207,7 @@ class App {
               console.log("cached version :" + cachedVersion);
               // We need to check here for the content version updates
               // If there's a new content version, we need to remove the cached content and reload
-              // We are comparing here the contentVersion with the aheadContentVersion
+              // We are comparing here the contentVersion with the aheadContentVersions
               if (aheadContentVersion && cachedVersion != aheadContentVersion) {
                 console.log("version mismatch found, deleting cache");
                 this.channel.postMessage({ command: "delete-cache", data: this.lang });
