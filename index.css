@@ -19,14 +19,87 @@ body {
   overflow-y: hidden;
 }
 
+img {
+  max-width: 100%;
+}
+
 .game-scene {
   height: 100vh;
   max-height: -webkit-fill-available;
-  min-width: 420px;
+  min-width: 320px;
+  max-width: 100%;
+  position: relative;
 }
 
-img {
-  display: none;
+#startscene {
+  height: 100vh;
+  width: 100%;
+  display: flex;
+}
+
+.ftm-title {
+  position: absolute;
+  width: 100%;
+  margin: auto;
+  text-align: center;
+  max-width: 100%;
+  top: 65px;
+  font-family: "AtmaSemiBold", system-ui;
+  font-size: 41px;
+  font-weight: 800;
+  text-shadow: -2px -2px 0 #f8b618, 2px -2px 0 #f8b618, -2px 2px 0 #f8b618,
+  2px 2px 0 #f8b618, -3px 0 0 #f8b618, 3px 0 0 #f8b618, 0 -3px 0 #f8b618,
+  0 3px 0 #f8b618;
+  color: #fff;
+  /* background: linear-gradient(to bottom, #F8B618 56%, #CB930E 73%); */
+  /* -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent; */
+  z-index: 9;
+}
+
+.ftm-mountain {
+  bottom: -5px;
+  position: absolute;
+  width: 100%;
+  left: 0;
+  right: 0;
+  margin: auto;
+  z-index: 9;
+}
+
+.ftm-totem {
+  position: absolute;
+  right: -55px;
+  bottom: 115px;
+  width: 52%;
+  z-index: 4;
+}
+
+.ftm-fence {
+  left: -50px;
+  position: absolute;
+  bottom: 118px;
+  width: 50%;
+  z-index: 4;
+}
+
+.winter-bg {
+  background-image: url('./assets/images/Winter_bg_01.webp');
+}
+
+.autumn-bg {
+  background-image: url('./assets/images/Autumn_bg_v01.webp');
+}
+
+.summer-bg {
+  background-image: url('./assets/images/bg_v01.webp');
+}
+
+/* Start Scene CSS*/
+#startscene {
+  display: flex;
+  width: 100%;
+  height: 100vh;
 }
 
 #discription-text {
@@ -40,6 +113,127 @@ img {
   background-color: rgba(0, 0, 0, 0.5);
   transform: translate(-50%, 0%);
   z-index: 100;
+}
+
+.cloud-container {
+  position: relative;
+  width: 100%;
+  height: 100vh;
+  z-index: 1;
+}
+
+.cloud1 {
+  position: absolute;
+  top: 7%;
+  left: -225px;
+  animation: moveCloudsLeft 25s linear infinite;
+  width: 225px;
+  animation-timing-function: ease-in-out;
+  /* Smooth speed changes */
+  animation-delay: 1s;
+  /* Start the animation after 1 second */
+}
+
+.cloud2 {
+  position: absolute;
+  top: 10%;
+  right: -225px;
+  animation: moveCloudsRight 30s linear infinite;
+  width: 225px;
+  animation-timing-function: ease-in-out;
+  animation-delay: 0s;
+  /* Delay of 3 seconds */
+}
+
+.cloud3 {
+  position: absolute;
+  top: 20%;
+  left: -225px;
+  animation: moveCloudsLeft 15s linear infinite;
+  width: 225px;
+  animation-timing-function: ease-in-out;
+  animation-delay: 3s;
+  /* No delay */
+}
+
+#newcanvas {
+  position: absolute;
+  z-index: 9;
+  /* height: 100vh; */
+  width: 100%;
+  bottom: 20%;
+  left: 0;
+  right: 0;
+  margin: auto;
+}
+
+#playbtn {
+  width: 100%;
+  height: 100vh;
+  position: absolute;
+  z-index: 9;
+}
+
+.playme {
+  width: 130px;
+  height: 130px;
+  position: absolute;
+  top: 25%;
+  left: 0;
+  right: 0;
+  margin: auto;
+  animation: pulse 2s infinite;
+  /* animation: glow 3s ease-in-out infinite; */
+}
+
+@keyframes glow {
+  0% {
+    box-shadow: 0 0 5px rgba(255, 255, 255, 0.5);
+  }
+
+  50% {
+    box-shadow: 0 0 20px rgba(255, 255, 255, 1);
+  }
+
+  100% {
+    box-shadow: 0 0 5px rgba(255, 255, 255, 0.5);
+  }
+}
+
+@keyframes pulse {
+  0% {
+    transform: scale(1);
+  }
+
+  50% {
+    transform: scale(1.1);
+  }
+
+  100% {
+    transform: scale(1);
+  }
+}
+
+
+/* Keyframes for moving the cloud from left to right */
+@keyframes moveCloudsLeft {
+  0% {
+    left: -225px;
+  }
+
+  100% {
+    left: 100%;
+  }
+}
+
+@keyframes moveCloudsRight {
+  0% {
+    right: -225px;
+  }
+
+  100% {
+    right: 100%;
+  }
 }
 
 #loading {
@@ -56,15 +250,18 @@ img {
   color: white;
   text-align: center;
 }
+
 #monster {
   border: 1px solid;
 }
+
 #discription-text p {
   margin-top: 10%;
   line-height: 1.8;
   color: white;
   text-align: center;
 }
+
 #canvas {
   position: absolute;
   /* background-color: white; */
@@ -76,6 +273,7 @@ img {
   z-index: 1;
   background-repeat: no-repeat;
   background-size: cover;
+  display: none;
 }
 
 #canvas-timer {
@@ -98,6 +296,7 @@ img {
   bottom: 50%;
   rotate: 90deg;
 }
+
 #loading-screen {
   position: fixed;
   top: 0;
@@ -122,17 +321,20 @@ img {
   display: flex;
   height: 100%;
   width: 100%;
-  position: absolute; /* Position it within #loading-screen */
+  position: absolute;
+  /* Position it within #loading-screen */
 }
 
 #progress-bar-container {
   display: none;
-  position: relative; /* Keep this for proper positioning */
+  position: relative;
+  /* Keep this for proper positioning */
   width: 98%;
   height: 4vh;
   background-color: #ccc;
   margin-top: 20vh;
-  z-index: 9999; /* Update z-index to place it above #loading-gif */
+  z-index: 9999;
+  /* Update z-index to place it above #loading-gif */
 }
 
 #progress-bar {
@@ -141,11 +343,14 @@ img {
   background-color: #000000;
   transition: width 0.3s ease-in-out;
 }
+
 .loading-spinner {
   width: 50px;
   height: 50px;
-  border: 4px solid #f3f3f3; /* color of spinner */
-  border-top: 4px solid #3498db; /* color of spinning part */
+  border: 4px solid #f3f3f3;
+  /* color of spinner */
+  border-top: 4px solid #3498db;
+  /* color of spinning part */
   border-radius: 50%;
   position: absolute;
   left: calc(50% - 25px);
@@ -158,6 +363,7 @@ img {
   0% {
     transform: rotate(0deg);
   }
+
   100% {
     transform: rotate(360deg);
   }
@@ -169,10 +375,11 @@ img {
   position: absolute;
   right: 20px;
   bottom: 20px;
-  color: #ffffff45;
+  color: #8a8a8a;
   font-size: small;
   z-index: 9;
 }
+
 #toggle-btn {
   position: absolute;
   left: 30%;
@@ -224,16 +431,19 @@ img {
     -webkit-transform: scale(0.5);
     transform: scale(0.5);
   }
+
   100% {
     -webkit-transform: scale(1);
     transform: scale(1);
   }
 }
+
 @keyframes scale-up-center {
   0% {
     -webkit-transform: scale(0.5);
     transform: scale(0.5);
   }
+
   100% {
     -webkit-transform: scale(1);
     transform: scale(1);
@@ -242,8 +452,7 @@ img {
 
 /* Apply the animation */
 .feedback-text.show {
-  -webkit-animation: scale-up-center 0.4s cubic-bezier(0.39, 0.575, 0.565, 1)
-    both;
+  -webkit-animation: scale-up-center 0.4s cubic-bezier(0.39, 0.575, 0.565, 1) both;
   animation: scale-up-center 0.4s cubic-bezier(0.39, 0.575, 0.565, 1) both;
   z-index: 999;
   opacity: 1;

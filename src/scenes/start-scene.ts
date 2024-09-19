@@ -14,7 +14,6 @@ import {
   PWAInstallStatus,
   DEFAULT_BG_GROUP_IMGS,
 } from "@constants";
-
 export class StartScene {
   public canvas: HTMLCanvasElement;
   public data: any;
@@ -53,13 +52,13 @@ export class StartScene {
     this.canavsElement = document.getElementById("canvas") as HTMLCanvasElement;
     this.context = this.canavsElement.getContext("2d");
     this.toggleBtn = document.getElementById("toggle-btn") as HTMLElement;
-    this.monster = new Monster(this.canvas, 4);
+    this.monster = new Monster(this.canvas);
     this.switchSceneToLevelSelection = switchSceneToLevelSelection;
     this.audioPlayer = new AudioPlayer();
     this.pwa_status = localStorage.getItem(PWAInstallStatus);
     this.handler = document.getElementById("canvas") as HTMLCanvasElement;
     this.devToggle();
-    this.createPlayButton();
+    this.monster.initialiseRiveMonster();
     window.addEventListener("beforeinstallprompt", this.handlerInstallPrompt);
     this.setupBg();
   }
@@ -80,30 +79,7 @@ export class StartScene {
     );
   };
 
-  animation = (deltaTime: number) => {
-    this.titleFont = this.getFontWidthOfTitle();
-    this.context.clearRect(0, 0, this.width, this.height);
-    this.background?.draw();
-    this.context.font = `${this.titleFont}px ${font}, monospace`;
-    this.context.fillStyle = "white";
-    this.context.textAlign = "center";
-    this.context.fillText(this.data.title, this.width * 0.5, this.height / 10);
-    this.monster.update(deltaTime);
-    this.playButton.draw();
-  };
 
-  createPlayButton() {
-    this.playButton = new PlayButton(
-      this.context,
-      this.canvas,
-      this.canvas.width * 0.35,
-      this.canvas.height / 7
-    );
-    document.addEventListener("selectstart", function (e) {
-      e.preventDefault();
-    });
-    this.handler.addEventListener("click", this.handleMouseClick, false);
-  }
 
   handleMouseClick = (event) => {
     let self = this;

@@ -157,7 +157,7 @@ export class GameplayScene {
     this.levelIndicators = new LevelIndicators(this.context, this.canvas, 0);
 
     this.levelIndicators.setIndicators(this.counter);
-    this.monster = new Monster(this.canvas, this.monsterPhaseNumber);
+    this.monster = new Monster(this.canvas);
 
     this.pausePopup = new PausePopUp(
       this.canvas,
@@ -377,7 +377,7 @@ export class GameplayScene {
     this.pauseButton.draw();
     this.levelIndicators.draw();
     this.promptText.draw(deltaTime);
-    this.monster.update(deltaTime);
+    // this.monster.update(deltaTime);
     this.timerTicking.draw();
     this.trailParticles?.draw();
     if (this.isPauseButtonClicked && this.isGameStarted) {

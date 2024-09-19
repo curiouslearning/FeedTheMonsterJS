@@ -56,9 +56,7 @@ export class LevelEndScene {
     this.width = width;
     this.context = context;
     this.monster = new Monster(
-      this.canvas,
-      monsterPhaseNumber,
-      this.switchToReactionAnimation
+      this.canvas
     );
 
     this.switchToGameplayCB = switchToGameplayCB;
@@ -144,7 +142,7 @@ export class LevelEndScene {
       );
       this.drawStars();
 
-      this.monster.update(deltaTime);
+      // this.monster.update(deltaTime);
       this.closeButton.draw();
       this.retryButton.draw();
       if (this.starCount >= 2) {

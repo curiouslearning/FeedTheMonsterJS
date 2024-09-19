@@ -1,8 +1,6 @@
-import { loadImages } from "@common";
-import { EventManager } from "@events";
+import * as rive from "@rive-app/canvas";
 
-
-export class Monster extends EventManager {
+export class Monster{
   public zindex: number;
   public width: number;
   public height: number;
@@ -17,83 +15,41 @@ export class Monster extends EventManager {
   public frameInterval: number;
   public frameTimer: number;
   public canvasStack: any;
-  public canavsElement: HTMLCanvasElement;
-  public context: CanvasRenderingContext2D;
+  public canvasElement: HTMLCanvasElement;
   public game: any;
   public images: Object;
   public loadedImages: any;
   public imagesLoaded: boolean = false;
   public monsterPhase: number;
-
-  constructor(game, monsterPhase, callBackFunction?) {
-    super({
-      stoneDropCallbackHandler: (event) => this.handleStoneDrop(event),
-      loadPuzzleCallbackHandler: (event) => this.handleLoadPuzzle(event),
-    });
-    this.game = game;
-    this.monsterPhase = monsterPhase;
-    this.width = this.game.width;
-    this.height = this.game.height;
-    this.canavsElement = document.getElementById("canvas") as HTMLCanvasElement;
-    this.context = this.canavsElement.getContext("2d");
+  public riveMonster:any;
+  constructor(maincanvas) {
+    this.canvasElement = document.getElementById("newcanvas") as HTMLCanvasElement;
     this.image = document.getElementById("monster") as HTMLImageElement;
-    this.frameX = 0;
-    this.frameY = 0;
-    this.maxFrame = 6;
-    this.x = this.game.width / 2 - this.game.width * 0.243;
-    this.y = this.game.width / 3;
-    this.fps = 10;
-    this.countFrame = 0;
-    this.frameInterval = 1000 / this.fps;
-    this.frameTimer = 0;
+  }
 
-    this.images = {
-      eatImg: "./assets/images/eat1" + this.monsterPhase + ".png",
-      idleImg: "./assets/images/idle1" + this.monsterPhase + ".png",
-      spitImg: "./assets/images/spit1" + this.monsterPhase + ".png",
-      dragImg: "./assets/images/drag1" + this.monsterPhase + ".png",
-    };
 
-    loadImages(this.images, (images) => {
-      this.loadedImages = Object.assign({}, images);
-      this.changeToIdleAnimation();
-
-      this.imagesLoaded = true;
-      if (callBackFunction) {
-        callBackFunction();
+  initialiseRiveMonster() {
+    this.riveMonster = new rive.Rive({
+      src: "./assets/monsterrive.riv",
+      canvas: this.canvasElement,
+      autoplay: true,
+      animations: 'Idle',
+      stateMachines: "State Machine 1",
+      layout: new rive.Layout({ fit: rive.Fit.Contain, alignment: rive.Alignment.BottomCenter }),
+      onLoad: () => {
+        const riveLoaded = document.getElementById("newcanvas");
+        // riveLoaded.style.zIndex = '1';
+        console.log("Rive Monster loaded and playing...");
       }
     });
   }
 
-
-  update(deltaTime) {
-    if (this.frameTimer >= this.frameInterval) {
-      this.frameTimer = 0;
-      if (this.frameX < this.maxFrame) {
-        this.frameX++;
-      } else {
-        this.frameX = 0;
-      }
-    } else {
-      this.frameTimer += deltaTime;
-    }
-
-    this.draw();
-  }
-
-  draw() {
-    if (this.imagesLoaded) {
-      this.context.drawImage(
-        this.image,
-        770 * this.frameX,
-        1386 * this.frameY,
-        768,
-        1386,
-        this.x * 0.5,
-        this.y * 0.1,
-        (this.width / 2) * 1.5,
-        (this.height / 1.5) * 1.5
-      );
+  stopRiveMonster() {
+    if (this.riveMonster) {
+      this.riveMonster.stop();
+      const riveLoaded = document.getElementById("newcanvas");
+      riveLoaded.style.zIndex = '0';
+      console.log("Rive Monster animation stopped.");
     }
   }
 
@@ -134,7 +90,7 @@ export class Monster extends EventManager {
   }
 
   public dispose() {
-    this.unregisterEventListener();
+
   }
 
   onClick(xClick: number, yClick: number): boolean {

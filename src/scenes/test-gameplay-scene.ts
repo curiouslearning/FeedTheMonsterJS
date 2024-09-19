@@ -65,7 +65,7 @@ export class TestGameplayScene {
     this.height = canvas.height;
     this.canavsElement = document.getElementById("canvas") as HTMLCanvasElement;
     this.context = this.canavsElement.getContext("2d");
-    this.monster = new Monster(this.canvas, 0);
+    this.monster = new Monster(this.canvas);
     console.log(Date.now, " ::: ", performance.now);
     this.switchSceneToLevelSelection = switchSceneToLevelSelection;
     this.stoneHandler = new StoneHandler(
@@ -220,7 +220,7 @@ export class TestGameplayScene {
         this.width * 0.5,
         this.height / 10
       );
-      this.monster.update(deltaTime);
+      // this.monster.update(deltaTime);
       this.promptText.draw(deltaTime);
       this.stoneHandler.draw(deltaTime);
 
