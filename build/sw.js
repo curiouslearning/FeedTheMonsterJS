@@ -39,25 +39,6 @@ channel.addEventListener("message", async function (event) {
     caches.delete(workbox.core.cacheNames.precache + event.data.data);
     await getCacheName(event.data.data);
   }
-  if(event.data.command === "delete-cache"){
-    console.log('Cache deleted in progress', event.data.data);
-    caches.open(event.data.data)
-    .then(cache => {
-      return cache.keys()
-        .then(keys => {
-          return Promise.all(keys.map(key => cache.delete(key)));
-        })
-        .then(() => {
-          console.log(`Cache '${event.data.data}' has been cleared`);
-          self.clients.matchAll().then((clients) => {
-            clients.forEach((client) =>
-              client.postMessage({ msg: "Cache-deleted" })
-            );
-          });
-        });
-    });
-  }
-  
 });
 
 self.registration.addEventListener("updatefound", function (e) {
@@ -128,13 +109,11 @@ async function getALLAudioUrls(cacheName, language) {
   // await cacheCommonAssets(language);
   let audioList = [];
   audioList.push("/lang/" + language + "/ftm_" + language + ".json");
-  fetch("/lang/" + language + "/ftm_" + language + ".json" + "?cache-bust=" + new Date().getTime(), {
+  fetch("./lang/" + language + "/ftm_" + language + ".json", {
     method: "GET",
     headers: {
       "Content-Type": "application/json",
-      "Cache-Control": "no-store",
     },
-    cache: "no-store",
   }).then((res) =>
     res.json().then(async (data) => {
       await cacheFeedBackAudio(data.FeedbackAudios,language);
