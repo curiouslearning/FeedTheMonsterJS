@@ -35,12 +35,14 @@ class App {
   private minVersion: string;
   private dataModal: DataModal;
   private startSessionTime: number;
+  private titleTextElement: HTMLElement | null;
   firebaseIntegration: FirebaseIntegration;
   constructor(lang: string) {
     this.lang = lang;
     this.canvas = document.getElementById("canvas") as HTMLCanvasElement;
     this.channel = new BroadcastChannel("my-channel");
     this.progressBar = document.getElementById("progress-bar") as HTMLElement;
+    this.titleTextElement = document.getElementById("title") as HTMLElement;
     this.progressBarContainer = document.getElementById(
       "progress-bar-container"
     ) as HTMLElement;
@@ -338,10 +340,9 @@ class App {
           "version" + this.lang,
           this.majVersion + "." + this.minVersion
         );
-        // window.location.reload();
         this.loadingElement.style.display = "none";
         this.handleResize(this.dataModal);
-        console.log("hide progress");
+        this.titleTextElement.classList.add('animate');
       }
       this.progressBar.style.width = `${data.data}%`;
     }

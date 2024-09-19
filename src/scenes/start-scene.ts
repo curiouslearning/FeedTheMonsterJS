@@ -15,7 +15,7 @@ import {
   PWAInstallStatus,
   DEFAULT_BG_GROUP_IMGS,
   FONT_BASE_PATH,
-  feedbackTextDefault,
+  titleTextDefault,
 } from "@constants";
 
 export class StartScene {
@@ -90,8 +90,8 @@ export class StartScene {
     this.titleFont = this.getFontWidthOfTitle();
     this.titleTextElement.style.fontSize = `${this.titleFont}px`;
     this.titleTextElement.textContent = this.data.title;
-    const fontPath = `${FONT_BASE_PATH}${feedbackTextDefault}.ttf`;
-    applyFontToElement(this.titleTextElement, feedbackTextDefault, fontPath);
+    const fontPath = `${FONT_BASE_PATH}${titleTextDefault}.ttf`;
+    applyFontToElement(this.titleTextElement, titleTextDefault, fontPath);
   }
 
   animation = (deltaTime: number) => {

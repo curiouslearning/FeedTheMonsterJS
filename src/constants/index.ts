@@ -23,6 +23,7 @@ export const GameScene1 = "GameScene1";
 export const EndScene1 = "EndScene1";
 export const FONT_BASE_PATH = './assets/fonts/';
 export const feedbackTextDefault = "Atma-SemiBold";
+export const titleTextDefault = "Atma-SemiBold";
 
 //Audio paths
 export const AUDIO_PATH_EATS = "./assets/audios/Eat.mp3";
