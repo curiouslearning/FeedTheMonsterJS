@@ -1,9 +1,10 @@
 import { Monster, AudioPlayer } from "@components";
 import { PlayButton } from "@buttons";
-import { DataModal } from "@data";
+import { DataModal, titleTextCustomFonts } from "@data";
 import {
   applyFontToElement,
   font,
+  lang,
   StoneConfig,
   toggleDebugMode,
   Utils,
@@ -15,7 +16,7 @@ import {
   PWAInstallStatus,
   DEFAULT_BG_GROUP_IMGS,
   FONT_BASE_PATH,
-  titleTextDefault,
+  titleTextDefaultFont,
 } from "@constants";
 
 export class StartScene {
@@ -90,8 +91,14 @@ export class StartScene {
     this.titleFont = this.getFontWidthOfTitle();
     this.titleTextElement.style.fontSize = `${this.titleFont}px`;
     this.titleTextElement.textContent = this.data.title;
-    const fontPath = `${FONT_BASE_PATH}${titleTextDefault}.ttf`;
-    applyFontToElement(this.titleTextElement, titleTextDefault, fontPath);
+  
+    const fontOptions = {
+      customFonts: titleTextCustomFonts,
+      defaultFont: titleTextDefaultFont,
+      lang: lang
+    };
+  
+    applyFontToElement(this.titleTextElement, fontOptions, FONT_BASE_PATH);
   }
 
   animation = (deltaTime: number) => {

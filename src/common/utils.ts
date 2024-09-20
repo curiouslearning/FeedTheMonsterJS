@@ -179,21 +179,44 @@ export const hideElement = (isHide: boolean = false, element: HTMLElement) => {
 
 export function applyFontToElement(
   element: HTMLElement | null,
-  fontName: string,
-  fontPath: string
+  fontOptions: { 
+    customFonts: Record<string, string>, 
+    defaultFont: string, 
+    lang: string 
+  },
+  fontBasePath: string
 ): void {
-  if (fontPath) {
+  const { customFonts, defaultFont, lang } = fontOptions;
+  
+  // Determine the correct font name based on the language
+  const fontName = customFonts[lang] || defaultFont;
+  const fontPath = `${fontBasePath}${fontName}.ttf`;
+
+  // Ensure fontName and fontPath exist
+  if (!fontName || !fontPath) {
+    return;
+  }
+
+  // Generate a unique ID for the font style element
+  const styleId = `font-${fontName.replace(/\s+/g, '-').toLowerCase()}`;
+
+  // Check if the font style has already been added to the document head
+  if (!document.getElementById(styleId)) {
     const style = document.createElement("style");
+    style.id = styleId;
     style.textContent = `
       @font-face {
         font-family: '${fontName}';
         src: url('${fontPath}') format('truetype');
+        font-weight: normal;
+        font-style: normal;
       }
     `;
     document.head.appendChild(style);
   }
 
+  // Apply the font to the element if it's provided
   if (element) {
-    element.style.fontFamily = `${fontName}, sans-serif`;
+    element.style.fontFamily = `'${fontName}', sans-serif`;
   }
 }

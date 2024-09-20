@@ -1,6 +1,6 @@
 import { applyFontToElement, hideElement, lang } from "@common";
 import { feedbackTextDefault, FONT_BASE_PATH } from "@constants";
-import { feedbackCustomFonts } from "@data/feedback-fonts";
+import { feedbackCustomFonts } from "@data";
 
 export class FeedbackTextEffects {
   private feedbackTextElement: HTMLElement | null;
@@ -22,39 +22,34 @@ export class FeedbackTextEffects {
   }
 
   private async loadFont() {
-    const fontName = feedbackCustomFonts[lang] || feedbackTextDefault;
-    const fontPath = `${FONT_BASE_PATH}${fontName}.ttf`;
-    this.applyFontToElement(fontName, fontPath);
-  }
+    const fontOptions = {
+      customFonts: feedbackCustomFonts,
+      defaultFont: feedbackTextDefault,
+      lang: lang,
+    };
 
-  /**
-   * Applies the specified font to the feedback text element and adds the necessary @font-face rule.
-   * @param fontName - The name of the font to apply.
-   * @param fontPath - The path to the font file.
-   */
-  private applyFontToElement(fontName: string, fontPath: string) {
-    applyFontToElement(this.feedbackTextElement, fontName, fontPath);
+    applyFontToElement(this.feedbackTextElement, fontOptions, FONT_BASE_PATH);
   }
 
   public wrapText(text: string): void {
     if (!this.isFeedbackElementAvailable()) return;
-  
+
     // Set the text content
     this.feedbackTextElement.textContent = text;
-  
+
     // Dynamically adjust the font size based on the length of the text
     if (text.length >= 12) {
-      this.feedbackTextElement.style.fontSize = '30px';
+      this.feedbackTextElement.style.fontSize = "30px";
     } else {
-      this.feedbackTextElement.style.fontSize = ''; // Reset to default font size (or specify default if needed)
+      this.feedbackTextElement.style.fontSize = ""; // Reset to default font size (or specify default if needed)
     }
-  
+
     // Show the feedback element
     hideElement(false, this.feedbackTextElement);
-  
+
     // Set the timeout to hide the feedback text after a delay
     this.setHideTimeout();
-  }  
+  }
 
   private setHideTimeout(): void {
     if (this.hideTimeoutId) {
