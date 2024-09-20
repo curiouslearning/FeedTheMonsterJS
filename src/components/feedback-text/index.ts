@@ -1,5 +1,5 @@
 import { applyFontToElement, hideElement, lang } from "@common";
-import { feedbackTextDefault, FONT_BASE_PATH } from "@constants";
+import { defaultFont, FONT_BASE_PATH } from "@constants";
 import { feedbackCustomFonts } from "@data";
 
 export class FeedbackTextEffects {
@@ -24,7 +24,7 @@ export class FeedbackTextEffects {
   private async loadFont() {
     const fontOptions = {
       customFonts: feedbackCustomFonts,
-      defaultFont: feedbackTextDefault,
+      defaultFont: defaultFont,
       lang: lang,
     };
 
@@ -36,11 +36,7 @@ export class FeedbackTextEffects {
     this.feedbackTextElement.textContent = text;
 
     // Dynamically adjust the font size based on the length of the text
-    if (text.length >= 12) {
-      this.feedbackTextElement.style.fontSize = "30px";
-    } else {
-      this.feedbackTextElement.style.fontSize = ""; // Reset to default font size (or specify default if needed)
-    }
+    this.feedbackTextElement.style.fontSize = text.length >= 12 ? "30px" : "";
 
     hideElement(false, this.feedbackTextElement);
 

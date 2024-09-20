@@ -16,7 +16,7 @@ import {
   PWAInstallStatus,
   DEFAULT_BG_GROUP_IMGS,
   FONT_BASE_PATH,
-  titleTextDefaultFont,
+  defaultFont,
 } from "@constants";
 
 export class StartScene {
@@ -94,7 +94,7 @@ export class StartScene {
   
     const fontOptions = {
       customFonts: titleTextCustomFonts,
-      defaultFont: titleTextDefaultFont,
+      defaultFont: defaultFont,
       lang: lang
     };
   

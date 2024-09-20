@@ -118,7 +118,6 @@ export class SceneHandler {
           this.data.minVersion.toString()
         : "";
     setTimeout(() => {
-      this.titleTextElement.style.zIndex = "-1";
       this.gameplayScene = new GameplayScene(
         this.canvas,
         gamePlayData.currentLevelData,
