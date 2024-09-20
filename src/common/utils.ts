@@ -188,20 +188,14 @@ export function applyFontToElement(
 ): void {
   const { customFonts, defaultFont, lang } = fontOptions;
   
-  // Determine the correct font name based on the language
   const fontName = customFonts[lang] || defaultFont;
   const fontPath = `${fontBasePath}${fontName}.ttf`;
-
-  // Ensure fontName and fontPath exist
-  if (!fontName || !fontPath) {
-    return;
-  }
 
   // Generate a unique ID for the font style element
   const styleId = `font-${fontName.replace(/\s+/g, '-').toLowerCase()}`;
 
-  // Check if the font style has already been added to the document head
-  if (!document.getElementById(styleId)) {
+  // Conditionally add the font to the document head only if fontName, fontPath are valid and the style isn't already added
+  if (fontName && fontPath && !document.getElementById(styleId)) {
     const style = document.createElement("style");
     style.id = styleId;
     style.textContent = `
@@ -215,7 +209,7 @@ export function applyFontToElement(
     document.head.appendChild(style);
   }
 
-  // Apply the font to the element if it's provided
+  // Apply the font to the element, with fallback to sans-serif
   if (element) {
     element.style.fontFamily = `'${fontName}', sans-serif`;
   }
