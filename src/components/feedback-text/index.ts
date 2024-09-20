@@ -1,6 +1,4 @@
-import { applyFontToElement, hideElement, lang } from "@common";
-import { defaultFont, FONT_BASE_PATH } from "@constants";
-import { feedbackCustomFonts } from "@data";
+import { hideElement } from "@common";
 
 export class FeedbackTextEffects {
   private feedbackTextElement: HTMLElement | null;
@@ -14,21 +12,10 @@ export class FeedbackTextEffects {
 
   private initialize() {
     if (!this.isFeedbackElementAvailable()) return;
-    this.loadFont();
   }
 
   private isFeedbackElementAvailable(): boolean {
     return !!this.feedbackTextElement;
-  }
-
-  private async loadFont() {
-    const fontOptions = {
-      customFonts: feedbackCustomFonts,
-      defaultFont: defaultFont,
-      lang: lang,
-    };
-
-    applyFontToElement(this.feedbackTextElement, fontOptions, FONT_BASE_PATH);
   }
 
   public wrapText(text: string): void {

@@ -8,7 +8,6 @@ import {
   isDocumentVisible,
   toggleDebugMode,
   hideElement,
-  applyFontToElement
 } from "./utils";
 import { Debugger, lang, font, pseudoId, Window } from "./global-variables";
 import {
@@ -48,6 +47,5 @@ export {
   isClickInsideButton,
   isDocumentVisible,
   toggleDebugMode,
-  hideElement,
-  applyFontToElement
+  hideElement
 };

@@ -1,10 +1,7 @@
 import { Monster, AudioPlayer } from "@components";
 import { PlayButton } from "@buttons";
-import { DataModal, titleTextCustomFonts } from "@data";
+import { DataModal } from "@data";
 import {
-  applyFontToElement,
-  font,
-  lang,
   StoneConfig,
   toggleDebugMode,
   Utils,
@@ -15,8 +12,6 @@ import {
   FirebaseUserClicked,
   PWAInstallStatus,
   DEFAULT_BG_GROUP_IMGS,
-  FONT_BASE_PATH,
-  defaultFont,
 } from "@constants";
 
 export class StartScene {
@@ -68,7 +63,7 @@ export class StartScene {
     window.addEventListener("beforeinstallprompt", this.handlerInstallPrompt);
     this.setupBg();
     this.titleTextElement = document.getElementById("title");
-    this.displayGameTitle();
+    this.generateGameTitle();
   }
 
   private setupBg = async () => {
@@ -87,19 +82,11 @@ export class StartScene {
     );
   };
 
-  displayGameTitle = () => {
+  generateGameTitle = () => {
     this.titleFont = this.getFontWidthOfTitle();
     this.titleTextElement.style.fontSize = `${this.titleFont}px`;
     this.titleTextElement.textContent = this.data.title;
-  
-    const fontOptions = {
-      customFonts: titleTextCustomFonts,
-      defaultFont: defaultFont,
-      lang: lang
-    };
-  
-    applyFontToElement(this.titleTextElement, fontOptions, FONT_BASE_PATH);
-  }
+  };
 
   animation = (deltaTime: number) => {
     this.context.clearRect(0, 0, this.width, this.height);
