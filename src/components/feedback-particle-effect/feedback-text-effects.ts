@@ -33,8 +33,6 @@ export class FeedbackTextEffects {
 
   public wrapText(text: string): void {
     if (!this.isFeedbackElementAvailable()) return;
-
-    // Set the text content
     this.feedbackTextElement.textContent = text;
 
     // Dynamically adjust the font size based on the length of the text
@@ -44,10 +42,8 @@ export class FeedbackTextEffects {
       this.feedbackTextElement.style.fontSize = ""; // Reset to default font size (or specify default if needed)
     }
 
-    // Show the feedback element
     hideElement(false, this.feedbackTextElement);
 
-    // Set the timeout to hide the feedback text after a delay
     this.setHideTimeout();
   }
 
