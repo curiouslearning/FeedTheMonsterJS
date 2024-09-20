@@ -293,11 +293,13 @@ img {
   color: #f8b618;
   text-shadow: -2px -2px 0 #fff, 2px -2px 0 #fff, -2px 2px 0 #fff,
     2px 2px 0 #fff, -3px 0 0 #fff, 3px 0 0 #fff, 0 -3px 0 #fff, 0 3px 0 #fff;
+  opacity: 0;
 }
 
 #title.animate {
   -webkit-animation: scale-in-bottom 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94)
-    150ms both;
-  animation: scale-in-bottom 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94) 150ms
+    200ms both;
+  animation: scale-in-bottom 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94) 200ms
     both;
+  opacity: 1;
 }

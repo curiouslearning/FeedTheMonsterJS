@@ -83,6 +83,7 @@ class App {
       this.handleCachedScenario(this.dataModal);
     }
     this.registerWorkbox();
+    this.titleTextElement.classList.add("animate");
   }
 
   private logSessionStartFirebaseEvent() {
@@ -342,7 +343,6 @@ class App {
         );
         this.loadingElement.style.display = "none";
         this.handleResize(this.dataModal);
-        this.titleTextElement.classList.add('animate');
       }
       this.progressBar.style.width = `${data.data}%`;
     }
@@ -406,7 +406,6 @@ class App {
         this.handleServiceWorkerMessage
       );
     }
-
     // Perform additional cleanup if necessary
   }
 }
