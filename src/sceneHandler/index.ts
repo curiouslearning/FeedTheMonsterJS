@@ -36,6 +36,7 @@ export class SceneHandler {
 
   private lastTime: number = 0;
   private toggleBtn: HTMLElement;
+  private titleTextElement: HTMLElement;
 
   constructor(canvas: HTMLCanvasElement, data: DataModal) {
     this.canvas = canvas;
@@ -44,6 +45,7 @@ export class SceneHandler {
     this.height = canvas.height;
     this.canavsElement = document.getElementById("canvas") as HTMLCanvasElement;
     this.toggleBtn = document.getElementById("toggle-btn") as HTMLElement;
+    this.titleTextElement = document.getElementById("title") as HTMLElement;
     window.addEventListener("beforeinstallprompt", this.handleInstallPrompt);
     this.context = this.canavsElement.getContext("2d");
     this.startScene = new StartScene(
@@ -168,6 +170,7 @@ export class SceneHandler {
     this.showLoading();
     this.dispose(changeSceneRequestFrom);
     setTimeout(() => {
+      this.titleTextElement.style.zIndex = "-1";
       this.levelSelectionScene = new LevelSelectionScreen(
         this.canvas,
         this.data,

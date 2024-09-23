@@ -1,5 +1,5 @@
 import * as Sentry from "@sentry/browser";
-import { getData, DataModal } from "@data";
+import { getData, DataModal, customFonts } from "@data";
 import { SceneHandler } from "@sceneHandler";
 import { AUDIO_URL_PRELOAD, IsCached } from "@constants";
 import { Workbox } from "workbox-window";
@@ -35,12 +35,16 @@ class App {
   private minVersion: string;
   private dataModal: DataModal;
   private startSessionTime: number;
+  private titleTextElement: HTMLElement | null;
+  private feedBackTextElement: HTMLElement | null;
   firebaseIntegration: FirebaseIntegration;
   constructor(lang: string) {
     this.lang = lang;
     this.canvas = document.getElementById("canvas") as HTMLCanvasElement;
     this.channel = new BroadcastChannel("my-channel");
     this.progressBar = document.getElementById("progress-bar") as HTMLElement;
+    this.titleTextElement = document.getElementById("title") as HTMLElement;
+    this.feedBackTextElement = document.getElementById("feedback-text") as HTMLElement;
     this.progressBarContainer = document.getElementById(
       "progress-bar-container"
     ) as HTMLElement;
@@ -81,6 +85,22 @@ class App {
       this.handleCachedScenario(this.dataModal);
     }
     this.registerWorkbox();
+
+    this.loadTitleFeedbackCustomFont();
+    this.titleTextElement.classList.add("animate");
+  }
+
+  private async loadTitleFeedbackCustomFont() {
+    const customTitleFeedbackFont = customFonts[this.lang] || customFonts.default;
+    const fontFamily = `'${customTitleFeedbackFont}', sans-serif`;
+
+    await this.loadAndCacheFont(customTitleFeedbackFont, `./assets/fonts/${customTitleFeedbackFont}.ttf`);
+    [this.titleTextElement, this.feedBackTextElement].forEach(element => {
+      if (element) {
+        element.style.fontFamily = fontFamily;
+      }
+    });
+   
   }
 
   private logSessionStartFirebaseEvent() {
@@ -338,10 +358,8 @@ class App {
           "version" + this.lang,
           this.majVersion + "." + this.minVersion
         );
-        // window.location.reload();
         this.loadingElement.style.display = "none";
         this.handleResize(this.dataModal);
-        console.log("hide progress");
       }
       this.progressBar.style.width = `${data.data}%`;
     }
@@ -405,7 +423,6 @@ class App {
         this.handleServiceWorkerMessage
       );
     }
-
     // Perform additional cleanup if necessary
   }
 }
