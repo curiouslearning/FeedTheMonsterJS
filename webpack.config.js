@@ -40,7 +40,7 @@ var config = {
       '@sceneHandler': path.resolve(__dirname, 'src/sceneHandler/'),
       '@scenes': path.resolve(__dirname, 'src/scenes/'),
       '@events': path.resolve(__dirname, 'src/events/'),
-      '@feedbackParticleEffect': path.resolve(__dirname, 'src/components/feedback-particle-effect/')
+      '@feedbackText': path.resolve(__dirname, 'src/components/feedback-text/')
     },
     extensions: ['.tsx', '.ts', '.js', '.json', '.css', '.sh', '.babelrc', '.eslintignore', '.gitignore', '.d'],
   },

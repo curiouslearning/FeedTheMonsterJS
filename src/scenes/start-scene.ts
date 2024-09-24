@@ -2,13 +2,12 @@ import { Monster, AudioPlayer } from "@components";
 import { PlayButton } from "@buttons";
 import { DataModal } from "@data";
 import {
-  font,
   StoneConfig,
   toggleDebugMode,
   Utils,
 } from "@common";
 import { FirebaseIntegration } from "../Firebase/firebase-integration";
-import { createBackground, defaultBgDrawing } from '@compositions';
+import { createBackground, defaultBgDrawing } from "@compositions";
 import {
   FirebaseUserClicked,
   PWAInstallStatus,
@@ -40,6 +39,7 @@ export class StartScene {
   audioPlayer: AudioPlayer;
   private toggleBtn: HTMLElement;
   private pwa_install_status: Event;
+  private titleTextElement: HTMLElement | null;
 
   constructor(
     canvas: HTMLCanvasElement,
@@ -62,6 +62,8 @@ export class StartScene {
     this.createPlayButton();
     window.addEventListener("beforeinstallprompt", this.handlerInstallPrompt);
     this.setupBg();
+    this.titleTextElement = document.getElementById("title");
+    this.generateGameTitle();
   }
 
   private setupBg = async () => {
@@ -80,14 +82,15 @@ export class StartScene {
     );
   };
 
-  animation = (deltaTime: number) => {
+  generateGameTitle = () => {
     this.titleFont = this.getFontWidthOfTitle();
+    this.titleTextElement.style.fontSize = `${this.titleFont}px`;
+    this.titleTextElement.textContent = this.data.title;
+  };
+
+  animation = (deltaTime: number) => {
     this.context.clearRect(0, 0, this.width, this.height);
     this.background?.draw();
-    this.context.font = `${this.titleFont}px ${font}, monospace`;
-    this.context.fillStyle = "white";
-    this.context.textAlign = "center";
-    this.context.fillText(this.data.title, this.width * 0.5, this.height / 10);
     this.monster.update(deltaTime);
     this.playButton.draw();
   };
