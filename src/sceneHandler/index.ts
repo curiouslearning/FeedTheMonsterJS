@@ -51,6 +51,8 @@ export class SceneHandler {
       data,
       this.switchSceneToLevelSelection
     );
+    console.log(SceneHandler.SceneName);
+    
     SceneHandler.SceneName = StartScene1;
     this.loadingScreen = new LoadingScene(
       this.width,
@@ -95,9 +97,7 @@ export class SceneHandler {
     this.context.clearRect(0, 0, this.width, this.height);
     this.loading ? this.loadingScreen.draw(deltaTime) : null;
 
-    if (SceneHandler.SceneName === StartScene1) {
-      // this.startScene.init();
-    } else if (SceneHandler.SceneName === LevelSelection1) {
+    if (SceneHandler.SceneName === LevelSelection1) {
       this.levelSelectionScene.drawLevelSelection();
     } else if (SceneHandler.SceneName === GameScene1) {
       this.gameplayScene.draw(deltaTime);
@@ -165,6 +165,8 @@ export class SceneHandler {
   };
 
   switchSceneToLevelSelection = (changeSceneRequestFrom?: string) => {
+    console.log(changeSceneRequestFrom,"triggered");
+    
     this.showLoading();
     this.dispose(changeSceneRequestFrom);
     setTimeout(() => {
@@ -178,6 +180,8 @@ export class SceneHandler {
   };
 
   private dispose = (lastSceneName: string): void => {
+    console.log(lastSceneName);
+    
     if (lastSceneName == SCENE_NAME_LEVEL_SELECT) {
       this.levelSelectionScene.dispose();
     } else if (lastSceneName === SCENE_NAME_GAME_PLAY) {
@@ -192,7 +196,7 @@ export class SceneHandler {
   private showLoading = (): void => {
     this.loadingScreen.initCloud();
     this.loading = true;
-    document.getElementById("loading").style.zIndex = "3";
+    document.getElementById("loading").style.zIndex = "12";
   };
 
   private removeLoading = (): void => {

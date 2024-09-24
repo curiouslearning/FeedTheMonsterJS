@@ -100,7 +100,9 @@ export class LevelSelectionScreen {
         this.audioPlayer.playAudio(AUDIO_INTRO);
       }
     });
-
+    console.log("Level Scene Called");
+    document.getElementById("startscene").style.display = "none";
+    document.getElementById("canvas").style.display = "block";
     this.addListeners();
     this.rightBtnSize = 10;
     this.rightBtnX = 0.73;
@@ -284,6 +286,8 @@ export class LevelSelectionScreen {
     }
   }
   private draw() {
+    console.log('Drawing Level Selection Screen');
+    
     for (let levelBtn of this.levelButtons) {
       this.drawLevel(
         levelBtn,

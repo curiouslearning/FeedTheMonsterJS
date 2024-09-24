@@ -59,6 +59,9 @@ export class StartScene {
     this.handler = document.getElementById("canvas") as HTMLCanvasElement;
     this.devToggle();
     this.monster.initialiseRiveMonster();
+    // Add the event listener for the play button here
+    const playButton = document.getElementById("playbtn") as HTMLElement;
+    playButton.addEventListener("click", this.handleMouseClick.bind(this));
     window.addEventListener("beforeinstallprompt", this.handlerInstallPrompt);
     this.setupBg();
   }
@@ -80,29 +83,42 @@ export class StartScene {
   };
 
 
-
-  handleMouseClick = (event) => {
-    let self = this;
-    const selfElement = document.getElementById("canvas") as HTMLCanvasElement;
+  handleMouseClick(event) {
     event.preventDefault();
-    var rect = selfElement.getBoundingClientRect();
+
+    // Get the play button element
+    const playButton = document.getElementById("playbtn") as HTMLCanvasElement;
+    
+    // Get the play button's bounding box (its coordinates and size)
+    const rect = playButton.getBoundingClientRect();
+    
+    // Get click position relative to the play button
     const x = event.clientX - rect.left;
     const y = event.clientY - rect.top;
-    const { excludeX, excludeY } = Utils.getExcludedCoordinates(
-      selfElement,
-      15
-    );
+    
+    // Check if the click was within the play button's boundaries
+    const { excludeX, excludeY } = Utils.getExcludedCoordinates(playButton, 15);
+    
     if (!(x < excludeX && y < excludeY)) {
+      console.log("Play button clicked");
+
+      // Trigger Firebase analytics or any other event
       FirebaseIntegration.getInstance().sendUserClickedOnPlayEvent();
+
+      // Trigger custom events (such as Facebook pixel, etc.)
       // @ts-ignore
       fbq("trackCustom", FirebaseUserClicked, {
         event: "click",
       });
+
+      // Hide the toggle button and play click sound
       this.toggleBtn.style.display = "none";
       this.audioPlayer.playButtonClickSound();
-      self.switchSceneToLevelSelection("StartScene");
+
+      // Switch to the level selection screen
+      this.switchSceneToLevelSelection("StartScene");
     }
-  };
+  }
 
   dispose() {
     this.monster.dispose();
