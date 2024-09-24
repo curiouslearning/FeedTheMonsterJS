@@ -10,9 +10,9 @@
   "minversion": 19,
   "langname": "HINDI",
   "FeedbackAudios": [
-    "https://feedthemonster.curiouscontent.org/lang/hindi/audios/fantastic.mp3",
-    "https://feedthemonster.curiouscontent.org/lang/hindi/audios/great.mp3",
-    "https://feedthemonster.curiouscontent.org/lang/hindi/audios/amazing.mp3"
+    "https://feedthemonster.curiouscontent.org/lang/english/audios/fantastic.mp3",
+    "https://feedthemonster.curiouscontent.org/lang/english/audios/great.mp3",
+    "https://feedthemonster.curiouscontent.org/lang/english/audios/amazing.mp3"
   ],
   "OtherAudios": {
     "Select your player": "https://feedthemonster.curiouscontent.org/lang/hindi/audios/Select-your-player.mp3",
