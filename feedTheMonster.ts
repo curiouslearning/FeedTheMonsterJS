@@ -297,6 +297,7 @@ class App {
   }
 
   private reinitializeSceneHandler(dataModal: DataModal): void {
+    this.titleTextElement.style.zIndex = "2";
     delete this.sceneHandler;
     this.sceneHandler = new SceneHandler(this.canvas, dataModal);
     this.passingDataToContainer();

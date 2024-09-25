@@ -170,7 +170,6 @@ export class SceneHandler {
     this.showLoading();
     this.dispose(changeSceneRequestFrom);
     setTimeout(() => {
-      this.titleTextElement.style.zIndex = "-1";
       this.levelSelectionScene = new LevelSelectionScreen(
         this.canvas,
         this.data,
@@ -196,6 +195,9 @@ export class SceneHandler {
     this.loadingScreen.initCloud();
     this.loading = true;
     document.getElementById("loading").style.zIndex = "3";
+    setTimeout(() => {
+      this.titleTextElement.style.zIndex =  "-1";
+    }, 800);
   };
 
   private removeLoading = (): void => {
