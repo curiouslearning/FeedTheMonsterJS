@@ -128,9 +128,10 @@ img {
 #progress-bar-container {
   display: none;
   position: relative; /* Keep this for proper positioning */
-  width: 98%;
+  width: 90%;
   height: 4vh;
-  background-color: #ccc;
+  background-color: #000000;
+  border: 1px solid #f1b82d;
   margin-top: 20vh;
   z-index: 9999; /* Update z-index to place it above #loading-gif */
 }
@@ -138,7 +139,7 @@ img {
 #progress-bar {
   display: none;
   height: 100%;
-  background-color: #000000;
+  background-color: #f1b82d;
   transition: width 0.3s ease-in-out;
 }
 .loading-spinner {
