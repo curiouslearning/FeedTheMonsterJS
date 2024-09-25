@@ -37,9 +37,11 @@ class App {
   private startSessionTime: number;
   private titleTextElement: HTMLElement | null;
   private feedBackTextElement: HTMLElement | null;
+  public currentProgress:any;
   firebaseIntegration: FirebaseIntegration;
   constructor(lang: string) {
     this.lang = lang;
+    this.currentProgress = 10; // Initialize progress to 0
     this.canvas = document.getElementById("canvas") as HTMLCanvasElement;
     this.channel = new BroadcastChannel("my-channel");
     this.progressBar = document.getElementById("progress-bar") as HTMLElement;
@@ -65,7 +67,6 @@ class App {
   }
 
   private async init() {
-    console.log("init");
     const font = await Utils.getLanguageSpecificFont(this.lang);
     await this.loadAndCacheFont(font, `./assets/fonts/${font}.ttf`);
     await this.preloadGameAudios();
@@ -179,7 +180,7 @@ class App {
     } else {
       this.progressBarContainer.style.display = "flex";
       this.progressBar.style.display = "flex";
-      this.progressBar.style.width = "30%";
+      this.progressBar.style.width = "10%";
     }
   };
 
@@ -209,7 +210,6 @@ class App {
                 return;
               }
               const newContentFileData = await response.json();
-              console.log(newContentFileData);
               const aheadContentVersion =
                 newContentFileData["majversion"] +
                 "." +
@@ -217,8 +217,6 @@ class App {
               const cachedVersion = localStorage.getItem(
                 "version" + lang.toLowerCase()
               );
-              console.log("No Cache Content version: " + aheadContentVersion);
-              console.log("cached version :" + cachedVersion);
               // We need to check here for the content version updates
               // If there's a new content version, we need to remove the cached content and reload
               // We are comparing here the contentVersion with the aheadContentVersion
@@ -330,40 +328,71 @@ class App {
     version: string;
   }): void => {
     if (this.progressBarContainer && this.progressBar) {
-      this.progressBarContainer.style.display = "flex";
-      this.progressBar.style.display = "flex";
+      this.showProgressBar();
+    
+      const progressValue = Math.min(100, Math.max(0, data.data)); // Ensure progress is between 0 and 100
 
-      if (parseInt(this.progressBar.style.width || "0") >= 40) {
-        this.progressBar.style.width = `${data.data}%`;
+      // Only update if new progress is greater than the current progress
+      if (progressValue > this.currentProgress) {
+        this.currentProgress = progressValue;
+        this.progressBar.style.width = `${this.currentProgress}%`;
       }
 
-      if (data.data % 100 === 0 && !this.is_cached.get(this.lang)) {
-        this.is_cached.set(this.lang, true);
-        localStorage.setItem(
-          IsCached,
-          JSON.stringify(Array.from(this.is_cached.entries()))
-        );
-        const download_completed: DownloadCompleted = {
-          cr_user_id: pseudoId,
-          ftm_language: lang,
-          profile_number: 0,
-          version_number: this.versionInfoElement.innerHTML,
-          json_version_number:
-            !!this.majVersion && !!this.minVersion
-              ? this.majVersion.toString() + "." + this.minVersion.toString()
-              : "",
-        };
-        this.firebaseIntegration.sendDownloadCompletedEvent(download_completed);
-        localStorage.setItem(
-          "version" + this.lang,
-          this.majVersion + "." + this.minVersion
-        );
-        this.loadingElement.style.display = "none";
-        this.handleResize(this.dataModal);
+      // Check if download completed
+      if (this.isDownloadCompleted(this.currentProgress)) {
+        this.cacheLanguage();
+        this.sendCompletionEvent();
+        this.hideLoadingScreen();
       }
-      this.progressBar.style.width = `${data.data}%`;
     }
   };
+
+  //Shows the progress bar.
+  showProgressBar() {
+    this.progressBarContainer.classList.add("visible");
+    this.progressBar.classList.add("visible");
+  }
+  
+  //Checks if download is completed.
+  isDownloadCompleted(progress) {
+    return progress === 100 && !this.is_cached.get(this.lang);
+  }
+  //Handles caching.
+  cacheLanguage() {
+    try {
+      this.is_cached.set(this.lang, true);
+      localStorage.setItem(IsCached, JSON.stringify(Array.from(this.is_cached.entries())));
+    } catch (error) {
+      console.error("Error caching language:", error);
+    }
+  }
+  // Handles Event sending.
+  sendCompletionEvent() {
+    const downloadCompleted: DownloadCompleted = {
+      cr_user_id: pseudoId,
+      ftm_language: lang,
+      profile_number: 0,
+      version_number: this.versionInfoElement.innerHTML,
+      json_version_number: this.getJsonVersionNumber(),
+    };
+    this.firebaseIntegration.sendDownloadCompletedEvent(downloadCompleted);
+  }
+  
+  getJsonVersionNumber() {
+    return !!this.majVersion && !!this.minVersion
+      ? this.majVersion + "." + this.minVersion
+      : "";
+  }
+  //Hides the loading screen.
+  hideLoadingScreen() {
+    try {
+      localStorage.setItem("version" + this.lang, this.getJsonVersionNumber());
+      this.loadingElement.style.display = "none";
+      this.handleResize(this.dataModal);
+    } catch (error) {
+      console.error("Error hiding loading screen:", error);
+    }
+  }
 
   private handleServiceWorkerMessage = (event: MessageEvent): void => {
     if (event.data.msg === "Loading") {
