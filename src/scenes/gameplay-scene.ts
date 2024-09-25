@@ -45,6 +45,7 @@ import {
   createBackground,
   loadDynamicBgAssets,
 } from "@compositions";
+import WordPuzzleLogic from '../gamepuzzles/wordPuzzleLogic';
 
 export class GameplayScene {
   public width: number;
@@ -88,7 +89,7 @@ export class GameplayScene {
   public isGameStarted: boolean = false;
   public time: number = 0;
   public score: number = 0;
-  tempWordforWordPuzzle: string = "";
+  //tempWordforWordPuzzle: string = "";
   public switchToLevelSelection: Function;
   public reloadScene: Function;
   audioPlayer: AudioPlayer;
@@ -100,6 +101,7 @@ export class GameplayScene {
   trailParticles: any;
   clickTrailToggle: boolean;
   hasFed: boolean;
+  wordPuzzleLogic:any;
 
   constructor(
     canvas,
@@ -122,6 +124,7 @@ export class GameplayScene {
     this.trailParticles = new TrailEffect(canvas);
     this.monsterPhaseNumber = monsterPhaseNumber || 1;
     this.levelData = levelData;
+    console.log('levelData ', levelData)
     this.switchSceneToEnd = switchSceneToEnd;
     this.levelNumber = levelNumber;
     this.switchToLevelSelection = switchToLevelSelection;
@@ -199,6 +202,8 @@ export class GameplayScene {
     this.trailParticles?.init();
     this.clickTrailToggle = false;
     this.hasFed = false;
+
+    this.wordPuzzleLogic = new WordPuzzleLogic(levelData, this.counter)
   }
 
   private setupBg = async () => {
@@ -246,9 +251,14 @@ export class GameplayScene {
       (x - this.monster.x - this.canvas.width / 4) ** 2 +
         (y - this.monster.y - this.canvas.height / 2.2) ** 2
     );
+    console.log('this.pickedStone ', this.pickedStone)
+    console.log('game type ', this.levelData?.levelMeta?.levelType)
+
 
     if (distance <= 100 && this.pickedStone) {
+      console.log('feeding the stone')
       const { text } = this.pickedStone; // Use destructuring for clarity
+
       switch (this.levelData.levelMeta.levelType) {
         case "LetterOnly":
         case "LetterInWord":
@@ -256,10 +266,17 @@ export class GameplayScene {
           break;
         case "Word":
         case "SoundWord":
-          this.wordPuzzle(text, this.pickedStone);
+          this.wordPuzzle(
+            this.wordPuzzleLogic.getCombinedLetters(),
+            this.pickedStone
+          );
           break;
       }
     } else {
+      console.log('Nothing to feed')
+      /*
+        Note: TO DO: Should use stone-handler.ts method resetStonePosition.
+      */
       if (
         this.pickedStone &&
         this.pickedStoneObject &&
@@ -279,6 +296,7 @@ export class GameplayScene {
       }
     }
     this.pickedStone = null;
+    this.wordPuzzleLogic.clearPickedUp();
     this.clickTrailToggle = false;
   };
 
@@ -288,35 +306,101 @@ export class GameplayScene {
     const x = event.clientX - rect.left;
     const y = event.clientY - rect.top;
 
-    for (let sc of this.stoneHandler.foilStones) {
-      const distance = Math.sqrt((x - sc.x) ** 2 + (y - sc.y) ** 2);
-      if (distance <= 40) {
-        this.pickedStoneObject = sc;
-        this.pickedStone = sc;
-        this.audioPlayer.playAudio(AUDIO_PATH_ON_DRAG);
-        break;
+    if (!this.wordPuzzleLogic.checkIsWordPuzzle()) {
+      /*To Do: Move all logic relating to stone handling including updating its coordnates to stone-handler.ts
+        Note: Will have to eventually remove this and use the handlePickStoneUp in stone-handler.ts
+        Will leave this for now to avoid affecting Letter Only puzzles with Word play puzzles implementation of multi-letter feature.
+      */
+      for (let sc of this.stoneHandler.foilStones) {
+        const distance = Math.sqrt((x - sc.x) ** 2 + (y - sc.y) ** 2);
+        if (distance <= 40) {
+          this.pickedStoneObject = sc;
+          this.pickedStone = sc;
+          this.audioPlayer.playAudio(AUDIO_PATH_ON_DRAG);
+          break;
+        }
       }
+    } else {
+      this.setPickedUp(x,y);
     }
 
     this.clickTrailToggle = true;
   };
 
+  setPickedUp(x,y) {
+    const stoneLetter = this.stoneHandler.handlePickStoneUp(x,y);
+
+    if (stoneLetter) {
+      this.pickedStoneObject = stoneLetter;
+      this.pickedStone = stoneLetter;
+      this.audioPlayer.playAudio(AUDIO_PATH_ON_DRAG);
+
+      if (this.levelData?.levelMeta?.levelType === 'Word') {
+        this.wordPuzzleLogic.setPickUpLetter(stoneLetter?.text);
+      }
+    }
+  }
+
   handleMouseMove = (event) => {
+    let trailX = event.clientX;
+    let trailY = event.clientY
+
     if (this.pickedStone) {
-      let rect = this.canvas.getBoundingClientRect();
-      const x = event.clientX - rect.left;
-      const y = event.clientY - rect.top;
-      this.monster.changeToDragAnimation();
-      this.pickedStone.x = x;
-      this.pickedStone.y = y;
-      this.trailParticles?.addTrailParticlesOnMove(x, y);
-    } else {
-      this.clickTrailToggle &&
-        this.trailParticles?.addTrailParticlesOnMove(
+      if (!this.wordPuzzleLogic.checkIsWordPuzzle()) {
+         /*To Do: Move all logic relating to stone handling including updating its coordnates to stone-handler.ts
+          Note: Will have to eventually remove this and use the handleMovingStoneLetter in stone-handler.ts
+          Will leave this for now to avoid affecting Letter Only puzzles with Word play puzzles implementation of multi-letter feature.
+        */
+        let rect = this.canvas.getBoundingClientRect();
+        const x = event.clientX - rect.left;
+        const y = event.clientY - rect.top;
+        this.monster.changeToDragAnimation();
+        this.pickedStone.x = x;
+        this.pickedStone.y = y;
+        trailX = x;
+        trailY = y;
+      } else {
+        const newStoneCoordinates = this.stoneHandler.handleMovingStoneLetter(
+          this.pickedStone,
           event.clientX,
           event.clientY
         );
+        this.pickedStone = newStoneCoordinates;
+        trailX = newStoneCoordinates.x;
+        trailY = newStoneCoordinates.y;
+
+        if (this.wordPuzzleLogic.checkIsWordPuzzle()) {
+
+          const newStoneLetter = this.stoneHandler.handleHoveringToAnotherStone(
+            trailX,
+            trailY,
+            this.wordPuzzleLogic.groupedLetters,
+            this.wordPuzzleLogic.getTargetWord()
+          );
+
+          if (newStoneLetter) {
+            this.wordPuzzleLogic.setPickUpLetter(newStoneLetter?.text);
+
+            this.pickedStone = this.stoneHandler.resetStonePosition(
+              this.width,
+              this.pickedStone,
+              this.pickedStoneObject
+            );
+            //After resetting its original position replace it with the new letter.
+            this.pickedStoneObject = newStoneLetter;
+            this.pickedStone = newStoneLetter;
+          }
+        }
+      }
+
+      this.monster.changeToDragAnimation();
     }
+
+    this.clickTrailToggle &&
+    this.trailParticles?.addTrailParticlesOnMove(
+      trailX,
+      trailY
+    );
   };
 
   handleMouseClick = (event) => {
@@ -381,7 +465,8 @@ export class GameplayScene {
     this.timerTicking.draw();
     this.trailParticles?.draw();
     if (this.isPauseButtonClicked && this.isGameStarted) {
-      this.stoneHandler.draw(deltaTime);
+      this.handleStoneLetterDrawing(deltaTime);
+
       this.pausePopup.draw();
     }
     if (!this.isPauseButtonClicked && !this.isGameStarted) {
@@ -393,6 +478,17 @@ export class GameplayScene {
       this.pausePopup.draw();
     }
     if (!this.isPauseButtonClicked && this.isGameStarted) {
+      this.handleStoneLetterDrawing(deltaTime);
+    }
+  }
+
+  private handleStoneLetterDrawing(deltaTime) {
+    if (this.wordPuzzleLogic.checkIsWordPuzzle()) {
+      this.stoneHandler.drawWordPuzzleLetters(
+        deltaTime,
+        this.wordPuzzleLogic.hideLetters
+      );
+    } else {
       this.stoneHandler.draw(deltaTime);
     }
   }
@@ -508,28 +604,32 @@ export class GameplayScene {
     droppedStoneInstance.x = -999;
     droppedStoneInstance.y = -999;
     const feedBackIndex = this.getRandomInt(0, 1);
-    this.tempWordforWordPuzzle = this.tempWordforWordPuzzle + droppedStone;
+    console.log('droppedStone ', droppedStone)
+    this.wordPuzzleLogic.setDroppedLetters(droppedStone);
 
-    const isCorrect = this.checkStoneDropped(
-      this.tempWordforWordPuzzle,
+    const isCorrect = this.wordPuzzleLogic.validateFedLetters()
+
+    this.stoneHandler.processLetterDropFeedbackAudio(
       feedBackIndex,
-      true
+      isCorrect,
+      true,
+      this.wordPuzzleLogic.droppedLetters
     );
-    if (
-      this.stoneHandler.getCorrectTargetStone() == this.tempWordforWordPuzzle &&
-      isCorrect
-    ) {
-      this.handleCorrectStoneDrop(feedBackIndex);
-      this.handleStoneDropEnd(isCorrect, "Word");
-      this.stonesCount = 1;
-      return;
-    }
 
     if (isCorrect) {
+      if (this.wordPuzzleLogic.validateWordPuzzle()) {
+        this.handleCorrectStoneDrop(feedBackIndex);
+        this.handleStoneDropEnd(isCorrect, "Word");
+        this.stonesCount = 1;
+        return;
+      }
+
       this.timerTicking.startTimer();
       this.monster.changeToEatAnimation();
       this.promptText.droppedStoneIndex(
-        lang == "arabic" ? this.stonesCount : this.tempWordforWordPuzzle.length
+        lang == "arabic"
+        ? this.stonesCount
+        : this.wordPuzzleLogic.droppedLetters.length
       );
       this.stonesCount++;
       this.resetToIdleAnimation(() => {
@@ -558,7 +658,6 @@ export class GameplayScene {
 
   private handleCorrectStoneDrop = (feedbackIndex: number): void => {
     this.score += 100;
-    
     this.feedbackTextEffects.wrapText(this.getRandomFeedBackText(feedbackIndex));
   };
 
@@ -574,7 +673,7 @@ export class GameplayScene {
     this.removeEventListeners();
     this.isGameStarted = false;
     this.time = 0;
-    this.tempWordforWordPuzzle = "";
+    this.wordPuzzleLogic.updatePuzzleLevel(loadPuzzleEvent?.detail?.counter);
     this.pickedStone = null;
     document.dispatchEvent(loadPuzzleEvent);
     this.addEventListeners();
@@ -596,10 +695,10 @@ export class GameplayScene {
       puzzle_number: this.counter,
       item_selected:
         puzzleType == "Word"
-          ? this.tempWordforWordPuzzle == null ||
-            this.tempWordforWordPuzzle == undefined
+          ? this.wordPuzzleLogic.droppedLetters == null ||
+            this.wordPuzzleLogic.droppedLetters == undefined
             ? "TIMEOUT"
-            : this.tempWordforWordPuzzle
+            : this.wordPuzzleLogic.droppedLetters
           : this.pickedStone == null || this.pickedStone == undefined
           ? "TIMEOUT"
           : this.pickedStone?.text,

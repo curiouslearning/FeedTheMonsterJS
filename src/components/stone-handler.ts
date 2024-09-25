@@ -14,7 +14,7 @@ import {
 
 export default class StoneHandler extends EventManager {
   public context: CanvasRenderingContext2D;
-  public canvas: { width: number; height?: number };
+  public canvas: HTMLCanvasElement;
   public currentPuzzleData: any;
   public targetStones: string[];
   public stonePos: number[][];
@@ -37,7 +37,7 @@ export default class StoneHandler extends EventManager {
   isGamePaused: boolean = false;
   constructor(
     context: CanvasRenderingContext2D,
-    canvas: { width: number; height?: number },
+    canvas,
     puzzleNumber: number,
     levelData,
     feedbackAudios,
@@ -50,6 +50,7 @@ export default class StoneHandler extends EventManager {
     this.context = context;
     this.canvas = canvas;
     this.puzzleNumber = puzzleNumber;
+    console.log('puzzleNumber ', puzzleNumber)
     this.levelData = levelData;
     this.setTargetStone(this.puzzleNumber);
     this.initializeStonePos();
@@ -104,6 +105,23 @@ export default class StoneHandler extends EventManager {
   draw(deltaTime: number) {
     for (let i = 0; i < this.foilStones.length; i++) {
       this.foilStones[i].draw(deltaTime);
+    }
+
+    if (
+      this.foilStones[this.foilStones.length - 1].frame >= 100 &&
+      !this.isGamePaused
+    ) {
+      this.timerTickingInstance.update(deltaTime);
+    }
+  }
+
+  drawWordPuzzleLetters(deltaTime: number, hideLetters: string[]) {
+    for (let i = 0; i < this.foilStones.length; i++) {
+
+      const letterChar = this.foilStones[i]?.text;
+      if (!hideLetters.includes(letterChar)) {
+        this.foilStones[i].draw(deltaTime);
+      }
     }
 
     if (
@@ -190,6 +208,11 @@ export default class StoneHandler extends EventManager {
     feedBackIndex: number,
     isWord:boolean = false
   ): boolean {
+    /**
+     * To Do: Need to refactor or revome this completely and place something
+     * that is tailored to single letter puzzle since word puzzle no longer uses this.
+     * Will leave this for now to avoid messing witht the single letter puzzle.
+     */
     const isLetterDropCorrect = isWord
       ? droppedStone == this.correctTargetStone.substring(0, droppedStone.length)
       : droppedStone == this.correctTargetStone;
@@ -204,13 +227,12 @@ export default class StoneHandler extends EventManager {
     return isLetterDropCorrect
   }
 
-  private processLetterDropFeedbackAudio(
+  public processLetterDropFeedbackAudio(
     feedBackIndex: number,
     isLetterDropCorrect:boolean,
     isWord:boolean,
     droppedStone: string,
   ) {
-
     if (isLetterDropCorrect) {
       const condition = isWord
         ? droppedStone === this.getCorrectTargetStone() // condition for word puzzle
@@ -240,6 +262,7 @@ export default class StoneHandler extends EventManager {
   }
 
   public getFoilStones() {
+    console.log('this.currentPuzzleData ', this.currentPuzzleData)
     this.currentPuzzleData.targetStones.forEach((e) => {
       const index = this.currentPuzzleData.foilStones.indexOf(e);
       if (index !== -1) {
@@ -291,5 +314,86 @@ export default class StoneHandler extends EventManager {
     );
     // to play the audio parrallely.
     this.correctStoneAudio.play();
+  }
+
+  resetStonePosition(
+    width,
+    pickedStone,
+    pickedStoneObject
+  ) {
+    const stone = pickedStone;
+    const stoneObj = pickedStoneObject;
+    //Resets the previous stone letter to its original position.
+    if (
+        stone &&
+        stoneObj &&
+        stone.text &&
+        typeof stoneObj.origx === "number" &&
+        typeof stoneObj.origy === "number"
+    ) {
+      const xLimit = 50;
+      const halfWidth = width / 2;
+
+      stone.x = stone.text.length <= 3 &&
+        stoneObj.origx < xLimit &&
+        stoneObj.origx < halfWidth
+          ? stoneObj.origx + 25
+          : stoneObj.origx;
+      stone.y = stoneObj.origy;
+    }
+
+    return stone;
+  }
+
+  handlePickStoneUp(posX, posY) {
+    let stoneLetter = null;
+    for (let sc of this.foilStones) {
+      const distance = Math.sqrt((posX - sc.x) ** 2 + (posY - sc.y) ** 2);
+      if (distance <= 40) {
+          stoneLetter = sc;
+          break;
+        }
+    };
+
+    return stoneLetter;
+  }
+
+  handleHoveringToAnotherStone(
+    posX,
+    posY,
+    groupLetters: string[],
+    wordSequence: string
+  ) {
+    /*
+      This function handles letter hovering interactions.
+      It checks if the letter or an existing letter already exist in the group and
+      it checks if the dragged letter aligns with the target word's sequence.
+      Then returns the hovered new letter of the target word, only if it's in the correct order.
+    */
+    let stoneLetter = null;
+    const combinedLetters = groupLetters.join('');
+    for (let sc of this.foilStones) {
+      const distance = Math.sqrt((posX - sc.x) ** 2 + (posY - sc.y) ** 2);
+
+      if (
+        distance <= 40
+        && !combinedLetters.includes(sc.text)
+        && wordSequence.includes(`${combinedLetters}${sc.text}`)
+      ) {
+        stoneLetter = sc;
+        break;
+      }
+    };
+
+    return stoneLetter;
+  }
+
+  handleMovingStoneLetter(draggingStone, posX, posY) {
+    const updatedStoneCoordinates = draggingStone;
+    const rect = this.canvas.getBoundingClientRect();
+    updatedStoneCoordinates.x = posX - rect.left;
+    updatedStoneCoordinates.y = posY - rect.top;
+
+    return updatedStoneCoordinates;
   }
 }
