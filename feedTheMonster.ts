@@ -87,7 +87,6 @@ class App {
     this.registerWorkbox();
 
     this.loadTitleFeedbackCustomFont();
-    this.titleTextElement.classList.add("animate");
   }
 
   private async loadTitleFeedbackCustomFont() {
@@ -100,7 +99,11 @@ class App {
         element.style.fontFamily = fontFamily;
       }
     });
-   
+  }
+
+  private animateFTMText() {
+    this.titleTextElement.classList.remove("animate");
+    this.titleTextElement.classList.add("animate");
   }
 
   private logSessionStartFirebaseEvent() {
@@ -176,6 +179,7 @@ class App {
       this.loadingElement.style.display = "none";
       this.progressBarContainer.style.display = "none";
       this.progressBar.style.display = "none";
+      this.animateFTMText();
     } else {
       this.progressBarContainer.style.display = "flex";
       this.progressBar.style.display = "flex";
@@ -359,6 +363,7 @@ class App {
           this.majVersion + "." + this.minVersion
         );
         this.loadingElement.style.display = "none";
+        this.animateFTMText();
         this.handleResize(this.dataModal);
       }
       this.progressBar.style.width = `${data.data}%`;
