@@ -1,11 +1,7 @@
 import { Monster, AudioPlayer } from "@components";
 import { PlayButton } from "@buttons";
 import { DataModal } from "@data";
-import {
-  StoneConfig,
-  toggleDebugMode,
-  Utils,
-} from "@common";
+import { StoneConfig, toggleDebugMode, Utils } from "@common";
 import { FirebaseIntegration } from "../Firebase/firebase-integration";
 import { createBackground, defaultBgDrawing } from "@compositions";
 import {
@@ -83,9 +79,13 @@ export class StartScene {
   };
 
   generateGameTitle = () => {
-    this.titleFont = this.getFontWidthOfTitle();
-    this.titleTextElement.style.fontSize = `${this.titleFont}px`;
-    this.titleTextElement.textContent = this.data.title;
+    const title = this.data?.title || "Feed The Monster";
+    this.titleFont = this.getFontWidthOfTitle(title);
+
+    if (this.titleTextElement) {
+      this.titleTextElement.style.fontSize = `${this.titleFont}px`;
+      this.titleTextElement.textContent = title;
+    }
   };
 
   animation = (deltaTime: number) => {
@@ -142,8 +142,21 @@ export class StartScene {
     );
   }
 
-  getFontWidthOfTitle() {
-    return (this.width + 200) / this.data.title.length;
+  getFontWidthOfTitle(title: string): number {
+    const baseFontSize = 40;
+    const characterWidthRatio = 0.6;
+    const maxAllowedWidth = this.width * 0.8;
+
+    const titleLength = title?.length ?? 0;
+    if (titleLength === 0) return baseFontSize;
+
+    const totalCharacterWidth = titleLength * characterWidthRatio;
+
+    const estimatedTextWidth = baseFontSize * totalCharacterWidth;
+
+    return estimatedTextWidth > maxAllowedWidth
+      ? maxAllowedWidth / totalCharacterWidth
+      : baseFontSize;
   }
 
   handlerInstallPrompt = (event) => {
