@@ -1,7 +1,11 @@
 import { Monster, AudioPlayer } from "@components";
 import { PlayButton } from "@buttons";
 import { DataModal } from "@data";
-import { StoneConfig, toggleDebugMode, Utils } from "@common";
+import {
+  StoneConfig,
+  toggleDebugMode,
+  Utils,
+} from "@common";
 import { FirebaseIntegration } from "../Firebase/firebase-integration";
 import { createBackground, defaultBgDrawing } from "@compositions";
 import {
