@@ -240,11 +240,66 @@ img {
   }
 }
 
+@-webkit-keyframes scale-in-bottom {
+  0% {
+    -webkit-transform: scale(0);
+    transform: scale(0);
+    -webkit-transform-origin: 50% 100%;
+    transform-origin: 50% 100%;
+    opacity: 1;
+  }
+  100% {
+    -webkit-transform: scale(1);
+    transform: scale(1);
+    -webkit-transform-origin: 50% 100%;
+    transform-origin: 50% 100%;
+    opacity: 1;
+  }
+}
+@keyframes scale-in-bottom {
+  0% {
+    -webkit-transform: scale(0);
+    transform: scale(0);
+    -webkit-transform-origin: 50% 100%;
+    transform-origin: 50% 100%;
+    opacity: 1;
+  }
+  100% {
+    -webkit-transform: scale(1);
+    transform: scale(1);
+    -webkit-transform-origin: 50% 100%;
+    transform-origin: 50% 100%;
+    opacity: 1;
+  }
+}
+
 /* Apply the animation */
 .feedback-text.show {
   -webkit-animation: scale-up-center 0.4s cubic-bezier(0.39, 0.575, 0.565, 1)
     both;
   animation: scale-up-center 0.4s cubic-bezier(0.39, 0.575, 0.565, 1) both;
   z-index: 999;
+  opacity: 1;
+}
+
+#title {
+  margin-top: 20px;
+  z-index: 2;
+  position: fixed;
+  width: 100%;
+  text-align: center;
+  padding: 10px;
+  font-size: 30px;
+  color: #f8b618;
+  text-shadow: -2px -2px 0 #fff, 2px -2px 0 #fff, -2px 2px 0 #fff,
+    2px 2px 0 #fff, -3px 0 0 #fff, 3px 0 0 #fff, 0 -3px 0 #fff, 0 3px 0 #fff;
+  opacity: 0;
+}
+
+#title.animate {
+  -webkit-animation: scale-in-bottom 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94)
+    200ms both;
+  animation: scale-in-bottom 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94) 200ms
+    both;
   opacity: 1;
 }
