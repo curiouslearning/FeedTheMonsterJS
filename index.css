@@ -310,19 +310,3 @@ img {
     opacity: 1;
   }
 }
-
-#title.hide-element-delay {
-  animation: fadeOutElement 2s ease-in-out forwards;
-}
-
-@keyframes fadeOutElement {
-  0% {
-    opacity: 1;
-    visibility: visible;
-  }
-  100% {
-    opacity: 0;
-    visibility: hidden;
-    display: none;
-  }
-}
