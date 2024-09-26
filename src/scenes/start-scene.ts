@@ -83,13 +83,7 @@ export class StartScene {
   };
 
   generateGameTitle = () => {
-    const title = this.data?.title || "Feed The Monster";
-    this.titleFont = this.getFontWidthOfTitle(title);
-
-    if (this.titleTextElement) {
-      this.titleTextElement.style.fontSize = `${this.titleFont}px`;
-      this.titleTextElement.textContent = title;
-    }
+    this.titleTextElement.textContent = this.data.title;
   };
 
   animation = (deltaTime: number) => {
@@ -144,23 +138,6 @@ export class StartScene {
       this.handlerInstallPrompt,
       false
     );
-  }
-
-  getFontWidthOfTitle(title: string): number {
-    const baseFontSize = 40;
-    const characterWidthRatio = 0.6;
-    const maxAllowedWidth = this.width * 0.8;
-
-    const titleLength = title?.length ?? 0;
-    if (titleLength === 0) return baseFontSize;
-
-    const totalCharacterWidth = titleLength * characterWidthRatio;
-
-    const estimatedTextWidth = baseFontSize * totalCharacterWidth;
-
-    return estimatedTextWidth > maxAllowedWidth
-      ? maxAllowedWidth / totalCharacterWidth
-      : baseFontSize;
   }
 
   handlerInstallPrompt = (event) => {
