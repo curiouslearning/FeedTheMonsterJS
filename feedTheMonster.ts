@@ -87,8 +87,7 @@ class App {
     }
     this.registerWorkbox();
 
-    // load the title custom font before showing it
-    await this.loadTitleFeedbackCustomFont();
+    this.loadTitleFeedbackCustomFont();
   }
 
   private async loadTitleFeedbackCustomFont() {
