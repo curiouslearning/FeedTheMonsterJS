@@ -67,9 +67,8 @@ async function getCacheName(language) {
 
 async function getALLAudioUrls(cacheName, language) {
   let audioList = new Set(); // Use Set to filter duplicates
-  audioList.add("/lang/" + language + "/ftm_" + language + ".json");
-
-  fetch("./lang/" + language + "/ftm_" + language + ".json", {
+  audioList.add(`/lang/${language}/ftm_${language}.json`);
+  fetch(`./lang/${language}/ftm_${language}.json`, {
     method: "GET",
     headers: {
       "Content-Type": "application/json",
