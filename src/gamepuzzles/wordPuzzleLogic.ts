@@ -64,17 +64,18 @@ export default class WordPuzzleLogic {
         this.puzzleNumber = 0;
     }
 
-    handleCheckHoveredStone(foilStone) {
+    handleCheckHoveredStone(foilStoneText:string) {
         const combinedLetters = this.getCombinedLetters();
         const targetWord = this.getTargetWord();
 
-        if (!this.droppedLetters.length //If there are no previous letter(s) were dropped.
+        /* Goes inside here if there are no previous letter(s) were dropped
+        and grouping of letters starts in a incorrect letter. */
+        if (!this.droppedLetters.length //
             && targetWord[0] !== combinedLetters[0]) {
-            /*Goes inside here if grouping of letters starts in a incorrect letter but is part of the targeted word.*/
             return false;
         }
 
-        return !combinedLetters.includes(foilStone.text) && targetWord.includes(`${combinedLetters}${foilStone.text}`)
+        return !combinedLetters.includes(foilStoneText) && targetWord.includes(`${combinedLetters}${foilStoneText}`);
     }
 
     validateFedLetters() {
@@ -92,7 +93,7 @@ export default class WordPuzzleLogic {
     }
 
     setPickUpLetter(letter: string) {
-        this.hideLetters = [...this.hideLetters, ...this.groupedLetters]; //Hide the previous letters except the new one.
+        this.hideLetters = [...this.groupedLetters]; //Hide the previous letters except the new one.
         this.groupedLetters.push(letter);
         console.log('this.groupedLetters ', this.groupedLetters)
         console.log('this.hideLetters ', this.hideLetters)

@@ -374,8 +374,8 @@ export class GameplayScene {
           const newStoneLetter = this.stoneHandler.handleHoveringToAnotherStone(
             trailX,
             trailY,
-            (foilStone) => {
-              return this.wordPuzzleLogic.handleCheckHoveredStone(foilStone);
+            (foilStoneText) => {
+              return this.wordPuzzleLogic.handleCheckHoveredStone(foilStoneText);
             }
             ,
           );

@@ -377,7 +377,7 @@ export default class StoneHandler extends EventManager {
     for (let sc of this.foilStones) {
       const distance = Math.sqrt((posX - sc.x) ** 2 + (posY - sc.y) ** 2);
 
-      if (distance <= 40 && validateHoveringLetter(sc)) {
+      if (distance <= 40 && validateHoveringLetter(sc.text)) {
         stoneLetter = sc;
         break;
       }
