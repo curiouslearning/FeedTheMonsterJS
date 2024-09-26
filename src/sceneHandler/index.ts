@@ -17,6 +17,7 @@ import {
   LevelSelection1,
   GameScene1,
   EndScene1,
+  HIDE_ELEMENT_DELAY,
 } from "@constants";
 
 export class SceneHandler {
@@ -195,9 +196,7 @@ export class SceneHandler {
     this.loadingScreen.initCloud();
     this.loading = true;
     document.getElementById("loading").style.zIndex = "3";
-    setTimeout(() => {
-      this.titleTextElement.style.zIndex =  "-1";
-    }, 800);
+    this.titleTextElement.classList.add(HIDE_ELEMENT_DELAY);
   };
 
   private removeLoading = (): void => {

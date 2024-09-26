@@ -146,3 +146,6 @@ export const SCENE_NAME_LEVEL_END = "LevelEnd";
 
 //Levels
 export const SPECIAL_LEVELS = [5, 13, 20, 30, 42];
+
+// css class names
+export const HIDE_ELEMENT_DELAY = "hide-element-delay";

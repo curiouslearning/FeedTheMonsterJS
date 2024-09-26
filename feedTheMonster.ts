@@ -1,7 +1,7 @@
 import * as Sentry from "@sentry/browser";
 import { getData, DataModal, customFonts } from "@data";
 import { SceneHandler } from "@sceneHandler";
-import { AUDIO_URL_PRELOAD, IsCached } from "@constants";
+import { AUDIO_URL_PRELOAD, HIDE_ELEMENT_DELAY, IsCached } from "@constants";
 import { Workbox } from "workbox-window";
 import { FirebaseIntegration } from "./src/Firebase/firebase-integration";
 import {
@@ -87,7 +87,9 @@ class App {
     }
     this.registerWorkbox();
 
-    this.loadTitleFeedbackCustomFont();
+    // load the title custom font before showing it
+    await this.loadTitleFeedbackCustomFont();
+    this.titleTextElement.classList.add("show");
   }
 
   private async loadTitleFeedbackCustomFont() {
@@ -100,11 +102,6 @@ class App {
         element.style.fontFamily = fontFamily;
       }
     });
-  }
-
-  private animateFTMText() {
-    this.titleTextElement.classList.remove("animate");
-    this.titleTextElement.classList.add("animate");
   }
 
   private logSessionStartFirebaseEvent() {
@@ -180,7 +177,6 @@ class App {
       this.loadingElement.style.display = "none";
       this.progressBarContainer.style.display = "none";
       this.progressBar.style.display = "none";
-      this.animateFTMText();
     } else {
       this.progressBarContainer.style.display = "flex";
       this.progressBar.style.display = "flex";
@@ -296,7 +292,7 @@ class App {
   }
 
   private reinitializeSceneHandler(dataModal: DataModal): void {
-    this.titleTextElement.style.zIndex = "2";
+    this.titleTextElement.classList.remove(HIDE_ELEMENT_DELAY); // this is to remove hide delay class when scene resets.
     delete this.sceneHandler;
     this.sceneHandler = new SceneHandler(this.canvas, dataModal);
     this.passingDataToContainer();
@@ -348,7 +344,6 @@ class App {
         this.cacheLanguage();
         this.sendCompletionEvent();
         this.hideLoadingScreen();
-        this.animateFTMText();
       }
     }
   };
