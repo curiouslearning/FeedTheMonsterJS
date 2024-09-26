@@ -89,7 +89,6 @@ class App {
 
     // load the title custom font before showing it
     await this.loadTitleFeedbackCustomFont();
-    this.titleTextElement.classList.add("show");
   }
 
   private async loadTitleFeedbackCustomFont() {
