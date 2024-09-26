@@ -1,7 +1,7 @@
 import * as Sentry from "@sentry/browser";
 import { getData, DataModal, customFonts } from "@data";
 import { SceneHandler } from "@sceneHandler";
-import { AUDIO_URL_PRELOAD, HIDE_ELEMENT_DELAY, IsCached } from "@constants";
+import { AUDIO_URL_PRELOAD, IsCached } from "@constants";
 import { Workbox } from "workbox-window";
 import { FirebaseIntegration } from "./src/Firebase/firebase-integration";
 import {
@@ -291,8 +291,7 @@ class App {
     }
   }
 
-  private reinitializeSceneHandler(dataModal: DataModal): void {
-    this.titleTextElement.classList.remove(HIDE_ELEMENT_DELAY); // this is to remove hide delay class when scene resets.
+  private reinitializeSceneHandler(dataModal: DataModal): void {// this is to remove hide delay class when scene resets.
     delete this.sceneHandler;
     this.sceneHandler = new SceneHandler(this.canvas, dataModal);
     this.passingDataToContainer();

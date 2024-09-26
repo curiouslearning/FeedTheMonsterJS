@@ -294,19 +294,35 @@ img {
   color: #f8b618;
   text-shadow: -2px -2px 0 #fff, 2px -2px 0 #fff, -2px 2px 0 #fff,
     2px 2px 0 #fff, -3px 0 0 #fff, 3px 0 0 #fff, 0 -3px 0 #fff, 0 3px 0 #fff;
-  display: none;
+  opacity: 0;
+  overflow: hidden;
+  animation: showElement 2s forwards;
 }
 
-#title.show {
-  display: block;
+@keyframes showElement {
+  0% {
+    opacity: 0;
+  }
+  40% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
 }
 
-.hide-element-delay {
-  animation: hideElement 0s ease-in-out 0.8s forwards; 
+#title.hide-element-delay {
+  animation: fadeOutElement 2s ease-in-out forwards;
 }
 
-@keyframes hideElement {
-  to {
+@keyframes fadeOutElement {
+  0% {
+    opacity: 1;
+    visibility: visible;
+  }
+  100% {
+    opacity: 0;
+    visibility: hidden;
     display: none;
   }
 }
