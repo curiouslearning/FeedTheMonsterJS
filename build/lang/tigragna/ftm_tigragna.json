@@ -2,13 +2,17 @@
   "title": "ሞኒስተርኩም አብልዕዎ",
   "RightToLeft": false,
   "FeedbackTexts": [
-    ""
+    "ዘይእመን እዪ",
+    "ጽቡቅ እዪ",
+    "ጽቡቅ ተግባር"
   ],
   "majversion": 1,
   "minversion": 17,
   "langname": "TIGRAGNA",
   "FeedbackAudios": [
-    ""
+    "https://feedthemonster.curiouscontent.org/lang/tigragna/audios/fantastic.mp3",
+    "https://feedthemonster.curiouscontent.org/lang/tigragna/audios/great.mp3",
+    "https://feedthemonster.curiouscontent.org/lang/tigragna/audios/amazing.mp3"
   ],
   "OtherAudios": {
     "Select your player": "https://feedthemonster.curiouscontent.org/lang/tigragna/audios/Select-your-player.mp3",
