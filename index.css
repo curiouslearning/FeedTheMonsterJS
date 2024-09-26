@@ -300,10 +300,7 @@ img {
 }
 
 @keyframes showElement {
-  0% {
-    opacity: 0;
-  }
-  30% {
+  50% {
     opacity: 0;
   }
   100% {
