@@ -34,7 +34,6 @@ export class StartScene {
   public handler: HTMLCanvasElement;
   public static SceneName: string;
   public switchSceneToLevelSelection: Function;
-  public titleFont: number;
   public background: any;
   audioPlayer: AudioPlayer;
   private toggleBtn: HTMLElement;
