@@ -176,6 +176,7 @@ export class SceneHandler {
         this.switchSceneToGameplay
       );
       SceneHandler.SceneName = LevelSelection1;
+      document.getElementById("canvas").style.zIndex = "3";
     }, 800);
   };
 
@@ -194,8 +195,7 @@ export class SceneHandler {
   private showLoading = (): void => {
     this.loadingScreen.initCloud();
     this.loading = true;
-    document.getElementById("loading").style.zIndex = "3";
-    this.titleTextElement.classList.add("hide-element-delay");
+    document.getElementById("loading").style.zIndex = "4";
   };
 
   private removeLoading = (): void => {
