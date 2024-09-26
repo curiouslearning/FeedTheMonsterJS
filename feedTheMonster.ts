@@ -289,7 +289,7 @@ class App {
     }
   }
 
-  private reinitializeSceneHandler(dataModal: DataModal): void {// this is to remove hide delay class when scene resets.
+  private reinitializeSceneHandler(dataModal: DataModal): void {
     delete this.sceneHandler;
     this.sceneHandler = new SceneHandler(this.canvas, dataModal);
     this.passingDataToContainer();
