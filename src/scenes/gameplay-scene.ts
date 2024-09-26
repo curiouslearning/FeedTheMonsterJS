@@ -374,8 +374,10 @@ export class GameplayScene {
           const newStoneLetter = this.stoneHandler.handleHoveringToAnotherStone(
             trailX,
             trailY,
-            this.wordPuzzleLogic.groupedLetters,
-            this.wordPuzzleLogic.getTargetWord()
+            (foilStone) => {
+              return this.wordPuzzleLogic.handleCheckHoveredStone(foilStone);
+            }
+            ,
           );
 
           if (newStoneLetter) {
@@ -486,7 +488,7 @@ export class GameplayScene {
     if (this.wordPuzzleLogic.checkIsWordPuzzle()) {
       this.stoneHandler.drawWordPuzzleLetters(
         deltaTime,
-        this.wordPuzzleLogic.hideLetters
+        this.wordPuzzleLogic.hideLetters,
       );
     } else {
       this.stoneHandler.draw(deltaTime);

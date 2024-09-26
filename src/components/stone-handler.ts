@@ -115,7 +115,10 @@ export default class StoneHandler extends EventManager {
     }
   }
 
-  drawWordPuzzleLetters(deltaTime: number, hideLetters: string[]) {
+  drawWordPuzzleLetters(
+    deltaTime: number,
+    hideLetters: string[],
+  ) {
     for (let i = 0; i < this.foilStones.length; i++) {
 
       const letterChar = this.foilStones[i]?.text;
@@ -361,8 +364,7 @@ export default class StoneHandler extends EventManager {
   handleHoveringToAnotherStone(
     posX,
     posY,
-    groupLetters: string[],
-    wordSequence: string
+    validateHoveringLetter
   ) {
     /*
       This function handles letter hovering interactions.
@@ -371,15 +373,11 @@ export default class StoneHandler extends EventManager {
       Then returns the hovered new letter of the target word, only if it's in the correct order.
     */
     let stoneLetter = null;
-    const combinedLetters = groupLetters.join('');
+
     for (let sc of this.foilStones) {
       const distance = Math.sqrt((posX - sc.x) ** 2 + (posY - sc.y) ** 2);
 
-      if (
-        distance <= 40
-        && !combinedLetters.includes(sc.text)
-        && wordSequence.includes(`${combinedLetters}${sc.text}`)
-      ) {
+      if (distance <= 40 && validateHoveringLetter(sc)) {
         stoneLetter = sc;
         break;
       }
