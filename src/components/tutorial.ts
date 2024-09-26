@@ -1,5 +1,6 @@
-import { createRippleEffect } from "../common/utils";
-import { GameScore } from "../data/game-score";
+import { createRippleEffect } from "@common";
+import { TUTORIAL_HAND } from "@constants";
+import { GameScore } from "@data";
 
 export class Tutorial {
   public width: number;
@@ -36,7 +37,7 @@ export class Tutorial {
     this.endy = this.height / 2 ;
     this.puzzleNumber = (puzzleNumber>=0)?puzzleNumber:null;
     this.tutorialImg = new Image();
-    this.tutorialImg.src = "./assets/images/tutorial_hand.png";
+    this.tutorialImg.src = TUTORIAL_HAND;
     this.drawRipple = createRippleEffect(this.context)
     this.tutorialImg.onload = () => {
       this.imagesLoaded = true;

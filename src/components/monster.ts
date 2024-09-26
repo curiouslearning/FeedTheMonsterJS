@@ -1,10 +1,5 @@
-import { Debugger, lang } from "../../global-variables";
-import {
-  StoreMonsterPhaseNumber,
-  loadImages,
-} from "../common/common";
-
-import { EventManager } from "../events/EventManager";
+import { loadImages } from "@common";
+import { EventManager } from "@events";
 
 
 export class Monster extends EventManager {
@@ -42,7 +37,6 @@ export class Monster extends EventManager {
     this.canavsElement = document.getElementById("canvas") as HTMLCanvasElement;
     this.context = this.canavsElement.getContext("2d");
     this.image = document.getElementById("monster") as HTMLImageElement;
-
     this.frameX = 0;
     this.frameY = 0;
     this.maxFrame = 6;
@@ -66,7 +60,6 @@ export class Monster extends EventManager {
 
       this.imagesLoaded = true;
       if (callBackFunction) {
-        // console.log(this.imagesLoaded);
         callBackFunction();
       }
     });

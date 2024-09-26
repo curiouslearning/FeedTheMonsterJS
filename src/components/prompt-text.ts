@@ -1,11 +1,8 @@
 
-import { EventManager } from "../events/EventManager";
-import { Utils } from "../common/utils";
-import { AudioPlayer } from "./audio-player";
-import { VISIBILITY_CHANGE } from "../common/event-names";
-import { PromptAudio } from "../common/common";
-import { font, lang } from "../../global-variables";
-
+import { EventManager } from "@events";
+import { Utils, font, VISIBILITY_CHANGE } from "@common";
+import { AudioPlayer } from "@components";
+import { PROMPT_PLAY_BUTTON, PROMPT_TEXT_BG } from "@constants";
 
 export class PromptText extends EventManager {
     public width: number;
@@ -48,22 +45,15 @@ export class PromptText extends EventManager {
         this.context = this.canavsElement.getContext("2d");
         this.audioPlayer = new AudioPlayer();
         this.audioPlayer.preloadPromptAudio(this.getPromptAudioUrl());
-
         this.prompt_image = new Image();
         this.promptPlayButton = new Image();
-
-        this.loadImages().then(()=>{
-            console.log('Images loaded');
-        });
-
+        this.loadImages()
         this.time = 0;
         this.promptImageWidth = this.width * 0.65;
         this.promptImageHeight = this.height * 0.3;
-        
         document.addEventListener(VISIBILITY_CHANGE, this.handleVisibilityChange, false);
     }
 
-    
 
     handleMouseDown = (event) => {
         let self = this;
@@ -73,7 +63,6 @@ export class PromptText extends EventManager {
         const x = event.clientX - rect.left;
         const y = event.clientY - rect.top;
         if (self.onClick(x, y)) {
-            console.log('Clicked on Play prompt audio');
             this.playSound();
         }
     }
@@ -83,19 +72,13 @@ export class PromptText extends EventManager {
     }
 
     playSound = () => {
-        console.log('PromptAudio',  Utils.getConvertedDevProdURL(this.currentPuzzleData.prompt.promptAudio));
         if (this.isAppForeground) {
             this.audioPlayer.playPromptAudio(Utils.getConvertedDevProdURL(this.currentPuzzleData.prompt.promptAudio));
         }
     }
 
     onClick(xClick, yClick) {
-        if (
-            Math.sqrt(xClick - this.width / 3) < 12 &&
-            Math.sqrt(yClick - this.height / 5.5) < 10
-        ) {
-            return true;
-        }
+        return Math.sqrt(xClick - this.width / 3) < 12 && Math.sqrt(yClick - this.height / 5.5) < 10
     }
 
     setCurrrentPuzzleData(data) {
@@ -103,7 +86,6 @@ export class PromptText extends EventManager {
         this.currentPromptText = data.prompt.promptText;
         this.targetStones = this.currentPuzzleData.targetStones;
     }
-
 
     drawRTLLang() {
         var x = this.width / 2;
@@ -140,7 +122,6 @@ export class PromptText extends EventManager {
                         scaledHeight / 4
                       );
                 }
-            
         } else if (this.levelData.levelMeta.levelType == "Word") {
             if (this.levelData.levelMeta.protoType == "Visible") {
             x = x - this.context.measureText(this.currentPromptText).width * 0.5;
@@ -164,9 +145,6 @@ export class PromptText extends EventManager {
               );
         }}
         else if (this.levelData.levelMeta.levelType == "audioPlayerWord") {
-            
-                    // const offsetX = (this.width - scaledWidth) / 2;
-                    // const offsetY = (this.height - scaledHeight) / 5;
                     const offsetX = (this.width - scaledWidth) *1.25;
                     const offsetY = (this.height - scaledHeight) *0.33;
                     this.context.drawImage(
@@ -347,9 +325,6 @@ export class PromptText extends EventManager {
         this.unregisterEventListener();
     }
 
-    update() {
-
-    }
     droppedStoneIndex(index:number){
         this.droppedStones = index;
     }
@@ -384,15 +359,15 @@ export class PromptText extends EventManager {
     }
 
     async loadImages() {
-        const image1Promise = this.loadImage(this.prompt_image, "./assets/images/promptTextBg.png");
-        const image2Promise = this.loadImage(this.promptPlayButton, "./assets/images/promptPlayButton.png");
-    
+        const image1Promise = this.loadImage(this.prompt_image, PROMPT_TEXT_BG);
+        const image2Promise = this.loadImage(this.promptPlayButton, PROMPT_PLAY_BUTTON);
+
         await Promise.all([image1Promise, image2Promise]);
-    
+
         this.imagesLoaded = true;
         // You can do additional actions here after both images are loaded.
       }
-    
+
       loadImage(image: HTMLImageElement, src: string): Promise<void> {
         return new Promise<void>((resolve, reject) => {
           image.onload = () => {

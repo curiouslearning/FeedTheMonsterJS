@@ -1,11 +1,21 @@
-import { loadImages } from "../common/common";
-import { CLICK } from "../common/event-names";
-import { AudioPlayer } from "../components/audio-player";
-import { Background } from "../components/background";
-import CloseButton from "../components/buttons/close-button";
-import NextButton from "../components/buttons/next-button";
-import RetryButton from "../components/buttons/retry-button";
-import { Monster } from "../components/monster";
+import { loadImages, CLICK, isDocumentVisible } from "@common";
+import { AudioPlayer, Monster } from "@components";
+import { CloseButton, NextButton, RetryButton } from "@buttons";
+import {
+  BACKGROUND_ASSET_LIST,
+  createBackground,
+  loadDynamicBgAssets,
+} from "@compositions";
+import {
+  AUDIO_INTRO,
+  AUDIO_LEVEL_LOSE,
+  AUDIO_LEVEL_WIN,
+  DEFAULT_BACKGROUND_1,
+  PIN_STAR_1,
+  PIN_STAR_2,
+  PIN_STAR_3,
+  WIN_BG,
+} from "@constants";
 
 export class LevelEndScene {
   public canvas: HTMLCanvasElement;
@@ -25,7 +35,7 @@ export class LevelEndScene {
   public switchToGameplayCB: Function;
   public switchToLevelSelectionCB: Function;
   public data: any;
-  public background: Background;
+  public background: any;
   public audioPlayer: AudioPlayer;
   public timeouts: any[];
   public starDrawnCount: number;
@@ -50,12 +60,6 @@ export class LevelEndScene {
       monsterPhaseNumber,
       this.switchToReactionAnimation
     );
-    this.background = new Background(
-      this.context,
-      this.width,
-      this.height,
-      currentLevel
-    );
 
     this.switchToGameplayCB = switchToGameplayCB;
     this.switchToLevelSelectionCB = switchToLevelSelectionCB;
@@ -65,30 +69,30 @@ export class LevelEndScene {
       context,
       canvas,
       this.width * 0.2 - (this.width * 0.19) / 2,
-      this.height /1.25
+      this.height / 1.25
     );
     this.retryButton = new RetryButton(
       this.context,
       this.canvas,
       this.width * 0.5 - (this.width * 0.19) / 2,
-      this.height /1.25
+      this.height / 1.25
     );
     this.nextButton = new NextButton(
       this.context,
       this.width,
       this.height,
       this.width * 0.8 - (this.width * 0.19) / 2,
-      this.height /1.25
+      this.height / 1.25
     );
     this.audioPlayer = new AudioPlayer();
     this.starCount = starCount;
     this.currentLevel = currentLevel;
     this.images = {
-      backgroundImg: "./assets/images/WIN_screen_bg.png",
-      star1Img: "./assets/images/pinStar1.png",
-      star2Img: "./assets/images/pinStar2.png",
-      star3Img: "./assets/images/pinStar3.png",
-      winBackgroundImg: "./assets/images/bg_v01.jpg",
+      backgroundImg: WIN_BG,
+      star1Img: PIN_STAR_1,
+      star2Img: PIN_STAR_2,
+      star3Img: PIN_STAR_3,
+      winBackgroundImg: DEFAULT_BACKGROUND_1,
     };
     loadImages(this.images, (images) => {
       this.loadedImages = Object.assign({}, images);
@@ -97,30 +101,46 @@ export class LevelEndScene {
     });
     this.addEventListener();
     this.audioPlayer = new AudioPlayer();
+    this.setupBg();
   }
+
+  private setupBg = async () => {
+    const { BG_GROUP_IMGS, draw } = loadDynamicBgAssets(
+      this.currentLevel,
+      BACKGROUND_ASSET_LIST
+    );
+    this.background = await createBackground(
+      this.context,
+      this.width,
+      this.height,
+      BG_GROUP_IMGS,
+      draw
+    );
+  };
+
   switchToReactionAnimation = () => {
     if (this.starCount <= 1) {
-      if (document.visibilityState === "visible") {
-        this.audioPlayer.playAudio("./assets/audios/LevelLoseFanfare.mp3");
+      if (isDocumentVisible()) {
+        this.audioPlayer.playAudio(AUDIO_LEVEL_LOSE);
       }
       this.monster.changeToSpitAnimation();
     } else {
-      if (document.visibilityState === "visible") {
-        this.audioPlayer.playAudio("./assets/audios/LevelWinFanfare.mp3");
-        this.audioPlayer.playAudio("./assets/audios/intro.mp3");
+      if (isDocumentVisible()) {
+        this.audioPlayer.playAudio(AUDIO_LEVEL_WIN);
+        this.audioPlayer.playAudio(AUDIO_INTRO);
       }
       this.monster.changeToEatAnimation();
     }
   };
   draw(deltaTime: number) {
-    this.background.draw();
+    this.background?.draw();
     if (this.imagesLoaded) {
       this.context.drawImage(
         this.loadedImages.backgroundImg,
         0,
         0,
         this.width,
-        this.height+this.height*0.12
+        this.height + this.height * 0.12
       );
       this.drawStars();
 
@@ -138,7 +158,6 @@ export class LevelEndScene {
       { delay: 1000, count: 2 },
       { delay: 1500, count: 3 },
     ];
-
     this.timeouts = animations.map((animation) => {
       return setTimeout(() => {
         this.starDrawnCount = animation.count;
@@ -188,34 +207,32 @@ export class LevelEndScene {
   }
 
   handleMouseClick = (event) => {
-    // console.log(" levelend mouseclick ");
     const selfElement:HTMLElement =document.getElementById("canvas");
     var rect = selfElement.getBoundingClientRect();
     const x = event.clientX - rect.left;
     const y = event.clientY - rect.top;
 
     if (this.closeButton.onClick(x, y)) {
-      this.audioPlayer.playButtonClickSound("./assets/audios/ButtonClick.mp3");
-      console.log(" close button clicked");
-
+      this.audioPlayer.playButtonClickSound();
       this.switchToLevelSelectionCB("LevelEnd");
     }
     if (this.retryButton.onClick(x, y)) {
-      this.audioPlayer.playButtonClickSound("./assets/audios/ButtonClick.mp3");
-      console.log(" retry button clicked");
+      this.audioPlayer.playButtonClickSound();
       let gamePlayData = {
-        currentLevelData: this.data.levels[this.currentLevel],
+        currentLevelData: {
+          ...this.data.levels[this.currentLevel],
+          levelNumber: this.currentLevel,
+        },
         selectedLevelNumber: this.currentLevel,
       };
       // pass same data as level is same
       this.switchToGameplayCB(gamePlayData, "LevelEnd");
     }
     if (this.nextButton.onClick(x, y) && this.starCount >= 2) {
-      this.audioPlayer.playButtonClickSound("./assets/audios/ButtonClick.mp3");
+      this.audioPlayer.playButtonClickSound();
       let next = Number(this.currentLevel) + 1;
-      console.log(typeof next, " next button clicked", next);
       let gamePlayData = {
-        currentLevelData: this.data.levels[next],
+        currentLevelData: { ...this.data.levels[next], levelNumber: next },
         selectedLevelNumber: next,
       };
 
@@ -223,15 +240,16 @@ export class LevelEndScene {
     }
   };
   pauseAudios = () => {
-    if (document.visibilityState === "visible") {
+    if (isDocumentVisible()) {
       if (this.starCount >= 2) {
-        this.audioPlayer.playAudio("./assets/audios/intro.mp3");
+        this.audioPlayer.playAudio(AUDIO_INTRO);
       }
     } else {
       this.audioPlayer.stopAllAudios();
     }
   };
   dispose = () => {
+    this.monster.dispose();
     this.audioPlayer.stopAllAudios();
     this.timeouts.forEach((timeout) => clearTimeout(timeout));
     document

@@ -1,4 +1,5 @@
-import { loadImages } from "../common/common";
+import { loadImages } from "@common";
+import { CLOUD_6, CLOUD_7, CLOUD_8 } from "@constants";
 export class LoadingScene {
   public canvas: HTMLCanvasElement;
   height: number;
@@ -20,9 +21,9 @@ export class LoadingScene {
     this.removeLoading=removeLoading;
     this.context = this.canvas.getContext("2d");
     this.images = {
-      cloud6: "./assets/images/cloud_01.png",
-      cloud7: "./assets/images/cloud_02.png",
-      cloud8: "./assets/images/cloud_03.png",
+      cloud6: CLOUD_6,
+      cloud7: CLOUD_7,
+      cloud8: CLOUD_8,
     };
     loadImages(this.images, (images) => {
       this.loadedImages = Object.assign({}, images);

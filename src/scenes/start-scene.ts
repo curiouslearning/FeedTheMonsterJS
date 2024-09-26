@@ -1,17 +1,19 @@
+import { Monster, AudioPlayer } from "@components";
+import { PlayButton } from "@buttons";
+import { DataModal } from "@data";
+import {
+  StoneConfig,
+  toggleDebugMode,
+  Utils,
+} from "@common";
+import { FirebaseIntegration } from "../Firebase/firebase-integration";
+import { createBackground, defaultBgDrawing } from "@compositions";
 import {
   FirebaseUserClicked,
   PWAInstallStatus,
-  StartScene1,
-} from "../common/common";
-import { StoneConfig } from "../common/stone-config";
-import { Monster } from "../components/monster";
-import { DataModal } from "../data/data-modal";
-import { Debugger, font, lang } from "../../global-variables";
-import { Background } from "../components/background";
-import { AudioPlayer } from "../components/audio-player";
-import { FirebaseIntegration } from "../Firebase/firebase-integration";
-import { Utils } from "../common/utils";
-import PlayButton from "../components/play-button";
+  DEFAULT_BG_GROUP_IMGS,
+} from "@constants";
+
 export class StartScene {
   public canvas: HTMLCanvasElement;
   public data: any;
@@ -33,10 +35,11 @@ export class StartScene {
   public static SceneName: string;
   public switchSceneToLevelSelection: Function;
   public titleFont: number;
-  public background1: Background;
+  public background: any;
   audioPlayer: AudioPlayer;
   private toggleBtn: HTMLElement;
   private pwa_install_status: Event;
+  private titleTextElement: HTMLElement | null;
 
   constructor(
     canvas: HTMLCanvasElement,
@@ -54,57 +57,52 @@ export class StartScene {
     this.toggleBtn = document.getElementById("toggle-btn") as HTMLElement;
     this.monster = new Monster(this.canvas, 4);
     this.switchSceneToLevelSelection = switchSceneToLevelSelection;
-    this.background1 = new Background(this.context, this.width, this.height, 1);
     this.audioPlayer = new AudioPlayer();
-
     this.pwa_status = localStorage.getItem(PWAInstallStatus);
     this.handler = document.getElementById("canvas") as HTMLCanvasElement;
     this.devToggle();
     this.createPlayButton();
-    StartScene.SceneName = StartScene1;
     window.addEventListener("beforeinstallprompt", this.handlerInstallPrompt);
+    this.setupBg();
+    this.titleTextElement = document.getElementById("title");
+    this.generateGameTitle();
   }
 
-  devToggle = () => {
-    this.toggleBtn.addEventListener("click", () => {
-      this.toggleBtn.classList.toggle("on");
-
-      if (this.toggleBtn.classList.contains("on")) {
-        Debugger.DebugMode = true;
-        this.toggleBtn.innerText = "Dev";
-      } else {
-        Debugger.DebugMode = false;
-        this.toggleBtn.innerText = "Dev";
-      }
-    });
-  }
-
-  animation = (deltaTime: number) => {
-    this.titleFont = this.getFontWidthOfTitle();
-
-    this.context.clearRect(0, 0, this.width, this.height);
-    if (StartScene.SceneName == StartScene1) {
-      this.background1.draw();
-      this.context.font = `${this.titleFont}px ${font}, monospace`;
-      this.context.fillStyle = "white";
-      this.context.textAlign = "center";
-      this.context.fillText(
-        this.data.title,
-        this.width * 0.5,
-        this.height / 10
-      );
-      this.monster.update(deltaTime);
-      this.playButton.draw();
-    }
+  private setupBg = async () => {
+    this.background = await createBackground(
+      this.context,
+      this.width,
+      this.height,
+      DEFAULT_BG_GROUP_IMGS,
+      defaultBgDrawing
+    );
   };
 
+  devToggle = () => {
+    this.toggleBtn.addEventListener("click", () =>
+      toggleDebugMode(this.toggleBtn)
+    );
+  };
+
+  generateGameTitle = () => {
+    this.titleFont = this.getFontWidthOfTitle();
+    this.titleTextElement.style.fontSize = `${this.titleFont}px`;
+    this.titleTextElement.textContent = this.data.title;
+  };
+
+  animation = (deltaTime: number) => {
+    this.context.clearRect(0, 0, this.width, this.height);
+    this.background?.draw();
+    this.monster.update(deltaTime);
+    this.playButton.draw();
+  };
 
   createPlayButton() {
     this.playButton = new PlayButton(
       this.context,
       this.canvas,
       this.canvas.width * 0.35,
-      this.canvas.height / 7,
+      this.canvas.height / 7
     );
     document.addEventListener("selectstart", function (e) {
       e.preventDefault();
@@ -119,7 +117,10 @@ export class StartScene {
     var rect = selfElement.getBoundingClientRect();
     const x = event.clientX - rect.left;
     const y = event.clientY - rect.top;
-    const {excludeX, excludeY} = Utils.getExcludedCoordinates(selfElement, 15);
+    const { excludeX, excludeY } = Utils.getExcludedCoordinates(
+      selfElement,
+      15
+    );
     if (!(x < excludeX && y < excludeY)) {
       FirebaseIntegration.getInstance().sendUserClickedOnPlayEvent();
       // @ts-ignore
@@ -127,15 +128,20 @@ export class StartScene {
         event: "click",
       });
       this.toggleBtn.style.display = "none";
-      this.audioPlayer.playButtonClickSound("./assets/audios/ButtonClick.mp3");
+      this.audioPlayer.playButtonClickSound();
       self.switchSceneToLevelSelection("StartScene");
     }
   };
 
   dispose() {
+    this.monster.dispose();
     this.audioPlayer.stopAllAudios();
     this.handler.removeEventListener("click", this.handleMouseClick, false);
-    window.removeEventListener("beforeinstallprompt", this.handlerInstallPrompt, false);
+    window.removeEventListener(
+      "beforeinstallprompt",
+      this.handlerInstallPrompt,
+      false
+    );
   }
 
   getFontWidthOfTitle() {
@@ -146,5 +152,5 @@ export class StartScene {
     event.preventDefault();
     this.pwa_install_status = event;
     localStorage.setItem(PWAInstallStatus, "false");
-  }
+  };
 }
