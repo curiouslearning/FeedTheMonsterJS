@@ -124,7 +124,6 @@ export class GameplayScene {
     this.trailParticles = new TrailEffect(canvas);
     this.monsterPhaseNumber = monsterPhaseNumber || 1;
     this.levelData = levelData;
-    console.log('levelData ', levelData)
     this.switchSceneToEnd = switchSceneToEnd;
     this.levelNumber = levelNumber;
     this.switchToLevelSelection = switchToLevelSelection;
@@ -203,7 +202,7 @@ export class GameplayScene {
     this.clickTrailToggle = false;
     this.hasFed = false;
 
-    this.wordPuzzleLogic = new WordPuzzleLogic(levelData, this.counter)
+    this.wordPuzzleLogic = new WordPuzzleLogic(levelData, this.counter);
   }
 
   private setupBg = async () => {
@@ -251,12 +250,8 @@ export class GameplayScene {
       (x - this.monster.x - this.canvas.width / 4) ** 2 +
         (y - this.monster.y - this.canvas.height / 2.2) ** 2
     );
-    console.log('this.pickedStone ', this.pickedStone)
-    console.log('game type ', this.levelData?.levelMeta?.levelType)
-
 
     if (distance <= 100 && this.pickedStone) {
-      console.log('feeding the stone')
       const { text } = this.pickedStone; // Use destructuring for clarity
 
       switch (this.levelData.levelMeta.levelType) {
@@ -266,14 +261,10 @@ export class GameplayScene {
           break;
         case "Word":
         case "SoundWord":
-          this.wordPuzzle(
-            this.wordPuzzleLogic.getCombinedLetters(),
-            this.pickedStone
-          );
+          this.wordPuzzle(this.pickedStone);
           break;
       }
     } else {
-      console.log('Nothing to feed')
       /*
         Note: TO DO: Should use stone-handler.ts method resetStonePosition.
       */
@@ -336,7 +327,10 @@ export class GameplayScene {
       this.audioPlayer.playAudio(AUDIO_PATH_ON_DRAG);
 
       if (this.levelData?.levelMeta?.levelType === 'Word') {
-        this.wordPuzzleLogic.setPickUpLetter(stoneLetter?.text);
+        this.wordPuzzleLogic.setPickUpLetter(
+          stoneLetter?.text,
+          stoneLetter?.foilStoneIndex
+        );
       }
     }
   }
@@ -370,18 +364,19 @@ export class GameplayScene {
         trailY = newStoneCoordinates.y;
 
         if (this.wordPuzzleLogic.checkIsWordPuzzle()) {
-
           const newStoneLetter = this.stoneHandler.handleHoveringToAnotherStone(
             trailX,
             trailY,
-            (foilStoneText) => {
-              return this.wordPuzzleLogic.handleCheckHoveredStone(foilStoneText);
+            (foilStoneText, foilStoneIndex) => {
+              return this.wordPuzzleLogic.handleCheckHoveredStone(foilStoneText, foilStoneIndex);
             }
-            ,
           );
 
           if (newStoneLetter) {
-            this.wordPuzzleLogic.setPickUpLetter(newStoneLetter?.text);
+            this.wordPuzzleLogic.setPickUpLetter(
+              newStoneLetter?.text,
+              newStoneLetter?.foilStoneIndex
+            );
 
             this.pickedStone = this.stoneHandler.resetStonePosition(
               this.width,
@@ -488,7 +483,9 @@ export class GameplayScene {
     if (this.wordPuzzleLogic.checkIsWordPuzzle()) {
       this.stoneHandler.drawWordPuzzleLetters(
         deltaTime,
-        this.wordPuzzleLogic.hideLetters,
+        (foilStoneIndex) => {
+          return this.wordPuzzleLogic.validateShouldHideLetter(foilStoneIndex);
+        },
       );
     } else {
       this.stoneHandler.draw(deltaTime);
@@ -601,21 +598,21 @@ export class GameplayScene {
     this.handleStoneDropEnd(isCorrect);
   }
 
-  public wordPuzzle(droppedStone: string, droppedStoneInstance: StoneConfig) {
+  public wordPuzzle(droppedStoneInstance: StoneConfig) {
     this.audioPlayer.stopFeedbackAudio();
     droppedStoneInstance.x = -999;
     droppedStoneInstance.y = -999;
     const feedBackIndex = this.getRandomInt(0, 1);
-    console.log('droppedStone ', droppedStone)
-    this.wordPuzzleLogic.setDroppedLetters(droppedStone);
 
-    const isCorrect = this.wordPuzzleLogic.validateFedLetters()
+    this.wordPuzzleLogic.setGroupToDropped();
+    const { droppedLetters } = this.wordPuzzleLogic.getValues();
+    const isCorrect = this.wordPuzzleLogic.validateFedLetters();
 
     this.stoneHandler.processLetterDropFeedbackAudio(
       feedBackIndex,
       isCorrect,
       true,
-      this.wordPuzzleLogic.droppedLetters
+      droppedLetters
     );
 
     if (isCorrect) {
@@ -631,7 +628,7 @@ export class GameplayScene {
       this.promptText.droppedStoneIndex(
         lang == "arabic"
         ? this.stonesCount
-        : this.wordPuzzleLogic.droppedLetters.length
+        : droppedLetters.length
       );
       this.stonesCount++;
       this.resetToIdleAnimation(() => {
@@ -686,6 +683,7 @@ export class GameplayScene {
 
   public logPuzzleEndFirebaseEvent(isCorrect: boolean, puzzleType?: string) {
     let endTime = Date.now();
+    const { droppedLetters } = this.wordPuzzleLogic.getValues();
     const puzzleCompletedData: PuzzleCompletedEvent = {
       cr_user_id: pseudoId,
       ftm_language: lang,
@@ -697,10 +695,10 @@ export class GameplayScene {
       puzzle_number: this.counter,
       item_selected:
         puzzleType == "Word"
-          ? this.wordPuzzleLogic.droppedLetters == null ||
-            this.wordPuzzleLogic.droppedLetters == undefined
+          ? droppedLetters == null ||
+            droppedLetters == undefined
             ? "TIMEOUT"
-            : this.wordPuzzleLogic.droppedLetters
+            : droppedLetters
           : this.pickedStone == null || this.pickedStone == undefined
           ? "TIMEOUT"
           : this.pickedStone?.text,

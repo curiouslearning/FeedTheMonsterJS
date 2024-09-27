@@ -50,7 +50,6 @@ export default class StoneHandler extends EventManager {
     this.context = context;
     this.canvas = canvas;
     this.puzzleNumber = puzzleNumber;
-    console.log('puzzleNumber ', puzzleNumber)
     this.levelData = levelData;
     this.setTargetStone(this.puzzleNumber);
     this.initializeStonePos();
@@ -117,12 +116,11 @@ export default class StoneHandler extends EventManager {
 
   drawWordPuzzleLetters(
     deltaTime: number,
-    hideLetters: string[],
-  ) {
+    shouldHideStoneChecker,
+  ):void {
     for (let i = 0; i < this.foilStones.length; i++) {
 
-      const letterChar = this.foilStones[i]?.text;
-      if (!hideLetters.includes(letterChar)) {
+      if (shouldHideStoneChecker(i)) {
         this.foilStones[i].draw(deltaTime);
       }
     }
@@ -265,7 +263,6 @@ export default class StoneHandler extends EventManager {
   }
 
   public getFoilStones() {
-    console.log('this.currentPuzzleData ', this.currentPuzzleData)
     this.currentPuzzleData.targetStones.forEach((e) => {
       const index = this.currentPuzzleData.foilStones.indexOf(e);
       if (index !== -1) {
@@ -348,14 +345,22 @@ export default class StoneHandler extends EventManager {
     return stone;
   }
 
+  private computeCursorDistance(posX, posY, sc):number {
+    return Math.sqrt((posX - sc.x) ** 2 + (posY - sc.y) ** 2);
+  }
+
   handlePickStoneUp(posX, posY) {
     let stoneLetter = null;
+    let ctr = 0;
     for (let sc of this.foilStones) {
-      const distance = Math.sqrt((posX - sc.x) ** 2 + (posY - sc.y) ** 2);
+      const distance = this.computeCursorDistance(posX, posY, sc);
       if (distance <= 40) {
           stoneLetter = sc;
+          /* Adds a unique identifier to tell which letter is which in case there are two or more of the same letter.*/
+          stoneLetter['foilStoneIndex'] = ctr;
           break;
-        }
+      }
+      ctr++;
     };
 
     return stoneLetter;
@@ -364,23 +369,21 @@ export default class StoneHandler extends EventManager {
   handleHoveringToAnotherStone(
     posX,
     posY,
-    validateHoveringLetter
+    shouldGroupLetter
   ) {
-    /*
-      This function handles letter hovering interactions.
-      It checks if the letter or an existing letter already exist in the group and
-      it checks if the dragged letter aligns with the target word's sequence.
-      Then returns the hovered new letter of the target word, only if it's in the correct order.
-    */
+    /* Handle hovering of stones for word puzzle multi-letter select.*/
     let stoneLetter = null;
-
+    let ctr = 0;
     for (let sc of this.foilStones) {
-      const distance = Math.sqrt((posX - sc.x) ** 2 + (posY - sc.y) ** 2);
+      const distance = this.computeCursorDistance(posX, posY, sc);
 
-      if (distance <= 40 && validateHoveringLetter(sc.text)) {
+      if (distance <= 40 && shouldGroupLetter(sc.text, ctr)) {
         stoneLetter = sc;
+        /* Adds a unique identifier to tell which letter is which in case there are two or more of the same letter.*/
+        stoneLetter['foilStoneIndex'] = ctr;
         break;
       }
+      ctr++;
     };
 
     return stoneLetter;
