@@ -88,7 +88,6 @@ class App {
     this.registerWorkbox();
 
     this.loadTitleFeedbackCustomFont();
-    this.titleTextElement.classList.add("animate");
   }
 
   private async loadTitleFeedbackCustomFont() {
@@ -101,7 +100,6 @@ class App {
         element.style.fontFamily = fontFamily;
       }
     });
-   
   }
 
   private logSessionStartFirebaseEvent() {

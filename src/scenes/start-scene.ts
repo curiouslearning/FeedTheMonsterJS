@@ -34,7 +34,6 @@ export class StartScene {
   public handler: HTMLCanvasElement;
   public static SceneName: string;
   public switchSceneToLevelSelection: Function;
-  public titleFont: number;
   public background: any;
   audioPlayer: AudioPlayer;
   private toggleBtn: HTMLElement;
@@ -83,8 +82,6 @@ export class StartScene {
   };
 
   generateGameTitle = () => {
-    this.titleFont = this.getFontWidthOfTitle();
-    this.titleTextElement.style.fontSize = `${this.titleFont}px`;
     this.titleTextElement.textContent = this.data.title;
   };
 
@@ -140,10 +137,6 @@ export class StartScene {
       this.handlerInstallPrompt,
       false
     );
-  }
-
-  getFontWidthOfTitle() {
-    return (this.width + 200) / this.data.title.length;
   }
 
   handlerInstallPrompt = (event) => {
