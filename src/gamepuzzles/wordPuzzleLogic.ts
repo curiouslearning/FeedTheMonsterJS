@@ -107,12 +107,13 @@ export default class WordPuzzleLogic {
         }
 
         /*
-        isLetterAlreadyAdded - If the new stone text is NOT already included and stone text is part of targeted word.
+        isLetterAlreadyAdded - If the new stone text is NOT already included
         isSameLetterUnique -If there is already of the same letter exist in group, validate using uniqe identifier which is the array index key in group object.
         */
-        const isLetterAlreadyAdded = !combinedLetters.includes(foilStoneText) && targetWord.includes(`${combinedLetters}${foilStoneText}`);
+        const isLetterAlreadyAdded = !combinedLetters.includes(foilStoneText);
+
         const isSameLetterUnique = !this.groupedObj[foilStoneIndex]
-        return  isLetterAlreadyAdded|| isSameLetterUnique;
+        return targetWord.includes(`${combinedLetters}${foilStoneText}`) && (isLetterAlreadyAdded|| isSameLetterUnique);
     }
 
     validateFedLetters():boolean {
