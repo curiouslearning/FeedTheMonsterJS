@@ -1,5 +1,5 @@
 @font-face {
-  font-family: AtmaSemiBold;
+  font-family: Atma-SemiBold;
   src: url(./assets/fonts/Atma-SemiBold.ttf);
 }
 
@@ -284,6 +284,7 @@ img {
 }
 
 #title {
+  font-family: Atma-SemiBold, sans-serif;
   margin-top: 15%;
   z-index: 2;
   position: fixed;
@@ -294,16 +295,5 @@ img {
   color: #f8b618;
   text-shadow: -2px -2px 0 #fff, 2px -2px 0 #fff, -2px 2px 0 #fff,
     2px 2px 0 #fff, -3px 0 0 #fff, 3px 0 0 #fff, 0 -3px 0 #fff, 0 3px 0 #fff;
-  opacity: 0;
   overflow: hidden;
-  animation: showElement 2s forwards;
-}
-
-@keyframes showElement {
-  50% {
-    opacity: 0;
-  }
-  100% {
-    opacity: 1;
-  }
 }
