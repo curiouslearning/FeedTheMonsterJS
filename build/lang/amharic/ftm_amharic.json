@@ -10,9 +10,9 @@
     "minversion": 132,
     "langname": "AMHARIC",
     "FeedbackAudios": [
-      "https://drive.google.com/file/d/1iUxV65dkgIsVmt8ERcBc2qiaoZREI9ZI/view?usp=sharing",
-      " https://drive.google.com/file/d/1sNtmDlKA-WCpKwIC7HsA8zcgjBmgDML5/view?usp=drive_link",
-      " https://drive.google.com/file/d/1ecCtC5jYSv81-jV5EES-cEieQrAYx0Sr/view?usp=drive_link"
+        "https://feedthemonster.curiouscontent.org/lang/amharic/audios/fantastic.mp3",
+        "https://feedthemonster.curiouscontent.org/lang/amharic/audios/great.mp3",
+        "https://feedthemonster.curiouscontent.org/lang/amharic/audios/amazing.mp3"
     ],
     "OtherAudios": {
       "Select your player": "https://feedthemonster.curiouscontent.org/lang/amharic/audios/Select-your-player.mp3",
