@@ -170,13 +170,13 @@ export class SceneHandler {
     this.showLoading();
     this.dispose(changeSceneRequestFrom);
     setTimeout(() => {
-      this.titleTextElement.style.zIndex = "-1";
       this.levelSelectionScene = new LevelSelectionScreen(
         this.canvas,
         this.data,
         this.switchSceneToGameplay
       );
       SceneHandler.SceneName = LevelSelection1;
+      this.titleTextElement.style.display = "none";
     }, 800);
   };
 

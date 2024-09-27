@@ -1,5 +1,5 @@
 @font-face {
-  font-family: AtmaSemiBold;
+  font-family: Atma-SemiBold;
   src: url(./assets/fonts/Atma-SemiBold.ttf);
 }
 
@@ -128,9 +128,10 @@ img {
 #progress-bar-container {
   display: none;
   position: relative; /* Keep this for proper positioning */
-  width: 98%;
+  width: 90%;
   height: 4vh;
-  background-color: #ccc;
+  background-color: #000000;
+  border: 1px solid #f1b82d;
   margin-top: 20vh;
   z-index: 9999; /* Update z-index to place it above #loading-gif */
 }
@@ -138,7 +139,7 @@ img {
 #progress-bar {
   display: none;
   height: 100%;
-  background-color: #000000;
+  background-color: #f1b82d;
   transition: width 0.3s ease-in-out;
 }
 .loading-spinner {
@@ -283,23 +284,16 @@ img {
 }
 
 #title {
-  margin-top: 20px;
+  font-family: Atma-SemiBold, sans-serif;
+  margin-top: 15%;
   z-index: 2;
   position: fixed;
   width: 100%;
   text-align: center;
   padding: 10px;
-  font-size: 30px;
+  font-size: 8vw;
   color: #f8b618;
   text-shadow: -2px -2px 0 #fff, 2px -2px 0 #fff, -2px 2px 0 #fff,
     2px 2px 0 #fff, -3px 0 0 #fff, 3px 0 0 #fff, 0 -3px 0 #fff, 0 3px 0 #fff;
-  opacity: 0;
-}
-
-#title.animate {
-  -webkit-animation: scale-in-bottom 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94)
-    200ms both;
-  animation: scale-in-bottom 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94) 200ms
-    both;
-  opacity: 1;
+  overflow: hidden;
 }
