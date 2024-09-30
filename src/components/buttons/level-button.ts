@@ -111,27 +111,36 @@ export default class LevelBloonButton {
     }
 
     private applyPulseEffect() {
-        const pulseDuration = 1500;
-        const maxOpacity = 0.5;
-        const baseColorRgba = '255, 255, 255';
-        const animationProgress = (Date.now() % pulseDuration) / pulseDuration;
-        const growPhase = animationProgress <= 0.7;
-        const progress = growPhase ? animationProgress / 0.7 : (animationProgress - 0.7) / 0.3;
-
-        const shadowSize = growPhase ? progress * 15 : 15 + progress * 45;
-        const shadowOpacity = growPhase ? maxOpacity * (1 - progress) : 0;
-
+        const PulseDuration = 1500;
+        const GrowPhaseThreshold = 0.7;
+        const BaseShadowSize = 15;
+        const MaxShadowSize = 45;
+        const MaxOpacity = 0.5;
+        const BaseColorRgba = '255, 255, 255';
+      
+        const animationProgress = (Date.now() % PulseDuration) / PulseDuration;
+        const growPhase = animationProgress <= GrowPhaseThreshold;
+      
+        const phaseDuration = growPhase ? GrowPhaseThreshold : (1 - GrowPhaseThreshold);
+        const progress = growPhase ? animationProgress / GrowPhaseThreshold : (animationProgress - GrowPhaseThreshold) / phaseDuration;
+      
+        const shadowSize = growPhase ? progress * BaseShadowSize : BaseShadowSize + progress * MaxShadowSize;
+        const shadowOpacity = growPhase ? MaxOpacity * (1 - progress) : 0;
+      
         if (shadowOpacity <= 0) return;
-
-        const sizeFactor = this.levelData?.isSpecial ? { x: 3, y: 2.5, radius: 2.2 } : { x: 3.4, y: 3.8, radius: 3.2 };
-        const centerX = this.posX + this.btnSize / sizeFactor.x;
-        const centerY = this.posY + this.btnSize / sizeFactor.y;
-        const radius = this.btnSize / sizeFactor.radius + shadowSize;
-
+      
+        const { x: scaleX, y: scaleY, radius: scaleRadius } = this.levelData?.isSpecial 
+          ? { x: 3, y: 2.5, radius: 2.2 } 
+          : { x: 3.4, y: 3.8, radius: 3.2 };
+      
+        const centerX = this.posX + this.btnSize / scaleX;
+        const centerY = this.posY + this.btnSize / scaleY;
+        const radius = this.btnSize / scaleRadius + shadowSize;
+      
         this.context.save();
         this.context.beginPath();
         this.context.arc(centerX, centerY, radius, 0, 2 * Math.PI);
-        this.context.fillStyle = `rgba(${baseColorRgba}, ${shadowOpacity})`;
+        this.context.fillStyle = `rgba(${BaseColorRgba}, ${shadowOpacity})`;
         this.context.fill();
         this.context.restore();
     }
