@@ -269,7 +269,7 @@ export class LevelSelectionScreen {
     
     levelBtn.setPulse(currentLevelIndex === currentLevel, levelBtn.levelData.isSpecial);
 
-    if (levelBtn.levelData.index + this.levelSelectionPageIndex <= this.data.levels.length) {
+    if (currentLevelIndex <= this.data.levels.length) {
       this.checkUnlockedLevel(gameLevelData);
       levelBtn.draw(
         this.levelSelectionPageIndex,
@@ -280,7 +280,7 @@ export class LevelSelectionScreen {
 
       Debugger.DebugMode
         ? this.context.fillText(
-            this.data.levels[levelBtn.levelData.index + this.levelSelectionPageIndex - 1]
+            this.data.levels[currentLevelIndex - 1]
               .levelMeta.levelType,
             levelBtn.levelData.x + levelBtn.btnSize / 3.5,
             levelBtn.levelData.y + levelBtn.btnSize / 1.3
