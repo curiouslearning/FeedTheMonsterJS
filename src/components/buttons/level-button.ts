@@ -27,6 +27,8 @@ export default class LevelBloonButton {
     private btnSize: number;
     private lockSize: number;
     private textFontSize: number;
+    private pulse: boolean;
+    private isSpecial: boolean;
 
     constructor(
         canvas,
@@ -45,6 +47,13 @@ export default class LevelBloonButton {
         this.btnSize = this.bloonSize;
         this.lockSize = canvas.height / 13;
         this.textFontSize = (this.size) / 6;
+        this.pulse = false;
+        this.isSpecial = false;
+    }
+
+    setPulse(shouldPulse: boolean, isSpecial: boolean) {
+        this.pulse = shouldPulse;
+        this.isSpecial = isSpecial;
     }
 
     isSpecialLevel(index){
@@ -63,6 +72,10 @@ export default class LevelBloonButton {
         gameLevelData,
         totalGameLevels
     ) {
+        if (this.pulse) {
+            this.applyPulseEffect();
+        }
+
         this.context.drawImage(
             this.levelData?.balloonImg,
             this.posX,
@@ -95,6 +108,32 @@ export default class LevelBloonButton {
             gameLevelData,
             totalGameLevels
         );
+    }
+
+    private applyPulseEffect() {
+        const pulseDuration = 1500;
+        const maxOpacity = 0.5;
+        const baseColorRgba = '255, 255, 255';
+        const animationProgress = (Date.now() % pulseDuration) / pulseDuration;
+        const growPhase = animationProgress <= 0.7;
+        const progress = growPhase ? animationProgress / 0.7 : (animationProgress - 0.7) / 0.3;
+
+        const shadowSize = growPhase ? progress * 15 : 15 + progress * 45;
+        const shadowOpacity = growPhase ? maxOpacity * (1 - progress) : 0;
+
+        if (shadowOpacity <= 0) return;
+
+        const sizeFactor = this.levelData?.isSpecial ? { x: 3, y: 2.5, radius: 2.2 } : { x: 3.4, y: 3.8, radius: 3.2 };
+        const centerX = this.posX + this.btnSize / sizeFactor.x;
+        const centerY = this.posY + this.btnSize / sizeFactor.y;
+        const radius = this.btnSize / sizeFactor.radius + shadowSize;
+
+        this.context.save();
+        this.context.beginPath();
+        this.context.arc(centerX, centerY, radius, 0, 2 * Math.PI);
+        this.context.fillStyle = `rgba(${baseColorRgba}, ${shadowOpacity})`;
+        this.context.fill();
+        this.context.restore();
     }
 
     drawIcons(
