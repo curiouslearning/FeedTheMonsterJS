@@ -116,7 +116,7 @@ export default class StoneHandler extends EventManager {
 
   drawWordPuzzleLetters(
     deltaTime: number,
-    shouldHideStoneChecker,
+    shouldHideStoneChecker: (index: number) => boolean,
   ):void {
     for (let i = 0; i < this.foilStones.length; i++) {
 
@@ -317,9 +317,9 @@ export default class StoneHandler extends EventManager {
   }
 
   resetStonePosition(
-    width,
-    pickedStone,
-    pickedStoneObject
+    width: number,
+    pickedStone: StoneConfig,
+    pickedStoneObject: StoneConfig
   ) {
     const stone = pickedStone;
     const stoneObj = pickedStoneObject;

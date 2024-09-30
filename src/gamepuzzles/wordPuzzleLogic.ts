@@ -59,8 +59,8 @@ export default class WordPuzzleLogic {
         hideListObj: { [key:number]: string },
     } {
         return {
-            groupedLetters: `${this.groupedLetters}`,
-            droppedLetters: `${this.droppedLetters}`,
+            groupedLetters: this.groupedLetters,
+            droppedLetters: this.droppedLetters,
             groupedObj: { ...this.groupedObj },
             droppedHistory: { ...this.droppedHistory },
             hideListObj: { ...this.hideListObj },
