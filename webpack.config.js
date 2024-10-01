@@ -40,7 +40,8 @@ var config = {
       '@sceneHandler': path.resolve(__dirname, 'src/sceneHandler/'),
       '@scenes': path.resolve(__dirname, 'src/scenes/'),
       '@events': path.resolve(__dirname, 'src/events/'),
-      '@feedbackText': path.resolve(__dirname, 'src/components/feedback-text/')
+      '@feedbackText': path.resolve(__dirname, 'src/components/feedback-text/'),
+      '@gamepuzzles': path.resolve(__dirname, 'src/gamepuzzles/')
     },
     extensions: ['.tsx', '.ts', '.js', '.json', '.css', '.sh', '.babelrc', '.eslintignore', '.gitignore', '.d'],
   },
