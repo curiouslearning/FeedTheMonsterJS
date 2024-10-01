@@ -28,7 +28,6 @@ export default class LevelBloonButton {
     private lockSize: number;
     private textFontSize: number;
     private pulse: boolean;
-    private isSpecial: boolean;
 
     constructor(
         canvas,
@@ -48,12 +47,10 @@ export default class LevelBloonButton {
         this.lockSize = canvas.height / 13;
         this.textFontSize = (this.size) / 6;
         this.pulse = false;
-        this.isSpecial = false;
     }
 
     setPulse(shouldPulse: boolean, isSpecial: boolean) {
         this.pulse = shouldPulse;
-        this.isSpecial = isSpecial;
     }
 
     isSpecialLevel(index){
