@@ -201,7 +201,7 @@ img {
 
 .feedback-text {
   font-family: "AtmaSemiBold", system-ui;
-  font-size: 52px;
+  font-size: 8vw;
   font-weight: 700;
   position: absolute;
   top: 22%;
