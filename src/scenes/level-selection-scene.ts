@@ -266,8 +266,10 @@ export class LevelSelectionScreen {
   private drawLevel(levelBtn: any, gameLevelData: []) {
     const currentLevelIndex = levelBtn.levelData.index + this.levelSelectionPageIndex;
     const currentLevel = this.previousPlayedLevelNumber + 1;
-    
-    levelBtn.setPulse(currentLevelIndex === currentLevel, levelBtn.levelData.isSpecial);
+
+    if (currentLevelIndex === currentLevel) {
+      levelBtn.applyPulseEffect();
+    }
 
     if (currentLevelIndex <= this.data.levels.length) {
       this.checkUnlockedLevel(gameLevelData);

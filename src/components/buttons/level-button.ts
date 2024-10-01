@@ -27,7 +27,6 @@ export default class LevelBloonButton {
     private btnSize: number;
     private lockSize: number;
     private textFontSize: number;
-    private pulse: boolean;
 
     constructor(
         canvas,
@@ -46,11 +45,6 @@ export default class LevelBloonButton {
         this.btnSize = this.bloonSize;
         this.lockSize = canvas.height / 13;
         this.textFontSize = (this.size) / 6;
-        this.pulse = false;
-    }
-
-    setPulse(shouldPulse: boolean, isSpecial: boolean) {
-        this.pulse = shouldPulse;
     }
 
     isSpecialLevel(index){
@@ -69,10 +63,6 @@ export default class LevelBloonButton {
         gameLevelData,
         totalGameLevels
     ) {
-        if (this.pulse) {
-            this.applyPulseEffect();
-        }
-
         this.context.drawImage(
             this.levelData?.balloonImg,
             this.posX,
@@ -107,7 +97,7 @@ export default class LevelBloonButton {
         );
     }
 
-    private applyPulseEffect() {
+    applyPulseEffect() {
         const PulseDuration = 1500;
         const GrowPhaseThreshold = 0.7;
         const BaseShadowSize = 15;
