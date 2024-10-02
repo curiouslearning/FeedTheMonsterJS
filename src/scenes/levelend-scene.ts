@@ -233,9 +233,9 @@ export class LevelEndScene {
       this.switchToGameplayCB(gamePlayData, "LevelEnd");
     }
     if (
-      this.nextButton.onClick(x, y) &&
+      this.isLastLevel &&
       this.starCount >= 2 &&
-      this.isLastLevel
+      this.nextButton.onClick(x, y)
     ) {
       this.audioPlayer.playButtonClickSound();
       let next = Number(this.currentLevel) + 1;
