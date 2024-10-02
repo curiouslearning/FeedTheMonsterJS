@@ -102,7 +102,7 @@ export class LevelEndScene {
     this.addEventListener();
     this.audioPlayer = new AudioPlayer();
     this.setupBg();
-    this.isLastLevel = this.currentLevel + 1 < this.data.levels.length;
+    this.isLastLevel = this.data.levels.length === this.currentLevel + 1;
   }
 
   private setupBg = async () => {
@@ -150,7 +150,7 @@ export class LevelEndScene {
       this.retryButton.draw();
       if (
         this.starCount >= 2 &&
-        this.isLastLevel
+        !this.isLastLevel
       ) {
         this.nextButton.draw();
       }
@@ -233,7 +233,7 @@ export class LevelEndScene {
       this.switchToGameplayCB(gamePlayData, "LevelEnd");
     }
     if (
-      this.isLastLevel &&
+      !this.isLastLevel &&
       this.starCount >= 2 &&
       this.nextButton.onClick(x, y)
     ) {
