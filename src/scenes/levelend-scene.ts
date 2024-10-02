@@ -102,7 +102,7 @@ export class LevelEndScene {
     this.addEventListener();
     this.audioPlayer = new AudioPlayer();
     this.setupBg();
-    this.isLastLevel = this.data.levels.length === this.currentLevel + 1;
+    this.isLastLevel = this.data.levels.length <= this.currentLevel + 1;
   }
 
   private setupBg = async () => {
@@ -148,10 +148,7 @@ export class LevelEndScene {
       this.monster.update(deltaTime);
       this.closeButton.draw();
       this.retryButton.draw();
-      if (
-        this.starCount >= 2 &&
-        !this.isLastLevel
-      ) {
+      if (!this.isLastLevel && this.starCount >= 2) {
         this.nextButton.draw();
       }
     }
