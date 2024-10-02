@@ -102,7 +102,7 @@ export class LevelEndScene {
     this.addEventListener();
     this.audioPlayer = new AudioPlayer();
     this.setupBg();
-    this.isLastLevel = this.currentLevel + 1 < this.data?.levels.length;
+    this.isLastLevel = this.currentLevel + 1 < this.data.levels.length;
   }
 
   private setupBg = async () => {
