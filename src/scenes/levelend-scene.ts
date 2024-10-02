@@ -39,6 +39,7 @@ export class LevelEndScene {
   public audioPlayer: AudioPlayer;
   public timeouts: any[];
   public starDrawnCount: number;
+  public isLastLevel: boolean;
   constructor(
     canvas: any,
     height: number,
@@ -60,7 +61,6 @@ export class LevelEndScene {
       monsterPhaseNumber,
       this.switchToReactionAnimation
     );
-
     this.switchToGameplayCB = switchToGameplayCB;
     this.switchToLevelSelectionCB = switchToLevelSelectionCB;
     this.data = data;
@@ -102,6 +102,7 @@ export class LevelEndScene {
     this.addEventListener();
     this.audioPlayer = new AudioPlayer();
     this.setupBg();
+    this.isLastLevel = this.currentLevel + 1 < this.data?.levels.length;
   }
 
   private setupBg = async () => {
@@ -147,7 +148,10 @@ export class LevelEndScene {
       this.monster.update(deltaTime);
       this.closeButton.draw();
       this.retryButton.draw();
-      if (this.starCount >= 2) {
+      if (
+        this.starCount >= 2 &&
+        this.isLastLevel
+      ) {
         this.nextButton.draw();
       }
     }
@@ -228,7 +232,11 @@ export class LevelEndScene {
       // pass same data as level is same
       this.switchToGameplayCB(gamePlayData, "LevelEnd");
     }
-    if (this.nextButton.onClick(x, y) && this.starCount >= 2) {
+    if (
+      this.nextButton.onClick(x, y) &&
+      this.starCount >= 2 &&
+      this.isLastLevel
+    ) {
       this.audioPlayer.playButtonClickSound();
       let next = Number(this.currentLevel) + 1;
       let gamePlayData = {
