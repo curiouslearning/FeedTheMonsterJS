@@ -102,7 +102,10 @@ export class LevelEndScene {
     this.addEventListener();
     this.audioPlayer = new AudioPlayer();
     this.setupBg();
-    this.isLastLevel = this.data.levels.length <= this.currentLevel + 1;
+    this.isLastLevel =
+      this.currentLevel !==
+        this.data.levels[this.data.levels.length - 1].levelMeta.levelNumber &&
+      this.starCount >= 2;
   }
 
   private setupBg = async () => {
@@ -148,7 +151,7 @@ export class LevelEndScene {
       this.monster.update(deltaTime);
       this.closeButton.draw();
       this.retryButton.draw();
-      if (!this.isLastLevel && this.starCount >= 2) {
+      if (this.isLastLevel) {
         this.nextButton.draw();
       }
     }
@@ -208,7 +211,7 @@ export class LevelEndScene {
   }
 
   handleMouseClick = (event) => {
-    const selfElement:HTMLElement =document.getElementById("canvas");
+    const selfElement: HTMLElement =document.getElementById("canvas");
     var rect = selfElement.getBoundingClientRect();
     const x = event.clientX - rect.left;
     const y = event.clientY - rect.top;
@@ -230,8 +233,7 @@ export class LevelEndScene {
       this.switchToGameplayCB(gamePlayData, "LevelEnd");
     }
     if (
-      !this.isLastLevel &&
-      this.starCount >= 2 &&
+      this.isLastLevel &&
       this.nextButton.onClick(x, y)
     ) {
       this.audioPlayer.playButtonClickSound();
