@@ -211,7 +211,7 @@ export class LevelEndScene {
   }
 
   handleMouseClick = (event) => {
-    const selfElement: HTMLElement =document.getElementById("canvas");
+    const selfElement:HTMLElement =document.getElementById("canvas");
     var rect = selfElement.getBoundingClientRect();
     const x = event.clientX - rect.left;
     const y = event.clientY - rect.top;
