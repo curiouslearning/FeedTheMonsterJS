@@ -22,9 +22,6 @@ export class FeedbackTextEffects {
     if (!this.isFeedbackElementAvailable()) return;
     this.feedbackTextElement.textContent = text;
 
-    // Dynamically adjust the font size based on the length of the text
-    this.feedbackTextElement.style.fontSize = text.length >= 12 ? "30px" : "";
-
     hideElement(false, this.feedbackTextElement);
 
     this.setHideTimeout();
