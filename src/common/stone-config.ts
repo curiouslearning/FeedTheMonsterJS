@@ -76,7 +76,9 @@ export class StoneConfig {
         return this.getEase(this.frame, 0, this.y, 100);
     }
 
-    draw(deltaTime: number) {
+    draw(deltaTime: number, testSize: boolean = false) {
+        const x = this.getX() - (testSize ? 1 * this.imageCenterOffsetX : this.imageCenterOffsetX);
+        const y = this.getY()- (testSize ? 1 * this.imageCenterOffsetY : this.imageCenterOffsetY)
         // Apply shadow properties
         this.context.fillStyle = 'red';
         this.context.shadowColor = 'rgba(255, 255, 255, 1)'; // Color of the shadow
@@ -85,10 +87,10 @@ export class StoneConfig {
         this.context.shadowOffsetY = 0; // Vertical shadow offset
         this.context.drawImage(
             this.img,
-            this.getX() - this.imageCenterOffsetX,
-            this.getY()- this.imageCenterOffsetY,
-            this.imageSize,
-            this.imageSize
+            x,
+            y,
+            testSize ? this.imageSize * 1 : this.imageSize,
+            testSize ? this.imageSize * 1 : this.imageSize,
         );
         this.context.fillStyle = "white";
         this.context.font = this.textFontSize + `px ${font}, monospace`;
