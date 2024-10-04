@@ -4,6 +4,8 @@ import { DevelopmentServer } from "@constants";
 import { Utils } from "@common";
 
 export var pseudoId = urlParams.get("cr_user_id");
+export var source = urlParams.get("source");
+export var campaign_id = urlParams.get("campaign_id");
 
 export var lang =
   urlParams.get("cr_lang") == null ? "english" : urlParams.get("cr_lang");

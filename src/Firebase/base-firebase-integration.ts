@@ -1,12 +1,14 @@
 import { initializeApp } from "firebase/app";
 import { getAnalytics, logEvent } from "firebase/analytics";
 import { firebaseConfig } from "./firebase-config";
+import { source, campaign_id } from "@common";
 
 export class BaseFirebaseIntegration {
     firebaseApp: any;
     analytics: any;
     constructor() {
         this.initializeFirebase();
+        this.setUserProperties(source,campaign_id);
     }
     protected customEvents(eventName: string, event: object): void {
         try {
@@ -22,6 +24,17 @@ export class BaseFirebaseIntegration {
             }
         } catch (error) {
             console.error("Error while logging session_end event:", error);
+        }
+    }
+    private setUserProperties(source: string, campaignId: string): void {
+        try {
+            setUserProperties(this.analytics, {
+                source: source,
+                campaign_id: campaignId
+            });
+            console.log("User properties set: ", { source, campaignId });
+        } catch (error) {
+            console.error("Error while setting user properties:", error);
         }
     }
     protected initializeFirebase() {
