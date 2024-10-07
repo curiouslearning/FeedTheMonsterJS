@@ -69,6 +69,7 @@ class App {
   private async init() {
     const font = await Utils.getLanguageSpecificFont(this.lang);
     await this.loadAndCacheFont(font, `./assets/fonts/${font}.ttf`);
+    await this.loadTitleFeedbackCustomFont();
     await this.preloadGameAudios();
     this.handleLoadingScreen();
     this.setupCanvas();
@@ -86,8 +87,6 @@ class App {
       this.handleCachedScenario(this.dataModal);
     }
     this.registerWorkbox();
-
-    this.loadTitleFeedbackCustomFont();
   }
 
   private async loadTitleFeedbackCustomFont() {
