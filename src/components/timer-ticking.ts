@@ -70,17 +70,17 @@ export class TimerTicking extends EventManager {
         this.timer = 0;
     }
     update(deltaTime) {
-        // if (this.startMyTimer && !this.isStoneDropped) {
-        //     this.timer += deltaTime * 0.008;
-        // }
-        // if (Math.floor(this.width * 0.87 - (this.width * 0.87 * this.timer * 0.01)) == 40 && !this.isMyTimerOver) {
-        //     this.playLevelEndAudioOnce?this.audioPlayer.playAudio(AUDIO_TIMEOUT):null;
-        //     this.playLevelEndAudioOnce = false;
-        // }
-        // if ((this.width * 0.87 - (this.width * 0.87 * this.timer * 0.01)) < 0 && !this.isMyTimerOver) {
-        //     this.isMyTimerOver = true;
-        //     this.callback(true);
-        // }
+        if (this.startMyTimer && !this.isStoneDropped) {
+            this.timer += deltaTime * 0.008;
+        }
+        if (Math.floor(this.width * 0.87 - (this.width * 0.87 * this.timer * 0.01)) == 40 && !this.isMyTimerOver) {
+            this.playLevelEndAudioOnce?this.audioPlayer.playAudio(AUDIO_TIMEOUT):null;
+            this.playLevelEndAudioOnce = false;
+        }
+        if ((this.width * 0.87 - (this.width * 0.87 * this.timer * 0.01)) < 0 && !this.isMyTimerOver) {
+            this.isMyTimerOver = true;
+            this.callback(true);
+        }
     }
 
     draw() {

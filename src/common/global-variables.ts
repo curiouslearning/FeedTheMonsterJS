@@ -13,7 +13,7 @@ export const Debugger = {
   DevelopmentLink: window.location.href.includes(DevelopmentServer)
     ? true
     : false,
-  DebugMode: true,
+  DebugMode: false,
 };
 
 export interface Window {

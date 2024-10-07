@@ -120,7 +120,6 @@ export default class StoneHandler extends EventManager {
     shouldHideStoneChecker: (index: number) => boolean,
     groupedLetters: {} | { [key:number]: string }
   ):void {
-    console.log('groupedLetters ', groupedLetters)
     for (let i = 0; i < this.foilStones.length; i++) {
 
       if (shouldHideStoneChecker(i)) {
