@@ -110,7 +110,6 @@ export class SceneHandler {
 
   switchSceneToGameplay = (gamePlayData, changeSceneRequestFrom?: string) => {
     this.showLoading();
-    console.log('this.data ', this.data)
     this.dispose(changeSceneRequestFrom);
     let jsonVersionNumber =
       !!this.data.majVersion && !!this.data.minVersion

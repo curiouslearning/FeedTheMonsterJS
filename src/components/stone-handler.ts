@@ -99,7 +99,6 @@ export default class StoneHandler extends EventManager {
         )
       );
     }
-    console.log('this.foilStones ', this.foilStones)
   }
 
   draw(deltaTime: number) {
