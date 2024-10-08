@@ -265,9 +265,10 @@ export class LevelSelectionScreen {
 
   private drawLevel(levelBtn: any, gameLevelData: []) {
     const currentLevelIndex = levelBtn.levelData.index + this.levelSelectionPageIndex;
-    const currentLevel = this.previousPlayedLevelNumber + 1;
+    const currentLevel = this.data.levels[currentLevelIndex - 1].levelMeta.levelNumber;
+    const nextLevelPlay = this.unlockLevelIndex + 1;
 
-    if (currentLevelIndex === currentLevel) {
+    if (nextLevelPlay === currentLevel) {
       levelBtn.applyPulseEffect();
     }
 
