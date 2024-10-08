@@ -58,6 +58,7 @@ export class LevelSelectionScreen {
   private levelButtons: any
 
   constructor(canvas: HTMLCanvasElement, data: any, callBack: Function) {
+    // console.log("level selection loaded");
     this.canvas = canvas;
     this.data = data;
     this.width = canvas.width;

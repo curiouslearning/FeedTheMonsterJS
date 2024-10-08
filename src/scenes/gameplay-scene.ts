@@ -115,6 +115,7 @@ export class GameplayScene {
     jsonVersionNumber,
     feedbackAudios
   ) {
+    console.log("gameplay loaded");
     this.width = canvas.width;
     this.height = canvas.height;
     this.rightToLeft = rightToLeft;

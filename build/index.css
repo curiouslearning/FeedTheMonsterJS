@@ -22,7 +22,7 @@ body {
 .game-scene {
   height: 100vh;
   max-height: -webkit-fill-available;
-  min-width: 420px;
+  min-width: 768px;
 }
 
 img {
@@ -35,7 +35,7 @@ img {
   left: 50%;
   bottom: 0%;
   width: 100%;
-  max-width: 420px;
+  max-width: 768px;
   height: 30%;
   background-color: rgba(0, 0, 0, 0.5);
   transform: translate(-50%, 0%);
