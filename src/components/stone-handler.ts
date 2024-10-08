@@ -117,11 +117,15 @@ export default class StoneHandler extends EventManager {
   drawWordPuzzleLetters(
     deltaTime: number,
     shouldHideStoneChecker: (index: number) => boolean,
+    groupedLetters: {} | { [key:number]: string }
   ):void {
     for (let i = 0; i < this.foilStones.length; i++) {
 
       if (shouldHideStoneChecker(i)) {
-        this.foilStones[i].draw(deltaTime);
+        this.foilStones[i].draw(
+          deltaTime,
+          Object.keys(groupedLetters).length > 1 && groupedLetters[i] !== undefined
+        );
       }
     }
 
