@@ -108,7 +108,7 @@ img {
   transform: translate(-50%, 0%);
   justify-content: center;
   align-items: center;
-  background-color: rgba(0, 0, 0, 0.8);
+  background-color: rgb(255 255 255);
   z-index: 1000;
 }
 
@@ -120,9 +120,11 @@ img {
 
 #loading-gif {
   display: flex;
-  height: 100%;
-  width: 100%;
-  position: absolute; /* Position it within #loading-screen */
+  width: 60%;
+  position: absolute;
+  left: 0;
+  right: 0;
+  margin: auto;
 }
 
 #progress-bar-container {
