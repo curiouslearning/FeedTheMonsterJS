@@ -77,7 +77,7 @@ export class StoneConfig {
     }
 
     adjustSize(shouldResize, num) {
-        return shouldResize ? num * 1.29 : num;
+        return shouldResize ? num * 1.25 : num;
     }
 
     draw(deltaTime: number, shouldResize: boolean = false) {
