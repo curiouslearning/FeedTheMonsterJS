@@ -480,11 +480,13 @@ export class GameplayScene {
 
   private handleStoneLetterDrawing(deltaTime) {
     if (this.wordPuzzleLogic.checkIsWordPuzzle()) {
+      const { groupedObj } = this.wordPuzzleLogic.getValues();
       this.stoneHandler.drawWordPuzzleLetters(
         deltaTime,
         (foilStoneIndex) => {
           return this.wordPuzzleLogic.validateShouldHideLetter(foilStoneIndex);
         },
+        groupedObj
       );
     } else {
       this.stoneHandler.draw(deltaTime);
