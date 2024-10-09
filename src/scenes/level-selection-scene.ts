@@ -265,7 +265,8 @@ export class LevelSelectionScreen {
 
   private drawLevel(levelBtn: any, gameLevelData: []) {
     const currentLevelIndex = levelBtn.levelData.index + this.levelSelectionPageIndex;
-    const currentLevel = this.data.levels[currentLevelIndex - 1].levelMeta.levelNumber;
+    const currentLevel = currentLevelIndex - 1;
+
     const nextLevelPlay = this.unlockLevelIndex + 1;
 
     if (nextLevelPlay === currentLevel) {
