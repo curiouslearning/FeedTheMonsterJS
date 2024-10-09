@@ -1,5 +1,5 @@
 {
-    "version": "1.27",
+    "version": "1.28",
     "web_apps": [
         {
         "appId": 0,
@@ -359,6 +359,13 @@
           "appUrl": "https://curiousreaderdev.curiouscontent.org/?book=LetsFlyPashto",
           "language":"Pashto",
           "languageInEnglishName":"Pashto"
+        },{
+          "appId": 46,
+          "appIconUrl": "https://devcuriousreader.wpcomstaging.com/container_app_manifest/icons/ftm_Colours_dev.png",
+          "title": "Curious Reader ColoursLevel2En",
+          "appUrl": "https://curiousreaderdev.curiouscontent.org/?book=ColoursLevel2En",
+          "language": "English",
+          "languageInEnglishName":"English"
         }
      
     ]
