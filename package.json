@@ -21,7 +21,6 @@
     "@capacitor/android": "^4.4.0",
     "@capacitor/core": "^4.4.0",
     "@octokit/rest": "^20.0.1",
-    "@release-it/conventional-changelog": "^8.0.1",
     "@sentry/browser": "^7.47.0",
     "@types/firebase": "^3.2.1",
     "@types/workbox-window": "^4.3.4",
@@ -83,6 +82,7 @@
   },
   "devDependencies": {
     "@capacitor/cli": "^4.4.0",
+    "@release-it/conventional-changelog": "^8.0.2",
     "@types/howler": "^2.2.7",
     "compression-webpack-plugin": "^11.1.0",
     "css-loader": "^7.1.2",
