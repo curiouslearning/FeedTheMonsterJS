@@ -1,5 +1,6 @@
-import { loadImages } from "../common";
-import { EventManager } from "../events/EventManager";
+import { loadImages } from "@common";
+import { BAR_EMPTY, BAR_FULL, LEVEL_INDICATOR } from "@constants";
+import { EventManager } from "@events";
 
 
 export class LevelIndicators extends EventManager{
@@ -19,9 +20,9 @@ export class LevelIndicators extends EventManager{
         this.canvas = canvas;
         this.activeIndicators = activeIndicators;
         this.images = {
-            level_indicator: "./assets/images/levels_v01.png",
-            bar_empty: "./assets/images/bar_empty_v01.png",
-            bar_full: "./assets/images/bar_full_v01.png"
+            level_indicator: LEVEL_INDICATOR,
+            bar_empty: BAR_EMPTY,
+            bar_full: BAR_FULL
         }
 
         loadImages(this.images, (images) => {
@@ -35,7 +36,6 @@ export class LevelIndicators extends EventManager{
 
     addDropStoneEvent() {
         document.addEventListener('dropstone', (event) => {
-            // console.log("Yeee recived from level-indicator");
             this.setIndicators(2);
 
         });
@@ -76,7 +76,6 @@ export class LevelIndicators extends EventManager{
     }
 
     public handleStoneDrop(event) {
-        // this.isStoneDropped = true;
     }
 
     public handleLoadPuzzle(event) {

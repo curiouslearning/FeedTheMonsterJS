@@ -1,17 +1,18 @@
-import { StoneConfig } from "../common/stone-config";
-import { Monster } from "../components/monster";
-import { DataModal } from "../data/data-modal";
-import { Debugger, font, lang } from "../../global-variables";
-import { AudioPlayer } from "../components/audio-player";
+import { Monster, AudioPlayer } from "@components";
+import { PlayButton } from "@buttons";
+import { DataModal } from "@data";
+import {
+  StoneConfig,
+  toggleDebugMode,
+  Utils,
+} from "@common";
 import { FirebaseIntegration } from "../Firebase/firebase-integration";
-import { Utils } from "../common/utils";
-import PlayButton from "../components/play-button";
-import { createBackground, defaultBgDrawing } from '../compositions/background';
+import { createBackground, defaultBgDrawing } from "@compositions";
 import {
   FirebaseUserClicked,
   PWAInstallStatus,
-  DEFAULT_BG_GROUP_IMGS
-} from '../constants/';
+  DEFAULT_BG_GROUP_IMGS,
+} from "@constants";
 
 export class StartScene {
   public canvas: HTMLCanvasElement;
@@ -33,11 +34,11 @@ export class StartScene {
   public handler: HTMLCanvasElement;
   public static SceneName: string;
   public switchSceneToLevelSelection: Function;
-  public titleFont: number;
   public background: any;
   audioPlayer: AudioPlayer;
   private toggleBtn: HTMLElement;
   private pwa_install_status: Event;
+  private titleTextElement: HTMLElement | null;
 
   constructor(
     canvas: HTMLCanvasElement,
@@ -60,6 +61,8 @@ export class StartScene {
     this.createPlayButton();
     window.addEventListener("beforeinstallprompt", this.handlerInstallPrompt);
     this.setupBg();
+    this.titleTextElement = document.getElementById("title");
+    this.generateGameTitle();
   }
 
   private setupBg = async () => {
@@ -70,45 +73,31 @@ export class StartScene {
       DEFAULT_BG_GROUP_IMGS,
       defaultBgDrawing
     );
-  }
+  };
 
   devToggle = () => {
-    this.toggleBtn.addEventListener("click", () => {
-      this.toggleBtn.classList.toggle("on");
+    this.toggleBtn.addEventListener("click", () =>
+      toggleDebugMode(this.toggleBtn)
+    );
+  };
 
-      if (this.toggleBtn.classList.contains("on")) {
-        Debugger.DebugMode = true;
-        this.toggleBtn.innerText = "Dev";
-      } else {
-        Debugger.DebugMode = false;
-        this.toggleBtn.innerText = "Dev";
-      }
-    });
-  }
+  generateGameTitle = () => {
+    this.titleTextElement.textContent = this.data.title;
+  };
 
   animation = (deltaTime: number) => {
-    this.titleFont = this.getFontWidthOfTitle();
     this.context.clearRect(0, 0, this.width, this.height);
     this.background?.draw();
-    this.context.font = `${this.titleFont}px ${font}, monospace`;
-    this.context.fillStyle = "white";
-    this.context.textAlign = "center";
-    this.context.fillText(
-      this.data.title,
-      this.width * 0.5,
-      this.height / 10
-    );
     this.monster.update(deltaTime);
     this.playButton.draw();
   };
-
 
   createPlayButton() {
     this.playButton = new PlayButton(
       this.context,
       this.canvas,
       this.canvas.width * 0.35,
-      this.canvas.height / 7,
+      this.canvas.height / 7
     );
     document.addEventListener("selectstart", function (e) {
       e.preventDefault();
@@ -123,7 +112,10 @@ export class StartScene {
     var rect = selfElement.getBoundingClientRect();
     const x = event.clientX - rect.left;
     const y = event.clientY - rect.top;
-    const {excludeX, excludeY} = Utils.getExcludedCoordinates(selfElement, 15);
+    const { excludeX, excludeY } = Utils.getExcludedCoordinates(
+      selfElement,
+      15
+    );
     if (!(x < excludeX && y < excludeY)) {
       FirebaseIntegration.getInstance().sendUserClickedOnPlayEvent();
       // @ts-ignore
@@ -137,19 +129,19 @@ export class StartScene {
   };
 
   dispose() {
-    this.monster.dispose()
+    this.monster.dispose();
     this.audioPlayer.stopAllAudios();
     this.handler.removeEventListener("click", this.handleMouseClick, false);
-    window.removeEventListener("beforeinstallprompt", this.handlerInstallPrompt, false);
-  }
-
-  getFontWidthOfTitle() {
-    return (this.width + 200) / this.data.title.length;
+    window.removeEventListener(
+      "beforeinstallprompt",
+      this.handlerInstallPrompt,
+      false
+    );
   }
 
   handlerInstallPrompt = (event) => {
     event.preventDefault();
     this.pwa_install_status = event;
     localStorage.setItem(PWAInstallStatus, "false");
-  }
+  };
 }

@@ -55,7 +55,7 @@
 
   <body>
     <div class="game-scene">
-      <h1 id="version-info-id">v1.0.34</h1>
+      <h1 id="version-info-id">v1.0.35</h1>
       <button id="toggle-btn" class="off">Dev</button>
       <!--Keep the server url in href-->
       <a
@@ -92,8 +92,10 @@
           friends! <br />Supported by Curious Learning.
         </p>
       </div> -->
+      <!-- Replace the canvas with a div for feedback text -->
+      <div id="title" class="title"></div>
+      <div id="feedback-text" class="feedback-text"></div>
       <canvas id="loading"></canvas>
-      <canvas id="feedback-text"></canvas>
       <canvas id="canvas"></canvas>
     </div>
     <script type="module" src="feedTheMonster.js"></script>

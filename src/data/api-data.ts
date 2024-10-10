@@ -1,4 +1,4 @@
-import { lang } from "../../global-variables";
+import { lang } from "@common";
 
 export const URL = "./lang/" + lang + "/ftm_" + lang + ".json";
 
@@ -16,12 +16,5 @@ export function getFtmData() {
 }
 
 export async function getData() {
-  // let d = {
-  //     "OtherAudios": null,
-  //     "FeedbackTexts": null,
-  //     "Levels": null,
-  //     "FeedbackAudios": null,
-  //     "RightToLeft": null
-  // }
   return await getFtmData();
 }

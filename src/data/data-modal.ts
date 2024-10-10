@@ -105,22 +105,6 @@ export class Levels {
     });
     return puzzleObjects;
   }
-
-  // getAllPuzzle() {
-  //     this.puzzleDataArray = []
-  //     this.puzzles = []
-  //     this.levelMeta = []
-  //     this.levelNumber;
-  //     this.levels.map((data, index)=> {
-  //         data.Puzzles.map((pData, index) => {
-  //             this.puzzles.push(new Puzzles(pData));
-  //         })
-  //         this.levelMeta.push(new LevelMeta(data.LevelMeta));
-  //         this.puzzleDataArray.push(this.puzzles)
-  //     });
-
-  //     return this.puzzleDataArray;
-  // }
 }
 
 export class Puzzles {

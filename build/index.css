@@ -1,3 +1,8 @@
+@font-face {
+  font-family: Atma-SemiBold;
+  src: url(./assets/fonts/Atma-SemiBold.ttf);
+}
+
 * {
   margin: 0;
   padding: 0;
@@ -37,14 +42,6 @@ img {
   z-index: 100;
 }
 
-#feedback-text {
-  position: absolute;
-  left: 50%;
-  top: 0%;
-  z-index: 0;
-  transform: translate(-50%, 0%);
-}
-
 #loading {
   position: absolute;
   left: 50%;
@@ -53,15 +50,14 @@ img {
   transform: translate(-50%, 0%);
 }
 
-
 #about-company p {
   margin-top: 10%;
   line-height: 1.8;
   color: white;
   text-align: center;
 }
-#monster{
-  border:1px solid;
+#monster {
+  border: 1px solid;
 }
 #discription-text p {
   margin-top: 10%;
@@ -116,7 +112,6 @@ img {
   z-index: 1000;
 }
 
-
 @media (min-width: 420px) {
   #loading-screen {
     max-width: 100%;
@@ -133,9 +128,10 @@ img {
 #progress-bar-container {
   display: none;
   position: relative; /* Keep this for proper positioning */
-  width: 98%;
+  width: 90%;
   height: 4vh;
-  background-color: #ccc;
+  background-color: #000000;
+  border: 1px solid #f1b82d;
   margin-top: 20vh;
   z-index: 9999; /* Update z-index to place it above #loading-gif */
 }
@@ -143,7 +139,7 @@ img {
 #progress-bar {
   display: none;
   height: 100%;
-  background-color: #000000;
+  background-color: #f1b82d;
   transition: width 0.3s ease-in-out;
 }
 .loading-spinner {
@@ -201,4 +197,103 @@ img {
 
 #toggle-btn.off {
   background-color: #bbb;
+}
+
+.feedback-text {
+  font-family: "AtmaSemiBold", system-ui;
+  font-size: 10vw;
+  font-weight: 700;
+  position: absolute;
+  top: 22%;
+  width: 100%;
+  color: #fff;
+  text-align: center;
+  line-height: 1.5;
+  white-space: nowrap;
+  opacity: 0;
+  pointer-events: none;
+  text-shadow: -2px -2px 0 #f8b618, 2px -2px 0 #f8b618, -2px 2px 0 #f8b618,
+    2px 2px 0 #f8b618, -3px 0 0 #f8b618, 3px 0 0 #f8b618, 0 -3px 0 #f8b618,
+    0 3px 0 #f8b618;
+  letter-spacing: 3px;
+  z-index: 0;
+}
+
+/* Animation for feedback text */
+@-webkit-keyframes scale-up-center {
+  0% {
+    -webkit-transform: scale(0.5);
+    transform: scale(0.5);
+  }
+  100% {
+    -webkit-transform: scale(1);
+    transform: scale(1);
+  }
+}
+@keyframes scale-up-center {
+  0% {
+    -webkit-transform: scale(0.5);
+    transform: scale(0.5);
+  }
+  100% {
+    -webkit-transform: scale(1);
+    transform: scale(1);
+  }
+}
+
+@-webkit-keyframes scale-in-bottom {
+  0% {
+    -webkit-transform: scale(0);
+    transform: scale(0);
+    -webkit-transform-origin: 50% 100%;
+    transform-origin: 50% 100%;
+    opacity: 1;
+  }
+  100% {
+    -webkit-transform: scale(1);
+    transform: scale(1);
+    -webkit-transform-origin: 50% 100%;
+    transform-origin: 50% 100%;
+    opacity: 1;
+  }
+}
+@keyframes scale-in-bottom {
+  0% {
+    -webkit-transform: scale(0);
+    transform: scale(0);
+    -webkit-transform-origin: 50% 100%;
+    transform-origin: 50% 100%;
+    opacity: 1;
+  }
+  100% {
+    -webkit-transform: scale(1);
+    transform: scale(1);
+    -webkit-transform-origin: 50% 100%;
+    transform-origin: 50% 100%;
+    opacity: 1;
+  }
+}
+
+/* Apply the animation */
+.feedback-text.show {
+  -webkit-animation: scale-up-center 0.4s cubic-bezier(0.39, 0.575, 0.565, 1)
+    both;
+  animation: scale-up-center 0.4s cubic-bezier(0.39, 0.575, 0.565, 1) both;
+  z-index: 999;
+  opacity: 1;
+}
+
+#title {
+  font-family: Atma-SemiBold, sans-serif;
+  margin-top: 15%;
+  z-index: 2;
+  position: fixed;
+  width: 100%;
+  text-align: center;
+  padding: 10px;
+  font-size: 8vw;
+  color: #f8b618;
+  text-shadow: -2px -2px 0 #fff, 2px -2px 0 #fff, -2px 2px 0 #fff,
+    2px 2px 0 #fff, -3px 0 0 #fff, 3px 0 0 #fff, 0 -3px 0 #fff, 0 3px 0 #fff;
+  overflow: hidden;
 }

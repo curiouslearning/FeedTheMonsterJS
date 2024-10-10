@@ -1,70 +1,10 @@
-/*! ../../../global-variables */
-
-/*! ../../common/ */
-
-/*! ../../common/event-names */
-
-/*! ../../constants/ */
-
-/*! ../../global-variables */
+/*! ../../Firebase/firebase-integration */
 
 /*! ../Firebase/firebase-integration */
 
-/*! ../audio-player */
-
-/*! ../buttons/no-button */
-
-/*! ../buttons/yes-button */
-
-/*! ../common */
-
-/*! ../common/ */
-
-/*! ../common/event-names */
-
-/*! ../common/level-config */
-
-/*! ../common/utils */
-
-/*! ../components/ */
-
-/*! ../components/audio-player */
-
-/*! ../components/buttons/cancel-button */
-
-/*! ../components/buttons/close-button */
-
-/*! ../components/buttons/next-button */
-
-/*! ../components/buttons/retry-button */
-
-/*! ../components/monster */
-
-/*! ../components/play-button */
-
-/*! ../compositions/background */
-
 /*! ../constants */
 
-/*! ../constants/ */
-
-/*! ../data/api-data */
-
-/*! ../data/game-score */
-
-/*! ../data/i18-font-mapping */
-
-/*! ../events/EventManager */
-
-/*! ../scenes/gameplay-scene */
-
-/*! ../scenes/level-selection-scene */
-
-/*! ../scenes/levelend-scene */
-
-/*! ../scenes/loading-scene */
-
-/*! ../scenes/start-scene */
+/*! ./api-data */
 
 /*! ./audio-player */
 
@@ -74,53 +14,93 @@
 
 /*! ./buttons/pause-button */
 
+/*! ./cancel-button */
+
+/*! ./close-button */
+
+/*! ./custom-fonts */
+
+/*! ./data-modal */
+
 /*! ./event-names */
 
-/*! ./feedback-particle-effect/feedback-text-effects */
-
-/*! ./feedback-particle-effect/sure-popup */
+/*! ./feedback-text */
 
 /*! ./firebase-config */
 
+/*! ./game-score */
+
+/*! ./gameplay-scene */
+
 /*! ./global-variables */
+
+/*! ./i18-font-mapping */
+
+/*! ./level-button */
+
+/*! ./level-config */
 
 /*! ./level-indicator */
 
+/*! ./level-selection-scene */
+
+/*! ./levelend-scene */
+
+/*! ./loading-scene */
+
 /*! ./monster */
 
-/*! ./pause-popup */
+/*! ./next-button */
+
+/*! ./no-button */
+
+/*! ./pause-button */
+
+/*! ./play-button */
 
 /*! ./prompt-text */
 
+/*! ./retry-button */
+
 /*! ./src/Firebase/firebase-integration */
 
-/*! ./src/common/event-names */
-
-/*! ./src/common/utils */
-
-/*! ./src/components/audio-player */
-
-/*! ./src/constants/ */
-
-/*! ./src/data/api-data */
-
-/*! ./src/data/data-modal */
-
-/*! ./src/sceneHandler/scene-handler */
+/*! ./start-scene */
 
 /*! ./stone-config */
 
 /*! ./stone-handler */
 
-/*! ./text-particle */
+/*! ./test-gameplay-scene */
 
 /*! ./timer-ticking */
+
+/*! ./trail-particles */
 
 /*! ./tutorial */
 
 /*! ./utils */
 
+/*! ./wordPuzzleLogic */
+
 /*! ./wrap-idb-value.js */
+
+/*! ./yes-button */
+
+/*! @buttons */
+
+/*! @common */
+
+/*! @components */
+
+/*! @compositions */
+
+/*! @constants */
+
+/*! @data */
+
+/*! @data/i18-font-mapping */
+
+/*! @events */
 
 /*! @firebase/analytics */
 
@@ -134,6 +114,16 @@
 
 /*! @firebase/util */
 
+/*! @gamepuzzles */
+
+/*! @popups/pause-popup */
+
+/*! @popups/sure-popup */
+
+/*! @sceneHandler */
+
+/*! @scenes */
+
 /*! firebase/analytics */
 
 /*! firebase/app */
@@ -146,9 +136,9 @@
   !*** ./feedTheMonster.ts ***!
   \***************************/
 
-/*!*****************************!*\
-  !*** ./global-variables.ts ***!
-  \*****************************/
+/*!***************************!*\
+  !*** ./src/data/index.ts ***!
+  \***************************/
 
 /*!*****************************!*\
   !*** ./src/common/index.ts ***!
@@ -156,6 +146,14 @@
 
 /*!*****************************!*\
   !*** ./src/common/utils.ts ***!
+  \*****************************/
+
+/*!*****************************!*\
+  !*** ./src/events/index.ts ***!
+  \*****************************/
+
+/*!*****************************!*\
+  !*** ./src/scenes/index.ts ***!
   \*****************************/
 
 /*!******************************!*\
@@ -178,6 +176,14 @@
   !*** ./src/components/index.ts ***!
   \*********************************/
 
+/*!**********************************!*\
+  !*** ./src/data/custom-fonts.ts ***!
+  \**********************************/
+
+/*!**********************************!*\
+  !*** ./src/gamepuzzles/index.ts ***!
+  \**********************************/
+
 /*!***********************************!*\
   !*** ./src/common/event-names.ts ***!
   \***********************************/
@@ -187,12 +193,16 @@
   \***********************************/
 
 /*!***********************************!*\
-  !*** ./src/scenes/start-scene.ts ***!
+  !*** ./src/compositions/index.ts ***!
   \***********************************/
 
-/*!************************************!*\
-  !*** ./src/common/level-config.ts ***!
-  \************************************/
+/*!***********************************!*\
+  !*** ./src/sceneHandler/index.ts ***!
+  \***********************************/
+
+/*!***********************************!*\
+  !*** ./src/scenes/start-scene.ts ***!
+  \***********************************/
 
 /*!************************************!*\
   !*** ./src/common/stone-config.ts ***!
@@ -200,10 +210,6 @@
 
 /*!************************************!*\
   !*** ./src/components/tutorial.ts ***!
-  \************************************/
-
-/*!************************************!*\
-  !*** ./src/events/EventManager.ts ***!
   \************************************/
 
 /*!*************************************!*\
@@ -227,19 +233,19 @@
   \**************************************/
 
 /*!***************************************!*\
-  !*** ./src/components/pause-popup.ts ***!
-  \***************************************/
-
-/*!***************************************!*\
-  !*** ./src/components/play-button.ts ***!
-  \***************************************/
-
-/*!***************************************!*\
   !*** ./src/components/prompt-text.ts ***!
   \***************************************/
 
 /*!****************************************!*\
+  !*** ./src/common/global-variables.ts ***!
+  \****************************************/
+
+/*!****************************************!*\
   !*** ./src/components/audio-player.ts ***!
+  \****************************************/
+
+/*!****************************************!*\
+  !*** ./src/compositions/background.ts ***!
   \****************************************/
 
 /*!*****************************************!*\
@@ -251,6 +257,10 @@
   \*****************************************/
 
 /*!*****************************************!*\
+  !*** ./src/components/buttons/index.ts ***!
+  \*****************************************/
+
+/*!*****************************************!*\
   !*** ./src/components/stone-handler.ts ***!
   \*****************************************/
 
@@ -258,16 +268,32 @@
   !*** ./src/components/timer-ticking.ts ***!
   \*****************************************/
 
+/*!******************************************!*\
+  !*** ./src/compositions/level-config.ts ***!
+  \******************************************/
+
 /*!*******************************************!*\
   !*** ./src/components/level-indicator.ts ***!
   \*******************************************/
 
 /*!*******************************************!*\
-  !*** ./src/sceneHandler/scene-handler.ts ***!
+  !*** ./src/components/trail-particles.ts ***!
   \*******************************************/
+
+/*!*******************************************!*\
+  !*** ./src/scenes/test-gameplay-scene.ts ***!
+  \*******************************************/
+
+/*!********************************************!*\
+  !*** ./src/gamepuzzles/wordPuzzleLogic.ts ***!
+  \********************************************/
 
 /*!*********************************************!*\
   !*** ./src/components/buttons/no-button.ts ***!
+  \*********************************************/
+
+/*!*********************************************!*\
+  !*** ./src/components/popups/sure-popup.ts ***!
   \*********************************************/
 
 /*!*********************************************!*\
@@ -283,15 +309,27 @@
   \**********************************************/
 
 /*!**********************************************!*\
-  !*** ./src/compositions/background/index.ts ***!
+  !*** ./src/components/popups/pause-popup.ts ***!
   \**********************************************/
 
 /*!***********************************************!*\
   !*** ./src/components/buttons/next-button.ts ***!
   \***********************************************/
 
+/*!***********************************************!*\
+  !*** ./src/components/buttons/play-button.ts ***!
+  \***********************************************/
+
+/*!***********************************************!*\
+  !*** ./src/components/feedback-text/index.ts ***!
+  \***********************************************/
+
 /*!************************************************!*\
   !*** ./src/components/buttons/close-button.ts ***!
+  \************************************************/
+
+/*!************************************************!*\
+  !*** ./src/components/buttons/level-button.ts ***!
   \************************************************/
 
 /*!************************************************!*\
@@ -330,17 +368,9 @@
   !*** ./node_modules/firebase/analytics/dist/esm/index.esm.js ***!
   \***************************************************************/
 
-/*!***************************************************************!*\
-  !*** ./src/components/feedback-particle-effect/sure-popup.ts ***!
-  \***************************************************************/
-
 /*!*****************************************************************!*\
   !*** ./node_modules/@firebase/logger/dist/esm/index.esm2017.js ***!
   \*****************************************************************/
-
-/*!******************************************************************!*\
-  !*** ./src/components/feedback-particle-effect/text-particle.ts ***!
-  \******************************************************************/
 
 /*!********************************************************************!*\
   !*** ./node_modules/@firebase/analytics/dist/esm/index.esm2017.js ***!
@@ -357,10 +387,6 @@
 /*!************************************************************************!*\
   !*** ./node_modules/@firebase/installations/dist/esm/index.esm2017.js ***!
   \************************************************************************/
-
-/*!**************************************************************************!*\
-  !*** ./src/components/feedback-particle-effect/feedback-text-effects.ts ***!
-  \**************************************************************************/
 
 /*!******************************************************************************!*\
   !*** ./node_modules/@firebase/installations/node_modules/idb/build/index.js ***!

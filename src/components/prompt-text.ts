@@ -1,11 +1,8 @@
 
-import { EventManager } from "../events/EventManager";
-import { Utils } from "../common/utils";
-import { AudioPlayer } from "./audio-player";
-import { VISIBILITY_CHANGE } from "../common/event-names";
-import { PromptAudio } from "../constants/";
-import { font, lang } from "../../global-variables";
-
+import { EventManager } from "@events";
+import { Utils, font, VISIBILITY_CHANGE } from "@common";
+import { AudioPlayer } from "@components";
+import { PROMPT_PLAY_BUTTON, PROMPT_TEXT_BG } from "@constants";
 
 export class PromptText extends EventManager {
     public width: number;
@@ -75,7 +72,6 @@ export class PromptText extends EventManager {
     }
 
     playSound = () => {
-        // console.log('PromptAudio',  Utils.getConvertedDevProdURL(this.currentPuzzleData.prompt.promptAudio));
         if (this.isAppForeground) {
             this.audioPlayer.playPromptAudio(Utils.getConvertedDevProdURL(this.currentPuzzleData.prompt.promptAudio));
         }
@@ -149,8 +145,6 @@ export class PromptText extends EventManager {
               );
         }}
         else if (this.levelData.levelMeta.levelType == "audioPlayerWord") {
-                    // const offsetX = (this.width - scaledWidth) / 2;
-                    // const offsetY = (this.height - scaledHeight) / 5;
                     const offsetX = (this.width - scaledWidth) *1.25;
                     const offsetY = (this.height - scaledHeight) *0.33;
                     this.context.drawImage(
@@ -365,8 +359,8 @@ export class PromptText extends EventManager {
     }
 
     async loadImages() {
-        const image1Promise = this.loadImage(this.prompt_image, "./assets/images/promptTextBg.png");
-        const image2Promise = this.loadImage(this.promptPlayButton, "./assets/images/promptPlayButton.png");
+        const image1Promise = this.loadImage(this.prompt_image, PROMPT_TEXT_BG);
+        const image2Promise = this.loadImage(this.promptPlayButton, PROMPT_PLAY_BUTTON);
 
         await Promise.all([image1Promise, image2Promise]);
 
