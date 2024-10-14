@@ -196,7 +196,7 @@ export class GameplayScene {
       : localStorage.setItem(PreviousPlayedLevel + lang, previousPlayedLevel);
     this.addEventListeners();
     this.resetAnimationID = 0;
-    this.setupBg();
+    // this.setupBg();
     this.trailParticles?.init();
     this.clickTrailToggle = false;
     this.hasFed = false;
