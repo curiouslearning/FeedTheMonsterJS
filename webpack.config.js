@@ -21,6 +21,10 @@ var config = {
         use: 'ts-loader',
         exclude: /node_modules/,
       },
+      {
+        test: /\.html$/,
+        use: 'raw-loader'
+      }
     ],
   },
   output: {

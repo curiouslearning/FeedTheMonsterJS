@@ -5,6 +5,7 @@
   "main": "feedTheMonster.js",
   "scripts": {
     "release": "release-it",
+    "workbox:inject": "workbox injectManifest",
     "dev": "webpack --config webpack.config.js"
   },
   "repository": {
