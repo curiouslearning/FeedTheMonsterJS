@@ -20,10 +20,6 @@ var config = {
         test: /\.ts?$/,
         use: 'ts-loader',
         exclude: /node_modules/,
-      },
-      {
-        test: /\.html$/,
-        use: 'raw-loader'
       }
     ],
   },
