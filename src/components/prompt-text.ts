@@ -1,9 +1,7 @@
-
 import { EventManager } from "@events";
 import { Utils, font, VISIBILITY_CHANGE } from "@common";
 import { AudioPlayer } from "@components";
 import { PROMPT_PLAY_BUTTON, PROMPT_TEXT_BG } from "@constants";
-
 export class PromptText extends EventManager {
     public width: number;
     public height: number;
@@ -19,16 +17,15 @@ export class PromptText extends EventManager {
     public audioPlayer: AudioPlayer;
     public isStoneDropped: boolean = false;
     droppedStones: number = 0;
+    private droppedStoneCount=0;
     public time: number = 0;
     public promptImageWidth: number = 0;
     public isAppForeground: boolean = true;
-
     public scale:number = 1;
     public isScalingUp:boolean = true;
     public scaleFactor:number = 0.00050;
     public promptImageHeight: number = 0;
     public promptPlayButton: HTMLImageElement;
-
     constructor(width: number, height: number, currentPuzzleData: any, levelData: any, rightToLeft) {
         super({
             stoneDropCallbackHandler: (event) => this.handleStoneDrop(event),
@@ -53,8 +50,6 @@ export class PromptText extends EventManager {
         this.promptImageHeight = this.height * 0.3;
         document.addEventListener(VISIBILITY_CHANGE, this.handleVisibilityChange, false);
     }
-
-
     handleMouseDown = (event) => {
         let self = this;
         const selfElement = <HTMLElement>document.getElementById("canvas");
@@ -66,27 +61,22 @@ export class PromptText extends EventManager {
             this.playSound();
         }
     }
-
     public getPromptAudioUrl = (): string => {
         return Utils.getConvertedDevProdURL(this.currentPuzzleData.prompt.promptAudio);
     }
-
     playSound = () => {
         if (this.isAppForeground) {
             this.audioPlayer.playPromptAudio(Utils.getConvertedDevProdURL(this.currentPuzzleData.prompt.promptAudio));
         }
     }
-
     onClick(xClick, yClick) {
         return Math.sqrt(xClick - this.width / 3) < 12 && Math.sqrt(yClick - this.height / 5.5) < 10
     }
-
     setCurrrentPuzzleData(data) {
         this.currentPuzzleData = data;
         this.currentPromptText = data.prompt.promptText;
         this.targetStones = this.currentPuzzleData.targetStones;
     }
-
     drawRTLLang() {
         var x = this.width / 2;
         const y = this.height * 0.26;
@@ -217,10 +207,32 @@ export class PromptText extends EventManager {
                 }
                 case "Word": {
                     if (this.levelData.levelMeta.protoType == "Visible") {
-                    if (this.droppedStones > i || this.droppedStones == undefined) {
+                    if(this.targetStones.length!=this.currentPromptText.length){
+                    if(this.targetStones.length>i){   
+                    if (this.droppedStoneCount > i || this.droppedStoneCount== undefined) {
                         this.context.fillStyle = "black";
                         this.context.fillText(
                             promptTextLetters[i],
+                            startPrompttextX+startPrompttextX/10,
+                            y
+                        );
+                    } else {
+                        this.context.fillStyle = "red";
+                        this.context.fillText(
+                            this.targetStones[i],
+                            startPrompttextX+startPrompttextX/10,
+                            y
+                        );
+                        break;
+                    }
+                    break;
+                }
+                break;
+                }else{
+                    if (this.droppedStones > i || this.droppedStones == undefined) {
+                        this.context.fillStyle = "black";
+                        this.context.fillText(
+                            this.targetStones[i],
                             startPrompttextX,
                             y
                         );
@@ -233,7 +245,7 @@ export class PromptText extends EventManager {
                         );
                     }
                     break;
-                }
+                }}
                 else{
                     this.context.drawImage(
                         this.promptPlayButton,
@@ -286,7 +298,6 @@ export class PromptText extends EventManager {
       if (Math.floor(this.time) >= 1910 && Math.floor(this.time) <= 1926) {
         this.playSound();
       }
-
         if (!this.isStoneDropped) {
             const scaledWidth = this.promptImageWidth * this.scale;
             const scaledHeight = this.promptImageHeight * this.scale;
@@ -305,13 +316,12 @@ export class PromptText extends EventManager {
                 : this.drawOthers();
         }
     }
-
     public handleStoneDrop(event) {
         this.isStoneDropped = true;
     }
-
     public handleLoadPuzzle(event) {
         this.droppedStones = 0;
+        this.droppedStoneCount=0
         this.currentPuzzleData = this.levelData.puzzles[event.detail.counter]
         this.currentPromptText = this.currentPuzzleData.prompt.promptText;
         this.targetStones = this.currentPuzzleData.targetStones;
@@ -319,19 +329,17 @@ export class PromptText extends EventManager {
         this.isStoneDropped = false;
         this.time = 0;
     }
-
     public dispose() {
         document.removeEventListener(VISIBILITY_CHANGE, this.handleVisibilityChange, false);
         this.unregisterEventListener();
     }
-
     droppedStoneIndex(index:number){
         this.droppedStones = index;
+        this.droppedStoneCount++;
     }
     calculateFont():number{
         return (this.promptImageWidth/this.currentPromptText.length>35)?35:this.width * 0.65/this.currentPromptText.length
     }
-
     updateScaling() {
         if (this.isScalingUp) {
           this.scale += this.scaleFactor;
@@ -346,28 +354,22 @@ export class PromptText extends EventManager {
           }
         }
     }
-
     handleVisibilityChange = () => {
         if (document.visibilityState == "hidden") {
             this.audioPlayer.stopAllAudios();
             this.isAppForeground = false
         }
-
         if (document.visibilityState == "visible") {
             this.isAppForeground = true
         }
     }
-
     async loadImages() {
         const image1Promise = this.loadImage(this.prompt_image, PROMPT_TEXT_BG);
         const image2Promise = this.loadImage(this.promptPlayButton, PROMPT_PLAY_BUTTON);
-
         await Promise.all([image1Promise, image2Promise]);
-
         this.imagesLoaded = true;
         // You can do additional actions here after both images are loaded.
       }
-
       loadImage(image: HTMLImageElement, src: string): Promise<void> {
         return new Promise<void>((resolve, reject) => {
           image.onload = () => {
@@ -380,4 +382,3 @@ export class PromptText extends EventManager {
         });
       }
 }
-
