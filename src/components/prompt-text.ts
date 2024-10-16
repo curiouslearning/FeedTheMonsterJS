@@ -209,41 +209,22 @@ export class PromptText extends EventManager {
                     if (this.levelData.levelMeta.protoType == "Visible") {
                     if(this.targetStones.length!=this.currentPromptText.length){
                     if(this.targetStones.length>i){   
-                    if (this.droppedStoneCount > i || this.droppedStoneCount== undefined) {
-                        this.context.fillStyle = "black";
+                        this.context.fillStyle = (this.droppedStoneCount>i || this.droppedStoneCount==undefined)?"black":"red";
                         this.context.fillText(
                             this.targetStones[i],
                             startPrompttextX+startPrompttextX/10,
                             y
-                        );
-                    } else {
-                        this.context.fillStyle = "red";
-                        this.context.fillText(
-                            this.targetStones[i],
-                            startPrompttextX+startPrompttextX/10,
-                            y
-                        );
-                        break;
-                    }
-                    break;
+                        );    
                 }
                 break;
                 }else{
-                    if (this.droppedStones > i || this.droppedStones == undefined) {
-                        this.context.fillStyle = "black";
-                        this.context.fillText(
-                            this.targetStones[i],
-                            startPrompttextX,
-                            y
-                        );
-                    } else {
-                        this.context.fillStyle = "red";
+                      this.context.fillStyle = (this.droppedStones > i || this.droppedStones == undefined)?"black":"red";
                         this.context.fillText(
                             promptTextLetters[i],
                             startPrompttextX,
                             y
                         );
-                    }
+                    
                     break;
                 }}
                 else{
