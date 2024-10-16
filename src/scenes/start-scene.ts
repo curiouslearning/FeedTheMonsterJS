@@ -73,6 +73,8 @@ export class StartScene {
       DEFAULT_BG_GROUP_IMGS,
       defaultBgDrawing
     );
+
+    this.background?.draw();
   };
 
   devToggle = () => {
@@ -87,7 +89,6 @@ export class StartScene {
 
   animation = (deltaTime: number) => {
     this.context.clearRect(0, 0, this.width, this.height);
-    this.background?.draw();
     this.monster.update(deltaTime);
     this.playButton.draw();
   };

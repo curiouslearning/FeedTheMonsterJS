@@ -6,6 +6,8 @@ import {
     WINTER_BG_GROUP_IMGS
 } from '@constants';
 
+const background = document.getElementById("background");
+
 export const BACKGROUND_ASSET_LIST = {
     summer: { BG_GROUP_IMGS: DEFAULT_BG_GROUP_IMGS, draw: defaultBgDrawing },
     autumn: { BG_GROUP_IMGS: AUTUMN_BG_GROUP_IMGS, draw: autumBgDrawing },
@@ -44,13 +46,8 @@ export const loadDynamicBgAssets = (levelNumber, assetsList) => {
 export function defaultBgDrawing(context,width, height, bgImages) {
    return {
         draw: () => {
-            context.drawImage(
-                bgImages?.DEFAULT_BACKGROUND_1,
-                0,
-                0,
-                width,
-                height
-            );
+            background.className = "";
+            background.classList.add("summer-bg");
             context.drawImage(
                 bgImages?.ASSETS_PATH_TOTEM,
                 width * 0.6,
@@ -79,13 +76,8 @@ export function defaultBgDrawing(context,width, height, bgImages) {
 export function autumBgDrawing(context,width, height, bgImages) {
     return {
         draw: () => {
-            context.drawImage(
-                bgImages.AUTUMN_BACKGROUND_1,
-                0,
-                0,
-                width,
-                height
-            );
+            background.className = "";
+            background.classList.add("autumn-bg");
             context.drawImage(
                 bgImages.AUTUMN_PILLAR_1,
                 width * 0.38,
@@ -114,13 +106,8 @@ export function autumBgDrawing(context,width, height, bgImages) {
 export function winterBgDrawing(context,width, height, bgImages) {
     return {
         draw: () => {
-            context.drawImage(
-                bgImages.WINTER_BACKGROUND_1,
-                0,
-                0,
-                width,
-                height
-            );
+            background.className = "";
+            background.classList.add("winter-bg");
             context.drawImage(
                 bgImages.WINTER_PILLAR_1,
                 width * 0.38,

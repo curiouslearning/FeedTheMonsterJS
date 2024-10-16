@@ -83,7 +83,7 @@ export class GameplayScene {
   pickedStoneObject: StoneConfig;
   pausePopup: PausePopUp;
   isPauseButtonClicked: boolean = false;
-  public background: Background;
+  public background: any;
   feedBackTextCanavsElement: HTMLCanvasElement;
   feedbackTextEffects: FeedbackTextEffects;
   public isGameStarted: boolean = false;
@@ -205,17 +205,10 @@ export class GameplayScene {
   }
 
   private setupBg = async () => {
-    const { BG_GROUP_IMGS, draw } = loadDynamicBgAssets(
-      this.levelData.levelNumber,
-      BACKGROUND_ASSET_LIST
-    );
-    this.background = await createBackground(
-      this.context,
-      this.width,
-      this.height,
-      BG_GROUP_IMGS,
-      draw
-    );
+    this.background = new Background(this.context, this.width, this.height, this.levelData.levelMeta.levelNumber);
+    this.background = await this.background.setupBg();
+
+    this.background?.draw();
   };
 
   resumeGame = () => {
@@ -451,9 +444,7 @@ export class GameplayScene {
         this.tutorial.setPlayMonsterClickAnimation(false);
       }
     }
-    if (this.imagesLoaded) {
-      this.background?.draw();
-    }
+    
     this.pauseButton.draw();
     this.levelIndicators.draw();
     this.promptText.draw(deltaTime);

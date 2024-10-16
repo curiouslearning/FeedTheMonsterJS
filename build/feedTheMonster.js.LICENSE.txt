@@ -94,6 +94,8 @@
 
 /*! @compositions */
 
+/*! @compositions/background */
+
 /*! @constants */
 
 /*! @data */
