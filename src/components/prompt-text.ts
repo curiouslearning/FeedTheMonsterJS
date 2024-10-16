@@ -212,7 +212,7 @@ export class PromptText extends EventManager {
                     if (this.droppedStoneCount > i || this.droppedStoneCount== undefined) {
                         this.context.fillStyle = "black";
                         this.context.fillText(
-                            promptTextLetters[i],
+                            this.targetStones[i],
                             startPrompttextX+startPrompttextX/10,
                             y
                         );
