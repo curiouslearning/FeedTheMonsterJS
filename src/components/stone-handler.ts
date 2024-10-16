@@ -102,15 +102,19 @@ export default class StoneHandler extends EventManager {
   }
 
   draw(deltaTime: number) {
-    for (let i = 0; i < this.foilStones.length; i++) {
-      this.foilStones[i].draw(deltaTime);
-    }
-
-    if (
-      this.foilStones[this.foilStones.length - 1].frame >= 100 &&
-      !this.isGamePaused
-    ) {
-      this.timerTickingInstance.update(deltaTime);
+    if(this.foilStones.length > 0) {
+      this.foilStones.forEach((stone) => {
+        if (stone && stone.frame !== undefined) {
+          stone.draw(deltaTime);
+        }
+      });
+  
+      if (
+        this.foilStones[this.foilStones.length - 1].frame >= 100 &&
+        !this.isGamePaused
+      ) {
+        this.timerTickingInstance.update(deltaTime);
+      }
     }
   }
 
@@ -120,7 +124,7 @@ export default class StoneHandler extends EventManager {
     groupedLetters: {} | { [key:number]: string }
   ):void {
     for (let i = 0; i < this.foilStones.length; i++) {
-
+      
       if (shouldHideStoneChecker(i)) {
         this.foilStones[i].draw(
           deltaTime,
@@ -157,7 +161,7 @@ export default class StoneHandler extends EventManager {
         this.canvas.width / 4 - offsetCoordinateValue,
         this.canvas.height / 1.28 - offsetCoordinateValue,
       ],
-       [
+      [
         this.canvas.width / 7 - offsetCoordinateValue,
         this.canvas.height / 1.5 - offsetCoordinateValue,
       ],
@@ -206,6 +210,10 @@ export default class StoneHandler extends EventManager {
       false
     );
     this.unregisterEventListener();
+
+     // Clear previous stone coordinates and state
+     this.stonePos = [];
+     this.foilStones = [];
   }
 
   public isStoneLetterDropCorrect(
@@ -253,12 +261,12 @@ export default class StoneHandler extends EventManager {
         );
       }
     } else {
-       this.audioPlayer.playFeedbackAudios(
-          false,
-          AUDIO_PATH_EATS,
-          AUDIO_PATH_MONSTER_SPIT,
-          Math.round(Math.random()) > 0 ? AUDIO_PATH_MONSTER_DISSAPOINTED : null
-        );
+      this.audioPlayer.playFeedbackAudios(
+        false,
+        AUDIO_PATH_EATS,
+        AUDIO_PATH_MONSTER_SPIT,
+        Math.round(Math.random()) > 0 ? AUDIO_PATH_MONSTER_DISSAPOINTED : null
+      );
     }
   }
 
@@ -329,11 +337,11 @@ export default class StoneHandler extends EventManager {
     const stoneObj = pickedStoneObject;
     //Resets the previous stone letter to its original position.
     if (
-        stone &&
-        stoneObj &&
-        stone.text &&
-        typeof stoneObj.origx === "number" &&
-        typeof stoneObj.origy === "number"
+      stone &&
+      stoneObj &&
+      stone.text &&
+      typeof stoneObj.origx === "number" &&
+      typeof stoneObj.origy === "number"
     ) {
       const xLimit = 50;
       const halfWidth = width / 2;
@@ -359,10 +367,10 @@ export default class StoneHandler extends EventManager {
     for (let sc of this.foilStones) {
       const distance = this.computeCursorDistance(posX, posY, sc);
       if (distance <= 40) {
-          stoneLetter = sc;
-          /* Adds a unique identifier to tell which letter is which in case there are two or more of the same letter.*/
-          stoneLetter['foilStoneIndex'] = ctr;
-          break;
+        stoneLetter = sc;
+        /* Adds a unique identifier to tell which letter is which in case there are two or more of the same letter.*/
+        stoneLetter['foilStoneIndex'] = ctr;
+        break;
       }
       ctr++;
     };
