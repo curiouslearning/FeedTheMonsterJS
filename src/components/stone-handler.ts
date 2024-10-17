@@ -210,6 +210,10 @@ export default class StoneHandler extends EventManager {
       false
     );
     this.unregisterEventListener();
+
+     // Clear previous stone coordinates and state
+     this.stonePos = [];
+     this.foilStones = [];
   }
 
   public isStoneLetterDropCorrect(
