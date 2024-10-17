@@ -101,6 +101,7 @@ export class GameplayScene {
   clickTrailToggle: boolean;
   hasFed: boolean;
   wordPuzzleLogic:any;
+  isListenerActive: boolean;
 
   constructor(
     canvas,
@@ -202,6 +203,7 @@ export class GameplayScene {
     this.hasFed = false;
 
     this.wordPuzzleLogic = new WordPuzzleLogic(levelData, this.counter);
+    this.isListenerActive = false;
   }
 
   private setupBg = async () => {
@@ -479,6 +481,9 @@ export class GameplayScene {
   }
 
   private handleStoneLetterDrawing(deltaTime) {
+    if (this.isListenerActive) {
+      this.addEventListeners();
+    }
     if (this.wordPuzzleLogic.checkIsWordPuzzle()) {
       const { groupedObj } = this.wordPuzzleLogic.getValues();
       this.stoneHandler.drawWordPuzzleLetters(
@@ -491,9 +496,13 @@ export class GameplayScene {
     } else {
       this.stoneHandler.draw(deltaTime);
     }
+    this.isListenerActive = true;
   }
 
   addEventListeners() {
+    if (!this.isListenerActive) {
+      return; // Don't set mouse listeners if dragging is disabled
+    }
     this.handler.addEventListener(MOUSEUP, this.handleMouseUp, false);
     this.handler.addEventListener(MOUSEMOVE, this.handleMouseMove, false);
     this.handler.addEventListener(MOUSEDOWN, this.handleMouseDown, false);
@@ -502,6 +511,7 @@ export class GameplayScene {
     this.handler.addEventListener(TOUCHMOVE, this.handleTouchMove, false);
     this.handler.addEventListener(TOUCHEND, this.handleTouchEnd, false);
     this.handler.addEventListener(CLICK, this.handleMouseClick, false);
+    
     document.addEventListener(
       VISIBILITY_CHANGE,
       this.handleVisibilityChange,
@@ -510,6 +520,7 @@ export class GameplayScene {
   }
 
   removeEventListeners() {
+    this.isListenerActive = false;
     // Remove event listeners using the defined functions
     this.handler.removeEventListener(CLICK, this.handleMouseClick, false);
     this.handler.removeEventListener("mouseup", this.handleMouseUp, false);
