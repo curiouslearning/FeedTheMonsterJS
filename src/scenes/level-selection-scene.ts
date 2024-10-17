@@ -56,7 +56,7 @@ export class LevelSelectionScreen {
   private leftBtnX: number;
   private leftBtnY: number;
   private levelButtons: any
-
+  public riveMonsterElement: HTMLCanvasElement;
   constructor(canvas: HTMLCanvasElement, data: any, callBack: Function) {
     this.canvas = canvas;
     this.data = data;
@@ -71,6 +71,8 @@ export class LevelSelectionScreen {
     this.levels = [];
     this.firebaseIntegration = new FirebaseIntegration();
     this.init();
+    this.riveMonsterElement = document.getElementById("rivecanvas") as HTMLCanvasElement;
+
     this.canvasElement = document.getElementById("canvas") as HTMLCanvasElement;
     this.context = this.canvasElement.getContext("2d");
     this.createLevelButtons();
@@ -88,6 +90,7 @@ export class LevelSelectionScreen {
         10 * Math.floor(this.previousPlayedLevelNumber / 10);
     }
     this.setupBg();
+    this.riveMonsterElement.style.zIndex = "-1";
     this.images = {
       nextbtn: NEXT_BTN_IMG,
       backbtn: BACK_BTN_IMG,
