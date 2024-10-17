@@ -52,7 +52,7 @@ export class Monster extends EventManager {
     width: this.canvasElement.width, // Example width and height, adjust as needed
     height: this.canvasElement.height,
     onLoad: () => {
-      this.riveMonster.play("Eat Happy"); // Start with the "Idle" animation
+      this.riveMonster.play("Eat Happy"); // Start with the "Eat Happy" animation
     }
   });
   }
