@@ -101,7 +101,7 @@ export class GameplayScene {
   clickTrailToggle: boolean;
   hasFed: boolean;
   wordPuzzleLogic:any;
-
+  public riveMonsterElement: HTMLCanvasElement;
   constructor(
     canvas,
     levelData,
@@ -146,7 +146,7 @@ export class GameplayScene {
       this.timerTicking
     );
     this.tutorial = new Tutorial(this.context, canvas.width, canvas.height);
-
+    this.riveMonsterElement = document.getElementById("rivecanvas") as HTMLCanvasElement;
     this.promptText = new PromptText(
       this.width,
       this.height,
@@ -200,7 +200,7 @@ export class GameplayScene {
     this.trailParticles?.init();
     this.clickTrailToggle = false;
     this.hasFed = false;
-
+    this.riveMonsterElement.style.zIndex = "4";
     this.wordPuzzleLogic = new WordPuzzleLogic(levelData, this.counter);
   }
 

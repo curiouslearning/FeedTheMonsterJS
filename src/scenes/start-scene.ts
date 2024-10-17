@@ -62,8 +62,8 @@ export class StartScene {
       stateMachines: "State Machine 1",
       fit: "contain",
       alignment: "topCenter",
-      width: 300, // Example width and height, adjust as needed
-      height: 300,
+      width: this.canavsElement.width, // Example width and height, adjust as needed
+      height: this.canavsElement.height,
       onLoad: () => {
         this.riveMonster.play("Idle"); // Start with the "Idle" animation
       }
@@ -78,6 +78,7 @@ export class StartScene {
     this.setupBg();
     this.titleTextElement = document.getElementById("title");
     this.generateGameTitle();
+    this.riveMonsterElement.style.zIndex = '6';
   }
 
   private setupBg = async () => {

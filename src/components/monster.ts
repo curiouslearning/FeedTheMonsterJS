@@ -49,10 +49,10 @@ export class Monster extends EventManager {
     stateMachines: "State Machine 1",
     fit: "contain",
     alignment: "topCenter",
-    width: 300, // Example width and height, adjust as needed
-    height: 300,
+    width: this.canvasElement.width, // Example width and height, adjust as needed
+    height: this.canvasElement.height,
     onLoad: () => {
-      this.riveMonster.play("Idle"); // Start with the "Idle" animation
+      this.riveMonster.play("Eat Happy"); // Start with the "Idle" animation
     }
   });
   }

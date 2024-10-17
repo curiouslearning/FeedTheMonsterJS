@@ -80,7 +80,7 @@ img {
   transform: translate(-50%, 0%);
   /* aspect-ratio: 2/3; */
   max-height: -webkit-fill-available;
-  z-index: 6;
+  z-index: 5;
   background-repeat: no-repeat;
   background-size: cover;
 }

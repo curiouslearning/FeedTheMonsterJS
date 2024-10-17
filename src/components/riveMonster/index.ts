@@ -5,8 +5,8 @@ interface RiveMonsterComponentProps {
     canvas: HTMLCanvasElement;  // Canvas element where the animation will render
     autoplay: boolean;
     stateMachines?: string;  // Optional, state machine for animation control
-    fit?: string;  // Fit property (e.g., contain, cover, etc.)
-    alignment?: string;  // Alignment property (e.g., topCenter, bottomLeft, etc.)
+    fit?: string;  // Fit property (e.g contain, cover, etc.)
+    alignment?: string;  // Alignment property (e.g topCenter, bottomLeft, etc.)
     width?: number;  // Optional width for the Rive animation
     height?: number;  // Optional height for the Rive animation
     onLoad?: () => void;  // Callback once Rive animation is loaded
@@ -18,7 +18,7 @@ export class RiveMonsterComponent {
   
     constructor(props: RiveMonsterComponentProps) {
       this.props = props;
-  
+      
       // Initialize Rive
       this.riveInstance = new Rive({
         src: this.props.src,
