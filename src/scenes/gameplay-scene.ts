@@ -40,11 +40,6 @@ import {
   ASSETS_PATH_MONSTER_IDLE,
   PreviousPlayedLevel,
 } from "@constants";
-import {
-  BACKGROUND_ASSET_LIST,
-  createBackground,
-  loadDynamicBgAssets,
-} from "@compositions";
 import { WordPuzzleLogic } from '@gamepuzzles';
 
 export class GameplayScene {
@@ -196,27 +191,12 @@ export class GameplayScene {
       : localStorage.setItem(PreviousPlayedLevel + lang, previousPlayedLevel);
     this.addEventListeners();
     this.resetAnimationID = 0;
-    // this.setupBg();
     this.trailParticles?.init();
     this.clickTrailToggle = false;
     this.hasFed = false;
     this.riveMonsterElement.style.zIndex = "4";
     this.wordPuzzleLogic = new WordPuzzleLogic(levelData, this.counter);
   }
-
-  private setupBg = async () => {
-    const { BG_GROUP_IMGS, draw } = loadDynamicBgAssets(
-      this.levelData.levelNumber,
-      BACKGROUND_ASSET_LIST
-    );
-    this.background = await createBackground(
-      this.context,
-      this.width,
-      this.height,
-      BG_GROUP_IMGS,
-      draw
-    );
-  };
 
   resumeGame = () => {
     this.addEventListeners();

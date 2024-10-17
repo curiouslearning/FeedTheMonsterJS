@@ -104,7 +104,6 @@ export class StartScene {
   animation = (deltaTime: number) => {
     this.context.clearRect(0, 0, this.width, this.height);
     this.background?.draw();
-    // this.monster.update(deltaTime);
     this.playButton.draw();
   };
 
@@ -145,7 +144,6 @@ export class StartScene {
   };
 
   dispose() {
-    // this.monster.dispose();
     this.audioPlayer.stopAllAudios();
     this.handler.removeEventListener("click", this.handleMouseClick, false);
     window.removeEventListener(
