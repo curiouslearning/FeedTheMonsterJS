@@ -101,7 +101,6 @@ export class GameplayScene {
   clickTrailToggle: boolean;
   hasFed: boolean;
   wordPuzzleLogic:any;
-  isListenerActive: boolean;
 
   constructor(
     canvas,
@@ -203,7 +202,6 @@ export class GameplayScene {
     this.hasFed = false;
 
     this.wordPuzzleLogic = new WordPuzzleLogic(levelData, this.counter);
-    this.isListenerActive = false;
   }
 
   private setupBg = async () => {
@@ -298,6 +296,10 @@ export class GameplayScene {
     const x = event.clientX - rect.left;
     const y = event.clientY - rect.top;
 
+    if (this.pickedStone && this.pickedStone.frame <= 99) {
+      return; // Prevent dragging if the stone is animating
+    }
+
     if (!this.wordPuzzleLogic.checkIsWordPuzzle()) {
       /*To Do: Move all logic relating to stone handling including updating its coordnates to stone-handler.ts
         Note: Will have to eventually remove this and use the handlePickStoneUp in stone-handler.ts
@@ -337,12 +339,16 @@ export class GameplayScene {
   }
 
   handleMouseMove = (event) => {
+    if (this.pickedStone && this.pickedStone.frame <= 99) {
+      return; // Prevent dragging if the stone is animating
+    }
+
     let trailX = event.clientX;
     let trailY = event.clientY
 
     if (this.pickedStone) {
       if (!this.wordPuzzleLogic.checkIsWordPuzzle()) {
-         /*To Do: Move all logic relating to stone handling including updating its coordnates to stone-handler.ts
+        /*To Do: Move all logic relating to stone handling including updating its coordnates to stone-handler.ts
           Note: Will have to eventually remove this and use the handleMovingStoneLetter in stone-handler.ts
           Will leave this for now to avoid affecting Letter Only puzzles with Word play puzzles implementation of multi-letter feature.
         */
@@ -481,9 +487,6 @@ export class GameplayScene {
   }
 
   private handleStoneLetterDrawing(deltaTime) {
-    if (this.isListenerActive) {
-      this.addEventListeners();
-    }
     if (this.wordPuzzleLogic.checkIsWordPuzzle()) {
       const { groupedObj } = this.wordPuzzleLogic.getValues();
       this.stoneHandler.drawWordPuzzleLetters(
@@ -496,19 +499,14 @@ export class GameplayScene {
     } else {
       this.stoneHandler.draw(deltaTime);
     }
-    this.isListenerActive = true;
   }
 
   addEventListeners() {
-    if (!this.isListenerActive) {
-      return; // Don't set mouse listeners if dragging is disabled
-    }
     this.handler.addEventListener(MOUSEUP, this.handleMouseUp, false);
-    this.handler.addEventListener(MOUSEMOVE, this.handleMouseMove, false);
     this.handler.addEventListener(MOUSEDOWN, this.handleMouseDown, false);
-
-    this.handler.addEventListener(TOUCHSTART, this.handleTouchStart, false);
+    this.handler.addEventListener(MOUSEMOVE, this.handleMouseMove, false);
     this.handler.addEventListener(TOUCHMOVE, this.handleTouchMove, false);
+    this.handler.addEventListener(TOUCHSTART, this.handleTouchStart, false);
     this.handler.addEventListener(TOUCHEND, this.handleTouchEnd, false);
     this.handler.addEventListener(CLICK, this.handleMouseClick, false);
     
@@ -520,7 +518,6 @@ export class GameplayScene {
   }
 
   removeEventListeners() {
-    this.isListenerActive = false;
     // Remove event listeners using the defined functions
     this.handler.removeEventListener(CLICK, this.handleMouseClick, false);
     this.handler.removeEventListener("mouseup", this.handleMouseUp, false);
@@ -611,6 +608,9 @@ export class GameplayScene {
   }
 
   public wordPuzzle(droppedStoneInstance: StoneConfig) {
+    if (droppedStoneInstance.frame <= 99) {
+      return;
+    }
     this.audioPlayer.stopFeedbackAudio();
     droppedStoneInstance.x = -999;
     droppedStoneInstance.y = -999;
