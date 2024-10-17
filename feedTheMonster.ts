@@ -39,6 +39,7 @@ class App {
   private feedBackTextElement: HTMLElement | null;
   public currentProgress:any;
   firebaseIntegration: FirebaseIntegration;
+
   constructor(lang: string) {
     this.lang = lang;
     this.currentProgress = 10; // Initialize progress to 0

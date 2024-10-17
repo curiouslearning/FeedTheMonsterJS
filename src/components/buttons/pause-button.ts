@@ -1,5 +1,7 @@
 import { isClickInsideButton, loadImages } from "@common";
 import { PAUSE_BTN_IMG } from "@constants";
+import { StateEvents } from '@gameEvents';
+import { SET_GAME_DATA } from '@constants';
 export default class PauseButton {
   public posX: number;
   public posY: number;
@@ -67,6 +69,7 @@ export default class PauseButton {
       this.btnSizeAnimation = 0.085;
       this.posX = this.posX + 0.9;
       this.posY = this.posY + 0.9;
+      StateEvents.publish(SET_GAME_DATA, { isGamePaused: true });
     }
 
     return isInside;

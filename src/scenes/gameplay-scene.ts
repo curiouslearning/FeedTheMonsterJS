@@ -46,6 +46,8 @@ import {
   loadDynamicBgAssets,
 } from "@compositions";
 import { WordPuzzleLogic } from '@gamepuzzles';
+import { StateEvents } from '../game-events';
+import { SET_GAME_DATA, UPDATED_GAMEPLAY_DATA } from '@constants';
 
 export class GameplayScene {
   public width: number;
@@ -82,7 +84,7 @@ export class GameplayScene {
   handler: HTMLElement;
   pickedStoneObject: StoneConfig;
   pausePopup: PausePopUp;
-  isPauseButtonClicked: boolean = false;
+  isPauseButtonClicked: boolean;
   public background: Background;
   feedBackTextCanavsElement: HTMLCanvasElement;
   feedbackTextEffects: FeedbackTextEffects;
@@ -102,50 +104,36 @@ export class GameplayScene {
   hasFed: boolean;
   wordPuzzleLogic:any;
 
-  constructor(
-    canvas,
-    levelData,
-    monsterPhaseNumber,
-    feedBackTexts,
-    rightToLeft,
-    switchSceneToEnd,
-    levelNumber,
-    switchToLevelSelection,
-    reloadScene,
-    jsonVersionNumber,
-    feedbackAudios
-  ) {
-    this.width = canvas.width;
-    this.height = canvas.height;
-    this.rightToLeft = rightToLeft;
-    this.canvas = canvas;
-    this.context = this.canvas.getContext("2d", { willReadFrequently: true });
-    this.trailParticles = new TrailEffect(canvas);
-    this.monsterPhaseNumber = monsterPhaseNumber || 1;
-    this.levelData = levelData;
-    this.switchSceneToEnd = switchSceneToEnd;
-    this.levelNumber = levelNumber;
-    this.switchToLevelSelection = switchToLevelSelection;
-    this.reloadScene = reloadScene;
-    this.jsonVersionNumber = jsonVersionNumber;
+  constructor(gamePlayDAO) {
+    this.gamePlayDataListener(gamePlayDAO)
+    this.trailParticles = new TrailEffect(gamePlayDAO.canvas);
+    this.monsterPhaseNumber = gamePlayDAO.monsterPhaseNumber || 1;
+    this.switchSceneToEnd = gamePlayDAO.switchSceneToEnd;
+    this.switchToLevelSelection = gamePlayDAO.switchToLevelSelection;
+    this.reloadScene = gamePlayDAO.reloadScene;
     this.startGameTime();
     this.startPuzzleTime();
     this.isDisposing = false;
-    this.pauseButton = new PauseButton(this.context, this.canvas);
+    this.pauseButton = new PauseButton(gamePlayDAO.gameCanvasContext, this.canvas);
     this.timerTicking = new TimerTicking(
       this.width,
       this.height,
       this.loadPuzzle
     );
+
     this.stoneHandler = new StoneHandler(
-      this.context,
+      gamePlayDAO.gameCanvasContext,
       this.canvas,
       this.counter,
       this.levelData,
-      feedbackAudios,
+      gamePlayDAO.feedbackAudios,
       this.timerTicking
     );
-    this.tutorial = new Tutorial(this.context, canvas.width, canvas.height);
+    this.tutorial = new Tutorial(
+      gamePlayDAO.gameCanvasContext,
+      gamePlayDAO.width,
+      gamePlayDAO.height
+    );
 
     this.promptText = new PromptText(
       this.width,
@@ -155,7 +143,7 @@ export class GameplayScene {
       this.rightToLeft
     );
 
-    this.levelIndicators = new LevelIndicators(this.context, this.canvas, 0);
+    this.levelIndicators = new LevelIndicators(gamePlayDAO.gameCanvasContext, this.canvas, 0);
 
     this.levelIndicators.setIndicators(this.counter);
     this.monster = new Monster(this.canvas, this.monsterPhaseNumber);
@@ -166,18 +154,16 @@ export class GameplayScene {
       this.switchToLevelSelection,
       this.reloadScene,
       {
-        currentLevelData: levelData,
-        selectedLevelNumber: levelNumber,
+        currentLevelData: gamePlayDAO.levelData,
+        selectedLevelNumber: gamePlayDAO.levelNumber,
       }
     );
     this.firebaseIntegration = new FirebaseIntegration();
-
     this.feedbackTextEffects = new FeedbackTextEffects();
-
     this.audioPlayer = new AudioPlayer();
     this.handler = document.getElementById("canvas");
-    this.puzzleData = levelData.puzzles;
-    this.feedBackTexts = feedBackTexts;
+    this.puzzleData = gamePlayDAO.levelData.puzzles;
+    this.feedBackTexts = gamePlayDAO.feedBackTexts;
 
     this.images = {
       profileMonster: ASSETS_PATH_MONSTER_IDLE,
@@ -201,7 +187,22 @@ export class GameplayScene {
     this.clickTrailToggle = false;
     this.hasFed = false;
 
-    this.wordPuzzleLogic = new WordPuzzleLogic(levelData, this.counter);
+    this.wordPuzzleLogic = new WordPuzzleLogic(gamePlayDAO.levelData, this.counter);
+
+    StateEvents.subscribe(UPDATED_GAMEPLAY_DATA, this.gamePlayDataListener.bind(this));
+    StateEvents.testCheckSubscribers(); //for testing
+  }
+
+  gamePlayDataListener(gameData){
+    this.isPauseButtonClicked = gameData?.isGamePaused;
+    this.width = gameData.width;
+    this.height = gameData.height;
+    this.rightToLeft = gameData.rightToLeft;
+    this.canvas = gameData.canvas;
+    this.context = gameData.gameCanvasContext;
+    this.levelData = gameData.levelData;
+    this.levelNumber = gameData.levelNumber;
+    this.jsonVersionNumber = gameData.jsonVersionNumber;
   }
 
   private setupBg = async () => {
@@ -220,7 +221,6 @@ export class GameplayScene {
 
   resumeGame = () => {
     this.addEventListeners();
-    this.isPauseButtonClicked = false;
     this.stoneHandler.setGamePause(false);
     this.pausePopup.dispose();
   };
@@ -736,7 +736,6 @@ export class GameplayScene {
 
   public pauseGamePlay = () => {
     this.removeEventListeners();
-    this.isPauseButtonClicked = true;
     this.stoneHandler.setGamePause(true);
     this.pausePopup.addListner();
     this.audioPlayer.stopAllAudios();

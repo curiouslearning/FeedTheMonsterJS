@@ -21,8 +21,10 @@ import {
   NEXT_BTN_IMG,
   BACK_BTN_IMG,
   AUDIO_INTRO,
+  SET_GAME_DATA
 } from "@constants";
 import { LevelBloonButton } from '@buttons';
+import { StateEvents } from '@gameEvents';
 
 export class LevelSelectionScreen {
   private canvas: HTMLCanvasElement;
@@ -362,8 +364,9 @@ export class LevelSelectionScreen {
       },
       selectedLevelNumber: level_number,
     };
+    StateEvents.publish(SET_GAME_DATA, { gamePlayData: gamePlayData });
     this.logSelectedLevelEvent();
-    this.callBack(gamePlayData, "LevelSelection");
+    this.callBack("LevelSelection");
   }
   public logSelectedLevelEvent() {
     const selectedLeveltData: SelectedLevel = {

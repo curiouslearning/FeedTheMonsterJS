@@ -13,6 +13,7 @@ import {
   PWAInstallStatus,
   DEFAULT_BG_GROUP_IMGS,
 } from "@constants";
+import { StateEvents } from '@gameEvents';
 
 export class StartScene {
   public canvas: HTMLCanvasElement;

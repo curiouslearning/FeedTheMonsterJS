@@ -18,6 +18,7 @@ import {
   GameScene1,
   EndScene1,
 } from "@constants";
+import { GameState } from '@gameState';
 
 export class SceneHandler {
   public canvas: HTMLCanvasElement;
@@ -33,12 +34,13 @@ export class SceneHandler {
   public static SceneName: string;
   public loadingScreen: LoadingScene;
   public loading: boolean = false;
-
   private lastTime: number = 0;
   private toggleBtn: HTMLElement;
   private titleTextElement: HTMLElement;
+  private gameState: any; //WIP to improve
 
   constructor(canvas: HTMLCanvasElement, data: DataModal) {
+    this.gameState = new GameState(canvas, data);
     this.canvas = canvas;
     this.data = data;
     this.width = canvas.width;
@@ -61,6 +63,7 @@ export class SceneHandler {
     );
     this.startAnimationLoop();
   }
+
 
   startAnimationLoop() {
     const animate = (timeStamp: number) => {
@@ -108,31 +111,21 @@ export class SceneHandler {
     }
   };
 
-  switchSceneToGameplay = (gamePlayData, changeSceneRequestFrom?: string) => {
+  switchSceneToGameplay = (changeSceneRequestFrom?: string) => {
+    const gamePlayDAO = this.gameState.getGamePlayDAO();
     this.showLoading();
     this.dispose(changeSceneRequestFrom);
-    let jsonVersionNumber =
-      !!this.data.majVersion && !!this.data.minVersion
-        ? this.data.majVersion.toString() +
-          "." +
-          this.data.minVersion.toString()
-        : "";
+
     setTimeout(() => {
-      this.gameplayScene = new GameplayScene(
-        this.canvas,
-        gamePlayData.currentLevelData,
-        this.checkMonsterPhaseUpdation(),
-        this.data.FeedbackTexts,
-        this.data.rightToLeft,
-        this.switchSceneToEndLevel,
-        gamePlayData.selectedLevelNumber,
-        () => {
+      this.gameplayScene = new GameplayScene({
+        ...gamePlayDAO,
+        monsterPhaseNumber: this.checkMonsterPhaseUpdation(),
+        switchSceneToEnd: this.switchSceneToEndLevel,
+        switchToLevelSelection: () => {
           this.switchSceneToLevelSelection(SCENE_NAME_GAME_PLAY);
         },
-        this.switchSceneToGameplay,
-        jsonVersionNumber,
-        this.data.FeedbackAudios
-      );
+        reloadScene: this.switchSceneToGameplay
+      });
       SceneHandler.SceneName = GameScene1;
     }, 800);
   };

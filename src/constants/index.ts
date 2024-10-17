@@ -146,3 +146,9 @@ export const SCENE_NAME_LEVEL_END = "LevelEnd";
 
 //Levels
 export const SPECIAL_LEVELS = [5, 13, 20, 30, 42];
+
+//state events
+export const SET_GAME_DATA = 'SET_GAME_DATA';
+export const UPDATED_GAMEPLAY_DATA = 'UPDATED_GAMEPLAY_DATA';
+
+
