@@ -350,7 +350,7 @@ export class GameplayScene {
 
     if (this.pickedStone) {
       if (!this.wordPuzzleLogic.checkIsWordPuzzle()) {
-        /*To Do: Move all logic relating to stone handling including updating its coordnates to stone-handler.ts
+         /*To Do: Move all logic relating to stone handling including updating its coordnates to stone-handler.ts
           Note: Will have to eventually remove this and use the handleMovingStoneLetter in stone-handler.ts
           Will leave this for now to avoid affecting Letter Only puzzles with Word play puzzles implementation of multi-letter feature.
         */
