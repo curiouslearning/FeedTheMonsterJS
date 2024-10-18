@@ -592,6 +592,9 @@ export class GameplayScene {
   }
 
   public letterPuzzle(droppedStone: string) {
+    if (this.pickedStone.frame <= 99) {
+      return; // Prevent dragging if the stone is animating
+    }
     const feedBackIndex = this.getRandomInt(0, 1);
     const isCorrect = this.checkStoneDropped(
       droppedStone,
@@ -605,7 +608,7 @@ export class GameplayScene {
 
   public wordPuzzle(droppedStoneInstance: StoneConfig) {
     if (droppedStoneInstance.frame <= 99) {
-      return;
+      return; // Prevent dragging if the stone is animating
     }
     this.audioPlayer.stopFeedbackAudio();
     droppedStoneInstance.x = -999;
