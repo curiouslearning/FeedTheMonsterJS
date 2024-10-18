@@ -1,12 +1,5 @@
 import { DataModal } from "@data";
-import {
-  SCENE_NAME_START,
-  SCENE_NAME_LEVEL_SELECT,
-  SCENE_NAME_GAME_PLAY,
-  SCENE_NAME_LEVEL_END,
-  PWAInstallStatus,
-
-} from "@constants";
+import { SCENE_NAME_START } from "@constants";
 
 export class GameData {
     data: null | DataModal;
@@ -41,7 +34,7 @@ export class GameData {
         },
         selectedLevelNumber: number
 
-    } //to do
+    };
     feedbackTexts: null |  {
         amazing: string,
         fantastic: string,
@@ -55,17 +48,6 @@ export class GameData {
         fantastic: string,
         great: string
     }
-    /*
-    levelData: {
-        currentLevelData: {
-            levelMeta
-            levelNumber
-            puzzles: []
-        },
-        selectedLevelNumber: number
-
-    }
-    */
 
     constructor() {
         this.data = null;

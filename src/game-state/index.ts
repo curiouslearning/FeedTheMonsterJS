@@ -9,7 +9,6 @@ import {
     SCENE_NAME_LEVEL_END,
     SET_CURRENT_SCENE_EVENT,
     UPDATED_CURRENT_SCENE_EVENT,
-    
     SET_GAMEPLAY_DATA_EVENT,
     UPDATED_GAMEPLAY_DATA_EVENT,
     SET_GAME_PAUSE_EVENT,
@@ -22,14 +21,17 @@ export class GameState extends StateEvents {
     constructor() {
         super();
         this.gameData = new GameData();
+        this.gameStateSetSceneListener = this.gameStateSetSceneListener.bind(this);
+        this.gameStateGamePlayDataListener = this.gameStateGamePlayDataListener.bind(this);
+        this.updateGamePauseActivity = this.updateGamePauseActivity.bind(this);
         this.initListeners();
     }
 
     private initListeners() {
         //Global listener for any publish event to update game state.
-        this.subscribe(SET_CURRENT_SCENE_EVENT, this.gameStateSetSceneListener.bind(this));
-        this.subscribe(SET_GAMEPLAY_DATA_EVENT, this.gameStateGamePlayDataListener.bind(this));
-        this.subscribe(SET_GAME_PAUSE_EVENT, this.updateGamePauseActivity.bind(this));
+        this.subscribe(SET_CURRENT_SCENE_EVENT, this.gameStateSetSceneListener);
+        this.subscribe(SET_GAMEPLAY_DATA_EVENT, this.gameStateGamePlayDataListener);
+        this.subscribe(SET_GAME_PAUSE_EVENT, this.updateGamePauseActivity);
     }
 
     private gameStateSetSceneListener(nextScene: string) {
@@ -55,7 +57,7 @@ export class GameState extends StateEvents {
     }
 
     private gameStateGamePlayDataListener(gamePlayData) {
-        //Updated gamePlayData comes from level selection and level end scene.
+        //Updated gamePlayData comes from level-selection and level-end scene.
         this.gameData.gamePlayData = gamePlayData;
         this.notifySubscribers(UPDATED_GAMEPLAY_DATA_EVENT, createGameplaySceneDAO(this.gameData));
     }
@@ -74,7 +76,6 @@ export class GameState extends StateEvents {
         canvas: HTMLCanvasElement,
         canavsElement: HTMLCanvasElement
     ) {
-        console.log('before this.gameData ', this.gameData)
         //Original game data from FeedTheMonster.ts.
         this.gameData.data = data;
         //HTML and Canvas state values.
@@ -94,15 +95,11 @@ export class GameState extends StateEvents {
         this.gameData.majVersion = data.majVersion;
         this.gameData.minVersion = data.minVersion;
         //Game state values - Level End Scene Data - To Do Add Below Here
-        console.log('after this.gameData ', this.gameData)
     }
 
     getGamePlayDAO() {
-        console.log('this.gameData ', this.gameData)
         return createGameplaySceneDAO(this.gameData);
     }
-
-
 };
 
 const gameStateInstance = new GameState();

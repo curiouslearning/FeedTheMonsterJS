@@ -104,7 +104,13 @@ export class GameplayScene {
   hasFed: boolean;
   wordPuzzleLogic:any;
 
-  constructor(gamePlayDAO) {
+  constructor({
+    monsterPhaseNumber,
+    switchSceneToEnd,
+    switchToLevelSelection,
+    reloadScene
+  }) {
+    const gamePlayDAO = gameState.getGamePlayDAO();
     this.isPauseButtonClicked = gamePlayDAO?.isGamePaused;
     this.width = gamePlayDAO.width;
     this.height = gamePlayDAO.height;
@@ -115,10 +121,10 @@ export class GameplayScene {
     this.levelNumber = gamePlayDAO.levelNumber;
     this.jsonVersionNumber = gamePlayDAO.jsonVersionNumber;
     this.trailParticles = new TrailEffect(gamePlayDAO.canvas);
-    this.monsterPhaseNumber = gamePlayDAO.monsterPhaseNumber || 1;
-    this.switchSceneToEnd = gamePlayDAO.switchSceneToEnd;
-    this.switchToLevelSelection = gamePlayDAO.switchToLevelSelection;
-    this.reloadScene = gamePlayDAO.reloadScene;
+    this.monsterPhaseNumber = monsterPhaseNumber || 1;
+    this.switchSceneToEnd = switchSceneToEnd;
+    this.switchToLevelSelection = switchToLevelSelection;
+    this.reloadScene = reloadScene;
     this.startGameTime();
     this.startPuzzleTime();
     this.isDisposing = false;
@@ -152,10 +158,8 @@ export class GameplayScene {
     );
 
     this.levelIndicators = new LevelIndicators(gamePlayDAO.gameCanvasContext, this.canvas, 0);
-
     this.levelIndicators.setIndicators(this.counter);
     this.monster = new Monster(this.canvas, this.monsterPhaseNumber);
-
     this.pausePopup = new PausePopUp(
       this.canvas,
       this.resumeGame,
@@ -196,8 +200,8 @@ export class GameplayScene {
     this.hasFed = false;
 
     this.wordPuzzleLogic = new WordPuzzleLogic(gamePlayDAO.levelData, this.counter);
-
-    gameState.subscribe(UPDATED_GAME_PAUSE_EVENT, this.gameplayPauseListener.bind(this));
+     this.gameplayPauseListener =  this.gameplayPauseListener.bind(this);
+    gameState.subscribe(UPDATED_GAME_PAUSE_EVENT, this.gameplayPauseListener);
     gameState.testCheckSubscribers(); //for testing
   }
 
@@ -563,6 +567,7 @@ export class GameplayScene {
   };
 
   public dispose = () => {
+    gameState.unsubscribe(UPDATED_GAME_PAUSE_EVENT, this.gameplayPauseListener);
     this.isDisposing = true;
     this.audioPlayer.stopAllAudios();
     this.monster.dispose();

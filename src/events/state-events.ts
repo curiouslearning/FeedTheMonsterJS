@@ -16,9 +16,12 @@ export class StateEvents {
     }
 
     unsubscribe(event, listener){
+        console.log('unsubscribe event ', event)
         if(!this.subscribers[event]) return;
         //Remove function listed in the event.
         this.subscribers[event] = this.subscribers[event].filter(fn => fn !== listener);
+
+        console.log('updated subscribers ', this.subscribers)
     }
 
     publish(event, data) {

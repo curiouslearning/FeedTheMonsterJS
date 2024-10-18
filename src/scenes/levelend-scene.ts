@@ -15,7 +15,10 @@ import {
   PIN_STAR_2,
   PIN_STAR_3,
   WIN_BG,
+  SCENE_NAME_LEVEL_END,
+  SET_GAMEPLAY_DATA_EVENT
 } from "@constants";
+import gameState from '@gameState';
 
 export class LevelEndScene {
   public canvas: HTMLCanvasElement;
@@ -218,11 +221,11 @@ export class LevelEndScene {
 
     if (this.closeButton.onClick(x, y)) {
       this.audioPlayer.playButtonClickSound();
-      this.switchToLevelSelectionCB("LevelEnd");
+      this.switchToLevelSelectionCB(SCENE_NAME_LEVEL_END);
     }
     if (this.retryButton.onClick(x, y)) {
       this.audioPlayer.playButtonClickSound();
-      let gamePlayData = {
+      const gamePlayData = {
         currentLevelData: {
           ...this.data.levels[this.currentLevel],
           levelNumber: this.currentLevel,
@@ -230,20 +233,21 @@ export class LevelEndScene {
         selectedLevelNumber: this.currentLevel,
       };
       // pass same data as level is same
-      this.switchToGameplayCB(gamePlayData, "LevelEnd");
+      gameState.publish(SET_GAMEPLAY_DATA_EVENT, gamePlayData);
+      this.switchToGameplayCB(SCENE_NAME_LEVEL_END);
     }
     if (
       this.isLastLevel &&
       this.nextButton.onClick(x, y)
     ) {
       this.audioPlayer.playButtonClickSound();
-      let next = Number(this.currentLevel) + 1;
-      let gamePlayData = {
+      const next = Number(this.currentLevel) + 1;
+      const gamePlayData = {
         currentLevelData: { ...this.data.levels[next], levelNumber: next },
         selectedLevelNumber: next,
       };
-
-      this.switchToGameplayCB(gamePlayData, "LevelEnd");
+      gameState.publish(SET_GAMEPLAY_DATA_EVENT, gamePlayData);
+      this.switchToGameplayCB(SCENE_NAME_LEVEL_END);
     }
   };
   pauseAudios = () => {

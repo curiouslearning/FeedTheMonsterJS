@@ -118,13 +118,10 @@ export class SceneHandler {
   };
 
   switchSceneToGameplay = (changeSceneRequestFrom?: string) => {
-    const gamePlayDAO = gameState.getGamePlayDAO();
     this.showLoading();
     this.dispose(changeSceneRequestFrom);
-    console.log('gamePlayDAO ', gamePlayDAO)
     setTimeout(() => {
       this.gameplayScene = new GameplayScene({
-        ...gamePlayDAO,
         monsterPhaseNumber: this.checkMonsterPhaseUpdation(),
         switchSceneToEnd: this.switchSceneToEndLevel,
         switchToLevelSelection: () => {
@@ -166,6 +163,7 @@ export class SceneHandler {
   };
 
   switchSceneToLevelSelection = (changeSceneRequestFrom?: string) => {
+    gameState.testCheckSubscribers()
     this.showLoading();
     this.dispose(changeSceneRequestFrom);
     setTimeout(() => {
