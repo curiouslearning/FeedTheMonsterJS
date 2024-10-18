@@ -40,11 +40,6 @@ import {
   ASSETS_PATH_MONSTER_IDLE,
   PreviousPlayedLevel,
 } from "@constants";
-import {
-  BACKGROUND_ASSET_LIST,
-  createBackground,
-  loadDynamicBgAssets,
-} from "@compositions";
 import { WordPuzzleLogic } from '@gamepuzzles';
 
 export class GameplayScene {
@@ -101,7 +96,7 @@ export class GameplayScene {
   clickTrailToggle: boolean;
   hasFed: boolean;
   wordPuzzleLogic:any;
-
+  public riveMonsterElement: HTMLCanvasElement;
   constructor(
     canvas,
     levelData,
@@ -146,7 +141,7 @@ export class GameplayScene {
       this.timerTicking
     );
     this.tutorial = new Tutorial(this.context, canvas.width, canvas.height);
-
+    this.riveMonsterElement = document.getElementById("rivecanvas") as HTMLCanvasElement;
     this.promptText = new PromptText(
       this.width,
       this.height,
@@ -196,27 +191,12 @@ export class GameplayScene {
       : localStorage.setItem(PreviousPlayedLevel + lang, previousPlayedLevel);
     this.addEventListeners();
     this.resetAnimationID = 0;
-    this.setupBg();
     this.trailParticles?.init();
     this.clickTrailToggle = false;
     this.hasFed = false;
-
+    this.riveMonsterElement.style.zIndex = "4";
     this.wordPuzzleLogic = new WordPuzzleLogic(levelData, this.counter);
   }
-
-  private setupBg = async () => {
-    const { BG_GROUP_IMGS, draw } = loadDynamicBgAssets(
-      this.levelData.levelNumber,
-      BACKGROUND_ASSET_LIST
-    );
-    this.background = await createBackground(
-      this.context,
-      this.width,
-      this.height,
-      BG_GROUP_IMGS,
-      draw
-    );
-  };
 
   resumeGame = () => {
     this.addEventListeners();
@@ -457,7 +437,6 @@ export class GameplayScene {
     this.pauseButton.draw();
     this.levelIndicators.draw();
     this.promptText.draw(deltaTime);
-    this.monster.update(deltaTime);
     this.timerTicking.draw();
     this.trailParticles?.draw();
     if (this.isPauseButtonClicked && this.isGameStarted) {
@@ -670,6 +649,7 @@ export class GameplayScene {
   }
 
   private initNewPuzzle(loadPuzzleEvent) {
+    this.monster.changeToIdleAnimation();
     this.removeEventListeners();
     this.isGameStarted = false;
     this.time = 0;

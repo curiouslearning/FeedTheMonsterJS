@@ -1,29 +1,20 @@
 import { loadImages } from "@common";
 import { EventManager } from "@events";
-
+import { RiveMonsterComponent } from "./riveMonster/rive-monster-component";
 
 export class Monster extends EventManager {
   public zindex: number;
   public width: number;
   public height: number;
-  public image: HTMLImageElement;
-  public frameX: number;
-  public frameY: number;
-  public maxFrame: number;
   public x: number;
   public y: number;
   public fps: number;
-  public countFrame: number;
-  public frameInterval: number;
-  public frameTimer: number;
   public canvasStack: any;
-  public canavsElement: HTMLCanvasElement;
+  public canvasElement: HTMLCanvasElement;
   public context: CanvasRenderingContext2D;
   public game: any;
-  public images: Object;
-  public loadedImages: any;
-  public imagesLoaded: boolean = false;
   public monsterPhase: number;
+  public riveMonster: RiveMonsterComponent; // Now using the RiveMonsterComponent
 
   constructor(game, monsterPhase, callBackFunction?) {
     super({
@@ -34,94 +25,72 @@ export class Monster extends EventManager {
     this.monsterPhase = monsterPhase;
     this.width = this.game.width;
     this.height = this.game.height;
-    this.canavsElement = document.getElementById("canvas") as HTMLCanvasElement;
-    this.context = this.canavsElement.getContext("2d");
-    this.image = document.getElementById("monster") as HTMLImageElement;
-    this.frameX = 0;
-    this.frameY = 0;
-    this.maxFrame = 6;
+    this.canvasElement = document.getElementById("rivecanvas") as HTMLCanvasElement;
+    this.context = this.canvasElement.getContext("2d");
     this.x = this.game.width / 2 - this.game.width * 0.243;
     this.y = this.game.width / 3;
     this.fps = 10;
-    this.countFrame = 0;
-    this.frameInterval = 1000 / this.fps;
-    this.frameTimer = 0;
 
-    this.images = {
-      eatImg: "./assets/images/eat1" + this.monsterPhase + ".png",
-      idleImg: "./assets/images/idle1" + this.monsterPhase + ".png",
-      spitImg: "./assets/images/spit1" + this.monsterPhase + ".png",
-      dragImg: "./assets/images/drag1" + this.monsterPhase + ".png",
-    };
+    // Initialize Rive Monster
+    this.initializeRiveMonster();
 
-    loadImages(this.images, (images) => {
-      this.loadedImages = Object.assign({}, images);
-      this.changeToIdleAnimation();
+    // Call callback if provided after initialization
+    if (callBackFunction) {
+      callBackFunction();
+    }
+  }
 
-      this.imagesLoaded = true;
-      if (callBackFunction) {
-        callBackFunction();
+  initializeRiveMonster() {
+    // Initialize the RiveMonsterComponent instead of directly using Rive
+    this.riveMonster = new RiveMonsterComponent({
+      canvas: this.canvasElement,
+      autoplay: true,
+      fit: "contain",
+      alignment: "topCenter",
+      width: this.canvasElement.width, // Example width and height, adjust as needed
+      height: this.canvasElement.height,
+      onLoad: () => {
+        this.riveMonster.play(RiveMonsterComponent.Animations.IDLE); // Start with the "Eat Happy" animation
       }
     });
+
+    // // Listen for state change once animation completion call idle animation
+    // this.riveMonster.onStateChange((stateName) => {
+    //   console.log(stateName);
+      
+    //   if (stateName !== RiveMonsterComponent.Animations.IDLE) {
+    //     this.changeToIdleAnimation(); // Return to idle after any other animation
+    //   }
+    // });
   }
 
-
-  update(deltaTime) {
-    if (this.frameTimer >= this.frameInterval) {
-      this.frameTimer = 0;
-      if (this.frameX < this.maxFrame) {
-        this.frameX++;
-      } else {
-        this.frameX = 0;
-      }
-    } else {
-      this.frameTimer += deltaTime;
-    }
-
-    this.draw();
-  }
-
-  draw() {
-    if (this.imagesLoaded) {
-      this.context.drawImage(
-        this.image,
-        770 * this.frameX,
-        1386 * this.frameY,
-        768,
-        1386,
-        this.x * 0.5,
-        this.y * 0.1,
-        (this.width / 2) * 1.5,
-        (this.height / 1.5) * 1.5
-      );
+  stopRiveMonster() {
+    if (this.riveMonster) {
+      this.riveMonster.stop();
+      console.log("Rive Monster animation stopped.");
     }
   }
 
-  changeImage(src) {
-    this.image.src = src;
-  }
-  
 
+  // Switch animation states for different behaviors
   changeToDragAnimation() {
-    this.maxFrame=6
-    this.image = this.loadedImages.dragImg;
+    this.riveMonster.play(RiveMonsterComponent.Animations.OPENING_MOUTH_EAT);
   }
 
   changeToEatAnimation() {
-    this.maxFrame=12
-    this.image = this.loadedImages.eatImg;
+    this.riveMonster.play(RiveMonsterComponent.Animations.EAT_HAPPY);
   }
 
   changeToIdleAnimation() {
-    this.maxFrame=6;
-    this.image = this.loadedImages.idleImg;
+    this.riveMonster.play(RiveMonsterComponent.Animations.IDLE);
   }
 
   changeToSpitAnimation() {
-    this.maxFrame=12;
-    this.image = this.loadedImages.spitImg;
+    this.riveMonster.play(RiveMonsterComponent.Animations.EAT_DISGUST);
   }
 
+
+  // Event handlers for puzzle and stone drop
   public handleStoneDrop(event) {
     if (event.detail.isCorrect) {
       this.changeToEatAnimation();
@@ -129,19 +98,23 @@ export class Monster extends EventManager {
       this.changeToSpitAnimation();
     }
   }
+
   public handleLoadPuzzle(event) {
     this.changeToIdleAnimation();
   }
 
+  // Cleanup
   public dispose() {
+    this.stopRiveMonster();
     this.unregisterEventListener();
   }
 
+  // Example click handler
   onClick(xClick: number, yClick: number): boolean {
     const distance = Math.sqrt(
       (xClick - this.x - this.width / 4) * (xClick - this.x - this.width / 4) +
-        (yClick - this.y - this.height / 2.2) *
-          (yClick - this.y - this.height / 2.2)
+      (yClick - this.y - this.height / 2.2) *
+      (yClick - this.y - this.height / 2.2)
     );
     if (distance <= 100) {
       return true;
