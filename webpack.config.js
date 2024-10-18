@@ -42,7 +42,6 @@ var config = {
       '@events': path.resolve(__dirname, 'src/events/'),
       '@feedbackText': path.resolve(__dirname, 'src/components/feedback-text/'),
       '@gamepuzzles': path.resolve(__dirname, 'src/gamepuzzles/'),
-      '@gameEvents': path.resolve(__dirname, 'src/game-events/'),
       '@gameState': path.resolve(__dirname, 'src/game-state/'),
     },
     extensions: ['.tsx', '.ts', '.js', '.json', '.css', '.sh', '.babelrc', '.eslintignore', '.gitignore', '.d'],

@@ -58,8 +58,6 @@
       "@feedbackText/*": ["src/components/feedback-text/*"],
       "@gamepuzzles/*": ["src/gamepuzzles/*"],
       "@gamepuzzles": ["src/gamepuzzles"],
-      "@gameEvents/*": ["src/game-events/*"],
-      "@gameEvents": ["src/game-events"],
       "@gameState/*": ["src/game-state/*"],
       "@gameState": ["src/game-state"],
     },

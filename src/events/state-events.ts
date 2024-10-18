@@ -1,4 +1,4 @@
-class StateEvents {
+export class StateEvents {
     subscribers: any;
 
     constructor() {
@@ -28,7 +28,3 @@ class StateEvents {
         });
     }
 }
-
-const stateEventInstance = new StateEvents();
-
-export default stateEventInstance;

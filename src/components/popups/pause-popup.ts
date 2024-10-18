@@ -2,9 +2,9 @@ import { CloseButton, CancelButton, RetryButton } from "@buttons";
 import { CLICK, lang, loadImages } from "@common";
 import { AudioPlayer } from "@components";
 import AreYouSurePopUp from "@popups/sure-popup";
-import { AUDIO_ARE_YOU_SURE, POPUP_BG_IMG } from "@constants";
-import { StateEvents } from '@gameEvents';
-import { SET_GAME_DATA } from '@constants';
+import { AUDIO_ARE_YOU_SURE, POPUP_BG_IMG, SET_GAME_PAUSE_EVENT } from "@constants";
+import gameState from '@gameState';
+
 export default class PausePopUp {
   public canvas: HTMLCanvasElement;
   public context: CanvasRenderingContext2D;
@@ -105,7 +105,7 @@ export default class PausePopUp {
     const y = event.clientY - rect.top;
 
     if (this.cancelButton.onClick(x, y)) {
-      StateEvents.publish(SET_GAME_DATA, { isGamePaused: false });
+      gameState.publish(SET_GAME_PAUSE_EVENT, false);
       this.playClickSound();
       this.callback();
     }

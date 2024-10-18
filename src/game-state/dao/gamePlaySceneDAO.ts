@@ -1,22 +1,23 @@
-export const createGameplaySceneDAO = (gameDataInstance) => {
-    const versionNumber = !!gameDataInstance.majVersion && !!gameDataInstance.minVersion
-        ? gameDataInstance.majVersion.toString() +
+export const createGameplaySceneDAO = (gameData) => {
+    const versionNumber = !!gameData.majVersion && !!gameData.minVersion
+        ? gameData.majVersion.toString() +
           "." +
-          gameDataInstance.minVersion.toString()
+          gameData.minVersion.toString()
         : "";
+
     //Returns a read only data of the values (except for canvas object) needed for gameplay scene.
     return {
-        canvas: gameDataInstance.canvas,
-        width: gameDataInstance.width,
-        height: gameDataInstance.height,
-        canavsElement: gameDataInstance.canavsElement,
-        gameCanvasContext: gameDataInstance.gameCanvasContext,
-        levelData: { ...gameDataInstance.gamePlayData.currentLevelData },
-        levelNumber: gameDataInstance.gamePlayData.selectedLevelNumber,
-        feedBackTexts: { ...gameDataInstance.feedbackTexts },
-        rightToLeft: gameDataInstance?.rightToLeft,
+        canvas: gameData.canvas,
+        width: gameData.width,
+        height: gameData.height,
+        canavsElement: gameData.canavsElement,
+        gameCanvasContext: gameData.gameCanvasContext,
+        levelData: { ...gameData.gamePlayData.currentLevelData },
+        levelNumber: gameData.gamePlayData.selectedLevelNumber,
+        feedBackTexts: { ...gameData.feedbackTexts },
+        rightToLeft: gameData?.rightToLeft,
         jsonVersionNumber: versionNumber,
-        feedbackAudios: { ...gameDataInstance.feedbackAudios },
-        isGamePaused: gameDataInstance.isGamePaused
+        feedbackAudios: { ...gameData.feedbackAudios },
+        isGamePaused: gameData.isGamePaused
     };
 }

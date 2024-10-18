@@ -39,6 +39,7 @@ import {
   AUDIO_PATH_ON_DRAG,
   ASSETS_PATH_MONSTER_IDLE,
   PreviousPlayedLevel,
+  UPDATED_GAME_PAUSE_EVENT
 } from "@constants";
 import {
   BACKGROUND_ASSET_LIST,
@@ -46,8 +47,7 @@ import {
   loadDynamicBgAssets,
 } from "@compositions";
 import { WordPuzzleLogic } from '@gamepuzzles';
-import { StateEvents } from '../game-events';
-import { SET_GAME_DATA, UPDATED_GAMEPLAY_DATA } from '@constants';
+import gameState from '@gameState';
 
 export class GameplayScene {
   public width: number;
@@ -105,7 +105,15 @@ export class GameplayScene {
   wordPuzzleLogic:any;
 
   constructor(gamePlayDAO) {
-    this.gamePlayDataListener(gamePlayDAO)
+    this.isPauseButtonClicked = gamePlayDAO?.isGamePaused;
+    this.width = gamePlayDAO.width;
+    this.height = gamePlayDAO.height;
+    this.rightToLeft = gamePlayDAO.rightToLeft;
+    this.canvas = gamePlayDAO.canvas;
+    this.context = gamePlayDAO.gameCanvasContext;
+    this.levelData = gamePlayDAO.levelData;
+    this.levelNumber = gamePlayDAO.levelNumber;
+    this.jsonVersionNumber = gamePlayDAO.jsonVersionNumber;
     this.trailParticles = new TrailEffect(gamePlayDAO.canvas);
     this.monsterPhaseNumber = gamePlayDAO.monsterPhaseNumber || 1;
     this.switchSceneToEnd = gamePlayDAO.switchSceneToEnd;
@@ -189,20 +197,12 @@ export class GameplayScene {
 
     this.wordPuzzleLogic = new WordPuzzleLogic(gamePlayDAO.levelData, this.counter);
 
-    StateEvents.subscribe(UPDATED_GAMEPLAY_DATA, this.gamePlayDataListener.bind(this));
-    StateEvents.testCheckSubscribers(); //for testing
+    gameState.subscribe(UPDATED_GAME_PAUSE_EVENT, this.gameplayPauseListener.bind(this));
+    gameState.testCheckSubscribers(); //for testing
   }
 
-  gamePlayDataListener(gameData){
-    this.isPauseButtonClicked = gameData?.isGamePaused;
-    this.width = gameData.width;
-    this.height = gameData.height;
-    this.rightToLeft = gameData.rightToLeft;
-    this.canvas = gameData.canvas;
-    this.context = gameData.gameCanvasContext;
-    this.levelData = gameData.levelData;
-    this.levelNumber = gameData.levelNumber;
-    this.jsonVersionNumber = gameData.jsonVersionNumber;
+  gameplayPauseListener(isPause: boolean){
+    this.isPauseButtonClicked = isPause;
   }
 
   private setupBg = async () => {

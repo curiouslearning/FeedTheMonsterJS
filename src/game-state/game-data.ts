@@ -1,33 +1,56 @@
+import { DataModal } from "@data";
 import {
   SCENE_NAME_START,
   SCENE_NAME_LEVEL_SELECT,
   SCENE_NAME_GAME_PLAY,
   SCENE_NAME_LEVEL_END,
   PWAInstallStatus,
-  StartScene1,
-  LevelSelection1,
-  GameScene1,
-  EndScene1,
+
 } from "@constants";
 
 export class GameData {
-    canvas: HTMLCanvasElement;
-    width: number;
-    height: number;
-    canavsElement: HTMLCanvasElement;
-    gameCanvasContext: CanvasRenderingContext2D;
+    data: null | DataModal;
+    canvas: null | HTMLCanvasElement;
+    width: null | number;
+    height: null | number;
+    canavsElement: null | HTMLCanvasElement;
+    context: null | CanvasRenderingContext2D;
+    gameCanvasContext: null | CanvasRenderingContext2D;
     isGamePaused: boolean;
     currentScene: string;
-    gamePlayData: any //to do
-    feedbackTexts: {
-        amazing: " Amazing!",
-        fantastic: "Fantastic!",
-        great: " Great!"
+    previousScene: string;
+    gamePlayData: null | {
+        currentLevelData: {
+            levelMeta: {
+                letterGroup: number;
+                levelNumber: number;
+                levelType: string;
+                promptFadeOut: number;
+                protoType: string;
+            };
+            levelNumber: number;
+            puzzles: {
+                foilStones: string[];
+                prompt: {
+                    promptAudio: string;
+                    promptText: string;
+                }
+                segmentNumber: number;
+                targetStones: string[];
+            }[];
+        },
+        selectedLevelNumber: number
+
+    } //to do
+    feedbackTexts: null |  {
+        amazing: string,
+        fantastic: string,
+        great: string
     };
-    rightToLeft: boolean;
-    majVersion:number;
-    minVersion: number;
-    feedbackAudios: {
+    rightToLeft: null | boolean;
+    majVersion: null | number;
+    minVersion: null | number;
+    feedbackAudios: null | {
         amazing: string,
         fantastic: string,
         great: string
@@ -44,19 +67,26 @@ export class GameData {
     }
     */
 
-    constructor(data, canvas: HTMLCanvasElement) {
-        this.canvas = canvas;
-        this.width = canvas.width;
-        this.height = canvas.height;
-        this.canavsElement = document.getElementById("canvas") as HTMLCanvasElement;
-        this.gameCanvasContext = this.canvas.getContext("2d", { willReadFrequently: true });
+    constructor() {
+        this.data = null;
+        /* Canvas States */
+        this.canvas = null;
+        this.width = null;
+        this.height = null;
+        this.canavsElement = null;
+        this.context = null;
+        this.gameCanvasContext = null;
+        /* Scene Handler States */
+        this.currentScene = SCENE_NAME_START;
+        this.previousScene = '';
+
+        /* Gameplay States */
         this.isGamePaused = false;
-        this.currentScene = StartScene1;
-        this.gamePlayData = {};
-        this.feedbackTexts = data.FeedbackTexts;
-        this.rightToLeft = data.rightToLeft;
-        this.majVersion = data.majVersion;
-        this.minVersion = data.minVersion;
-        this.feedbackAudios = data.FeedbackAudios;
+        this.gamePlayData = null;
+        this.feedbackAudios = null;
+        this.feedbackTexts = null;
+        this.rightToLeft = null;
+        this.majVersion = null;
+        this.minVersion = null;
     }
 };
