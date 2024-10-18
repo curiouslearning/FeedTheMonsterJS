@@ -437,7 +437,6 @@ export class GameplayScene {
     this.pauseButton.draw();
     this.levelIndicators.draw();
     this.promptText.draw(deltaTime);
-    this.monster.update(deltaTime);
     this.timerTicking.draw();
     this.trailParticles?.draw();
     if (this.isPauseButtonClicked && this.isGameStarted) {
@@ -650,6 +649,9 @@ export class GameplayScene {
   }
 
   private initNewPuzzle(loadPuzzleEvent) {
+    console.log("new puzzle");
+    
+    this.monster.changeToIdleAnimation();
     this.removeEventListeners();
     this.isGameStarted = false;
     this.time = 0;

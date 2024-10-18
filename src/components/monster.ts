@@ -1,6 +1,6 @@
 import { loadImages } from "@common";
 import { EventManager } from "@events";
-import { RiveMonsterComponent } from "./riveMonster";
+import { RiveMonsterComponent } from "./riveMonster/rive-monster-component";
 
 export class Monster extends EventManager {
   public zindex: number;
@@ -41,20 +41,27 @@ export class Monster extends EventManager {
   }
 
   initializeRiveMonster() {
-   // Initialize the RiveMonsterComponent instead of directly using Rive
-   this.riveMonster = new RiveMonsterComponent({
-    src: "./assets/monsterrive.riv",
-    canvas: this.canvasElement,
-    autoplay: true,
-    stateMachines: "State Machine 1",
-    fit: "contain",
-    alignment: "topCenter",
-    width: this.canvasElement.width, // Example width and height, adjust as needed
-    height: this.canvasElement.height,
-    onLoad: () => {
-      this.riveMonster.play("Eat Happy"); // Start with the "Eat Happy" animation
-    }
-  });
+    // Initialize the RiveMonsterComponent instead of directly using Rive
+    this.riveMonster = new RiveMonsterComponent({
+      canvas: this.canvasElement,
+      autoplay: true,
+      fit: "contain",
+      alignment: "topCenter",
+      width: this.canvasElement.width, // Example width and height, adjust as needed
+      height: this.canvasElement.height,
+      onLoad: () => {
+        this.riveMonster.play(RiveMonsterComponent.Animations.IDLE); // Start with the "Eat Happy" animation
+      }
+    });
+
+    // // Listen for state change once animation completion call idle animation
+    // this.riveMonster.onStateChange((stateName) => {
+    //   console.log(stateName);
+      
+    //   if (stateName !== RiveMonsterComponent.Animations.IDLE) {
+    //     this.changeToIdleAnimation(); // Return to idle after any other animation
+    //   }
+    // });
   }
 
   stopRiveMonster() {
@@ -64,33 +71,24 @@ export class Monster extends EventManager {
     }
   }
 
-  // Update function (if needed for custom logic)
-  update(deltaTime?) {
-    // Custom update logic here
-  }
-
-  // Drawing is now handled by Rive automatically, no need for custom draw logic
-  draw() {
-    console.log('Drawing Rive Animation');
-    // Rive takes care of the rendering, no manual draw call needed
-  }
 
   // Switch animation states for different behaviors
   changeToDragAnimation() {
-    this.riveMonster.play("Opening Mouth Eat");
+    this.riveMonster.play(RiveMonsterComponent.Animations.OPENING_MOUTH_EAT);
   }
 
   changeToEatAnimation() {
-    this.riveMonster.play("Eat Happy");
+    this.riveMonster.play(RiveMonsterComponent.Animations.EAT_HAPPY);
   }
 
   changeToIdleAnimation() {
-    this.riveMonster.play("Idle");
+    this.riveMonster.play(RiveMonsterComponent.Animations.IDLE);
   }
 
   changeToSpitAnimation() {
-    this.riveMonster.play("Eat Disgust");
+    this.riveMonster.play(RiveMonsterComponent.Animations.EAT_DISGUST);
   }
+
 
   // Event handlers for puzzle and stone drop
   public handleStoneDrop(event) {
@@ -115,8 +113,8 @@ export class Monster extends EventManager {
   onClick(xClick: number, yClick: number): boolean {
     const distance = Math.sqrt(
       (xClick - this.x - this.width / 4) * (xClick - this.x - this.width / 4) +
-        (yClick - this.y - this.height / 2.2) *
-          (yClick - this.y - this.height / 2.2)
+      (yClick - this.y - this.height / 2.2) *
+      (yClick - this.y - this.height / 2.2)
     );
     if (distance <= 100) {
       return true;

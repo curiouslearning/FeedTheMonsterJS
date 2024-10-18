@@ -13,7 +13,7 @@ import {
   PWAInstallStatus,
   DEFAULT_BG_GROUP_IMGS,
 } from "@constants";
-import { RiveMonsterComponent } from "@components/riveMonster";
+import { RiveMonsterComponent } from "@components/riveMonster/rive-monster-component";
 
 export class StartScene {
   public canvas: HTMLCanvasElement;
@@ -56,16 +56,14 @@ export class StartScene {
     this.context = this.canavsElement.getContext("2d");
     this.toggleBtn = document.getElementById("toggle-btn") as HTMLElement;
     this.riveMonster = new RiveMonsterComponent({
-      src: "./assets/monsterrive.riv",
       canvas: this.riveMonsterElement,
       autoplay: true,
-      stateMachines: "State Machine 1",
       fit: "contain",
       alignment: "topCenter",
       width: this.canavsElement.width, // Example width and height, adjust as needed
       height: this.canavsElement.height,
       onLoad: () => {
-        this.riveMonster.play("Idle"); // Start with the "Idle" animation
+        this.riveMonster.play(RiveMonsterComponent.Animations.IDLE); // Start with the "Idle" animation
       }
     });
     this.switchSceneToLevelSelection = switchSceneToLevelSelection;

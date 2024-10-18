@@ -148,7 +148,7 @@ export class LevelEndScene {
       );
       this.drawStars();
 
-      this.monster.update(deltaTime);
+      // this.monster.update(deltaTime);
       this.closeButton.draw();
       this.retryButton.draw();
       if (this.isLastLevel) {
