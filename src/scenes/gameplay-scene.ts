@@ -101,7 +101,6 @@ export class GameplayScene {
   clickTrailToggle: boolean;
   hasFed: boolean;
   wordPuzzleLogic:any;
-  isListenerActive: boolean;
 
   constructor(
     canvas,
@@ -203,7 +202,6 @@ export class GameplayScene {
     this.hasFed = false;
 
     this.wordPuzzleLogic = new WordPuzzleLogic(levelData, this.counter);
-    this.isListenerActive = false;
   }
 
   private setupBg = async () => {
@@ -337,6 +335,10 @@ export class GameplayScene {
   }
 
   handleMouseMove = (event) => {
+    if (this.pickedStone && this.pickedStone.frame <= 99) {
+      return; // Prevent dragging if the stone is animating
+    }
+
     let trailX = event.clientX;
     let trailY = event.clientY
 
@@ -481,9 +483,6 @@ export class GameplayScene {
   }
 
   private handleStoneLetterDrawing(deltaTime) {
-    if (this.isListenerActive) {
-      this.addEventListeners();
-    }
     if (this.wordPuzzleLogic.checkIsWordPuzzle()) {
       const { groupedObj } = this.wordPuzzleLogic.getValues();
       this.stoneHandler.drawWordPuzzleLetters(
@@ -496,17 +495,12 @@ export class GameplayScene {
     } else {
       this.stoneHandler.draw(deltaTime);
     }
-    this.isListenerActive = true;
   }
 
   addEventListeners() {
-    if (!this.isListenerActive) {
-      return; // Don't set mouse listeners if dragging is disabled
-    }
     this.handler.addEventListener(MOUSEUP, this.handleMouseUp, false);
     this.handler.addEventListener(MOUSEMOVE, this.handleMouseMove, false);
     this.handler.addEventListener(MOUSEDOWN, this.handleMouseDown, false);
-
     this.handler.addEventListener(TOUCHSTART, this.handleTouchStart, false);
     this.handler.addEventListener(TOUCHMOVE, this.handleTouchMove, false);
     this.handler.addEventListener(TOUCHEND, this.handleTouchEnd, false);
@@ -520,7 +514,6 @@ export class GameplayScene {
   }
 
   removeEventListeners() {
-    this.isListenerActive = false;
     // Remove event listeners using the defined functions
     this.handler.removeEventListener(CLICK, this.handleMouseClick, false);
     this.handler.removeEventListener("mouseup", this.handleMouseUp, false);
@@ -599,6 +592,9 @@ export class GameplayScene {
   }
 
   public letterPuzzle(droppedStone: string) {
+    if (this.pickedStone && this.pickedStone.frame <= 99) {
+      return; // Prevent dragging if the stone is animating
+    }
     const feedBackIndex = this.getRandomInt(0, 1);
     const isCorrect = this.checkStoneDropped(
       droppedStone,
@@ -611,6 +607,9 @@ export class GameplayScene {
   }
 
   public wordPuzzle(droppedStoneInstance: StoneConfig) {
+    if (droppedStoneInstance.frame <= 99) {
+      return; // Prevent dragging if the stone is animating
+    }
     this.audioPlayer.stopFeedbackAudio();
     droppedStoneInstance.x = -999;
     droppedStoneInstance.y = -999;
