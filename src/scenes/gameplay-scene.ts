@@ -592,7 +592,7 @@ export class GameplayScene {
   }
 
   public letterPuzzle(droppedStone: string) {
-    if (this.pickedStone.frame <= 99) {
+    if (this.pickedStone && this.pickedStone.frame <= 99) {
       return; // Prevent dragging if the stone is animating
     }
     const feedBackIndex = this.getRandomInt(0, 1);
