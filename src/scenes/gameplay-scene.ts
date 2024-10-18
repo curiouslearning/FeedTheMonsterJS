@@ -649,8 +649,6 @@ export class GameplayScene {
   }
 
   private initNewPuzzle(loadPuzzleEvent) {
-    console.log("new puzzle");
-    
     this.monster.changeToIdleAnimation();
     this.removeEventListeners();
     this.isGameStarted = false;
