@@ -501,7 +501,6 @@ export class GameplayScene {
     this.handler.addEventListener(MOUSEUP, this.handleMouseUp, false);
     this.handler.addEventListener(MOUSEMOVE, this.handleMouseMove, false);
     this.handler.addEventListener(MOUSEDOWN, this.handleMouseDown, false);
-    
     this.handler.addEventListener(TOUCHSTART, this.handleTouchStart, false);
     this.handler.addEventListener(TOUCHMOVE, this.handleTouchMove, false);
     this.handler.addEventListener(TOUCHEND, this.handleTouchEnd, false);
