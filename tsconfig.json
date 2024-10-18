@@ -58,8 +58,8 @@
       "@feedbackText/*": ["src/components/feedback-text/*"],
       "@gamepuzzles/*": ["src/gamepuzzles/*"],
       "@gamepuzzles": ["src/gamepuzzles"],
-      "@gameState/*": ["src/game-state/*"],
-      "@gameState": ["src/game-state"],
+      "@gameStateService/*": ["src/gameStateService/*"],
+      "@gameStateService": ["src/gameStateService"],
     },
     // "rootDirs": [],                        /* List of root folders whose combined content represents the structure of the project at runtime. */
     // "typeRoots": [],                       /* List of folders to include type definitions from. */

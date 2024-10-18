@@ -16,9 +16,8 @@ import {
   PIN_STAR_3,
   WIN_BG,
   SCENE_NAME_LEVEL_END,
-  SET_GAMEPLAY_DATA_EVENT
 } from "@constants";
-import gameState from '@gameState';
+import gameStateService from '@gameStateService';
 
 export class LevelEndScene {
   public canvas: HTMLCanvasElement;
@@ -233,7 +232,7 @@ export class LevelEndScene {
         selectedLevelNumber: this.currentLevel,
       };
       // pass same data as level is same
-      gameState.publish(SET_GAMEPLAY_DATA_EVENT, gamePlayData);
+      gameStateService.publish(gameStateService.EVENTS.GAMEPLAY_DATA_EVENT, gamePlayData);
       this.switchToGameplayCB(SCENE_NAME_LEVEL_END);
     }
     if (
@@ -246,7 +245,7 @@ export class LevelEndScene {
         currentLevelData: { ...this.data.levels[next], levelNumber: next },
         selectedLevelNumber: next,
       };
-      gameState.publish(SET_GAMEPLAY_DATA_EVENT, gamePlayData);
+      gameStateService.publish(gameStateService.EVENTS.GAMEPLAY_DATA_EVENT, gamePlayData);
       this.switchToGameplayCB(SCENE_NAME_LEVEL_END);
     }
   };

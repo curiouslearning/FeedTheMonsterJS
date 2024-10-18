@@ -13,9 +13,8 @@ import {
   SCENE_NAME_GAME_PLAY,
   SCENE_NAME_LEVEL_END,
   PWAInstallStatus,
-  UPDATED_CURRENT_SCENE_EVENT
 } from "@constants";
-import gameState from '@gameState';
+import gameStateService from '@gameStateService';
 
 export class SceneHandler {
   public canvas: HTMLCanvasElement;
@@ -36,14 +35,13 @@ export class SceneHandler {
   private titleTextElement: HTMLElement;
 
   constructor(canvas: HTMLCanvasElement, data: DataModal) {
-    gameState.setDefaultGameStateValues(
+    gameStateService.setDefaultGameStateValues(
       data,
       canvas,
       document.getElementById("canvas") as HTMLCanvasElement
     );
     this.canvas = canvas;
     this.data = data;
-    console.log('data ', data)
     this.width = canvas.width;
     this.height = canvas.height;
     this.canavsElement = document.getElementById("canvas") as HTMLCanvasElement;
@@ -63,12 +61,6 @@ export class SceneHandler {
       this.removeLoading
     );
     this.startAnimationLoop();
-    gameState.subscribe(UPDATED_CURRENT_SCENE_EVENT, this.sceneNameListener.bind(this));
-  }
-
-  sceneNameListener(nextScene:string) {
-    console.log('sceneNameListener nextScene ', nextScene);
-    SceneHandler.SceneName = nextScene;
   }
 
   startAnimationLoop() {
@@ -163,7 +155,7 @@ export class SceneHandler {
   };
 
   switchSceneToLevelSelection = (changeSceneRequestFrom?: string) => {
-    gameState.testCheckSubscribers()
+    gameStateService.testCheckSubscribers()
     this.showLoading();
     this.dispose(changeSceneRequestFrom);
     setTimeout(() => {

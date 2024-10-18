@@ -17,10 +17,6 @@ export const PhraseAudio = "phrase_audio";
 export const LevelEndAudio = "level_end_audio";
 export const UrlSubstring = "/feedthemonster";
 export const DevelopmentServer = "https://feedthemonsterdev.curiouscontent.org";
-// export const StartScene1 = "StartScene1";
-// export const LevelSelection1 = "LevelSelection1";
-// export const GameScene1 = "GameScene1";
-// export const EndScene1 = "EndScene1";
 export const FONT_BASE_PATH = './assets/fonts/';
 
 //Audio paths
@@ -146,14 +142,3 @@ export const SCENE_NAME_LEVEL_END = "LevelEnd";
 
 //Levels
 export const SPECIAL_LEVELS = [5, 13, 20, 30, 42];
-
-//state events
-export const SET_CURRENT_SCENE_EVENT = 'SET_CURRENT_SCENE_EVENT';
-export const UPDATED_CURRENT_SCENE_EVENT = 'UPDATED_CURRENT_SCENE_EVENT';
-
-export const SET_GAMEPLAY_DATA_EVENT = 'SET_GAMEPLAY_DATA_EVENT';
-export const UPDATED_GAMEPLAY_DATA_EVENT = 'UPDATED_GAMEPLAY_DATA_EVENT';
-export const SET_GAME_PAUSE_EVENT = 'SET_GAME_PAUSE_EVENT';
-export const UPDATED_GAME_PAUSE_EVENT = 'UPDATED_GAME_PAUSE_EVENT';
-
-

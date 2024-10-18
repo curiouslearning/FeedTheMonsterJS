@@ -1,3 +1,15 @@
+/**
+ * data-access-objects.ts
+ *
+ * This file contains functions that serve as Data Access Object (DAOs)
+ * designed to retrieve initial values from the game state.
+ * This provides a set of getters for accessing the underlying data,
+ * that will be used when initiating or creating any component class or scene class.
+ *
+ * Note: DAOs will return a new object to ensure that it is a READ-ONLY data
+ * and to avoid any data manupulation through pass-by-reference.
+ */
+
 export const createGameplaySceneDAO = (gameData) => {
     const versionNumber = !!gameData.majVersion && !!gameData.minVersion
         ? gameData.majVersion.toString() +
@@ -21,3 +33,5 @@ export const createGameplaySceneDAO = (gameData) => {
         isGamePaused: gameData.isGamePaused
     };
 }
+
+//Add more data access objects below here.

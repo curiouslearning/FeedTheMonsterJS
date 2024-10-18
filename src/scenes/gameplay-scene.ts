@@ -39,7 +39,6 @@ import {
   AUDIO_PATH_ON_DRAG,
   ASSETS_PATH_MONSTER_IDLE,
   PreviousPlayedLevel,
-  UPDATED_GAME_PAUSE_EVENT
 } from "@constants";
 import {
   BACKGROUND_ASSET_LIST,
@@ -47,7 +46,7 @@ import {
   loadDynamicBgAssets,
 } from "@compositions";
 import { WordPuzzleLogic } from '@gamepuzzles';
-import gameState from '@gameState';
+import gameStateService from '@gameStateService';
 
 export class GameplayScene {
   public width: number;
@@ -60,7 +59,6 @@ export class GameplayScene {
   public promptText: PromptText;
   public pauseButton: PauseButton;
   public tutorial: Tutorial;
-  public puzzleData: any;
   public id: string;
   public context: CanvasRenderingContext2D;
   public levelIndicators: LevelIndicators;
@@ -110,7 +108,7 @@ export class GameplayScene {
     switchToLevelSelection,
     reloadScene
   }) {
-    const gamePlayDAO = gameState.getGamePlayDAO();
+    const gamePlayDAO = gameStateService.getGamePlayDAO();
     this.isPauseButtonClicked = gamePlayDAO?.isGamePaused;
     this.width = gamePlayDAO.width;
     this.height = gamePlayDAO.height;
@@ -120,15 +118,17 @@ export class GameplayScene {
     this.levelData = gamePlayDAO.levelData;
     this.levelNumber = gamePlayDAO.levelNumber;
     this.jsonVersionNumber = gamePlayDAO.jsonVersionNumber;
-    this.trailParticles = new TrailEffect(gamePlayDAO.canvas);
     this.monsterPhaseNumber = monsterPhaseNumber || 1;
     this.switchSceneToEnd = switchSceneToEnd;
     this.switchToLevelSelection = switchToLevelSelection;
     this.reloadScene = reloadScene;
+
+    this.trailParticles = new TrailEffect(this.canvas);
+    
     this.startGameTime();
     this.startPuzzleTime();
     this.isDisposing = false;
-    this.pauseButton = new PauseButton(gamePlayDAO.gameCanvasContext, this.canvas);
+    this.pauseButton = new PauseButton(this.context, this.canvas);
     this.timerTicking = new TimerTicking(
       this.width,
       this.height,
@@ -170,11 +170,8 @@ export class GameplayScene {
         selectedLevelNumber: gamePlayDAO.levelNumber,
       }
     );
-    this.firebaseIntegration = new FirebaseIntegration();
-    this.feedbackTextEffects = new FeedbackTextEffects();
-    this.audioPlayer = new AudioPlayer();
+
     this.handler = document.getElementById("canvas");
-    this.puzzleData = gamePlayDAO.levelData.puzzles;
     this.feedBackTexts = gamePlayDAO.feedBackTexts;
 
     this.images = {
@@ -193,16 +190,19 @@ export class GameplayScene {
         )
       : localStorage.setItem(PreviousPlayedLevel + lang, previousPlayedLevel);
     this.addEventListeners();
-    this.resetAnimationID = 0;
+    this.resetAnimationID = 0; //This will no longer be needed if Rive Monster comes.
     this.setupBg();
     this.trailParticles?.init();
     this.clickTrailToggle = false;
-    this.hasFed = false;
+    this.hasFed = false; //This will no longer be needed if Rive Monster comes.
 
     this.wordPuzzleLogic = new WordPuzzleLogic(gamePlayDAO.levelData, this.counter);
-     this.gameplayPauseListener =  this.gameplayPauseListener.bind(this);
-    gameState.subscribe(UPDATED_GAME_PAUSE_EVENT, this.gameplayPauseListener);
-    gameState.testCheckSubscribers(); //for testing
+    this.gameplayPauseListener =  this.gameplayPauseListener.bind(this);
+    gameStateService.subscribe(gameStateService.EVENTS.GAME_PAUSE_STATUS_EVENT, this.gameplayPauseListener);
+    gameStateService.testCheckSubscribers(); //for testing
+    this.firebaseIntegration = new FirebaseIntegration();
+    this.feedbackTextEffects = new FeedbackTextEffects();
+    this.audioPlayer = new AudioPlayer();
   }
 
   gameplayPauseListener(isPause: boolean){
@@ -567,7 +567,7 @@ export class GameplayScene {
   };
 
   public dispose = () => {
-    gameState.unsubscribe(UPDATED_GAME_PAUSE_EVENT, this.gameplayPauseListener);
+    gameStateService.unsubscribe(gameStateService.EVENTS.GAME_PAUSE_STATUS_EVENT, this.gameplayPauseListener);
     this.isDisposing = true;
     this.audioPlayer.stopAllAudios();
     this.monster.dispose();
@@ -637,7 +637,7 @@ export class GameplayScene {
         : droppedLetters.length
       );
       this.stonesCount++;
-      this.resetToIdleAnimation(() => {
+      this.resetToIdleAnimation(() => { //This will no longer be needed if Rive Monster comes.
         this.monster.changeToIdleAnimation();
         this.hasFed = false; //re-enables idle reset when stones are not fed.
       }, 2000);
@@ -647,7 +647,7 @@ export class GameplayScene {
     }
   }
 
-  resetToIdleAnimation(callback: () => void, delay: number) {
+  resetToIdleAnimation(callback: () => void, delay: number) { //This will no longer be needed if Rive Monster comes.
     if (this.resetAnimationID !== undefined) {
       clearTimeout(this.resetAnimationID);
     }
