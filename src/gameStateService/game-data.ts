@@ -40,14 +40,15 @@ export class GameData {
         fantastic: string,
         great: string
     };
-    public rightToLeft: null | boolean;
+    public rightToLeft: boolean;
     public majVersion: null | number;
     public minVersion: null | number;
     public feedbackAudios: null | {
         amazing: string,
         fantastic: string,
         great: string
-    }
+    };
+    public clickTrailToggle: boolean
 
     constructor() {
         this.data = null;
@@ -67,8 +68,9 @@ export class GameData {
         this.gamePlayData = null;
         this.feedbackAudios = null;
         this.feedbackTexts = null;
-        this.rightToLeft = null;
+        this.rightToLeft = false;
         this.majVersion = null;
         this.minVersion = null;
+        this.clickTrailToggle = false;
     }
 };

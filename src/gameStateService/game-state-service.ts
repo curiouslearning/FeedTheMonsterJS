@@ -18,6 +18,7 @@ export class GameStateService extends PubSub {
         this.gameStateSetSceneListener = this.gameStateSetSceneListener.bind(this);
         this.gameStateGamePlayDataListener = this.gameStateGamePlayDataListener.bind(this);
         this.updateGamePauseActivity = this.updateGamePauseActivity.bind(this);
+        this.updateGameTrailToggle = this.updateGameTrailToggle.bind(this);
         this.initListeners();
     }
 
@@ -26,6 +27,7 @@ export class GameStateService extends PubSub {
         this.subscribe(this.EVENTS.SCENE_NAME_EVENT, this.gameStateSetSceneListener);
         this.subscribe(this.EVENTS.GAMEPLAY_DATA_EVENT, this.gameStateGamePlayDataListener);
         this.subscribe(this.EVENTS.GAME_PAUSE_STATUS_EVENT, this.updateGamePauseActivity);
+        this.subscribe(this.EVENTS.GAME_TRAIL_EFFECT_TOGGLE_EVENT, this.updateGameTrailToggle)
     }
 
     private gameStateSetSceneListener(nextScene: string) {
@@ -51,13 +53,18 @@ export class GameStateService extends PubSub {
         // this.notifySubscribers(UPDATED_CURRENT_SCENE_EVENT, scenes);
     }
 
-    private gameStateGamePlayDataListener(gamePlayData) {
+    private gameStateGamePlayDataListener(updatedGamePlayData) {
         //Updated gamePlayData comes from level-selection and level-end scene.
-        this.gameData.gamePlayData = gamePlayData;
+        this.gameData.gamePlayData = updatedGamePlayData;
+        this.gameData.isGamePaused = false;
     }
 
     private updateGamePauseActivity(isPaused: boolean) {
         this.gameData.isGamePaused = isPaused;
+    }
+
+    private updateGameTrailToggle(isTrailEffectOn: boolean) {
+        this.gameData.clickTrailToggle = isTrailEffectOn;
     }
 
     setDefaultGameStateValues(
@@ -86,7 +93,7 @@ export class GameStateService extends PubSub {
         //Game state values - Level End Scene Data - To Do Add Below Here
     }
 
-    getGamePlayDAO() {
+    getGamePlaySceneDetails() {
         return createGameplaySceneDAO(this.gameData);
     }
 };

@@ -2,8 +2,6 @@
 
 /*! ../Firebase/firebase-integration */
 
-/*! ../constants */
-
 /*! ../events/pub-sub-events */
 
 /*! ./api-data */

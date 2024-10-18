@@ -10,7 +10,8 @@ import {
   AUDIO_PATH_CORRECT_STONE,
   AUDIO_PATH_CHEERING_FUNC,
   ASSETS_PATH_STONE_PINK_BG
-} from '../constants';
+} from '@constants';
+import gameStateService from '@gameStateService';
 
 export default class StoneHandler extends EventManager {
   public context: CanvasRenderingContext2D;
@@ -76,6 +77,8 @@ export default class StoneHandler extends EventManager {
       this.handleVisibilityChange,
       false
     );
+    this.setGamePause = this.setGamePause.bind(this);
+    gameStateService.subscribe(gameStateService.EVENTS.GAME_PAUSE_STATUS_EVENT, this.setGamePause);
   }
 
   createStones(img) {
@@ -200,6 +203,7 @@ export default class StoneHandler extends EventManager {
   }
 
   public dispose() {
+    gameStateService.unsubscribe(gameStateService.EVENTS.GAME_PAUSE_STATUS_EVENT, this.setGamePause);
     document.removeEventListener(
       VISIBILITY_CHANGE,
       this.handleVisibilityChange,
@@ -303,7 +307,7 @@ export default class StoneHandler extends EventManager {
     ];
   }
 
-  setGamePause(isGamePaused:boolean){
+  private setGamePause(isGamePaused:boolean){
     this.isGamePaused  = isGamePaused;
   }
 

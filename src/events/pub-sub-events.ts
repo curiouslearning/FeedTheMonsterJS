@@ -14,15 +14,17 @@ export class PubSub {
         SCENE_NAME_EVENT: string;
         GAMEPLAY_DATA_EVENT: string;
         GAME_PAUSE_STATUS_EVENT: string;
+        GAME_TRAIL_EFFECT_TOGGLE_EVENT: string;
     }
 
     constructor() {
-        this.subscribers = {}
+        this.subscribers = {};
         this.EVENTS = {
             SCENE_NAME_EVENT: 'SCENE_NAME_EVENT',
             GAMEPLAY_DATA_EVENT: 'GAMEPLAY_DATA_EVENT',
-            GAME_PAUSE_STATUS_EVENT: 'GAME_PAUSE_STATUS_EVENT'
-        }
+            GAME_PAUSE_STATUS_EVENT: 'GAME_PAUSE_STATUS_EVENT',
+            GAME_TRAIL_EFFECT_TOGGLE_EVENT: 'GAME_TRAIL_EFFECT_TOGGLE_EVENT'
+        };
     }
 
     testCheckSubscribers() {
