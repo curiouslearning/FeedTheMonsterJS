@@ -6,7 +6,7 @@ import {
   LevelIndicators,
   StoneHandler,
   Tutorial,
-  Background,
+  BackgroundComponent,
   FeedbackTextEffects,
   AudioPlayer,
   TrailEffect,
@@ -205,7 +205,7 @@ export class GameplayScene {
   }
 
   private setupBg = async () => {
-    this.background = new Background(this.context, this.width, this.height, this.levelData.levelMeta.levelNumber);
+    this.background = new BackgroundComponent(this.context, this.width, this.height, this.levelData.levelMeta.levelNumber);
     this.background = await this.background.setupBg();
 
     this.background?.draw();

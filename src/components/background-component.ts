@@ -7,7 +7,7 @@ import {
 } from "@compositions/background";
 import { LEVEL_SELECTION_BACKGROUND } from "@constants";
 
-export class Background {
+export class BackgroundComponent {
   public width: number;
   public height: number;
   public context: CanvasRenderingContext2D;

@@ -300,6 +300,71 @@ img {
   overflow: hidden;
 }
 
+/* TODO: move to scss */
+/* POPUPS */ 
+.popup {
+  display: none;
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 1000;
+  height: 100%;
+  width: 100%;
+}
+.popup.show {
+  display: block;
+}
+.popup .popup__overlay {
+  height: 100%;
+  width: 100%;
+  background-color: rgba(0,0,0,0.5);
+}
+.popup .popup__content-wrapper {
+  position: absolute;
+  top: 20vh;
+  left: 10vw;
+  right: 10vw;
+  padding: 35px 50px;
+  height: 80vw;
+  background-repeat: no-repeat;
+  background-size: contain;
+}
+
+.popup .popup__content-wrapper [data-click="close"] {
+  position: absolute;
+  top: -15px;
+  left: 15px;
+  
+  display: block;
+}
+
+.popup .popup__content-wrapper .popup__content-container {
+  padding: 15px;
+  color: #fff;
+}
+
+/* BUTTONS */
+.btn--icon {
+  height: calc(100vw * 0.19);
+  width: calc(100vw * 0.19);
+  display: inline-block;
+}
+
+.btn--icon img {
+  display: block;
+  height: 100%;
+  width: 100%;
+  transition: transform 300ms;
+}
+.btn--icon:hover img {
+  transform: scale(1.1);
+}
+.btn--icon:active img {
+  transform: scale(0.9);
+}
+
 #background {
   position: fixed;
   width: 100%;
