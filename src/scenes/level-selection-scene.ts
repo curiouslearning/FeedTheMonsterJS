@@ -234,13 +234,14 @@ export class LevelSelectionScreen {
     const isLeft = isWithinButtonArea(this.canvas.width / 10);
 
     if (isLeft || isRight) {
-      this.audioPlayer.playButtonClickSound();
       const pageIndex = this.levelSelectionPageIndex;
       if (isRight && pageIndex != this.levelsSectionCount * 10 - 10) {
+        this.audioPlayer.playButtonClickSound();
         this.levelSelectionPageIndex = pageIndex + 10;
         this.rightBtnSize = 10.5;
         this.rightBtnY = 1.299;
       } else if (isLeft && pageIndex != 0) {
+        this.audioPlayer.playButtonClickSound();
         this.levelSelectionPageIndex = pageIndex - 10;
         this.leftBtnSize = 10.3;
         this.leftBtnY = 1.299;
@@ -265,9 +266,11 @@ export class LevelSelectionScreen {
 
   private drawLevel(levelBtn: any, gameLevelData: []) {
     const currentLevelIndex = levelBtn.levelData.index + this.levelSelectionPageIndex;
-    const currentLevel = this.previousPlayedLevelNumber + 1;
+    const currentLevel = currentLevelIndex - 1;
 
-    if (currentLevelIndex === currentLevel) {
+    const nextLevelPlay = this.unlockLevelIndex + 1;
+
+    if (nextLevelPlay === currentLevel) {
       levelBtn.applyPulseEffect();
     }
 

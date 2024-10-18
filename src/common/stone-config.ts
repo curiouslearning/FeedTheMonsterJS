@@ -72,11 +72,19 @@ export class StoneConfig {
             // Animation has ended, return the final stone position
             return this.y;
         }
-    
+
         return this.getEase(this.frame, 0, this.y, 100);
     }
 
-    draw(deltaTime: number) {
+    adjustSize(shouldResize, num) {
+        return shouldResize ? num * 1.25 : num;
+    }
+
+    draw(deltaTime: number, shouldResize: boolean = false) {
+        const x = this.getX() - this.adjustSize(shouldResize, this.imageCenterOffsetX);
+        const y = this.getY()- this.adjustSize(shouldResize, this.imageCenterOffsetY);
+
+
         // Apply shadow properties
         this.context.fillStyle = 'red';
         this.context.shadowColor = 'rgba(255, 255, 255, 1)'; // Color of the shadow
@@ -85,10 +93,10 @@ export class StoneConfig {
         this.context.shadowOffsetY = 0; // Vertical shadow offset
         this.context.drawImage(
             this.img,
-            this.getX() - this.imageCenterOffsetX,
-            this.getY()- this.imageCenterOffsetY,
-            this.imageSize,
-            this.imageSize
+            x,
+            y,
+            this.adjustSize(shouldResize, this.imageSize),
+            this.adjustSize(shouldResize, this.imageSize),
         );
         this.context.fillStyle = "white";
         this.context.font = this.textFontSize + `px ${font}, monospace`;
@@ -99,13 +107,12 @@ export class StoneConfig {
          this.context.shadowBlur = 0;    // Blur the shadow by 15 pixels
          this.context.shadowColor = 'transparent '; // Semi-transparent white shadow
         this.context.fillText(this.text, this.getX(), this.getY());
-       
+
         if (this.frame < 100) {
             this.frame = this.frame + 1;
         }
         else if(this.tutorialInstance!=null || this.tutorialInstance!=undefined){
                 this.tutorialInstance.draw(deltaTime,this.img,this.imageSize);
             }
-        
     }
 }

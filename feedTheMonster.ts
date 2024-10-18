@@ -1,7 +1,7 @@
 import * as Sentry from "@sentry/browser";
 import { getData, DataModal, customFonts } from "@data";
 import { SceneHandler } from "@sceneHandler";
-import { AUDIO_URL_PRELOAD, IsCached } from "@constants";
+import { AUDIO_URL_PRELOAD, IsCached, PreviousPlayedLevel } from "@constants";
 import { Workbox } from "workbox-window";
 import { FirebaseIntegration } from "./src/Firebase/firebase-integration";
 import {
@@ -82,6 +82,14 @@ class App {
     window.addEventListener("resize", async () => {
       this.handleResize(this.dataModal);
     });
+
+    const playedInfo = localStorage.getItem(this.lang + "gamePlayedInfo");
+    const nextPlayableLevel = playedInfo ? JSON.parse(playedInfo).length - 1 : 0;
+    const storageKey = Debugger.DebugMode
+      ? PreviousPlayedLevel + this.lang + "Debug"
+      : PreviousPlayedLevel + this.lang;
+
+    localStorage.setItem(storageKey, nextPlayableLevel.toString());
 
     if (this.is_cached.has(this.lang)) {
       this.handleCachedScenario(this.dataModal);
@@ -326,7 +334,7 @@ class App {
   }): void => {
     if (this.progressBarContainer && this.progressBar) {
       this.showProgressBar();
-    
+
       const progressValue = Math.min(100, Math.max(0, data.data)); // Ensure progress is between 0 and 100
 
       // Only update if new progress is greater than the current progress
@@ -349,7 +357,7 @@ class App {
     this.progressBarContainer.classList.add("visible");
     this.progressBar.classList.add("visible");
   }
-  
+
   //Checks if download is completed.
   isDownloadCompleted(progress) {
     return progress === 100 && !this.is_cached.get(this.lang);
@@ -374,7 +382,7 @@ class App {
     };
     this.firebaseIntegration.sendDownloadCompletedEvent(downloadCompleted);
   }
-  
+
   getJsonVersionNumber() {
     return !!this.majVersion && !!this.minVersion
       ? this.majVersion + "." + this.minVersion
