@@ -10,9 +10,7 @@ export var lang =
 
 export const font = Utils.getLanguageSpecificFont(lang);
 export const Debugger = {
-  DevelopmentLink: window.location.href.includes(DevelopmentServer)
-    ? true
-    : false,
+  DevelopmentLink: true,
   DebugMode: false,
 };
 

@@ -1,4 +1,4 @@
-import {StoneConfig, VISIBILITY_CHANGE, Utils} from '@common'
+import { StoneConfig, VISIBILITY_CHANGE, Utils } from '@common'
 import { EventManager } from "@events";
 import { Tutorial, AudioPlayer, TimerTicking } from "@components"
 import { GameScore } from "@data";
@@ -117,8 +117,8 @@ export default class StoneHandler extends EventManager {
   drawWordPuzzleLetters(
     deltaTime: number,
     shouldHideStoneChecker: (index: number) => boolean,
-    groupedLetters: {} | { [key:number]: string }
-  ):void {
+    groupedLetters: {} | { [key: number]: string }
+  ): void {
     for (let i = 0; i < this.foilStones.length; i++) {
 
       if (shouldHideStoneChecker(i)) {
@@ -129,10 +129,7 @@ export default class StoneHandler extends EventManager {
       }
     }
 
-    if (
-      this.foilStones[this.foilStones.length - 1].frame >= 100 &&
-      !this.isGamePaused
-    ) {
+    if (this.foilStones.length > 0 && this.foilStones[this.foilStones.length - 1].frame >= 100 && !this.isGamePaused) {
       this.timerTickingInstance.update(deltaTime);
     }
   }
@@ -157,20 +154,20 @@ export default class StoneHandler extends EventManager {
         this.canvas.width / 4 - offsetCoordinateValue,
         this.canvas.height / 1.28 - offsetCoordinateValue,
       ],
-       [
+      [
         this.canvas.width / 7 - offsetCoordinateValue,
         this.canvas.height / 1.5 - offsetCoordinateValue,
       ],
       [
         this.canvas.width / 2.3 +
-          this.canvas.width / 2.1 -
-          offsetCoordinateValue,
+        this.canvas.width / 2.1 -
+        offsetCoordinateValue,
         this.canvas.height / 1.9 - offsetCoordinateValue,
       ],
       [
         this.canvas.width / 2.3 +
-          this.canvas.width / 2.1 -
-          offsetCoordinateValue,
+        this.canvas.width / 2.1 -
+        offsetCoordinateValue,
         this.canvas.height / 1.42 - offsetCoordinateValue,
       ],
       [
@@ -211,7 +208,7 @@ export default class StoneHandler extends EventManager {
   public isStoneLetterDropCorrect(
     droppedStone: string,
     feedBackIndex: number,
-    isWord:boolean = false
+    isWord: boolean = false
   ): boolean {
     /**
      * To Do: Need to refactor or revome this completely and place something
@@ -234,8 +231,8 @@ export default class StoneHandler extends EventManager {
 
   public processLetterDropFeedbackAudio(
     feedBackIndex: number,
-    isLetterDropCorrect:boolean,
-    isWord:boolean,
+    isLetterDropCorrect: boolean,
+    isWord: boolean,
     droppedStone: string,
   ) {
     if (isLetterDropCorrect) {
@@ -253,12 +250,12 @@ export default class StoneHandler extends EventManager {
         );
       }
     } else {
-       this.audioPlayer.playFeedbackAudios(
-          false,
-          AUDIO_PATH_EATS,
-          AUDIO_PATH_MONSTER_SPIT,
-          Math.round(Math.random()) > 0 ? AUDIO_PATH_MONSTER_DISSAPOINTED : null
-        );
+      this.audioPlayer.playFeedbackAudios(
+        false,
+        AUDIO_PATH_EATS,
+        AUDIO_PATH_MONSTER_SPIT,
+        Math.round(Math.random()) > 0 ? AUDIO_PATH_MONSTER_DISSAPOINTED : null
+      );
     }
   }
 
@@ -303,8 +300,8 @@ export default class StoneHandler extends EventManager {
     ];
   }
 
-  setGamePause(isGamePaused:boolean){
-    this.isGamePaused  = isGamePaused;
+  setGamePause(isGamePaused: boolean) {
+    this.isGamePaused = isGamePaused;
   }
 
   playCorrectAnswerFeedbackSound(feedBackIndex: number) {
@@ -329,11 +326,11 @@ export default class StoneHandler extends EventManager {
     const stoneObj = pickedStoneObject;
     //Resets the previous stone letter to its original position.
     if (
-        stone &&
-        stoneObj &&
-        stone.text &&
-        typeof stoneObj.origx === "number" &&
-        typeof stoneObj.origy === "number"
+      stone &&
+      stoneObj &&
+      stone.text &&
+      typeof stoneObj.origx === "number" &&
+      typeof stoneObj.origy === "number"
     ) {
       const xLimit = 50;
       const halfWidth = width / 2;
@@ -341,15 +338,15 @@ export default class StoneHandler extends EventManager {
       stone.x = stone.text.length <= 3 &&
         stoneObj.origx < xLimit &&
         stoneObj.origx < halfWidth
-          ? stoneObj.origx + 25
-          : stoneObj.origx;
+        ? stoneObj.origx + 25
+        : stoneObj.origx;
       stone.y = stoneObj.origy;
     }
 
     return stone;
   }
 
-  private computeCursorDistance(posX, posY, sc):number {
+  private computeCursorDistance(posX, posY, sc): number {
     return Math.sqrt((posX - sc.x) ** 2 + (posY - sc.y) ** 2);
   }
 
@@ -359,10 +356,10 @@ export default class StoneHandler extends EventManager {
     for (let sc of this.foilStones) {
       const distance = this.computeCursorDistance(posX, posY, sc);
       if (distance <= 40) {
-          stoneLetter = sc;
-          /* Adds a unique identifier to tell which letter is which in case there are two or more of the same letter.*/
-          stoneLetter['foilStoneIndex'] = ctr;
-          break;
+        stoneLetter = sc;
+        /* Adds a unique identifier to tell which letter is which in case there are two or more of the same letter.*/
+        stoneLetter['foilStoneIndex'] = ctr;
+        break;
       }
       ctr++;
     };

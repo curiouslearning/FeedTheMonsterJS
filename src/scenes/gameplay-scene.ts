@@ -40,11 +40,6 @@ import {
   ASSETS_PATH_MONSTER_IDLE,
   PreviousPlayedLevel,
 } from "@constants";
-import {
-  BACKGROUND_ASSET_LIST,
-  createBackground,
-  loadDynamicBgAssets,
-} from "@compositions";
 import { WordPuzzleLogic } from '@gamepuzzles';
 
 export class GameplayScene {
@@ -101,7 +96,7 @@ export class GameplayScene {
   clickTrailToggle: boolean;
   hasFed: boolean;
   wordPuzzleLogic:any;
-
+  public riveMonsterElement: HTMLCanvasElement;
   constructor(
     canvas,
     levelData,
@@ -146,7 +141,7 @@ export class GameplayScene {
       this.timerTicking
     );
     this.tutorial = new Tutorial(this.context, canvas.width, canvas.height);
-
+    this.riveMonsterElement = document.getElementById("rivecanvas") as HTMLCanvasElement;
     this.promptText = new PromptText(
       this.width,
       this.height,
@@ -200,15 +195,13 @@ export class GameplayScene {
     this.trailParticles?.init();
     this.clickTrailToggle = false;
     this.hasFed = false;
-
+    this.riveMonsterElement.style.zIndex = "4";
     this.wordPuzzleLogic = new WordPuzzleLogic(levelData, this.counter);
   }
 
-  private setupBg = async () => {
-    this.background = new BackgroundComponent(this.context, this.width, this.height, this.levelData.levelMeta.levelNumber);
-    this.background = await this.background.setupBg();
-
-    this.background?.draw();
+  private setupBg = () => {
+    this.background = new BackgroundComponent(this.levelData.levelMeta.levelNumber);
+    this.background.loadBackground();
   };
 
   resumeGame = () => {
@@ -448,7 +441,6 @@ export class GameplayScene {
     this.pauseButton.draw();
     this.levelIndicators.draw();
     this.promptText.draw(deltaTime);
-    this.monster.update(deltaTime);
     this.timerTicking.draw();
     this.trailParticles?.draw();
     if (this.isPauseButtonClicked && this.isGameStarted) {
@@ -661,6 +653,7 @@ export class GameplayScene {
   }
 
   private initNewPuzzle(loadPuzzleEvent) {
+    this.monster.changeToIdleAnimation();
     this.removeEventListeners();
     this.isGameStarted = false;
     this.time = 0;

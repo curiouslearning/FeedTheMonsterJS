@@ -12,6 +12,8 @@
 
 /*! ./background-component */
 
+/*! ./background-html */
+
 /*! ./base-firebase-integration */
 
 /*! ./buttons/pause-button */
@@ -64,6 +66,8 @@
 
 /*! ./retry-button */
 
+/*! ./riveMonster/rive-monster-component */
+
 /*! ./src/Firebase/firebase-integration */
 
 /*! ./start-scene */
@@ -94,9 +98,9 @@
 
 /*! @components */
 
-/*! @compositions */
+/*! @components/riveMonster/rive-monster-component */
 
-/*! @compositions/background */
+/*! @compositions */
 
 /*! @constants */
 
@@ -123,6 +127,8 @@
 /*! @popups/pause-popup */
 
 /*! @popups/sure-popup */
+
+/*! @rive-app/canvas */
 
 /*! @sceneHandler */
 
@@ -297,6 +303,10 @@
   \*********************************************/
 
 /*!*********************************************!*\
+  !*** ./src/compositions/background-html.ts ***!
+  \*********************************************/
+
+/*!*********************************************!*\
   !*** ./src/scenes/level-selection-scene.ts ***!
   \*********************************************/
 
@@ -311,6 +321,10 @@
 /*!**********************************************!*\
   !*** ./src/components/popups/pause-popup.ts ***!
   \**********************************************/
+
+/*!***********************************************!*\
+  !*** ./node_modules/@rive-app/canvas/rive.js ***!
+  \***********************************************/
 
 /*!***********************************************!*\
   !*** ./src/components/buttons/next-button.ts ***!
@@ -366,6 +380,10 @@
 
 /*!**************************************************************!*\
   !*** ./node_modules/@firebase/app/dist/esm/index.esm2017.js ***!
+  \**************************************************************/
+
+/*!**************************************************************!*\
+  !*** ./src/components/riveMonster/rive-monster-component.ts ***!
   \**************************************************************/
 
 /*!***************************************************************!*\

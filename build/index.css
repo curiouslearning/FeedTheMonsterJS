@@ -61,6 +61,13 @@ img {
 #monster {
   border: 1px solid;
 }
+#rivecanvas {
+  position: absolute;
+  bottom: 270px;
+  left: 0;
+  z-index: 4;
+  width: 100%;
+}
 #discription-text p {
   margin-top: 10%;
   line-height: 1.8;
@@ -75,7 +82,7 @@ img {
   transform: translate(-50%, 0%);
   /* aspect-ratio: 2/3; */
   max-height: -webkit-fill-available;
-  z-index: 1;
+  z-index: 5;
   background-repeat: no-repeat;
   background-size: cover;
 }
@@ -288,7 +295,7 @@ img {
 #title {
   font-family: Atma-SemiBold, sans-serif;
   margin-top: 15%;
-  z-index: 2;
+  z-index: 10;
   position: fixed;
   width: 100%;
   text-align: center;
@@ -301,7 +308,7 @@ img {
 }
 
 /* TODO: move to scss */
-/* POPUPS */ 
+/* POPUPS */
 .popup {
   display: none;
   position: absolute;
@@ -319,7 +326,7 @@ img {
 .popup .popup__overlay {
   height: 100%;
   width: 100%;
-  background-color: rgba(0,0,0,0.5);
+  background-color: rgba(0, 0, 0, 0.5);
 }
 .popup .popup__content-wrapper {
   position: absolute;
@@ -336,7 +343,7 @@ img {
   position: absolute;
   top: -15px;
   left: 15px;
-  
+
   display: block;
 }
 
@@ -365,6 +372,18 @@ img {
   transform: scale(0.9);
 }
 
+.autumn,
+.summer,
+.winter {
+  display: none;
+}
+
+.autumn-bg .autumn,
+.summer-bg .summer,
+.winter-bg .winter {
+  display: block;
+}
+
 #background {
   position: fixed;
   width: 100%;
@@ -384,24 +403,49 @@ img {
   right: 0;
   margin: auto;
   width: 150%;
+  z-index: 2;
 }
 
 .ftm-totem {
-  img {
-    position: absolute;
-    right: -55px;
-    bottom: 115px;
-    width: 52%;
-    z-index: 4;
-  }
+  position: absolute;
+  right: -230px;
+  bottom: 235px;
+  width: 100%;
+  z-index: 1;
 }
 
 .ftm-fence {
+  rotate: 370deg;
+  width: 295px;
+  left: -76px;
+  bottom: 185px;
+  position: absolute;
+}
+
+.winter-bg .ftm-fence {
+  left: -83px;
+  position: absolute;
+  bottom: 250px;
+  width: 65%;
+  z-index: 1;
+  rotate: 334deg;
+}
+
+.autumn-bg .ftm-fence {
   left: -50px;
   position: absolute;
-  bottom: 118px;
+  bottom: 215px;
   width: 50%;
-  z-index: 4;
+  z-index: 1;
+  rotate: 334deg;
+}
+
+.autumn-bg .ftm-totem,
+.winter-bg .ftm-totem {
+  right: -103px;
+  bottom: 250px;
+  width: 90%;
+  z-index: 1;
 }
 
 .winter-bg {

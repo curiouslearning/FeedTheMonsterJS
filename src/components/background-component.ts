@@ -1,41 +1,20 @@
-import { loadImages } from "@common";
-import {
-  BACKGROUND_ASSET_LIST,
-  createBackground,
-  levelSelectBgDrawing,
-  loadDynamicBgAssets,
-} from "@compositions/background";
-import { LEVEL_SELECTION_BACKGROUND } from "@constants";
+interface BackgroundDraw {
+  draw: () => void;
+}
+
+import { BACKGROUND_HTML_LIST, loadBackground } from "@compositions";
 
 export class BackgroundComponent {
-  public width: number;
-  public height: number;
-  public context: CanvasRenderingContext2D;
-  public levelNumber: number;
-  public background: any;
+  private levelNumber: number;
+  private background: BackgroundDraw | null;
 
-  constructor(context, width, height, levelNumber) {
-    this.width = width;
-    this.height = height;
-    this.context = context;
+  constructor(levelNumber: number) {
     this.levelNumber = levelNumber;
-
-    this.setupBg();
+    this.background = null;
   }
 
-  setupBg = async () => {
-    const { BG_GROUP_IMGS, draw } = loadDynamicBgAssets(
-      this.levelNumber,
-      BACKGROUND_ASSET_LIST
-    );
-    const background = await createBackground(
-      this.context,
-      this.width,
-      this.height,
-      BG_GROUP_IMGS,
-      draw
-    );
-
-    return { ...background };
-  };
+  public loadBackground(): void {
+    const { draw } = loadBackground(this.levelNumber, BACKGROUND_HTML_LIST);
+    draw(); // Execute the draw method to render the background
+  }
 }
