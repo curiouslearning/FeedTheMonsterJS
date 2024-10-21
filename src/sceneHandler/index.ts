@@ -155,7 +155,6 @@ export class SceneHandler {
   };
 
   switchSceneToLevelSelection = (changeSceneRequestFrom?: string) => {
-    gameStateService.testCheckSubscribers()
     this.showLoading();
     this.dispose(changeSceneRequestFrom);
     setTimeout(() => {

@@ -197,7 +197,6 @@ export class GameplayScene {
     this.wordPuzzleLogic = new WordPuzzleLogic(this.levelData, this.counter);
     this.gameplayPauseListener =  this.gameplayPauseListener.bind(this);
     gameStateService.subscribe(gameStateService.EVENTS.GAME_PAUSE_STATUS_EVENT, this.gameplayPauseListener);
-    gameStateService.testCheckSubscribers(); //for testing
   }
 
   gameplayPauseListener(isPause: boolean){
