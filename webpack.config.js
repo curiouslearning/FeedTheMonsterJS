@@ -9,7 +9,7 @@ const TerserPlugin = require('terser-webpack-plugin');
 var config = {
   mode: 'development',
   watch: true,
-  entry: './feedTheMonster.ts',
+  entry: './src/feedTheMonster.ts',
   module: {
     rules: [
       {
@@ -53,9 +53,9 @@ var config = {
     // }),
     new CopyPlugin({
       patterns: [
-        { from: "./index.html", to: "./" },
-        { from: "./index.css", to: "./" },
-        { from: "./assets", to: "./assets" },
+        { from: "./public/index.html", to: "./" },
+        { from: "./public/index.css", to: "./" },
+        { from: "./public/assets", to: "./assets" },
         { from: "./lang", to: "./lang" },
       ],
     }),

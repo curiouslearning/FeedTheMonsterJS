@@ -4,6 +4,8 @@
 
 /*! ../constants */
 
+/*! ./Firebase/firebase-integration */
+
 /*! ./api-data */
 
 /*! ./audio-player */
@@ -63,8 +65,6 @@
 /*! ./retry-button */
 
 /*! ./riveMonster/rive-monster-component */
-
-/*! ./src/Firebase/firebase-integration */
 
 /*! ./start-scene */
 
@@ -139,10 +139,6 @@
 /*! workbox-window */
 
 /*!***************************!*\
-  !*** ./feedTheMonster.ts ***!
-  \***************************/
-
-/*!***************************!*\
   !*** ./src/data/index.ts ***!
   \***************************/
 
@@ -165,6 +161,10 @@
 /*!******************************!*\
   !*** ./src/data/api-data.ts ***!
   \******************************/
+
+/*!*******************************!*\
+  !*** ./src/feedTheMonster.ts ***!
+  \*******************************/
 
 /*!********************************!*\
   !*** ./src/constants/index.ts ***!
