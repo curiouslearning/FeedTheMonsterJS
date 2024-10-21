@@ -183,7 +183,7 @@ export class SceneHandler {
   private showLoading = (): void => {
     this.loadingScreen.initCloud();
     this.loading = true;
-    document.getElementById("loading").style.zIndex = "3";
+    document.getElementById("loading").style.zIndex = "10";
   };
 
   private removeLoading = (): void => {

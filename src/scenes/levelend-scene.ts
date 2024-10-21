@@ -132,6 +132,7 @@ export class LevelEndScene {
       this.monster.changeToSpitAnimation();
     } else {
       if (isDocumentVisible()) {
+        console.log('this.audioPlayer ', this.audioPlayer)
         this.audioPlayer.playAudio(AUDIO_LEVEL_WIN);
         this.audioPlayer.playAudio(AUDIO_INTRO);
       }
@@ -150,7 +151,7 @@ export class LevelEndScene {
       );
       this.drawStars();
 
-      this.monster.update(deltaTime);
+      // this.monster.update(deltaTime);
       this.closeButton.draw();
       this.retryButton.draw();
       if (this.isLastLevel) {
