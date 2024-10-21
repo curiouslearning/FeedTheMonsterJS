@@ -285,7 +285,6 @@ export class GameplayScene {
     }
     this.pickedStone = null;
     this.wordPuzzleLogic.clearPickedUp();
-    //this.clickTrailToggle = false;
     gameStateService.publish(gameStateService.EVENTS.GAME_TRAIL_EFFECT_TOGGLE_EVENT, false);
   };
 
@@ -313,7 +312,6 @@ export class GameplayScene {
       this.setPickedUp(x,y);
     }
 
-    //this.clickTrailToggle = true;
     gameStateService.publish(gameStateService.EVENTS.GAME_TRAIL_EFFECT_TOGGLE_EVENT, true);
   };
 

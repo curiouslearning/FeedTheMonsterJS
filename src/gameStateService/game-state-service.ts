@@ -9,6 +9,15 @@ import {
     SCENE_NAME_LEVEL_END,
 } from '@constants';
 
+/**
+ * GameStateService.ts
+ *
+ * The GameStateService class is reponsible to managing the current state of the game (GameData.ts).
+ * It also provides methods for accessing these properties using a set of getters
+ * that returns data access objects (DAO). The class also integrates with the Publish-Subscribe pattern
+ * to faciliate event-drivent updates, in the game state.
+ */
+
 export class GameStateService extends PubSub {
     private gameData: any;
 
