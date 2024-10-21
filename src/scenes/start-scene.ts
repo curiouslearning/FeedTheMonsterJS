@@ -87,8 +87,6 @@ export class StartScene {
       DEFAULT_BG_GROUP_IMGS,
       defaultBgDrawing
     );
-
-    this.background?.draw();
   };
 
   devToggle = () => {
