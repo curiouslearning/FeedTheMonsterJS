@@ -58,11 +58,6 @@ export class LevelEndScene {
     this.height = height;
     this.width = width;
     this.context = context;
-    this.monster = new Monster(
-      this.canvas,
-      monsterPhaseNumber,
-      this.switchToReactionAnimation
-    );
     this.switchToGameplayCB = switchToGameplayCB;
     this.switchToLevelSelectionCB = switchToLevelSelectionCB;
     this.data = data;
@@ -108,6 +103,15 @@ export class LevelEndScene {
       this.currentLevel !==
         this.data.levels[this.data.levels.length - 1].levelMeta.levelNumber &&
       this.starCount >= 2;
+      this.monster = new Monster(
+      this.canvas,
+      monsterPhaseNumber,
+      () => {
+        //Temp fix - wrapping this in a function to avoid reference undefined of 'this'.
+        //To do - hook level-end-scene properly to game state service.
+        this.switchToReactionAnimation
+      }
+    );
   }
 
   private setupBg = async () => {
@@ -132,7 +136,6 @@ export class LevelEndScene {
       this.monster.changeToSpitAnimation();
     } else {
       if (isDocumentVisible()) {
-        console.log('this.audioPlayer ', this.audioPlayer)
         this.audioPlayer.playAudio(AUDIO_LEVEL_WIN);
         this.audioPlayer.playAudio(AUDIO_INTRO);
       }

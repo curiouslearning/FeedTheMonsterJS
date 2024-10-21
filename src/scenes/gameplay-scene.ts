@@ -118,8 +118,6 @@ export class GameplayScene {
     this.switchSceneToEnd = switchSceneToEnd;
     this.switchToLevelSelection = switchToLevelSelection;
     this.reloadScene = reloadScene;
-    gameStateService.testCheckSubscribers()
-    console.log('gameData ', gameStateService)
     this.handler = document.getElementById("canvas");
     this.riveMonsterElement = document.getElementById("rivecanvas") as HTMLCanvasElement;
     this.riveMonsterElement.style.zIndex = "4";
