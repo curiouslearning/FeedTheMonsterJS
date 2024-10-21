@@ -77,7 +77,8 @@ export default class PausePopUp {
   }
   yesRetryCallback = () => {
     this.playClickSound();
-    this.reloadScene(this.gameplayData, "GamePlay");
+    gameStateService.publish(gameStateService.EVENTS.GAMEPLAY_DATA_EVENT, this.gameplayData);
+    this.reloadScene("GamePlay");
   };
   noRetryCallback = () => {
     if (this.isRetryButtonClicked) {
