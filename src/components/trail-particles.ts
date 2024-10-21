@@ -19,12 +19,15 @@ export default class TrailEffect {
         this.isDiamond = false;
         this.clickTrailToggle = false;
         this.trailToggleListener = this.trailToggleListener.bind(this);
-        gameStateService.subscribe(gameStateService.EVENTS.GAME_TRAIL_EFFECT_TOGGLE_EVENT, this.trailToggleListener);
         this.init();
     }
 
     private init() {
         this.draw();
+        gameStateService.subscribe(
+            gameStateService.EVENTS.GAME_TRAIL_EFFECT_TOGGLE_EVENT,
+            this.trailToggleListener
+        );
     }
 
     private trailToggleListener(isTrailEffectOn: boolean) {
@@ -67,7 +70,10 @@ export default class TrailEffect {
     }
 
     clearTrailSubscription() {
-        gameStateService.unsubscribe(gameStateService.EVENTS.GAME_TRAIL_EFFECT_TOGGLE_EVENT, this.trailToggleListener);
+        gameStateService.unsubscribe(
+            gameStateService.EVENTS.GAME_TRAIL_EFFECT_TOGGLE_EVENT,
+            this.trailToggleListener
+        );
     }
 };
 

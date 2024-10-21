@@ -285,7 +285,10 @@ export class GameplayScene {
     }
     this.pickedStone = null;
     this.wordPuzzleLogic.clearPickedUp();
-    gameStateService.publish(gameStateService.EVENTS.GAME_TRAIL_EFFECT_TOGGLE_EVENT, false);
+    gameStateService.publish(
+      gameStateService.EVENTS.GAME_TRAIL_EFFECT_TOGGLE_EVENT,
+      false
+    );
   };
 
   // Event to identify mouse moved down on the canvas
