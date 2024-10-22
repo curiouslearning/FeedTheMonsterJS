@@ -1,83 +1,112 @@
 import { BaseBackgroundComponent } from "@background/base-background/base-background-component";
+import {
+  DEFAULT_BG_GROUP_IMGS,
+  AUTUMN_BG_GROUP_IMGS,
+  WINTER_BG_GROUP_IMGS,
+} from "@constants";
 
-//for SummerBackground
-class SummerBackground extends BaseBackgroundComponent {
+interface BackgroundAssets {
+  hill: string;
+  fence: string;
+  totem: string;
+}
+
+type Season = "summer" | "autumn" | "winter";
+
+export class BackgroundHtmlGenerator extends BaseBackgroundComponent {
   constructor() {
-    super();
+    super("background");
   }
 
-  public draw(): void {
-    this.setBackgroundClass("summer-bg");
-  }
-}
+  // Generates and appends the background section for a given season
+  public generateBackground(season: Season): void {
+    if (!this.element) return;
 
-// for AutumnBackground
-class AutumnBackground extends BaseBackgroundComponent {
-  constructor() {
-    super();
-  }
-
-  public draw(): void {
-    this.setBackgroundClass("autumn-bg");
-  }
-}
-
-// for WinterBackground
-class WinterBackground extends BaseBackgroundComponent {
-  constructor() {
-    super();
+    const assets = this.getAssetsForSeason(season);
+    this.clearBackgroundContent();
+    const section = this.createBackgroundSection(season, assets);
+    this.element.appendChild(section);
   }
 
-  public draw(): void {
-    this.setBackgroundClass("winter-bg");
-  }
-}
+  // Determines the background type based on the level number
+  public static createBackgroundComponent(levelNumber: number): Season {
+    const backgroundTypes: Season[] = ["summer", "autumn", "winter"];
+    const index = Math.floor(levelNumber / 10) % backgroundTypes.length;
+    const selectedBackground =
+      levelNumber >= 30 ? backgroundTypes[index % 3] : backgroundTypes[index];
 
-class LevelSelectBackground extends BaseBackgroundComponent {
-  private context: CanvasRenderingContext2D;
-  private width: number;
-  private height: number;
-  private bgImages: Record<string, HTMLImageElement>;
-
-  constructor(
-    context: CanvasRenderingContext2D,
-    width: number,
-    height: number,
-    bgImages: Record<string, HTMLImageElement>
-  ) {
-    super();
-    this.context = context;
-    this.width = width;
-    this.height = height;
-    this.bgImages = bgImages;
+    this.updateBackgroundClass(selectedBackground);
+    return selectedBackground;
   }
 
-  public draw(): void {
-    this.context.drawImage(this.bgImages?.LEVEL_SELECTION_BACKGROUND, 0, 0, this.width, this.height);
+  // Retrieves assets based on the season
+  private getAssetsForSeason(season: Season): BackgroundAssets {
+    switch (season) {
+      case "summer":
+        return {
+          hill: DEFAULT_BG_GROUP_IMGS.ASSETS_PATH_HILL,
+          fence: DEFAULT_BG_GROUP_IMGS.ASSETS_PATH_FENCE,
+          totem: DEFAULT_BG_GROUP_IMGS.ASSETS_PATH_TOTEM,
+        };
+      case "autumn":
+        return {
+          hill: AUTUMN_BG_GROUP_IMGS.AUTUMN_HILL_1,
+          fence: AUTUMN_BG_GROUP_IMGS.AUTUMN_FENCE_1,
+          totem: AUTUMN_BG_GROUP_IMGS.AUTUMN_SIGN_1,
+        };
+      case "winter":
+        return {
+          hill: WINTER_BG_GROUP_IMGS.WINTER_HILL_1,
+          fence: WINTER_BG_GROUP_IMGS.WINTER_FENCE_1,
+          totem: WINTER_BG_GROUP_IMGS.WINTER_SIGN_1,
+        };
+    }
   }
-}
 
-export function createBackgroundComponent(levelNumber: number): BaseBackgroundComponent {
-  const backgroundTypes = [SummerBackground, AutumnBackground, WinterBackground];
-  const index = Math.floor(levelNumber / 10) % backgroundTypes.length;
-
-  // Wrap around first three types if the levelNumber exceeds 30
-  const selectedBackground = levelNumber >= 30 ? index % 3 : index;
-
-  return new backgroundTypes[selectedBackground]();
-}
-
-export class BackgroundComponent {
-  private background: BaseBackgroundComponent | null;
-  private levelNumber: number;
-
-  constructor(levelNumber: number) {
-    this.levelNumber = levelNumber;
-    this.background = null;
+  // Clears the current background content
+  private clearBackgroundContent(): void {
+    if (this.element) {
+      this.element.innerHTML = "";
+    }
   }
 
-  public loadBackground(): void {
-    this.background = createBackgroundComponent(this.levelNumber);
-    this.background.draw();
+  // Creates the background section using assets for a specific season
+  private createBackgroundSection(
+    season: string,
+    assets: BackgroundAssets
+  ): HTMLDivElement {
+    const section = document.createElement("div");
+    section.className = season;
+
+    const mountainDiv = this.createElementWithImage(
+      "ftm-mountain",
+      assets.hill,
+      "Hill",
+      "hill-img"
+    );
+    const fenceDiv = this.createElementWithImage(
+      "ftm-fence",
+      assets.fence,
+      "Fence",
+      "fence-img"
+    );
+    const totemDiv = this.createElementWithImage(
+      "ftm-totem",
+      assets.totem,
+      "Totem",
+      "totem-img"
+    );
+
+    section.append(mountainDiv, fenceDiv, totemDiv);
+    return section;
+  }
+
+  // Updates the background element's class based on the selected background type
+  private static updateBackgroundClass(selectedBackground: Season): void {
+    const backgroundElement = document.getElementById("background");
+    if (backgroundElement) {
+      backgroundElement.className = "";
+      backgroundElement.classList.add(`${selectedBackground}-bg`);
+    }
   }
 }

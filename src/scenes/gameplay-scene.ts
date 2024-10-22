@@ -6,7 +6,7 @@ import {
   LevelIndicators,
   StoneHandler,
   Tutorial,
-  BackgroundComponent,
+  BackgroundHtmlGenerator,
   FeedbackTextEffects,
   AudioPlayer,
   TrailEffect,
@@ -202,8 +202,14 @@ export class GameplayScene {
   }
 
   private setupBg = () => {
-    this.background = new BackgroundComponent(this.levelData.levelMeta.levelNumber);
-    this.background.loadBackground();
+    // Determine the background type based on the level number using the static method
+    const selectedBackgroundType = BackgroundHtmlGenerator.createBackgroundComponent(this.levelData.levelMeta.levelNumber);
+    
+    // Apply the logic to update the HTML or visual representation of the background
+    const backgroundGenerator = new BackgroundHtmlGenerator();
+  
+    // Dynamically update the background based on the selected type
+    backgroundGenerator.generateBackground(selectedBackgroundType);
   };
 
   resumeGame = () => {

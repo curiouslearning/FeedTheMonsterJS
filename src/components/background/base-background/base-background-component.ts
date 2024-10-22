@@ -1,21 +1,35 @@
+export class BaseBackgroundComponent {
+  protected element: HTMLElement | null;
 
-export interface IBackgroundComponent {
-  draw(): void; 
-}
-export abstract class BaseBackgroundComponent implements IBackgroundComponent {
-  protected backgroundElement: HTMLElement | null;
-
-  constructor() {
-    this.backgroundElement = document.getElementById("background");
+  constructor(elementId: string) {
+    this.element = document.getElementById(elementId);
   }
 
-  protected setBackgroundClass(className: string): void {
-    if (this.backgroundElement) {
-      this.backgroundElement.className = ""; // Reset the class
-      this.backgroundElement.classList.add(className); // Add the new class
+  // Method to set a class name on the element
+  protected setClassName(className: string): void {
+    if (this.element) {
+      this.element.className = ""; // Clear existing classes
+      this.element.classList.add(className);
     }
   }
 
-  // Enforce the implementation of draw method in derived classes
-  public abstract draw(): void;
+  // Helper function to create an image element inside a wrapper div
+  protected createElementWithImage(
+    wrapperClassName: string,
+    imageSrc: string,
+    imageAlt: string,
+    imageId: string
+  ): HTMLDivElement {
+    const wrapperDiv = document.createElement("div");
+    wrapperDiv.className = wrapperClassName;
+
+    const imgElement = document.createElement("img");
+    imgElement.src = imageSrc;
+    imgElement.alt = imageAlt;
+    imgElement.id = imageId;
+
+    wrapperDiv.appendChild(imgElement);
+
+    return wrapperDiv;
+  }
 }
