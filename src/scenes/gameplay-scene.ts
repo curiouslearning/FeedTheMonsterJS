@@ -96,6 +96,7 @@ export class GameplayScene {
   hasFed: boolean;
   wordPuzzleLogic:any;
   public riveMonsterElement: HTMLCanvasElement;
+  private unsubscribeEvent: () => void;
 
   constructor({
     monsterPhaseNumber,
@@ -190,12 +191,12 @@ export class GameplayScene {
     this.feedbackTextEffects = new FeedbackTextEffects();
     this.audioPlayer = new AudioPlayer();
     this.wordPuzzleLogic = new WordPuzzleLogic(this.levelData, this.counter);
-    this.gameplayPauseListener =  this.gameplayPauseListener.bind(this);
-    gameStateService.subscribe(gameStateService.EVENTS.GAME_PAUSE_STATUS_EVENT, this.gameplayPauseListener);
-  }
-
-  gameplayPauseListener(isPause: boolean){
-    this.isPauseButtonClicked = isPause;
+    this.unsubscribeEvent = gameStateService.subscribe(
+      gameStateService.EVENTS.GAME_PAUSE_STATUS_EVENT,
+      (isPause: boolean) => {
+        this.isPauseButtonClicked = isPause;
+      }
+    );
   }
 
   resumeGame = () => {
@@ -543,7 +544,7 @@ export class GameplayScene {
 
   public dispose = () => {
     this.trailParticles.clearTrailSubscription();
-    gameStateService.unsubscribe(gameStateService.EVENTS.GAME_PAUSE_STATUS_EVENT, this.gameplayPauseListener);
+    this.unsubscribeEvent();
     this.isDisposing = true;
     this.audioPlayer.stopAllAudios();
     this.monster.dispose(); //This will no longer be needed if Rive Monster comes.

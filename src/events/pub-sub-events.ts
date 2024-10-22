@@ -10,43 +10,47 @@
 */
 export class PubSub {
     private subscribers: any;
-    public EVENTS: {
-        SCENE_NAME_EVENT: string;
-        GAMEPLAY_DATA_EVENT: string;
-        GAME_PAUSE_STATUS_EVENT: string;
-        GAME_TRAIL_EFFECT_TOGGLE_EVENT: string;
-    }
+    private listenerIdCounter: number;
 
     constructor() {
         this.subscribers = {};
-        this.EVENTS = {
-            SCENE_NAME_EVENT: 'SCENE_NAME_EVENT',
-            GAMEPLAY_DATA_EVENT: 'GAMEPLAY_DATA_EVENT',
-            GAME_PAUSE_STATUS_EVENT: 'GAME_PAUSE_STATUS_EVENT',
-            GAME_TRAIL_EFFECT_TOGGLE_EVENT: 'GAME_TRAIL_EFFECT_TOGGLE_EVENT'
-        };
+        this.listenerIdCounter = 0;
     }
 
-    testCheckSubscribers() {
+    checkSubscribers() {
         //To Do - This will be remove after developing FM-285
-        console.log('this.subscribers ', this.subscribers)
+        console.log('checkSubscribers ', this.subscribers)
     }
 
-    subscribe(event, fn) {
-        const isEventHasFunctions = Array.isArray(this.subscribers[event]);
-        this.subscribers[event] = isEventHasFunctions ? [...this.subscribers[event], fn] : [fn];
+    subscribe(event, listenerCallback) {
+        const listenerId = this.listenerIdCounter++;
+
+        if (!this.subscribers[event]) {
+            this.subscribers[event] = {};
+        };
+
+        this.subscribers[event][listenerId] = listenerCallback;
+
+        //Returns an unsubscribe function for clearing.
+        return () => {
+            this.unsubscribe(event, listenerId);
+        }
+
     }
 
-    unsubscribe(event, listener){
-        if(!this.subscribers[event]) return;
+    unsubscribe(event, listenerId){
+        if(!this.subscribers[event] || !this.subscribers[event][listenerId]) return;
         //Remove function listed in the event.
-        this.subscribers[event] = this.subscribers[event].filter(fn => fn !== listener);
+        delete this.subscribers[event][listenerId];
     }
 
     publish(event, data) {
         if(!this.subscribers[event]) return;
-        this.subscribers[event].forEach(eventFunc => {
-            eventFunc(data);
+
+        Object.keys(this.subscribers[event]).forEach(listenerId => {
+            if (this.subscribers[event][listenerId]) {
+                this.subscribers[event][listenerId](data);
+            };
         });
     }
 }

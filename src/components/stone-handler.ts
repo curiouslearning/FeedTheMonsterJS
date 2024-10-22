@@ -36,6 +36,8 @@ export default class StoneHandler extends EventManager {
   public feedbackAudios: string[];
   public timerTickingInstance: TimerTicking;
   isGamePaused: boolean = false;
+  private unsubscribeEvent: () => void;
+
   constructor(
     context: CanvasRenderingContext2D,
     canvas,
@@ -77,8 +79,13 @@ export default class StoneHandler extends EventManager {
       this.handleVisibilityChange,
       false
     );
-    this.setGamePause = this.setGamePause.bind(this);
-    gameStateService.subscribe(gameStateService.EVENTS.GAME_PAUSE_STATUS_EVENT, this.setGamePause);
+    this.unsubscribeEvent = gameStateService.subscribe(
+      gameStateService.EVENTS.GAME_PAUSE_STATUS_EVENT,
+      (isGamePaused:boolean) => {
+        console.log('stone-handler pause ', isGamePaused)
+        this.isGamePaused  = isGamePaused;
+      }
+    );
   }
 
   createStones(img) {
@@ -200,7 +207,7 @@ export default class StoneHandler extends EventManager {
   }
 
   public dispose() {
-    gameStateService.unsubscribe(gameStateService.EVENTS.GAME_PAUSE_STATUS_EVENT, this.setGamePause);
+    this.unsubscribeEvent();
     document.removeEventListener(
       VISIBILITY_CHANGE,
       this.handleVisibilityChange,
@@ -302,10 +309,6 @@ export default class StoneHandler extends EventManager {
       feedbackAudios["great"],
       feedbackAudios["amazing"]
     ];
-  }
-
-  private setGamePause(isGamePaused:boolean){
-    this.isGamePaused  = isGamePaused;
   }
 
   playCorrectAnswerFeedbackSound(feedBackIndex: number) {

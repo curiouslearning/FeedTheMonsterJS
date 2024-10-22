@@ -8,6 +8,7 @@ export default class TrailEffect {
     };
     isDiamond: boolean;
     clickTrailToggle: boolean;
+    private unsubscribeEvent: () => void;
 
     constructor(canvas) {
         this.ctx = canvas.getContext("2d");
@@ -18,20 +19,17 @@ export default class TrailEffect {
         };
         this.isDiamond = false;
         this.clickTrailToggle = false;
-        this.trailToggleListener = this.trailToggleListener.bind(this);
         this.init();
     }
 
     private init() {
         this.draw();
-        gameStateService.subscribe(
+        this.unsubscribeEvent = gameStateService.subscribe(
             gameStateService.EVENTS.GAME_TRAIL_EFFECT_TOGGLE_EVENT,
-            this.trailToggleListener
+            (isTrailEffectOn: boolean) => {
+                this.clickTrailToggle = isTrailEffectOn;
+            }
         );
-    }
-
-    private trailToggleListener(isTrailEffectOn: boolean) {
-        this.clickTrailToggle = isTrailEffectOn;
     }
 
     draw() {
@@ -70,10 +68,7 @@ export default class TrailEffect {
     }
 
     clearTrailSubscription() {
-        gameStateService.unsubscribe(
-            gameStateService.EVENTS.GAME_TRAIL_EFFECT_TOGGLE_EVENT,
-            this.trailToggleListener
-        );
+        this.unsubscribeEvent();
     }
 };
 
