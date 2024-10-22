@@ -41,6 +41,7 @@ import {
   PreviousPlayedLevel,
 } from "@constants";
 import { WordPuzzleLogic } from '@gamepuzzles';
+import gameStateService from '@gameStateService';
 
 export class GameplayScene {
   public width: number;
@@ -53,7 +54,6 @@ export class GameplayScene {
   public promptText: PromptText;
   public pauseButton: PauseButton;
   public tutorial: Tutorial;
-  public puzzleData: any;
   public id: string;
   public context: CanvasRenderingContext2D;
   public levelIndicators: LevelIndicators;
@@ -77,7 +77,7 @@ export class GameplayScene {
   handler: HTMLElement;
   pickedStoneObject: StoneConfig;
   pausePopup: PausePopUp;
-  isPauseButtonClicked: boolean = false;
+  isPauseButtonClicked: boolean;
   public background: Background;
   feedBackTextCanavsElement: HTMLCanvasElement;
   feedbackTextEffects: FeedbackTextEffects;
@@ -93,39 +93,37 @@ export class GameplayScene {
   isDisposing: boolean;
   resetAnimationID: number | NodeJS.Timeout;
   trailParticles: any;
-  clickTrailToggle: boolean;
   hasFed: boolean;
   wordPuzzleLogic:any;
   public riveMonsterElement: HTMLCanvasElement;
-  constructor(
-    canvas,
-    levelData,
+  private unsubscribeEvent: () => void;
+
+  constructor({
     monsterPhaseNumber,
-    feedBackTexts,
-    rightToLeft,
     switchSceneToEnd,
-    levelNumber,
     switchToLevelSelection,
-    reloadScene,
-    jsonVersionNumber,
-    feedbackAudios
-  ) {
-    this.width = canvas.width;
-    this.height = canvas.height;
-    this.rightToLeft = rightToLeft;
-    this.canvas = canvas;
-    this.context = this.canvas.getContext("2d", { willReadFrequently: true });
-    this.trailParticles = new TrailEffect(canvas);
+    reloadScene
+  }) {
+    const gamePlayData = gameStateService.getGamePlaySceneDetails();
+    this.isPauseButtonClicked = gamePlayData?.isGamePaused;
+    this.width = gamePlayData.width;
+    this.height = gamePlayData.height;
+    this.rightToLeft = gamePlayData.rightToLeft;
+    this.canvas = gamePlayData.canvas;
+    this.context = gamePlayData.gameCanvasContext;
+    this.levelData = gamePlayData.levelData;
+    this.levelNumber = gamePlayData.levelNumber;
+    this.jsonVersionNumber = gamePlayData.jsonVersionNumber;
+    this.feedBackTexts = gamePlayData.feedBackTexts;
     this.monsterPhaseNumber = monsterPhaseNumber || 1;
-    this.levelData = levelData;
     this.switchSceneToEnd = switchSceneToEnd;
-    this.levelNumber = levelNumber;
     this.switchToLevelSelection = switchToLevelSelection;
     this.reloadScene = reloadScene;
-    this.jsonVersionNumber = jsonVersionNumber;
-    this.startGameTime();
-    this.startPuzzleTime();
+    this.handler = document.getElementById("canvas");
+    this.riveMonsterElement = document.getElementById("rivecanvas") as HTMLCanvasElement;
+    this.riveMonsterElement.style.zIndex = "4";
     this.isDisposing = false;
+    this.trailParticles = new TrailEffect(this.canvas);
     this.pauseButton = new PauseButton(this.context, this.canvas);
     this.timerTicking = new TimerTicking(
       this.width,
@@ -137,11 +135,14 @@ export class GameplayScene {
       this.canvas,
       this.counter,
       this.levelData,
-      feedbackAudios,
+      gamePlayData.feedbackAudios,
       this.timerTicking
     );
-    this.tutorial = new Tutorial(this.context, canvas.width, canvas.height);
-    this.riveMonsterElement = document.getElementById("rivecanvas") as HTMLCanvasElement;
+    this.tutorial = new Tutorial(
+      this.context,
+      this.width,
+       this.height
+    );
     this.promptText = new PromptText(
       this.width,
       this.height,
@@ -149,39 +150,33 @@ export class GameplayScene {
       this.levelData,
       this.rightToLeft
     );
-
     this.levelIndicators = new LevelIndicators(this.context, this.canvas, 0);
-
     this.levelIndicators.setIndicators(this.counter);
     this.monster = new Monster(this.canvas, this.monsterPhaseNumber);
-
     this.pausePopup = new PausePopUp(
       this.canvas,
       this.resumeGame,
       this.switchToLevelSelection,
       this.reloadScene,
       {
-        currentLevelData: levelData,
-        selectedLevelNumber: levelNumber,
+        currentLevelData: this.levelData,
+        selectedLevelNumber: this.levelNumber,
       }
     );
-    this.firebaseIntegration = new FirebaseIntegration();
 
-    this.feedbackTextEffects = new FeedbackTextEffects();
-
-    this.audioPlayer = new AudioPlayer();
-    this.handler = document.getElementById("canvas");
-    this.puzzleData = levelData.puzzles;
-    this.feedBackTexts = feedBackTexts;
-
-    this.images = {
+    /* These codes will no longer be needed if Rive Monster comes. */
+    /********************************************************************************/
+    this.images = { //This will no longer be needed if Rive Monster comes.
       profileMonster: ASSETS_PATH_MONSTER_IDLE,
     };
-
-    loadImages(this.images, (images) => {
+    this.resetAnimationID = 0; //This will no longer be needed if Rive Monster comes.
+    loadImages(this.images, (images) => { //This will no longer be needed if Rive Monster comes.
       this.loadedImages = Object.assign({}, images);
       this.imagesLoaded = true;
     });
+    this.hasFed = false; //This will no longer be needed if Rive Monster comes.
+    /********************************************************************************/
+
     var previousPlayedLevel: string = this.levelData.levelMeta.levelNumber;
     Debugger.DebugMode
       ? localStorage.setItem(
@@ -190,18 +185,22 @@ export class GameplayScene {
         )
       : localStorage.setItem(PreviousPlayedLevel + lang, previousPlayedLevel);
     this.addEventListeners();
-    this.resetAnimationID = 0;
-    this.trailParticles?.init();
-    this.clickTrailToggle = false;
-    this.hasFed = false;
-    this.riveMonsterElement.style.zIndex = "4";
-    this.wordPuzzleLogic = new WordPuzzleLogic(levelData, this.counter);
+    this.startGameTime();
+    this.startPuzzleTime();
+    this.firebaseIntegration = new FirebaseIntegration();
+    this.feedbackTextEffects = new FeedbackTextEffects();
+    this.audioPlayer = new AudioPlayer();
+    this.wordPuzzleLogic = new WordPuzzleLogic(this.levelData, this.counter);
+    this.unsubscribeEvent = gameStateService.subscribe(
+      gameStateService.EVENTS.GAME_PAUSE_STATUS_EVENT,
+      (isPause: boolean) => {
+        this.isPauseButtonClicked = isPause;
+      }
+    );
   }
 
   resumeGame = () => {
     this.addEventListeners();
-    this.isPauseButtonClicked = false;
-    this.stoneHandler.setGamePause(false);
     this.pausePopup.dispose();
   };
 
@@ -267,7 +266,10 @@ export class GameplayScene {
     }
     this.pickedStone = null;
     this.wordPuzzleLogic.clearPickedUp();
-    this.clickTrailToggle = false;
+    gameStateService.publish(
+      gameStateService.EVENTS.GAME_TRAIL_EFFECT_TOGGLE_EVENT,
+      false
+    );
   };
 
   // Event to identify mouse moved down on the canvas
@@ -294,7 +296,7 @@ export class GameplayScene {
       this.setPickedUp(x,y);
     }
 
-    this.clickTrailToggle = true;
+    gameStateService.publish(gameStateService.EVENTS.GAME_TRAIL_EFFECT_TOGGLE_EVENT, true);
   };
 
   setPickedUp(x,y) {
@@ -376,7 +378,6 @@ export class GameplayScene {
       this.monster.changeToDragAnimation();
     }
 
-    this.clickTrailToggle &&
     this.trailParticles?.addTrailParticlesOnMove(
       trailX,
       trailY
@@ -546,9 +547,11 @@ export class GameplayScene {
   };
 
   public dispose = () => {
+    this.trailParticles.clearTrailSubscription();
+    this.unsubscribeEvent();
     this.isDisposing = true;
     this.audioPlayer.stopAllAudios();
-    this.monster.dispose();
+    this.monster.dispose(); //This will no longer be needed if Rive Monster comes.
     this.timerTicking.dispose();
     this.levelIndicators.dispose();
     this.stoneHandler.dispose();
@@ -621,7 +624,7 @@ export class GameplayScene {
         : droppedLetters.length
       );
       this.stonesCount++;
-      this.resetToIdleAnimation(() => {
+      this.resetToIdleAnimation(() => { //This will no longer be needed if Rive Monster comes.
         this.monster.changeToIdleAnimation();
         this.hasFed = false; //re-enables idle reset when stones are not fed.
       }, 2000);
@@ -631,7 +634,7 @@ export class GameplayScene {
     }
   }
 
-  resetToIdleAnimation(callback: () => void, delay: number) {
+  resetToIdleAnimation(callback: () => void, delay: number) { //This will no longer be needed if Rive Monster comes.
     if (this.resetAnimationID !== undefined) {
       clearTimeout(this.resetAnimationID);
     }
@@ -726,14 +729,13 @@ export class GameplayScene {
 
   public pauseGamePlay = () => {
     this.removeEventListeners();
-    this.isPauseButtonClicked = true;
-    this.stoneHandler.setGamePause(true);
     this.pausePopup.addListner();
     this.audioPlayer.stopAllAudios();
   };
 
   handleVisibilityChange = () => {
     this.audioPlayer.stopAllAudios();
+    gameStateService.publish(gameStateService.EVENTS.GAME_PAUSE_STATUS_EVENT, true);
     this.pauseGamePlay();
   };
 }

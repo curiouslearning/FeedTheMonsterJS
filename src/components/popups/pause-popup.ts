@@ -3,6 +3,8 @@ import { CLICK, lang, loadImages } from "@common";
 import { AudioPlayer } from "@components";
 import AreYouSurePopUp from "@popups/sure-popup";
 import { AUDIO_ARE_YOU_SURE, POPUP_BG_IMG } from "@constants";
+import gameStateService from '@gameStateService';
+
 export default class PausePopUp {
   public canvas: HTMLCanvasElement;
   public context: CanvasRenderingContext2D;
@@ -75,7 +77,8 @@ export default class PausePopUp {
   }
   yesRetryCallback = () => {
     this.playClickSound();
-    this.reloadScene(this.gameplayData, "GamePlay");
+    gameStateService.publish(gameStateService.EVENTS.GAMEPLAY_DATA_EVENT, this.gameplayData);
+    this.reloadScene("GamePlay");
   };
   noRetryCallback = () => {
     if (this.isRetryButtonClicked) {
@@ -85,6 +88,7 @@ export default class PausePopUp {
   };
   noCloseCallback = () => {
     if (this.isCloseButtonClicked) {
+      gameStateService.publish(gameStateService.EVENTS.GAME_PAUSE_STATUS_EVENT, false);
       this.isCloseButtonClicked = false;
       this.callback();
     }
@@ -103,6 +107,7 @@ export default class PausePopUp {
     const y = event.clientY - rect.top;
 
     if (this.cancelButton.onClick(x, y)) {
+      gameStateService.publish(gameStateService.EVENTS.GAME_PAUSE_STATUS_EVENT, false);
       this.playClickSound();
       this.callback();
     }
