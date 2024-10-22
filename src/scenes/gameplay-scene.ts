@@ -13,7 +13,6 @@ import {
 } from "@components";
 import PausePopUp from "@popups/pause-popup";
 import {
-  loadImages,
   StoneConfig,
   CLICK,
   LOADPUZZLE,
@@ -37,7 +36,6 @@ import {
 import { FirebaseIntegration } from "../Firebase/firebase-integration";
 import {
   AUDIO_PATH_ON_DRAG,
-  ASSETS_PATH_MONSTER_IDLE,
   PreviousPlayedLevel,
 } from "@constants";
 import { WordPuzzleLogic } from '@gamepuzzles';
@@ -65,15 +63,10 @@ export class GameplayScene {
   public feedBackTexts: any;
   public isPuzzleCompleted: boolean;
   public rightToLeft: boolean;
-  public imagesLoaded: boolean = false;
   public switchSceneToEnd: Function;
   public levelNumber: Function;
-  loadedImages: any;
   stoneHandler: StoneHandler;
   public counter: number = 0;
-  images: {
-    profileMonster: string;
-  };
   handler: HTMLElement;
   pickedStoneObject: StoneConfig;
   pausePopup: PausePopUp;
@@ -91,9 +84,7 @@ export class GameplayScene {
   startTime: number;
   puzzleTime: number;
   isDisposing: boolean;
-  resetAnimationID: number | NodeJS.Timeout;
   trailParticles: any;
-  hasFed: boolean;
   wordPuzzleLogic:any;
   public riveMonsterElement: HTMLCanvasElement;
   private unsubscribeEvent: () => void;
@@ -163,19 +154,6 @@ export class GameplayScene {
         selectedLevelNumber: this.levelNumber,
       }
     );
-
-    /* These codes will no longer be needed if Rive Monster comes. */
-    /********************************************************************************/
-    this.images = { //This will no longer be needed if Rive Monster comes.
-      profileMonster: ASSETS_PATH_MONSTER_IDLE,
-    };
-    this.resetAnimationID = 0; //This will no longer be needed if Rive Monster comes.
-    loadImages(this.images, (images) => { //This will no longer be needed if Rive Monster comes.
-      this.loadedImages = Object.assign({}, images);
-      this.imagesLoaded = true;
-    });
-    this.hasFed = false; //This will no longer be needed if Rive Monster comes.
-    /********************************************************************************/
 
     var previousPlayedLevel: string = this.levelData.levelMeta.levelNumber;
     Debugger.DebugMode
@@ -434,9 +412,6 @@ export class GameplayScene {
   handleTouchEnd = (event) => {
     const touch = event.changedTouches[0];
     this.handleMouseUp({ clientX: touch.clientX, clientY: touch.clientY });
-    if(!this.hasFed) {
-      this.monster.changeToIdleAnimation();
-    }
     this.trailParticles?.resetParticles();
   };
 
@@ -562,7 +537,7 @@ export class GameplayScene {
     this.unsubscribeEvent();
     this.isDisposing = true;
     this.audioPlayer.stopAllAudios();
-    this.monster.dispose(); //This will no longer be needed if Rive Monster comes.
+    this.monster.dispose();
     this.timerTicking.dispose();
     this.levelIndicators.dispose();
     this.stoneHandler.dispose();
@@ -576,7 +551,6 @@ export class GameplayScene {
   };
 
   private checkStoneDropped(stone, feedBackIndex, isWord = false) {
-    this.hasFed = true; //To prevent idle animation from firing when stone is dropped.
     return this.stoneHandler.isStoneLetterDropCorrect(
       stone,
       feedBackIndex,
@@ -607,7 +581,6 @@ export class GameplayScene {
     droppedStoneInstance.x = -999;
     droppedStoneInstance.y = -999;
     const feedBackIndex = this.getRandomInt(0, 1);
-    this.hasFed = true;
     this.wordPuzzleLogic.setGroupToDropped();
     const { droppedLetters } = this.wordPuzzleLogic.getValues();
     const isCorrect = this.wordPuzzleLogic.validateFedLetters();
@@ -635,22 +608,10 @@ export class GameplayScene {
         : droppedLetters.length
       );
       this.stonesCount++;
-      this.resetToIdleAnimation(() => { //This will no longer be needed if Rive Monster comes.
-        this.monster.changeToIdleAnimation();
-        this.hasFed = false; //re-enables idle reset when stones are not fed.
-      }, 2000);
     } else {
       this.handleStoneDropEnd(isCorrect, "Word");
       this.stonesCount = 1;
     }
-  }
-
-  resetToIdleAnimation(callback: () => void, delay: number) { //This will no longer be needed if Rive Monster comes.
-    if (this.resetAnimationID !== undefined) {
-      clearTimeout(this.resetAnimationID);
-    }
-
-    this.resetAnimationID = setTimeout(callback, delay);
   }
 
   private handleStoneDropEnd(isCorrect, puzzleType: string | null = null) {
@@ -683,7 +644,6 @@ export class GameplayScene {
     this.addEventListeners();
     this.audioPlayer.stopAllAudios();
     this.startPuzzleTime();
-    this.hasFed = false;
   }
 
   public logPuzzleEndFirebaseEvent(isCorrect: boolean, puzzleType?: string) {
