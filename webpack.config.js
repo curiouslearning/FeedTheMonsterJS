@@ -33,7 +33,7 @@ var config = {
       '@buttons': path.resolve(__dirname, 'src/components/buttons/'),
       '@popups': path.resolve(__dirname, 'src/components/popups/'),
       '@common': path.resolve(__dirname, 'src/common/'),
-      '@compositions': path.resolve(__dirname, 'src/compositions/'), // to be removed once background component has been fully used
+      '@compositions': path.resolve(__dirname, 'src/compositions/'), // to be removed once background component has been fully integrated
       '@constants': path.resolve(__dirname, 'src/constants/'),
       '@data': path.resolve(__dirname, 'src/data/'),
       '@interfaces': path.resolve(__dirname, 'src/interfaces/'),
