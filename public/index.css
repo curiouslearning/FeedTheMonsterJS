@@ -29,6 +29,7 @@ body {
 
 img {
   max-width: 100%;
+  width: 100%;
 }
 
 #discription-text {
@@ -397,44 +398,43 @@ img {
 }
 
 .ftm-mountain {
-  bottom: -5px;
+  bottom: -2%;
   position: absolute;
-  left: -75px;
-  right: 0;
-  margin: auto;
-  width: 150%;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 175vw;
   z-index: 2;
 }
 
 .ftm-totem {
   position: absolute;
-  right: -230px;
-  bottom: 235px;
+  right: -55vw;
+  bottom: 65vw;
   width: 100%;
   z-index: 1;
 }
 
 .ftm-fence {
   rotate: 370deg;
-  width: 295px;
-  left: -76px;
-  bottom: 185px;
+  width: 68%;
+  left: -18vw;
+  bottom: 58vw;
   position: absolute;
 }
 
 .winter-bg .ftm-fence {
-  left: -83px;
   position: absolute;
-  bottom: 250px;
+  bottom: 31vw;
+  left: 52vw;
+  transform: translateX(-111%) translateY(-94%) rotate(-26deg);
   width: 65%;
   z-index: 1;
-  rotate: 334deg;
 }
 
 .autumn-bg .ftm-fence {
-  left: -50px;
+  left: -8vw;
   position: absolute;
-  bottom: 215px;
+  bottom: 62vw;
   width: 50%;
   z-index: 1;
   rotate: 334deg;
@@ -442,8 +442,10 @@ img {
 
 .autumn-bg .ftm-totem,
 .winter-bg .ftm-totem {
-  right: -103px;
-  bottom: 250px;
+  position: absolute;
+  bottom: 52vw;
+  right: 15vw;
+  transform: translateX(50%);
   width: 90%;
   z-index: 1;
 }
