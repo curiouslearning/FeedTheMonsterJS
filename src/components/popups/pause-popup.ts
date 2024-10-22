@@ -88,6 +88,7 @@ export default class PausePopUp {
   };
   noCloseCallback = () => {
     if (this.isCloseButtonClicked) {
+      gameStateService.publish(gameStateService.EVENTS.GAME_PAUSE_STATUS_EVENT, false);
       this.isCloseButtonClicked = false;
       this.callback();
     }
