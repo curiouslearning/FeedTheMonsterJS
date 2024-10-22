@@ -3,7 +3,7 @@ import { getData, DataModal, customFonts } from "@data";
 import { SceneHandler } from "@sceneHandler";
 import { AUDIO_URL_PRELOAD, IsCached, PreviousPlayedLevel } from "@constants";
 import { Workbox } from "workbox-window";
-import { FirebaseIntegration } from "./src/Firebase/firebase-integration";
+import { FirebaseIntegration } from "./Firebase/firebase-integration";
 import {
   Utils,
   VISIBILITY_CHANGE,
@@ -17,7 +17,7 @@ import {
   SessionStart,
   SessionEnd,
   DownloadCompleted,
-} from "./src/Firebase/firebase-event-interface";
+} from "./Firebase/firebase-event-interface";
 import { URL } from "@data";
 declare const window: any;
 
