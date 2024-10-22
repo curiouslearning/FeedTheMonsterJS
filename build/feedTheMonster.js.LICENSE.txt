@@ -12,7 +12,7 @@
 
 /*! ./background */
 
-/*! ./background/base-background/base-background-component */
+/*! ./background/background */
 
 /*! ./base-firebase-integration */
 
@@ -93,6 +93,8 @@
 /*! ./wrap-idb-value.js */
 
 /*! ./yes-button */
+
+/*! @background/base-background/base-background-component */
 
 /*! @buttons */
 
@@ -231,10 +233,6 @@
   \*************************************/
 
 /*!**************************************!*\
-  !*** ./src/components/background.ts ***!
-  \**************************************/
-
-/*!**************************************!*\
   !*** ./src/data/i18-font-mapping.ts ***!
   \**************************************/
 
@@ -365,6 +363,10 @@
 /*!************************************************!*\
   !*** ./src/components/buttons/retry-button.ts ***!
   \************************************************/
+
+/*!*************************************************!*\
+  !*** ./src/components/background/background.ts ***!
+  \*************************************************/
 
 /*!*************************************************!*\
   !*** ./src/components/buttons/cancel-button.ts ***!

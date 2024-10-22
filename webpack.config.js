@@ -43,6 +43,7 @@ var config = {
       '@feedbackText': path.resolve(__dirname, 'src/components/feedback-text/'),
       '@gamepuzzles': path.resolve(__dirname, 'src/gamepuzzles/'),
       '@gameStateService': path.resolve(__dirname, 'src/gameStateService/'),
+      '@background': path.resolve(__dirname, 'src/components/background/'),
     },
     extensions: ['.tsx', '.ts', '.js', '.json', '.css', '.sh', '.babelrc', '.eslintignore', '.gitignore', '.d'],
   },

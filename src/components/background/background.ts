@@ -1,12 +1,7 @@
-// Import the BaseBackground class
-import { BaseBackground } from "./background/base-background/base-background-component";
+import { BaseBackgroundComponent } from "@background/base-background/base-background-component";
 
-interface BackgroundDraw {
-  draw: () => void;
-}
-
-// Derived class for SummerBackground
-class SummerBackground extends BaseBackground {
+//for SummerBackground
+class SummerBackground extends BaseBackgroundComponent {
   constructor() {
     super();
   }
@@ -16,8 +11,8 @@ class SummerBackground extends BaseBackground {
   }
 }
 
-// Derived class for AutumnBackground
-class AutumnBackground extends BaseBackground {
+// for AutumnBackground
+class AutumnBackground extends BaseBackgroundComponent {
   constructor() {
     super();
   }
@@ -27,8 +22,8 @@ class AutumnBackground extends BaseBackground {
   }
 }
 
-// Derived class for WinterBackground
-class WinterBackground extends BaseBackground {
+// for WinterBackground
+class WinterBackground extends BaseBackgroundComponent {
   constructor() {
     super();
   }
@@ -38,8 +33,7 @@ class WinterBackground extends BaseBackground {
   }
 }
 
-// Derived class for LevelSelectBackground
-class LevelSelectBackground extends BaseBackground {
+class LevelSelectBackground extends BaseBackgroundComponent {
   private context: CanvasRenderingContext2D;
   private width: number;
   private height: number;
@@ -63,8 +57,7 @@ class LevelSelectBackground extends BaseBackground {
   }
 }
 
-// Factory function to create background components based on level number
-export function createBackgroundComponent(levelNumber: number): BaseBackground {
+export function createBackgroundComponent(levelNumber: number): BaseBackgroundComponent {
   const backgroundTypes = [SummerBackground, AutumnBackground, WinterBackground];
   const index = Math.floor(levelNumber / 10) % backgroundTypes.length;
 
@@ -74,9 +67,8 @@ export function createBackgroundComponent(levelNumber: number): BaseBackground {
   return new backgroundTypes[selectedBackground]();
 }
 
-// BackgroundComponent class that manages the selected background
 export class BackgroundComponent {
-  private background: BaseBackground | null;
+  private background: BaseBackgroundComponent | null;
   private levelNumber: number;
 
   constructor(levelNumber: number) {
