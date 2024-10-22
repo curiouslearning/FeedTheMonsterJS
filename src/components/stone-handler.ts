@@ -111,15 +111,19 @@ export default class StoneHandler extends EventManager {
   }
 
   draw(deltaTime: number) {
-    for (let i = 0; i < this.foilStones.length; i++) {
-      this.foilStones[i].draw(deltaTime);
-    }
-
-    if (
-      this.foilStones[this.foilStones.length - 1].frame >= 100 &&
-      !this.isGamePaused
-    ) {
-      this.timerTickingInstance.update(deltaTime);
+    if(this.foilStones.length > 0) {
+      this.foilStones.forEach((stone) => {
+        if (stone && stone.frame !== undefined) {
+          stone.draw(deltaTime);
+        }
+      });
+  
+      if (
+        this.foilStones[this.foilStones.length - 1].frame >= 100 &&
+        !this.isGamePaused
+      ) {
+        this.timerTickingInstance.update(deltaTime);
+      }
     }
   }
 
@@ -129,7 +133,7 @@ export default class StoneHandler extends EventManager {
     groupedLetters: {} | { [key: number]: string }
   ): void {
     for (let i = 0; i < this.foilStones.length; i++) {
-
+      
       if (shouldHideStoneChecker(i)) {
         this.foilStones[i].draw(
           deltaTime,

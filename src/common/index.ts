@@ -9,7 +9,7 @@ import {
   toggleDebugMode,
   hideElement,
 } from "./utils";
-import { Debugger, lang, font, pseudoId, Window } from "./global-variables";
+import { Debugger, lang, font, pseudoId, Window, source, campaign_id } from "./global-variables";
 import {
   CLICK,
   LOADPUZZLE,
@@ -33,6 +33,8 @@ export {
   lang,
   font,
   pseudoId,
+  source,
+  campaign_id,
   Window,
   CLICK,
   LOADPUZZLE,
