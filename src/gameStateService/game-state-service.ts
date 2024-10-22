@@ -137,7 +137,6 @@ export class GameStateService extends PubSub {
 
     private gameStateGamePlayDataListener(updatedGamePlayData) {
         //Updated gamePlayData comes from level-selection and level-end scene.
-        console.log('gameStateGamePlayDataListener ', updatedGamePlayData)
         this.gamePlayData = updatedGamePlayData;
         this.isGamePaused = false;
     }

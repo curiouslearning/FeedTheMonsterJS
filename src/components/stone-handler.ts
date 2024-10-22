@@ -82,7 +82,6 @@ export default class StoneHandler extends EventManager {
     this.unsubscribeEvent = gameStateService.subscribe(
       gameStateService.EVENTS.GAME_PAUSE_STATUS_EVENT,
       (isGamePaused:boolean) => {
-        console.log('stone-handler pause ', isGamePaused)
         this.isGamePaused  = isGamePaused;
       }
     );
