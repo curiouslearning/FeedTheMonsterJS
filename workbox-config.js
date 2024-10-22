@@ -7,7 +7,7 @@ module.exports = {
   ],
   maximumFileSizeToCacheInBytes: 10 * 1024 * 1024,
   swDest: "build/sw.js",
-  swSrc: "sw-src.js",
+  swSrc: "src/sw-src.js",
   globIgnores: [
     "lang/**/*.{wav,mp3,WAV,png,jpg,webp}",
 

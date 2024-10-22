@@ -13,11 +13,8 @@ import {
   SCENE_NAME_GAME_PLAY,
   SCENE_NAME_LEVEL_END,
   PWAInstallStatus,
-  StartScene1,
-  LevelSelection1,
-  GameScene1,
-  EndScene1,
 } from "@constants";
+import gameStateService from '@gameStateService';
 
 export class SceneHandler {
   public canvas: HTMLCanvasElement;
@@ -33,12 +30,16 @@ export class SceneHandler {
   public static SceneName: string;
   public loadingScreen: LoadingScene;
   public loading: boolean = false;
-
   private lastTime: number = 0;
   private toggleBtn: HTMLElement;
   private titleTextElement: HTMLElement;
 
   constructor(canvas: HTMLCanvasElement, data: DataModal) {
+    gameStateService.setDefaultGameStateValues(
+      data,
+      canvas,
+      document.getElementById("canvas") as HTMLCanvasElement
+    );
     this.canvas = canvas;
     this.data = data;
     this.width = canvas.width;
@@ -53,7 +54,7 @@ export class SceneHandler {
       data,
       this.switchSceneToLevelSelection
     );
-    SceneHandler.SceneName = StartScene1;
+    SceneHandler.SceneName = SCENE_NAME_START;
     this.loadingScreen = new LoadingScene(
       this.width,
       this.height,
@@ -97,43 +98,30 @@ export class SceneHandler {
     this.context.clearRect(0, 0, this.width, this.height);
     this.loading ? this.loadingScreen.draw(deltaTime) : null;
 
-    if (SceneHandler.SceneName === StartScene1) {
+    if (SceneHandler.SceneName === SCENE_NAME_START) {
       this.startScene.animation(deltaTime);
-    } else if (SceneHandler.SceneName === LevelSelection1) {
+    } else if (SceneHandler.SceneName === SCENE_NAME_LEVEL_SELECT) {
       this.levelSelectionScene.drawLevelSelection();
-    } else if (SceneHandler.SceneName === GameScene1) {
+    } else if (SceneHandler.SceneName === SCENE_NAME_GAME_PLAY) {
       this.gameplayScene.draw(deltaTime);
-    } else if (SceneHandler.SceneName === EndScene1) {
+    } else if (SceneHandler.SceneName === SCENE_NAME_LEVEL_END) {
       this.levelEndScene.draw(deltaTime);
     }
   };
 
-  switchSceneToGameplay = (gamePlayData, changeSceneRequestFrom?: string) => {
+  switchSceneToGameplay = (changeSceneRequestFrom?: string) => {
     this.showLoading();
     this.dispose(changeSceneRequestFrom);
-    let jsonVersionNumber =
-      !!this.data.majVersion && !!this.data.minVersion
-        ? this.data.majVersion.toString() +
-          "." +
-          this.data.minVersion.toString()
-        : "";
     setTimeout(() => {
-      this.gameplayScene = new GameplayScene(
-        this.canvas,
-        gamePlayData.currentLevelData,
-        this.checkMonsterPhaseUpdation(),
-        this.data.FeedbackTexts,
-        this.data.rightToLeft,
-        this.switchSceneToEndLevel,
-        gamePlayData.selectedLevelNumber,
-        () => {
+      this.gameplayScene = new GameplayScene({
+        monsterPhaseNumber: this.checkMonsterPhaseUpdation(),
+        switchSceneToEnd: this.switchSceneToEndLevel,
+        switchToLevelSelection: () => {
           this.switchSceneToLevelSelection(SCENE_NAME_GAME_PLAY);
         },
-        this.switchSceneToGameplay,
-        jsonVersionNumber,
-        this.data.FeedbackAudios
-      );
-      SceneHandler.SceneName = GameScene1;
+        reloadScene: this.switchSceneToGameplay
+      });
+      SceneHandler.SceneName = SCENE_NAME_GAME_PLAY;
     }, 800);
   };
 
@@ -160,7 +148,7 @@ export class SceneHandler {
           this.data,
           monsterPhaseNumber
         );
-        SceneHandler.SceneName = EndScene1;
+        SceneHandler.SceneName = SCENE_NAME_LEVEL_END;
       },
       isTimerEnded ? 0 : 4000
     );
@@ -175,7 +163,7 @@ export class SceneHandler {
         this.data,
         this.switchSceneToGameplay
       );
-      SceneHandler.SceneName = LevelSelection1;
+      SceneHandler.SceneName = SCENE_NAME_LEVEL_SELECT;
       this.titleTextElement.style.display = "none";
     }, 800);
   };

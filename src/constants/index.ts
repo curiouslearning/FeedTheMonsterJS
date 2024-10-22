@@ -17,10 +17,6 @@ export const PhraseAudio = "phrase_audio";
 export const LevelEndAudio = "level_end_audio";
 export const UrlSubstring = "/feedthemonster";
 export const DevelopmentServer = "https://feedthemonsterdev.curiouscontent.org";
-export const StartScene1 = "StartScene1";
-export const LevelSelection1 = "LevelSelection1";
-export const GameScene1 = "GameScene1";
-export const EndScene1 = "EndScene1";
 export const FONT_BASE_PATH = './assets/fonts/';
 
 //Audio paths

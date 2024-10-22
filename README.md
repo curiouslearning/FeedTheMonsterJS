@@ -321,6 +321,17 @@ this.context.fillText(this.score, this.width / 2.25, this.height / 15);
 
 <p align="right">(<a href="#top">back to top</a>)</p>
 
+### Data Collection
+
+Feed The Monster uses Firebase to collect some statistics for internal analysis such events which we collect are:
+
+* Number of users played the Feed The Monster.
+* The amount of time spend on Feed The Monster.
+
+
+Also In order to exclude firebase from the build you can just remove firebase logEvent code and you are good to go.
+
+<p align="right">(<a href="#top">back to top</a>)</p>
 <!-- CONTRIBUTING -->
 
 ## Contributing
