@@ -1,4 +1,4 @@
-import { BaseBackgroundComponent } from "@background/base-background/base-background-component";
+import { BaseBackgroundComponent } from "@components/background/base-background/base-background-component";
 import {
   DEFAULT_BG_GROUP_IMGS,
   AUTUMN_BG_GROUP_IMGS,
@@ -72,7 +72,7 @@ export class BackgroundHtmlGenerator extends BaseBackgroundComponent {
 
   // Creates the background section using assets for a specific season
   private createBackgroundSection(
-    season: string,
+    season: Season,
     assets: BackgroundAssets
   ): HTMLDivElement {
     const section = document.createElement("div");
@@ -101,12 +101,13 @@ export class BackgroundHtmlGenerator extends BaseBackgroundComponent {
     return section;
   }
 
-  // Updates the background element's class based on the selected background type
   private static updateBackgroundClass(selectedBackground: Season): void {
     const backgroundElement = document.getElementById("background");
-    if (backgroundElement) {
-      backgroundElement.className = "";
-      backgroundElement.classList.add(`${selectedBackground}-bg`);
+    const newClass = `${selectedBackground}-bg`;
+  
+    if (backgroundElement && backgroundElement.className !== newClass) {
+      // Directly update the class only if it has changed
+      backgroundElement.className = newClass;
     }
-  }
+  }  
 }

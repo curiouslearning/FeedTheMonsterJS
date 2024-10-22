@@ -94,13 +94,13 @@
 
 /*! ./yes-button */
 
-/*! @background/base-background/base-background-component */
-
 /*! @buttons */
 
 /*! @common */
 
 /*! @components */
+
+/*! @components/background/base-background/base-background-component */
 
 /*! @components/riveMonster/rive-monster-component */
 
