@@ -292,6 +292,10 @@ export class GameplayScene {
 
   // Event to identify mouse moved down on the canvas
   handleMouseDown = (event) => {
+    if (this.pickedStone && this.pickedStone.frame <= 99) {
+      return; // Prevent dragging if the stone is animating
+    }
+
     let rect = this.canvas.getBoundingClientRect();
     const x = event.clientX - rect.left;
     const y = event.clientY - rect.top;
@@ -318,6 +322,10 @@ export class GameplayScene {
   };
 
   setPickedUp(x,y) {
+    if (this.pickedStone && this.pickedStone.frame <= 99) {
+      return; // Prevent dragging if the stone is animating
+    }
+    
     const stoneLetter = this.stoneHandler.handlePickStoneUp(x,y);
 
     if (stoneLetter) {
