@@ -14,7 +14,7 @@ import {
   createLevelObject,
   getdefaultCloudBtnsPos,
   loadLevelImages
-} from "@compositions";
+} from "@compositions"; // to be removed once background component has been fully used
 import {
   PreviousPlayedLevel,
   LEVEL_SELECTION_BACKGROUND,

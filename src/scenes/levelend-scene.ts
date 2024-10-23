@@ -5,7 +5,7 @@ import {
   BACKGROUND_ASSET_LIST,
   createBackground,
   loadDynamicBgAssets,
-} from "@compositions";
+} from "@compositions"; // to be removed once background component has been fully used
 import {
   AUDIO_INTRO,
   AUDIO_LEVEL_LOSE,

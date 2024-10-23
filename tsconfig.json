@@ -47,8 +47,8 @@
       "@buttons": ["src/components/buttons"],
       "@popups/*": ["src/components/popups/*"],
       "@common": ["src/common"],
-      "@compositions/*": ["src/compositions/*"],
-      "@compositions": ["src/compositions"],
+      "@compositions/*": ["src/compositions/*"], // to be removed once background component has been fully integrated
+      "@compositions": ["src/compositions"], // to be removed once background component has been fully integrated
       "@constants": ["src/constants"],
       "@data/*": ["src/data/*"],
       "@data": ["src/data"],
@@ -59,7 +59,7 @@
       "@gamepuzzles/*": ["src/gamepuzzles/*"],
       "@gamepuzzles": ["src/gamepuzzles"],
       "@gameStateService/*": ["src/gameStateService/*"],
-      "@gameStateService": ["src/gameStateService"],
+      "@gameStateService": ["src/gameStateService"]
     },
     // "rootDirs": [],                        /* List of root folders whose combined content represents the structure of the project at runtime. */
     // "typeRoots": [],                       /* List of folders to include type definitions from. */
