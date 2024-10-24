@@ -1,6 +1,6 @@
 const path = require('path');
-var nodeEnv = process.env.NODE_ENV || 'development';
-var isDev = (nodeEnv !== 'production');
+const nodeEnv = process.env.NODE_ENV || 'development';
+const isDev = (nodeEnv !== 'production');
 const CopyPlugin = require("copy-webpack-plugin");
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const TerserPlugin = require('terser-webpack-plugin');
@@ -8,8 +8,17 @@ const TerserPlugin = require('terser-webpack-plugin');
 
 var config = {
   mode: 'development',
-  watch: true,
   entry: './src/feedTheMonster.ts',
+  devServer: {
+    static: {
+      directory: path.join(__dirname, 'build'),
+    },
+    client: {
+      overlay: true,
+    },
+    compress: false,
+    port: 8080
+  },
   module: {
     rules: [
       {
@@ -59,7 +68,7 @@ var config = {
         { from: "./public/assets", to: "./assets" },
         { from: "./lang", to: "./lang" },
       ],
-    }),
+    })
   ],
   optimization: {
     minimize: true,
