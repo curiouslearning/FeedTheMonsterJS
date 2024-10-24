@@ -1,16 +1,14 @@
 const path = require('path');
-var nodeEnv = process.env.NODE_ENV || 'development';
-var isDev = (nodeEnv !== 'production');
+const nodeEnv = process.env.NODE_ENV || 'development';
+const isDev = (nodeEnv !== 'production');
 const CopyPlugin = require("copy-webpack-plugin");
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const TerserPlugin = require('terser-webpack-plugin');
-const WorkboxPlugin = require('workbox-webpack-plugin');
-const wokboxConfig = require('./workbox-config.js');
 // const CompressionPlugin = require('compression-webpack-plugin');
 
 var config = {
   mode: 'development',
-  entry: './feedTheMonster.ts',
+  entry: './src/feedTheMonster.ts',
   devServer: {
     static: {
       directory: path.join(__dirname, 'build'),
@@ -18,11 +16,8 @@ var config = {
     client: {
       overlay: true,
     },
-    compress: true,
-    port: 8080,
-    devMiddleware: {
-      writeToDisk: true
-    }
+    compress: false,
+    port: 8080
   },
   module: {
     rules: [
@@ -73,8 +68,7 @@ var config = {
         { from: "./public/assets", to: "./assets" },
         { from: "./lang", to: "./lang" },
       ],
-    }),
-    new WorkboxPlugin.InjectManifest(wokboxConfig)
+    })
   ],
   optimization: {
     minimize: true,

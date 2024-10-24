@@ -1,195 +1,84 @@
-/*! ../modules/logger/index.js */
-
-/*! ../utils/log.js */
-
-/*! ./Logger */
-
-/*! ./clients/WebSocketClient.js */
-
-/*! ./createConsoleLogger */
-
-/*! ./emitter */
-
-/*! ./fsm.js */
-
-/*! ./getCurrentScriptSource.js */
-
-/*! ./log */
-
-/*! ./log-apply-result */
-
-/*! ./log.js */
-
-/*! ./named-references */
-
-/*! ./node_modules/webpack-dev-server/client/clients/WebSocketClient.js */
-
-/*! ./numeric-unicode-map */
-
-/*! ./overlay.js */
-
-/*! ./overlay/runtime-error.js */
-
-/*! ./overlay/state-machine.js */
-
-/*! ./overlay/styles.js */
-
-/*! ./progress.js */
-
-/*! ./socket.js */
-
-/*! ./surrogate-pairs */
-
-/*! ./utils/createSocketURL.js */
-
-/*! ./utils/log.js */
-
-/*! ./utils/parseURL.js */
-
-/*! ./utils/reloadApp.js */
-
-/*! ./utils/sendMessage.js */
-
-/*! ./utils/stripAnsi.js */
-
-/*! ansi-html-community */
-
-/*! events */
-
-/*! html-entities */
-
-/*! tapable */
-
-/*! webpack/hot/emitter.js */
-
-/*! webpack/hot/log.js */
-
-/*! webpack/lib/logging/runtime.js */
-
-/*!***************************************!*\
-  !*** ./node_modules/events/events.js ***!
-  \***************************************/
-
-/*!*****************************************!*\
-  !*** ./node_modules/webpack/hot/log.js ***!
-  \*****************************************/
-
-/*!********************************************!*\
-  !*** ./client-src/modules/logger/index.js ***!
-  \********************************************/
-
-/*!*********************************************!*\
-  !*** ./node_modules/webpack/hot/emitter.js ***!
-  \*********************************************/
-
-/*!**********************************************!*\
-  !*** ./client-src/modules/logger/tapable.js ***!
-  \**********************************************/
-
-/*!************************************************!*\
-  !*** ./node_modules/webpack/hot/dev-server.js ***!
-  \************************************************/
-
-/*!*************************************************!*\
-  !*** ./node_modules/html-entities/lib/index.js ***!
-  \*************************************************/
-
-/*!***************************************************!*\
-  !*** ./node_modules/ansi-html-community/index.js ***!
-  \***************************************************/
-
-/*!****************************************************!*\
-  !*** ./node_modules/webpack/lib/logging/Logger.js ***!
-  \****************************************************/
-
-/*!*****************************************************!*\
-  !*** ./node_modules/webpack/lib/logging/runtime.js ***!
-  \*****************************************************/
-
-/*!******************************************************!*\
-  !*** ./node_modules/webpack/hot/log-apply-result.js ***!
-  \******************************************************/
-
-/*!**********************************************************!*\
-  !*** ./node_modules/webpack-dev-server/client/socket.js ***!
-  \**********************************************************/
-
-/*!***********************************************************!*\
-  !*** ./node_modules/html-entities/lib/surrogate-pairs.js ***!
-  \***********************************************************/
-
-/*!***********************************************************!*\
-  !*** ./node_modules/webpack-dev-server/client/overlay.js ***!
-  \***********************************************************/
-
-/*!************************************************************!*\
-  !*** ./node_modules/html-entities/lib/named-references.js ***!
-  \************************************************************/
-
-/*!************************************************************!*\
-  !*** ./node_modules/webpack-dev-server/client/progress.js ***!
-  \************************************************************/
-
-/*!*************************************************************!*\
-  !*** ./node_modules/webpack-dev-server/client/utils/log.js ***!
-  \*************************************************************/
-
-/*!***************************************************************!*\
-  !*** ./node_modules/html-entities/lib/numeric-unicode-map.js ***!
-  \***************************************************************/
-
-/*!***************************************************************!*\
-  !*** ./node_modules/webpack-dev-server/client/overlay/fsm.js ***!
-  \***************************************************************/
-
-/*!*****************************************************************!*\
-  !*** ./node_modules/webpack/lib/logging/createConsoleLogger.js ***!
-  \*****************************************************************/
-
-/*!******************************************************************!*\
-  !*** ./node_modules/webpack-dev-server/client/overlay/styles.js ***!
-  \******************************************************************/
-
-/*!******************************************************************!*\
-  !*** ./node_modules/webpack-dev-server/client/utils/parseURL.js ***!
-  \******************************************************************/
-
-/*!*******************************************************************!*\
-  !*** ./node_modules/webpack-dev-server/client/utils/reloadApp.js ***!
-  \*******************************************************************/
-
-/*!*******************************************************************!*\
-  !*** ./node_modules/webpack-dev-server/client/utils/stripAnsi.js ***!
-  \*******************************************************************/
-
-/*!*********************************************************************!*\
-  !*** ./node_modules/webpack-dev-server/client/utils/sendMessage.js ***!
-  \*********************************************************************/
-
-/*!************************************************************************!*\
-  !*** ./node_modules/webpack-dev-server/client/modules/logger/index.js ***!
-  \************************************************************************/
-
-/*!*************************************************************************!*\
-  !*** ./node_modules/webpack-dev-server/client/overlay/runtime-error.js ***!
-  \*************************************************************************/
-
-/*!*************************************************************************!*\
-  !*** ./node_modules/webpack-dev-server/client/overlay/state-machine.js ***!
-  \*************************************************************************/
-
-/*!*************************************************************************!*\
-  !*** ./node_modules/webpack-dev-server/client/utils/createSocketURL.js ***!
-  \*************************************************************************/
-
-/*!***************************************************************************!*\
-  !*** ./node_modules/webpack-dev-server/client/clients/WebSocketClient.js ***!
-  \***************************************************************************/
-
-/*!********************************************************************************!*\
-  !*** ./node_modules/webpack-dev-server/client/utils/getCurrentScriptSource.js ***!
-  \********************************************************************************/
-
-/*!***********************************************************************************************************************************************************************************!*\
-  !*** ./node_modules/webpack-dev-server/client/index.js?protocol=ws%3A&hostname=0.0.0.0&port=8080&pathname=%2Fws&logging=info&overlay=true&reconnect=10&hot=true&live-reload=true ***!
-  \***********************************************************************************************************************************************************************************/
+/**
+ * @license
+ * Copyright 2017 Google LLC
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+/**
+ * @license
+ * Copyright 2019 Google LLC
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+/**
+ * @license
+ * Copyright 2020 Google LLC
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+/**
+ * @license
+ * Copyright 2021 Google LLC
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+/**
+ * @license
+ * Copyright 2022 Google LLC
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
