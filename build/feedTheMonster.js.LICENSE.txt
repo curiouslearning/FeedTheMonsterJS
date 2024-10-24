@@ -1,68 +1,18 @@
-/*! ../../Firebase/firebase-integration */
-
-/*! ../Firebase/firebase-integration */
-
-/*! ../constants */
-
 /*! ../modules/logger/index.js */
 
 /*! ../utils/log.js */
 
 /*! ./Logger */
 
-/*! ./api-data */
-
-/*! ./audio-player */
-
-/*! ./background */
-
-/*! ./base-firebase-integration */
-
-/*! ./buttons/pause-button */
-
-/*! ./cancel-button */
-
 /*! ./clients/WebSocketClient.js */
-
-/*! ./close-button */
 
 /*! ./createConsoleLogger */
 
-/*! ./custom-fonts */
-
-/*! ./data-modal */
-
 /*! ./emitter */
-
-/*! ./event-names */
-
-/*! ./feedback-text */
-
-/*! ./firebase-config */
 
 /*! ./fsm.js */
 
-/*! ./game-score */
-
-/*! ./gameplay-scene */
-
 /*! ./getCurrentScriptSource.js */
-
-/*! ./global-variables */
-
-/*! ./i18-font-mapping */
-
-/*! ./level-button */
-
-/*! ./level-config */
-
-/*! ./level-indicator */
-
-/*! ./level-selection-scene */
-
-/*! ./levelend-scene */
-
-/*! ./loading-scene */
 
 /*! ./log */
 
@@ -70,13 +20,7 @@
 
 /*! ./log.js */
 
-/*! ./monster */
-
 /*! ./named-references */
-
-/*! ./next-button */
-
-/*! ./no-button */
 
 /*! ./node_modules/webpack-dev-server/client/clients/WebSocketClient.js */
 
@@ -90,39 +34,11 @@
 
 /*! ./overlay/styles.js */
 
-/*! ./pause-button */
-
-/*! ./play-button */
-
 /*! ./progress.js */
-
-/*! ./prompt-text */
-
-/*! ./retry-button */
-
-/*! ./riveMonster/rive-monster-component */
 
 /*! ./socket.js */
 
-/*! ./src/Firebase/firebase-integration */
-
-/*! ./start-scene */
-
-/*! ./stone-config */
-
-/*! ./stone-handler */
-
 /*! ./surrogate-pairs */
-
-/*! ./test-gameplay-scene */
-
-/*! ./timer-ticking */
-
-/*! ./trail-particles */
-
-/*! ./tutorial */
-
-/*! ./utils */
 
 /*! ./utils/createSocketURL.js */
 
@@ -136,65 +52,11 @@
 
 /*! ./utils/stripAnsi.js */
 
-/*! ./wordPuzzleLogic */
-
-/*! ./wrap-idb-value.js */
-
-/*! ./yes-button */
-
-/*! @buttons */
-
-/*! @common */
-
-/*! @components */
-
-/*! @components/riveMonster/rive-monster-component */
-
-/*! @compositions */
-
-/*! @constants */
-
-/*! @data */
-
-/*! @data/i18-font-mapping */
-
-/*! @events */
-
-/*! @firebase/analytics */
-
-/*! @firebase/app */
-
-/*! @firebase/component */
-
-/*! @firebase/installations */
-
-/*! @firebase/logger */
-
-/*! @firebase/util */
-
-/*! @gamepuzzles */
-
-/*! @popups/pause-popup */
-
-/*! @popups/sure-popup */
-
-/*! @rive-app/canvas */
-
-/*! @sceneHandler */
-
-/*! @scenes */
-
 /*! ansi-html-community */
 
 /*! events */
 
-/*! firebase/analytics */
-
-/*! firebase/app */
-
 /*! html-entities */
-
-/*! idb */
 
 /*! tapable */
 
@@ -204,262 +66,36 @@
 
 /*! webpack/lib/logging/runtime.js */
 
-/*! workbox-window */
-
-/*!***************************!*\
-  !*** ./feedTheMonster.ts ***!
-  \***************************/
-
-/*!***************************!*\
-  !*** ./src/data/index.ts ***!
-  \***************************/
-
-/*!*****************************!*\
-  !*** ./src/common/index.ts ***!
-  \*****************************/
-
-/*!*****************************!*\
-  !*** ./src/common/utils.ts ***!
-  \*****************************/
-
-/*!*****************************!*\
-  !*** ./src/events/index.ts ***!
-  \*****************************/
-
-/*!*****************************!*\
-  !*** ./src/scenes/index.ts ***!
-  \*****************************/
-
-/*!******************************!*\
-  !*** ./src/data/api-data.ts ***!
-  \******************************/
-
-/*!********************************!*\
-  !*** ./src/constants/index.ts ***!
-  \********************************/
-
-/*!********************************!*\
-  !*** ./src/data/data-modal.ts ***!
-  \********************************/
-
-/*!********************************!*\
-  !*** ./src/data/game-score.ts ***!
-  \********************************/
-
-/*!*********************************!*\
-  !*** ./src/components/index.ts ***!
-  \*********************************/
-
-/*!**********************************!*\
-  !*** ./src/data/custom-fonts.ts ***!
-  \**********************************/
-
-/*!**********************************!*\
-  !*** ./src/gamepuzzles/index.ts ***!
-  \**********************************/
-
-/*!***********************************!*\
-  !*** ./src/common/event-names.ts ***!
-  \***********************************/
-
-/*!***********************************!*\
-  !*** ./src/components/monster.ts ***!
-  \***********************************/
-
-/*!***********************************!*\
-  !*** ./src/compositions/index.ts ***!
-  \***********************************/
-
-/*!***********************************!*\
-  !*** ./src/sceneHandler/index.ts ***!
-  \***********************************/
-
-/*!***********************************!*\
-  !*** ./src/scenes/start-scene.ts ***!
-  \***********************************/
-
-/*!************************************!*\
-  !*** ./src/common/stone-config.ts ***!
-  \************************************/
-
-/*!************************************!*\
-  !*** ./src/components/tutorial.ts ***!
-  \************************************/
-
-/*!*************************************!*\
-  !*** ./src/scenes/loading-scene.ts ***!
-  \*************************************/
-
-/*!**************************************!*\
-  !*** ./src/components/background.ts ***!
-  \**************************************/
-
-/*!**************************************!*\
-  !*** ./src/data/i18-font-mapping.ts ***!
-  \**************************************/
-
-/*!**************************************!*\
-  !*** ./src/scenes/gameplay-scene.ts ***!
-  \**************************************/
-
-/*!**************************************!*\
-  !*** ./src/scenes/levelend-scene.ts ***!
-  \**************************************/
-
 /*!***************************************!*\
   !*** ./node_modules/events/events.js ***!
   \***************************************/
-
-/*!***************************************!*\
-  !*** ./src/components/prompt-text.ts ***!
-  \***************************************/
-
-/*!****************************************!*\
-  !*** ./src/common/global-variables.ts ***!
-  \****************************************/
-
-/*!****************************************!*\
-  !*** ./src/components/audio-player.ts ***!
-  \****************************************/
-
-/*!****************************************!*\
-  !*** ./src/compositions/background.ts ***!
-  \****************************************/
-
-/*!*****************************************!*\
-  !*** ./node_modules/idb/build/index.js ***!
-  \*****************************************/
 
 /*!*****************************************!*\
   !*** ./node_modules/webpack/hot/log.js ***!
   \*****************************************/
 
-/*!*****************************************!*\
-  !*** ./src/Firebase/firebase-config.ts ***!
-  \*****************************************/
-
-/*!*****************************************!*\
-  !*** ./src/components/buttons/index.ts ***!
-  \*****************************************/
-
-/*!*****************************************!*\
-  !*** ./src/components/stone-handler.ts ***!
-  \*****************************************/
-
-/*!*****************************************!*\
-  !*** ./src/components/timer-ticking.ts ***!
-  \*****************************************/
-
-/*!******************************************!*\
-  !*** ./src/compositions/level-config.ts ***!
-  \******************************************/
-
-/*!*******************************************!*\
-  !*** ./src/components/level-indicator.ts ***!
-  \*******************************************/
-
-/*!*******************************************!*\
-  !*** ./src/components/trail-particles.ts ***!
-  \*******************************************/
-
-/*!*******************************************!*\
-  !*** ./src/scenes/test-gameplay-scene.ts ***!
-  \*******************************************/
-
 /*!********************************************!*\
   !*** ./client-src/modules/logger/index.js ***!
-  \********************************************/
-
-/*!********************************************!*\
-  !*** ./src/gamepuzzles/wordPuzzleLogic.ts ***!
   \********************************************/
 
 /*!*********************************************!*\
   !*** ./node_modules/webpack/hot/emitter.js ***!
   \*********************************************/
 
-/*!*********************************************!*\
-  !*** ./src/components/buttons/no-button.ts ***!
-  \*********************************************/
-
-/*!*********************************************!*\
-  !*** ./src/components/popups/sure-popup.ts ***!
-  \*********************************************/
-
-/*!*********************************************!*\
-  !*** ./src/scenes/level-selection-scene.ts ***!
-  \*********************************************/
-
 /*!**********************************************!*\
   !*** ./client-src/modules/logger/tapable.js ***!
   \**********************************************/
 
-/*!**********************************************!*\
-  !*** ./src/Firebase/firebase-integration.ts ***!
-  \**********************************************/
-
-/*!**********************************************!*\
-  !*** ./src/components/buttons/yes-button.ts ***!
-  \**********************************************/
-
-/*!**********************************************!*\
-  !*** ./src/components/popups/pause-popup.ts ***!
-  \**********************************************/
-
-/*!***********************************************!*\
-  !*** ./node_modules/@rive-app/canvas/rive.js ***!
-  \***********************************************/
-
-/*!***********************************************!*\
-  !*** ./src/components/buttons/next-button.ts ***!
-  \***********************************************/
-
-/*!***********************************************!*\
-  !*** ./src/components/buttons/play-button.ts ***!
-  \***********************************************/
-
-/*!***********************************************!*\
-  !*** ./src/components/feedback-text/index.ts ***!
-  \***********************************************/
-
 /*!************************************************!*\
   !*** ./node_modules/webpack/hot/dev-server.js ***!
-  \************************************************/
-
-/*!************************************************!*\
-  !*** ./src/components/buttons/close-button.ts ***!
-  \************************************************/
-
-/*!************************************************!*\
-  !*** ./src/components/buttons/level-button.ts ***!
-  \************************************************/
-
-/*!************************************************!*\
-  !*** ./src/components/buttons/pause-button.ts ***!
-  \************************************************/
-
-/*!************************************************!*\
-  !*** ./src/components/buttons/retry-button.ts ***!
   \************************************************/
 
 /*!*************************************************!*\
   !*** ./node_modules/html-entities/lib/index.js ***!
   \*************************************************/
 
-/*!*************************************************!*\
-  !*** ./src/components/buttons/cancel-button.ts ***!
-  \*************************************************/
-
-/*!**************************************************!*\
-  !*** ./node_modules/idb/build/wrap-idb-value.js ***!
-  \**************************************************/
-
 /*!***************************************************!*\
   !*** ./node_modules/ansi-html-community/index.js ***!
-  \***************************************************/
-
-/*!***************************************************!*\
-  !*** ./src/Firebase/base-firebase-integration.ts ***!
   \***************************************************/
 
 /*!****************************************************!*\
@@ -474,17 +110,9 @@
   !*** ./node_modules/webpack/hot/log-apply-result.js ***!
   \******************************************************/
 
-/*!*********************************************************!*\
-  !*** ./node_modules/firebase/app/dist/esm/index.esm.js ***!
-  \*********************************************************/
-
 /*!**********************************************************!*\
   !*** ./node_modules/webpack-dev-server/client/socket.js ***!
   \**********************************************************/
-
-/*!***********************************************************!*\
-  !*** ./node_modules/@firebase/util/dist/index.esm2017.js ***!
-  \***********************************************************/
 
 /*!***********************************************************!*\
   !*** ./node_modules/html-entities/lib/surrogate-pairs.js ***!
@@ -506,18 +134,6 @@
   !*** ./node_modules/webpack-dev-server/client/utils/log.js ***!
   \*************************************************************/
 
-/*!**************************************************************!*\
-  !*** ./node_modules/@firebase/app/dist/esm/index.esm2017.js ***!
-  \**************************************************************/
-
-/*!**************************************************************!*\
-  !*** ./src/components/riveMonster/rive-monster-component.ts ***!
-  \**************************************************************/
-
-/*!***************************************************************!*\
-  !*** ./node_modules/firebase/analytics/dist/esm/index.esm.js ***!
-  \***************************************************************/
-
 /*!***************************************************************!*\
   !*** ./node_modules/html-entities/lib/numeric-unicode-map.js ***!
   \***************************************************************/
@@ -525,10 +141,6 @@
 /*!***************************************************************!*\
   !*** ./node_modules/webpack-dev-server/client/overlay/fsm.js ***!
   \***************************************************************/
-
-/*!*****************************************************************!*\
-  !*** ./node_modules/@firebase/logger/dist/esm/index.esm2017.js ***!
-  \*****************************************************************/
 
 /*!*****************************************************************!*\
   !*** ./node_modules/webpack/lib/logging/createConsoleLogger.js ***!
@@ -550,25 +162,9 @@
   !*** ./node_modules/webpack-dev-server/client/utils/stripAnsi.js ***!
   \*******************************************************************/
 
-/*!********************************************************************!*\
-  !*** ./node_modules/@firebase/analytics/dist/esm/index.esm2017.js ***!
-  \********************************************************************/
-
-/*!********************************************************************!*\
-  !*** ./node_modules/@firebase/component/dist/esm/index.esm2017.js ***!
-  \********************************************************************/
-
 /*!*********************************************************************!*\
   !*** ./node_modules/webpack-dev-server/client/utils/sendMessage.js ***!
   \*********************************************************************/
-
-/*!***********************************************************************!*\
-  !*** ./node_modules/workbox-window/build/workbox-window.prod.es5.mjs ***!
-  \***********************************************************************/
-
-/*!************************************************************************!*\
-  !*** ./node_modules/@firebase/installations/dist/esm/index.esm2017.js ***!
-  \************************************************************************/
 
 /*!************************************************************************!*\
   !*** ./node_modules/webpack-dev-server/client/modules/logger/index.js ***!
@@ -590,103 +186,10 @@
   !*** ./node_modules/webpack-dev-server/client/clients/WebSocketClient.js ***!
   \***************************************************************************/
 
-/*!******************************************************************************!*\
-  !*** ./node_modules/@firebase/installations/node_modules/idb/build/index.js ***!
-  \******************************************************************************/
-
 /*!********************************************************************************!*\
   !*** ./node_modules/webpack-dev-server/client/utils/getCurrentScriptSource.js ***!
   \********************************************************************************/
 
-/*!***************************************************************************************!*\
-  !*** ./node_modules/@firebase/installations/node_modules/idb/build/wrap-idb-value.js ***!
-  \***************************************************************************************/
-
 /*!***********************************************************************************************************************************************************************************!*\
   !*** ./node_modules/webpack-dev-server/client/index.js?protocol=ws%3A&hostname=0.0.0.0&port=8080&pathname=%2Fws&logging=info&overlay=true&reconnect=10&hot=true&live-reload=true ***!
   \***********************************************************************************************************************************************************************************/
-
-/**
- * @license
- * Copyright 2017 Google LLC
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *   http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-
-/**
- * @license
- * Copyright 2019 Google LLC
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *   http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-
-/**
- * @license
- * Copyright 2020 Google LLC
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *   http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-
-/**
- * @license
- * Copyright 2021 Google LLC
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *   http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-
-/**
- * @license
- * Copyright 2022 Google LLC
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *   http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */

@@ -22,11 +22,14 @@ body {
 .game-scene {
   height: 100vh;
   max-height: -webkit-fill-available;
-  min-width: 420px;
+  min-width: 320px;
+  max-width: 100%;
+  position: relative;
 }
 
 img {
-  display: none;
+  max-width: 100%;
+  width: 100%;
 }
 
 #discription-text {
@@ -59,7 +62,7 @@ img {
 #monster {
   border: 1px solid;
 }
-#rivecanvas{
+#rivecanvas {
   position: absolute;
   bottom: 270px;
   left: 0;
@@ -306,7 +309,7 @@ img {
 }
 
 /* TODO: move to scss */
-/* POPUPS */ 
+/* POPUPS */
 .popup {
   display: none;
   position: absolute;
@@ -324,7 +327,7 @@ img {
 .popup .popup__overlay {
   height: 100%;
   width: 100%;
-  background-color: rgba(0,0,0,0.5);
+  background-color: rgba(0, 0, 0, 0.5);
 }
 .popup .popup__content-wrapper {
   position: absolute;
@@ -341,7 +344,7 @@ img {
   position: absolute;
   top: -15px;
   left: 15px;
-  
+
   display: block;
 }
 
@@ -368,4 +371,93 @@ img {
 }
 .btn--icon:active img {
   transform: scale(0.9);
+}
+
+.autumn,
+.summer,
+.winter {
+  display: none;
+}
+
+.autumn-bg .autumn,
+.summer-bg .summer,
+.winter-bg .winter {
+  display: block;
+}
+
+#background {
+  position: fixed;
+  width: 100%;
+  height: 100vh;
+  margin: auto;
+  left: 0;
+  top: 0;
+  top: 0;
+  background-size: cover;
+  background-repeat: no-repeat;
+}
+
+.ftm-mountain {
+  bottom: -2%;
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 175vw;
+  z-index: 2;
+}
+
+.ftm-totem {
+  position: absolute;
+  right: -55vw;
+  bottom: 65vw;
+  width: 100%;
+  z-index: 1;
+}
+
+.ftm-fence {
+  rotate: 370deg;
+  width: 68%;
+  left: -18vw;
+  bottom: 58vw;
+  position: absolute;
+}
+
+.winter-bg .ftm-fence {
+  position: absolute;
+  bottom: 31vw;
+  left: 52vw;
+  transform: translateX(-111%) translateY(-94%) rotate(-26deg);
+  width: 65%;
+  z-index: 1;
+}
+
+.autumn-bg .ftm-fence {
+  left: -8vw;
+  position: absolute;
+  bottom: 62vw;
+  width: 50%;
+  z-index: 1;
+  rotate: 334deg;
+}
+
+.autumn-bg .ftm-totem,
+.winter-bg .ftm-totem {
+  position: absolute;
+  bottom: 52vw;
+  right: 15vw;
+  transform: translateX(50%);
+  width: 90%;
+  z-index: 1;
+}
+
+.winter-bg {
+  background-image: url("./assets/images/Winter_bg_01.webp");
+}
+
+.autumn-bg {
+  background-image: url("./assets/images/Autumn_bg_v01.webp");
+}
+
+.summer-bg {
+  background-image: url("./assets/images/bg_v01.webp");
 }

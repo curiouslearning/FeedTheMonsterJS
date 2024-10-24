@@ -10,7 +10,8 @@ import {
   AUDIO_PATH_CORRECT_STONE,
   AUDIO_PATH_CHEERING_FUNC,
   ASSETS_PATH_STONE_PINK_BG
-} from '../constants';
+} from '@constants';
+import gameStateService from '@gameStateService';
 
 export default class StoneHandler extends EventManager {
   public context: CanvasRenderingContext2D;
@@ -35,6 +36,8 @@ export default class StoneHandler extends EventManager {
   public feedbackAudios: string[];
   public timerTickingInstance: TimerTicking;
   isGamePaused: boolean = false;
+  private unsubscribeEvent: () => void;
+
   constructor(
     context: CanvasRenderingContext2D,
     canvas,
@@ -76,6 +79,12 @@ export default class StoneHandler extends EventManager {
       this.handleVisibilityChange,
       false
     );
+    this.unsubscribeEvent = gameStateService.subscribe(
+      gameStateService.EVENTS.GAME_PAUSE_STATUS_EVENT,
+      (isGamePaused:boolean) => {
+        this.isGamePaused  = isGamePaused;
+      }
+    );
   }
 
   createStones(img) {
@@ -102,15 +111,19 @@ export default class StoneHandler extends EventManager {
   }
 
   draw(deltaTime: number) {
-    for (let i = 0; i < this.foilStones.length; i++) {
-      this.foilStones[i].draw(deltaTime);
-    }
-
-    if (
-      this.foilStones[this.foilStones.length - 1].frame >= 100 &&
-      !this.isGamePaused
-    ) {
-      this.timerTickingInstance.update(deltaTime);
+    if(this.foilStones.length > 0) {
+      this.foilStones.forEach((stone) => {
+        if (stone && stone.frame !== undefined) {
+          stone.draw(deltaTime);
+        }
+      });
+  
+      if (
+        this.foilStones[this.foilStones.length - 1].frame >= 100 &&
+        !this.isGamePaused
+      ) {
+        this.timerTickingInstance.update(deltaTime);
+      }
     }
   }
 
@@ -120,7 +133,7 @@ export default class StoneHandler extends EventManager {
     groupedLetters: {} | { [key: number]: string }
   ): void {
     for (let i = 0; i < this.foilStones.length; i++) {
-
+      
       if (shouldHideStoneChecker(i)) {
         this.foilStones[i].draw(
           deltaTime,
@@ -197,6 +210,7 @@ export default class StoneHandler extends EventManager {
   }
 
   public dispose() {
+    this.unsubscribeEvent();
     document.removeEventListener(
       VISIBILITY_CHANGE,
       this.handleVisibilityChange,
@@ -298,10 +312,6 @@ export default class StoneHandler extends EventManager {
       feedbackAudios["great"],
       feedbackAudios["amazing"]
     ];
-  }
-
-  setGamePause(isGamePaused: boolean) {
-    this.isGamePaused = isGamePaused;
   }
 
   playCorrectAnswerFeedbackSound(feedBackIndex: number) {

@@ -5,7 +5,7 @@ import {
   BACKGROUND_ASSET_LIST,
   createBackground,
   loadDynamicBgAssets,
-} from "@compositions";
+} from "@compositions"; // to be removed once background component has been fully used
 import {
   AUDIO_INTRO,
   AUDIO_LEVEL_LOSE,
@@ -15,7 +15,9 @@ import {
   PIN_STAR_2,
   PIN_STAR_3,
   WIN_BG,
+  SCENE_NAME_LEVEL_END,
 } from "@constants";
+import gameStateService from '@gameStateService';
 
 export class LevelEndScene {
   public canvas: HTMLCanvasElement;
@@ -56,11 +58,6 @@ export class LevelEndScene {
     this.height = height;
     this.width = width;
     this.context = context;
-    this.monster = new Monster(
-      this.canvas,
-      monsterPhaseNumber,
-      this.switchToReactionAnimation
-    );
     this.switchToGameplayCB = switchToGameplayCB;
     this.switchToLevelSelectionCB = switchToLevelSelectionCB;
     this.data = data;
@@ -106,6 +103,15 @@ export class LevelEndScene {
       this.currentLevel !==
         this.data.levels[this.data.levels.length - 1].levelMeta.levelNumber &&
       this.starCount >= 2;
+      this.monster = new Monster(
+      this.canvas,
+      monsterPhaseNumber,
+      () => {
+        //Temp fix - wrapping this in a function to avoid reference undefined of 'this'.
+        //To do - hook level-end-scene properly to game state service.
+        this.switchToReactionAnimation
+      }
+    );
   }
 
   private setupBg = async () => {
@@ -218,11 +224,11 @@ export class LevelEndScene {
 
     if (this.closeButton.onClick(x, y)) {
       this.audioPlayer.playButtonClickSound();
-      this.switchToLevelSelectionCB("LevelEnd");
+      this.switchToLevelSelectionCB(SCENE_NAME_LEVEL_END);
     }
     if (this.retryButton.onClick(x, y)) {
       this.audioPlayer.playButtonClickSound();
-      let gamePlayData = {
+      const gamePlayData = {
         currentLevelData: {
           ...this.data.levels[this.currentLevel],
           levelNumber: this.currentLevel,
@@ -230,20 +236,21 @@ export class LevelEndScene {
         selectedLevelNumber: this.currentLevel,
       };
       // pass same data as level is same
-      this.switchToGameplayCB(gamePlayData, "LevelEnd");
+      gameStateService.publish(gameStateService.EVENTS.GAMEPLAY_DATA_EVENT, gamePlayData);
+      this.switchToGameplayCB(SCENE_NAME_LEVEL_END);
     }
     if (
       this.isLastLevel &&
       this.nextButton.onClick(x, y)
     ) {
       this.audioPlayer.playButtonClickSound();
-      let next = Number(this.currentLevel) + 1;
-      let gamePlayData = {
+      const next = Number(this.currentLevel) + 1;
+      const gamePlayData = {
         currentLevelData: { ...this.data.levels[next], levelNumber: next },
         selectedLevelNumber: next,
       };
-
-      this.switchToGameplayCB(gamePlayData, "LevelEnd");
+      gameStateService.publish(gameStateService.EVENTS.GAMEPLAY_DATA_EVENT, gamePlayData);
+      this.switchToGameplayCB(SCENE_NAME_LEVEL_END);
     }
   };
   pauseAudios = () => {

@@ -220,7 +220,7 @@ export class TestGameplayScene {
         this.width * 0.5,
         this.height / 10
       );
-      // this.monster.update(deltaTime); does not exist
+      // this.monster.update(deltaTime); there's no more update method
       this.promptText.draw(deltaTime);
       this.stoneHandler.draw(deltaTime);
 

@@ -14,15 +14,17 @@ import {
   createLevelObject,
   getdefaultCloudBtnsPos,
   loadLevelImages
-} from "@compositions";
+} from "@compositions"; // to be removed once background component has been fully used
 import {
   PreviousPlayedLevel,
   LEVEL_SELECTION_BACKGROUND,
   NEXT_BTN_IMG,
   BACK_BTN_IMG,
   AUDIO_INTRO,
+  SCENE_NAME_LEVEL_SELECT,
 } from "@constants";
 import { LevelBloonButton } from '@buttons';
+import gameStateService from '@gameStateService';
 
 export class LevelSelectionScreen {
   private canvas: HTMLCanvasElement;
@@ -365,8 +367,9 @@ export class LevelSelectionScreen {
       },
       selectedLevelNumber: level_number,
     };
+    gameStateService.publish(gameStateService.EVENTS.GAMEPLAY_DATA_EVENT, gamePlayData);
     this.logSelectedLevelEvent();
-    this.callBack(gamePlayData, "LevelSelection");
+    this.callBack(SCENE_NAME_LEVEL_SELECT);
   }
   public logSelectedLevelEvent() {
     const selectedLeveltData: SelectedLevel = {

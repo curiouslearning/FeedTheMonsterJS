@@ -47,7 +47,7 @@ var config = {
       '@buttons': path.resolve(__dirname, 'src/components/buttons/'),
       '@popups': path.resolve(__dirname, 'src/components/popups/'),
       '@common': path.resolve(__dirname, 'src/common/'),
-      '@compositions': path.resolve(__dirname, 'src/compositions/'),
+      '@compositions': path.resolve(__dirname, 'src/compositions/'), // to be removed once background component has been fully integrated
       '@constants': path.resolve(__dirname, 'src/constants/'),
       '@data': path.resolve(__dirname, 'src/data/'),
       '@interfaces': path.resolve(__dirname, 'src/interfaces/'),
@@ -55,7 +55,8 @@ var config = {
       '@scenes': path.resolve(__dirname, 'src/scenes/'),
       '@events': path.resolve(__dirname, 'src/events/'),
       '@feedbackText': path.resolve(__dirname, 'src/components/feedback-text/'),
-      '@gamepuzzles': path.resolve(__dirname, 'src/gamepuzzles/')
+      '@gamepuzzles': path.resolve(__dirname, 'src/gamepuzzles/'),
+      '@gameStateService': path.resolve(__dirname, 'src/gameStateService/')
     },
     extensions: ['.tsx', '.ts', '.js', '.json', '.css', '.sh', '.babelrc', '.eslintignore', '.gitignore', '.d'],
   },
@@ -67,9 +68,9 @@ var config = {
     // }),
     new CopyPlugin({
       patterns: [
-        { from: "./index.html", to: "./" },
-        { from: "./index.css", to: "./" },
-        { from: "./assets", to: "./assets" },
+        { from: "./public/index.html", to: "./" },
+        { from: "./public/index.css", to: "./" },
+        { from: "./public/assets", to: "./assets" },
         { from: "./lang", to: "./lang" },
       ],
     }),
