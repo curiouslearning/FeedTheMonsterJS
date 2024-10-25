@@ -63,7 +63,7 @@ img {
 }
 #rivecanvas {
   position: absolute;
-  bottom: 270px;
+  bottom: 170px;
   left: 0;
   z-index: 4;
   width: 100%;
@@ -385,7 +385,7 @@ img {
 }
 
 #background {
-  position: fixed;
+  margin: auto;
   width: 100%;
   height: 100vh;
   margin: auto;
@@ -394,59 +394,57 @@ img {
   top: 0;
   background-size: cover;
   background-repeat: no-repeat;
+  overflow: hidden;
 }
 
 .ftm-mountain {
-  bottom: -2%;
   position: absolute;
-  left: 50%;
-  transform: translateX(-50%);
-  width: 175vw;
+  width: 100%;
   z-index: 2;
+  bottom: -7px;
 }
 
 .ftm-totem {
   position: absolute;
-  right: -55vw;
-  bottom: 65vw;
+  right: -48%;
+  bottom: 8%;
   width: 100%;
   z-index: 1;
 }
 
 .ftm-fence {
-  rotate: 370deg;
-  width: 68%;
-  left: -18vw;
-  bottom: 58vw;
+  rotate: 373deg;
+  left: -34%;
+  bottom: 6%;
   position: absolute;
+  width: 100%;
 }
 
 .winter-bg .ftm-fence {
   position: absolute;
-  bottom: 31vw;
-  left: 52vw;
-  transform: translateX(-111%) translateY(-94%) rotate(-26deg);
-  width: 65%;
+  bottom: 148px;
+  left: -150px;
+  transform: rotate(-33deg);
   z-index: 1;
+  width: 100%;
 }
 
 .autumn-bg .ftm-fence {
-  left: -8vw;
+  left: -123px;
   position: absolute;
-  bottom: 62vw;
-  width: 50%;
+  bottom: 40px;
   z-index: 1;
-  rotate: 334deg;
+  rotate: 342deg;
+  width: 100%;
 }
 
 .autumn-bg .ftm-totem,
 .winter-bg .ftm-totem {
   position: absolute;
-  bottom: 52vw;
-  right: 15vw;
-  transform: translateX(50%);
-  width: 90%;
+  bottom: 88px;
+  right: -175px;
   z-index: 1;
+  width: auto;
 }
 
 .winter-bg {
@@ -476,4 +474,53 @@ img {
   align-items: center;
   position: absolute;
   top: 150px;
+}
+
+/* Small devices (landscape phones, 576px and up) */
+@media (min-width: 576px) {
+  .autumn-bg .ftm-totem,
+  .winter-bg .ftm-totem {
+    right: -130px;
+    bottom: 258px;
+    width: auto;
+  }
+
+  .winter-bg .ftm-fence {
+    width: auto;
+    left: -79px;
+    bottom: 322px;
+  }
+
+  .autumn-bg .ftm-fence {
+    bottom: 148px;
+    width: auto;
+  }
+}
+
+/* Medium devices (tablets, 768px and up) */
+@media (min-width: 768px) {
+}
+
+/* Large devices (desktops, 992px and up) */
+@media (min-width: 992px) {
+  .autumn-bg .ftm-totem,
+  .winter-bg .ftm-totem {
+    right: -130px;
+    bottom: 258px;
+    width: auto;
+  }
+
+  .winter-bg .ftm-fence {
+    width: auto;
+    left: -79px;
+    bottom: 425px;
+  }
+
+  .ftm-fence {
+    rotate: 373deg;
+    left: -146px;
+    bottom: 275px;
+    position: absolute;
+    width: auto;
+  }
 }

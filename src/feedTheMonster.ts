@@ -38,12 +38,14 @@ class App {
   private titleTextElement: HTMLElement | null;
   private feedBackTextElement: HTMLElement | null;
   public currentProgress:any;
+  public background: HTMLElement | null;
   firebaseIntegration: FirebaseIntegration;
 
   constructor(lang: string) {
     this.lang = lang;
     this.currentProgress = 10; // Initialize progress to 0
     this.canvas = document.getElementById("canvas") as HTMLCanvasElement;
+    this.background = document.getElementById("background") as HTMLElement;
     this.channel = new BroadcastChannel("my-channel");
     this.progressBar = document.getElementById("progress-bar") as HTMLElement;
     this.titleTextElement = document.getElementById("title") as HTMLElement;
@@ -255,8 +257,10 @@ class App {
   }
 
   private setupCanvas() {
+    const gameWidth = window.screen.width > 1080 ? 768 : window.innerWidth;
     this.canvas.height = window.innerHeight;
-    this.canvas.width = window.screen.width > 1080 ? 768 : window.innerWidth;
+    this.canvas.width = gameWidth;
+    this.background.style.width = `${gameWidth}px`;
   }
 
   private createDataModal(data: any): DataModal {
