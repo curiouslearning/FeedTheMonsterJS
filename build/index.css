@@ -442,9 +442,9 @@ img {
 .winter-bg .ftm-totem {
   position: absolute;
   bottom: 88px;
-  right: -148px;
+  right: -175px;
   z-index: 1;
-  width: 100%;
+  width: auto;
 }
 
 .winter-bg {
