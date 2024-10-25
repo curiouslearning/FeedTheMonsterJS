@@ -502,8 +502,8 @@ img {
   .ftm-fence {
     rotate: 373deg;
     left: -146px;
-    bottom: 130px;
+    bottom: 275px;
     position: absolute;
-    width: 100%;
+    width: auto;
   }
 }
