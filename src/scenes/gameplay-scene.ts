@@ -216,11 +216,11 @@ export class GameplayScene {
 
     // Check if the click is within range of the monster
     const distance = Math.sqrt(
-      (x - this.monster.x - this.canvas.width / 4) ** 2 +
-        (y - this.monster.y - this.canvas.height / 2.2) ** 2
+      (x - this.monster.x - this.canvas.width / 3.5) ** 2 +
+        (y - this.monster.y - this.canvas.height / 1.8) ** 2 // Adjusted the divisor to lower the target point
     );
 
-    if (distance <= 100 && this.pickedStone) {
+    if (distance <= 120 && this.pickedStone) {
       const { text } = this.pickedStone; // Use destructuring for clarity
 
       switch (this.levelData.levelMeta.levelType) {
