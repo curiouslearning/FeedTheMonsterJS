@@ -28,7 +28,7 @@ export class LevelEndScene {
   public data: any;
   public audioPlayer: AudioPlayer;
   public isLastLevel: boolean;
-
+  public levelEndElement = document.getElementById("levelEnd");
   constructor(
     canvas: any,
     height: number,
@@ -48,6 +48,7 @@ export class LevelEndScene {
     this.switchToGameplayCB = switchToGameplayCB;
     this.switchToLevelSelectionCB = switchToLevelSelectionCB;
     this.data = data;
+    this.canvas.style.zIndex = "8";
     this.closeButton = new CloseButton(
       context,
       canvas,
@@ -87,11 +88,11 @@ export class LevelEndScene {
   }
 
   showLevelEndScreen() {
-    const levelEndElement = document.getElementById("levelEnd");
+    
 
     // Make the levelEnd element visible by setting display to block
-    if (levelEndElement) {
-      levelEndElement.style.display = 'block';
+    if (this.levelEndElement) {
+      this.levelEndElement.style.display = 'block';
     }
 
     // Render the stars dynamically based on the star count
@@ -103,13 +104,13 @@ export class LevelEndScene {
       if (isDocumentVisible()) {
         this.audioPlayer.playAudio(AUDIO_LEVEL_LOSE);
       }
-      this.monster.changeToSpitAnimation();
+      // this.monster.changeToSpitAnimation();
     } else {
       if (isDocumentVisible()) {
         this.audioPlayer.playAudio(AUDIO_LEVEL_WIN);
         this.audioPlayer.playAudio(AUDIO_INTRO);
       }
-      this.monster.changeToEatAnimation();
+      // this.monster.changeToEatAnimation();
     }
   };
 
@@ -140,7 +141,7 @@ export class LevelEndScene {
       const starImg = document.createElement("img");
       starImg.src = starImages[i];  // Set the star image source
       starImg.alt = `Star ${i + 1}`;
-      starImg.classList.add("star");
+      starImg.classList.add('stars',`star${i + 1}`);
       starsContainer.appendChild(starImg);  // Add star to the container
     }
   }

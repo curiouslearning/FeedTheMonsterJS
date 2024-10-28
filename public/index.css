@@ -82,7 +82,7 @@ img {
   transform: translate(-50%, 0%);
   /* aspect-ratio: 2/3; */
   max-height: -webkit-fill-available;
-  z-index: 5;
+  z-index: 4;
   background-repeat: no-repeat;
   background-size: cover;
 }
@@ -295,7 +295,7 @@ img {
 #title {
   font-family: Atma-SemiBold, sans-serif;
   margin-top: 15%;
-  z-index: 10;
+  z-index: 6;
   position: fixed;
   width: 100%;
   text-align: center;
@@ -407,16 +407,16 @@ img {
 .ftm-totem {
   position: absolute;
   bottom: 14%;
-  width: 100%;
+  width: 60%;
   z-index: 1;
-  left: 60vw;
+  right: -80px;
 }
 
 .ftm-fence {
-  left: -155px;
-  bottom: 5%;
+  left: -120px;
+  bottom: 60px;
   position: absolute;
-  width: 100%;
+  width: 80%;
 }
 
 .winter-bg .ftm-fence {
@@ -429,21 +429,21 @@ img {
 }
 
 .autumn-bg .ftm-fence {
-  left: -123px;
+  left: -100px;
   position: absolute;
-  bottom: 40px;
+  bottom: 80px;
   z-index: 1;
   rotate: 342deg;
-  width: 100%;
+  width: 70%;
 }
 
 .autumn-bg .ftm-totem,
 .winter-bg .ftm-totem {
   position: absolute;
-  bottom: 88px;
-  right: -175px;
+  bottom: 150px;
+  right: -50px;
   z-index: 1;
-  width: auto;
+  width: 80%;
 }
 
 .winter-bg {
@@ -464,19 +464,36 @@ img {
   position: fixed;
   z-index: 7;
   background-image: url(./assets/images/WIN_screen_bg.webp);
-  background-size: 100% 112%;
+  background-size: 100% 115%;
   top: 0;
   bottom: 0;
 }
 .stars-container{
   width: 100%;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  position: absolute;
-  top: 150px;
+  position: relative;
+  top: 160px;
+  height: 120px;
 }
-
+.star1{
+  position: absolute;
+  left: 40px;
+  width: 80px;
+  bottom: 10px;
+}
+.star2{
+  width: 85px;
+  top: -20px;
+  position: absolute;
+  left: 0;
+  right: 0;
+  margin: auto;
+}
+.star3{
+  position: absolute;
+  right: 22px;
+  width: 80px;
+  bottom: 10px;
+}
 /* Small devices (landscape phones, 576px and up) */
 @media (min-width: 576px) {
   .autumn-bg .ftm-totem,
