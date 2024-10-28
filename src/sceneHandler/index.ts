@@ -26,12 +26,12 @@ export class SceneHandler {
     SCENE_NAME_LEVEL_END?: LevelEndScene;
   };
   private activeScene: null | StartScene | LevelSelectionScreen | GameplayScene | LevelEndScene;
-  public canvas: HTMLCanvasElement; //Remove and use DAO - see notes above.
-  public data: DataModal; //Remove and use DAO - see notes above.
-  public width: number; //Remove and use DAO - see notes above.
-  public height: number; //Remove and use DAO - see notes above.
-  public canavsElement: HTMLCanvasElement; //Remove and use DAO - see notes above.
-  public context: CanvasRenderingContext2D; //Remove and use DAO - see notes above.
+  public canvas: HTMLCanvasElement; //Remove and use DAO.
+  public data: DataModal; //Remove and use DAO.
+  public width: number; //Remove and use DAO.
+  public height: number; //Remove and use DAO.
+  public canavsElement: HTMLCanvasElement; //Remove and use DAO.
+  public context: CanvasRenderingContext2D; //Remove and use DAO.
   private lastTime: number = 0;
   private toggleBtn: HTMLElement;
   private titleTextElement: HTMLElement;
