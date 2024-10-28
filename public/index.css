@@ -63,7 +63,7 @@ img {
 }
 #rivecanvas {
   position: absolute;
-  bottom: 170px;
+  bottom: 150px;
   left: 0;
   z-index: 4;
   width: 100%;
@@ -406,16 +406,15 @@ img {
 
 .ftm-totem {
   position: absolute;
-  right: -48%;
-  bottom: 8%;
+  bottom: 14%;
   width: 100%;
   z-index: 1;
+  left: 60vw;
 }
 
 .ftm-fence {
-  rotate: 373deg;
-  left: -34%;
-  bottom: 6%;
+  left: -155px;
+  bottom: 5%;
   position: absolute;
   width: 100%;
 }
@@ -463,9 +462,11 @@ img {
   height: 100vh;
   width: 100%;
   position: fixed;
-  z-index: 4;
+  z-index: 7;
   background-image: url(./assets/images/WIN_screen_bg.webp);
-  background-size: 100% 100%;
+  background-size: 100% 112%;
+  top: 0;
+  bottom: 0;
 }
 .stars-container{
   width: 100%;
