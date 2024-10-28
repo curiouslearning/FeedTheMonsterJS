@@ -30,7 +30,7 @@ export class SceneHandler {
   public data: DataModal; //Remove and use DAO.
   public width: number; //Remove and use DAO.
   public height: number; //Remove and use DAO.
-  public canavsElement: HTMLCanvasElement; //Remove and use DAO.
+  public canavasElement: HTMLCanvasElement; //Remove and use DAO.
   public context: CanvasRenderingContext2D; //Remove and use DAO.
   private lastTime: number = 0;
   private toggleBtn: HTMLElement;
@@ -49,8 +49,8 @@ export class SceneHandler {
     this.data = data; //Create and use DAO.
     this.width = canvas.width; //Create and use DAO.
     this.height = canvas.height; //Create and use DAO.
-    this.canavsElement = document.getElementById("canvas") as HTMLCanvasElement; //Create and use DAO.
-    this.context = this.canavsElement.getContext("2d"); //Create and use DAO.
+    this.canavasElement = document.getElementById("canvas") as HTMLCanvasElement; //Create and use DAO.
+    this.context = this.canavasElement.getContext("2d"); //Create and use DAO.
     /***********************************************************************/
     this.toggleBtn = document.getElementById("toggle-btn") as HTMLElement;
     this.titleTextElement = document.getElementById("title") as HTMLElement;
