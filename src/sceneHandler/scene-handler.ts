@@ -8,7 +8,7 @@ import {
 import { DataModal, GameScore } from "@data";
 import { Debugger } from "@common";
 import {
-  SCENE_NAME_LOADING,
+  LOADING_TRANSITION,
   SCENE_NAME_START,
   SCENE_NAME_LEVEL_SELECT,
   SCENE_NAME_GAME_PLAY,
@@ -19,7 +19,7 @@ import gameStateService from '@gameStateService';
 
 export class SceneHandler {
   private scenes: {
-    SCENE_NAME_LOADING?: LoadingScene;
+    LOADING_TRANSITION?: LoadingScene;
     SCENE_NAME_START?: StartScene;
     SCENE_NAME_LEVEL_SELECT?: LevelSelectionScreen;
     SCENE_NAME_GAME_PLAY?: GameplayScene;
@@ -60,7 +60,7 @@ export class SceneHandler {
   }
 
   private init(canvas: HTMLCanvasElement, data: DataModal) {
-    this.addScene(SCENE_NAME_LOADING, new LoadingScene());
+    this.addScene(LOADING_TRANSITION, new LoadingScene());
     this.addScene(
       SCENE_NAME_START,
       new StartScene(
@@ -118,7 +118,7 @@ export class SceneHandler {
     const deltaTime = timeStamp - this.lastTime;
     this.lastTime = timeStamp;
     this.context.clearRect(0, 0, this.width, this.height);
-    this.scenes[SCENE_NAME_LOADING].draw(deltaTime);
+    this.scenes[LOADING_TRANSITION].draw(deltaTime);
     this.activeScene.draw(deltaTime);
   };
 

@@ -52,7 +52,7 @@
       "@constants": ["src/constants"],
       "@data/*": ["src/data/*"],
       "@data": ["src/data"],
-      "@sceneHandler": ["src/sceneHandler"],
+      "@sceneHandler/*": ["src/sceneHandler/*"],
       "@scenes": ["src/scenes"],
       "@events": ["src/events"],
       "@feedbackText/*": ["src/components/feedback-text/*"],

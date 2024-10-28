@@ -1,6 +1,6 @@
 import * as Sentry from "@sentry/browser";
 import { getData, DataModal, customFonts } from "@data";
-import { SceneHandler } from "@sceneHandler";
+import { SceneHandler } from "@sceneHandler/scene-handler";
 import { AUDIO_URL_PRELOAD, IsCached, PreviousPlayedLevel } from "@constants";
 import { Workbox } from "workbox-window";
 import { FirebaseIntegration } from "./Firebase/firebase-integration";
