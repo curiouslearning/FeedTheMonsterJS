@@ -8,6 +8,7 @@ import {
 import { DataModal, GameScore } from "@data";
 import { Debugger } from "@common";
 import {
+  SCENE_NAME_LOADING,
   SCENE_NAME_START,
   SCENE_NAME_LEVEL_SELECT,
   SCENE_NAME_GAME_PLAY,
@@ -17,19 +18,20 @@ import {
 import gameStateService from '@gameStateService';
 
 export class SceneHandler {
-  public canvas: HTMLCanvasElement;
-  public data: DataModal;
-  public width: number;
-  public height: number;
-  public startScene: StartScene;
-  public levelSelectionScene: LevelSelectionScreen;
-  public gameplayScene: GameplayScene;
-  public levelEndScene: LevelEndScene;
-  public canavsElement: HTMLCanvasElement;
-  public context: CanvasRenderingContext2D;
-  public static SceneName: string;
-  public loadingScreen: LoadingScene;
-  public loading: boolean = false;
+  private scenes: {
+    SCENE_NAME_LOADING?: LoadingScene;
+    SCENE_NAME_START?: StartScene;
+    SCENE_NAME_LEVEL_SELECT?: LevelSelectionScreen;
+    SCENE_NAME_GAME_PLAY?: GameplayScene;
+    SCENE_NAME_LEVEL_END?: LevelEndScene;
+  };
+  private activeScene: null | StartScene | LevelSelectionScreen | GameplayScene | LevelEndScene;
+  public canvas: HTMLCanvasElement; //Remove and use DAO - see notes above.
+  public data: DataModal; //Remove and use DAO - see notes above.
+  public width: number; //Remove and use DAO - see notes above.
+  public height: number; //Remove and use DAO - see notes above.
+  public canavsElement: HTMLCanvasElement; //Remove and use DAO - see notes above.
+  public context: CanvasRenderingContext2D; //Remove and use DAO - see notes above.
   private lastTime: number = 0;
   private toggleBtn: HTMLElement;
   private titleTextElement: HTMLElement;
@@ -40,27 +42,48 @@ export class SceneHandler {
       canvas,
       document.getElementById("canvas") as HTMLCanvasElement
     );
-    this.canvas = canvas;
-    this.data = data;
-    this.width = canvas.width;
-    this.height = canvas.height;
-    this.canavsElement = document.getElementById("canvas") as HTMLCanvasElement;
+    this.scenes = {};
+    this.activeScene = null;
+    /* Remove these and, create and use DAO. */
+    this.canvas = canvas; //Create and use DAO.
+    this.data = data; //Create and use DAO.
+    this.width = canvas.width; //Create and use DAO.
+    this.height = canvas.height; //Create and use DAO.
+    this.canavsElement = document.getElementById("canvas") as HTMLCanvasElement; //Create and use DAO.
+    this.context = this.canavsElement.getContext("2d"); //Create and use DAO.
+    /***********************************************************************/
     this.toggleBtn = document.getElementById("toggle-btn") as HTMLElement;
     this.titleTextElement = document.getElementById("title") as HTMLElement;
     window.addEventListener("beforeinstallprompt", this.handleInstallPrompt);
-    this.context = this.canavsElement.getContext("2d");
-    this.startScene = new StartScene(
-      canvas,
-      data,
-      this.switchSceneToLevelSelection
-    );
-    SceneHandler.SceneName = SCENE_NAME_START;
-    this.loadingScreen = new LoadingScene(
-      this.width,
-      this.height,
-      this.removeLoading
-    );
     this.startAnimationLoop();
+    this.init(canvas, data);
+  }
+
+  private init(canvas, data) {
+    this.addScene(SCENE_NAME_LOADING, new LoadingScene());
+    this.addScene(
+      SCENE_NAME_START,
+      new StartScene(
+        canvas, //to do - use DAO.
+        data, //to do - use DAO.
+        this.switchSceneToLevelSelection
+      )
+    );
+    this.gotoScene(SCENE_NAME_START);
+  }
+
+  private addScene(key, Class) {
+    this.scenes[key] = Class;
+  }
+
+  private gotoScene(key) {
+    this.activeScene && this.activeScene?.dispose();
+    this.activeScene = this.scenes[key];
+  }
+
+  private timerWrapper = (callback: () => void, customTime:number = 800) => {
+    //This is for reusable setTimeout with default 800 miliseconds.
+    setTimeout(() => { callback(); }, customTime);
   }
 
   startAnimationLoop() {
@@ -86,109 +109,82 @@ export class SceneHandler {
   }
 
   public checkMonsterPhaseUpdation(): number {
-    let totalStarCount = GameScore.getTotalStarCount();
-    let monsterPhaseNumber = Math.floor(totalStarCount / 12) + 1 || 1;
+    const totalStarCount = GameScore.getTotalStarCount();
+    const monsterPhaseNumber = Math.floor(totalStarCount / 12) + 1 || 1;
     return monsterPhaseNumber <= 4 ? monsterPhaseNumber : 4;
   }
 
   animation = (timeStamp: number) => {
-    let deltaTime = timeStamp - this.lastTime;
+    const deltaTime = timeStamp - this.lastTime;
     this.lastTime = timeStamp;
-
     this.context.clearRect(0, 0, this.width, this.height);
-    this.loading ? this.loadingScreen.draw(deltaTime) : null;
-
-    if (SceneHandler.SceneName === SCENE_NAME_START) {
-      this.startScene.animation(deltaTime);
-    } else if (SceneHandler.SceneName === SCENE_NAME_LEVEL_SELECT) {
-      this.levelSelectionScene.drawLevelSelection();
-    } else if (SceneHandler.SceneName === SCENE_NAME_GAME_PLAY) {
-      this.gameplayScene.draw(deltaTime);
-    } else if (SceneHandler.SceneName === SCENE_NAME_LEVEL_END) {
-      this.levelEndScene.draw(deltaTime);
-    }
+    this.scenes[SCENE_NAME_LOADING].draw(deltaTime);
+    this.activeScene.draw(deltaTime);
   };
 
-  switchSceneToGameplay = (changeSceneRequestFrom?: string) => {
-    this.showLoading();
-    this.dispose(changeSceneRequestFrom);
-    setTimeout(() => {
-      this.gameplayScene = new GameplayScene({
-        monsterPhaseNumber: this.checkMonsterPhaseUpdation(),
-        switchSceneToEnd: this.switchSceneToEndLevel,
-        switchToLevelSelection: () => {
-          this.switchSceneToLevelSelection(SCENE_NAME_GAME_PLAY);
-        },
-        reloadScene: this.switchSceneToGameplay
-      });
-      SceneHandler.SceneName = SCENE_NAME_GAME_PLAY;
-    }, 800);
-  };
-
-  switchSceneToEndLevel = (
-    starCount: number,
-    monsterPhaseNumber: number,
-    currentLevelNumber,
-    isTimerEnded: boolean
-  ) => {
-    this.loadingScreen.initCloud();
-
-    setTimeout(
+  switchSceneToLevelSelection = () => {
+    this.timerWrapper(
       () => {
-        this.dispose(SCENE_NAME_GAME_PLAY);
-        this.levelEndScene = new LevelEndScene(
-          this.canvas,
-          this.height,
-          this.width,
-          this.context,
-          starCount,
-          currentLevelNumber,
-          this.switchSceneToGameplay,
-          this.switchSceneToLevelSelection,
-          this.data,
-          monsterPhaseNumber
+        this.addScene(
+          SCENE_NAME_LEVEL_SELECT,
+          new LevelSelectionScreen(
+            this.canvas, //to do - use DAO.
+            this.data, //to do - use DAO.
+            this.switchSceneToGameplay
+          )
         );
-        SceneHandler.SceneName = SCENE_NAME_LEVEL_END;
-      },
-      isTimerEnded ? 0 : 4000
+        this.gotoScene(SCENE_NAME_LEVEL_SELECT);
+        this.titleTextElement.style.display = "none";
+      }
     );
   };
 
-  switchSceneToLevelSelection = (changeSceneRequestFrom?: string) => {
-    this.showLoading();
-    this.dispose(changeSceneRequestFrom);
-    setTimeout(() => {
-      this.levelSelectionScene = new LevelSelectionScreen(
-        this.canvas,
-        this.data,
-        this.switchSceneToGameplay
-      );
-      SceneHandler.SceneName = SCENE_NAME_LEVEL_SELECT;
-      this.titleTextElement.style.display = "none";
-    }, 800);
+  switchSceneToGameplay = () => {
+    this.timerWrapper(
+      () => {
+        this.addScene(
+          SCENE_NAME_GAME_PLAY,
+          new GameplayScene({
+            monsterPhaseNumber: this.checkMonsterPhaseUpdation(),
+            switchSceneToEnd: this.switchSceneToEndLevel,
+            switchToLevelSelection: () => {
+              this.switchSceneToLevelSelection();
+            },
+            reloadScene: this.switchSceneToGameplay
+          })
+        );
+        this.gotoScene(SCENE_NAME_GAME_PLAY);
+      }
+    );
   };
 
-  private dispose = (lastSceneName: string): void => {
-    if (lastSceneName == SCENE_NAME_LEVEL_SELECT) {
-      this.levelSelectionScene.dispose();
-    } else if (lastSceneName === SCENE_NAME_GAME_PLAY) {
-      this.gameplayScene.dispose();
-    } else if (lastSceneName === SCENE_NAME_START) {
-      this.startScene.dispose();
-    } else if (lastSceneName == SCENE_NAME_LEVEL_END) {
-      this.levelEndScene.dispose();
-    }
-  };
-
-  private showLoading = (): void => {
-    this.loadingScreen.initCloud();
-    this.loading = true;
-    document.getElementById("loading").style.zIndex = "10";
-  };
-
-  private removeLoading = (): void => {
-    document.getElementById("loading").style.zIndex = "-1";
-    this.loading = false;
+  switchSceneToEndLevel = (
+    starCount: number, //to do - use DAO.
+    monsterPhaseNumber: number, //to do - use DAO.
+    currentLevelNumber, //to do - use DAO.
+    isTimerEnded: boolean //to do - use DAO.
+  ) => {
+    this.timerWrapper(
+      () => {
+        this.addScene(
+          SCENE_NAME_LEVEL_END,
+          new LevelEndScene(
+            this.canvas, //to do - use DAO.
+            this.height, //to do - use DAO.
+            this.width, //to do - use DAO.
+            this.context, //to do - use DAO.
+            starCount, //to do - use DAO.
+            currentLevelNumber, //to do - use DAO.
+            this.switchSceneToGameplay,
+            this.switchSceneToLevelSelection,
+            this.data, //to do - use DAO.
+            monsterPhaseNumber //to do - use DAO.
+          )
+        );
+        this.gotoScene(SCENE_NAME_LEVEL_END);
+      },
+      isTimerEnded ? 0 : 4000
+    )
   };
 
   private handleInstallPrompt = (event: Event) => {

@@ -136,6 +136,7 @@ export const WINTER_BG_GROUP_IMGS = {
 };
 
 //Scene Names
+export const SCENE_NAME_LOADING = 'LoadingScene';
 export const SCENE_NAME_START = "StartScene";
 export const SCENE_NAME_LEVEL_SELECT = "LevelSelection";
 export const SCENE_NAME_GAME_PLAY = "GamePlay";
