@@ -59,7 +59,7 @@ export class SceneHandler {
     this.init(canvas, data);
   }
 
-  private init(canvas, data) {
+  private init(canvas: HTMLCanvasElement, data: DataModal) {
     this.addScene(SCENE_NAME_LOADING, new LoadingScene());
     this.addScene(
       SCENE_NAME_START,
@@ -72,11 +72,11 @@ export class SceneHandler {
     this.gotoScene(SCENE_NAME_START);
   }
 
-  private addScene(key, Class) {
+  private addScene(key: string, Class: LoadingScene | StartScene | LevelSelectionScreen | GameplayScene | LevelEndScene) {
     this.scenes[key] = Class;
   }
 
-  private gotoScene(key) {
+  private gotoScene(key: string) {
     this.activeScene && this.activeScene?.dispose();
     this.activeScene = this.scenes[key];
   }
