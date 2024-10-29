@@ -1,7 +1,7 @@
 importScripts(
   "https://storage.googleapis.com/workbox-cdn/releases/4.3.1/workbox-sw.js"
 );
-workbox.precaching.precacheAndRoute([{"revision":"f6ab26a6ba4ed5c473bcae5036836cdc","url":"feedTheMonster.js"},{"revision":"09bb61dacaa8b249581ad750f35869e2","url":"index.css"},{"revision":"0ac1e4be77fc3838b79c74aa60ee3352","url":"index.html"},{"revision":"ae797974ddb3e3332e4e4aa403364538","url":"workers/feedback-text-worker.js"}], {
+workbox.precaching.precacheAndRoute([{"revision":"41ee52a13ec4becc8d52ca965face3dc","url":"feedTheMonster.js"},{"revision":"09bb61dacaa8b249581ad750f35869e2","url":"index.css"},{"revision":"1019bda598e9e2ab3289c7994b28729a","url":"index.html"},{"revision":"ae797974ddb3e3332e4e4aa403364538","url":"workers/feedback-text-worker.js"}], {
   ignoreURLParametersMatching: [/^cr_/],
   exclude: [/^lang\//],
 });

@@ -298,7 +298,7 @@ export class LevelSelectionScreen {
         : null;
     }
   }
-  private draw() {
+  private drawLevelSelection() {
     for (let levelBtn of this.levelButtons) {
       this.drawLevel(
         levelBtn,
@@ -368,6 +368,7 @@ export class LevelSelectionScreen {
       selectedLevelNumber: level_number,
     };
     gameStateService.publish(gameStateService.EVENTS.GAMEPLAY_DATA_EVENT, gamePlayData);
+    gameStateService.publish(gameStateService.EVENTS.SCENE_LOADING_EVENT, true);
     this.logSelectedLevelEvent();
     this.callBack(SCENE_NAME_LEVEL_SELECT);
   }
@@ -385,10 +386,10 @@ export class LevelSelectionScreen {
     };
     this.firebaseIntegration.sendSelectedLevelEvent(selectedLeveltData);
   }
-  public drawLevelSelection() {
+  public draw() {
     if (this.imagesLoaded) {
       this.background?.draw();
-      this.draw();
+      this.drawLevelSelection();
       this.downButton(this.levelSelectionPageIndex);
     }
   }

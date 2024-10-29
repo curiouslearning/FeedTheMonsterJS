@@ -4,6 +4,10 @@ const isDev = (nodeEnv !== 'production');
 const CopyPlugin = require("copy-webpack-plugin");
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const TerserPlugin = require('terser-webpack-plugin');
+const ESLintPlugin = require('eslint-webpack-plugin');
+
+const eslintConfig = require('./.eslintrc.json');
+
 // const CompressionPlugin = require('compression-webpack-plugin');
 
 const mode = isDev ? 'development' : 'production';
@@ -70,7 +74,16 @@ var config = {
         { from: "./public/assets", to: "./assets" },
         { from: "./lang", to: "./lang" },
       ],
-    })
+    }),
+
+    // TODO: fix lint issues first
+    // lint can be tested by running `npm run lint`
+    // new ESLintPlugin({
+    //   ...eslintConfig,
+
+    //   // TODO: set this to isDev once we fix all the lint errors.
+    //   failOnError: false
+    // })
   ],
   optimization: {
     minimize: true,
