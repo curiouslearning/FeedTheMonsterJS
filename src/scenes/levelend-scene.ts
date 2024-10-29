@@ -8,7 +8,6 @@ import {
   PIN_STAR_1,
   PIN_STAR_2,
   PIN_STAR_3,
-  SCENE_NAME_LEVEL_END,
 } from "@constants";
 import gameStateService from '@gameStateService';
 
@@ -153,6 +152,11 @@ export class LevelEndScene {
     document.addEventListener("visibilitychange", this.pauseAudios, false);
   }
 
+  private handlePublishEvent(shouldShowLoading: boolean, gamePlayData = null) {
+    gamePlayData && gameStateService.publish(gameStateService.EVENTS.GAMEPLAY_DATA_EVENT, gamePlayData);
+    gameStateService.publish(gameStateService.EVENTS.SCENE_LOADING_EVENT, shouldShowLoading);
+  }
+
   handleMouseClick = (event) => {
     const selfElement: HTMLElement = document.getElementById("canvas");
     var rect = selfElement.getBoundingClientRect();
@@ -161,7 +165,8 @@ export class LevelEndScene {
 
     if (this.closeButton.onClick(x, y)) {
       this.audioPlayer.playButtonClickSound();
-      this.switchToLevelSelectionCB(SCENE_NAME_LEVEL_END);
+      this.handlePublishEvent(true);
+      this.switchToLevelSelectionCB();
     }
     if (this.retryButton.onClick(x, y)) {
       this.audioPlayer.playButtonClickSound();
@@ -172,8 +177,9 @@ export class LevelEndScene {
         },
         selectedLevelNumber: this.currentLevel,
       };
-      gameStateService.publish(gameStateService.EVENTS.GAMEPLAY_DATA_EVENT, gamePlayData);
-      this.switchToGameplayCB(SCENE_NAME_LEVEL_END);
+      // pass same data as level is same
+      this.handlePublishEvent(true, gamePlayData);
+      this.switchToGameplayCB();
     }
     if (this.isLastLevel && this.nextButton.onClick(x, y)) {
       this.audioPlayer.playButtonClickSound();
@@ -182,8 +188,8 @@ export class LevelEndScene {
         currentLevelData: { ...this.data.levels[next], levelNumber: next },
         selectedLevelNumber: next,
       };
-      gameStateService.publish(gameStateService.EVENTS.GAMEPLAY_DATA_EVENT, gamePlayData);
-      this.switchToGameplayCB(SCENE_NAME_LEVEL_END);
+      this.handlePublishEvent(true, gamePlayData);
+      this.switchToGameplayCB();
     }
   };
 

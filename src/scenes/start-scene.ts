@@ -14,6 +14,7 @@ import {
   DEFAULT_BG_GROUP_IMGS,
 } from "@constants";
 import { RiveMonsterComponent } from "@components/riveMonster/rive-monster-component";
+import gameStateService from '@gameStateService';
 
 export class StartScene {
   public canvas: HTMLCanvasElement;
@@ -99,7 +100,7 @@ export class StartScene {
     this.titleTextElement.textContent = this.data.title;
   };
 
-  animation = (deltaTime: number) => {
+  draw = (deltaTime: number) => {
     this.context.clearRect(0, 0, this.width, this.height);
     this.background?.draw();
     this.playButton.draw();
@@ -137,7 +138,8 @@ export class StartScene {
       });
       this.toggleBtn.style.display = "none";
       this.audioPlayer.playButtonClickSound();
-      self.switchSceneToLevelSelection("StartScene");
+      gameStateService.publish(gameStateService.EVENTS.SCENE_LOADING_EVENT, true);
+      self.switchSceneToLevelSelection();
     }
   };
 
