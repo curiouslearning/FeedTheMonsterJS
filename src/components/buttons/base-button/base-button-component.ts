@@ -1,4 +1,4 @@
-interface ButtonOptions {
+export interface ButtonOptions {
   id: string;
   className?: string;
   onClick?: () => void;
@@ -59,27 +59,3 @@ export class BaseButtonComponent {
     return this.element;
   }
 }
-
-// example usage in pause-button.ts
-// import {PAUSE_BTN_IMG} from '@constants';
-// import gameStateService from '@gameStateService';
-
-// import {BaseButtonComponent} from './base-button/base-button-component';
-
-// export default class PauseButton extends BaseButtonComponent {
-//   constructor() {
-//     super({
-//       id: 'pause-button',
-//       className: 'pause-button-image',
-//       onClick: () => {
-//         console.log('Pause button clicked or touched');
-//         gameStateService.publish(
-//           gameStateService.EVENTS.GAME_PAUSE_STATUS_EVENT,
-//           true, // isGamePaused
-//         );
-//       },
-//       imageSrc: PAUSE_BTN_IMG,
-//       imageAlt: 'Pause Icon',
-//     });
-//   }
-// }
