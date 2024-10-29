@@ -458,6 +458,23 @@ img {
 .summer-bg {
   background-image: url("./assets/images/bg_v01.webp");
 }
+#levelEnd{
+  display: none;
+  height: 100vh;
+  width: 100%;
+  position: fixed;
+  z-index: 4;
+  background-image: url(./assets/images/WIN_screen_bg.webp);
+  background-size: 100% 100%;
+}
+.stars-container{
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: absolute;
+  top: 150px;
+}
 
 /* Small devices (landscape phones, 576px and up) */
 @media (min-width: 576px) {
