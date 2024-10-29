@@ -73,9 +73,9 @@ export class LevelEndScene {
 
     this.isLastLevel =
       this.currentLevel !==
-        this.data.levels[this.data.levels.length - 1].levelMeta.levelNumber &&
+      this.data.levels[this.data.levels.length - 1].levelMeta.levelNumber &&
       this.starCount >= 2;
-    
+
     this.monster = new Monster(
       this.canvas,
       monsterPhaseNumber,
@@ -87,13 +87,10 @@ export class LevelEndScene {
   }
 
   showLevelEndScreen() {
-    
-
     // Make the levelEnd element visible by setting display to block
     if (this.levelEndElement) {
       this.levelEndElement.style.display = 'block';
     }
-
     // Render the stars dynamically based on the star count
     this.renderStarsHTML();
   }
@@ -103,44 +100,41 @@ export class LevelEndScene {
       if (isDocumentVisible()) {
         this.audioPlayer.playAudio(AUDIO_LEVEL_LOSE);
       }
-      // this.monster.changeToSpitAnimation();
+      // this.monster.changeToSpitAnimation(); //Commenting to handle interactive animation
     } else {
       if (isDocumentVisible()) {
         this.audioPlayer.playAudio(AUDIO_LEVEL_WIN);
         this.audioPlayer.playAudio(AUDIO_INTRO);
       }
-      // this.monster.changeToEatAnimation();
+      // this.monster.changeToEatAnimation();  //Commenting to handle interactive animation
     }
   };
 
-  draw(deltaTime: number) {
+  draw(deltaTime?: number) {
     // No background drawing here as it's handled in HTML
-
-    // Draw monster and buttons
+    // Draw buttons
     this.closeButton.draw();
     this.retryButton.draw();
-    if (this.isLastLevel) {
-      this.nextButton.draw();
-    }
+    this.isLastLevel && this.nextButton.draw();
   }
 
   renderStarsHTML() {
     const starsContainer = document.querySelector(".stars-container");
-  
+
     // Clear any previously rendered stars
     starsContainer.innerHTML = '';
-  
+
     const starImages = [
       PIN_STAR_1, // Path to star 1 image
       PIN_STAR_2, // Path to star 2 image
       PIN_STAR_3, // Path to star 3 image
     ];
-  
+
     for (let i = 0; i < this.starCount; i++) {
       const starImg = document.createElement("img");
       starImg.src = starImages[i];  // Set the star image source
       starImg.alt = `Star ${i + 1}`;
-      starImg.classList.add('stars',`star${i + 1}`);
+      starImg.classList.add('stars', `star${i + 1}`);
       starsContainer.appendChild(starImg);  // Add star to the container
     }
   }
