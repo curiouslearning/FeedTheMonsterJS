@@ -1,99 +1,85 @@
 interface ButtonOptions {
-  label?: string;
-  onClick?: () => void;
+  id: string;
   className?: string;
-  disabled?: boolean;
-  targetId?: string; // Optional target container ID for dynamic injection
+  onClick?: () => void;
+  imageSrc?: string;
+  imageAlt?: string;
+  targetId?: string;
 }
 
 export class BaseButtonComponent {
-  private element: HTMLButtonElement;
+  private element: HTMLElement;
 
   constructor(options: ButtonOptions) {
-    this.element = document.createElement("button");
-    this.applyOptions(options);
-    this.injectButton(options.targetId);
+    this.element = this.createButtonElement(options);
+    this.injectButtonIntoTarget(
+      options.targetId || 'game-control',
+      options.onClick,
+    );
   }
 
-  private applyOptions(options: ButtonOptions): void {
-    const { label, onClick, className, disabled } = options;
+  private createButtonElement({
+    id,
+    className = '',
+    imageSrc,
+    imageAlt = 'Button Image',
+  }: ButtonOptions): HTMLElement {
+    // Create the button using a template literal for simplicity
+    const wrapper = document.createElement('div');
+    wrapper.innerHTML = `
+      <button id="${id}" class="dynamic-button ${className}">
+        ${imageSrc ? `<img src="${imageSrc}" alt="${imageAlt}" class="button-image" />` : ''}
+      </button>
+    `;
 
-    if (label) {
-      this.element.textContent = label;
-    }
+    return wrapper.firstElementChild as HTMLElement;
+  }
 
-    if (onClick) {
-      this.addEventListeners(onClick);
-    }
+  private injectButtonIntoTarget(targetId: string, onClick?: () => void): void {
+    const targetElement = document.getElementById(targetId);
+    if (targetElement) {
+      targetElement.appendChild(this.element);
 
-    if (className) {
-      this.element.className = className;
-    }
+      if (onClick) {
+        const eventHandler = (event: Event) => {
+          event.preventDefault();
+          onClick();
+        };
 
-    if (disabled) {
-      this.element.disabled = disabled;
+        ['click', 'touchstart'].forEach(eventType =>
+          this.element.addEventListener(eventType, eventHandler),
+        );
+      }
+    } else {
+      console.error(`Target element '${targetId}' not found.`);
     }
   }
 
-  private addEventListeners(onClick: () => void): void {
-    this.element.addEventListener("click", (event) => {
-      event.preventDefault();
-      onClick();
-    });
-
-    this.element.addEventListener("touchstart", (event) => {
-      event.preventDefault();
-      onClick();
-    });
-  }
-
-  private injectButton(targetId?: string): void {
-    let targetElement: HTMLElement | null = null;
-
-    // Use a default target if no specific target ID is provided
-    if (targetId) {
-      targetElement = document.getElementById(targetId);
-    }
-
-    // Fallback to a default target like '#background-elements' or 'body' if not specified
-    if (!targetElement) {
-      targetElement =
-        document.getElementById("background-elements") || document.body;
-    }
-
-    targetElement.appendChild(this.element);
-  }
-
-  public getElement(): HTMLButtonElement {
+  public getElement(): HTMLElement {
     return this.element;
   }
 }
 
-// sample implementation
-// in pause-button.ts
-// import { BaseButtonComponent } from "./base-button/base-button-component";
+// example usage in pause-button.ts
+// import {PAUSE_BTN_IMG} from '@constants';
+// import gameStateService from '@gameStateService';
+
+// import {BaseButtonComponent} from './base-button/base-button-component';
+
 // export default class PauseButton extends BaseButtonComponent {
 //   constructor() {
 //     super({
-//       label: 'Pause',
-//       className: 'pause-button',
+//       id: 'pause-button',
+//       className: 'pause-button-image',
 //       onClick: () => {
 //         console.log('Pause button clicked or touched');
-//         gameStateService.publish(gameStateService.EVENTS.GAME_PAUSE_STATUS_EVENT, true);
+//         gameStateService.publish(
+//           gameStateService.EVENTS.GAME_PAUSE_STATUS_EVENT,
+//           true, // isGamePaused
+//         );
 //       },
+//       imageSrc: PAUSE_BTN_IMG,
+//       imageAlt: 'Pause Icon',
 //     });
-
-//     this.injectButtonIntoTarget();
-//   }
-
-//   private injectButtonIntoTarget(): void {
-//     // Define the target element ID directly
-//     const targetElement = document.getElementById('game-control');
-//     if (targetElement) {
-//       // Append the button to the target element
-//       targetElement.appendChild(this.getElement());
-//     } else {
-//       console.error("Target element 'game-control' not found.");
-//     }
 //   }
 // }
