@@ -10,6 +10,19 @@
  * and to avoid any data manupulation through pass-by-reference.
  */
 
+export const createLoadingSceneDAO = (gameData) => {
+    const canvas = gameData.loadingCanvas; //using canvas with "loading" ID.
+    canvas.height = gameData.height; //using the original "canvas" ID height.
+    canvas.width = gameData.width; //using the original "canvas" ID width.
+
+    return {
+        canvas,
+        height: gameData.height,
+        width: gameData.width,
+        context: gameData.loadingContext,
+    };
+}
+
 export const createGameplaySceneDAO = (gameData) => {
     const versionNumber = !!gameData.majVersion && !!gameData.minVersion
         ? gameData.majVersion.toString() +

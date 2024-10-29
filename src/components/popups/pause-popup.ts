@@ -71,13 +71,18 @@ export default class PausePopUp {
     );
     this.CloseSurePopup = new AreYouSurePopUp(
       this.canvas,
-      this.switchToLevelSelection,
+      () => {
+        //Temp fix just to properly connect all buttons to properly loading and pausing the game.
+        //To do - Need to improved AreYouSurePopUp and this needs to be cleaned up.
+        this.handleClosePublish();
+        this.switchToLevelSelection();
+      },
       this.noCloseCallback
     );
   }
   yesRetryCallback = () => {
     this.playClickSound();
-    gameStateService.publish(gameStateService.EVENTS.GAMEPLAY_DATA_EVENT, this.gameplayData);
+    this.handleRetryPublish();
     this.reloadScene("GamePlay");
   };
   noRetryCallback = () => {
@@ -98,6 +103,16 @@ export default class PausePopUp {
       .getElementById("canvas")
       .addEventListener(CLICK, this.handleMouseClick, false);
   };
+
+  private handleRetryPublish() {
+    gameStateService.publish(gameStateService.EVENTS.GAMEPLAY_DATA_EVENT, this.gameplayData);
+    gameStateService.publish(gameStateService.EVENTS.SCENE_LOADING_EVENT, true);
+  }
+
+  private handleClosePublish() {
+    gameStateService.publish(gameStateService.EVENTS.SCENE_LOADING_EVENT, true);
+    gameStateService.publish(gameStateService.EVENTS.GAME_PAUSE_STATUS_EVENT, false);
+  }
 
   handleMouseClick = (event) => {
     const selfElement = <HTMLElement>document.getElementById("canvas");
@@ -121,6 +136,7 @@ export default class PausePopUp {
       } else {
         this.playClickSound();
         this.dispose();
+        this.handleRetryPublish();
         this.reloadScene(this.gameplayData, "GamePlay");
       }
     }
@@ -134,6 +150,7 @@ export default class PausePopUp {
       } else {
         this.playClickSound();
         this.dispose();
+        this.handleClosePublish();
         this.switchToLevelSelection("GamePlay");
       }
     }
