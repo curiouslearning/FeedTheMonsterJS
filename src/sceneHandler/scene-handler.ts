@@ -81,6 +81,11 @@ export class SceneHandler {
     this.activeScene = this.scenes[key];
   }
 
+  // Call this method where necessary to hide the background when level ends
+  hideLevelEndScreen() {
+    gameStateService.toggleLevelEndBackground(false); // Publish hide event
+  }
+
   private timerWrapper = (callback: () => void, customTime:number = 800) => {
     //This is for reusable setTimeout with default 800 miliseconds.
     setTimeout(() => { callback(); }, customTime);
@@ -134,12 +139,15 @@ export class SceneHandler {
           )
         );
         this.gotoScene(SCENE_NAME_LEVEL_SELECT);
+        if (gameStateService.isLevelendBackgroundVisible()) { //check if level end background is present in DOM and hide it.
+          this.hideLevelEndScreen();
+        }
         this.titleTextElement.style.display = "none";
       }
     );
   };
 
-  switchSceneToGameplay = () => {
+  switchSceneToGameplay = () => {  
     this.timerWrapper(
       () => {
         this.addScene(
@@ -153,6 +161,9 @@ export class SceneHandler {
             reloadScene: this.switchSceneToGameplay
           })
         );
+        if (gameStateService.isLevelendBackgroundVisible()) { //check if level end background is present in DOM and hide it.
+          this.hideLevelEndScreen();
+        } 
         this.gotoScene(SCENE_NAME_GAME_PLAY);
       }
     );

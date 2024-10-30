@@ -1,5 +1,5 @@
 import { loadImages, CLICK, isDocumentVisible } from "@common";
-import { AudioPlayer, Monster } from "@components";
+import { AudioPlayer } from "@components";
 import { CloseButton, NextButton, RetryButton } from "@buttons";
 import {
   AUDIO_INTRO,
@@ -16,7 +16,6 @@ export class LevelEndScene {
   public height: number;
   public width: number;
   public context: CanvasRenderingContext2D;
-  public monster: Monster;
   public closeButton: CloseButton;
   public retryButton: RetryButton;
   public nextButton: NextButton;
@@ -70,27 +69,31 @@ export class LevelEndScene {
     this.audioPlayer = new AudioPlayer();
     this.starCount = starCount;
     this.currentLevel = currentLevel;
-
+    // Subscribe to the LEVEL_END_BACKGROUND_TOGGLE event
+    gameStateService.subscribe(gameStateService.EVENTS.LEVEL_END_BACKGROUND_TOGGLE, this.toggleLevelEndBackground);
     this.isLastLevel =
       this.currentLevel !==
       this.data.levels[this.data.levels.length - 1].levelMeta.levelNumber &&
       this.starCount >= 2;
-
-    this.monster = new Monster(
-      this.canvas,
-      monsterPhaseNumber,
-      this.switchToReactionAnimation
-    );
+    // this.monster = new Monster(
+    //   this.canvas,
+    //   monsterPhaseNumber,
+    //   this.switchToReactionAnimation
+    // );
     this.showLevelEndScreen();  // Display the level end screen
     this.addEventListener();
     this.renderStarsHTML();
   }
-
-  showLevelEndScreen() {
-    // Make the levelEnd element visible by setting display to block
+  // Method to show/hide the Level End background
+  toggleLevelEndBackground = (shouldShow: boolean) => {
     if (this.levelEndElement) {
-      this.levelEndElement.style.display = 'block';
+      this.levelEndElement.style.display = shouldShow ? 'block' : 'none';
     }
+  };
+
+  // Call this method where necessary to show the background when level ends
+  showLevelEndScreen() {
+    gameStateService.toggleLevelEndBackground(true); // Publish show event
     // Render the stars dynamically based on the star count
     this.renderStarsHTML();
   }
@@ -198,7 +201,7 @@ export class LevelEndScene {
   };
 
   dispose = () => {
-    this.monster.dispose();
+    // this.monster.dispose();
     this.audioPlayer.stopAllAudios();
     document
       .getElementById("canvas")
