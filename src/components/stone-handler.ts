@@ -89,11 +89,19 @@ export default class StoneHandler extends EventManager {
 
   createStones(img) {
     const foilStones = this.getFoilStones();
+    console.log('canvas size ', {
+      canvasWidth: this.canvas.width,
+      canvasHeight: this.canvas.height
+    })
     for (let i = 0; i < foilStones.length; i++) {
       if (foilStones[i] == this.correctTargetStone) {
         this.tutorial.updateTargetStonePositions(this.stonePos[i]);
       }
-
+      console.log('create stones ', {
+        index: i,
+        xPos: this.stonePos[i][0],
+        yPos: this.stonePos[i][1],
+      })
       this.foilStones.push(
         new StoneConfig(
           this.context,
@@ -108,6 +116,7 @@ export default class StoneHandler extends EventManager {
         )
       );
     }
+    console.log('test this.foilStones ', this.foilStones)
   }
 
   draw(deltaTime: number) {
@@ -157,14 +166,14 @@ export default class StoneHandler extends EventManager {
       ],
       [
         this.canvas.width / 2 - offsetCoordinateValue,
-        this.canvas.height / 1.15 - offsetCoordinateValue,
+        this.canvas.height / 1.04 - offsetCoordinateValue,
       ],
       [
-        this.canvas.width / 3.5 + this.canvas.width / 2 - offsetCoordinateValue,
+        this.canvas.width / 2.8 + this.canvas.width / 2 - offsetCoordinateValue,
         this.canvas.height / 1.2 - offsetCoordinateValue,
       ],
       [
-        this.canvas.width / 4 - offsetCoordinateValue,
+        this.canvas.width / 4.3 - offsetCoordinateValue,
         this.canvas.height / 1.28 - offsetCoordinateValue,
       ],
       [
@@ -184,7 +193,7 @@ export default class StoneHandler extends EventManager {
         this.canvas.height / 1.42 - offsetCoordinateValue,
       ],
       [
-        this.canvas.width / 6 - offsetCoordinateValue,
+        this.canvas.width / 6.4 - offsetCoordinateValue,
         this.canvas.height / 1.1 - offsetCoordinateValue,
       ],
     ];

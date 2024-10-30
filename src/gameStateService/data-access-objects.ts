@@ -47,4 +47,27 @@ export const createGameplaySceneDAO = (gameData) => {
     };
 }
 
+export const createStonePositions = (gameData) => {
+    const stonePos = [
+        [5, 1.9],
+        [2, 1.04], //Note: This stone is located right below the monster.
+        [
+            [2.8, 2],
+            1.2
+        ],
+        [ 4.3, 1.28],
+        [7, 1.5],
+        [
+            [2.3, 2.1],
+            1.9
+        ],
+        [
+            [2.3, 2.1],
+            1.42
+        ],
+        [6.4, 1.1]
+
+    ];
+}
+
 //Add more data access objects below here.
