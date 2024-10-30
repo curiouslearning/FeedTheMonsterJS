@@ -88,6 +88,7 @@ export default class PausePopUp {
   noRetryCallback = () => {
     if (this.isRetryButtonClicked) {
       this.isRetryButtonClicked = false;
+      gameStateService.publish(gameStateService.EVENTS.GAME_PAUSE_STATUS_EVENT, false);
       this.callback();
     }
   };
