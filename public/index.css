@@ -457,6 +457,7 @@ img {
 .summer-bg {
   background-image: url("./assets/images/bg_v01.webp");
 }
+
 #levelEnd{
   display: none;
   height: 100vh;
@@ -494,6 +495,22 @@ img {
   width: 80px;
   bottom: 10px;
 }
+
+.dynamic-button {
+  cursor: pointer;
+  padding: 10px 20px;
+  border: none;
+  background: transparent;
+  display: flex;
+  align-items: center;
+}
+
+.dynamic-button .button-image {
+  width: 60px;
+  height: 60px;
+  vertical-align: middle;
+}
+
 /* Small devices (landscape phones, 576px and up) */
 @media (min-width: 576px) {
   .autumn-bg .ftm-totem,
