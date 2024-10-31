@@ -439,7 +439,6 @@ export class GameplayScene {
     this.pauseButton.draw();
     this.levelIndicators.draw();
     this.promptText.draw(deltaTime);
-    this.timerTicking.draw();
     this.trailParticles?.draw();
     if (this.isPauseButtonClicked && this.isGameStarted) {
       this.handleStoneLetterDrawing(deltaTime);

@@ -83,36 +83,6 @@ export class TimerTicking extends EventManager {
         }
     }
 
-    draw() {
-        if (this.imagesLoaded) {
-            this.context.drawImage(
-                this.loadedImages.timer_empty,
-                0,
-                this.height * 0.1,
-                this.width,
-                this.height * 0.05
-            );
-            this.context.drawImage(
-                this.loadedImages.rotating_clock,
-                0,
-                this.height * 0.09,
-                this.width * 0.14,
-                this.height * 0.065
-            );
-            this.context.drawImage(
-                this.loadedImages.timer_full,
-                0,
-                0,
-                this.timerWidth - (this.timerWidth * this.timer * 0.01),
-                this.timerHeight,
-                this.width * 0.14,
-                this.height * 0.099,
-                this.width * 0.87 - (this.width * 0.87 * this.timer * 0.01),
-                this.height * 0.05
-            );
-        }
-    }
-
     public handleStoneDrop(event) {
         this.isStoneDropped = true;
     }
