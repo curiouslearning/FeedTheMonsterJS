@@ -55,7 +55,7 @@ export default class StoneHandler extends EventManager {
     this.puzzleNumber = puzzleNumber;
     this.levelData = levelData;
     this.setTargetStone(this.puzzleNumber);
-    this.initializeStonePos();
+    this.stonePos = gameStateService.getStonePositions();
     this.correctStoneAudio = new Audio(AUDIO_PATH_CORRECT_STONE);
     this.correctStoneAudio.loop = false;
     this.feedbackAudios = this.convertFeedBackAudiosToList(feedbackAudios);
@@ -89,19 +89,10 @@ export default class StoneHandler extends EventManager {
 
   createStones(img) {
     const foilStones = this.getFoilStones();
-    console.log('canvas size ', {
-      canvasWidth: this.canvas.width,
-      canvasHeight: this.canvas.height
-    })
     for (let i = 0; i < foilStones.length; i++) {
       if (foilStones[i] == this.correctTargetStone) {
         this.tutorial.updateTargetStonePositions(this.stonePos[i]);
       }
-      console.log('create stones ', {
-        index: i,
-        xPos: this.stonePos[i][0],
-        yPos: this.stonePos[i][1],
-      })
       this.foilStones.push(
         new StoneConfig(
           this.context,
@@ -116,17 +107,16 @@ export default class StoneHandler extends EventManager {
         )
       );
     }
-    console.log('test this.foilStones ', this.foilStones)
   }
 
   draw(deltaTime: number) {
-    if(this.foilStones.length > 0) {
+    if (this.foilStones.length > 0) {
       this.foilStones.forEach((stone) => {
         if (stone && stone.frame !== undefined) {
           stone.draw(deltaTime);
         }
       });
-  
+
       if (
         this.foilStones[this.foilStones.length - 1].frame >= 100 &&
         !this.isGamePaused
@@ -142,7 +132,6 @@ export default class StoneHandler extends EventManager {
     groupedLetters: {} | { [key: number]: string }
   ): void {
     for (let i = 0; i < this.foilStones.length; i++) {
-      
       if (shouldHideStoneChecker(i)) {
         this.foilStones[i].draw(
           deltaTime,
@@ -154,50 +143,6 @@ export default class StoneHandler extends EventManager {
     if (this.foilStones.length > 0 && this.foilStones[this.foilStones.length - 1].frame >= 100 && !this.isGamePaused) {
       this.timerTickingInstance.update(deltaTime);
     }
-  }
-
-  initializeStonePos() {
-    let offsetCoordinateValue = 32;
-
-    this.stonePos = [
-      [
-        this.canvas.width / 5 - offsetCoordinateValue,
-        this.canvas.height / 1.9 - offsetCoordinateValue,
-      ],
-      [
-        this.canvas.width / 2 - offsetCoordinateValue,
-        this.canvas.height / 1.04 - offsetCoordinateValue,
-      ],
-      [
-        this.canvas.width / 2.8 + this.canvas.width / 2 - offsetCoordinateValue,
-        this.canvas.height / 1.2 - offsetCoordinateValue,
-      ],
-      [
-        this.canvas.width / 4.3 - offsetCoordinateValue,
-        this.canvas.height / 1.28 - offsetCoordinateValue,
-      ],
-      [
-        this.canvas.width / 7 - offsetCoordinateValue,
-        this.canvas.height / 1.5 - offsetCoordinateValue,
-      ],
-      [
-        this.canvas.width / 2.3 +
-        this.canvas.width / 2.1 -
-        offsetCoordinateValue,
-        this.canvas.height / 1.9 - offsetCoordinateValue,
-      ],
-      [
-        this.canvas.width / 2.3 +
-        this.canvas.width / 2.1 -
-        offsetCoordinateValue,
-        this.canvas.height / 1.42 - offsetCoordinateValue,
-      ],
-      [
-        this.canvas.width / 6.4 - offsetCoordinateValue,
-        this.canvas.height / 1.1 - offsetCoordinateValue,
-      ],
-    ];
-    this.stonePos = this.stonePos.sort(() => Math.random() - 0.5);
   }
 
   public setTargetStone(puzzleNumber) {
@@ -214,7 +159,6 @@ export default class StoneHandler extends EventManager {
     this.tutorial.setPuzzleNumber(event.detail.counter);
     this.puzzleNumber = event.detail.counter;
     this.setTargetStone(this.puzzleNumber);
-    this.initializeStonePos();
     this.createStones(this.stonebg);
   }
 
@@ -233,11 +177,11 @@ export default class StoneHandler extends EventManager {
     feedBackIndex: number,
     isWord: boolean = false
   ): boolean {
-    /**
+    /*
      * To Do: Need to refactor or revome this completely and place something
      * that is tailored to single letter puzzle since word puzzle no longer uses this.
      * Will leave this for now to avoid messing witht the single letter puzzle.
-     */
+    */
     const isLetterDropCorrect = isWord
       ? droppedStone == this.correctTargetStone.substring(0, droppedStone.length)
       : droppedStone == this.correctTargetStone;
@@ -336,7 +280,7 @@ export default class StoneHandler extends EventManager {
     this.correctStoneAudio.play();
   }
 
-  resetStonePosition(
+	resetStonePosition(
     width: number,
     pickedStone: StoneConfig,
     pickedStoneObject: StoneConfig
