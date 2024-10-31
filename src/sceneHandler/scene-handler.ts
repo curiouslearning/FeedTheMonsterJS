@@ -139,7 +139,7 @@ export class SceneHandler {
     );
   };
 
-  switchSceneToGameplay = () => {
+  switchSceneToGameplay = () => {  
     this.timerWrapper(
       () => {
         this.addScene(
