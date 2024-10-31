@@ -70,7 +70,7 @@ export class LevelEndScene {
     this.starCount = starCount;
     this.currentLevel = currentLevel;
     // Subscribe to the LEVEL_END_BACKGROUND_TOGGLE event
-    gameStateService.subscribe(gameStateService.EVENTS.LEVEL_END_BACKGROUND_TOGGLE, this.toggleLevelEndBackground);
+    this.toggleLevelEndBackground(true);
     this.isLastLevel =
       this.currentLevel !==
       this.data.levels[this.data.levels.length - 1].levelMeta.levelNumber &&
@@ -93,7 +93,7 @@ export class LevelEndScene {
 
   // Call this method where necessary to show the background when level ends
   showLevelEndScreen() {
-    gameStateService.toggleLevelEndBackground(true); // Publish show event
+    this.toggleLevelEndBackground(true); // Publish show event
     // Render the stars dynamically based on the star count
     this.renderStarsHTML();
   }
@@ -150,8 +150,15 @@ export class LevelEndScene {
   }
 
   private handlePublishEvent(shouldShowLoading: boolean, gamePlayData = null) {
-    gamePlayData && gameStateService.publish(gameStateService.EVENTS.GAMEPLAY_DATA_EVENT, gamePlayData);
+    if (gamePlayData) {
+      gameStateService.publish(gameStateService.EVENTS.GAMEPLAY_DATA_EVENT, gamePlayData);
+    }
     gameStateService.publish(gameStateService.EVENTS.SCENE_LOADING_EVENT, shouldShowLoading);
+    setTimeout(() => {
+      this.toggleLevelEndBackground(!shouldShowLoading);
+    },
+    800);
+
   }
 
   handleMouseClick = (event) => {

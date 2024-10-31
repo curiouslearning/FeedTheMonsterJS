@@ -20,7 +20,6 @@ export class GameStateService extends PubSub {
         GAMEPLAY_DATA_EVENT: string;
         GAME_PAUSE_STATUS_EVENT: string;
         GAME_TRAIL_EFFECT_TOGGLE_EVENT: string;
-        LEVEL_END_BACKGROUND_TOGGLE: string;
     }
     public data: null | DataModal;
     public canvas: null | HTMLCanvasElement;
@@ -69,7 +68,6 @@ export class GameStateService extends PubSub {
         great: string
     };
     public clickTrailToggle: boolean
-    private isLevelEndBackgroundVisible = false;
     constructor() {
         super();
         this.EVENTS = {
@@ -77,7 +75,6 @@ export class GameStateService extends PubSub {
             GAMEPLAY_DATA_EVENT: 'GAMEPLAY_DATA_EVENT',
             GAME_PAUSE_STATUS_EVENT: 'GAME_PAUSE_STATUS_EVENT',
             GAME_TRAIL_EFFECT_TOGGLE_EVENT: 'GAME_TRAIL_EFFECT_TOGGLE_EVENT', // To move this event on DOM Event once created.
-            LEVEL_END_BACKGROUND_TOGGLE: 'LEVEL_END_BACKGROUND_TOGGLE'
         };
         this.data = null;
         /* Canvas States */
@@ -106,15 +103,6 @@ export class GameStateService extends PubSub {
         this.subscribe(this.EVENTS.GAMEPLAY_DATA_EVENT, (data) => { this.gameStateGamePlayDataListener(data); });
         this.subscribe(this.EVENTS.GAME_PAUSE_STATUS_EVENT, (data) => { this.updateGamePauseActivity(data); });
         this.subscribe(this.EVENTS.GAME_TRAIL_EFFECT_TOGGLE_EVENT, (data) => { this.updateGameTrailToggle(data); }); // To move this event on DOM Event once created.
-    }
-
-    toggleLevelEndBackground(shouldShow: boolean) {
-        this.isLevelEndBackgroundVisible = shouldShow;
-        this.publish(this.EVENTS.LEVEL_END_BACKGROUND_TOGGLE, shouldShow);
-    }
-
-    isLevelendBackgroundVisible() {
-        return this.isLevelEndBackgroundVisible;
     }
 
     private gameStateGamePlayDataListener(updatedGamePlayData) {
