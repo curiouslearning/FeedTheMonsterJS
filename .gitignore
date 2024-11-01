@@ -6,3 +6,4 @@ credentials.json
 convertAudios
 .DS_Store
 .idea
+coverage

@@ -1,8 +1,10 @@
+import { AudioPlayer } from '@components/audio-player';
 import { CANCEL_BTN_IMG, POPUP_BG_IMG } from '@constants';
+import { PubSub } from '../../../events/pub-sub-events';
 
 const DEFAULT_SELECTORS = {
   root: '.game-scene',
-  closeButton: '[data-close]'
+  closeButton: '[data-click="close"]'
 };
 
 const FIXED_SELECTORS = {
@@ -29,6 +31,8 @@ export interface PopupOptions {
   }
 }
 
+export type PopupClickCallback = (event: PopupClickEvent) => void;
+
 export interface PopupClickEvent {
   data: any;
   event: Event;
@@ -53,6 +57,12 @@ export interface PopupClickEvent {
  * 
  */
 export class BasePopupComponent {
+
+  static readonly EVENTS = {
+    ON_CLOSE: 'onClose',
+    ON_BTN_CLICK: 'onClick'
+  };
+
   /**
    * Designated id of the popup component. Must be unique, as this is used in the DOM as well. This needs to be overriden.
    */
@@ -67,8 +77,15 @@ export class BasePopupComponent {
     </div>
   `;
   
+  /**
+   * Todo: move this to base button
+   */
+  private audioPlayer = new AudioPlayer();
   private isRendered: boolean = false;
   private popupEl?: Element;
+  private clickCallback: PopupClickCallback = () => {};
+  private closeCallback: PopupClickCallback = () => {};
+  private pubSub = new PubSub();
 
   constructor(
     protected options: PopupOptions = { selectors: DEFAULT_SELECTORS }
@@ -79,7 +96,7 @@ export class BasePopupComponent {
   /**
    * This method is automatically called. This is where you put your event bindings and other side effects, like pub/sub.
    */
-  init() {
+  onInit() {
 
   }
 
@@ -111,27 +128,28 @@ export class BasePopupComponent {
    * Button clicked event callback. Automatically called when an element with data-click attribute is clicked.
    * @param event 
    */
-  onButtonClick(event: PopupClickEvent) {
-    console.log(event);
+  onButtonClick(callback: PopupClickCallback) {
+    return this.pubSub.subscribe(BasePopupComponent.EVENTS.ON_BTN_CLICK, callback);
   }
 
   /**
    * Close event callback. Automatically called when an element with data-click="close" attribute is clicked.
    * @param event 
    */
-  onClose(event: PopupClickEvent) {
-    setTimeout(() => {
-      this.show();
-    }, 1000);
+  onClose(callback: PopupClickCallback) {
+    return this.pubSub.subscribe(BasePopupComponent.EVENTS.ON_CLOSE, callback);
   }
 
   /**
    * Initialiation logic,
    */
   private _init() {
-    this.render();
-    this.init();
-    this._addEventListeners();
+    // this makes sure all overrides from child classes take place first.
+    setTimeout(() => {
+      this.render();
+      this.onInit();
+      this._addEventListeners();
+    });
   }
 
   private _click = (event: Event) => {
@@ -139,20 +157,21 @@ export class BasePopupComponent {
     const closestTarget = target.closest(FIXED_SELECTORS.autoClickBind) as HTMLElement;
     const data = closestTarget.dataset.click;
     const isClose = data === 'close';
+    const clickEventData = {
+      data,
+      event
+    };
+    
+    // Todo: move this to base button
+    this.audioPlayer.playButtonClickSound();
 
     // Added delay to visualize animation
     setTimeout(() => {
       if (isClose) {
         this.hide();
-        this.onClose({
-          data,
-          event
-        });
+        this.pubSub.publish(BasePopupComponent.EVENTS.ON_CLOSE, clickEventData);
       } else {
-        this.onButtonClick({
-          data,
-          event
-        });
+        this.pubSub.publish(BasePopupComponent.EVENTS.ON_BTN_CLICK, clickEventData);
       }
     }, 300);
   }

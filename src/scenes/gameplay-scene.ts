@@ -40,6 +40,7 @@ import {
 } from "@constants";
 import { WordPuzzleLogic } from '@gamepuzzles';
 import gameStateService from '@gameStateService';
+import { PausePopupComponent } from '@components/popups/pause-popup/pause-popup-component';
 
 export class GameplayScene {
   public width: number;
@@ -59,6 +60,7 @@ export class GameplayScene {
   public monsterPhaseNumber: number;
   public pickedStone: StoneConfig;
   public puzzleStartTime: number;
+  pausePopupComponent: PausePopupComponent = new PausePopupComponent();
   public showTutorial: boolean;
   public feedBackTexts: any;
   public isPuzzleCompleted: boolean;
@@ -173,9 +175,32 @@ export class GameplayScene {
       gameStateService.EVENTS.GAME_PAUSE_STATUS_EVENT,
       (isPause: boolean) => {
         this.isPauseButtonClicked = isPause;
+
+        if (isPause) this.pausePopupComponent.show();
       }
     );
 
+    this.pausePopupComponent.onClose(() => {
+      gameStateService.publish(gameStateService.EVENTS.GAME_PAUSE_STATUS_EVENT, false);
+      this.resumeGame();
+    });
+    this.pausePopupComponent.onButtonClick(({ data }) => {
+      console.log({ data });
+      // TODO confirm popup logic here for english language
+      this.pausePopupComponent.hide();
+
+      if (data === 'select-level') {
+        gameStateService.publish(gameStateService.EVENTS.SCENE_LOADING_EVENT, true);
+        gameStateService.publish(gameStateService.EVENTS.GAME_PAUSE_STATUS_EVENT, false);
+        this.switchToLevelSelection('GamePlay');
+      }
+
+      if (data === 'restart-level') {
+        gameStateService.publish(gameStateService.EVENTS.GAMEPLAY_DATA_EVENT, gameStateService.getGamePlaySceneDetails());
+        gameStateService.publish(gameStateService.EVENTS.SCENE_LOADING_EVENT, true)
+        this.reloadScene('GamePlay');
+      }
+    });
     this.setupBg();
   }
 
