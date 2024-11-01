@@ -81,7 +81,7 @@ export class GameStateService extends PubSub {
             SCENE_LOADING_EVENT: 'SCENE_LOADING_EVENT',
             GAMEPLAY_DATA_EVENT: 'GAMEPLAY_DATA_EVENT',
             GAME_PAUSE_STATUS_EVENT: 'GAME_PAUSE_STATUS_EVENT',
-            GAME_TRAIL_EFFECT_TOGGLE_EVENT: 'GAME_TRAIL_EFFECT_TOGGLE_EVENT' // To move this event on DOM Event once created.
+            GAME_TRAIL_EFFECT_TOGGLE_EVENT: 'GAME_TRAIL_EFFECT_TOGGLE_EVENT', // To move this event on DOM Event once created.
         };
         this.data = null;
         /* Canvas States */
