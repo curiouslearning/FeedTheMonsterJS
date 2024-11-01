@@ -59,7 +59,7 @@ export const createStonePositionsDAO = ({
 	const widthVal = riveCanvasWidth ? riveCanvasWidth : width;
 	const heightVal = riveCanvasHeight ? riveCanvasHeight : height;
 	const deviceWidth = 540; //Lower than 540 width some stones are too close to monster.
-	const setWidthFactor = (defaultVal, smallerVal) => {
+	const setCoordinateFactor = (defaultVal, smallerVal) => {
 		/*
 		 * Temp handling to make sure no stones are overlap on rive monster.
 		 * This function can be removed once we have the official rive file
@@ -73,12 +73,12 @@ export const createStonePositionsDAO = ({
   //Coordinates with comments are the ones near to the monster.
 	const staticCoordinateFactors = [
 		[5, 1.9],
-		[2, setWidthFactor(1.04, 1.07)], //This stone is located right below the monster.
-		[[setWidthFactor(2.8, 2.5), 2], 1.2], //Lower right 1.
-		[setWidthFactor(4.3, 4.5), 1.28], //lower left side 2.
+		[setCoordinateFactor(2, 1.3), 1.07], //This stone is located right below the monster.
+		[[setCoordinateFactor(2.8, 2.5), 2], 1.2], //Lower right 1.
+		[setCoordinateFactor(4.3, 4.5), 1.28], //lower left side 2.
 		[7, 1.5],
 		[[2.3, 2.1],  1.9],
-		[[setWidthFactor(3, 2.4), 2.1], 1.42],  //Lower right 2, above lower right 1.
+		[[setCoordinateFactor(3, 2.4), 2.1], 1.42],  //Lower right 2, above lower right 1.
 		[6.4, 1.1]
 	];
 
