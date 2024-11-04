@@ -1,27 +1,24 @@
-import {CANCEL_BTN_IMG} from '@constants';
+import {RETRY_BTN_IMG} from '@constants';
 import {BaseButtonComponent} from './base-button/base-button-component';
 import {AudioPlayer} from '@components/audio-player';
 import gameStateService from '@gameStateService';
 
-export default class CancelButton extends BaseButtonComponent {
-  constructor(onCancelAction: () => void) {
+export default class RetryButtonHtml extends BaseButtonComponent {
+  constructor(onRetryAction: () => void) {
     const audioPlayer = new AudioPlayer();
     const isGamePaused =
       gameStateService.getGamePlaySceneDetails()?.isGamePaused;
 
+    // Initialize the button component with options and real-time class handling
     super({
-      id: 'cancel-button',
-      className: `cancel-button-image ${isGamePaused ? 'show' : 'hide'}`,
+      id: 'retry-button',
+      className: `retry-button-image ${isGamePaused ? 'show' : 'hide'}`,
       onClick: () => {
-        gameStateService.publish(
-          gameStateService.EVENTS.GAME_PAUSE_STATUS_EVENT,
-          false,
-        );
         audioPlayer.playButtonClickSound();
-        onCancelAction();
+        onRetryAction();
       },
-      imageSrc: CANCEL_BTN_IMG,
-      imageAlt: 'Cancel Icon',
+      imageSrc: RETRY_BTN_IMG,
+      imageAlt: 'Retry Icon',
       targetId: 'game-control',
     });
 
@@ -38,6 +35,7 @@ export default class CancelButton extends BaseButtonComponent {
   }
 
   private updateVisibility(isPaused: boolean) {
-    this.element.className = `dynamic-button cancel-button-image ${isPaused ? 'show' : 'hide'}`;
+    // Update only retry-specific visibility classes, as dynamic-button is added by BaseButtonComponent
+    this.element.className = `dynamic-button retry-button-image ${isPaused ? 'show' : 'hide'}`;
   }
 }

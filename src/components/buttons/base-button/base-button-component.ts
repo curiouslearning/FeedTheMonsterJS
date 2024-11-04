@@ -8,14 +8,25 @@ export interface ButtonOptions {
 }
 
 export class BaseButtonComponent {
-  private element: HTMLElement;
+  protected element: HTMLElement;
 
   constructor(options: ButtonOptions) {
-    this.element = this.createButtonElement(options);
-    this.injectButtonIntoTarget(
-      options.targetId || 'game-control',
-      options.onClick,
-    );
+    // Check if an element with the given ID already exists in the DOM
+    const existingElement = document.getElementById(options.id);
+
+    if (existingElement) {
+      console.warn(
+        `Button with ID '${options.id}' already exists. Reusing the existing element.`,
+      );
+      this.element = existingElement; // Reuse the existing DOM element
+    } else {
+      // Create the button element if it doesn't exist
+      this.element = this.createButtonElement(options);
+      this.injectButtonIntoTarget(
+        options.targetId || 'game-control',
+        options.onClick,
+      );
+    }
   }
 
   private createButtonElement({

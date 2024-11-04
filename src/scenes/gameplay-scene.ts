@@ -115,7 +115,7 @@ export class GameplayScene {
     this.riveMonsterElement.style.zIndex = "4";
     this.isDisposing = false;
     this.trailParticles = new TrailEffect(this.canvas);
-    this.pauseButton = new PauseButton(this.context, this.canvas);
+    this.pauseButton = new PauseButton(this.pauseGamePlay.bind(this));
     this.timerTicking = new TimerTicking(
       this.width,
       this.height,
@@ -394,11 +394,6 @@ export class GameplayScene {
       this.tutorial.setPlayMonsterClickAnimation(false);
     }
 
-    if (this.pauseButton.onClick(x, y)) {
-      this.audioPlayer.playButtonClickSound();
-      this.pauseGamePlay();
-    }
-
     if (this.promptText.onClick(x, y)) {
       this.promptText.playSound();
     }
@@ -436,7 +431,6 @@ export class GameplayScene {
       }
     }
     
-    this.pauseButton.draw();
     this.levelIndicators.draw();
     this.promptText.draw(deltaTime);
     this.timerTicking.draw();
