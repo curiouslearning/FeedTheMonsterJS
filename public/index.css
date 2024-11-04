@@ -516,6 +516,7 @@ img {
   #pause-button {
     position: absolute;
     right: 0;
+    top: 0;
   }
 }
 /* Dynamic Buttons */
@@ -526,6 +527,11 @@ img {
   background: transparent;
   display: flex;
   align-items: center;
+  transition: transform 0.1s ease;
+}
+
+.dynamic-button:active {
+  transform: scale(0.95);
 }
 
 .dynamic-button.show {

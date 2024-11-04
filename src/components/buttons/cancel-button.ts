@@ -22,7 +22,7 @@ export default class CancelButton extends BaseButtonComponent {
       },
       imageSrc: CANCEL_BTN_IMG,
       imageAlt: 'Cancel Icon',
-      targetId: 'game-control',
+      targetId: 'pause-control',
     });
 
     this.setupPauseStateListener();

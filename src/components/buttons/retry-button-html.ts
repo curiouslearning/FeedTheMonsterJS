@@ -14,12 +14,13 @@ export default class RetryButtonHtml extends BaseButtonComponent {
       id: 'retry-button',
       className: `retry-button-image ${isGamePaused ? 'show' : 'hide'}`,
       onClick: () => {
+        console.log('onRetryAction', onRetryAction);
         audioPlayer.playButtonClickSound();
         onRetryAction();
       },
       imageSrc: RETRY_BTN_IMG,
       imageAlt: 'Retry Icon',
-      targetId: 'game-control',
+      targetId: 'pause-control',
     });
 
     this.setupPauseStateListener();

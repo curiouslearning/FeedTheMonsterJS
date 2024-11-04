@@ -1,76 +1,48 @@
-import { isClickInsideButton, loadImages } from "@common";
-import { CANCEL_BTN_IMG } from "@constants";
-export default class NoButton {
-  public posX: number;
-  public posY: number;
-  public context: CanvasRenderingContext2D;
-  public canvas: { width: any; height?: number };
-  public imagesLoaded: boolean = false;
-  public no_button_image: HTMLImageElement;
-  private btnSizeAnimation: number;
-  private btnOriginalSize: number;
-  private orignalPos: {
-    x: number;
-    y: number;
-  };
+import {CANCEL_BTN_IMG} from '@constants';
+import {BaseButtonComponent} from './base-button/base-button-component';
+import {AudioPlayer} from '@components/audio-player';
+import gameStateService from '@gameStateService';
 
-  constructor(
-    context: CanvasRenderingContext2D,
-    canvas: HTMLCanvasElement,
-    posX: number,
-    posY: number
-  ) {
-    this.posX = posX + 5;
-    this.posY = posY + 10;
-    this.context = context;
-    this.canvas = canvas;
+export default class NoButton extends BaseButtonComponent {
+  private audioPlayer: AudioPlayer;
 
-    loadImages({ no_button_image: CANCEL_BTN_IMG }, (images) => {
-      this.no_button_image = images["no_button_image"];
-      this.imagesLoaded = true;
+  constructor(onNoAction: () => void) {
+    // Initialize the button component with options and click handling
+    super({
+      id: 'no-button',
+      className: 'no-button-image',
+      onClick: () => {
+        this.audioPlayer.playButtonClickSound();
+        onNoAction();
+      },
+      imageSrc: CANCEL_BTN_IMG,
+      imageAlt: 'No Icon',
+      targetId: 'game-control',
     });
 
-    this.btnSizeAnimation = 0.18;
-    this.btnOriginalSize = this.btnSizeAnimation;
-    this.orignalPos = { x: this.posX, y: this.posY };
+    // Initialize audio player after calling super()
+    this.audioPlayer = new AudioPlayer();
+
+    this.setupPauseStateListener();
   }
 
-  draw() {
-    if (this.imagesLoaded) {
-      this.context.drawImage(
-        this.no_button_image,
-        this.posX,
-        this.posY,
-        this.canvas.width * this.btnSizeAnimation,
-        this.canvas.width * this.btnSizeAnimation
-      );
-
-      if (this.btnSizeAnimation < 0.18) {
-        this.btnSizeAnimation = this.btnSizeAnimation + 0.0005;
-      } else {
-        this.posX = this.orignalPos.x;
-        this.posY = this.orignalPos.y;
-      }
-    }
-  }
-
-  onClick(xClick: number, yClick: number): boolean {
-    const isInside = isClickInsideButton(
-      xClick,
-      yClick,
-      this.posX,
-      this.posY,
-      this.canvas.width * this.btnOriginalSize,
-      this.canvas.width * this.btnOriginalSize,
-      true // Button is circular
+  private setupPauseStateListener() {
+    gameStateService.subscribe(
+      gameStateService.EVENTS.GAME_PAUSE_STATUS_EVENT,
+      (isPaused: boolean) => {
+        this.updateVisibility(isPaused);
+      },
     );
+  }
 
-    if (isInside) {
-      this.btnSizeAnimation = 0.17;
-      this.posX = this.posX + 1;
-      this.posY = this.posY + 1;
+  private updateVisibility(isPaused: boolean) {
+    // Toggle 'show' and 'hide' classes based on the pause state
+    if (isPaused) {
+      this.element.classList.add('show');
+      this.element.classList.remove('hide');
+    } else {
+      this.element.classList.add('hide');
+      this.element.classList.remove('show');
     }
-
-    return isInside;
   }
 }

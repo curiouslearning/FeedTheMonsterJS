@@ -1,9 +1,11 @@
 import {MAP_BTN_IMG} from '@constants';
 import {BaseButtonComponent} from './base-button/base-button-component';
 import gameStateService from '@gameStateService';
+import {AudioPlayer} from '@components/audio-player';
 
 export default class CloseButtonHtml extends BaseButtonComponent {
   constructor(onCloseAction: () => void) {
+    const audioPlayer = new AudioPlayer();
     const isGamePaused =
       gameStateService.getGamePlaySceneDetails()?.isGamePaused;
 
@@ -12,11 +14,13 @@ export default class CloseButtonHtml extends BaseButtonComponent {
       id: 'close-button',
       className: `close-button-image ${isGamePaused ? 'show' : 'hide'}`,
       onClick: () => {
+        console.log('onCloseAction', onCloseAction);
+        audioPlayer.playButtonClickSound();
         onCloseAction();
       },
       imageSrc: MAP_BTN_IMG,
       imageAlt: 'Close Icon',
-      targetId: 'game-control',
+      targetId: 'pause-control',
     });
 
     this.setupPauseStateListener();

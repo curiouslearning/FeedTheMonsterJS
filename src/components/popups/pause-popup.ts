@@ -8,10 +8,8 @@ import gameStateService from '@gameStateService';
 export default class PausePopUp {
   public canvas: HTMLCanvasElement;
   public context: CanvasRenderingContext2D;
-  public cancelButton: CancelButton;
   public imagesLoaded: boolean = false;
   public pop_up_image: HTMLImageElement;
-
   public callback: Function;
   public switchToLevelSelection: Function;
   public reloadScene: Function;
@@ -21,6 +19,7 @@ export default class PausePopUp {
   CloseSurePopup: AreYouSurePopUp;
   isRetryButtonClicked: boolean = false;
   isCloseButtonClicked: boolean = false;
+
   constructor(
     canvas,
     callback,
@@ -44,41 +43,26 @@ export default class PausePopUp {
       this.callback();
     });
     new RetryButtonHtml(() => {
-      if (lang == 'english') {
-        this.dispose();
+      if (lang === 'english') {
         this.isRetryButtonClicked = true;
         this.retrySurePopup.addListner();
         this.playAreYouSureSound();
       } else {
-        this.dispose();
         this.handleRetryPublish();
         this.reloadScene(this.gameplayData, 'GamePlay');
       }
     });
 
     new CloseButtonHtml(() => {
-      if (lang == 'english') {
-        this.playClickSound();
-        this.dispose();
+      if (lang === 'english') {
         this.isCloseButtonClicked = true;
         this.CloseSurePopup.addListner();
         this.playAreYouSureSound();
       } else {
-        this.playClickSound();
-        this.dispose();
         this.handleClosePublish();
         this.switchToLevelSelection('GamePlay');
       }
     });
-
-    // this.closeButton = new CloseButton(
-    //   this.context,
-    //   this.canvas,
-    //   this.canvas.width * 0.25,
-    //   this.canvas.height * 0.2 +
-    //     this.canvas.width * 0.4 -
-    //     (this.canvas.width * 0.19) / 2
-    // );
 
     loadImages({pop_up_image: POPUP_BG_IMG}, images => {
       this.pop_up_image = images['pop_up_image'];
@@ -93,19 +77,18 @@ export default class PausePopUp {
     this.CloseSurePopup = new AreYouSurePopUp(
       this.canvas,
       () => {
-        //Temp fix just to properly connect all buttons to properly loading and pausing the game.
-        //To do - Need to improved AreYouSurePopUp and this needs to be cleaned up.
         this.handleClosePublish();
         this.switchToLevelSelection();
       },
       this.noCloseCallback,
     );
   }
+
   yesRetryCallback = () => {
-    this.playClickSound();
     this.handleRetryPublish();
     this.reloadScene('GamePlay');
   };
+
   noRetryCallback = () => {
     if (this.isRetryButtonClicked) {
       this.isRetryButtonClicked = false;
@@ -116,6 +99,7 @@ export default class PausePopUp {
       this.callback();
     }
   };
+
   noCloseCallback = () => {
     if (this.isCloseButtonClicked) {
       gameStateService.publish(
@@ -125,11 +109,6 @@ export default class PausePopUp {
       this.isCloseButtonClicked = false;
       this.callback();
     }
-  };
-  addListner = () => {
-    document
-      .getElementById('canvas')
-      .addEventListener(CLICK, this.handleMouseClick, false);
   };
 
   private handleRetryPublish() {
@@ -148,43 +127,6 @@ export default class PausePopUp {
     );
   }
 
-  handleMouseClick = event => {
-    const selfElement = <HTMLElement>document.getElementById('canvas');
-    event.preventDefault();
-    var rect = selfElement.getBoundingClientRect();
-    const x = event.clientX - rect.left;
-    const y = event.clientY - rect.top;
-
-    // if (this.retryButton.onClick(x, y)) {
-    //   if (lang == "english") {
-    //     this.playClickSound();
-    //     this.dispose();
-    //     this.isRetryButtonClicked = true;
-    //     this.retrySurePopup.addListner();
-    //     this.playAreYouSureSound();
-    //   } else {
-    //     this.playClickSound();
-    //     this.dispose();
-    //     this.handleRetryPublish();
-    //     this.reloadScene(this.gameplayData, "GamePlay");
-    //   }
-    // }
-    // if (this.closeButton.onClick(x, y)) {
-    //   if (lang == "english") {
-    //     this.playClickSound();
-    //     this.dispose();
-    //     this.isCloseButtonClicked = true;
-    //     this.CloseSurePopup.addListner();
-    //     this.playAreYouSureSound();
-    //   } else {
-    //     this.playClickSound();
-    //     this.dispose();
-    //     this.handleClosePublish();
-    //     this.switchToLevelSelection("GamePlay");
-    //   }
-    // }
-  };
-
   draw() {
     if (this.imagesLoaded) {
       this.context.fillStyle = 'rgba(0,0,0,0.5)';
@@ -196,25 +138,14 @@ export default class PausePopUp {
         this.canvas.width * 0.8,
         this.canvas.width * 0.8,
       );
-      // this.retryButton.draw();
-      // this.closeButton.draw();
-      if (this.isRetryButtonClicked == true && lang == 'english')
+      if (this.isRetryButtonClicked && lang === 'english')
         this.retrySurePopup.draw();
-      if (this.isCloseButtonClicked == true && lang == 'english')
+      if (this.isCloseButtonClicked && lang === 'english')
         this.CloseSurePopup.draw();
     }
   }
 
-  playClickSound = () => {
-    this.audioPlayer.playButtonClickSound();
-  };
   playAreYouSureSound = () => {
     this.audioPlayer.playAudio(AUDIO_ARE_YOU_SURE);
-  };
-
-  dispose = () => {
-    document
-      .getElementById('canvas')
-      .removeEventListener(CLICK, this.handleMouseClick, false);
   };
 }

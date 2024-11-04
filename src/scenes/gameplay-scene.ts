@@ -192,7 +192,6 @@ export class GameplayScene {
 
   resumeGame = () => {
     this.addEventListeners();
-    this.pausePopup.dispose();
   };
 
   getRandomFeedBackText(randomIndex: number): string {
@@ -705,7 +704,6 @@ export class GameplayScene {
 
   public pauseGamePlay = () => {
     this.removeEventListeners();
-    this.pausePopup.addListner();
     this.audioPlayer.stopAllAudios();
   };
 
