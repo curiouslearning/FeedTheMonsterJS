@@ -2,17 +2,19 @@ import { PubSub } from '../events/pub-sub-events';
 import { DataModal } from "@data";
 import {
     createLoadingSceneDAO,
-    createGameplaySceneDAO
+    createGameplaySceneDAO,
+    createStonePositionsDAO
 } from './data-access-objects';
 
-/**
+/*
  * GameStateService.ts
  *
  * The GameStateService class is reponsible to managing the current state of the game (ts).
  * It also provides methods for accessing these properties using a set of getters
- * that returns data access objects (DAO). The class also integrates with the Publish-Subscribe pattern
+ * that returns data access objects (DAO), used during initialization.
+ * The class also integrates with the Publish-Subscribe pattern
  * to faciliate event-drivent updates, in the game state.
- */
+*/
 
 export class GameStateService extends PubSub {
     public EVENTS: {
@@ -23,11 +25,14 @@ export class GameStateService extends PubSub {
     }
     public data: null | DataModal;
     public canvas: null | HTMLCanvasElement;
-    public width: null | number;
-    public height: null | number;
+    public width: number;
+    public height: number;
     public canavsElement: null | HTMLCanvasElement;
     public context: null | CanvasRenderingContext2D;
     public gameCanvasContext: null | CanvasRenderingContext2D;
+    public riveCanvas: null | CanvasRenderingContext2D;
+    public riveCanvasWidth: number;
+    public riveCanvasHeight: number;
     public loadingCanvas: null | HTMLCanvasElement;
     public loadingContext: null | CanvasRenderingContext2D;
     public isGamePaused: boolean;
@@ -60,14 +65,16 @@ export class GameStateService extends PubSub {
         great: string
     };
     public rightToLeft: boolean;
-    public majVersion: null | number;
-    public minVersion: null | number;
+    public majVersion: number;
+    public minVersion: number;
     public feedbackAudios: null | {
         amazing: string,
         fantastic: string,
         great: string
     };
-    public clickTrailToggle: boolean
+    public clickTrailToggle: boolean;
+    public offsetCoordinateValue: number;
+
     constructor() {
         super();
         this.EVENTS = {
@@ -79,11 +86,14 @@ export class GameStateService extends PubSub {
         this.data = null;
         /* Canvas States */
         this.canvas = null;
-        this.width = null;
-        this.height = null;
+        this.width = 0;
+        this.height = 0;
         this.canavsElement = null;
         this.context = null;
         this.gameCanvasContext = null;
+        this.riveCanvas = null;
+        this.riveCanvasWidth = 0;
+        this.riveCanvasHeight = 0;
         /* Scene Handler States */
 
         /* Gameplay States */
@@ -92,9 +102,10 @@ export class GameStateService extends PubSub {
         this.feedbackAudios = null;
         this.feedbackTexts = null;
         this.rightToLeft = false;
-        this.majVersion = null;
-        this.minVersion = null;
+        this.majVersion = 0;
+        this.minVersion = 0;
         this.clickTrailToggle = false;
+        this.offsetCoordinateValue = 32; //Default value used to offset stone coordinates.
         this.initListeners();
     }
 
@@ -136,6 +147,7 @@ export class GameStateService extends PubSub {
         this.gameCanvasContext = canvas.getContext("2d", { willReadFrequently: true });
         this.loadingCanvas = document.getElementById("loading") as HTMLCanvasElement;
         this.loadingContext = this.loadingCanvas.getContext("2d");
+        //To Do - Once we have the official Rive files, set the width and height in here.
         //To Do Add Below Here Game state values - Start Scene Data
         //To Do Add Below Here Game state values - Level Selection Scene Data
         /*Gameplay Scene Data */
@@ -154,6 +166,10 @@ export class GameStateService extends PubSub {
 
     getGamePlaySceneDetails() {
         return createGameplaySceneDAO(this);
+    }
+
+    getStonePositions() {
+        return createStonePositionsDAO(this);
     }
 };
 
