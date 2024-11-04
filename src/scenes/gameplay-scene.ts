@@ -146,16 +146,6 @@ export class GameplayScene {
     this.levelIndicators = new LevelIndicators(this.context, this.canvas, 0);
     this.levelIndicators.setIndicators(this.counter);
     this.monster = new Monster(this.canvas, this.monsterPhaseNumber);
-    this.pausePopup = new PausePopUp(
-      this.canvas,
-      this.resumeGame,
-      this.switchToLevelSelection,
-      this.reloadScene,
-      {
-        currentLevelData: this.levelData,
-        selectedLevelNumber: this.levelNumber,
-      }
-    );
 
     var previousPlayedLevel: string = this.levelData.levelMeta.levelNumber;
     Debugger.DebugMode
@@ -185,7 +175,6 @@ export class GameplayScene {
       this.resumeGame();
     });
     this.pausePopupComponent.onButtonClick(({ data }) => {
-      console.log({ data });
       // TODO confirm popup logic here for english language
       this.pausePopupComponent.close();
 
@@ -196,7 +185,10 @@ export class GameplayScene {
       }
 
       if (data === 'restart-level') {
-        gameStateService.publish(gameStateService.EVENTS.GAMEPLAY_DATA_EVENT, gameStateService.getGamePlaySceneDetails());
+        gameStateService.publish(gameStateService.EVENTS.GAMEPLAY_DATA_EVENT, {
+          currentLevelData: this.levelData,
+          selectedLevelNumber: this.levelNumber,
+        });
         gameStateService.publish(gameStateService.EVENTS.SCENE_LOADING_EVENT, true)
         this.reloadScene('GamePlay');
       }
@@ -217,7 +209,6 @@ export class GameplayScene {
 
   resumeGame = () => {
     this.addEventListeners();
-    this.pausePopup.dispose();
   };
 
   getRandomFeedBackText(randomIndex: number): string {
@@ -468,16 +459,11 @@ export class GameplayScene {
     this.trailParticles?.draw();
     if (this.isPauseButtonClicked && this.isGameStarted) {
       this.handleStoneLetterDrawing(deltaTime);
-
-      this.pausePopup.draw();
     }
     if (!this.isPauseButtonClicked && !this.isGameStarted) {
       this.counter == 0
         ? this.tutorial.clickOnMonsterTutorial(deltaTime)
         : undefined;
-    }
-    if (this.isPauseButtonClicked && !this.isGameStarted) {
-      this.pausePopup.draw();
     }
     if (!this.isPauseButtonClicked && this.isGameStarted) {
       this.handleStoneLetterDrawing(deltaTime);
@@ -584,6 +570,7 @@ export class GameplayScene {
       false
     );
     this.removeEventListeners();
+    this.pausePopupComponent.destroy();
   };
 
   private checkStoneDropped(stone, feedBackIndex, isWord = false) {
@@ -736,7 +723,6 @@ export class GameplayScene {
 
   public pauseGamePlay = () => {
     this.removeEventListeners();
-    this.pausePopup.addListner();
     this.audioPlayer.stopAllAudios();
   };
 

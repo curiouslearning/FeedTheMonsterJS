@@ -13,17 +13,12 @@ export class PausePopupComponent extends BasePopupComponent {
     </div>
   `;
 
-  constructor() {
-    super();
-  }
-
   onInit() {
     this.onButtonClick(({ data }) => {
-      console.log({ data });
       // TODO confirm popup logic here for english language
-      
     });
 
+    // TODO integrate buttons
     this.selectLevelButton = new BaseButtonComponent({
       id: 'popup-select-level',
       targetId: this.id

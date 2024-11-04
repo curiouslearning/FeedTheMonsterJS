@@ -90,8 +90,6 @@ export class BasePopupComponent {
    */
   private audioPlayer = new AudioPlayer();
   private isRendered: boolean = false;
-  private clickCallback: PopupClickCallback = () => {};
-  private closeCallback: PopupClickCallback = () => {};
   private pubSub = new PubSub();
 
   constructor(
@@ -130,6 +128,7 @@ export class BasePopupComponent {
    */
   destroy() {
     this.popupEl.remove();
+    this._removeEventListeners();
   }
 
   /**
@@ -146,6 +145,17 @@ export class BasePopupComponent {
    */
   onClose(callback: PopupClickCallback) {
     return this.pubSub.subscribe(BasePopupComponent.EVENTS.ON_CLOSE, callback);
+  }
+  
+  render() {
+    if (this.isRendered) return;
+
+    const popupTemplate = POPUP_LAYOUT(this.id, this.template);
+    const { root } = this.options.selectors;
+    const rootEl = document.querySelector(root);
+    rootEl.insertAdjacentHTML('beforeend', popupTemplate);
+    this.popupEl = rootEl.querySelector(`#${this.id}`);
+    this.isRendered = true;
   }
 
   /**
@@ -184,23 +194,21 @@ export class BasePopupComponent {
   }
 
   private _addEventListeners() {
-    const closeButtons = this.popupEl?.querySelectorAll(FIXED_SELECTORS.autoClickBind);
-    if (!closeButtons.length) return;
+    const buttons = this.popupEl?.querySelectorAll(FIXED_SELECTORS.autoClickBind);
+    if (!buttons?.length) return;
 
-    closeButtons.forEach((closeButton) => {
-      closeButton.addEventListener('click', this._click);
+    buttons.forEach((button) => {
+      button.addEventListener('click', this._click);
     });
   }
 
-  private render() {
-    if (this.isRendered) return;
+  private _removeEventListeners() {
+    const buttons = this.popupEl?.querySelectorAll(FIXED_SELECTORS.autoClickBind);
+    if (!buttons.length) return;
 
-    const popupTemplate = POPUP_LAYOUT(this.id, this.template);
-    const { root } = this.options.selectors;
-    const rootEl = document.querySelector(root);
-    rootEl.insertAdjacentHTML('beforeend', popupTemplate);
-    this.popupEl = rootEl.querySelector(`#${this.id}`);
-    this.isRendered = true;
+    buttons.forEach((button) => {
+      button.removeEventListener('click', this._click);
+    });
   }
 
   private setVisibility(toggle: boolean) {

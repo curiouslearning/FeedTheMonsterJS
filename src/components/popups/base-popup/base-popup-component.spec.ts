@@ -9,49 +9,55 @@ describe('BasePopupComponent', () => {
   });
 
   describe('Given default settings', () => {
+    let popup;
+    let popupEl;
+    beforeEach(() => {
+      popup = new BasePopupComponent();
+      popup.render();
+      popupEl = document.querySelector('#base-popup');
+    });
+
+    afterEach(() => {
+      if (popup) popup.destroy();
+    });
+
     describe('When initialized', () => {
       it('it should append #base-popup to .game-scene', () => {
-        new BasePopupComponent();
-
         expect(document.querySelector('#base-popup')).toBeTruthy();
       });
 
       it('it should call init', () => {
-        const initSpy = jest.spyOn(BasePopupComponent.prototype, 'init');
+        const initSpy = jest.spyOn(BasePopupComponent.prototype, 'onInit');
         new BasePopupComponent();
 
-        expect(initSpy).toHaveBeenCalled();
+        setTimeout(() => {
+          expect(initSpy).toHaveBeenCalled();
+        }, 500);
       });
     });
 
-    describe('When show is called', () => {
+    describe('When open is called', () => {
       it('it should add "show" css class to popup', () => {
-        const popup = new BasePopupComponent();
-        const popupEl = document.querySelector('#base-popup');
-        popup.show();
+        popup.open();
         expect(popupEl.classList.contains('show')).toBeTruthy();
       });
     });
 
-    describe('When show and then hide is called', () => {
+    describe('When open and then close is called', () => {
       it('it should remove "show" css class from the popup', () => {
-        const popup = new BasePopupComponent();
-        const popupEl = document.querySelector('#base-popup');
-        popup.show();
-        popup.hide();
+        popup.open();
+        popup.close();
         expect(popupEl.classList.contains('show')).toBeFalsy();
       });
     });
 
     describe('When close button is clicked', () => {
       it('it should remove "show" css class from the popup', () => {
-        const popup = new BasePopupComponent();
-        const popupEl = document.querySelector('#base-popup');
         const closeBtn = popupEl.querySelector('[data-click="close"]');
         const clickEvent = new Event('click', {
           bubbles: true
         })
-        popup.show();
+        popup.open();
         closeBtn.dispatchEvent(clickEvent);
 
         setTimeout(() => {
@@ -61,14 +67,12 @@ describe('BasePopupComponent', () => {
       });
 
       it('it should call hide method', () => {
-        const hideSpy = jest.spyOn(BasePopupComponent.prototype, 'hide');
-        const popup = new BasePopupComponent();
-        const popupEl = document.querySelector('#base-popup');
+        const hideSpy = jest.spyOn(BasePopupComponent.prototype, 'close');
         const closeBtn = popupEl.querySelector('[data-click="close"]');
         const clickEvent = new Event('click', {
           bubbles: true
         })
-        popup.show();
+        popup.open();
         closeBtn.dispatchEvent(clickEvent);
 
         setTimeout(() => {
@@ -77,27 +81,26 @@ describe('BasePopupComponent', () => {
         }, 500);
       });
 
-      it('it should call onClose method', () => {
-        const onCloseSpy = jest.spyOn(BasePopupComponent.prototype, 'onClose');
-        const popup = new BasePopupComponent();
-        const popupEl = document.querySelector('#base-popup');
+      it('it should call onClose callback', () => {
+        const fakeCb = jest.fn();
+        popup.onClose(fakeCb);
         const closeBtn = popupEl.querySelector('[data-click="close"]');
         const clickEvent = new Event('click', {
           bubbles: true
         })
-        popup.show();
+        popup.open();
         closeBtn.dispatchEvent(clickEvent);
 
         setTimeout(() => {
           // ensure click timeout is finished
-          expect(onCloseSpy).toHaveBeenCalled();
+          expect(fakeCb).toHaveBeenCalled();
         }, 500);
       });
     });
     
-    describe('When desctroy is called', () => {
+    describe('When destroy is called', () => {
       it('it should remove the popup element', () => {
-        const popup = new BasePopupComponent();
+        popup.open();
         popup.destroy();
 
         const popupEl = document.querySelector('#base-popup');
