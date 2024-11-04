@@ -35,7 +35,13 @@ export type PopupClickCallback = (event: PopupClickEvent) => void;
 
 export interface PopupClickEvent {
   data: any;
-  event: Event;
+
+  /**
+   * Optional
+   * 
+   * The event object from clicking the close button
+   */
+  event?: Event;
 }
 
 /**
@@ -57,6 +63,8 @@ export interface PopupClickEvent {
  * 
  */
 export class BasePopupComponent {
+
+  popupEl?: Element;
 
   static readonly EVENTS = {
     ON_CLOSE: 'onClose',
@@ -82,7 +90,6 @@ export class BasePopupComponent {
    */
   private audioPlayer = new AudioPlayer();
   private isRendered: boolean = false;
-  private popupEl?: Element;
   private clickCallback: PopupClickCallback = () => {};
   private closeCallback: PopupClickCallback = () => {};
   private pubSub = new PubSub();
@@ -103,7 +110,7 @@ export class BasePopupComponent {
   /**
    * Shows/Opens the popup
    */
-  show() {
+  open() {
     if (!this.isRendered) this.render();
     this.setVisibility(true);
   }
@@ -111,8 +118,9 @@ export class BasePopupComponent {
   /**
    * Hides/Closes the popup
    */
-  hide() {
+  close(clickEventData?: PopupClickEvent) {
     this.setVisibility(false);
+    this.pubSub.publish(BasePopupComponent.EVENTS.ON_CLOSE, clickEventData);
   }
 
   /**
@@ -168,8 +176,7 @@ export class BasePopupComponent {
     // Added delay to visualize animation
     setTimeout(() => {
       if (isClose) {
-        this.hide();
-        this.pubSub.publish(BasePopupComponent.EVENTS.ON_CLOSE, clickEventData);
+        this.close(clickEventData);
       } else {
         this.pubSub.publish(BasePopupComponent.EVENTS.ON_BTN_CLICK, clickEventData);
       }

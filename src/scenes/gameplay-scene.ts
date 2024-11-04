@@ -176,7 +176,7 @@ export class GameplayScene {
       (isPause: boolean) => {
         this.isPauseButtonClicked = isPause;
 
-        if (isPause) this.pausePopupComponent.show();
+        if (isPause) this.pausePopupComponent.open();
       }
     );
 
@@ -187,7 +187,7 @@ export class GameplayScene {
     this.pausePopupComponent.onButtonClick(({ data }) => {
       console.log({ data });
       // TODO confirm popup logic here for english language
-      this.pausePopupComponent.hide();
+      this.pausePopupComponent.close();
 
       if (data === 'select-level') {
         gameStateService.publish(gameStateService.EVENTS.SCENE_LOADING_EVENT, true);
