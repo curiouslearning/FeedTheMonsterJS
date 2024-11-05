@@ -582,6 +582,7 @@ img {
   top: 40px;
   width: 100%; /* Adjust based on timer width */
   height: 100px; /* Adjust based on timer height */
+  display: none;
 }
 
 #timer-empty {

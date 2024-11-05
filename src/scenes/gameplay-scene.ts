@@ -88,7 +88,7 @@ export class GameplayScene {
   wordPuzzleLogic:any;
   public riveMonsterElement: HTMLCanvasElement;
   private unsubscribeEvent: () => void;
-
+  public timeTicker:HTMLElement;
   constructor({
     monsterPhaseNumber,
     switchSceneToEnd,
@@ -113,6 +113,8 @@ export class GameplayScene {
     this.handler = document.getElementById("canvas");
     this.riveMonsterElement = document.getElementById("rivecanvas") as HTMLCanvasElement;
     this.riveMonsterElement.style.zIndex = "4";
+    this.timeTicker = document.getElementById("timer-ticking");
+    this.timeTicker.style.display = "block";
     this.isDisposing = false;
     this.trailParticles = new TrailEffect(this.canvas);
     this.pauseButton = new PauseButton(this.context, this.canvas);
@@ -543,6 +545,7 @@ export class GameplayScene {
   };
 
   public dispose = () => {
+    this.timeTicker.style.display = "none";
     this.trailParticles.clearTrailSubscription();
     this.unsubscribeEvent();
     this.isDisposing = true;
