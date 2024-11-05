@@ -532,14 +532,6 @@ img {
   height: 60px;
 }
 
-.dynamic-button.show {
-  display: block;
-}
-
-.dynamic-button.hide {
-  display: none;
-}
-
 .dynamic-button .button-image {
   width: 100%;
   max-width: 60px;

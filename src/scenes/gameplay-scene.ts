@@ -116,7 +116,12 @@ export class GameplayScene {
     this.riveMonsterElement.style.zIndex = "4";
     this.isDisposing = false;
     this.trailParticles = new TrailEffect(this.canvas);
-    this.pauseButton = new PauseButton(this.pauseGamePlay.bind(this));
+    this.pauseButton = new PauseButton();
+    this.pauseButton.onClick(() => {
+      console.log('Game Paused');
+      gameStateService.publish(gameStateService.EVENTS.GAME_PAUSE_STATUS_EVENT, true);
+      this.pauseGamePlay();
+    });
     this.timerTicking = new TimerTicking(
       this.width,
       this.height,
@@ -178,9 +183,8 @@ export class GameplayScene {
     );
 
     this.setupBg();
-
     this.gameControl = document.getElementById("game-control") as HTMLCanvasElement;
-    this.gameControl.style.zIndex = "5";
+    this.gameControl.style.zIndex = "5"
   }
 
   private setupBg = () => {
@@ -196,6 +200,7 @@ export class GameplayScene {
 
   resumeGame = () => {
     this.addEventListeners();
+    this.pausePopup.dispose();
   };
 
   getRandomFeedBackText(randomIndex: number): string {
@@ -397,6 +402,11 @@ export class GameplayScene {
       this.tutorial.setPlayMonsterClickAnimation(false);
     }
 
+    // if (this.pauseButton.onClick(x, y)) {
+    //   this.audioPlayer.playButtonClickSound();
+    //   this.pauseGamePlay();
+    // }
+
     if (this.promptText.onClick(x, y)) {
       this.promptText.playSound();
     }
@@ -434,17 +444,23 @@ export class GameplayScene {
       }
     }
     
+    // this.pauseButton.draw();
     this.levelIndicators.draw();
     this.promptText.draw(deltaTime);
     this.timerTicking.draw();
     this.trailParticles?.draw();
     if (this.isPauseButtonClicked && this.isGameStarted) {
       this.handleStoneLetterDrawing(deltaTime);
+
+      this.pausePopup.draw();
     }
     if (!this.isPauseButtonClicked && !this.isGameStarted) {
       this.counter == 0
         ? this.tutorial.clickOnMonsterTutorial(deltaTime)
         : undefined;
+    }
+    if (this.isPauseButtonClicked && !this.isGameStarted) {
+      this.pausePopup.draw();
     }
     if (!this.isPauseButtonClicked && this.isGameStarted) {
       this.handleStoneLetterDrawing(deltaTime);
@@ -703,6 +719,7 @@ export class GameplayScene {
 
   public pauseGamePlay = () => {
     this.removeEventListeners();
+    this.pausePopup.addListner();
     this.audioPlayer.stopAllAudios();
   };
 

@@ -1,42 +1,19 @@
-import {YES_BTN_IMG} from '@constants';
-import {BaseButtonComponent} from '../base-button-component/base-button-component';
-import {AudioPlayer} from '@components/audio-player';
-import gameStateService from '@gameStateService';
+import { YES_BTN_IMG } from '@constants';
+import { BaseButtonComponent } from '@components/buttons/base-button-component/base-button-component';
 
-export default class YesButton extends BaseButtonComponent {
-  private audioPlayer: AudioPlayer;
-
-  constructor(onYesAction: () => void) {
-    // Initialize the button component with options and click handling
+export default class YesButtonHtml extends BaseButtonComponent {
+  constructor(
+    customId = 'yes-button',
+    customClassName = 'yes-button-image',
+    customImageAlt = 'Yes Icon',
+    customTargetId = 'game-control'
+  ) {
     super({
-      id: 'yes-button',
-      className: 'yes-button-image',
-      onClick: () => {
-        this.audioPlayer.playButtonClickSound();
-        onYesAction();
-      },
+      id: customId,
+      className: customClassName,
       imageSrc: YES_BTN_IMG,
-      imageAlt: 'Yes Icon',
-      targetId: 'game-control',
+      imageAlt: customImageAlt,
+      targetId: customTargetId,
     });
-
-    // Initialize audio player after calling super()
-    this.audioPlayer = new AudioPlayer();
-
-    this.setupPauseStateListener();
-  }
-
-  private setupPauseStateListener() {
-    gameStateService.subscribe(
-      gameStateService.EVENTS.GAME_PAUSE_STATUS_EVENT,
-      (isPaused: boolean) => {
-        this.updateVisibility(isPaused);
-      },
-    );
-  }
-
-  // Note:  this will potentially removed once popup is implemented
-  private updateVisibility(isPaused: boolean) {
-    this.element.className = `dynamic-button yes-button-image ${isPaused ? 'show' : 'hide'}`;
   }
 }

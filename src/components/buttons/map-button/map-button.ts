@@ -1,17 +1,17 @@
-import {CANCEL_BTN_IMG} from '@constants';
+import {MAP_BTN_IMG} from '@constants';
 import {BaseButtonComponent} from '../base-button-component/base-button-component';
 
-export default class CancelButtonHtml extends BaseButtonComponent {
+export default class MapButton extends BaseButtonComponent {
   constructor(
-    customId = 'cancel-button',
-    customClassName = 'cancel-button-image',
-    customImageAlt = 'Cancel Icon',
+    customId = 'close-button',
+    customClassName = 'close-button-image',
+    customImageAlt = 'Close Icon',
     customTargetId = 'game-control',
   ) {
     super({
       id: customId,
       className: customClassName,
-      imageSrc: CANCEL_BTN_IMG,
+      imageSrc: MAP_BTN_IMG,
       imageAlt: customImageAlt,
       targetId: customTargetId,
     });
