@@ -1,3 +1,4 @@
+// Note: Once the HTML buttons are fully integrated, we can delete the old button files.
 import CloseButton from './close-button'; // once popup is applied. this will be cancel-button component and this file can be removed
 import MapButton from './map-button/map-button';
 import CancelButton from './cancel-button'; // once popup is applied. this will be cancel-button component and this file can be removed
