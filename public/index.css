@@ -509,17 +509,19 @@ img {
   bottom: 10px;
 }
 
+/* Dynamic Buttons */
 .game-control {
   position: relative;
   z-index: 5;
-
-  #pause-button {
-    position: absolute;
-    right: 0;
-    top: 0;
-  }
 }
-/* Dynamic Buttons */
+
+#pause-button {
+  position: absolute;
+  right: 0;
+  top: 0;
+  margin: 10px 20px;
+}
+
 .dynamic-button {
   cursor: pointer;
   border: none;
@@ -528,10 +530,10 @@ img {
   align-items: center;
   width: 60px;
   height: 60px;
-  transition: transform 0.1s ease;
+  transition: transform 0.1s ease-in-out;
 }
 
-.dynamic-button:active {
+.dynamic-button.clicked {
   transform: scale(0.95);
 }
 
@@ -550,22 +552,18 @@ img {
   vertical-align: middle;
 }
 
-#pause-button {
-  margin: 10px 20px;
-}
-
 /* End dynamic buttons */
 
 /* Small devices (landscape phones, 576px and up) */
 @media (min-width: 576px) {
-  #rivecanvas{
+  #rivecanvas {
     bottom: 22%;
   }
-  .summer .ftm-fence{
-      left: -200px;
-      bottom: 175px;
-      position: absolute;
-      width: 100%;
+  .summer .ftm-fence {
+    left: -200px;
+    bottom: 175px;
+    position: absolute;
+    width: 100%;
   }
   .summer .ftm-totem {
     position: absolute;
@@ -573,7 +571,7 @@ img {
     width: 55%;
     z-index: 1;
     right: -100px;
-}
+  }
   .autumn-bg .ftm-totem,
   .winter-bg .ftm-totem {
     right: -130px;
