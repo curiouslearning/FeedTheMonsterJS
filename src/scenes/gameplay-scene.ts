@@ -87,6 +87,7 @@ export class GameplayScene {
   trailParticles: any;
   wordPuzzleLogic:any;
   public riveMonsterElement: HTMLCanvasElement;
+  public gameControl: HTMLCanvasElement;
   private unsubscribeEvent: () => void;
 
   constructor({
@@ -177,6 +178,9 @@ export class GameplayScene {
     );
 
     this.setupBg();
+
+    this.gameControl = document.getElementById("game-control") as HTMLCanvasElement;
+    this.gameControl.style.zIndex = "5";
   }
 
   private setupBg = () => {
