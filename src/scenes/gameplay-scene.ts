@@ -402,11 +402,6 @@ export class GameplayScene {
       this.tutorial.setPlayMonsterClickAnimation(false);
     }
 
-    // if (this.pauseButton.onClick(x, y)) {
-    //   this.audioPlayer.playButtonClickSound();
-    //   this.pauseGamePlay();
-    // }
-
     if (this.promptText.onClick(x, y)) {
       this.promptText.playSound();
     }
@@ -444,7 +439,6 @@ export class GameplayScene {
       }
     }
     
-    // this.pauseButton.draw();
     this.levelIndicators.draw();
     this.promptText.draw(deltaTime);
     this.timerTicking.draw();
