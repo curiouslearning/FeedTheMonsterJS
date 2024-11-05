@@ -436,16 +436,11 @@ export class GameplayScene {
     this.trailParticles?.draw();
     if (this.isPauseButtonClicked && this.isGameStarted) {
       this.handleStoneLetterDrawing(deltaTime);
-
-      this.pausePopup.draw();
     }
     if (!this.isPauseButtonClicked && !this.isGameStarted) {
       this.counter == 0
         ? this.tutorial.clickOnMonsterTutorial(deltaTime)
         : undefined;
-    }
-    if (this.isPauseButtonClicked && !this.isGameStarted) {
-      this.pausePopup.draw();
     }
     if (!this.isPauseButtonClicked && this.isGameStarted) {
       this.handleStoneLetterDrawing(deltaTime);

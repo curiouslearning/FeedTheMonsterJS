@@ -1,5 +1,5 @@
 import {MAP_BTN_IMG} from '@constants';
-import {BaseButtonComponent} from './base-button/base-button-component';
+import {BaseButtonComponent} from '../base-button-component/base-button-component';
 import gameStateService from '@gameStateService';
 import {AudioPlayer} from '@components/audio-player';
 
@@ -20,7 +20,7 @@ export default class CloseButtonHtml extends BaseButtonComponent {
       },
       imageSrc: MAP_BTN_IMG,
       imageAlt: 'Close Icon',
-      targetId: 'pause-control',
+      targetId: 'game-control',
     });
 
     this.setupPauseStateListener();
@@ -36,13 +36,6 @@ export default class CloseButtonHtml extends BaseButtonComponent {
   }
 
   private updateVisibility(isPaused: boolean) {
-    // Toggle 'show' and 'hide' classes based on real-time pause state
-    if (isPaused) {
-      this.element.classList.add('show');
-      this.element.classList.remove('hide');
-    } else {
-      this.element.classList.add('hide');
-      this.element.classList.remove('show');
-    }
+    this.element.className = `dynamic-button close-button-image ${isPaused ? 'show' : 'hide'}`;
   }
 }

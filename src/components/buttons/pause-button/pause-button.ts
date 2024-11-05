@@ -1,6 +1,6 @@
 import {PAUSE_BTN_IMG} from '@constants';
 import gameStateService from '@gameStateService';
-import {BaseButtonComponent} from './base-button/base-button-component';
+import {BaseButtonComponent} from '../base-button-component/base-button-component';
 import {AudioPlayer} from '@components/audio-player';
 
 export default class PauseButton extends BaseButtonComponent {

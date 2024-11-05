@@ -1,4 +1,4 @@
-import PauseButton from "./buttons/pause-button";
+import PauseButton from "./buttons/pause-button/pause-button";
 import { LevelIndicators } from "./level-indicator";
 import { PromptText } from "./prompt-text";
 import StoneHandler from "./stone-handler";

@@ -1,5 +1,5 @@
 import {CANCEL_BTN_IMG} from '@constants';
-import {BaseButtonComponent} from './base-button/base-button-component';
+import {BaseButtonComponent} from '../base-button-component/base-button-component';
 import {AudioPlayer} from '@components/audio-player';
 import gameStateService from '@gameStateService';
 
@@ -22,7 +22,7 @@ export default class CancelButton extends BaseButtonComponent {
       },
       imageSrc: CANCEL_BTN_IMG,
       imageAlt: 'Cancel Icon',
-      targetId: 'pause-control',
+      targetId: 'game-control',
     });
 
     this.setupPauseStateListener();

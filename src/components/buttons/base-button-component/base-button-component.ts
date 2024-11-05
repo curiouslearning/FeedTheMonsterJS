@@ -38,7 +38,7 @@ export class BaseButtonComponent {
     // Create the button using a template literal for simplicity
     const wrapper = document.createElement('div');
     wrapper.innerHTML = `
-      <button id="${id}" class="dynamic-button ${className}">
+      <button id="${id}" class="dynamic-button ${className}" style="transition: transform 0.1s ease;">
         ${imageSrc ? `<img src="${imageSrc}" alt="${imageAlt}" class="button-image" />` : ''}
       </button>
     `;
@@ -54,6 +54,7 @@ export class BaseButtonComponent {
       if (onClick) {
         const eventHandler = (event: Event) => {
           event.preventDefault();
+          this.animateButtonClick();
           onClick();
         };
 
@@ -64,6 +65,15 @@ export class BaseButtonComponent {
     } else {
       console.error(`Target element '${targetId}' not found.`);
     }
+  }
+
+  private animateButtonClick() {
+    // Apply a temporary scale for a click animation effect
+    this.element.style.transform = `scale(0.95)`;
+
+    setTimeout(() => {
+      this.element.style.transform = `scale(1)`;
+    }, 100); // Reset after 100 ms
   }
 
   public getElement(): HTMLElement {

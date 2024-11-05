@@ -138,10 +138,6 @@ export default class PausePopUp {
         this.canvas.width * 0.8,
         this.canvas.width * 0.8,
       );
-      if (this.isRetryButtonClicked && lang === 'english')
-        this.retrySurePopup.draw();
-      if (this.isCloseButtonClicked && lang === 'english')
-        this.CloseSurePopup.draw();
     }
   }
 

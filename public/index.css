@@ -511,7 +511,7 @@ img {
 
 .game-control {
   position: relative;
-  z-index: 10;
+  z-index: 5;
 
   #pause-button {
     position: absolute;
@@ -522,11 +522,12 @@ img {
 /* Dynamic Buttons */
 .dynamic-button {
   cursor: pointer;
-  padding: 10px 20px;
   border: none;
   background: transparent;
   display: flex;
   align-items: center;
+  width: 60px;
+  height: 60px;
   transition: transform 0.1s ease;
 }
 
@@ -543,9 +544,14 @@ img {
 }
 
 .dynamic-button .button-image {
-  width: 60px;
-  height: 60px;
+  width: 100%;
+  max-width: 60px;
+  max-height: 60px;
   vertical-align: middle;
+}
+
+#pause-button {
+  margin: 10px 20px;
 }
 
 /* End dynamic buttons */

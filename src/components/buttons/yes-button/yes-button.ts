@@ -1,22 +1,22 @@
-import {CANCEL_BTN_IMG} from '@constants';
-import {BaseButtonComponent} from './base-button/base-button-component';
+import {YES_BTN_IMG} from '@constants';
+import {BaseButtonComponent} from '../base-button-component/base-button-component';
 import {AudioPlayer} from '@components/audio-player';
 import gameStateService from '@gameStateService';
 
-export default class NoButton extends BaseButtonComponent {
+export default class YesButton extends BaseButtonComponent {
   private audioPlayer: AudioPlayer;
 
-  constructor(onNoAction: () => void) {
+  constructor(onYesAction: () => void) {
     // Initialize the button component with options and click handling
     super({
-      id: 'no-button',
-      className: 'no-button-image',
+      id: 'yes-button',
+      className: 'yes-button-image',
       onClick: () => {
         this.audioPlayer.playButtonClickSound();
-        onNoAction();
+        onYesAction();
       },
-      imageSrc: CANCEL_BTN_IMG,
-      imageAlt: 'No Icon',
+      imageSrc: YES_BTN_IMG,
+      imageAlt: 'Yes Icon',
       targetId: 'game-control',
     });
 
@@ -36,13 +36,6 @@ export default class NoButton extends BaseButtonComponent {
   }
 
   private updateVisibility(isPaused: boolean) {
-    // Toggle 'show' and 'hide' classes based on the pause state
-    if (isPaused) {
-      this.element.classList.add('show');
-      this.element.classList.remove('hide');
-    } else {
-      this.element.classList.add('hide');
-      this.element.classList.remove('show');
-    }
+    this.element.className = `dynamic-button yes-button-image ${isPaused ? 'show' : 'hide'}`;
   }
 }

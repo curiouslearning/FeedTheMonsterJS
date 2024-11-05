@@ -61,7 +61,7 @@ export class TimerTicking extends EventManager {
     startTimer() {
         // it will start timer immediatly
         this.readyTimer();
-        this.startMyTimer = false;
+        this.startMyTimer = true;
         this.isMyTimerOver = false
     }
 
@@ -70,9 +70,9 @@ export class TimerTicking extends EventManager {
         this.timer = 0;
     }
     update(deltaTime) {
-        // if (this.startMyTimer && !this.isStoneDropped) {
-        //     this.timer += deltaTime * 0.008;
-        // }
+        if (this.startMyTimer && !this.isStoneDropped) {
+            this.timer += deltaTime * 0.008;
+        }
         if (Math.floor(this.width * 0.87 - (this.width * 0.87 * this.timer * 0.01)) == 40 && !this.isMyTimerOver) {
             this.playLevelEndAudioOnce?this.audioPlayer.playAudio(AUDIO_TIMEOUT):null;
             this.playLevelEndAudioOnce = false;

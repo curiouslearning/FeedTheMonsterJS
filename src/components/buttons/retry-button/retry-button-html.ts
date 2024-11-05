@@ -1,5 +1,5 @@
 import {RETRY_BTN_IMG} from '@constants';
-import {BaseButtonComponent} from './base-button/base-button-component';
+import {BaseButtonComponent} from '../base-button-component/base-button-component';
 import {AudioPlayer} from '@components/audio-player';
 import gameStateService from '@gameStateService';
 
@@ -20,7 +20,7 @@ export default class RetryButtonHtml extends BaseButtonComponent {
       },
       imageSrc: RETRY_BTN_IMG,
       imageAlt: 'Retry Icon',
-      targetId: 'pause-control',
+      targetId: 'game-control',
     });
 
     this.setupPauseStateListener();
@@ -36,7 +36,6 @@ export default class RetryButtonHtml extends BaseButtonComponent {
   }
 
   private updateVisibility(isPaused: boolean) {
-    // Update only retry-specific visibility classes, as dynamic-button is added by BaseButtonComponent
     this.element.className = `dynamic-button retry-button-image ${isPaused ? 'show' : 'hide'}`;
   }
 }
