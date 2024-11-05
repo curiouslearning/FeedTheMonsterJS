@@ -14,7 +14,6 @@ export default class CloseButtonHtml extends BaseButtonComponent {
       id: 'close-button',
       className: `close-button-image ${isGamePaused ? 'show' : 'hide'}`,
       onClick: () => {
-        console.log('onCloseAction', onCloseAction);
         audioPlayer.playButtonClickSound();
         onCloseAction();
       },
