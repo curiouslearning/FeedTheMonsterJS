@@ -35,6 +35,7 @@ export default class CloseButtonHtml extends BaseButtonComponent {
     );
   }
 
+  // Note:  this will potentially removed once popup is implemented
   private updateVisibility(isPaused: boolean) {
     this.element.className = `dynamic-button close-button-image ${isPaused ? 'show' : 'hide'}`;
   }

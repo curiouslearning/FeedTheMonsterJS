@@ -35,6 +35,7 @@ export default class RetryButtonHtml extends BaseButtonComponent {
     );
   }
 
+  // Note:  this will potentially removed once popup is implemented
   private updateVisibility(isPaused: boolean) {
     this.element.className = `dynamic-button retry-button-image ${isPaused ? 'show' : 'hide'}`;
   }

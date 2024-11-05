@@ -37,6 +37,7 @@ export default class CancelButton extends BaseButtonComponent {
     );
   }
 
+  // Note:  this will potentially removed once popup is implemented
   private updateVisibility(isPaused: boolean) {
     this.element.className = `dynamic-button cancel-button-image ${isPaused ? 'show' : 'hide'}`;
   }

@@ -35,6 +35,7 @@ export default class NoButton extends BaseButtonComponent {
     );
   }
 
+  // Note:  this will potentially removed once popup is implemented
   private updateVisibility(isPaused: boolean) {
     this.element.className = `dynamic-button no-button-image ${isPaused ? 'show' : 'hide'}`;
   }
