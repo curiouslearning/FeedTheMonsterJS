@@ -1,32 +1,21 @@
 import { loadImages, CLICK, isDocumentVisible } from "@common";
-import { AudioPlayer, Monster } from "@components";
+import { AudioPlayer } from "@components";
 import { CloseButton, NextButton, RetryButton } from "@buttons";
-import {
-  BACKGROUND_ASSET_LIST,
-  createBackground,
-  loadDynamicBgAssets,
-} from "@compositions";
 import {
   AUDIO_INTRO,
   AUDIO_LEVEL_LOSE,
   AUDIO_LEVEL_WIN,
-  DEFAULT_BACKGROUND_1,
   PIN_STAR_1,
   PIN_STAR_2,
   PIN_STAR_3,
-  WIN_BG,
 } from "@constants";
+import gameStateService from '@gameStateService';
 
 export class LevelEndScene {
   public canvas: HTMLCanvasElement;
   public height: number;
   public width: number;
-  public images: any;
-  public loadedImages: any;
-  public imagesLoaded: any;
-  public id: string;
   public context: CanvasRenderingContext2D;
-  public monster: Monster;
   public closeButton: CloseButton;
   public retryButton: RetryButton;
   public nextButton: NextButton;
@@ -35,11 +24,9 @@ export class LevelEndScene {
   public switchToGameplayCB: Function;
   public switchToLevelSelectionCB: Function;
   public data: any;
-  public background: any;
   public audioPlayer: AudioPlayer;
-  public timeouts: any[];
-  public starDrawnCount: number;
   public isLastLevel: boolean;
+  public levelEndElement = document.getElementById("levelEnd");
   constructor(
     canvas: any,
     height: number,
@@ -56,15 +43,10 @@ export class LevelEndScene {
     this.height = height;
     this.width = width;
     this.context = context;
-    this.monster = new Monster(
-      this.canvas,
-      monsterPhaseNumber,
-      this.switchToReactionAnimation
-    );
     this.switchToGameplayCB = switchToGameplayCB;
     this.switchToLevelSelectionCB = switchToLevelSelectionCB;
     this.data = data;
-    this.starDrawnCount = 0;
+    this.canvas.style.zIndex = "8";
     this.closeButton = new CloseButton(
       context,
       canvas,
@@ -87,122 +69,79 @@ export class LevelEndScene {
     this.audioPlayer = new AudioPlayer();
     this.starCount = starCount;
     this.currentLevel = currentLevel;
-    this.images = {
-      backgroundImg: WIN_BG,
-      star1Img: PIN_STAR_1,
-      star2Img: PIN_STAR_2,
-      star3Img: PIN_STAR_3,
-      winBackgroundImg: DEFAULT_BACKGROUND_1,
-    };
-    loadImages(this.images, (images) => {
-      this.loadedImages = Object.assign({}, images);
-      this.imagesLoaded = true;
-      this.starAnimation();
-    });
-    this.addEventListener();
-    this.audioPlayer = new AudioPlayer();
-    this.setupBg();
+    // Subscribe to the LEVEL_END_BACKGROUND_TOGGLE event
+    this.toggleLevelEndBackground(true);
     this.isLastLevel =
       this.currentLevel !==
-        this.data.levels[this.data.levels.length - 1].levelMeta.levelNumber &&
+      this.data.levels[this.data.levels.length - 1].levelMeta.levelNumber &&
       this.starCount >= 2;
+    // this.monster = new Monster(
+    //   this.canvas,
+    //   monsterPhaseNumber,
+    //   this.switchToReactionAnimation
+    // );
+    this.showLevelEndScreen();  // Display the level end screen
+    this.addEventListener();
+    this.renderStarsHTML();
   }
-
-  private setupBg = async () => {
-    const { BG_GROUP_IMGS, draw } = loadDynamicBgAssets(
-      this.currentLevel,
-      BACKGROUND_ASSET_LIST
-    );
-    this.background = await createBackground(
-      this.context,
-      this.width,
-      this.height,
-      BG_GROUP_IMGS,
-      draw
-    );
+  // Method to show/hide the Level End background
+  toggleLevelEndBackground = (shouldShow: boolean) => {
+    if (this.levelEndElement) {
+      this.levelEndElement.style.display = shouldShow ? 'block' : 'none';
+    }
   };
+
+  // Call this method where necessary to show the background when level ends
+  showLevelEndScreen() {
+    this.toggleLevelEndBackground(true); // Publish show event
+    // Render the stars dynamically based on the star count
+    this.renderStarsHTML();
+  }
 
   switchToReactionAnimation = () => {
     if (this.starCount <= 1) {
       if (isDocumentVisible()) {
         this.audioPlayer.playAudio(AUDIO_LEVEL_LOSE);
       }
-      this.monster.changeToSpitAnimation();
+      // this.monster.changeToSpitAnimation(); //Commenting to handle interactive animation
     } else {
       if (isDocumentVisible()) {
         this.audioPlayer.playAudio(AUDIO_LEVEL_WIN);
         this.audioPlayer.playAudio(AUDIO_INTRO);
       }
-      this.monster.changeToEatAnimation();
+      // this.monster.changeToEatAnimation();  //Commenting to handle interactive animation
     }
   };
-  draw(deltaTime: number) {
-    this.background?.draw();
-    if (this.imagesLoaded) {
-      this.context.drawImage(
-        this.loadedImages.backgroundImg,
-        0,
-        0,
-        this.width,
-        this.height + this.height * 0.12
-      );
-      this.drawStars();
 
-      this.monster.update(deltaTime);
-      this.closeButton.draw();
-      this.retryButton.draw();
-      if (this.isLastLevel) {
-        this.nextButton.draw();
-      }
-    }
+  draw(deltaTime?: number) {
+    // No background drawing here as it's handled in HTML
+    // Draw buttons
+    this.closeButton.draw();
+    this.retryButton.draw();
+    this.isLastLevel && this.nextButton.draw();
   }
-  starAnimation() {
-    const animations = [
-      { delay: 500, count: 1 },
-      { delay: 1000, count: 2 },
-      { delay: 1500, count: 3 },
+
+  renderStarsHTML() {
+    const starsContainer = document.querySelector(".stars-container");
+
+    // Clear any previously rendered stars
+    starsContainer.innerHTML = '';
+
+    const starImages = [
+      PIN_STAR_1, // Path to star 1 image
+      PIN_STAR_2, // Path to star 2 image
+      PIN_STAR_3, // Path to star 3 image
     ];
-    this.timeouts = animations.map((animation) => {
-      return setTimeout(() => {
-        this.starDrawnCount = animation.count;
-      }, animation.delay);
-    });
-  }
-  drawStars() {
-    if (this.starCount >= 1 && this.starDrawnCount >= 1) {
-      this.context.drawImage(
-        this.loadedImages.star1Img,
-        this.width * 0.2 - (this.width * 0.19) / 2,
-        this.height * 0.2,
-        this.width * 0.19,
-        this.width * 0.19
-      );
 
-      if (
-        this.starCount <= 3 &&
-        this.starCount > 1 &&
-        this.starDrawnCount <= 3 &&
-        this.starDrawnCount > 1
-      ) {
-        this.context.drawImage(
-          this.loadedImages.star2Img,
-          this.width * 0.5 - (this.width * 0.19) / 2,
-          this.height * 0.15,
-          this.width * 0.19,
-          this.width * 0.19
-        );
-        if (this.starCount >= 3 && this.starDrawnCount >= 3) {
-          this.context.drawImage(
-            this.loadedImages.star3Img,
-            this.width * 0.82 - (this.width * 0.19) / 2,
-            this.height * 0.2,
-            this.width * 0.19,
-            this.width * 0.19
-          );
-        }
-      }
+    for (let i = 0; i < this.starCount; i++) {
+      const starImg = document.createElement("img");
+      starImg.src = starImages[i];  // Set the star image source
+      starImg.alt = `Star ${i + 1}`;
+      starImg.classList.add('stars', `star${i + 1}`);
+      starsContainer.appendChild(starImg);  // Add star to the container
     }
   }
+
   addEventListener() {
     document
       .getElementById("canvas")
@@ -210,19 +149,32 @@ export class LevelEndScene {
     document.addEventListener("visibilitychange", this.pauseAudios, false);
   }
 
+  private handlePublishEvent(shouldShowLoading: boolean, gamePlayData = null) {
+    if (gamePlayData) {
+      gameStateService.publish(gameStateService.EVENTS.GAMEPLAY_DATA_EVENT, gamePlayData);
+    }
+    gameStateService.publish(gameStateService.EVENTS.SCENE_LOADING_EVENT, shouldShowLoading);
+    setTimeout(() => {
+      this.toggleLevelEndBackground(!shouldShowLoading);
+    },
+    800);
+
+  }
+
   handleMouseClick = (event) => {
-    const selfElement:HTMLElement =document.getElementById("canvas");
+    const selfElement: HTMLElement = document.getElementById("canvas");
     var rect = selfElement.getBoundingClientRect();
     const x = event.clientX - rect.left;
     const y = event.clientY - rect.top;
 
     if (this.closeButton.onClick(x, y)) {
       this.audioPlayer.playButtonClickSound();
-      this.switchToLevelSelectionCB("LevelEnd");
+      this.handlePublishEvent(true);
+      this.switchToLevelSelectionCB();
     }
     if (this.retryButton.onClick(x, y)) {
       this.audioPlayer.playButtonClickSound();
-      let gamePlayData = {
+      const gamePlayData = {
         currentLevelData: {
           ...this.data.levels[this.currentLevel],
           levelNumber: this.currentLevel,
@@ -230,22 +182,21 @@ export class LevelEndScene {
         selectedLevelNumber: this.currentLevel,
       };
       // pass same data as level is same
-      this.switchToGameplayCB(gamePlayData, "LevelEnd");
+      this.handlePublishEvent(true, gamePlayData);
+      this.switchToGameplayCB();
     }
-    if (
-      this.isLastLevel &&
-      this.nextButton.onClick(x, y)
-    ) {
+    if (this.isLastLevel && this.nextButton.onClick(x, y)) {
       this.audioPlayer.playButtonClickSound();
-      let next = Number(this.currentLevel) + 1;
-      let gamePlayData = {
+      const next = Number(this.currentLevel) + 1;
+      const gamePlayData = {
         currentLevelData: { ...this.data.levels[next], levelNumber: next },
         selectedLevelNumber: next,
       };
-
-      this.switchToGameplayCB(gamePlayData, "LevelEnd");
+      this.handlePublishEvent(true, gamePlayData);
+      this.switchToGameplayCB();
     }
   };
+
   pauseAudios = () => {
     if (isDocumentVisible()) {
       if (this.starCount >= 2) {
@@ -255,10 +206,10 @@ export class LevelEndScene {
       this.audioPlayer.stopAllAudios();
     }
   };
+
   dispose = () => {
-    this.monster.dispose();
+    // this.monster.dispose();
     this.audioPlayer.stopAllAudios();
-    this.timeouts.forEach((timeout) => clearTimeout(timeout));
     document
       .getElementById("canvas")
       .removeEventListener(CLICK, this.handleMouseClick, false);

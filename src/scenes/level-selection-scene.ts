@@ -14,15 +14,17 @@ import {
   createLevelObject,
   getdefaultCloudBtnsPos,
   loadLevelImages
-} from "@compositions";
+} from "@compositions"; // to be removed once background component has been fully used
 import {
   PreviousPlayedLevel,
   LEVEL_SELECTION_BACKGROUND,
   NEXT_BTN_IMG,
   BACK_BTN_IMG,
   AUDIO_INTRO,
+  SCENE_NAME_LEVEL_SELECT,
 } from "@constants";
 import { LevelBloonButton } from '@buttons';
+import gameStateService from '@gameStateService';
 
 export class LevelSelectionScreen {
   private canvas: HTMLCanvasElement;
@@ -56,7 +58,7 @@ export class LevelSelectionScreen {
   private leftBtnX: number;
   private leftBtnY: number;
   private levelButtons: any
-
+  public riveMonsterElement: HTMLCanvasElement;
   constructor(canvas: HTMLCanvasElement, data: any, callBack: Function) {
     this.canvas = canvas;
     this.data = data;
@@ -71,6 +73,8 @@ export class LevelSelectionScreen {
     this.levels = [];
     this.firebaseIntegration = new FirebaseIntegration();
     this.init();
+    this.riveMonsterElement = document.getElementById("rivecanvas") as HTMLCanvasElement;
+
     this.canvasElement = document.getElementById("canvas") as HTMLCanvasElement;
     this.context = this.canvasElement.getContext("2d");
     this.createLevelButtons();
@@ -88,6 +92,7 @@ export class LevelSelectionScreen {
         10 * Math.floor(this.previousPlayedLevelNumber / 10);
     }
     this.setupBg();
+    this.riveMonsterElement.style.zIndex = "-1";
     this.images = {
       nextbtn: NEXT_BTN_IMG,
       backbtn: BACK_BTN_IMG,
@@ -293,7 +298,7 @@ export class LevelSelectionScreen {
         : null;
     }
   }
-  private draw() {
+  private drawLevelSelection() {
     for (let levelBtn of this.levelButtons) {
       this.drawLevel(
         levelBtn,
@@ -362,8 +367,10 @@ export class LevelSelectionScreen {
       },
       selectedLevelNumber: level_number,
     };
+    gameStateService.publish(gameStateService.EVENTS.GAMEPLAY_DATA_EVENT, gamePlayData);
+    gameStateService.publish(gameStateService.EVENTS.SCENE_LOADING_EVENT, true);
     this.logSelectedLevelEvent();
-    this.callBack(gamePlayData, "LevelSelection");
+    this.callBack(SCENE_NAME_LEVEL_SELECT);
   }
   public logSelectedLevelEvent() {
     const selectedLeveltData: SelectedLevel = {
@@ -379,10 +386,10 @@ export class LevelSelectionScreen {
     };
     this.firebaseIntegration.sendSelectedLevelEvent(selectedLeveltData);
   }
-  public drawLevelSelection() {
+  public draw() {
     if (this.imagesLoaded) {
       this.background?.draw();
-      this.draw();
+      this.drawLevelSelection();
       this.downButton(this.levelSelectionPageIndex);
     }
   }

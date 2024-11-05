@@ -1,15 +1,8 @@
+const path = require('path');
+
 module.exports = {
   globDirectory: "build/",
-  globPatterns: [
-    "**/*.{wav,mp3,WAV,png,jpg,webp,js,gif,css,html}",
-    
-    "./manifest.json"
-  ],
   maximumFileSizeToCacheInBytes: 10 * 1024 * 1024,
-  swDest: "build/sw.js",
-  swSrc: "sw-src.js",
-  globIgnores: [
-    "lang/**/*.{wav,mp3,WAV,png,jpg,webp}",
-
-  ]
+  swDest: path.resolve(__dirname, 'build/sw.js'),
+  swSrc: path.resolve(__dirname, 'src/sw-src.js')
 };

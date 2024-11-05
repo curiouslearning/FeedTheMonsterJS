@@ -17,10 +17,6 @@ export const PhraseAudio = "phrase_audio";
 export const LevelEndAudio = "level_end_audio";
 export const UrlSubstring = "/feedthemonster";
 export const DevelopmentServer = "https://feedthemonsterdev.curiouscontent.org";
-export const StartScene1 = "StartScene1";
-export const LevelSelection1 = "LevelSelection1";
-export const GameScene1 = "GameScene1";
-export const EndScene1 = "EndScene1";
 export const FONT_BASE_PATH = './assets/fonts/';
 
 //Audio paths
@@ -61,17 +57,17 @@ export const AUDIO_URL_PRELOAD = [
 export const ASSETS_PATH_STONE_PINK_BG = "./assets/images/stone_pink.webp"; //stone_pink_v02.png
 export const ASSETS_PATH_TOTEM = "./assets/images/Totem_v02_v01.webp";
 export const ASSETS_PATH_BG_01 = "./assets/images/bg_v01.webp";
-export const ASSETS_PATH_HILL = "./assets/images/hill_v01.webp";
+export const ASSETS_PATH_HILL = "./assets/images/hill.webp";
 export const ASSETS_PATH_FENCE = "./assets/images/fence_v01.webp";
 export const ASSETS_PATH_MONSTER_IDLE = "./assets/images/idle4.png";
 export const DEFAULT_BACKGROUND_1 = "./assets/images/bg_v01.webp";
 export const AUTUMN_BACKGROUND_1 = "./assets/images/Autumn_bg_v01.webp";
-export const AUTUMN_HILL_1 = "./assets/images/Autumn_hill_v01.webp";
+export const AUTUMN_HILL_1 = "./assets/images/Autumn_hill.webp";
 export const AUTUMN_PILLAR_1 = "./assets/images/Autumn_sign_v01.webp";
 export const AUTUMN_SIGN_1 = "./assets/images/Autumn_sign_v01.webp";
 export const AUTUMN_FENCE_1 = "./assets/images/Autumn_fence_v01.webp";
 export const WINTER_BACKGROUND_1 = "./assets/images/Winter_bg_01.webp";
-export const WINTER_HILL_1 = "./assets/images/Winter_hill_v01.webp";
+export const WINTER_HILL_1 = "./assets/images/Winter_hill.webp";
 export const WINTER_SIGN_1 = "./assets/images/Winter_sign_v01.webp";
 export const WINTER_FENCE_1 = "./assets/images/Winter_fence_v01.webp";
 export const WINTER_PILLAR_1 = "./assets/images/Winter_sign_v01.webp";
@@ -109,6 +105,7 @@ export const YES_BTN_IMG = "./assets/images/confirm_btn.webp";
 export const POPUP_BG_IMG = "./assets/images/popup_bg_v01.webp";
 
 //Background Group Images
+// to be removed once background component is fully integrate - GAMEPLAY_BG_GROUP_IMGS, DEFAULT_BG_GROUP_IMGS, AUTUMN_BG_GROUP_IMGS, WINTER_BG_GROUP_IMGS
 export const GAMEPLAY_BG_GROUP_IMGS = {
   ASSETS_PATH_TOTEM,
   DEFAULT_BACKGROUND_1,
@@ -139,6 +136,7 @@ export const WINTER_BG_GROUP_IMGS = {
 };
 
 //Scene Names
+export const LOADING_TRANSITION = 'LoadingTransition';
 export const SCENE_NAME_START = "StartScene";
 export const SCENE_NAME_LEVEL_SELECT = "LevelSelection";
 export const SCENE_NAME_GAME_PLAY = "GamePlay";
