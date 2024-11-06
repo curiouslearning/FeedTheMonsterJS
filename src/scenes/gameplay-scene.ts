@@ -118,7 +118,6 @@ export class GameplayScene {
     this.trailParticles = new TrailEffect(this.canvas);
     this.pauseButton = new PauseButton();
     this.pauseButton.onClick(() => {
-      console.log('Game Paused');
       gameStateService.publish(gameStateService.EVENTS.GAME_PAUSE_STATUS_EVENT, true);
       this.pauseGamePlay();
     });
