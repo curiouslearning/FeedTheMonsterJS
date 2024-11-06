@@ -36,7 +36,7 @@ export class BaseButtonComponent {
       this.audioPlayer.playButtonClickSound();
 
       // Apply scale effect
-      this.element.style.transform = 'scale(0.95)';
+      this.element.style.transform = 'scale(0.90)';
 
       // Reset scale after 100ms
       setTimeout(() => {
