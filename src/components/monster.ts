@@ -15,6 +15,14 @@ export class Monster extends EventManager {
   public game: any;
   public monsterPhase: number;
   public riveMonster: RiveMonsterComponent; // Now using the RiveMonsterComponent
+  private hitboxRangeX: {
+    from: number;
+    to: number;
+  };
+  private hitboxRangeY: {
+    from: number;
+    to: number;
+  };
 
   constructor(game, monsterPhase, callBackFunction?) {
     super({
@@ -29,9 +37,16 @@ export class Monster extends EventManager {
     this.context = this.canvasElement.getContext("2d");
     this.x = this.game.width / 2 - this.game.width * 0.243;
     this.y = this.game.width / 3;
+    this.hitboxRangeX = {
+      from: 0,
+      to: 0,
+    };
+    this.hitboxRangeY = {
+      from: 0,
+      to: 0,
+    };
     // Initialize Rive Monster
     this.initializeRiveMonster();
-
     // Call callback if provided after initialization
     if (callBackFunction) {
       callBackFunction();
@@ -60,6 +75,18 @@ export class Monster extends EventManager {
     //     this.changeToIdleAnimation(); // Return to idle after any other animation
     //   }
     // });
+
+    //Adjust this range factor to control how big is the hit box for dropping stones.
+    const rangeFactorX = 70; //SUBCTRACT FROM CENTER TO LEFT, ADD FROM CENTER TO RIGHT.
+    const rangeFactoryY = 50; //SUBCTRACT FROM CENTER TO TOP, ADD FROM CENTER TO BOTTOM.
+    const monsterCenterX = this.game.width / 2;
+    //Note: Rive height is currently always half of width. This might change when new rive files are to be implemented/
+    const monsterCenterY = monsterCenterX / 2; //Create different sets of height for multiple rive files or adjust this for height when replacing the current rive monster.
+
+    this.hitboxRangeX.from = monsterCenterX - rangeFactorX;
+    this.hitboxRangeX.to = monsterCenterX + rangeFactorX;
+    this.hitboxRangeY.from = monsterCenterY - rangeFactoryY;
+    this.hitboxRangeY.to = monsterCenterY + rangeFactorX;
   }
 
   checkHitboxDistance(event) {
@@ -75,15 +102,8 @@ export class Monster extends EventManager {
     const x = event.clientX - rect.left;
     const y = event.clientY - rect.top;
 
-    //Adjust this range factor to control how big is the hit box for dropping stones.
-    const rangeFactorX = 70; //SUBCTRACT FROM CENTER TO LEFT, ADD FROM CENTER TO RIGHT.
-    const rangeFactoryY = 50; //SUBCTRACT FROM CENTER TO TOP, ADD FROM CENTER TO BOTTOM.
-
-    const monsterXCenter = this.game.width / 2;
-    //Note: Rive height is currently always half of width. This might change when new rive files are to be implemented/
-    const monsterYCenter = monsterXCenter / 2; //Create different sets of height for multiple rive files or adjust this for height when replacing the current rive monster.
-    const isWithinHitboxY = y <= (monsterYCenter + rangeFactoryY) && y >= (monsterYCenter - rangeFactoryY);
-    const isWithinHitboxX = x <= (monsterXCenter + rangeFactorX) && x >= (monsterXCenter - rangeFactorX);
+    const isWithinHitboxX = x >= this.hitboxRangeX.from && x <= this.hitboxRangeX.to;
+    const isWithinHitboxY = y >= this.hitboxRangeY.from && y <= this.hitboxRangeY.to;
 
     return isWithinHitboxX && isWithinHitboxY;
   }
