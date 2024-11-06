@@ -1,19 +1,18 @@
-import { YES_BTN_IMG } from '@constants';
-import { BaseButtonComponent } from '@components/buttons/base-button-component/base-button-component';
+import {YES_BTN_IMG} from '@constants';
+import {
+  BaseButtonComponent,
+  ButtonOptions,
+} from '@components/buttons/base-button-component/base-button-component';
 
 export default class YesButtonHtml extends BaseButtonComponent {
-  constructor(
-    customId = 'yes-button',
-    customClassName = 'yes-button-image',
-    customImageAlt = 'Yes Icon',
-    customTargetId = 'game-control'
-  ) {
+  constructor(options: Partial<ButtonOptions> = {}) {
     super({
-      id: customId,
-      className: customClassName,
+      id: options.id || 'yes-button',
+      className: options.className || 'yes-button-image',
       imageSrc: YES_BTN_IMG,
-      imageAlt: customImageAlt,
-      targetId: customTargetId,
+      imageAlt: options.imageAlt || 'Yes Icon',
+      targetId: options.targetId || 'game-control',
+      ...options, // Allows for additional overrides if needed
     });
   }
 }

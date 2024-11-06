@@ -1,19 +1,18 @@
 import {CANCEL_BTN_IMG} from '@constants';
-import {BaseButtonComponent} from '../base-button-component/base-button-component';
+import {
+  BaseButtonComponent,
+  ButtonOptions,
+} from '../base-button-component/base-button-component';
 
 export default class CancelButtonHtml extends BaseButtonComponent {
-  constructor(
-    customId = 'cancel-button',
-    customClassName = 'cancel-button-image',
-    customImageAlt = 'Cancel Icon',
-    customTargetId = 'game-control',
-  ) {
+  constructor(options: Partial<ButtonOptions> = {}) {
     super({
-      id: customId,
-      className: customClassName,
+      id: options.id || 'cancel-button',
+      className: options.className || 'cancel-button-image',
       imageSrc: CANCEL_BTN_IMG,
-      imageAlt: customImageAlt,
-      targetId: customTargetId,
+      imageAlt: options.imageAlt || 'Cancel Icon',
+      targetId: options.targetId || 'game-control',
+      ...options, // Allows any additional overrides
     });
   }
 }

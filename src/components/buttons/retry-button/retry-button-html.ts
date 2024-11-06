@@ -1,23 +1,18 @@
 import {RETRY_BTN_IMG} from '@constants';
-import {BaseButtonComponent} from '../base-button-component/base-button-component';
-import {AudioPlayer} from '@components/audio-player';
+import {
+  BaseButtonComponent,
+  ButtonOptions,
+} from '../base-button-component/base-button-component';
 
 export default class RetryButtonHtml extends BaseButtonComponent {
-  constructor(
-    customId = 'retry-button',
-    customClassName = 'retry-button-image',
-    customImageAlt = 'Retry Icon',
-    customTargetId = 'game-control',
-  ) {
-    // Initialize the button component with customizable options
+  constructor(options: Partial<ButtonOptions> = {}) {
     super({
-      id: customId,
-      className: `${customClassName}`,
+      id: options.id || 'retry-button',
+      className: options.className || 'retry-button-image',
       imageSrc: RETRY_BTN_IMG,
-      imageAlt: customImageAlt,
-      targetId: customTargetId,
+      imageAlt: options.imageAlt || 'Retry Icon',
+      targetId: options.targetId || 'game-control',
+      ...options, // Allows for additional overrides
     });
-
-    this.audioPlayer = new AudioPlayer();
   }
 }
