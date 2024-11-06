@@ -87,6 +87,7 @@ export class GameplayScene {
   trailParticles: any;
   wordPuzzleLogic:any;
   public riveMonsterElement: HTMLCanvasElement;
+  public gameControl: HTMLCanvasElement;
   private unsubscribeEvent: () => void;
 
   constructor({
@@ -115,7 +116,11 @@ export class GameplayScene {
     this.riveMonsterElement.style.zIndex = "4";
     this.isDisposing = false;
     this.trailParticles = new TrailEffect(this.canvas);
-    this.pauseButton = new PauseButton(this.context, this.canvas);
+    this.pauseButton = new PauseButton();
+    this.pauseButton.onClick(() => {
+      gameStateService.publish(gameStateService.EVENTS.GAME_PAUSE_STATUS_EVENT, true);
+      this.pauseGamePlay();
+    });
     this.timerTicking = new TimerTicking(
       this.width,
       this.height,
@@ -177,6 +182,8 @@ export class GameplayScene {
     );
 
     this.setupBg();
+    this.gameControl = document.getElementById("game-control") as HTMLCanvasElement;
+    this.gameControl.style.zIndex = "5"
   }
 
   private setupBg = () => {
@@ -382,11 +389,6 @@ export class GameplayScene {
       this.tutorial.setPlayMonsterClickAnimation(false);
     }
 
-    if (this.pauseButton.onClick(x, y)) {
-      this.audioPlayer.playButtonClickSound();
-      this.pauseGamePlay();
-    }
-
     if (this.promptText.onClick(x, y)) {
       this.promptText.playSound();
     }
@@ -424,7 +426,6 @@ export class GameplayScene {
       }
     }
 
-    this.pauseButton.draw();
     this.levelIndicators.draw();
     this.promptText.draw(deltaTime);
     this.timerTicking.draw();
