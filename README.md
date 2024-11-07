@@ -1,4 +1,4 @@
-# FeedTheMonsterJS
+# FeedTheMonsterJS backup dev
 
 <div id="top"></div>
 
@@ -321,7 +321,6 @@ this.context.fillText(this.score, this.width / 2.25, this.height / 15);
 
 <p align="right">(<a href="#top">back to top</a>)</p>
 
-<<<<<<< Amit_Readme
 ### Data Collection
 
 Feed The Monster uses Firebase to collect some statistics for internal analysis such events which we collect are:
@@ -333,8 +332,6 @@ Feed The Monster uses Firebase to collect some statistics for internal analysis 
 Also In order to exclude firebase from the build you can just remove firebase logEvent code and you are good to go.
 
 <p align="right">(<a href="#top">back to top</a>)</p>
-=======
->>>>>>> develop
 <!-- CONTRIBUTING -->
 
 ## Contributing

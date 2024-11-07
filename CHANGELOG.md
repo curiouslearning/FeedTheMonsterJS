@@ -1,5 +1,4 @@
 
-
 ## [1.0.34](https://github.com/curiouslearning/FeedTheMonsterJS/compare/1.0.31...1.0.34) (2024-08-28)
 
 

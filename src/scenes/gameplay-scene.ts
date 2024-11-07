@@ -292,6 +292,10 @@ export class GameplayScene {
 
   // Event to identify mouse moved down on the canvas
   handleMouseDown = (event) => {
+    if (this.pickedStone && this.pickedStone.frame <= 99) {
+      return; // Prevent dragging if the stone is animating
+    }
+
     let rect = this.canvas.getBoundingClientRect();
     const x = event.clientX - rect.left;
     const y = event.clientY - rect.top;
@@ -306,7 +310,7 @@ export class GameplayScene {
         if (distance <= 40) {
           this.pickedStoneObject = sc;
           this.pickedStone = sc;
-          this.audioPlayer.playAudio(AUDIO_PATH_ON_DRAG);
+          this.audioPlayer.playAudio(AUDIO_PATH_ON_DRAG); // Note: When refactoring, this should be moved alongside the StoneHandler and handled within that class.
           break;
         }
       }
@@ -318,12 +322,16 @@ export class GameplayScene {
   };
 
   setPickedUp(x,y) {
+    if (this.pickedStone && this.pickedStone.frame <= 99) {
+      return; // Prevent dragging if the stone is animating
+    }
+    
     const stoneLetter = this.stoneHandler.handlePickStoneUp(x,y);
 
     if (stoneLetter) {
       this.pickedStoneObject = stoneLetter;
       this.pickedStone = stoneLetter;
-      this.audioPlayer.playAudio(AUDIO_PATH_ON_DRAG);
+      this.audioPlayer.playAudio(AUDIO_PATH_ON_DRAG); // Note: When refactoring, this should be moved alongside the StoneHandler and handled within that class.
 
       if (this.levelData?.levelMeta?.levelType === 'Word') {
         this.wordPuzzleLogic.setPickUpLetter(
@@ -335,6 +343,10 @@ export class GameplayScene {
   }
 
   handleMouseMove = (event) => {
+    if (this.pickedStone && this.pickedStone.frame <= 99) {
+      return; // Prevent dragging if the stone is animating
+    }
+
     let trailX = event.clientX;
     let trailY = event.clientY
 
@@ -422,6 +434,9 @@ export class GameplayScene {
 
   // Event to identify touch on the canvas
   handleTouchStart = (event) => {
+    if (this.pickedStone && this.pickedStone.frame <= 99) {
+      return; // Prevent dragging if the stone is animating
+    }
     const touch = event.touches[0];
     this.handleMouseDown({ clientX: touch.clientX, clientY: touch.clientY });
     this.trailParticles?.resetParticles();
@@ -497,11 +512,11 @@ export class GameplayScene {
     this.handler.addEventListener(MOUSEUP, this.handleMouseUp, false);
     this.handler.addEventListener(MOUSEMOVE, this.handleMouseMove, false);
     this.handler.addEventListener(MOUSEDOWN, this.handleMouseDown, false);
-
     this.handler.addEventListener(TOUCHSTART, this.handleTouchStart, false);
     this.handler.addEventListener(TOUCHMOVE, this.handleTouchMove, false);
     this.handler.addEventListener(TOUCHEND, this.handleTouchEnd, false);
     this.handler.addEventListener(CLICK, this.handleMouseClick, false);
+    
     document.addEventListener(
       VISIBILITY_CHANGE,
       this.handleVisibilityChange,
@@ -588,6 +603,9 @@ export class GameplayScene {
   }
 
   public letterPuzzle(droppedStone: string) {
+    if (this.pickedStone && this.pickedStone.frame <= 99) {
+      return; // Prevent dragging if the stone is animating
+    }
     const feedBackIndex = this.getRandomInt(0, 1);
     const isCorrect = this.checkStoneDropped(
       droppedStone,
@@ -600,6 +618,9 @@ export class GameplayScene {
   }
 
   public wordPuzzle(droppedStoneInstance: StoneConfig) {
+    if (droppedStoneInstance.frame <= 99) {
+      return; // Prevent dragging if the stone is animating
+    }
     this.audioPlayer.stopFeedbackAudio();
     droppedStoneInstance.x = -999;
     droppedStoneInstance.y = -999;
