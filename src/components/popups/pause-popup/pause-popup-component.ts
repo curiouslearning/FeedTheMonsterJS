@@ -1,5 +1,6 @@
 import { BaseButtonComponent } from '@components/buttons/base-button/base-button-component';
 import { BasePopupComponent } from "../base-popup/base-popup-component";
+import gameStateService from '@gameStateService/index';
 
 export class PausePopupComponent extends BasePopupComponent {
   selectLevelButton?: BaseButtonComponent;
@@ -14,8 +15,12 @@ export class PausePopupComponent extends BasePopupComponent {
   `;
 
   onInit() {
-    this.onButtonClick(({ data }) => {
+    this.onButtonClick((clickEvent) => {
       // TODO confirm popup logic here for english language
+      const { data } = clickEvent;
+      if (data === 'select-level' || data === 'restart-level') {
+        this.close(clickEvent);
+      }
     });
 
     // TODO integrate buttons
@@ -23,6 +28,7 @@ export class PausePopupComponent extends BasePopupComponent {
       id: 'popup-select-level',
       targetId: this.id
     });
+
     this.retartLevelButton = new BaseButtonComponent({
       id: 'popup-reset-level',
       targetId: this.id

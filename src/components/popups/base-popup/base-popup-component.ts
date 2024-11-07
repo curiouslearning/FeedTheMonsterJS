@@ -18,7 +18,7 @@ export const POPUP_LAYOUT = (id: string, content: string, showClose: boolean = t
     <div class="popup__overlay"></div>
     <div class="popup__content-wrapper" style="background-image: url(${POPUP_BG_IMG})">
       ${showClose ? `<div class="btn--icon" data-click="close"><img src="${CANCEL_BTN_IMG}"/></div>` : ''}
-      <div class="popup__content-container">${content}</div>
+      <div id="${id}-content-container" class="popup__content-container">${content}</div>
     </div>
   </div>
 `;
@@ -90,7 +90,7 @@ export class BasePopupComponent {
    */
   private audioPlayer = new AudioPlayer();
   private isRendered: boolean = false;
-  private pubSub = new PubSub();
+  protected pubSub = new PubSub();
 
   constructor(
     protected options: PopupOptions = { selectors: DEFAULT_SELECTORS }
