@@ -78,14 +78,14 @@ export class Monster extends EventManager {
 
     //Adjust this range factor to control how big is the hit box for dropping stones.
     const rangeFactorX = 70; //SUBCTRACT FROM CENTER TO LEFT, ADD FROM CENTER TO RIGHT.
-    const rangeFactoryY = 50; //SUBCTRACT FROM CENTER TO TOP, ADD FROM CENTER TO BOTTOM.
+    const rangeFactorY = 50; //SUBCTRACT FROM CENTER TO TOP, ADD FROM CENTER TO BOTTOM.
     const monsterCenterX = this.game.width / 2;
     //Note: Rive height is currently always half of width. This might change when new rive files are to be implemented/
     const monsterCenterY = monsterCenterX / 2; //Create different sets of height for multiple rive files or adjust this for height when replacing the current rive monster.
 
     this.hitboxRangeX.from = monsterCenterX - rangeFactorX;
     this.hitboxRangeX.to = monsterCenterX + rangeFactorX;
-    this.hitboxRangeY.from = monsterCenterY - rangeFactoryY;
+    this.hitboxRangeY.from = monsterCenterY - rangeFactorY;
     this.hitboxRangeY.to = monsterCenterY + rangeFactorX;
   }
 
