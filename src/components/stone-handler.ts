@@ -124,29 +124,6 @@ export default class StoneHandler extends EventManager {
     groupedLetters: {} | { [key:number]: string }
   ):void {
     for (let i = 0; i < this.foilStones.length; i++) {
-      
-      if (shouldHideStoneChecker(i)) {
-        this.foilStones[i].draw(
-          deltaTime,
-          Object.keys(groupedLetters).length > 1 && groupedLetters[i] !== undefined
-        );
-      }
-    }
-
-    if (
-      this.foilStones[this.foilStones.length - 1].frame >= 100 &&
-      !this.isGamePaused
-    ) {
-      this.timerTickingInstance.update(deltaTime);
-    }
-  }
-
-  drawWordPuzzleLetters(
-    deltaTime: number,
-    shouldHideStoneChecker: (index: number) => boolean,
-    groupedLetters: {} | { [key:number]: string }
-  ):void {
-    for (let i = 0; i < this.foilStones.length; i++) {
 
       if (shouldHideStoneChecker(i)) {
         this.foilStones[i].draw(
