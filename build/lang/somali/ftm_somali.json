@@ -130,6 +130,9 @@
             },
             {
               "StoneText": "s"
+            },
+            {
+              "StoneText": "k"
             }
           ]
         }
@@ -187,7 +190,7 @@
               "StoneText": "b"
             },
             {
-              "StoneText": "s"
+              "StoneText": "d"
             }
           ]
         },
@@ -203,6 +206,9 @@
             "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/somali/audios/d.mp3"
           },
           "foilstones": [
+            {
+              "StoneText": "b"
+            },
             {
               "StoneText": "t"
             },
@@ -227,7 +233,7 @@
           },
           "foilstones": [
             {
-              "StoneText": "s"
+              "StoneText": "t"
             },
             {
               "StoneText": "s"
@@ -288,7 +294,7 @@
           },
           "foilstones": [
             {
-              "StoneText": "a"
+              "StoneText": "k"
             },
             {
               "StoneText": "d"
@@ -368,7 +374,7 @@
           },
           "foilstones": [
             {
-              "StoneText": "a"
+              "StoneText": "t"
             },
             {
               "StoneText": "b"
@@ -426,7 +432,7 @@
               "StoneText": "t"
             },
             {
-              "StoneText": "d"
+              "StoneText": "t"
             }
           ]
         },
@@ -446,7 +452,7 @@
               "StoneText": "s"
             },
             {
-              "StoneText": "t"
+              "StoneText": "b"
             }
           ]
         },
@@ -486,7 +492,7 @@
               "StoneText": "b"
             },
             {
-              "StoneText": "l"
+              "StoneText": "k"
             },
             {
               "StoneText": "d"
@@ -564,7 +570,7 @@
           },
           "foilstones": [
             {
-              "StoneText": "j"
+              "StoneText": "a"
             },
             {
               "StoneText": "j"
@@ -587,7 +593,7 @@
           },
           "foilstones": [
             {
-              "StoneText": "j"
+              "StoneText": "a"
             },
             {
               "StoneText": "l"
@@ -617,6 +623,9 @@
             },
             {
               "StoneText": "t"
+            },
+            {
+              "StoneText": "j"
             },
             {
               "StoneText": "j"
@@ -743,7 +752,7 @@
               "StoneText": "j"
             },
             {
-              "StoneText": "s"
+              "StoneText": "d"
             },
             {
               "StoneText": "j"
@@ -781,7 +790,7 @@
               "StoneText": "kh"
             },
             {
-              "StoneText": "s"
+              "StoneText": "b"
             },
             {
               "StoneText": "a"
@@ -876,7 +885,7 @@
               "StoneText": "d"
             },
             {
-              "StoneText": "b"
+              "StoneText": "kh"
             },
             {
               "StoneText": "kh"
@@ -977,7 +986,7 @@
           },
           "foilstones": [
             {
-              "StoneText": "t"
+              "StoneText": "s"
             },
             {
               "StoneText": "b"
@@ -1067,7 +1076,7 @@
               "StoneText": "s"
             },
             {
-              "StoneText": "s"
+              "StoneText": "b"
             }
           ]
         },
@@ -1113,7 +1122,10 @@
               "StoneText": "a"
             },
             {
-              "StoneText": "s"
+              "StoneText": "t"
+            },
+            {
+              "StoneText": "k"
             }
           ]
         },
@@ -1395,13 +1407,13 @@
           },
           "foilstones": [
             {
-              "StoneText": "b"
+              "StoneText": "t"
             },
             {
               "StoneText": "d"
             },
             {
-              "StoneText": "b"
+              "StoneText": "a"
             }
           ]
         },
@@ -1598,7 +1610,7 @@
           ]
         },
         {
-          "SegmentNumber": 4,
+          "SegmentNumber": 2,
           "targetstones": [
             {
               "StoneText": "k"
@@ -2078,7 +2090,7 @@
           },
           "foilstones": [
             {
-              "StoneText": "t"
+              "StoneText": "l"
             },
             {
               "StoneText": "e"
@@ -2130,7 +2142,7 @@
               "StoneText": "g"
             },
             {
-              "StoneText": "w"
+              "StoneText": "y"
             },
             {
               "StoneText": "a"
@@ -2194,7 +2206,7 @@
               "StoneText": "h"
             },
             {
-              "StoneText": "w"
+              "StoneText": "a"
             },
             {
               "StoneText": "y"
@@ -2223,7 +2235,7 @@
               "StoneText": "w"
             },
             {
-              "StoneText": "b"
+              "StoneText": "h"
             }
           ]
         },
@@ -2478,7 +2490,7 @@
           },
           "foilstones": [
             {
-              "StoneText": "g"
+              "StoneText": "w"
             },
             {
               "StoneText": "g"
@@ -2568,7 +2580,7 @@
               "StoneText": "a"
             },
             {
-              "StoneText": "w"
+              "StoneText": "x"
             },
             {
               "StoneText": "g"
@@ -2599,6 +2611,12 @@
             "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/somali/audios/h.mp3"
           },
           "foilstones": [
+            {
+              "StoneText": "g"
+            },
+            {
+              "StoneText": "kh"
+            },
             {
               "StoneText": "e"
             },
@@ -2806,7 +2824,7 @@
               "StoneText": "t"
             },
             {
-              "StoneText": "h"
+              "StoneText": "b"
             },
             {
               "StoneText": "g"
@@ -3232,7 +3250,7 @@
           ]
         },
         {
-          "SegmentNumber": 2,
+          "SegmentNumber": 1,
           "targetstones": [
             {
               "StoneText": "w"
@@ -3480,7 +3498,7 @@
               "StoneText": "b"
             },
             {
-              "StoneText": "x"
+              "StoneText": "y"
             },
             {
               "StoneText": "n"
@@ -3535,13 +3553,13 @@
           },
           "foilstones": [
             {
+              "StoneText": "d"
+            },
+            {
               "StoneText": "x"
             },
             {
-              "StoneText": "w"
-            },
-            {
-              "StoneText": "i"
+              "StoneText": "g"
             }
           ]
         },
@@ -3966,7 +3984,7 @@
               "StoneText": "q"
             },
             {
-              "StoneText": "w"
+              "StoneText": "n"
             },
             {
               "StoneText": "i"
@@ -4132,7 +4150,7 @@
           },
           "foilstones": [
             {
-              "StoneText": "s"
+              "StoneText": "dh"
             },
             {
               "StoneText": "l"
@@ -4307,7 +4325,7 @@
               "StoneText": "a"
             },
             {
-              "StoneText": "x"
+              "StoneText": "i"
             },
             {
               "StoneText": "q"
@@ -4435,7 +4453,7 @@
               "StoneText": "h"
             },
             {
-              "StoneText": "m"
+              "StoneText": "sh"
             },
             {
               "StoneText": "sh"
@@ -4444,7 +4462,39 @@
               "StoneText": "x"
             },
             {
-              "StoneText": "l"
+              "StoneText": "w"
+            }
+          ]
+        },
+        {
+          "SegmentNumber": 2,
+          "targetstones": [
+            {
+              "StoneText": "m"
+            }
+          ],
+          "prompt": {
+            "PromptText": "mid",
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/somali/audios/m.mp3"
+          },
+          "foilstones": [
+            {
+              "StoneText": "q"
+            },
+            {
+              "StoneText": "b"
+            },
+            {
+              "StoneText": "sh"
+            },
+            {
+              "StoneText": "w"
+            },
+            {
+              "StoneText": "e"
+            },
+            {
+              "StoneText": "i"
             }
           ]
         },
@@ -4528,16 +4578,16 @@
               "StoneText": "q"
             },
             {
-              "StoneText": "i"
+              "StoneText": "k"
             },
             {
               "StoneText": "e"
             },
             {
-              "StoneText": "i"
+              "StoneText": "t"
             },
             {
-              "StoneText": "x"
+              "StoneText": "m"
             }
           ]
         }
@@ -4614,6 +4664,9 @@
             },
             {
               "StoneText": "n"
+            },
+            {
+              "StoneText": "i"
             }
           ]
         },
@@ -4668,7 +4721,7 @@
               "StoneText": "e"
             },
             {
-              "StoneText": "n"
+              "StoneText": "b"
             },
             {
               "StoneText": "q"
@@ -4965,7 +5018,7 @@
               "StoneText": "sh"
             },
             {
-              "StoneText": "n"
+              "StoneText": "m"
             },
             {
               "StoneText": "t"
@@ -5205,7 +5258,7 @@
               "StoneText": "e"
             },
             {
-              "StoneText": "d"
+              "StoneText": "x"
             },
             {
               "StoneText": "dh"
@@ -5399,7 +5452,7 @@
               "StoneText": "a"
             },
             {
-              "StoneText": "n"
+              "StoneText": "a"
             },
             {
               "StoneText": "i"
@@ -5778,7 +5831,7 @@
               "StoneText": "sh"
             },
             {
-              "StoneText": "o"
+              "StoneText": "sh"
             },
             {
               "StoneText": "t"
@@ -6132,7 +6185,7 @@
               "StoneText": "k"
             },
             {
-              "StoneText": "d"
+              "StoneText": "s"
             },
             {
               "StoneText": "m"
@@ -6469,7 +6522,7 @@
               "StoneText": "k"
             },
             {
-              "StoneText": "n"
+              "StoneText": "o"
             },
             {
               "StoneText": "q"
@@ -6602,6 +6655,21 @@
             },
             {
               "StoneText": "s"
+            },
+            {
+              "StoneText": "k"
+            },
+            {
+              "StoneText": "e"
+            },
+            {
+              "StoneText": "h"
+            },
+            {
+              "StoneText": "t"
+            },
+            {
+              "StoneText": "s"
             }
           ]
         },
@@ -6621,7 +6689,7 @@
               "StoneText": "k"
             },
             {
-              "StoneText": "c"
+              "StoneText": "q"
             },
             {
               "StoneText": "t"
@@ -6735,6 +6803,9 @@
               "StoneText": "e"
             },
             {
+              "StoneText": "i"
+            },
+            {
               "StoneText": "s"
             },
             {
@@ -6744,7 +6815,7 @@
               "StoneText": "dh"
             },
             {
-              "StoneText": "k"
+              "StoneText": "o"
             },
             {
               "StoneText": "kh"
@@ -6826,7 +6897,7 @@
               "StoneText": "s"
             },
             {
-              "StoneText": "s"
+              "StoneText": "k"
             },
             {
               "StoneText": "x"
@@ -6905,7 +6976,7 @@
               "StoneText": "c"
             },
             {
-              "StoneText": "s"
+              "StoneText": "c"
             },
             {
               "StoneText": "s"
@@ -6993,7 +7064,7 @@
               "StoneText": "q"
             },
             {
-              "StoneText": "sh"
+              "StoneText": "m"
             },
             {
               "StoneText": "g"
@@ -7195,7 +7266,7 @@
               "StoneText": "sh"
             },
             {
-              "StoneText": "c"
+              "StoneText": "q"
             },
             {
               "StoneText": "q"
@@ -7271,7 +7342,13 @@
               "StoneText": "c"
             },
             {
-              "StoneText": "sh"
+              "StoneText": "a"
+            },
+            {
+              "StoneText": "c"
+            },
+            {
+              "StoneText": "q"
             },
             {
               "StoneText": "sh"
@@ -7438,7 +7515,7 @@
               "StoneText": "c"
             },
             {
-              "StoneText": "j"
+              "StoneText": "sh"
             },
             {
               "StoneText": "q"
@@ -7470,7 +7547,7 @@
               "StoneText": "c"
             },
             {
-              "StoneText": "h"
+              "StoneText": "d"
             },
             {
               "StoneText": "q"
@@ -7922,7 +7999,7 @@
               "StoneText": "o"
             },
             {
-              "StoneText": "b"
+              "StoneText": "o"
             },
             {
               "StoneText": "s"
@@ -8027,7 +8104,7 @@
               "StoneText": "s"
             },
             {
-              "StoneText": "h"
+              "StoneText": "s"
             },
             {
               "StoneText": "a"
@@ -8107,7 +8184,7 @@
               "StoneText": "a"
             },
             {
-              "StoneText": "h"
+              "StoneText": "o"
             },
             {
               "StoneText": "o"
@@ -8363,10 +8440,10 @@
               "StoneText": "l"
             },
             {
-              "StoneText": "u"
+              "StoneText": "y"
             },
             {
-              "StoneText": "a"
+              "StoneText": "o"
             },
             {
               "StoneText": "o"
@@ -8416,7 +8493,7 @@
               "StoneText": "w"
             },
             {
-              "StoneText": "h"
+              "StoneText": "k"
             },
             {
               "StoneText": "t"
@@ -8436,7 +8513,7 @@
           },
           "foilstones": [
             {
-              "StoneText": "c"
+              "StoneText": "j"
             },
             {
               "StoneText": "e"
@@ -8559,7 +8636,7 @@
               "StoneText": "o"
             },
             {
-              "StoneText": "c"
+              "StoneText": "x"
             },
             {
               "StoneText": "r"
@@ -8755,7 +8832,7 @@
               "StoneText": "i"
             },
             {
-              "StoneText": "f"
+              "StoneText": "j"
             },
             {
               "StoneText": "sh"
@@ -8919,7 +8996,10 @@
               "StoneText": "w"
             },
             {
-              "StoneText": "d"
+              "StoneText": "x"
+            },
+            {
+              "StoneText": "k"
             },
             {
               "StoneText": "f"
@@ -8960,13 +9040,13 @@
               "StoneText": "s"
             },
             {
-              "StoneText": "w"
+              "StoneText": "sh"
             },
             {
               "StoneText": "x"
             },
             {
-              "StoneText": "o"
+              "StoneText": "u"
             },
             {
               "StoneText": "q"
@@ -9042,13 +9122,13 @@
           },
           "foilstones": [
             {
-              "StoneText": "u"
+              "StoneText": "i"
             },
             {
               "StoneText": "j"
             },
             {
-              "StoneText": "l"
+              "StoneText": "y"
             },
             {
               "StoneText": "j"
@@ -9224,7 +9304,7 @@
               "StoneText": "q"
             },
             {
-              "StoneText": "k"
+              "StoneText": "c"
             },
             {
               "StoneText": "t"
@@ -9288,7 +9368,7 @@
               "StoneText": "k"
             },
             {
-              "StoneText": "q"
+              "StoneText": "r"
             },
             {
               "StoneText": "q"
@@ -9423,6 +9503,15 @@
               "StoneText": "g"
             },
             {
+              "StoneText": "c"
+            },
+            {
+              "StoneText": "kh"
+            },
+            {
+              "StoneText": "r"
+            },
+            {
               "StoneText": "u"
             },
             {
@@ -9484,10 +9573,7 @@
           },
           "foilstones": [
             {
-              "StoneText": "c"
-            },
-            {
-              "StoneText": "c"
+              "StoneText": "kh"
             },
             {
               "StoneText": "sh"
@@ -9503,6 +9589,15 @@
             },
             {
               "StoneText": "o"
+            },
+            {
+              "StoneText": "a"
+            },
+            {
+              "StoneText": "r"
+            },
+            {
+              "StoneText": "a"
             },
             {
               "StoneText": "c"
@@ -9613,13 +9708,13 @@
               "StoneText": "e"
             },
             {
-              "StoneText": "r"
+              "StoneText": "b"
             },
             {
               "StoneText": "i"
             },
             {
-              "StoneText": "x"
+              "StoneText": "n"
             },
             {
               "StoneText": "f"
@@ -9859,6 +9954,15 @@
               "StoneText": "u"
             },
             {
+              "StoneText": "q"
+            },
+            {
+              "StoneText": "r"
+            },
+            {
+              "StoneText": "u"
+            },
+            {
               "StoneText": "i"
             },
             {
@@ -9894,7 +9998,7 @@
               "StoneText": "dh"
             },
             {
-              "StoneText": "h"
+              "StoneText": "dh"
             },
             {
               "StoneText": "i"
@@ -10137,7 +10241,7 @@
               "StoneText": "l"
             },
             {
-              "StoneText": "k"
+              "StoneText": "f"
             },
             {
               "StoneText": "x"
@@ -10222,7 +10326,7 @@
               "StoneText": "f"
             },
             {
-              "StoneText": "j"
+              "StoneText": "s"
             },
             {
               "StoneText": "s"
@@ -10386,7 +10490,7 @@
               "StoneText": "c"
             },
             {
-              "StoneText": "a"
+              "StoneText": "w"
             },
             {
               "StoneText": "q"
@@ -10556,7 +10660,16 @@
               "StoneText": "n"
             },
             {
-              "StoneText": "n"
+              "StoneText": "h"
+            },
+            {
+              "StoneText": "u"
+            },
+            {
+              "StoneText": "a"
+            },
+            {
+              "StoneText": "t"
             },
             {
               "StoneText": "kh"
@@ -10606,7 +10719,7 @@
               "StoneText": "l"
             },
             {
-              "StoneText": "r"
+              "StoneText": "n"
             },
             {
               "StoneText": "l"
@@ -11041,7 +11154,10 @@
               "StoneText": "s"
             },
             {
-              "StoneText": "l"
+              "StoneText": "n"
+            },
+            {
+              "StoneText": "d"
             },
             {
               "StoneText": "f"
@@ -11220,7 +11336,7 @@
               "StoneText": "q"
             },
             {
-              "StoneText": "h"
+              "StoneText": "d"
             },
             {
               "StoneText": "sh"
@@ -11369,7 +11485,7 @@
               "StoneText": "e"
             },
             {
-              "StoneText": "w"
+              "StoneText": "o"
             },
             {
               "StoneText": "m"
@@ -11413,7 +11529,16 @@
               "StoneText": "q"
             },
             {
-              "StoneText": "l"
+              "StoneText": "sh"
+            },
+            {
+              "StoneText": "kh"
+            },
+            {
+              "StoneText": "d"
+            },
+            {
+              "StoneText": "y"
             },
             {
               "StoneText": "q"
@@ -11480,7 +11605,7 @@
               "StoneText": "kh"
             },
             {
-              "StoneText": "l"
+              "StoneText": "d"
             },
             {
               "StoneText": "l"
@@ -11577,7 +11702,7 @@
               "StoneText": "c"
             },
             {
-              "StoneText": "d"
+              "StoneText": "kh"
             },
             {
               "StoneText": "d"
@@ -11805,7 +11930,7 @@
               "StoneText": "u"
             },
             {
-              "StoneText": "t"
+              "StoneText": "e"
             },
             {
               "StoneText": "m"
@@ -11881,13 +12006,13 @@
               "StoneText": "c"
             },
             {
-              "StoneText": "u"
+              "StoneText": "c"
             },
             {
               "StoneText": "l"
             },
             {
-              "StoneText": "a"
+              "StoneText": "l"
             },
             {
               "StoneText": "c"
@@ -11899,7 +12024,7 @@
               "StoneText": "u"
             },
             {
-              "StoneText": "u"
+              "StoneText": "c"
             }
           ]
         }
@@ -11966,7 +12091,7 @@
           },
           "foilstones": [
             {
-              "StoneText": "q"
+              "StoneText": "a"
             },
             {
               "StoneText": "q"
@@ -12020,6 +12145,15 @@
             },
             {
               "StoneText": "q"
+            },
+            {
+              "StoneText": "q"
+            },
+            {
+              "StoneText": "d"
+            },
+            {
+              "StoneText": "d"
             }
           ]
         },
@@ -12048,7 +12182,7 @@
               "StoneText": "f"
             },
             {
-              "StoneText": "u"
+              "StoneText": "q"
             },
             {
               "StoneText": "l"
@@ -12168,7 +12302,7 @@
               "StoneText": "q"
             },
             {
-              "StoneText": "h"
+              "StoneText": "c"
             },
             {
               "StoneText": "q"
@@ -12440,7 +12574,7 @@
               "StoneText": "kh"
             },
             {
-              "StoneText": "x"
+              "StoneText": "j"
             },
             {
               "StoneText": "s"
@@ -12572,7 +12706,7 @@
               "StoneText": "d"
             },
             {
-              "StoneText": "e"
+              "StoneText": "q"
             },
             {
               "StoneText": "o"
@@ -12639,7 +12773,7 @@
               "StoneText": "u"
             },
             {
-              "StoneText": "f"
+              "StoneText": "r"
             },
             {
               "StoneText": "r"
@@ -12955,7 +13089,7 @@
           "SegmentNumber": 1,
           "targetstones": [
             {
-              "StoneText": "q"
+              "StoneText": "j"
             }
           ],
           "prompt": {
@@ -13049,10 +13183,206 @@
               "StoneText": "a"
             },
             {
-              "StoneText": "n"
+              "StoneText": "w"
+            },
+            {
+              "StoneText": "k"
+            },
+            {
+              "StoneText": "r"
+            },
+            {
+              "StoneText": "g"
+            },
+            {
+              "StoneText": "o"
+            }
+          ]
+        },
+        {
+          "SegmentNumber": 4,
+          "targetstones": [
+            {
+              "StoneText": "q"
+            }
+          ],
+          "prompt": {
+            "PromptText": "qof",
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/somali/audios/q.mp3"
+          },
+          "foilstones": [
+            {
+              "StoneText": "o"
+            },
+            {
+              "StoneText": "r"
+            },
+            {
+              "StoneText": "d"
             },
             {
               "StoneText": "f"
+            },
+            {
+              "StoneText": "y"
+            },
+            {
+              "StoneText": "f"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "LevelMeta": {
+        "LevelNumber": 73,
+        "PromptType": "Visible",
+        "LevelType": "LetterInWord",
+        "csvType": "matchfirst",
+        "PromptFadeout": 0,
+        "LetterGroup": 18
+      },
+      "Puzzles": [
+        {
+          "SegmentNumber": 0,
+          "targetstones": [
+            {
+              "StoneText": "u"
+            }
+          ],
+          "prompt": {
+            "PromptText": "ubax",
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/somali/audios/u.mp3"
+          },
+          "foilstones": [
+            {
+              "StoneText": "f"
+            },
+            {
+              "StoneText": "s"
+            },
+            {
+              "StoneText": "dh"
+            },
+            {
+              "StoneText": "f"
+            },
+            {
+              "StoneText": "k"
+            },
+            {
+              "StoneText": "e"
+            },
+            {
+              "StoneText": "u"
+            },
+            {
+              "StoneText": "s"
+            }
+          ]
+        },
+        {
+          "SegmentNumber": 1,
+          "targetstones": [
+            {
+              "StoneText": "q"
+            }
+          ],
+          "prompt": {
+            "PromptText": "qof",
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/somali/audios/q.mp3"
+          },
+          "foilstones": [
+            {
+              "StoneText": "x"
+            },
+            {
+              "StoneText": "w"
+            },
+            {
+              "StoneText": "d"
+            },
+            {
+              "StoneText": "u"
+            },
+            {
+              "StoneText": "f"
+            },
+            {
+              "StoneText": "u"
+            },
+            {
+              "StoneText": "q"
+            },
+            {
+              "StoneText": "u"
+            }
+          ]
+        },
+        {
+          "SegmentNumber": 2,
+          "targetstones": [
+            {
+              "StoneText": "u"
+            }
+          ],
+          "prompt": {
+            "PromptText": "ubax",
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/somali/audios/u.mp3"
+          },
+          "foilstones": [
+            {
+              "StoneText": "dh"
+            },
+            {
+              "StoneText": "dh"
+            },
+            {
+              "StoneText": "r"
+            },
+            {
+              "StoneText": "y"
+            },
+            {
+              "StoneText": "f"
+            },
+            {
+              "StoneText": "w"
+            }
+          ]
+        },
+        {
+          "SegmentNumber": 3,
+          "targetstones": [
+            {
+              "StoneText": "f"
+            }
+          ],
+          "prompt": {
+            "PromptText": "fur",
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/somali/audios/f.mp3"
+          },
+          "foilstones": [
+            {
+              "StoneText": "q"
+            },
+            {
+              "StoneText": "j"
+            },
+            {
+              "StoneText": "m"
+            },
+            {
+              "StoneText": "q"
+            },
+            {
+              "StoneText": "k"
+            },
+            {
+              "StoneText": "n"
+            },
+            {
+              "StoneText": "u"
             }
           ]
         },
@@ -13378,7 +13708,10 @@
               "StoneText": "r"
             },
             {
-              "StoneText": "d"
+              "StoneText": "h"
+            },
+            {
+              "StoneText": "k"
             },
             {
               "StoneText": "f"
@@ -13413,7 +13746,7 @@
           },
           "foilstones": [
             {
-              "StoneText": "r"
+              "StoneText": "u"
             },
             {
               "StoneText": "u"
@@ -13460,7 +13793,10 @@
               "StoneText": "u"
             },
             {
-              "StoneText": "n"
+              "StoneText": "r"
+            },
+            {
+              "StoneText": "b"
             },
             {
               "StoneText": "u"
@@ -13607,7 +13943,7 @@
               "StoneText": "x"
             },
             {
-              "StoneText": "a"
+              "StoneText": "b"
             },
             {
               "StoneText": "w"
