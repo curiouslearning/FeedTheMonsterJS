@@ -11,7 +11,6 @@ import {
   AudioPlayer,
   TrailEffect,
 } from "@components";
-import PausePopUp from "@popups/pause-popup";
 import {
   StoneConfig,
   CLICK,
@@ -71,7 +70,6 @@ export class GameplayScene {
   public counter: number = 0;
   handler: HTMLElement;
   pickedStoneObject: StoneConfig;
-  pausePopup: PausePopUp;
   isPauseButtonClicked: boolean;
   public background: any;
   feedBackTextCanavsElement: HTMLCanvasElement;
