@@ -40,7 +40,7 @@ import {
 } from "@constants";
 import { WordPuzzleLogic } from '@gamepuzzles';
 import gameStateService from '@gameStateService';
-import { PausePopupComponent } from '@components/popups/pause-popup/pause-popup-component';
+import { PAUSE_POPUP_EVENT_DATA, PausePopupComponent } from '@components/popups/pause-popup/pause-popup-component';
 
 export class GameplayScene {
   public width: number;
@@ -175,29 +175,28 @@ export class GameplayScene {
       }
     );
 
-    this.pausePopupComponent.onClose(() => {
-      gameStateService.publish(gameStateService.EVENTS.GAME_PAUSE_STATUS_EVENT, false);
-      this.resumeGame();
-    });
-    this.pausePopupComponent.onButtonClick(({ data }) => {
-      // TODO confirm popup logic here for english language
-      this.pausePopupComponent.close();
+    this.pausePopupComponent.onClose((event) => {
+      const { data } = event;
 
-      if (data === 'select-level') {
-        gameStateService.publish(gameStateService.EVENTS.SCENE_LOADING_EVENT, true);
-        gameStateService.publish(gameStateService.EVENTS.GAME_PAUSE_STATUS_EVENT, false);
-        this.switchToLevelSelection('GamePlay');
-      }
-
-      if (data === 'restart-level') {
-        gameStateService.publish(gameStateService.EVENTS.GAMEPLAY_DATA_EVENT, {
-          currentLevelData: this.levelData,
-          selectedLevelNumber: this.levelNumber,
-        });
-        gameStateService.publish(gameStateService.EVENTS.SCENE_LOADING_EVENT, true)
-        this.reloadScene('GamePlay');
+      switch(data) {
+        case PAUSE_POPUP_EVENT_DATA.RESTART_LEVEL:
+          gameStateService.publish(gameStateService.EVENTS.GAMEPLAY_DATA_EVENT, {
+            currentLevelData: this.levelData,
+            selectedLevelNumber: this.levelNumber,
+          });
+          gameStateService.publish(gameStateService.EVENTS.SCENE_LOADING_EVENT, true)
+          this.reloadScene('GamePlay');
+          break;
+        case PAUSE_POPUP_EVENT_DATA.SELECT_LEVEL:
+          gameStateService.publish(gameStateService.EVENTS.SCENE_LOADING_EVENT, true);
+          gameStateService.publish(gameStateService.EVENTS.GAME_PAUSE_STATUS_EVENT, false);
+          this.switchToLevelSelection('GamePlay');
+        default:
+          gameStateService.publish(gameStateService.EVENTS.GAME_PAUSE_STATUS_EVENT, false);
+          this.resumeGame();
       }
     });
+
     this.setupBg();
     this.gameControl = document.getElementById("game-control") as HTMLCanvasElement;
     this.gameControl.style.zIndex = "5"

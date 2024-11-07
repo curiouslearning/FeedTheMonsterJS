@@ -9,7 +9,7 @@ describe('BasePopupComponent', () => {
   });
 
   describe('Given default settings', () => {
-    let popup;
+    let popup: BasePopupComponent;
     let popupEl;
     beforeEach(() => {
       popup = new BasePopupComponent();
@@ -53,12 +53,12 @@ describe('BasePopupComponent', () => {
 
     describe('When close button is clicked', () => {
       it('it should remove "show" css class from the popup', () => {
-        const closeBtn = popupEl.querySelector('[data-click="close"]');
+        const closeBtn = popup.closeButton;
         const clickEvent = new Event('click', {
           bubbles: true
         })
         popup.open();
-        closeBtn.dispatchEvent(clickEvent);
+        closeBtn.getElement().dispatchEvent(clickEvent);
 
         setTimeout(() => {
           // ensure click timeout is finished
@@ -68,12 +68,12 @@ describe('BasePopupComponent', () => {
 
       it('it should call hide method', () => {
         const hideSpy = jest.spyOn(BasePopupComponent.prototype, 'close');
-        const closeBtn = popupEl.querySelector('[data-click="close"]');
+        const closeBtn = popup.closeButton;
         const clickEvent = new Event('click', {
           bubbles: true
         })
         popup.open();
-        closeBtn.dispatchEvent(clickEvent);
+        closeBtn.getElement().dispatchEvent(clickEvent);
 
         setTimeout(() => {
           // ensure click timeout is finished
@@ -84,12 +84,12 @@ describe('BasePopupComponent', () => {
       it('it should call onClose callback', () => {
         const fakeCb = jest.fn();
         popup.onClose(fakeCb);
-        const closeBtn = popupEl.querySelector('[data-click="close"]');
+        const closeBtn = popup.closeButton;
         const clickEvent = new Event('click', {
           bubbles: true
         })
         popup.open();
-        closeBtn.dispatchEvent(clickEvent);
+        closeBtn.getElement().dispatchEvent(clickEvent);
 
         setTimeout(() => {
           // ensure click timeout is finished

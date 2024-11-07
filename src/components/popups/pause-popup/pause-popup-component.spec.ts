@@ -1,4 +1,5 @@
 import { PausePopupComponent } from './pause-popup-component';
+jest.useFakeTimers();
 
 describe('PausePopupComponent', () => {
   beforeEach(() => {
@@ -9,11 +10,12 @@ describe('PausePopupComponent', () => {
   });
 
   describe('Given Default', () => {
-    let popup;
-    let popupEl;
+    let popup: PausePopupComponent;
+    let popupEl: Element;
 
     beforeEach(() => {
       popup = new PausePopupComponent();
+      jest.runAllTimers();
       popup.render();
       popupEl = document.querySelector('#pause-popup');
     });
@@ -26,44 +28,39 @@ describe('PausePopupComponent', () => {
       it('should call onInit', () => {
         const initSpy = jest.spyOn(PausePopupComponent.prototype, 'onInit');
         new PausePopupComponent();
-
-        setTimeout(() => {
-          expect(initSpy).toHaveBeenCalled();
-        }, 100);
-      });
-
-      it('should call onButtonClick', () => {
-        const onButtonClickSpy = jest.spyOn(PausePopupComponent.prototype, 'onButtonClick');
-        new PausePopupComponent();
-
-        setTimeout(() => {
-          expect(onButtonClickSpy).toHaveBeenCalled();
-        }, 100);
+        jest.runAllTimers();
+        expect(initSpy).toHaveBeenCalled();
       });
     });
 
     describe('When onInit is called', () => {
-      it('should call onButtonClick', () => {
-        const onButtonClickSpy = jest.spyOn(PausePopupComponent.prototype, 'onButtonClick');
-        const popup = new PausePopupComponent();
-        popup.onInit();
-
-        expect(onButtonClickSpy).toHaveBeenCalled();
-      });
-
-      it('should set selectLevelButton', () => {
-        setTimeout(() => {
-          expect(popup.selectLevelButton ).toBeTruthy();
-        }, 100);
+      it('should set selectLevelButton', async () => {
+        expect(popup.selectLevelButton).toBeTruthy();
       });
 
       it('should set retartLevelButton', () => {
-        setTimeout(() => {
-          expect(popup.retartLevelButton).toBeTruthy();
-        }, 100);
+        expect(popup.restartLevelButton).toBeTruthy();
+      });
+    });
+
+    describe('When popup.selectLevelButton is clicked', () => {
+      it('should close the popup', () => {
+        popup.open();
+        popup.selectLevelButton.getElement().dispatchEvent(new Event('click'));
+        jest.runAllTimers();
+        expect(popupEl.classList.contains('show')).toBeFalsy();
       });
     });
   
+    describe('When popup.restartLevelButton is clicked', () => {
+      it('should close the popup', () => {
+        popup.open();
+        popup.selectLevelButton.getElement().dispatchEvent(new Event('click'));
+        jest.runAllTimers();
+        expect(popupEl.classList.contains('show')).toBeFalsy();
+      });
+    });
+
     describe('When popup is opened', () => {
       it('should render pause popup element', () => {
         expect(popupEl).toBeTruthy();

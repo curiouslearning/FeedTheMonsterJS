@@ -15,3 +15,5 @@ global.AudioContext = jest.fn().mockImplementation(() => ({
   }),
   destination: {},
 }));
+
+jest.mock('@components/audio-player');

@@ -1,6 +1,9 @@
 import { AudioPlayer } from '@components/audio-player';
-import { CANCEL_BTN_IMG, POPUP_BG_IMG } from '@constants';
+import { POPUP_BG_IMG } from '@constants';
 import { PubSub } from '../../../events/pub-sub-events';
+import { CancelButtonHtml, CloseButton } from '@components/buttons';
+import { BaseButtonComponent } from '@components/buttons/base-button-component/base-button-component';
+import './base-popup-component.scss';
 
 const DEFAULT_SELECTORS = {
   root: '.game-scene',
@@ -16,8 +19,7 @@ const CSS_SHOW = 'show';
 export const POPUP_LAYOUT = (id: string, content: string, showClose: boolean = true): string => `
   <div id="${id}" class="popup">
     <div class="popup__overlay"></div>
-    <div class="popup__content-wrapper" style="background-image: url(${POPUP_BG_IMG})">
-      ${showClose ? `<div class="btn--icon" data-click="close"><img src="${CANCEL_BTN_IMG}"/></div>` : ''}
+    <div id="${id}-content-wrapper" class="popup__content-wrapper" style="background-image: url(${POPUP_BG_IMG})">
       <div id="${id}-content-container" class="popup__content-container">${content}</div>
     </div>
   </div>
@@ -65,6 +67,7 @@ export interface PopupClickEvent {
 export class BasePopupComponent {
 
   popupEl?: Element;
+  closeButton?: BaseButtonComponent;
 
   static readonly EVENTS = {
     ON_CLOSE: 'onClose',
@@ -79,11 +82,7 @@ export class BasePopupComponent {
   /**
    * String literal template containing the dom elements of the popup.
    */
-  protected template = `
-    <div>
-      <h1>Base Popup Template</h1>
-    </div>
-  `;
+  protected template: string = ``;
   
   /**
    * Todo: move this to base button
@@ -155,9 +154,28 @@ export class BasePopupComponent {
     const rootEl = document.querySelector(root);
     rootEl.insertAdjacentHTML('beforeend', popupTemplate);
     this.popupEl = rootEl.querySelector(`#${this.id}`);
+
+    if (!this.options.hideClose) {
+      this.closeButton = new CancelButtonHtml({
+        targetId: this.contentWrapperId
+      });
+
+      this.closeButton.onClick(() => {
+        setTimeout(() => {
+          this.close({ data: false });
+        }, 300);
+      });
+    }
     this.isRendered = true;
   }
 
+  get contentContainerId() {
+    return `${this.id}-content-container`;
+  }
+
+  get contentWrapperId() {
+    return `${this.id}-content-wrapper`;
+  }
   /**
    * Initialiation logic,
    */

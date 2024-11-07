@@ -1,37 +1,31 @@
-import { BaseButtonComponent } from '@components/buttons/base-button/base-button-component';
 import { BasePopupComponent } from "../base-popup/base-popup-component";
-import gameStateService from '@gameStateService/index';
+import { MapButton, RetryButtonHtml } from '@components/buttons';
+import { BaseButtonComponent } from '@components/buttons/base-button-component/base-button-component';
+import './pause-popup-component.scss';
+
+export const PAUSE_POPUP_EVENT_DATA = {
+  SELECT_LEVEL: 'select-level',
+  RESTART_LEVEL: 'restart-level'
+}
 
 export class PausePopupComponent extends BasePopupComponent {
   selectLevelButton?: BaseButtonComponent;
-  retartLevelButton?: BaseButtonComponent;
+  restartLevelButton?: BaseButtonComponent;
 
   protected override id = 'pause-popup';
-  protected override template = `
-    <div class="d-flex w-100 h-100">
-      <div data-click="select-level">select level</div>
-      <div data-click="restart-level">restart level</div>
-    </div>
-  `;
 
   onInit() {
-    this.onButtonClick((clickEvent) => {
-      // TODO confirm popup logic here for english language
-      const { data } = clickEvent;
-      if (data === 'select-level' || data === 'restart-level') {
-        this.close(clickEvent);
-      }
-    });
-
+    const targetId = this.contentContainerId;
     // TODO integrate buttons
-    this.selectLevelButton = new BaseButtonComponent({
-      id: 'popup-select-level',
-      targetId: this.id
-    });
+    this.selectLevelButton = new MapButton({ targetId });
+    this.selectLevelButton.onClick(() => this.handleClick('select-level'));
+    this.restartLevelButton = new RetryButtonHtml({ targetId });
+    this.restartLevelButton.onClick(() => this.handleClick('restart-level'));
+  }
 
-    this.retartLevelButton = new BaseButtonComponent({
-      id: 'popup-reset-level',
-      targetId: this.id
-    });
+  handleClick(data: string) {
+    setTimeout(() => {
+      this.close({ data });
+    }, 300);
   }
 }
