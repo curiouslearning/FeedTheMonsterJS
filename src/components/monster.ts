@@ -86,7 +86,7 @@ export class Monster extends EventManager {
     this.hitboxRangeX.from = monsterCenterX - rangeFactorX;
     this.hitboxRangeX.to = monsterCenterX + rangeFactorX;
     this.hitboxRangeY.from = monsterCenterY - rangeFactorY;
-    this.hitboxRangeY.to = monsterCenterY + rangeFactorX;
+    this.hitboxRangeY.to = monsterCenterY + rangeFactorY;
   }
 
   checkHitboxDistance(event) {
