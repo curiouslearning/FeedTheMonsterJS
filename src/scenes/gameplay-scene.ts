@@ -11,7 +11,6 @@ import {
   AudioPlayer,
   TrailEffect,
 } from "@components";
-import PausePopUp from "@popups/pause-popup";
 import {
   StoneConfig,
   CLICK,
@@ -40,6 +39,7 @@ import {
 } from "@constants";
 import { WordPuzzleLogic } from '@gamepuzzles';
 import gameStateService from '@gameStateService';
+import { PAUSE_POPUP_EVENT_DATA, PausePopupComponent } from '@components/popups/pause-popup/pause-popup-component';
 
 export class GameplayScene {
   public width: number;
@@ -59,6 +59,7 @@ export class GameplayScene {
   public monsterPhaseNumber: number;
   public pickedStone: StoneConfig;
   public puzzleStartTime: number;
+  pausePopupComponent: PausePopupComponent = new PausePopupComponent();
   public showTutorial: boolean;
   public feedBackTexts: any;
   public isPuzzleCompleted: boolean;
@@ -69,7 +70,6 @@ export class GameplayScene {
   public counter: number = 0;
   handler: HTMLElement;
   pickedStoneObject: StoneConfig;
-  pausePopup: PausePopUp;
   isPauseButtonClicked: boolean;
   public background: any;
   feedBackTextCanavsElement: HTMLCanvasElement;
@@ -149,16 +149,6 @@ export class GameplayScene {
     this.levelIndicators = new LevelIndicators(this.context, this.canvas, 0);
     this.levelIndicators.setIndicators(this.counter);
     this.monster = new Monster(this.canvas, this.monsterPhaseNumber);
-    this.pausePopup = new PausePopUp(
-      this.canvas,
-      this.resumeGame,
-      this.switchToLevelSelection,
-      this.reloadScene,
-      {
-        currentLevelData: this.levelData,
-        selectedLevelNumber: this.levelNumber,
-      }
-    );
 
     var previousPlayedLevel: string = this.levelData.levelMeta.levelNumber;
     Debugger.DebugMode
@@ -178,8 +168,32 @@ export class GameplayScene {
       gameStateService.EVENTS.GAME_PAUSE_STATUS_EVENT,
       (isPause: boolean) => {
         this.isPauseButtonClicked = isPause;
+
+        if (isPause) this.pausePopupComponent.open();
       }
     );
+
+    this.pausePopupComponent.onClose((event) => {
+      const { data } = event;
+
+      switch(data) {
+        case PAUSE_POPUP_EVENT_DATA.RESTART_LEVEL:
+          gameStateService.publish(gameStateService.EVENTS.GAMEPLAY_DATA_EVENT, {
+            currentLevelData: this.levelData,
+            selectedLevelNumber: this.levelNumber,
+          });
+          gameStateService.publish(gameStateService.EVENTS.SCENE_LOADING_EVENT, true)
+          this.reloadScene('GamePlay');
+          break;
+        case PAUSE_POPUP_EVENT_DATA.SELECT_LEVEL:
+          gameStateService.publish(gameStateService.EVENTS.SCENE_LOADING_EVENT, true);
+          gameStateService.publish(gameStateService.EVENTS.GAME_PAUSE_STATUS_EVENT, false);
+          this.switchToLevelSelection('GamePlay');
+        default:
+          gameStateService.publish(gameStateService.EVENTS.GAME_PAUSE_STATUS_EVENT, false);
+          this.resumeGame();
+      }
+    });
 
     this.setupBg();
     this.gameControl = document.getElementById("game-control") as HTMLCanvasElement;
@@ -199,7 +213,6 @@ export class GameplayScene {
 
   resumeGame = () => {
     this.addEventListeners();
-    this.pausePopup.dispose();
   };
 
   getRandomFeedBackText(randomIndex: number): string {
@@ -432,16 +445,11 @@ export class GameplayScene {
     this.trailParticles?.draw();
     if (this.isPauseButtonClicked && this.isGameStarted) {
       this.handleStoneLetterDrawing(deltaTime);
-
-      this.pausePopup.draw();
     }
     if (!this.isPauseButtonClicked && !this.isGameStarted) {
       this.counter == 0
         ? this.tutorial.clickOnMonsterTutorial(deltaTime)
         : undefined;
-    }
-    if (this.isPauseButtonClicked && !this.isGameStarted) {
-      this.pausePopup.draw();
     }
     if (!this.isPauseButtonClicked && this.isGameStarted) {
       this.handleStoneLetterDrawing(deltaTime);
@@ -548,6 +556,7 @@ export class GameplayScene {
       false
     );
     this.removeEventListeners();
+    this.pausePopupComponent.destroy();
   };
 
   private checkStoneDropped(stone, feedBackIndex, isWord = false) {
@@ -700,7 +709,6 @@ export class GameplayScene {
 
   public pauseGamePlay = () => {
     this.removeEventListeners();
-    this.pausePopup.addListner();
     this.audioPlayer.stopAllAudios();
   };
 
