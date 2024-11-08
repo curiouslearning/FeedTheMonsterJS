@@ -26,7 +26,8 @@ export class TimerTicking extends EventManager {
     public isStoneDropped: boolean = false;
     public audioPlayer: AudioPlayer;
     public playLevelEndAudioOnce: boolean = true;
-
+    // Additional properties for HTML manipulation
+    private timerFullContainer: HTMLElement;
     constructor(width: number, height: number, callback: Function) {
         super({
             stoneDropCallbackHandler: (event) => this.handleStoneDrop(event),
@@ -51,7 +52,8 @@ export class TimerTicking extends EventManager {
             rotating_clock: ROTATING_CLOCK,
             timer_full: TIMER_FULL
         }
-
+        // Reference the container element for the "full timer" image
+        this.timerFullContainer = document.getElementById("timer-full-container") as HTMLElement;
         loadImages(this.images, (images) => {
             this.loadedImages = Object.assign({}, images);
             this.imagesLoaded = true;
@@ -68,19 +70,42 @@ export class TimerTicking extends EventManager {
     readyTimer() {
         // make timer look full so as it get start signal..... it will start decreasing
         this.timer = 0;
+        console.log("Ready Time==>",this.timer);
     }
     update(deltaTime) {
         if (this.startMyTimer && !this.isStoneDropped) {
             this.timer += deltaTime * 0.008;
+
+            // Calculate the new width percentage for the timer
+            const timerDepletion = Math.max(0, 100 - this.timer);
+            this.timerFullContainer.style.width = `${timerDepletion}%`;
+
+            if (timerDepletion < 5 && !this.isMyTimerOver) {
+                this.playLevelEndAudioOnce ? this.audioPlayer.playAudio(AUDIO_TIMEOUT) : null;
+                this.playLevelEndAudioOnce = false;
+            }
+
+            if (timerDepletion <= 0 && !this.isMyTimerOver) {
+                this.isMyTimerOver = true;
+                console.log("Timer ended.");
+                this.callback(true);
+            }
         }
-        if (Math.floor(this.width * 0.87 - (this.width * 0.87 * this.timer * 0.01)) == 40 && !this.isMyTimerOver) {
-            this.playLevelEndAudioOnce?this.audioPlayer.playAudio(AUDIO_TIMEOUT):null;
-            this.playLevelEndAudioOnce = false;
-        }
-        if ((this.width * 0.87 - (this.width * 0.87 * this.timer * 0.01)) < 0 && !this.isMyTimerOver) {
-            this.isMyTimerOver = true;
-            this.callback(true);
-        }
+        // if (this.startMyTimer && !this.isStoneDropped) {
+        //     this.timer += deltaTime * 0.008;
+        //     console.log("Time left==>",this.timer);
+        // }
+        // if (Math.floor(this.width * 0.87 - (this.width * 0.87 * this.timer * 0.01)) == 40 && !this.isMyTimerOver) {
+        //     console.log("Time left==>",this.timer);
+            
+        //     this.playLevelEndAudioOnce?this.audioPlayer.playAudio(AUDIO_TIMEOUT):null;
+        //     this.playLevelEndAudioOnce = false;
+        // }
+        // if ((this.width * 0.87 - (this.width * 0.87 * this.timer * 0.01)) < 0 && !this.isMyTimerOver) {
+        //     this.isMyTimerOver = true;
+        //     console.log("Time left==>",this.timer);
+        //     this.callback(true);
+        // }
     }
 
     public handleStoneDrop(event) {
