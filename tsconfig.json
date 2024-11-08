@@ -61,7 +61,7 @@
       "@data": ["src/data"],
       "@sceneHandler/*": ["src/sceneHandler/*"],
       "@scenes": ["src/scenes"],
-      "@events": ["src/events"],
+      "@events": ["src/events", "src/events/*"],
       "@feedbackText/*": ["src/components/feedback-text/*"],
       "@gamepuzzles/*": ["src/gamepuzzles/*"],
       "@gamepuzzles": ["src/gamepuzzles"],
