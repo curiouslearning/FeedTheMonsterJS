@@ -1,6 +1,6 @@
-import { loadImages, CLICK, isDocumentVisible } from "@common";
+import { CLICK, isDocumentVisible } from "@common";
 import { AudioPlayer } from "@components";
-import { CloseButton, NextButton, RetryButton } from "@buttons";
+import { MapButton, NextButtonHtml, RetryButtonHtml } from "@components/buttons";
 import {
   AUDIO_INTRO,
   AUDIO_LEVEL_LOSE,
@@ -10,15 +10,13 @@ import {
   PIN_STAR_3,
 } from "@constants";
 import gameStateService from '@gameStateService';
+import './levelend-scene.scss';
 
 export class LevelEndScene {
   public canvas: HTMLCanvasElement;
   public height: number;
   public width: number;
   public context: CanvasRenderingContext2D;
-  public closeButton: CloseButton;
-  public retryButton: RetryButton;
-  public nextButton: NextButton;
   public starCount: number;
   public currentLevel: number;
   public switchToGameplayCB: Function;
@@ -47,25 +45,6 @@ export class LevelEndScene {
     this.switchToLevelSelectionCB = switchToLevelSelectionCB;
     this.data = data;
     this.canvas.style.zIndex = "8";
-    this.closeButton = new CloseButton(
-      context,
-      canvas,
-      this.width * 0.2 - (this.width * 0.19) / 2,
-      this.height / 1.25
-    );
-    this.retryButton = new RetryButton(
-      this.context,
-      this.canvas,
-      this.width * 0.5 - (this.width * 0.19) / 2,
-      this.height / 1.25
-    );
-    this.nextButton = new NextButton(
-      this.context,
-      this.width,
-      this.height,
-      this.width * 0.8 - (this.width * 0.19) / 2,
-      this.height / 1.25
-    );
     this.audioPlayer = new AudioPlayer();
     this.starCount = starCount;
     this.currentLevel = currentLevel;
@@ -88,6 +67,7 @@ export class LevelEndScene {
   toggleLevelEndBackground = (shouldShow: boolean) => {
     if (this.levelEndElement) {
       this.levelEndElement.style.display = shouldShow ? 'block' : 'none';
+      this.levelEndElement.style.zIndex = "11";
     }
   };
 
@@ -96,6 +76,7 @@ export class LevelEndScene {
     this.toggleLevelEndBackground(true); // Publish show event
     // Render the stars dynamically based on the star count
     this.renderStarsHTML();
+    this.renderButtonsHTML();
   }
 
   switchToReactionAnimation = () => {
@@ -113,12 +94,7 @@ export class LevelEndScene {
     }
   };
 
-  draw(deltaTime?: number) {
-    // No background drawing here as it's handled in HTML
-    // Draw buttons
-    this.closeButton.draw();
-    this.retryButton.draw();
-    this.isLastLevel && this.nextButton.draw();
+  draw() {
   }
 
   renderStarsHTML() {
@@ -141,6 +117,70 @@ export class LevelEndScene {
       starsContainer.appendChild(starImg);  // Add star to the container
     }
   }
+
+  private createButton(
+    ButtonClass: typeof MapButton | typeof RetryButtonHtml | typeof NextButtonHtml,
+    id: string,
+    onClickCallback: () => void
+  ) {
+    const buttonsContainerId = 'buttons-container';
+
+    const button = new ButtonClass({ targetId: buttonsContainerId, id });
+    const gameControl = document.getElementById("game-control") as HTMLCanvasElement;
+    button.onClick(() => {
+      this.levelEndElement.style.zIndex = '7';
+      gameControl.style.zIndex = "-1";
+      onClickCallback();
+    });
+  };
+
+  renderButtonsHTML() {
+    // Define configurations for each button
+    const buttonConfigs = [
+      {
+        ButtonClass: MapButton,
+        id: 'levelend-map-btn',
+        onClick: () => {
+          this.handlePublishEvent(true);
+          this.switchToLevelSelectionCB();
+        },
+      },
+      {
+        ButtonClass: RetryButtonHtml,
+        id: 'levelend-retry-btn',
+        onClick: () => {
+          const gamePlayData = {
+            currentLevelData: {
+              ...this.data.levels[this.currentLevel],
+              levelNumber: this.currentLevel,
+            },
+            selectedLevelNumber: this.currentLevel,
+          };
+          this.handlePublishEvent(true, gamePlayData);
+          this.switchToGameplayCB();
+        },
+      },
+      {
+        ButtonClass: NextButtonHtml,
+        id: 'levelend-next-btn',
+        condition: this.isLastLevel,
+        onClick: () => {
+          const nextLevel = this.currentLevel + 1;
+          const gamePlayData = {
+            currentLevelData: { ...this.data.levels[nextLevel], levelNumber: nextLevel },
+            selectedLevelNumber: nextLevel,
+          };
+          this.handlePublishEvent(true, gamePlayData);
+          this.switchToGameplayCB();
+        },
+      },
+    ];
+  
+    // Create buttons based on configuration
+    buttonConfigs.forEach(({ ButtonClass, id, onClick, condition = true }) => {
+      if (condition) this.createButton(ButtonClass, id, onClick);
+    });
+  }  
 
   addEventListener() {
     document
@@ -166,35 +206,6 @@ export class LevelEndScene {
     var rect = selfElement.getBoundingClientRect();
     const x = event.clientX - rect.left;
     const y = event.clientY - rect.top;
-
-    if (this.closeButton.onClick(x, y)) {
-      this.audioPlayer.playButtonClickSound();
-      this.handlePublishEvent(true);
-      this.switchToLevelSelectionCB();
-    }
-    if (this.retryButton.onClick(x, y)) {
-      this.audioPlayer.playButtonClickSound();
-      const gamePlayData = {
-        currentLevelData: {
-          ...this.data.levels[this.currentLevel],
-          levelNumber: this.currentLevel,
-        },
-        selectedLevelNumber: this.currentLevel,
-      };
-      // pass same data as level is same
-      this.handlePublishEvent(true, gamePlayData);
-      this.switchToGameplayCB();
-    }
-    if (this.isLastLevel && this.nextButton.onClick(x, y)) {
-      this.audioPlayer.playButtonClickSound();
-      const next = Number(this.currentLevel) + 1;
-      const gamePlayData = {
-        currentLevelData: { ...this.data.levels[next], levelNumber: next },
-        selectedLevelNumber: next,
-      };
-      this.handlePublishEvent(true, gamePlayData);
-      this.switchToGameplayCB();
-    }
   };
 
   pauseAudios = () => {
