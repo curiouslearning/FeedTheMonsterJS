@@ -119,13 +119,8 @@ export class SceneHandler {
     this.lastTime = timeStamp;
     this.context.clearRect(0, 0, this.width, this.height);
     this.scenes[LOADING_TRANSITION].draw(deltaTime);
-    
-    if (this.activeScene instanceof StartScene || 
-      this.activeScene instanceof LevelSelectionScreen || 
-      this.activeScene instanceof GameplayScene || 
-      this.activeScene instanceof LoadingScene) {
-      this.activeScene.draw(deltaTime);
-    }
+
+    this.activeScene && !(this.activeScene instanceof LevelEndScene) && this.activeScene.draw(deltaTime);
   };
 
   switchSceneToLevelSelection = () => {
