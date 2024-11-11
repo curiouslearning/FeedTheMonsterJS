@@ -5,6 +5,11 @@ import AreYouSurePopUp from "@popups/sure-popup";
 import { AUDIO_ARE_YOU_SURE, POPUP_BG_IMG } from "@constants";
 import gameStateService from '@gameStateService';
 
+/**
+ * Canvas-based pause popup component.
+ * 
+ * @deprecated no longer used. We are now using the html version
+ */
 export default class PausePopUp {
   public canvas: HTMLCanvasElement;
   public context: CanvasRenderingContext2D;

@@ -19,6 +19,8 @@ import {
   DownloadCompleted,
 } from "./Firebase/firebase-event-interface";
 import { URL } from "@data";
+import './styles/main.scss';
+
 declare const window: any;
 
 class App {
