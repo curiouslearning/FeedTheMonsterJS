@@ -36,8 +36,6 @@ export class TimerTicking extends EventManager {
         this.width = width;
         this.height = height;
         this.widthToClear = this.width / 3.4;
-        this.timerHeight = 112;
-        this.timerWidth = 888;
         this.callback = callback;
         this.canavsElement = document.getElementById("canvas") as HTMLCanvasElement;
         this.context = this.canavsElement.getContext("2d");
@@ -70,7 +68,7 @@ export class TimerTicking extends EventManager {
     readyTimer() {
         // make timer look full so as it get start signal..... it will start decreasing
         this.timer = 0;
-        console.log("Ready Time==>",this.timer);
+        this.timerFullContainer.style.width = "100%"; // Reset width on start
     }
     update(deltaTime) {
         if (this.startMyTimer && !this.isStoneDropped) {

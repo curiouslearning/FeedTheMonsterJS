@@ -626,6 +626,7 @@ img {
   position: absolute;
   top: 45%;
   height: 60px;
+  left: 30px;
   animation: rotateClock 2s linear infinite;
 }
 
@@ -633,7 +634,7 @@ img {
   position: absolute;
   bottom: 0px;
   left: 14%;
-  width: 86%;
+  width: 100%;
   overflow: hidden;
   height: 45px;
 }
