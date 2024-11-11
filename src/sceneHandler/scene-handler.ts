@@ -17,6 +17,10 @@ import {
 } from "@constants";
 import gameStateService from '@gameStateService';
 
+interface DrawableScene {
+  draw(deltaTime: number): void;
+}
+
 export class SceneHandler {
   private scenes: {
     LOADING_TRANSITION?: LoadingScene;
@@ -82,8 +86,12 @@ export class SceneHandler {
   }
 
   private timerWrapper = (callback: () => void, customTime:number = 800) => {
-    //This is for reusable setTimeout with default 800 miliseconds.
+    //This is for reusable setTimeout with default 800 milliseconds.
     setTimeout(() => { callback(); }, customTime);
+  }
+
+  private isDrawable(scene: any): scene is DrawableScene {
+    return typeof scene?.draw === "function";
   }
 
   startAnimationLoop() {
@@ -118,8 +126,14 @@ export class SceneHandler {
     const deltaTime = timeStamp - this.lastTime;
     this.lastTime = timeStamp;
     this.context.clearRect(0, 0, this.width, this.height);
-    this.scenes[LOADING_TRANSITION].draw(deltaTime);
-    this.activeScene.draw(deltaTime);
+
+    if (this.isDrawable(this.scenes[LOADING_TRANSITION])) {
+      this.scenes[LOADING_TRANSITION].draw(deltaTime);
+    }
+
+    if (this.isDrawable(this.activeScene)) {
+      this.activeScene.draw(deltaTime);
+    }
   };
 
   switchSceneToLevelSelection = () => {

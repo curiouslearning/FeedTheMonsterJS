@@ -67,6 +67,7 @@ export class LevelEndScene {
   toggleLevelEndBackground = (shouldShow: boolean) => {
     if (this.levelEndElement) {
       this.levelEndElement.style.display = shouldShow ? 'block' : 'none';
+      // this is to ensure that the level end scene is the top element when level end is active
       this.levelEndElement.style.zIndex = "11";
     }
   };
@@ -93,9 +94,6 @@ export class LevelEndScene {
       // this.monster.changeToEatAnimation();  //Commenting to handle interactive animation
     }
   };
-
-  draw() {
-  }
 
   renderStarsHTML() {
     const starsContainer = document.querySelector(".stars-container");
@@ -128,11 +126,22 @@ export class LevelEndScene {
     const button = new ButtonClass({ targetId: buttonsContainerId, id });
     const gameControl = document.getElementById("game-control") as HTMLCanvasElement;
     button.onClick(() => {
+      // this is to revert back the level end element to original z indev value 7
       this.levelEndElement.style.zIndex = '7';
+      // making sure this moves at the back since we dont need pause button in the levelend scene bnut this code might be remove when working on the destroy function in FM-329
       gameControl.style.zIndex = "-1";
       onClickCallback();
     });
   };
+
+  retryAndNextButtonCB(level: number) {
+    const gamePlayData = {
+      currentLevelData: { ...this.data.levels[level], levelNumber: level },
+      selectedLevelNumber: level,
+    };
+    this.handlePublishEvent(true, gamePlayData);
+    this.switchToGameplayCB();
+  }
 
   renderButtonsHTML() {
     // Define configurations for each button
@@ -149,36 +158,23 @@ export class LevelEndScene {
         ButtonClass: RetryButtonHtml,
         id: 'levelend-retry-btn',
         onClick: () => {
-          const gamePlayData = {
-            currentLevelData: {
-              ...this.data.levels[this.currentLevel],
-              levelNumber: this.currentLevel,
-            },
-            selectedLevelNumber: this.currentLevel,
-          };
-          this.handlePublishEvent(true, gamePlayData);
-          this.switchToGameplayCB();
+          this.retryAndNextButtonCB(this.currentLevel);
         },
       },
       {
         ButtonClass: NextButtonHtml,
         id: 'levelend-next-btn',
-        condition: this.isLastLevel,
+        showButton: this.isLastLevel,
         onClick: () => {
           const nextLevel = this.currentLevel + 1;
-          const gamePlayData = {
-            currentLevelData: { ...this.data.levels[nextLevel], levelNumber: nextLevel },
-            selectedLevelNumber: nextLevel,
-          };
-          this.handlePublishEvent(true, gamePlayData);
-          this.switchToGameplayCB();
+          this.retryAndNextButtonCB(nextLevel);
         },
       },
     ];
   
     // Create buttons based on configuration
-    buttonConfigs.forEach(({ ButtonClass, id, onClick, condition = true }) => {
-      if (condition) this.createButton(ButtonClass, id, onClick);
+    buttonConfigs.forEach(({ ButtonClass, id, onClick, showButton = true }) => {
+      if (showButton) this.createButton(ButtonClass, id, onClick);
     });
   }  
 
