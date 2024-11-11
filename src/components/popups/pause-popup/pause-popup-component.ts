@@ -16,6 +16,7 @@ export class PausePopupComponent extends BasePopupComponent {
   restartLevelButton?: BaseButtonComponent;
   confirmPopup?: ConfirmPopupComponent;
   protected audioPlayer = new AudioPlayer();
+  protected clickTimeout?;
   protected override id = 'pause-popup';
 
   onInit() {
@@ -38,10 +39,13 @@ export class PausePopupComponent extends BasePopupComponent {
         unsub();
         this.handleConfirmClose(confirmData, data);
       });
-      setTimeout(() => {
+
+      if (this.clickTimeout) clearTimeout(this.clickTimeout);
+      this.clickTimeout = setTimeout(() => {
         this.confirmPopup.open();
         this.audioPlayer.playAudio(AUDIO_ARE_YOU_SURE);
       }, 300);
+      
     } else {
       super.handleClick(data);
     }
