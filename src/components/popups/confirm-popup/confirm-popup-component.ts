@@ -8,11 +8,14 @@ export class ConfirmPopupComponent extends BasePopupComponent {
   cancelButton?: BaseButtonComponent;
 
   protected override id = 'confirm-popup';
-
+  protected override template = `
+    <div class="confirm-message text-align-center w-100 mb-3 font-size-3">Are you sure?</div>
+    <div id="confirm-button-container" class="button-container d-flex justify-content-center w-100"></div>
+  `;
   onInit() {
-    const targetId = this.contentContainerId;
+    const targetId = 'confirm-button-container';
 
-    this.cancelButton = new CancelButtonHtml({ id: this.createButtonId('cancel-button'),targetId, className: 'me-4' });
+    this.cancelButton = new CancelButtonHtml({ id: this.createButtonId('cancel-button'), targetId, className: 'me-4' });
     this.cancelButton.onClick(() => this.handleClick(false));
 
     this.confirmButton = new YesButtonHtml({ id: this.createButtonId('confirm-button'), targetId });
