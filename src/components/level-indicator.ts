@@ -1,18 +1,18 @@
 import { EventManager } from "@events";
-import LevelField from './level-field/level-field';
+import LevelFieldComponent from './level-field/level-field-component';
 
 export class LevelIndicators extends EventManager{
-    private levelBarIndicator: any
+    private levelBarIndicator: LevelFieldComponent;
 
     constructor() {
         super({
             stoneDropCallbackHandler: (event) => this.handleStoneDrop(event),
             loadPuzzleCallbackHandler: (event) => this.handleLoadPuzzle(event)
         })
-        this.levelBarIndicator = new LevelField('levels');
+        this.levelBarIndicator = new LevelFieldComponent();
     }
     setIndicators(indicatorCount) {
-        this.levelBarIndicator.updateBar(indicatorCount);
+        this.levelBarIndicator.updateLevel(indicatorCount);
     }
 
     addDropStoneEvent() {
@@ -23,7 +23,7 @@ export class LevelIndicators extends EventManager{
 
     public dispose() {
         this.unregisterEventListener();
-        this.levelBarIndicator.deleteLevelField();
+        this.levelBarIndicator.removeLevelField();
     }
 
     public handleStoneDrop(event) {
