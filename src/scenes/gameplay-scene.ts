@@ -146,7 +146,7 @@ export class GameplayScene {
       this.levelData,
       this.rightToLeft
     );
-    this.levelIndicators = new LevelIndicators(this.context, this.canvas, 0);
+    this.levelIndicators = new LevelIndicators();
     this.levelIndicators.setIndicators(this.counter);
     this.monster = new Monster(this.canvas, this.monsterPhaseNumber);
     this.pausePopup = new PausePopUp(
@@ -425,8 +425,6 @@ export class GameplayScene {
         this.tutorial.setPlayMonsterClickAnimation(false);
       }
     }
-
-    this.levelIndicators.draw();
     this.promptText.draw(deltaTime);
     this.timerTicking.draw();
     this.trailParticles?.draw();
