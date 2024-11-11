@@ -32,6 +32,10 @@ var config = {
         use: [MiniCssExtractPlugin.loader, 'css-loader'],
       },
       {
+        test: /\.s[ac]ss$/,
+        use: ["style-loader", "css-loader", "sass-loader"],
+      },
+      {
         test: /\.ts?$/,
         use: 'ts-loader',
         exclude: /node_modules/,

@@ -5,7 +5,11 @@
     "[javascript]": {
         "editor.tabSize": 2
     },
-    "[typescript]": {
+    "[scss]": {
         "editor.tabSize": 2
+    },
+    "[typescript]": {
+        "editor.tabSize": 2,
+        "typescript.preferences.quoteStyle": "single"
     }
 }
