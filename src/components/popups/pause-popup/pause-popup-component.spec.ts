@@ -1,4 +1,5 @@
 import { PausePopupComponent } from './pause-popup-component';
+jest.mock('')
 jest.useFakeTimers();
 
 describe('PausePopupComponent', () => {
@@ -44,20 +45,23 @@ describe('PausePopupComponent', () => {
     });
 
     describe('When popup.selectLevelButton is clicked', () => {
-      it('should close the popup', () => {
+      it('should show the confirm popup', () => {
         popup.open();
         popup.selectLevelButton.getElement().dispatchEvent(new Event('click'));
+        
         jest.runAllTimers();
-        expect(popupEl.classList.contains('show')).toBeFalsy();
+        const confirmPopup = document.querySelector('#confirm-popup');
+        expect(confirmPopup).toBeTruthy();
       });
     });
   
     describe('When popup.restartLevelButton is clicked', () => {
-      it('should close the popup', () => {
+      it('should show the confirm popup', () => {
         popup.open();
         popup.selectLevelButton.getElement().dispatchEvent(new Event('click'));
         jest.runAllTimers();
-        expect(popupEl.classList.contains('show')).toBeFalsy();
+        const confirmPopup = document.querySelector('#confirm-popup');
+        expect(confirmPopup).toBeTruthy();
       });
     });
 

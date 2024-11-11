@@ -175,7 +175,7 @@ export class GameplayScene {
 
     this.pausePopupComponent.onClose((event) => {
       const { data } = event;
-
+      console.log(event);
       switch(data) {
         case PAUSE_POPUP_EVENT_DATA.RESTART_LEVEL:
           gameStateService.publish(gameStateService.EVENTS.GAMEPLAY_DATA_EVENT, {
