@@ -14,7 +14,7 @@ describe('LevelEndScene Buttons', () => {
     };
 
     const buttonsContainer = document.createElement('div');
-    buttonsContainer.id = 'buttons-container';
+    buttonsContainer.id = 'levelEndButtons';
     document.body.appendChild(buttonsContainer);
   });
 
@@ -30,7 +30,7 @@ describe('LevelEndScene Buttons', () => {
       | typeof NextButtonHtml,
     onClick: () => void,
   ) {
-    const button = new ButtonClass({targetId: 'buttons-container', id});
+    const button = new ButtonClass({targetId: 'levelEndButtons', id});
     button.onClick(onClick);
   }
 

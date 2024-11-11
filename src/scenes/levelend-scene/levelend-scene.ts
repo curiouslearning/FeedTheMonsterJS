@@ -123,7 +123,7 @@ export class LevelEndScene {
     id: string,
     onClickCallback: () => void
   ) {
-    const buttonsContainerId = 'buttons-container';
+    const buttonsContainerId = 'levelEndButtons';
 
     const button = new ButtonClass({ targetId: buttonsContainerId, id });
     const gameControl = document.getElementById("game-control") as HTMLCanvasElement;
