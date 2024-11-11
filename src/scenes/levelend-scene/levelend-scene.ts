@@ -134,13 +134,18 @@ export class LevelEndScene {
     });
   };
 
-  retryAndNextButtonCB(level: number) {
-    const gamePlayData = {
-      currentLevelData: { ...this.data.levels[level], levelNumber: level },
-      selectedLevelNumber: level,
-    };
-    this.handlePublishEvent(true, gamePlayData);
-    this.switchToGameplayCB();
+  buttonCallbackFn(level: number | null, action: 'map' | 'retry' | 'next') {
+    if (action === 'map') {
+      this.handlePublishEvent(true);
+      this.switchToLevelSelectionCB();
+    } else {
+      const gamePlayData = {
+        currentLevelData: { ...this.data.levels[level], levelNumber: level },
+        selectedLevelNumber: level,
+      };
+      this.handlePublishEvent(true, gamePlayData);
+      this.switchToGameplayCB();
+    }
   }
 
   renderButtonsHTML() {
@@ -150,15 +155,14 @@ export class LevelEndScene {
         ButtonClass: MapButton,
         id: 'levelend-map-btn',
         onClick: () => {
-          this.handlePublishEvent(true);
-          this.switchToLevelSelectionCB();
+          this.buttonCallbackFn(null, 'map');
         },
       },
       {
         ButtonClass: RetryButtonHtml,
         id: 'levelend-retry-btn',
         onClick: () => {
-          this.retryAndNextButtonCB(this.currentLevel);
+          this.buttonCallbackFn(this.currentLevel, 'retry');
         },
       },
       {
@@ -167,7 +171,7 @@ export class LevelEndScene {
         showButton: this.isLastLevel,
         onClick: () => {
           const nextLevel = this.currentLevel + 1;
-          this.retryAndNextButtonCB(nextLevel);
+          this.buttonCallbackFn(nextLevel, 'next');
         },
       },
     ];
