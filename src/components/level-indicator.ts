@@ -23,7 +23,7 @@ export class LevelIndicators extends EventManager{
 
     public dispose() {
         this.unregisterEventListener();
-        this.levelBarIndicator.removeLevelField();
+        this.levelBarIndicator.destroy();
     }
 
     public handleStoneDrop(event) {

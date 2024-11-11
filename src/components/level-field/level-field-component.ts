@@ -56,9 +56,4 @@ export default class LevelFieldComponent extends BaseHTML {
       barsEl[barIndex].src = BAR_FULL;
     }
   }
-
-  removeLevelField():void {
-    this.destroy();
-  }
-
 }
