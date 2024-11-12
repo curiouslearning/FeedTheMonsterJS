@@ -1,6 +1,6 @@
-import {MapButton, RetryButtonHtml, NextButtonHtml} from '@components/buttons';
+import { MapButton, RetryButtonHtml, NextButtonHtml } from '@components/buttons';
 
-describe('LevelEndScene Buttons', () => {
+describe('LevelEndScreen', () => {
   let mockSwitchToGameplayCB: jest.Mock;
   let mockSwitchToLevelSelectionCB: jest.Mock;
   let mockData: any;
@@ -10,7 +10,7 @@ describe('LevelEndScene Buttons', () => {
     mockSwitchToGameplayCB = jest.fn();
     mockSwitchToLevelSelectionCB = jest.fn();
     mockData = {
-      levels: [{levelMeta: {levelNumber: 1}}, {levelMeta: {levelNumber: 2}}],
+      levels: [{ levelMeta: { levelNumber: 1 } }, { levelMeta: { levelNumber: 2 } }],
     };
 
     const buttonsContainer = document.createElement('div');
@@ -24,13 +24,10 @@ describe('LevelEndScene Buttons', () => {
 
   function renderButton(
     id: string,
-    ButtonClass:
-      | typeof MapButton
-      | typeof RetryButtonHtml
-      | typeof NextButtonHtml,
-    onClick: () => void,
+    ButtonClass: typeof MapButton | typeof RetryButtonHtml | typeof NextButtonHtml,
+    onClick: () => void
   ) {
-    const button = new ButtonClass({targetId: 'levelEndButtons', id});
+    const button = new ButtonClass({ targetId: 'levelEndButtons', id });
     button.onClick(onClick);
   }
 
@@ -38,7 +35,7 @@ describe('LevelEndScene Buttons', () => {
     renderButton('levelend-map-btn', MapButton, mockSwitchToLevelSelectionCB);
     renderButton('levelend-retry-btn', RetryButtonHtml, () => {
       mockSwitchToGameplayCB({
-        currentLevelData: {...mockData.levels[1], levelNumber: 1},
+        currentLevelData: { ...mockData.levels[1], levelNumber: 1 },
         selectedLevelNumber: 1,
       });
     });
@@ -57,57 +54,61 @@ describe('LevelEndScene Buttons', () => {
     }
   }
 
-  describe('Button Rendering', () => {
-    it('should render MapButton and RetryButtonHtml by default', () => {
-      renderButtonsHTML(true);
-      expect(document.getElementById('levelend-map-btn')).not.toBeNull();
-      expect(document.getElementById('levelend-retry-btn')).not.toBeNull();
-    });
+  describe('Given Default parameters', () => {
+    describe('When LevelEndScene renders', () => {
+      it('it should render MapButton', () => {
+        renderButtonsHTML(true);
+        expect(document.getElementById('levelend-map-btn')).not.toBeNull();
+      });
 
-    it('should render NextButtonHtml only if isLastLevel is false', () => {
-      renderButtonsHTML(false);
-      expect(document.getElementById('levelend-next-btn')).not.toBeNull();
-    });
+      it('it should render RetryButtonHtml', () => {
+        renderButtonsHTML(true);
+        expect(document.getElementById('levelend-retry-btn')).not.toBeNull();
+      });
 
-    it('should not render NextButtonHtml if isLastLevel is true', () => {
-      renderButtonsHTML(true);
-      expect(document.getElementById('levelend-next-btn')).toBeNull();
-    });
-  });
+      it('it should render NextButtonHtml if isLastLevel is false', () => {
+        renderButtonsHTML(false);
+        expect(document.getElementById('levelend-next-btn')).not.toBeNull();
+      });
 
-  describe('Button Click Callbacks', () => {
-    it('should call switchToLevelSelectionCB when MapButton is clicked', () => {
-      renderButtonsHTML(true);
-      const mapButton = document.getElementById(
-        'levelend-map-btn',
-      ) as HTMLButtonElement;
-      mapButton.click();
-      expect(mockSwitchToLevelSelectionCB).toHaveBeenCalled();
-    });
-
-    it('should call switchToGameplayCB with correct data when RetryButtonHtml is clicked', () => {
-      renderButtonsHTML(true);
-      const retryButton = document.getElementById(
-        'levelend-retry-btn',
-      ) as HTMLButtonElement;
-      retryButton.click();
-
-      expect(mockSwitchToGameplayCB).toHaveBeenCalledWith({
-        currentLevelData: {...mockData.levels[1], levelNumber: 1},
-        selectedLevelNumber: 1,
+      it('it should not render NextButtonHtml if isLastLevel is true', () => {
+        renderButtonsHTML(true);
+        expect(document.getElementById('levelend-next-btn')).toBeNull();
       });
     });
 
-    it('should call switchToGameplayCB with correct data when NextButtonHtml is clicked if isLastLevel is false', () => {
-      renderButtonsHTML(false);
-      const nextButton = document.getElementById(
-        'levelend-next-btn',
-      ) as HTMLButtonElement;
-      nextButton.click();
+    describe('When clicking MapButton', () => {
+      it('it should call switchToLevelSelectionCB', () => {
+        renderButtonsHTML(true);
+        const mapButton = document.getElementById('levelend-map-btn') as HTMLButtonElement;
+        mapButton.click();
+        expect(mockSwitchToLevelSelectionCB).toHaveBeenCalled();
+      });
+    });
 
-      expect(mockSwitchToGameplayCB).toHaveBeenCalledWith({
-        currentLevelData: {...mockData.levels[2], levelNumber: 2},
-        selectedLevelNumber: 2,
+    describe('When clicking RetryButtonHtml', () => {
+      it('it should call switchToGameplayCB with correct data', () => {
+        renderButtonsHTML(true);
+        const retryButton = document.getElementById('levelend-retry-btn') as HTMLButtonElement;
+        retryButton.click();
+
+        expect(mockSwitchToGameplayCB).toHaveBeenCalledWith({
+          currentLevelData: { ...mockData.levels[1], levelNumber: 1 },
+          selectedLevelNumber: 1,
+        });
+      });
+    });
+
+    describe('When clicking NextButtonHtml', () => {
+      it('it should call switchToGameplayCB with correct data if isLastLevel is false', () => {
+        renderButtonsHTML(false);
+        const nextButton = document.getElementById('levelend-next-btn') as HTMLButtonElement;
+        nextButton.click();
+
+        expect(mockSwitchToGameplayCB).toHaveBeenCalledWith({
+          currentLevelData: { ...mockData.levels[2], levelNumber: 2 },
+          selectedLevelNumber: 2,
+        });
       });
     });
   });
