@@ -1,6 +1,6 @@
-import { CLICK, isDocumentVisible } from "@common";
-import { AudioPlayer } from "@components";
-import { MapButton, NextButtonHtml, RetryButtonHtml } from "@components/buttons";
+import {CLICK, isDocumentVisible} from '@common';
+import {AudioPlayer} from '@components';
+import {MapButton, NextButtonHtml, RetryButtonHtml} from '@components/buttons';
 import {
   AUDIO_INTRO,
   AUDIO_LEVEL_LOSE,
@@ -8,11 +8,14 @@ import {
   PIN_STAR_1,
   PIN_STAR_2,
   PIN_STAR_3,
-} from "@constants";
+} from '@constants';
 import gameStateService from '@gameStateService';
 import './levelend-scene.scss';
 
 export class LevelEndScene {
+  static renderButtonsHTML() {
+    throw new Error('Method not implemented.');
+  }
   public height: number;
   public width: number;
   public starCount: number;
@@ -22,8 +25,8 @@ export class LevelEndScene {
   public data: any;
   public audioPlayer: AudioPlayer;
   public isLastLevel: boolean;
-  public levelEndElement = document.getElementById("levelEnd");
-  
+  public levelEndElement = document.getElementById('levelEnd');
+
   constructor(
     height: number,
     width: number,
@@ -32,7 +35,7 @@ export class LevelEndScene {
     switchToGameplayCB,
     switchToLevelSelectionCB,
     data,
-    monsterPhaseNumber: number
+    monsterPhaseNumber: number,
   ) {
     this.height = height;
     this.width = width;
@@ -42,18 +45,16 @@ export class LevelEndScene {
     this.audioPlayer = new AudioPlayer();
     this.starCount = starCount;
     this.currentLevel = currentLevel;
+    this.isLastLevel = this.currentLevel ===
+    this.data.levels[this.data.levels.length - 1].levelMeta.levelNumber;
     // Subscribe to the LEVEL_END_BACKGROUND_TOGGLE event
     this.toggleLevelEndBackground(true);
-    this.isLastLevel =
-      this.currentLevel !==
-      this.data.levels[this.data.levels.length - 1].levelMeta.levelNumber &&
-      this.starCount >= 2;
     // this.monster = new Monster(
     //   this.canvas,
     //   monsterPhaseNumber,
     //   this.switchToReactionAnimation
     // );
-    this.showLevelEndScreen();  // Display the level end screen
+    this.showLevelEndScreen(); // Display the level end screen
     this.addEventListener();
     this.renderStarsHTML();
   }
@@ -62,7 +63,7 @@ export class LevelEndScene {
     if (this.levelEndElement) {
       this.levelEndElement.style.display = shouldShow ? 'block' : 'none';
       // this is to ensure that the level end scene is the top element when level end is active
-      this.levelEndElement.style.zIndex = "11";
+      this.levelEndElement.style.zIndex = '11';
     }
   };
 
@@ -90,7 +91,7 @@ export class LevelEndScene {
   };
 
   renderStarsHTML() {
-    const starsContainer = document.querySelector(".stars-container");
+    const starsContainer = document.querySelector('.stars-container');
 
     // Clear any previously rendered stars
     starsContainer.innerHTML = '';
@@ -102,45 +103,64 @@ export class LevelEndScene {
     ];
 
     for (let i = 0; i < this.starCount; i++) {
-      const starImg = document.createElement("img");
-      starImg.src = starImages[i];  // Set the star image source
+      const starImg = document.createElement('img');
+      starImg.src = starImages[i]; // Set the star image source
       starImg.alt = `Star ${i + 1}`;
       starImg.classList.add('stars', `star${i + 1}`);
-      starsContainer.appendChild(starImg);  // Add star to the container
+      starsContainer.appendChild(starImg); // Add star to the container
     }
   }
 
   private createButton(
-    ButtonClass: typeof MapButton | typeof RetryButtonHtml | typeof NextButtonHtml,
+    ButtonClass:
+      | typeof MapButton
+      | typeof RetryButtonHtml
+      | typeof NextButtonHtml,
     id: string,
-    onClickCallback: () => void
+    onClickCallback: () => void,
   ) {
     const buttonsContainerId = 'levelEndButtons';
 
-    const button = new ButtonClass({ targetId: buttonsContainerId, id });
-    const gameControl = document.getElementById("game-control") as HTMLCanvasElement;
+    const button = new ButtonClass({targetId: buttonsContainerId, id});
+    const gameControl = document.getElementById(
+      'game-control',
+    ) as HTMLCanvasElement;
     button.onClick(() => {
       // this is to revert back the level end element to original z indev value 7
       this.levelEndElement.style.zIndex = '7';
       // making sure this moves at the back since we dont need pause button in the levelend scene bnut this code might be remove when working on the destroy function in FM-329
-      gameControl.style.zIndex = "-1";
+      gameControl.style.zIndex = '-1';
       onClickCallback();
     });
-  };
+  }
 
-  buttonCallbackFn(level: number | null, action: 'map' | 'retry' | 'next') {
+  buttonCallbackFn(action: 'map' | 'retry' | 'next') {
     if (action === 'map') {
       this.handlePublishEvent(true);
       this.switchToLevelSelectionCB();
     } else {
+      let levelData;
+      if (action === 'retry') {
+        levelData = this.data.levels[this.currentLevel - 1];
+      } else if (
+        action === 'next' &&
+        this.currentLevel < this.data.levels.length
+      ) {
+        levelData = this.data.levels[this.currentLevel];
+      }
+  
       const gamePlayData = {
-        currentLevelData: { ...this.data.levels[level], levelNumber: level },
-        selectedLevelNumber: level,
+        currentLevelData: {
+          ...levelData,
+          levelNumber: action === 'next' ? this.currentLevel + 1 : this.currentLevel,
+        },
+        selectedLevelNumber: action === 'next' ? this.currentLevel + 1 : this.currentLevel,
       };
+  
       this.handlePublishEvent(true, gamePlayData);
-      this.switchToGameplayCB();
+      this.switchToGameplayCB(gamePlayData);
     }
-  }
+  }  
 
   renderButtonsHTML() {
     // Define configurations for each button
@@ -149,51 +169,62 @@ export class LevelEndScene {
         ButtonClass: MapButton,
         id: 'levelend-map-btn',
         onClick: () => {
-          this.buttonCallbackFn(null, 'map');
+          this.buttonCallbackFn('map');
         },
       },
       {
         ButtonClass: RetryButtonHtml,
         id: 'levelend-retry-btn',
         onClick: () => {
-          this.buttonCallbackFn(this.currentLevel, 'retry');
-        },
-      },
-      {
-        ButtonClass: NextButtonHtml,
-        id: 'levelend-next-btn',
-        showButton: this.isLastLevel,
-        onClick: () => {
-          const nextLevel = this.currentLevel + 1;
-          this.buttonCallbackFn(nextLevel, 'next');
+          this.buttonCallbackFn('retry');
         },
       },
     ];
   
+    // Only add NextButton if not the last level
+    if (!this.isLastLevel && this.starCount >= 2) {
+      buttonConfigs.push({
+        ButtonClass: NextButtonHtml,
+        id: 'levelend-next-btn',
+        onClick: () => {
+          this.buttonCallbackFn('next');
+        },
+      });
+    } else {
+      const nextButton = document.getElementById("levelend-next-btn");
+      if (nextButton) {
+        nextButton.remove();
+      }
+    }
+  
     // Create buttons based on configuration
-    buttonConfigs.forEach(({ ButtonClass, id, onClick, showButton = true }) => {
-      if (showButton) this.createButton(ButtonClass, id, onClick);
+    buttonConfigs.forEach(({ ButtonClass, id, onClick }) => {
+      this.createButton(ButtonClass, id, onClick);
     });
   }  
 
   addEventListener() {
-    document.addEventListener("visibilitychange", this.pauseAudios, false);
+    document.addEventListener('visibilitychange', this.pauseAudios, false);
   }
 
   private handlePublishEvent(shouldShowLoading: boolean, gamePlayData = null) {
     if (gamePlayData) {
-      gameStateService.publish(gameStateService.EVENTS.GAMEPLAY_DATA_EVENT, gamePlayData);
+      gameStateService.publish(
+        gameStateService.EVENTS.GAMEPLAY_DATA_EVENT,
+        gamePlayData,
+      );
     }
-    gameStateService.publish(gameStateService.EVENTS.SCENE_LOADING_EVENT, shouldShowLoading);
+    gameStateService.publish(
+      gameStateService.EVENTS.SCENE_LOADING_EVENT,
+      shouldShowLoading,
+    );
     setTimeout(() => {
       this.toggleLevelEndBackground(!shouldShowLoading);
-    },
-    800);
-
+    }, 800);
   }
 
-  handleMouseClick = (event) => {
-    const selfElement: HTMLElement = document.getElementById("canvas");
+  handleMouseClick = event => {
+    const selfElement: HTMLElement = document.getElementById('canvas');
     var rect = selfElement.getBoundingClientRect();
     const x = event.clientX - rect.left;
     const y = event.clientY - rect.top;
@@ -212,9 +243,6 @@ export class LevelEndScene {
   dispose = () => {
     // this.monster.dispose();
     this.audioPlayer.stopAllAudios();
-    document
-      .getElementById("canvas")
-      .removeEventListener(CLICK, this.handleMouseClick, false);
-    document.removeEventListener("visibilitychange", this.pauseAudios, false);
+    document.removeEventListener('visibilitychange', this.pauseAudios, false);
   };
 }

@@ -1,5 +1,5 @@
-import {MapButton, RetryButtonHtml, NextButtonHtml} from '@components/buttons';
-import {LevelEndScene} from './levelend-scene';
+import { MapButton, RetryButtonHtml, NextButtonHtml } from '@components/buttons';
+import { LevelEndScene } from './levelend-scene';
 
 describe('LevelEndScreen', () => {
   let mockSwitchToGameplayCB: jest.Mock;
@@ -7,147 +7,160 @@ describe('LevelEndScreen', () => {
   let mockData: any;
   let levelEndScene: LevelEndScene;
 
-  describe('Given Default', () => {
-    beforeEach(() => {
-      document.body.innerHTML = '';
-      mockSwitchToGameplayCB = jest.fn();
-      mockSwitchToLevelSelectionCB = jest.fn();
-      mockData = {
-        levels: [{levelMeta: {levelNumber: 1}}, {levelMeta: {levelNumber: 2}}],
-      };
+  beforeEach(() => {
+    document.body.innerHTML = '';
+    mockSwitchToGameplayCB = jest.fn();
+    mockSwitchToLevelSelectionCB = jest.fn();
+    mockData = {
+      levels: [
+        {
+          levelMeta: {
+            promptFadeOut: 0,
+            letterGroup: 18,
+            levelNumber: 1,
+            protoType: 'Visible',
+            levelType: 'LetterInWord',
+          },
+          puzzles: [],
+        },
+        {
+          levelMeta: {
+            promptFadeOut: 0,
+            letterGroup: 19,
+            levelNumber: 2,
+            protoType: 'Visible',
+            levelType: 'LetterInWord',
+          },
+          puzzles: [],
+        },
+      ],
+    };
 
-      const buttonsContainer = document.createElement('div');
-      buttonsContainer.id = 'levelEndButtons';
-      document.body.appendChild(buttonsContainer);
+    const buttonsContainer = document.createElement('div');
+    buttonsContainer.id = 'levelEndButtons';
+    document.body.appendChild(buttonsContainer);
 
-      const starsContainer = document.createElement('div');
-      starsContainer.className = 'stars-container';
-      document.body.appendChild(starsContainer);
+    const starsContainer = document.createElement('div');
+    starsContainer.className = 'stars-container';
+    document.body.appendChild(starsContainer);
 
-      const levelEndElement = document.createElement('div');
-      levelEndElement.id = 'levelEnd';
-      document.body.appendChild(levelEndElement);
+    const levelEndElement = document.createElement('div');
+    levelEndElement.id = 'levelEnd';
+    document.body.appendChild(levelEndElement);
 
-      const gameControlElement = document.createElement('div');
-      gameControlElement.id = 'game-control';
-      document.body.appendChild(gameControlElement);
+    const gameControlElement = document.createElement('div');
+    gameControlElement.id = 'game-control';
+    document.body.appendChild(gameControlElement);
+
+    levelEndScene = new LevelEndScene(
+      600, // height
+      800, // width
+      3, // starCount
+      1, // currentLevel
+      mockSwitchToGameplayCB,
+      mockSwitchToLevelSelectionCB,
+      mockData,
+      1, // monsterPhaseNumber
+    );
+  });
+
+  afterEach(() => {
+    document.body.innerHTML = '';
+  });
+
+  describe('When instantiated', () => {
+    it('should call showLevelEndScreen', () => {
+      const initSpy = jest.spyOn(LevelEndScene.prototype, 'showLevelEndScreen');
+
+      // Re-instantiate to trigger the constructor after spying on the method
+      levelEndScene = new LevelEndScene(
+        600, // height
+        800, // width
+        3, // starCount
+        1, // currentLevel
+        mockSwitchToGameplayCB,
+        mockSwitchToLevelSelectionCB,
+        mockData,
+        1, // monsterPhaseNumber
+      );
+
+      expect(initSpy).toHaveBeenCalled();
+    });
+  });
+
+  describe('Levelend buttons rendering', () => {
+    it('should render MapButton', () => {
+      levelEndScene.renderButtonsHTML();
+      expect(document.getElementById('levelend-map-btn')).not.toBeNull();
     });
 
-    afterEach(() => {
-      document.body.innerHTML = '';
+    it('should call switchToLevelSelectionCB when Map button is clicked', () => {
+      levelEndScene.renderButtonsHTML();
+      const mapButton = document.getElementById('levelend-map-btn') as HTMLButtonElement;
+      mapButton.click();
+      expect(mockSwitchToLevelSelectionCB).toHaveBeenCalled();
     });
 
-    function renderButton(
-      id: string,
-      ButtonClass:
-        | typeof MapButton
-        | typeof RetryButtonHtml
-        | typeof NextButtonHtml,
-      onClick: () => void,
-    ) {
-      const button = new ButtonClass({targetId: 'levelEndButtons', id});
-      button.onClick(onClick);
-    }
+    it('should render RetryButtonHtml', () => {
+      levelEndScene.renderButtonsHTML();
+      expect(document.getElementById('levelend-retry-btn')).not.toBeNull();
+    });
 
-    function renderButtonsHTML(isLastLevel: boolean) {
-      renderButton('levelend-map-btn', MapButton, mockSwitchToLevelSelectionCB);
-      renderButton('levelend-retry-btn', RetryButtonHtml, () => {
-        mockSwitchToGameplayCB({
-          currentLevelData: {...mockData.levels[1], levelNumber: 1},
-          selectedLevelNumber: 1,
-        });
-      });
+    it('should call switchToGameplayCB with correct data when Retry button is clicked', () => {
+      levelEndScene.renderButtonsHTML();
+      const retryButton = document.getElementById('levelend-retry-btn') as HTMLButtonElement;
+      retryButton.click();
 
-      if (!isLastLevel) {
-        renderButton('levelend-next-btn', NextButtonHtml, () => {
-          const nextLevel = 2;
-          mockSwitchToGameplayCB({
-            currentLevelData: {
-              ...mockData.levels[nextLevel],
-              levelNumber: nextLevel,
-            },
-            selectedLevelNumber: nextLevel,
-          });
-        });
-      }
-    }
-
-    describe('When instantiated', () => {
-      it('should call showLevelEndScreen', () => {
-        const initSpy = jest.spyOn(LevelEndScene.prototype, 'showLevelEndScreen');
-        levelEndScene = new LevelEndScene(
-          600, // height
-          800, // width
-          3, // starCount
-          1, // currentLevel
-          mockSwitchToGameplayCB,
-          mockSwitchToLevelSelectionCB,
-          mockData,
-          1, // monsterPhaseNumber
-        );
-        jest.runAllTimers();
-        expect(initSpy).toHaveBeenCalled();
+      expect(mockSwitchToGameplayCB).toHaveBeenCalledWith({
+        currentLevelData: {
+          levelMeta: {
+            promptFadeOut: 0,
+            letterGroup: 18,
+            levelNumber: 1,
+            protoType: 'Visible',
+            levelType: 'LetterInWord',
+          },
+          puzzles: [],
+          levelNumber: 1,
+        },
+        selectedLevelNumber: 1,
       });
     });
 
-    describe('Levelend buttons should be now HTML', () => {
-      it('it should render MapButton', () => {
-        renderButtonsHTML(false);
-        expect(document.getElementById('levelend-map-btn')).not.toBeNull();
+    it('should render NextButtonHtml if isLastLevel is false', () => {
+      levelEndScene.isLastLevel = false; // Explicitly set to false
+      levelEndScene.renderButtonsHTML();
+      expect(document.getElementById('levelend-next-btn')).not.toBeNull();
+    });
+
+    it('should call switchToGameplayCB with correct data when Next button is clicked', () => {
+      levelEndScene.isLastLevel = false; // Ensure it’s not the last level
+      levelEndScene.renderButtonsHTML();
+      const nextButton = document.getElementById('levelend-next-btn') as HTMLButtonElement;
+      nextButton.click();
+
+      expect(mockSwitchToGameplayCB).toHaveBeenCalledWith({
+        currentLevelData: {
+          levelMeta: {
+            promptFadeOut: 0,
+            letterGroup: 19,
+            levelNumber: 2,
+            protoType: 'Visible',
+            levelType: 'LetterInWord',
+          },
+          puzzles: [],
+          levelNumber: 2,
+        },
+        selectedLevelNumber: 2,
       });
+    });
 
-      it('it should call switchToLevelSelectionCB when Map button is clicked', () => {
-        renderButtonsHTML(true);
-        const mapButton = document.getElementById(
-          'levelend-map-btn',
-        ) as HTMLButtonElement;
-        mapButton.click();
-        expect(mockSwitchToLevelSelectionCB).toHaveBeenCalled();
-      });
+    it('should not render NextButtonHtml if isLastLevel is true', () => {
+      levelEndScene.isLastLevel = true; // Simulate last level scenario
+      levelEndScene.renderButtonsHTML();
 
-      it('it should render RetryButtonHtml', () => {
-        renderButtonsHTML(false);
-        expect(document.getElementById('levelend-retry-btn')).not.toBeNull();
-      });
-
-      it('it should call switchToGameplayCB with correct data when Retry button is clicked', () => {
-        renderButtonsHTML(true);
-        const retryButton = document.getElementById(
-          'levelend-retry-btn',
-        ) as HTMLButtonElement;
-        retryButton.click();
-
-        expect(mockSwitchToGameplayCB).toHaveBeenCalledWith({
-          currentLevelData: {...mockData.levels[1], levelNumber: 1},
-          selectedLevelNumber: 1,
-        });
-      });
-
-      it('it should render NextButtonHtml if isLastLevel is false', () => {
-        renderButtonsHTML(false);
-        expect(document.getElementById('levelend-next-btn')).not.toBeNull();
-      });
-
-      it('it should call switchToGameplayCB with correct data if isLastLevel is false when Next Button is clicked', () => {
-        renderButtonsHTML(false);
-        const nextButton = document.getElementById(
-          'levelend-next-btn',
-        ) as HTMLButtonElement;
-        nextButton.click();
-
-        expect(mockSwitchToGameplayCB).toHaveBeenCalledWith({
-          currentLevelData: {...mockData.levels[2], levelNumber: 2},
-          selectedLevelNumber: 2,
-        });
-      });
-
-      it('should not render NextButtonHtml if isLastLevel is true', () => {
-        renderButtonsHTML(true); // Pass true to simulate the last level
-
-        const nextButton = document.getElementById('levelend-next-btn');
-        console.log(nextButton);
-        expect(nextButton).toBeNull(); // Confirm the button does not exist
-      });
+      const nextButton = document.getElementById('levelend-next-btn');
+      expect(nextButton).toBeNull(); // Confirm the button does not exist
     });
   });
 });
