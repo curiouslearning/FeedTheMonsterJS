@@ -557,6 +557,7 @@ export class GameplayScene {
     );
     this.removeEventListeners();
     this.pausePopupComponent.destroy();
+    this.pauseButton.dispose();
   };
 
   private checkStoneDropped(stone, feedBackIndex, isWord = false) {
