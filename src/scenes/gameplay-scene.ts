@@ -438,7 +438,6 @@ export class GameplayScene {
         this.tutorial.setPlayMonsterClickAnimation(false);
       }
     }
-
     this.levelIndicators.draw();
     this.promptText.draw(deltaTime);
     this.timerTicking.draw();
