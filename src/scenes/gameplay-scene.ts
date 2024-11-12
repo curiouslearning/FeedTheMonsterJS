@@ -107,7 +107,7 @@ export class GameplayScene {
     this.reloadScene = reloadScene;
     this.isDisposing = false;
     // Initialize additional game elements
-    this.initializeGameComponents();
+    this.initializeGameComponents(gamePlayData);
     var previousPlayedLevel: string = this.levelData.levelMeta.levelNumber;
     Debugger.DebugMode
       ? localStorage.setItem(
@@ -156,7 +156,7 @@ export class GameplayScene {
     this.setupBg();
   }
 
-  public initializeGameComponents() {
+  public initializeGameComponents(gamePlayData) {
     this.trailParticles = new TrailEffect(this.canvas);
     this.pauseButton = new PauseButton();
     this.pauseButton.onClick(() => {
@@ -169,7 +169,7 @@ export class GameplayScene {
       this.canvas,
       this.counter,
       this.levelData,
-      this.feedBackTexts,
+      gamePlayData.feedbackAudios,
       this.timerTicking
     );
     this.tutorial = new Tutorial(this.context, this.width, this.height);
