@@ -13,10 +13,8 @@ import gameStateService from '@gameStateService';
 import './levelend-scene.scss';
 
 export class LevelEndScene {
-  public canvas: HTMLCanvasElement;
   public height: number;
   public width: number;
-  public context: CanvasRenderingContext2D;
   public starCount: number;
   public currentLevel: number;
   public switchToGameplayCB: Function;
@@ -25,11 +23,10 @@ export class LevelEndScene {
   public audioPlayer: AudioPlayer;
   public isLastLevel: boolean;
   public levelEndElement = document.getElementById("levelEnd");
+  
   constructor(
-    canvas: any,
     height: number,
     width: number,
-    context: CanvasRenderingContext2D,
     starCount: number,
     currentLevel: number,
     switchToGameplayCB,
@@ -37,14 +34,11 @@ export class LevelEndScene {
     data,
     monsterPhaseNumber: number
   ) {
-    this.canvas = canvas;
     this.height = height;
     this.width = width;
-    this.context = context;
     this.switchToGameplayCB = switchToGameplayCB;
     this.switchToLevelSelectionCB = switchToLevelSelectionCB;
     this.data = data;
-    this.canvas.style.zIndex = "8";
     this.audioPlayer = new AudioPlayer();
     this.starCount = starCount;
     this.currentLevel = currentLevel;
@@ -183,9 +177,6 @@ export class LevelEndScene {
   }  
 
   addEventListener() {
-    document
-      .getElementById("canvas")
-      .addEventListener(CLICK, this.handleMouseClick, false);
     document.addEventListener("visibilitychange", this.pauseAudios, false);
   }
 

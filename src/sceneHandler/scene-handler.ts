@@ -170,10 +170,8 @@ export class SceneHandler {
         this.addScene(
           SCENE_NAME_LEVEL_END,
           new LevelEndScene(
-            this.canvas, //to do - use DAO.
             this.height, //to do - use DAO.
             this.width, //to do - use DAO.
-            this.context, //to do - use DAO.
             starCount, //to do - use DAO.
             currentLevelNumber, //to do - use DAO.
             this.switchSceneToGameplay,
