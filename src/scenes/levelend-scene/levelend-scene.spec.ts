@@ -1,4 +1,3 @@
-import { MapButton, RetryButtonHtml, NextButtonHtml } from '@components/buttons';
 import { LevelEndScene } from './levelend-scene';
 
 describe('LevelEndScreen', () => {
