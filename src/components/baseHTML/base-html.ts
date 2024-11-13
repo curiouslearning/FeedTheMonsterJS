@@ -48,7 +48,7 @@ export class BaseHTML {
   }
 
   public destroy() {
-    document.getElementById(this.id).remove();
+    this.isRendered && document.getElementById(this.id).remove();
     this.isRendered = false;
   }
 
