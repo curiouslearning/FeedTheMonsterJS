@@ -1,7 +1,7 @@
 import {
   BaseHtmlOptions,
   BaseHTML
-} from '@components/baseHTML/BaseHTML';
+} from '../baseHTML/base-html';
 import {
   BAR_EMPTY,
   BAR_FULL,
@@ -21,11 +21,7 @@ export const LEVEL_FIELD_LAYOUT = (id: string) => {
       <div class="level-field">
         <img class="level-background" src="${LEVEL_INDICATOR}"/>
         <div class="bar-level-wrapper">
-          <img class="bar-level" src="${BAR_EMPTY}" />
-          <img class="bar-level" src="${BAR_EMPTY}" />
-          <img class="bar-level" src="${BAR_EMPTY}" />
-          <img class="bar-level" src="${BAR_EMPTY}" />
-          <img class="bar-level" src="${BAR_EMPTY}" />
+           ${Array(5).fill(`<img class="bar-level" src="${BAR_EMPTY}" alt="bar" />`).join('')}
         </div>
       </div>
     </div>

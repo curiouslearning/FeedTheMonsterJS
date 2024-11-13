@@ -5,7 +5,7 @@ export interface BaseHtmlOptions {
   }
 }
 
-export interface HTML_TEMPLATE {
+export interface HtmlTemplate {
   (id: string): string;
 }
 
@@ -17,12 +17,12 @@ export interface HTML_TEMPLATE {
 export class BaseHTML {
   private isRendered: boolean = false;
   private id: string;
-  private template: HTML_TEMPLATE;
+  private template: HtmlTemplate;
 
   constructor(
     protected options: BaseHtmlOptions,
     id: string,
-    htmlTemplate: HTML_TEMPLATE
+    htmlTemplate: HtmlTemplate
   ) {
     this.id = id;
     this.template = htmlTemplate;
@@ -39,7 +39,7 @@ export class BaseHTML {
     const { root } = this.options.selectors;
     const rootEl = document.querySelector(root);
     const templateString = this.template(this.id);
-    rootEl.insertAdjacentHTML('beforeend', templateString);
+    rootEl && rootEl.insertAdjacentHTML('beforeend', templateString);
     this.isRendered = true;
   }
 

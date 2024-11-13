@@ -1,4 +1,4 @@
-import { BaseHTML } from './BaseHTML';
+import { BaseHTML } from './base-html';
 
 describe('Base HTML ', () => {
   let testBase;
