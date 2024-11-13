@@ -2,7 +2,6 @@ import { loadImages } from "@common";
 import { BAR_EMPTY, BAR_FULL, LEVEL_INDICATOR } from "@constants";
 import { EventManager } from "@events";
 
-//testing the release notes
 
 export class LevelIndicators extends EventManager{
     public context: CanvasRenderingContext2D;
