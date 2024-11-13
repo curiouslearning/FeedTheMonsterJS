@@ -3,7 +3,8 @@ import CloseButton from './close-button'; // once popup is applied. this will be
 import MapButton from './map-button/map-button';
 import CancelButton from './cancel-button'; // once popup is applied. this will be cancel-button component and this file can be removed
 import CancelButtonHtml from './cancel-button/cancel-button';
-import NextButton from './next-button';
+import NextButton from './next-button'; // once popup and levelend and level select buttons html is applied. this will be next-button-html component and this file can be removed
+import NextButtonHtml from './next-button/next-button';
 import PauseButton from './pause-button/pause-button';
 import RetryButton from './retry-button'; // once popup and levelend buttons html is applied. this will be retry-button-html component and this file can be removed
 import RetryButtonHtml from './retry-button/retry-button-html';
@@ -19,6 +20,7 @@ export {
   CancelButton,
   CancelButtonHtml,
   NextButton,
+  NextButtonHtml,
   PauseButton,
   RetryButton,
   RetryButtonHtml,
