@@ -197,7 +197,7 @@ export class GameplayScene {
 
     this.setupBg();
     this.gameControl = document.getElementById("game-control") as HTMLCanvasElement;
-    this.gameControl.style.zIndex = "5"
+    this.gameControl.style.zIndex = "9"
   }
 
   private setupBg = () => {
