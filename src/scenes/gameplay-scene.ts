@@ -156,7 +156,7 @@ export class GameplayScene {
     this.setupBg();
   }
 
-  public initializeGameComponents(gamePlayData) {
+  private  initializeGameComponents(gamePlayData) {
     this.trailParticles = new TrailEffect(this.canvas);
     this.pauseButton = new PauseButton();
     this.pauseButton.onClick(() => {
@@ -185,7 +185,7 @@ export class GameplayScene {
     this.monster = new Monster(this.canvas, this.monsterPhaseNumber);
   }
 
-  public setupUIElements() {
+  private setupUIElements() {
     this.handler = document.getElementById("canvas");
     this.riveMonsterElement = document.getElementById("rivecanvas") as HTMLCanvasElement;
     this.riveMonsterElement.style.zIndex = "4";
@@ -195,7 +195,7 @@ export class GameplayScene {
     this.gameControl.style.zIndex = "5";
   }
 
-  public initializeProperties(gamePlayData) {
+  private initializeProperties(gamePlayData) {
     this.isPauseButtonClicked = gamePlayData?.isGamePaused;
     this.width = gamePlayData.width;
     this.height = gamePlayData.height;
@@ -548,7 +548,7 @@ export class GameplayScene {
   };
 
   public dispose = () => {
-    this.timeTicker.style.display = "none";
+    this.timerTicking.dispose();
     this.trailParticles.clearTrailSubscription();
     this.unsubscribeEvent();
     this.isDisposing = true;
