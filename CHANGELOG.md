@@ -1,6 +1,6 @@
 
 
-## [1.1.0](https://github.com/curiouslearning/FeedTheMonsterJS/compare/1.0.35...1.1.0) (2024-11-13)
+## [1.0.36](https://github.com/curiouslearning/FeedTheMonsterJS/compare/1.0.35...1.1.0) (2024-11-13)
 
 
 ### Features
