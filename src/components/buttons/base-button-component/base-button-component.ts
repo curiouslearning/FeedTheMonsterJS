@@ -82,7 +82,7 @@ export class BaseButtonComponent {
       this.element.removeEventListener('click', this.clickListener);
       this.clickListener = null;
     }
-    // Set audioPlayer to null to free up memory (audio cleanup handled externally if needed)
+    // Set audioPlayer to null to free up memory and audio cleanup
     this.audioPlayer = null;
   }
 
