@@ -541,7 +541,8 @@ img {
 
 /* End dynamic buttons */
 
-/* Small devices (landscape phones, 576px and up) */
+
+/* Small devices (landscape phones, 540px and up) */
 @media (min-width: 576px) {
   #rivecanvas {
     bottom: 22%;
@@ -580,10 +581,6 @@ img {
 }
 
 /* Medium devices (tablets, 768px and up) */
-@media (min-width: 768px) {
-}
-
-/* Large devices (desktops, 992px and up) */
 @media (min-width: 992px) {
   .autumn-bg .ftm-totem,
   .winter-bg .ftm-totem {
