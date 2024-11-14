@@ -36,3 +36,7 @@ export interface LevelCompletedEvent extends CommonEventProperties {
     number_of_successful_puzzles: number;
     duration: number;
 }  
+
+export interface levelEndButtonsCLick extends CommonEventProperties {
+    buttonType: string;
+}  

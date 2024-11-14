@@ -1,4 +1,5 @@
 import {AudioPlayer} from '@components/audio-player';
+
 export interface ButtonOptions {
   id: string;
   className?: string;
@@ -11,6 +12,7 @@ export interface ButtonOptions {
 export class BaseButtonComponent {
   protected element: HTMLElement;
   protected audioPlayer: AudioPlayer;
+  private clickListener: (event: Event) => void;
 
   constructor(options: ButtonOptions) {
     this.audioPlayer = new AudioPlayer();
@@ -31,9 +33,11 @@ export class BaseButtonComponent {
 
   // Public method to set the onClick handler
   public onClick(callback: () => void): void {
-    this.element.addEventListener('click', event => {
+    this.clickListener = (event: Event) => {
       event.preventDefault();
-      this.audioPlayer.playButtonClickSound();
+      if (this.audioPlayer) {
+        this.audioPlayer.playButtonClickSound();
+      }
 
       // Apply scale effect
       this.element.style.transform = 'scale(0.90)';
@@ -44,7 +48,9 @@ export class BaseButtonComponent {
       }, 100);
 
       callback();
-    });
+    };
+
+    this.element.addEventListener('click', this.clickListener);
   }
 
   private createButtonElement({
@@ -67,6 +73,17 @@ export class BaseButtonComponent {
     if (targetElement) {
       targetElement.appendChild(this.element);
     }
+  }
+
+  // Method to dispose of the button, removing event listeners and cleaning up
+  public dispose(): void {
+    // Remove the click event listener to prevent interactions with a disposed button
+    if (this.clickListener) {
+      this.element.removeEventListener('click', this.clickListener);
+      this.clickListener = null;
+    }
+    // Set audioPlayer to null to free up memory and audio cleanup
+    this.audioPlayer = null;
   }
 
   // Optional getter for accessing the element

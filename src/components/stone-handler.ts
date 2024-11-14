@@ -90,9 +90,9 @@ export default class StoneHandler extends EventManager {
   createStones(img) {
     const foilStones = this.getFoilStones();
     for (let i = 0; i < foilStones.length; i++) {
-      if (foilStones[i] == this.correctTargetStone) {
-        this.tutorial.updateTargetStonePositions(this.stonePos[i]);
-      }
+      // if (foilStones[i] == this.correctTargetStone) {
+      //   //this.tutorial.updateTargetStonePositions(this.stonePos[i]); //temporary disabled
+      // }
       this.foilStones.push(
         new StoneConfig(
           this.context,
@@ -103,7 +103,8 @@ export default class StoneHandler extends EventManager {
           this.stonePos[i][1],
           img,
           this.timerTickingInstance,
-          i == foilStones.length - 1 ? this.tutorial : null
+          //i == foilStones.length - 1 ? this.tutorial : null //temporary disabled
+          null
         )
       );
     }

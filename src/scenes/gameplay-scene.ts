@@ -85,11 +85,11 @@ export class GameplayScene {
   puzzleTime: number;
   isDisposing: boolean;
   trailParticles: any;
-  wordPuzzleLogic:any;
+  wordPuzzleLogic: any;
   public riveMonsterElement: HTMLCanvasElement;
   public gameControl: HTMLCanvasElement;
   private unsubscribeEvent: () => void;
-
+  public timeTicker: HTMLElement;
   constructor({
     monsterPhaseNumber,
     switchSceneToEnd,
@@ -97,65 +97,23 @@ export class GameplayScene {
     reloadScene
   }) {
     const gamePlayData = gameStateService.getGamePlaySceneDetails();
-    this.isPauseButtonClicked = gamePlayData?.isGamePaused;
-    this.width = gamePlayData.width;
-    this.height = gamePlayData.height;
-    this.rightToLeft = gamePlayData.rightToLeft;
-    this.canvas = gamePlayData.canvas;
-    this.context = gamePlayData.gameCanvasContext;
-    this.levelData = gamePlayData.levelData;
-    this.levelNumber = gamePlayData.levelNumber;
-    this.jsonVersionNumber = gamePlayData.jsonVersionNumber;
-    this.feedBackTexts = gamePlayData.feedBackTexts;
+    // Assign state properties based on game state
+    this.initializeProperties(gamePlayData);
+    // UI element setup
+    this.setupUIElements();
     this.monsterPhaseNumber = monsterPhaseNumber || 1;
     this.switchSceneToEnd = switchSceneToEnd;
     this.switchToLevelSelection = switchToLevelSelection;
     this.reloadScene = reloadScene;
-    this.handler = document.getElementById("canvas");
-    this.riveMonsterElement = document.getElementById("rivecanvas") as HTMLCanvasElement;
-    this.riveMonsterElement.style.zIndex = "4";
     this.isDisposing = false;
-    this.trailParticles = new TrailEffect(this.canvas);
-    this.pauseButton = new PauseButton();
-    this.pauseButton.onClick(() => {
-      gameStateService.publish(gameStateService.EVENTS.GAME_PAUSE_STATUS_EVENT, true);
-      this.pauseGamePlay();
-    });
-    this.timerTicking = new TimerTicking(
-      this.width,
-      this.height,
-      this.loadPuzzle
-    );
-    this.stoneHandler = new StoneHandler(
-      this.context,
-      this.canvas,
-      this.counter,
-      this.levelData,
-      gamePlayData.feedbackAudios,
-      this.timerTicking
-    );
-    this.tutorial = new Tutorial(
-      this.context,
-      this.width,
-       this.height
-    );
-    this.promptText = new PromptText(
-      this.width,
-      this.height,
-      this.levelData.puzzles[this.counter],
-      this.levelData,
-      this.rightToLeft
-    );
-    this.levelIndicators = new LevelIndicators(this.context, this.canvas, 0);
-    this.levelIndicators.setIndicators(this.counter);
-    this.monster = new Monster(this.canvas, this.monsterPhaseNumber);
-
+    // Initialize additional game elements
+    this.initializeGameComponents(gamePlayData);
     var previousPlayedLevel: string = this.levelData.levelMeta.levelNumber;
     Debugger.DebugMode
       ? localStorage.setItem(
-          PreviousPlayedLevel + lang + "Debug",
-          previousPlayedLevel
-        )
+        PreviousPlayedLevel + lang + "Debug",
+        previousPlayedLevel
+      )
       : localStorage.setItem(PreviousPlayedLevel + lang, previousPlayedLevel);
     this.addEventListeners();
     this.startGameTime();
@@ -175,8 +133,8 @@ export class GameplayScene {
 
     this.pausePopupComponent.onClose((event) => {
       const { data } = event;
-      console.log(event);
-      switch(data) {
+
+      switch (data) {
         case PAUSE_POPUP_EVENT_DATA.RESTART_LEVEL:
           gameStateService.publish(gameStateService.EVENTS.GAMEPLAY_DATA_EVENT, {
             currentLevelData: this.levelData,
@@ -196,17 +154,67 @@ export class GameplayScene {
     });
 
     this.setupBg();
+  }
+
+  private  initializeGameComponents(gamePlayData) {
+    this.trailParticles = new TrailEffect(this.canvas);
+    this.pauseButton = new PauseButton();
+    this.pauseButton.onClick(() => {
+      gameStateService.publish(gameStateService.EVENTS.GAME_PAUSE_STATUS_EVENT, true);
+      this.pauseGamePlay();
+    });
+    this.timerTicking = new TimerTicking(this.width, this.height, this.loadPuzzle);
+    this.stoneHandler = new StoneHandler(
+      this.context,
+      this.canvas,
+      this.counter,
+      this.levelData,
+      gamePlayData.feedbackAudios,
+      this.timerTicking
+    );
+    this.tutorial = new Tutorial(this.context, this.width, this.height);
+    this.promptText = new PromptText(
+      this.width,
+      this.height,
+      this.levelData.puzzles[this.counter],
+      this.levelData,
+      this.rightToLeft
+    );
+    this.levelIndicators = new LevelIndicators();
+    this.levelIndicators.setIndicators(this.counter);
+    this.monster = new Monster(this.canvas, this.monsterPhaseNumber);
+  }
+
+  private setupUIElements() {
+    this.handler = document.getElementById("canvas");
+    this.riveMonsterElement = document.getElementById("rivecanvas") as HTMLCanvasElement;
+    this.riveMonsterElement.style.zIndex = "4";
+    this.timeTicker = document.getElementById("timer-ticking");
+    this.timeTicker.style.display = "block";
     this.gameControl = document.getElementById("game-control") as HTMLCanvasElement;
-    this.gameControl.style.zIndex = "5"
+    this.gameControl.style.zIndex = "5";
+  }
+
+  private initializeProperties(gamePlayData) {
+    this.isPauseButtonClicked = gamePlayData?.isGamePaused;
+    this.width = gamePlayData.width;
+    this.height = gamePlayData.height;
+    this.rightToLeft = gamePlayData.rightToLeft;
+    this.canvas = gamePlayData.canvas;
+    this.context = gamePlayData.gameCanvasContext;
+    this.levelData = gamePlayData.levelData;
+    this.levelNumber = gamePlayData.levelNumber;
+    this.jsonVersionNumber = gamePlayData.jsonVersionNumber;
+    this.feedBackTexts = gamePlayData.feedBackTexts;
   }
 
   private setupBg = () => {
     // Determine the background type based on the level number using the static method
     const selectedBackgroundType = BackgroundHtmlGenerator.createBackgroundComponent(this.levelData.levelMeta.levelNumber);
-    
+
     // Apply the logic to update the HTML or visual representation of the background
     const backgroundGenerator = new BackgroundHtmlGenerator();
-  
+
     // Dynamically update the background based on the selected type
     backgroundGenerator.generateBackground(selectedBackgroundType);
   };
@@ -256,8 +264,8 @@ export class GameplayScene {
         const halfWidth = this.width / 2;
         this.pickedStone.x =
           this.pickedStone.text.length <= 3 &&
-          this.pickedStoneObject.origx < xLimit &&
-          this.pickedStoneObject.origx < halfWidth
+            this.pickedStoneObject.origx < xLimit &&
+            this.pickedStoneObject.origx < halfWidth
             ? this.pickedStoneObject.origx + 25
             : this.pickedStoneObject.origx;
         this.pickedStone.y = this.pickedStoneObject.origy;
@@ -296,18 +304,18 @@ export class GameplayScene {
         }
       }
     } else {
-      this.setPickedUp(x,y);
+      this.setPickedUp(x, y);
     }
 
     gameStateService.publish(gameStateService.EVENTS.GAME_TRAIL_EFFECT_TOGGLE_EVENT, true);
   };
 
-  setPickedUp(x,y) {
+  setPickedUp(x, y) {
     if (this.pickedStone && this.pickedStone.frame <= 99) {
       return; // Prevent dragging if the stone is animating
     }
 
-    const stoneLetter = this.stoneHandler.handlePickStoneUp(x,y);
+    const stoneLetter = this.stoneHandler.handlePickStoneUp(x, y);
 
     if (stoneLetter) {
       this.pickedStoneObject = stoneLetter;
@@ -333,10 +341,10 @@ export class GameplayScene {
 
     if (this.pickedStone) {
       if (!this.wordPuzzleLogic.checkIsWordPuzzle()) {
-         /*To Do: Move all logic relating to stone handling including updating its coordnates to stone-handler.ts
-          Note: Will have to eventually remove this and use the handleMovingStoneLetter in stone-handler.ts
-          Will leave this for now to avoid affecting Letter Only puzzles with Word play puzzles implementation of multi-letter feature.
-        */
+        /*To Do: Move all logic relating to stone handling including updating its coordnates to stone-handler.ts
+         Note: Will have to eventually remove this and use the handleMovingStoneLetter in stone-handler.ts
+         Will leave this for now to avoid affecting Letter Only puzzles with Word play puzzles implementation of multi-letter feature.
+       */
         let rect = this.canvas.getBoundingClientRect();
         const x = event.clientX - rect.left;
         const y = event.clientY - rect.top;
@@ -438,10 +446,7 @@ export class GameplayScene {
         this.tutorial.setPlayMonsterClickAnimation(false);
       }
     }
-
-    this.levelIndicators.draw();
     this.promptText.draw(deltaTime);
-    this.timerTicking.draw();
     this.trailParticles?.draw();
     if (this.isPauseButtonClicked && this.isGameStarted) {
       this.handleStoneLetterDrawing(deltaTime);
@@ -479,7 +484,7 @@ export class GameplayScene {
     this.handler.addEventListener(TOUCHMOVE, this.handleTouchMove, false);
     this.handler.addEventListener(TOUCHEND, this.handleTouchEnd, false);
     this.handler.addEventListener(CLICK, this.handleMouseClick, false);
-    
+
     document.addEventListener(
       VISIBILITY_CHANGE,
       this.handleVisibilityChange,
@@ -541,12 +546,16 @@ export class GameplayScene {
   };
 
   public dispose = () => {
+    // Ensure TimerTicking is disposed of properly
+    if (this.timerTicking) {
+      this.timerTicking.dispose();
+      this.timerTicking = null;
+  }
     this.trailParticles.clearTrailSubscription();
     this.unsubscribeEvent();
     this.isDisposing = true;
     this.audioPlayer.stopAllAudios();
     this.monster.dispose();
-    this.timerTicking.dispose();
     this.levelIndicators.dispose();
     this.stoneHandler.dispose();
     this.promptText.dispose();
@@ -557,6 +566,7 @@ export class GameplayScene {
     );
     this.removeEventListeners();
     this.pausePopupComponent.destroy();
+    this.pauseButton.dispose();
   };
 
   private checkStoneDropped(stone, feedBackIndex, isWord = false) {
@@ -613,8 +623,8 @@ export class GameplayScene {
       this.monster.changeToEatAnimation();
       this.promptText.droppedStoneIndex(
         lang == "arabic"
-        ? this.stonesCount
-        : droppedLetters.length
+          ? this.stonesCount
+          : droppedLetters.length
       );
       this.stonesCount++;
     } else {
@@ -674,8 +684,8 @@ export class GameplayScene {
             ? "TIMEOUT"
             : droppedLetters
           : this.pickedStone == null || this.pickedStone == undefined
-          ? "TIMEOUT"
-          : this.pickedStone?.text,
+            ? "TIMEOUT"
+            : this.pickedStone?.text,
       target: this.stoneHandler.getCorrectTargetStone(),
       foils: this.stoneHandler.getFoilStones(),
       response_time: (endTime - this.puzzleTime) / 1000,
