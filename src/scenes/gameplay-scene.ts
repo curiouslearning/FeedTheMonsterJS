@@ -548,13 +548,16 @@ export class GameplayScene {
   };
 
   public dispose = () => {
-    this.timerTicking.dispose();
+    // Ensure TimerTicking is disposed of properly
+    if (this.timerTicking) {
+      this.timerTicking.dispose();
+      this.timerTicking = null;
+  }
     this.trailParticles.clearTrailSubscription();
     this.unsubscribeEvent();
     this.isDisposing = true;
     this.audioPlayer.stopAllAudios();
     this.monster.dispose();
-    this.timerTicking.dispose();
     this.levelIndicators.dispose();
     this.stoneHandler.dispose();
     this.promptText.dispose();

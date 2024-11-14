@@ -3,7 +3,6 @@
   top: 40px;
   width: 100%; /* Adjust based on timer width */
   height: 100px; /* Adjust based on timer height */
-  display: none;
 
   #timer-empty {
     position: absolute;
@@ -30,7 +29,7 @@
 
     #timer-full {
       position: absolute;
-      width: 100%;
+      width: 86%;
       height: 100%;
       transition: width 0.5s ease;
     }

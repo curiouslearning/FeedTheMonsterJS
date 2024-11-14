@@ -27,7 +27,9 @@ export class TimerTicking extends EventManager {
     public audioPlayer: AudioPlayer;
     public playLevelEndAudioOnce: boolean = true;
     // Additional properties for HTML manipulation
-    public timerFullContainer: HTMLElement;
+    private timerContainer: HTMLElement | null = null;
+    private timerFullContainer: HTMLElement | null = null;
+    private timerId = "timer-ticking";
     constructor(width: number, height: number, callback: Function) {
         super({
             stoneDropCallbackHandler: (event) => this.handleStoneDrop(event),
@@ -60,12 +62,10 @@ export class TimerTicking extends EventManager {
     }
 
     private createTimerHtml() {
-        // Create main container
-        const container = document.createElement('div');
-        container.id = 'timer-ticking';
-
-        // Create images and timer-full-container
-        container.innerHTML = `
+        // Check if an element with this ID already exists and remove it if necessary
+        this.timerContainer = document.getElementById(this.timerId) || document.createElement("div");
+        this.timerContainer.id = this.timerId;
+        this.timerContainer.innerHTML = `
             <img id="timer-empty" src="${TIMER_EMPTY}" alt="Timer Empty">
             <img id="rotating-clock" src="${ROTATING_CLOCK}" alt="Rotating Clock">
             <div id="timer-full-container">
@@ -73,12 +73,13 @@ export class TimerTicking extends EventManager {
             </div>
         `;
 
-        // Append to document body or parent
-        document.body.appendChild(container);
-
-        // Store references for further manipulation
-        this.timeTickerElement = container;
-        this.timerFullContainer = container.querySelector('#timer-full-container') as HTMLElement;
+        // Reference the timer full container for width manipulation
+        this.timerFullContainer = this.timerContainer.querySelector("#timer-full-container") as HTMLElement;
+        
+        // Attach to DOM (if not already present)
+        if (!document.body.contains(this.timerContainer)) {
+            document.body.appendChild(this.timerContainer);
+        }
     }
 
     startTimer() {
@@ -91,7 +92,7 @@ export class TimerTicking extends EventManager {
     readyTimer() {
         // make timer look full so as it get start signal..... it will start decreasing
         this.timer = 0;
-        this.timerFullContainer.style.width = "100%"; // Reset width on start
+        if (this.timerFullContainer) this.timerFullContainer.style.width = "100%"; // Reset width on start
     }
     update(deltaTime) {
         if (this.startMyTimer && !this.isStoneDropped) {
@@ -125,7 +126,10 @@ export class TimerTicking extends EventManager {
 
     public dispose() {
         this.unregisterEventListener();
-        this.timeTickerElement.remove();
+        this.startMyTimer = false;
+        if (this.timerContainer) {
+            this.timerContainer.innerHTML = ''; // This will only clear the contents, not the element itself
+        }
     }
 
 }
