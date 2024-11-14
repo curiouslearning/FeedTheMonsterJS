@@ -206,7 +206,6 @@ export class GameplayScene {
     this.levelNumber = gamePlayData.levelNumber;
     this.jsonVersionNumber = gamePlayData.jsonVersionNumber;
     this.feedBackTexts = gamePlayData.feedBackTexts;
-    this.gameControl.style.zIndex = "9"
   }
 
   private setupBg = () => {
