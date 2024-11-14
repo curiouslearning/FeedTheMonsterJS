@@ -1,0 +1,13 @@
+.text-align-center {
+  text-align: center;
+}
+
+.font {
+  $stepAmount: 8;
+  $steps: 1, 2, 3, 4, 5;
+  @each $step in $steps {
+    &-size-#{$step} {
+      font-size: $step * $stepAmount + px;
+    }
+  }
+}
