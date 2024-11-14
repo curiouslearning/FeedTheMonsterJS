@@ -5,6 +5,7 @@ import { AudioPlayer } from '@components';
 import { lang } from '@common';
 import { AUDIO_ARE_YOU_SURE } from '@constants';
 import { ConfirmPopupComponent } from '@components/popups/confirm-popup/confirm-popup-component';
+import debounce from 'lodash-es/debounce';
 
 export const PAUSE_POPUP_EVENT_DATA = {
   SELECT_LEVEL: 'select-level',
@@ -15,6 +16,7 @@ export class PausePopupComponent extends BasePopupComponent {
   selectLevelButton?: BaseButtonComponent;
   restartLevelButton?: BaseButtonComponent;
   confirmPopup?: ConfirmPopupComponent;
+  openConfirm = () => {};
   protected audioPlayer = new AudioPlayer();
   protected clickTimeout?;
   protected override id = 'pause-popup';
@@ -29,8 +31,11 @@ export class PausePopupComponent extends BasePopupComponent {
     this.confirmPopup = new ConfirmPopupComponent({
       hideClose: true
     });
-    
-    this.audioPlayer = new AudioPlayer();
+
+    this.openConfirm = debounce(() => {
+      this.confirmPopup.open();
+      this.audioPlayer.playAudio(AUDIO_ARE_YOU_SURE);
+    }, 300);
   }
 
   handleClick(data: any) {
@@ -40,20 +45,23 @@ export class PausePopupComponent extends BasePopupComponent {
         this.handleConfirmClose(confirmData, data);
       });
 
-      if (this.clickTimeout) clearTimeout(this.clickTimeout);
-      this.clickTimeout = setTimeout(() => {
-        this.confirmPopup.open();
-        this.audioPlayer.playAudio(AUDIO_ARE_YOU_SURE);
-      }, 300);
+      this.openConfirm();
       
     } else {
       super.handleClick(data);
     }
   }
 
+  /**
+   * 
+   * @param confirmClickEvent Function that handles closing of the confirmation popup.
+   * @param pauseData 
+   */
   handleConfirmClose(confirmClickEvent: PopupClickEvent, pauseData: any) {
+    // if confirmation was "yes", we pass pause data to base click handler (pause data = level-reset or level-select)
     if (confirmClickEvent.data) super.handleClick(pauseData);
 
+    // if confimation was "no", we pass false with 0 timeout to base click handler.
     super.handleClick(false, 0);
   }
 
