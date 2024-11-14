@@ -180,7 +180,7 @@ export class GameplayScene {
       this.levelData,
       this.rightToLeft
     );
-    this.levelIndicators = new LevelIndicators(this.context, this.canvas, 0);
+    this.levelIndicators = new LevelIndicators();
     this.levelIndicators.setIndicators(this.counter);
     this.monster = new Monster(this.canvas, this.monsterPhaseNumber);
   }
@@ -206,6 +206,7 @@ export class GameplayScene {
     this.levelNumber = gamePlayData.levelNumber;
     this.jsonVersionNumber = gamePlayData.jsonVersionNumber;
     this.feedBackTexts = gamePlayData.feedBackTexts;
+    this.gameControl.style.zIndex = "9"
   }
 
   private setupBg = () => {
@@ -446,8 +447,6 @@ export class GameplayScene {
         this.tutorial.setPlayMonsterClickAnimation(false);
       }
     }
-
-    this.levelIndicators.draw();
     this.promptText.draw(deltaTime);
     this.trailParticles?.draw();
     if (this.isPauseButtonClicked && this.isGameStarted) {
@@ -568,6 +567,7 @@ export class GameplayScene {
     );
     this.removeEventListeners();
     this.pausePopupComponent.destroy();
+    this.pauseButton.dispose();
   };
 
   private checkStoneDropped(stone, feedBackIndex, isWord = false) {
