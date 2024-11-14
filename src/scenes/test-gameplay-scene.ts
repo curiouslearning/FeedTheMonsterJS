@@ -91,7 +91,7 @@ export class TestGameplayScene {
       this.timeOverCallback
     );
     //////////////////////end
-    this.levelIndicator = new LevelIndicators(this.context, this.canvas, 0);
+    this.levelIndicator = new LevelIndicators();
     this.levelIndicator.setIndicators(3);
     this.tutorial.updateTargetStonePositions([100, 100]);
 
@@ -224,7 +224,6 @@ export class TestGameplayScene {
       this.promptText.draw(deltaTime);
       this.stoneHandler.draw(deltaTime);
 
-      this.levelIndicator.draw();
       this.timerTicking.update(deltaTime);
     }
   };
