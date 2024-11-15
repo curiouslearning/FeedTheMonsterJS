@@ -189,8 +189,6 @@ export class GameplayScene {
     this.handler = document.getElementById("canvas");
     this.riveMonsterElement = document.getElementById("rivecanvas") as HTMLCanvasElement;
     this.riveMonsterElement.style.zIndex = "4";
-    this.timeTicker = document.getElementById("timer-ticking");
-    this.timeTicker.style.display = "block";
     this.gameControl = document.getElementById("game-control") as HTMLCanvasElement;
     this.gameControl.style.zIndex = "5";
   }
