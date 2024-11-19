@@ -21,11 +21,11 @@
 
   #timer-full-container {
     position: absolute;
-    bottom: 0px;
+    bottom: 0;
     left: 14%;
     width: 100%;
     overflow: hidden;
-    height: 45px;
+    height:5vh; /* Adjust percentage based on design needs */
 
     #timer-full {
       position: absolute;

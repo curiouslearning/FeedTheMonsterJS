@@ -2,9 +2,11 @@ import { loadImages } from "@common";
 import { EventManager } from "@events";
 import { AudioPlayer } from "@components";
 import { TIMER_EMPTY, ROTATING_CLOCK, TIMER_FULL, AUDIO_TIMEOUT } from "@constants";
-import './timer-ticking.scss';
+import './timerHtml/timerHtml.scss';
+import TimerHTMLComponent from './timerHtml/timerHtml';
 
-export class TimerTicking extends EventManager {
+
+export default class TimerTicking extends EventManager {
     public width: number;
     public height: number;
     public timerWidth: number;
@@ -27,11 +29,8 @@ export class TimerTicking extends EventManager {
     public audioPlayer: AudioPlayer;
     public playLevelEndAudioOnce: boolean = true;
     // Additional properties for HTML manipulation
-    private timerContainer: HTMLElement | null = null;
-    private timerFullContainer: HTMLElement | null = null;
-    private timerId = "timer-ticking";
-    private hasRendered: boolean = false; // New flag to track render status
-
+    public timerFullContainer: HTMLElement | null = null;
+    public timerHtmlComponent: TimerHTMLComponent;
     constructor(width: number, height: number, callback: Function) {
         super({
             stoneDropCallbackHandler: (event) => this.handleStoneDrop(event),
@@ -54,36 +53,20 @@ export class TimerTicking extends EventManager {
             timer_full: TIMER_FULL
         }
         //create the timer-ticking structure
-        this.createTimerHtml();
+        this.timerHtmlComponent = new TimerHTMLComponent('timer-ticking');
         // Reference the container element for the "full timer" image
-        this.timerFullContainer = document.getElementById("timer-full-container") as HTMLElement;
+        // Verify and cache the DOM element after rendering
+        setTimeout(() => {
+            this.timerFullContainer = document.getElementById("timer-full-container");
+            if (this.timerFullContainer) this.timerFullContainer.style.width = "100%";
+        }, 0);
         loadImages(this.images, (images) => {
             this.loadedImages = Object.assign({}, images);
             this.imagesLoaded = true;
         });
-    }
 
-    public createTimerHtml() {
-        if (this.hasRendered) return; // Ensure it only renders once
-        this.hasRendered = true;
-
-        this.timerContainer = document.createElement("div");
-        this.timerContainer.id = this.timerId;
-        this.timerContainer.innerHTML = `
-            <img id="timer-empty" src="${TIMER_EMPTY}" alt="Timer Empty">
-            <img id="rotating-clock" src="${ROTATING_CLOCK}" alt="Rotating Clock">
-            <div id="timer-full-container">
-                <img id="timer-full" src="${TIMER_FULL}" alt="Timer Full">
-            </div>
-        `;
-
-        // Attach to the background container in the DOM
-        const backgroundElement = document.getElementById("background");
-        if (backgroundElement) {
-            backgroundElement.appendChild(this.timerContainer);
-        }
-
-        this.timerFullContainer = this.timerContainer.querySelector("#timer-full-container") as HTMLElement;
+        // Cache the reference after rendering
+        this.timerFullContainer = this.getTimerFullContainer();
     }
 
     startTimer() {
@@ -101,13 +84,13 @@ export class TimerTicking extends EventManager {
     update(deltaTime) {
         if (this.startMyTimer && !this.isStoneDropped) {
             this.timer += deltaTime * 0.008;
+
+            // Calculate the new width percentage for the timer
             const timerDepletion = Math.max(0, 100 - this.timer);
-            if (this.timerFullContainer) {
-                this.timerFullContainer.style.width = `${timerDepletion}%`;
-            }
+            this.timerFullContainer.style.width = `${timerDepletion}%`;
 
             if (timerDepletion < 5 && !this.isMyTimerOver) {
-                if (this.playLevelEndAudioOnce) this.audioPlayer.playAudio(AUDIO_TIMEOUT);
+                this.playLevelEndAudioOnce ? this.audioPlayer.playAudio(AUDIO_TIMEOUT) : null;
                 this.playLevelEndAudioOnce = false;
             }
 
@@ -116,6 +99,14 @@ export class TimerTicking extends EventManager {
                 this.callback(true);
             }
         }
+    }
+
+    private getTimerFullContainer(): HTMLElement | null {
+        return document.getElementById("timer-full-container");
+    }
+
+    stopTimer(): void {
+        this.isTimerRunningOut = false;
     }
 
     public handleStoneDrop(event) {
@@ -128,16 +119,9 @@ export class TimerTicking extends EventManager {
 
     }
 
-    public dispose() {
-        this.unregisterEventListener();
-        this.startMyTimer = false;
-
-        if (this.timerContainer) {
-            this.timerContainer.remove(); // Removes the element from the DOM
-            this.timerContainer = null; // Ensures no dangling reference
-        }
-
-        this.hasRendered = false; // Reset render flag for future use
+    public destroy(): void {
+        this.stopTimer();
     }
+
 
 }

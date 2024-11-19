@@ -536,6 +536,7 @@ export class GameplayScene {
         () => {
           if (!this.isDisposing) {
             this.initNewPuzzle(loadPuzzleEvent);
+            this.timerTicking.startTimer(); // Start the timer for the new puzzle
           }
         },
         timerEnded ? 0 : 4500
@@ -546,7 +547,7 @@ export class GameplayScene {
   public dispose = () => {
     // Ensure TimerTicking is disposed of properly
     if (this.timerTicking) {
-      this.timerTicking.dispose();
+      this.timerTicking.destroy();
       this.timerTicking = null;
   }
     this.trailParticles.clearTrailSubscription();
