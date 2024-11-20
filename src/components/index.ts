@@ -4,19 +4,18 @@ import { PromptText } from "./prompt-text";
 import StoneHandler from "./stone-handler";
 import { Tutorial } from "./tutorial";
 import { Monster } from "./monster";
-import { TimerTicking } from "./timer-ticking/timer-ticking";
 import { BackgroundHtmlGenerator } from "./background/background";
 import { FeedbackTextEffects } from "./feedback-text";
 import { AudioPlayer } from "./audio-player";
 import TrailEffect from "./trail-particles";
-
+import  TimerTicking  from "./timer-ticking";
 export {
   Monster,
-  TimerTicking,
   PromptText,
   PauseButton,
   LevelIndicators,
   StoneHandler,
+  TimerTicking,
   Tutorial,
   BackgroundHtmlGenerator,
   FeedbackTextEffects,
