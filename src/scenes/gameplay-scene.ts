@@ -189,8 +189,6 @@ export class GameplayScene {
     this.handler = document.getElementById("canvas");
     this.riveMonsterElement = document.getElementById("rivecanvas") as HTMLCanvasElement;
     this.riveMonsterElement.style.zIndex = "4";
-    this.timeTicker = document.getElementById("timer-ticking");
-    this.timeTicker.style.display = "block";
     this.gameControl = document.getElementById("game-control") as HTMLCanvasElement;
     this.gameControl.style.zIndex = "5";
   }
@@ -538,6 +536,7 @@ export class GameplayScene {
         () => {
           if (!this.isDisposing) {
             this.initNewPuzzle(loadPuzzleEvent);
+            this.timerTicking.startTimer(); // Start the timer for the new puzzle
           }
         },
         timerEnded ? 0 : 4500
@@ -548,7 +547,7 @@ export class GameplayScene {
   public dispose = () => {
     // Ensure TimerTicking is disposed of properly
     if (this.timerTicking) {
-      this.timerTicking.dispose();
+      this.timerTicking.destroy();
       this.timerTicking = null;
   }
     this.trailParticles.clearTrailSubscription();

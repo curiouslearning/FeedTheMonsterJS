@@ -34,7 +34,7 @@ export class BaseHTML {
     //Add more logic here if needed.
   }
 
-  private render() {
+  public render() {
     if (this.isRendered) return;
     const { root } = this.options.selectors;
     const rootEl = document.querySelector(root);
@@ -48,7 +48,8 @@ export class BaseHTML {
   }
 
   public destroy() {
-    document.getElementById(this.id).remove();
+    const element = document.getElementById(this.id)
+    if(element) element.remove();
     this.isRendered = false;
   }
 
