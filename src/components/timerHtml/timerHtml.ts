@@ -26,8 +26,4 @@ export default class TimerHTMLComponent extends BaseHTML {
     this.render();
 
   }
-
-  destroy() {
-    super.destroy(); // Ensures the component is removed from the DOM
-  }
 }
