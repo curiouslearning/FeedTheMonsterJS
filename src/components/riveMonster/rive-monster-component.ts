@@ -13,7 +13,7 @@ interface RiveMonsterComponentProps {
 export class RiveMonsterComponent {
     private props: RiveMonsterComponentProps;
     private riveInstance: any;
-    private src: string = './assets/monsterrive.riv';  // Define the .riv file path
+    private src: string = '../public/assets/monsterrive.riv';  // Define the .riv file path
     private stateMachines: string = 'State Machine 1';  // Define the state machine
 
     // Static readonly properties for all monster animations
@@ -28,7 +28,7 @@ export class RiveMonsterComponent {
     constructor(props: RiveMonsterComponentProps) {
         this.props = props;
 
-
+        
         // Initialize Rive
         this.riveInstance = new Rive({
             src: this.src,
