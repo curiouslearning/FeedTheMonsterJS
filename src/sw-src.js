@@ -10,11 +10,11 @@ var version = 1.26;
 // self.addEventListener('activate', function(e) {
 //     console.log("activated");
 //
-//
 // });
 
 self.addEventListener("install", async function (e) {
   self.skipWaiting();
+  e.waitUntil(preloadAdditionalAssets()); // Preload specific assets during the install event
 });
 const channel = new BroadcastChannel("my-channel");
 self.addEventListener("activate", function (event) {
@@ -45,6 +45,31 @@ self.registration.addEventListener("updatefound", function (e) {
     });
   });
 });
+
+// Preload additional assets
+async function preloadAdditionalAssets() {
+  const assetsToCache = [
+    "../public/assets/monsterrive.riv", // Additional Rive asset
+  ];
+  const cache = await caches.open("dynamic-cache");
+
+  try {
+    await Promise.all(
+      assetsToCache.map(async (url) => {
+        const response = await fetch(url);
+        if (response.ok) {
+          await cache.put(url, response.clone());
+          console.log("Cached additional asset:", url);
+        } else {
+          console.error("Failed to fetch additional asset:", url);
+        }
+      })
+    );
+    console.log("All additional assets preloaded successfully.");
+  } catch (error) {
+    console.error("Error preloading additional assets:", error);
+  }
+}
 
 async function cacheLangAssets(file, cacheName) {
   const cache = await caches.open(cacheName);
@@ -156,7 +181,7 @@ async function cacheCommonAssets(language) {
   try {
     const cacheName = language;
     const cache = await caches.open(cacheName);
-    
+
     const timeoutPromises = assetUrls.map((url) => {
       return new Promise((resolve, reject) => {
         const timeoutId = setTimeout(() => {
