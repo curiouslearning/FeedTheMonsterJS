@@ -41,6 +41,7 @@
     "fs": "^0.0.1-security",
     "googleapis": "^118.0.0",
     "howler": "^2.2.3",
+    "lodash-es": "^4.17.21",
     "node-fetch": "^3.3.1",
     "path": "^0.12.7",
     "release-it": "^17.4.0",

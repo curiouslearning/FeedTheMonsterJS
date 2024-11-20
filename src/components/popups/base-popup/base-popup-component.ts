@@ -1,7 +1,6 @@
-import { AudioPlayer } from '@components/audio-player';
 import { POPUP_BG_IMG } from '@constants';
 import { PubSub } from '../../../events/pub-sub-events';
-import { CancelButtonHtml, CloseButton } from '@components/buttons';
+import { CancelButtonHtml } from '@components/buttons';
 import { BaseButtonComponent } from '@components/buttons/base-button-component/base-button-component';
 import './base-popup-component.scss';
 
@@ -27,7 +26,7 @@ export const POPUP_LAYOUT = (id: string, content: string, showClose: boolean = t
 
 export interface PopupOptions {
   hideClose?: boolean;
-  selectors: {
+  selectors?: {
     root: string;
     closeButton: string;
   }
@@ -83,17 +82,18 @@ export class BasePopupComponent {
    * String literal template containing the dom elements of the popup.
    */
   protected template: string = ``;
-  
-  /**
-   * Todo: move this to base button
-   */
-  private audioPlayer = new AudioPlayer();
+
   private isRendered: boolean = false;
+  protected options?: PopupOptions;
   protected pubSub = new PubSub();
 
   constructor(
-    protected options: PopupOptions = { selectors: DEFAULT_SELECTORS }
+    options?: PopupOptions
   ) {
+    this.options = {
+      selectors: DEFAULT_SELECTORS,
+      ...options
+    };
     this._init();
   }
   
@@ -128,6 +128,16 @@ export class BasePopupComponent {
   destroy() {
     this.popupEl.remove();
     this._removeEventListeners();
+  }
+
+  /**
+   * Default click handler for popup buttons. Triggers this.close with the provided data with a fixed timeout of 300ms to allow button animations to show.
+   * @param data {any} the data you wish to send to popup close subscribers.
+   */
+  handleClick(data: any, time = 300) {
+    setTimeout(() => {
+      this.close({ data });
+    }, time);
   }
 
   /**
@@ -197,9 +207,6 @@ export class BasePopupComponent {
       data,
       event
     };
-    
-    // Todo: move this to base button
-    this.audioPlayer.playButtonClickSound();
 
     // Added delay to visualize animation
     setTimeout(() => {
