@@ -28,7 +28,7 @@ export class RiveMonsterComponent {
     constructor(props: RiveMonsterComponentProps) {
         this.props = props;
 
-
+        
         // Initialize Rive
         this.riveInstance = new Rive({
             src: this.src,
