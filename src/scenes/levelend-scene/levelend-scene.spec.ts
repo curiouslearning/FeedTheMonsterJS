@@ -59,7 +59,6 @@ describe('LevelEndScreen', () => {
       mockSwitchToGameplayCB,
       mockSwitchToLevelSelectionCB,
       mockData,
-      1, // monsterPhaseNumber
     );
   });
 
@@ -80,7 +79,6 @@ describe('LevelEndScreen', () => {
         mockSwitchToGameplayCB,
         mockSwitchToLevelSelectionCB,
         mockData,
-        1, // monsterPhaseNumber
       );
 
       expect(initSpy).toHaveBeenCalled();
