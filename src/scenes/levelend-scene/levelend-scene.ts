@@ -1,6 +1,6 @@
-import {CLICK, isDocumentVisible} from '@common';
-import {AudioPlayer} from '@components';
-import {MapButton, NextButtonHtml, RetryButtonHtml} from '@components/buttons';
+import { CLICK, isDocumentVisible } from '@common';
+import { AudioPlayer } from '@components';
+import { MapButton, NextButtonHtml, RetryButtonHtml } from '@components/buttons';
 import {
   AUDIO_INTRO,
   AUDIO_LEVEL_LOSE,
@@ -46,7 +46,7 @@ export class LevelEndScene {
     this.starCount = starCount;
     this.currentLevel = currentLevel;
     this.isLastLevel = this.currentLevel ===
-    this.data.levels[this.data.levels.length - 1].levelMeta.levelNumber;
+      this.data.levels[this.data.levels.length - 1].levelMeta.levelNumber;
     // Subscribe to the LEVEL_END_BACKGROUND_TOGGLE event
     this.toggleLevelEndBackground(true);
     // this.monster = new Monster(
@@ -108,6 +108,11 @@ export class LevelEndScene {
       starImg.alt = `Star ${i + 1}`;
       starImg.classList.add('stars', `star${i + 1}`);
       starsContainer.appendChild(starImg); // Add star to the container
+
+      // Delay the addition of the 'show' class
+      setTimeout(() => {
+        starImg.classList.add('show');
+      }, i * 500); // Half-second delay between each star
     }
   }
 
@@ -121,7 +126,7 @@ export class LevelEndScene {
   ) {
     const buttonsContainerId = 'levelEndButtons';
 
-    const button = new ButtonClass({targetId: buttonsContainerId, id});
+    const button = new ButtonClass({ targetId: buttonsContainerId, id });
     const gameControl = document.getElementById(
       'game-control',
     ) as HTMLCanvasElement;
@@ -148,7 +153,7 @@ export class LevelEndScene {
       ) {
         levelData = this.data.levels[this.currentLevel];
       }
-  
+
       const gamePlayData = {
         currentLevelData: {
           ...levelData,
@@ -156,11 +161,11 @@ export class LevelEndScene {
         },
         selectedLevelNumber: action === 'next' ? this.currentLevel + 1 : this.currentLevel,
       };
-  
+
       this.handlePublishEvent(true, gamePlayData);
       this.switchToGameplayCB(gamePlayData);
     }
-  }  
+  }
 
   renderButtonsHTML() {
     // Define configurations for each button
@@ -180,7 +185,7 @@ export class LevelEndScene {
         },
       },
     ];
-  
+
     // Only add NextButton if not the last level
     if (!this.isLastLevel && this.starCount >= 2) {
       buttonConfigs.push({
@@ -196,12 +201,12 @@ export class LevelEndScene {
         nextButton.remove();
       }
     }
-  
+
     // Create buttons based on configuration
     buttonConfigs.forEach(({ ButtonClass, id, onClick }) => {
       this.createButton(ButtonClass, id, onClick);
     });
-  }  
+  }
 
   addEventListener() {
     document.addEventListener('visibilitychange', this.pauseAudios, false);
