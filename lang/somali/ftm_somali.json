@@ -187,7 +187,7 @@
               "StoneText": "b"
             },
             {
-              "StoneText": "s"
+              "StoneText": "d"
             }
           ]
         },
@@ -207,7 +207,7 @@
               "StoneText": "t"
             },
             {
-              "StoneText": "s"
+              "StoneText": "t"
             },
             {
               "StoneText": "d"
@@ -486,7 +486,7 @@
               "StoneText": "b"
             },
             {
-              "StoneText": "l"
+              "StoneText": "k"
             },
             {
               "StoneText": "d"
@@ -1598,7 +1598,7 @@
           ]
         },
         {
-          "SegmentNumber": 4,
+          "SegmentNumber": 2,
           "targetstones": [
             {
               "StoneText": "k"
@@ -2194,7 +2194,7 @@
               "StoneText": "h"
             },
             {
-              "StoneText": "w"
+              "StoneText": "a"
             },
             {
               "StoneText": "y"
@@ -2599,6 +2599,12 @@
             "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/somali/audios/h.mp3"
           },
           "foilstones": [
+            {
+              "StoneText": "g"
+            },
+            {
+              "StoneText": "kh"
+            },
             {
               "StoneText": "e"
             },
@@ -3232,7 +3238,7 @@
           ]
         },
         {
-          "SegmentNumber": 2,
+          "SegmentNumber": 1,
           "targetstones": [
             {
               "StoneText": "w"
@@ -6138,6 +6144,9 @@
               "StoneText": "m"
             },
             {
+              "StoneText": "m"
+            },
+            {
               "StoneText": "k"
             },
             {
@@ -8027,7 +8036,7 @@
               "StoneText": "s"
             },
             {
-              "StoneText": "h"
+              "StoneText": "s"
             },
             {
               "StoneText": "a"
@@ -9224,7 +9233,7 @@
               "StoneText": "q"
             },
             {
-              "StoneText": "k"
+              "StoneText": "t"
             },
             {
               "StoneText": "t"
@@ -9613,7 +9622,7 @@
               "StoneText": "e"
             },
             {
-              "StoneText": "r"
+              "StoneText": "b"
             },
             {
               "StoneText": "i"
@@ -11041,7 +11050,7 @@
               "StoneText": "s"
             },
             {
-              "StoneText": "l"
+              "StoneText": "d"
             },
             {
               "StoneText": "f"
@@ -12955,7 +12964,7 @@
           "SegmentNumber": 1,
           "targetstones": [
             {
-              "StoneText": "q"
+              "StoneText": "j"
             }
           ],
           "prompt": {
@@ -13052,7 +13061,174 @@
               "StoneText": "n"
             },
             {
+              "StoneText": "r"
+            },
+            {
+              "StoneText": "d"
+            },
+            {
               "StoneText": "f"
+            },
+            {
+              "StoneText": "y"
+            },
+            {
+              "StoneText": "f"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "LevelMeta": {
+        "LevelNumber": 73,
+        "PromptType": "Visible",
+        "LevelType": "LetterInWord",
+        "csvType": "matchfirst",
+        "PromptFadeout": 0,
+        "LetterGroup": 18
+      },
+      "Puzzles": [
+        {
+          "SegmentNumber": 0,
+          "targetstones": [
+            {
+              "StoneText": "u"
+            }
+          ],
+          "prompt": {
+            "PromptText": "ubax",
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/somali/audios/u.mp3"
+          },
+          "foilstones": [
+            {
+              "StoneText": "f"
+            },
+            {
+              "StoneText": "s"
+            },
+            {
+              "StoneText": "dh"
+            },
+            {
+              "StoneText": "f"
+            },
+            {
+              "StoneText": "k"
+            },
+            {
+              "StoneText": "e"
+            },
+            {
+              "StoneText": "u"
+            },
+            {
+              "StoneText": "s"
+            }
+          ]
+        },
+        {
+          "SegmentNumber": 1,
+          "targetstones": [
+            {
+              "StoneText": "q"
+            }
+          ],
+          "prompt": {
+            "PromptText": "qof",
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/somali/audios/q.mp3"
+          },
+          "foilstones": [
+            {
+              "StoneText": "x"
+            },
+            {
+              "StoneText": "w"
+            },
+            {
+              "StoneText": "d"
+            },
+            {
+              "StoneText": "u"
+            },
+            {
+              "StoneText": "f"
+            },
+            {
+              "StoneText": "u"
+            },
+            {
+              "StoneText": "q"
+            },
+            {
+              "StoneText": "u"
+            }
+          ]
+        },
+        {
+          "SegmentNumber": 2,
+          "targetstones": [
+            {
+              "StoneText": "u"
+            }
+          ],
+          "prompt": {
+            "PromptText": "ubax",
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/somali/audios/u.mp3"
+          },
+          "foilstones": [
+            {
+              "StoneText": "dh"
+            },
+            {
+              "StoneText": "dh"
+            },
+            {
+              "StoneText": "r"
+            },
+            {
+              "StoneText": "y"
+            },
+            {
+              "StoneText": "f"
+            },
+            {
+              "StoneText": "w"
+            }
+          ]
+        },
+        {
+          "SegmentNumber": 3,
+          "targetstones": [
+            {
+              "StoneText": "f"
+            }
+          ],
+          "prompt": {
+            "PromptText": "fur",
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/somali/audios/f.mp3"
+          },
+          "foilstones": [
+            {
+              "StoneText": "q"
+            },
+            {
+              "StoneText": "j"
+            },
+            {
+              "StoneText": "m"
+            },
+            {
+              "StoneText": "q"
+            },
+            {
+              "StoneText": "k"
+            },
+            {
+              "StoneText": "n"
+            },
+            {
+              "StoneText": "u"
             }
           ]
         },
@@ -13378,7 +13554,16 @@
               "StoneText": "r"
             },
             {
-              "StoneText": "d"
+              "StoneText": "k"
+            },
+            {
+              "StoneText": "f"
+            },
+            {
+              "StoneText": "n"
+            },
+            {
+              "StoneText": "r"
             },
             {
               "StoneText": "f"
