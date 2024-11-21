@@ -26,6 +26,9 @@ export class LevelEndScene {
   public audioPlayer: AudioPlayer;
   public isLastLevel: boolean;
   public levelEndElement = document.getElementById('levelEnd');
+  public nextButtonInstance: NextButtonHtml;
+  public retryButtonInstance: RetryButtonHtml;
+  public mapButtonInstance: MapButton;
 
   constructor(
     height: number,
@@ -45,8 +48,9 @@ export class LevelEndScene {
     this.audioPlayer = new AudioPlayer();
     this.starCount = starCount;
     this.currentLevel = currentLevel;
-    this.isLastLevel = this.currentLevel ===
-    this.data.levels[this.data.levels.length - 1].levelMeta.levelNumber;
+    this.isLastLevel =
+      this.currentLevel ===
+      this.data.levels[this.data.levels.length - 1].levelMeta.levelNumber;
     // Subscribe to the LEVEL_END_BACKGROUND_TOGGLE event
     this.toggleLevelEndBackground(true);
     // this.monster = new Monster(
@@ -122,45 +126,60 @@ export class LevelEndScene {
     const buttonsContainerId = 'levelEndButtons';
 
     const button = new ButtonClass({targetId: buttonsContainerId, id});
+
+    // Save the button instances for disposal later
+    if (ButtonClass === NextButtonHtml) {
+      this.nextButtonInstance = button as NextButtonHtml;
+    } else if (ButtonClass === RetryButtonHtml) {
+      this.retryButtonInstance = button as RetryButtonHtml;
+    } else if (ButtonClass === MapButton) {
+      this.mapButtonInstance = button as MapButton;
+    }
+
     const gameControl = document.getElementById(
       'game-control',
     ) as HTMLCanvasElement;
+
     button.onClick(() => {
-      // this is to revert back the level end element to original z indev value 7
       this.levelEndElement.style.zIndex = '7';
-      // making sure this moves at the back since we dont need pause button in the levelend scene bnut this code might be remove when working on the destroy function in FM-329
       gameControl.style.zIndex = '-1';
       onClickCallback();
     });
   }
 
   buttonCallbackFn(action: 'map' | 'retry' | 'next') {
-    if (action === 'map') {
-      this.handlePublishEvent(true);
-      this.switchToLevelSelectionCB();
-    } else {
-      let levelData;
-      if (action === 'retry') {
-        levelData = this.data.levels[this.currentLevel - 1];
-      } else if (
-        action === 'next' &&
-        this.currentLevel < this.data.levels.length
-      ) {
-        levelData = this.data.levels[this.currentLevel];
-      }
-  
+    const handleRetryOrNext = (level: number) => {
       const gamePlayData = {
         currentLevelData: {
-          ...levelData,
-          levelNumber: action === 'next' ? this.currentLevel + 1 : this.currentLevel,
+          ...this.data.levels[level],
+          levelNumber: level,
         },
-        selectedLevelNumber: action === 'next' ? this.currentLevel + 1 : this.currentLevel,
+        selectedLevelNumber: level,
       };
-  
       this.handlePublishEvent(true, gamePlayData);
-      this.switchToGameplayCB(gamePlayData);
+      this.switchToGameplayCB();
+    };
+
+    switch (action) {
+      case 'map':
+        this.handlePublishEvent(true);
+        this.switchToLevelSelectionCB();
+        break;
+
+      case 'retry':
+        handleRetryOrNext(this.currentLevel);
+        break;
+
+      case 'next':
+        if (this.currentLevel < this.data.levels.length) {
+          handleRetryOrNext(this.currentLevel + 1);
+        }
+        break;
+
+      default:
+        console.warn(`Unhandled action: ${action}`);
     }
-  }  
+  }
 
   renderButtonsHTML() {
     // Define configurations for each button
@@ -180,7 +199,7 @@ export class LevelEndScene {
         },
       },
     ];
-  
+
     // Only add NextButton if not the last level
     if (!this.isLastLevel && this.starCount >= 2) {
       buttonConfigs.push({
@@ -191,17 +210,17 @@ export class LevelEndScene {
         },
       });
     } else {
-      const nextButton = document.getElementById("levelend-next-btn");
+      const nextButton = document.getElementById('levelend-next-btn');
       if (nextButton) {
         nextButton.remove();
       }
     }
-  
+
     // Create buttons based on configuration
-    buttonConfigs.forEach(({ ButtonClass, id, onClick }) => {
+    buttonConfigs.forEach(({ButtonClass, id, onClick}) => {
       this.createButton(ButtonClass, id, onClick);
     });
-  }  
+  }
 
   addEventListener() {
     document.addEventListener('visibilitychange', this.pauseAudios, false);
@@ -241,8 +260,28 @@ export class LevelEndScene {
   };
 
   dispose = () => {
-    // this.monster.dispose();
+    // Stop all audio
     this.audioPlayer.stopAllAudios();
+
+    // Remove visibility change listener
     document.removeEventListener('visibilitychange', this.pauseAudios, false);
+
+    // Dispose of the NextButtonHtml instance
+    if (this.nextButtonInstance) {
+      this.nextButtonInstance.dispose();
+      this.nextButtonInstance = null; // Clean up the reference
+    }
+
+    // Dispose of the RetryButtonHtml instance
+    if (this.retryButtonInstance) {
+      this.retryButtonInstance.dispose();
+      this.retryButtonInstance = null; // Clean up the reference
+    }
+
+    // Dispose of the MapButton instance
+    if (this.mapButtonInstance) {
+      this.mapButtonInstance.dispose();
+      this.mapButtonInstance = null; // Clean up the reference
+    }
   };
 }
