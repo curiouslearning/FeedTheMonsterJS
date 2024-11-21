@@ -1,5 +1,5 @@
-import {CLICK, isDocumentVisible} from '@common';
-import {AudioPlayer, Monster} from '@components';
+import {isDocumentVisible} from '@common';
+import {AudioPlayer} from '@components';
 import {MapButton, NextButtonHtml, RetryButtonHtml} from '@components/buttons';
 import {
   AUDIO_INTRO,
