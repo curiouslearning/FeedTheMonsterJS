@@ -1,3 +1,4 @@
+import gameStateService from '@gameStateService';
 export default class TrailEffect {
     ctx: CanvasRenderingContext2D
     particles: any;
@@ -6,6 +7,8 @@ export default class TrailEffect {
         y: undefined | number
     };
     isDiamond: boolean;
+    clickTrailToggle: boolean;
+    private unsubscribeEvent: () => void;
 
     constructor(canvas) {
         this.ctx = canvas.getContext("2d");
@@ -15,10 +18,18 @@ export default class TrailEffect {
             y: undefined
         };
         this.isDiamond = false;
+        this.clickTrailToggle = false;
+        this.init();
     }
 
-    init() {
+    private init() {
         this.draw();
+        this.unsubscribeEvent = gameStateService.subscribe(
+            gameStateService.EVENTS.GAME_TRAIL_EFFECT_TOGGLE_EVENT,
+            (isTrailEffectOn: boolean) => {
+                this.clickTrailToggle = isTrailEffectOn;
+            }
+        );
     }
 
     draw() {
@@ -42,16 +53,22 @@ export default class TrailEffect {
     }
 
     addTrailParticlesOnMove(x, y) {
-        this.mouse.x = x;
-        this.mouse.y = y;
-        this.particles.push(
-            new Particles(this.ctx, this.mouse)
-        );
+        if(this.clickTrailToggle) {
+            this.mouse.x = x;
+            this.mouse.y = y;
+            this.particles.push(
+                new Particles(this.ctx, this.mouse)
+            );
+        }
     }
 
     resetParticles() {
         this.mouse.x = undefined;
         this.mouse.y = undefined;
+    }
+
+    clearTrailSubscription() {
+        this.unsubscribeEvent();
     }
 };
 
@@ -160,5 +177,4 @@ class Particles {
     private easeOutQuart(x) {
         return 1 - Math.pow(1 - x, 4);
     }
-
 };
