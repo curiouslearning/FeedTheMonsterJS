@@ -66,11 +66,7 @@ export class LevelEndScene {
       autoplay: true,
       fit: "contain",
       alignment: "topCenter",
-      width: this.canvasElement.width, // Example width and height, adjust as needed
-      height: this.canvasElement.height,
       onLoad: () => {
-        console.log("Rive monster called");
-        
         this.riveMonster.play(RiveMonsterComponent.Animations.IDLE); // Start with the "Eat Happy" animation
       }
     });
