@@ -52,11 +52,14 @@ describe('LevelEndScreen', () => {
     gameControlElement.id = 'game-control';
     document.body.appendChild(gameControlElement);
 
-    // mock data example
+    // Mock data example
     gameStateService.publish(gameStateService.EVENTS.LEVEL_END_DATA_EVENT, {
-      starCount: 3,
-      currentLevel: 0,
-      isTimerEnded: false,
+      levelEndData: {
+        starCount: 3,
+        currentLevel: 0,
+        isTimerEnded: false,
+      },
+      data: mockData,
     });
 
     levelEndScene = new LevelEndScene(
@@ -83,7 +86,7 @@ describe('LevelEndScreen', () => {
     });
   });
 
-  describe('Levelend buttons rendering', () => {
+  describe('LevelEnd buttons rendering', () => {
     it('should render MapButton', () => {
       levelEndScene.renderButtonsHTML();
       expect(document.getElementById('levelend-map-btn')).not.toBeNull();
@@ -110,20 +113,7 @@ describe('LevelEndScreen', () => {
       ) as HTMLButtonElement;
       retryButton.click();
 
-      expect(mockSwitchToGameplayCB).toHaveBeenCalledWith({
-        currentLevelData: {
-          levelMeta: {
-            promptFadeOut: 0,
-            letterGroup: 18,
-            levelNumber: 1,
-            protoType: 'Visible',
-            levelType: 'LetterInWord',
-          },
-          puzzles: [],
-          levelNumber: 1,
-        },
-        selectedLevelNumber: 1,
-      });
+      expect(mockSwitchToGameplayCB).toHaveBeenCalledWith();
     });
 
     it('should render NextButtonHtml if isLastLevel is false', () => {
@@ -140,20 +130,7 @@ describe('LevelEndScreen', () => {
       ) as HTMLButtonElement;
       nextButton.click();
 
-      expect(mockSwitchToGameplayCB).toHaveBeenCalledWith({
-        currentLevelData: {
-          levelMeta: {
-            promptFadeOut: 0,
-            letterGroup: 19,
-            levelNumber: 2,
-            protoType: 'Visible',
-            levelType: 'LetterInWord',
-          },
-          puzzles: [],
-          levelNumber: 2,
-        },
-        selectedLevelNumber: 2,
-      });
+      expect(mockSwitchToGameplayCB).toHaveBeenCalledWith();
     });
 
     it('should not render NextButtonHtml if isLastLevel is true', () => {

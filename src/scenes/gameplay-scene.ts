@@ -27,7 +27,7 @@ import {
   lang,
   pseudoId,
 } from "@common";
-import { GameScore } from "@data";
+import { GameScore, DataModal } from "@data";
 import {
   LevelCompletedEvent,
   PuzzleCompletedEvent,
@@ -79,6 +79,7 @@ export class GameplayScene {
   public score: number = 0;
   public switchToLevelSelection: Function;
   public reloadScene: Function;
+  private data: DataModal;
   audioPlayer: AudioPlayer;
   firebaseIntegration: FirebaseIntegration;
   startTime: number;
@@ -204,6 +205,7 @@ export class GameplayScene {
     this.levelNumber = gamePlayData.levelNumber;
     this.jsonVersionNumber = gamePlayData.jsonVersionNumber;
     this.feedBackTexts = gamePlayData.feedBackTexts;
+    this.data = gamePlayData.data;
   }
 
   private setupBg = () => {
@@ -528,7 +530,7 @@ export class GameplayScene {
       }
 
       console.log(levelEndData);
-      gameStateService.publish(gameStateService.EVENTS.LEVEL_END_DATA_EVENT, levelEndData);
+      gameStateService.publish(gameStateService.EVENTS.LEVEL_END_DATA_EVENT, {levelEndData, data: this.data});
       this.switchSceneToEnd();
     } else {
       const loadPuzzleEvent = new CustomEvent(LOADPUZZLE, {

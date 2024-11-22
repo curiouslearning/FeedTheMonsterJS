@@ -32,6 +32,7 @@ export class LevelEndScene {
     this.switchToGameplayCB = switchToGameplayCB;
     this.switchToLevelSelectionCB = switchToLevelSelectionCB;
     this.data = data;
+    console.log(this.data);
     this.audioPlayer = new AudioPlayer();
     this.starCount = starCount;
     this.currentLevel = currentLevel;
@@ -191,8 +192,8 @@ export class LevelEndScene {
         },
       },
     ];
-
-    // Only add NextButton if not the last level
+  
+    // Add NextButtonHtml only if not the last level and the star count is sufficient
     if (!this.isLastLevel && this.starCount >= 2) {
       buttonConfigs.push({
         ButtonClass: NextButtonHtml,
@@ -201,18 +202,21 @@ export class LevelEndScene {
           this.buttonCallbackFn('next');
         },
       });
-    } else {
+    }
+  
+    // Remove any existing NextButtonHtml if it's the last level
+    if (this.isLastLevel) {
       const nextButton = document.getElementById('levelend-next-btn');
       if (nextButton) {
         nextButton.remove();
       }
     }
-
+  
     // Create buttons based on configuration
-    buttonConfigs.forEach(({ButtonClass, id, onClick}) => {
+    buttonConfigs.forEach(({ ButtonClass, id, onClick }) => {
       this.createButton(ButtonClass, id, onClick);
     });
-  }
+  }  
 
   addEventListener() {
     document.addEventListener('visibilitychange', this.pauseAudios, false);

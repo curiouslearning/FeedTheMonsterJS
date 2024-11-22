@@ -41,7 +41,8 @@ export const createGameplaySceneDAO = (gameData) => {
 		rightToLeft: gameData?.rightToLeft,
 		jsonVersionNumber: versionNumber,
 		feedbackAudios: { ...gameData.feedbackAudios },
-		isGamePaused: gameData.isGamePaused
+		isGamePaused: gameData.isGamePaused,
+		data: gameData.data
 	};
 }
 

@@ -183,8 +183,9 @@ export class GameStateService extends PubSub {
         return createStonePositionsDAO(this);
     }
     
-    levelEndSceneData(levelEndData) {
-        this.levelEndData = {...levelEndData}
+    levelEndSceneData({levelEndData, data}) {
+        this.levelEndData = {...levelEndData};
+        this.data = data;
     }
 
     getLevelEndSceneData() {
