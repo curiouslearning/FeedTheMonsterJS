@@ -59,7 +59,7 @@ export class LevelEndScene {
     if (this.levelEndElement) {
       this.levelEndElement.style.display = shouldShow ? 'block' : 'none';
       // this is to ensure that the level end scene is the top element when level end is active
-      this.levelEndElement.style.zIndex = '11';
+      this.levelEndElement.style.zIndex = '12';
     }
   };
 

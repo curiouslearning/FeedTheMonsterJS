@@ -101,12 +101,12 @@ export const createStonePositionsDAO = ({
 	return randomizedStonePositions;
 }
 
-export const createLevelEndDataDAO = (levelEndData) => {
-	console.log(levelEndData);
+export const createLevelEndDataDAO = (gameState) => {
   return {
-		starCount: levelEndData.starCount,
-		currentLevel: levelEndData.currentLevel,
-		isTimerEnded: levelEndData.isTimerEnded
+		starCount: gameState.levelEndData.starCount,
+		currentLevel: gameState.levelEndData.currentLevel,
+		isTimerEnded: gameState.levelEndData.isTimerEnded,
+		data: gameState.data
 	};
 }
 

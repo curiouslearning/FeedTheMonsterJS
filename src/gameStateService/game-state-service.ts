@@ -184,16 +184,11 @@ export class GameStateService extends PubSub {
     }
     
     levelEndSceneData(levelEndData) {
-        console.log(levelEndData);
-        this.levelEndData = {
-            starCount: levelEndData.starCount,
-            currentLevel: levelEndData.currentLevel,
-            isTimerEnded: levelEndData.currentLevel
-        }
+        this.levelEndData = {...levelEndData}
     }
 
     getLevelEndSceneData() {
-        return createLevelEndDataDAO(this.levelEndData);
+        return createLevelEndDataDAO(this);
     }
 };
 

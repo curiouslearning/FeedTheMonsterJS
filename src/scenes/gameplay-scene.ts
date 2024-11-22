@@ -523,10 +523,9 @@ export class GameplayScene {
 
       const levelEndData = {
         starCount: GameScore.calculateStarCount(this.score),
-        currentLevelNumber: this.levelNumber,
+        currentLevel: this.levelNumber,
         isTimerEnded: timerEnded
       }
-      console.log(levelEndData);
       gameStateService.publish(gameStateService.EVENTS.LEVEL_END_DATA_EVENT, levelEndData);
       this.switchSceneToEnd();
     } else {
