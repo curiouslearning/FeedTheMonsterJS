@@ -29,14 +29,9 @@ export class LevelEndScene {
   public nextButtonInstance: NextButtonHtml;
   public retryButtonInstance: RetryButtonHtml;
   public mapButtonInstance: MapButton;
-  constructor(
-    starCount: number,
-    currentLevel: number,
-    switchToGameplayCB,
-    switchToLevelSelectionCB,
-    data,
-  ) {
+  constructor(switchToGameplayCB, switchToLevelSelectionCB, data) {
     const {height, width} = gameStateService.getGamePlaySceneDetails();
+    const {starCount, currentLevel} = gameStateService.getLevelEndSceneData();
     this.height = height;
     this.width = width;
     this.switchToGameplayCB = switchToGameplayCB;
@@ -109,6 +104,11 @@ export class LevelEndScene {
       starImg.alt = `Star ${i + 1}`;
       starImg.classList.add('stars', `star${i + 1}`);
       starsContainer.appendChild(starImg); // Add star to the container
+
+      // Delay the addition of the 'show' class
+      setTimeout(() => {
+        starImg.classList.add('show');
+      }, i * 500); // Half-second delay between each star
     }
   }
 

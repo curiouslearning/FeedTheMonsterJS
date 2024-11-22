@@ -102,9 +102,11 @@ export const createStonePositionsDAO = ({
 }
 
 export const createLevelEndDataDAO = (levelEndData) => {
+	console.log(levelEndData);
   return {
 		starCount: levelEndData.starCount,
-		currentLevel: levelEndData.currentLevel
+		currentLevel: levelEndData.currentLevel,
+		isTimerEnded: levelEndData.isTimerEnded
 	};
 }
 

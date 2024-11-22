@@ -52,8 +52,6 @@ describe('LevelEndScreen', () => {
     document.body.appendChild(gameControlElement);
 
     levelEndScene = new LevelEndScene(
-      3, // starCount
-      1, // currentLevel
       mockSwitchToGameplayCB,
       mockSwitchToLevelSelectionCB,
       mockData,
@@ -70,8 +68,6 @@ describe('LevelEndScreen', () => {
 
       // Re-instantiate to trigger the constructor after spying on the method
       levelEndScene = new LevelEndScene(
-        3, // starCount
-        1, // currentLevel
         mockSwitchToGameplayCB,
         mockSwitchToLevelSelectionCB,
         mockData,

@@ -159,27 +159,20 @@ export class SceneHandler {
     );
   };
 
-  switchSceneToEndLevel = (
-    starCount: number, //to do - use DAO.
-    monsterPhaseNumber: number, //to do - use DAO.
-    currentLevelNumber, //to do - use DAO.
-    isTimerEnded: boolean //to do - use DAO.
-  ) => {
+  switchSceneToEndLevel = () => {
     this.timerWrapper(
       () => {
+        console.log(this.data);
         this.addScene(
           SCENE_NAME_LEVEL_END,
           new LevelEndScene(
-            starCount, //to do - use DAO.
-            currentLevelNumber, //to do - use DAO.
             this.switchSceneToGameplay,
             this.switchSceneToLevelSelection,
             this.data, //to do - use DAO.
           )
         );
         this.gotoScene(SCENE_NAME_LEVEL_END);
-      },
-      isTimerEnded ? 0 : 4000
+      }
     )
   };
 

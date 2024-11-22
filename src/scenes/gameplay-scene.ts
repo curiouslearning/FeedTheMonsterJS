@@ -520,12 +520,15 @@ export class GameplayScene {
       this.levelIndicators.setIndicators(this.counter);
       this.logLevelEndFirebaseEvent();
       GameScore.setGameLevelScore(this.levelData, this.score);
-      this.switchSceneToEnd(
-        GameScore.calculateStarCount(this.score),
-        this.monsterPhaseNumber,
-        this.levelNumber,
-        timerEnded
-      );
+
+      const levelEndData = {
+        starCount: GameScore.calculateStarCount(this.score),
+        currentLevelNumber: this.levelNumber,
+        isTimerEnded: timerEnded
+      }
+      console.log(levelEndData);
+      gameStateService.publish(gameStateService.EVENTS.LEVEL_END_DATA_EVENT, levelEndData);
+      this.switchSceneToEnd();
     } else {
       const loadPuzzleEvent = new CustomEvent(LOADPUZZLE, {
         detail: {
