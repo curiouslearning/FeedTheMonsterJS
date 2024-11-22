@@ -1,4 +1,4 @@
-import { LevelEndScene } from './levelend-scene';
+import {LevelEndScene} from './levelend-scene';
 
 describe('LevelEndScreen', () => {
   let mockSwitchToGameplayCB: jest.Mock;
@@ -52,14 +52,11 @@ describe('LevelEndScreen', () => {
     document.body.appendChild(gameControlElement);
 
     levelEndScene = new LevelEndScene(
-      600, // height
-      800, // width
       3, // starCount
       1, // currentLevel
       mockSwitchToGameplayCB,
       mockSwitchToLevelSelectionCB,
       mockData,
-      1, // monsterPhaseNumber
     );
   });
 
@@ -73,14 +70,11 @@ describe('LevelEndScreen', () => {
 
       // Re-instantiate to trigger the constructor after spying on the method
       levelEndScene = new LevelEndScene(
-        600, // height
-        800, // width
         3, // starCount
         1, // currentLevel
         mockSwitchToGameplayCB,
         mockSwitchToLevelSelectionCB,
         mockData,
-        1, // monsterPhaseNumber
       );
 
       expect(initSpy).toHaveBeenCalled();
@@ -95,7 +89,9 @@ describe('LevelEndScreen', () => {
 
     it('should call switchToLevelSelectionCB when Map button is clicked', () => {
       levelEndScene.renderButtonsHTML();
-      const mapButton = document.getElementById('levelend-map-btn') as HTMLButtonElement;
+      const mapButton = document.getElementById(
+        'levelend-map-btn',
+      ) as HTMLButtonElement;
       mapButton.click();
       expect(mockSwitchToLevelSelectionCB).toHaveBeenCalled();
     });
@@ -107,7 +103,9 @@ describe('LevelEndScreen', () => {
 
     it('should call switchToGameplayCB with correct data when Retry button is clicked', () => {
       levelEndScene.renderButtonsHTML();
-      const retryButton = document.getElementById('levelend-retry-btn') as HTMLButtonElement;
+      const retryButton = document.getElementById(
+        'levelend-retry-btn',
+      ) as HTMLButtonElement;
       retryButton.click();
 
       expect(mockSwitchToGameplayCB).toHaveBeenCalledWith({
@@ -135,7 +133,9 @@ describe('LevelEndScreen', () => {
     it('should call switchToGameplayCB with correct data when Next button is clicked', () => {
       levelEndScene.isLastLevel = false; // Ensure it’s not the last level
       levelEndScene.renderButtonsHTML();
-      const nextButton = document.getElementById('levelend-next-btn') as HTMLButtonElement;
+      const nextButton = document.getElementById(
+        'levelend-next-btn',
+      ) as HTMLButtonElement;
       nextButton.click();
 
       expect(mockSwitchToGameplayCB).toHaveBeenCalledWith({

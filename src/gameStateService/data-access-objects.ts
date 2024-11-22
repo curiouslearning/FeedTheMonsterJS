@@ -101,4 +101,11 @@ export const createStonePositionsDAO = ({
 	return randomizedStonePositions;
 }
 
+export const createLevelEndDataDAO = (levelEndData) => {
+  return {
+		starCount: levelEndData.starCount,
+		currentLevel: levelEndData.currentLevel
+	};
+}
+
 //Add more data access objects below here.

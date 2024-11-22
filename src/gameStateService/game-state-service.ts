@@ -3,7 +3,8 @@ import { DataModal } from "@data";
 import {
     createLoadingSceneDAO,
     createGameplaySceneDAO,
-    createStonePositionsDAO
+    createStonePositionsDAO,
+    createLevelEndDataDAO
 } from './data-access-objects';
 
 /*
@@ -74,6 +75,10 @@ export class GameStateService extends PubSub {
     };
     public clickTrailToggle: boolean;
     public offsetCoordinateValue: number;
+    public levelEndData: null | {
+        starCount: number
+        currentLevel: number
+    };
 
     constructor() {
         super();
@@ -107,6 +112,8 @@ export class GameStateService extends PubSub {
         this.clickTrailToggle = false;
         this.offsetCoordinateValue = 32; //Default value used to offset stone coordinates.
         this.initListeners();
+
+        this.levelEndData = null
     }
 
     private initListeners() {
@@ -170,6 +177,10 @@ export class GameStateService extends PubSub {
 
     getStonePositions() {
         return createStonePositionsDAO(this);
+    }
+
+    getLevelEndData() {
+        return createLevelEndDataDAO(this);
     }
 };
 

@@ -29,17 +29,14 @@ export class LevelEndScene {
   public nextButtonInstance: NextButtonHtml;
   public retryButtonInstance: RetryButtonHtml;
   public mapButtonInstance: MapButton;
-
   constructor(
-    height: number,
-    width: number,
     starCount: number,
     currentLevel: number,
     switchToGameplayCB,
     switchToLevelSelectionCB,
     data,
-    monsterPhaseNumber: number,
   ) {
+    const {height, width} = gameStateService.getGamePlaySceneDetails();
     this.height = height;
     this.width = width;
     this.switchToGameplayCB = switchToGameplayCB;
