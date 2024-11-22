@@ -5,7 +5,7 @@
     "চমৎকার"
   ],
   "majversion": 3,
-  "minversion": 173,
+  "minversion": 174,
   "langname": "BANGLA",
   "FeedbackAudios": [
     "https://feedthemonster.curiouscontent.org/lang/bangla/audios/fantastic.mp3"
@@ -62,7 +62,7 @@
               "StoneText": "য়"
             },
             {
-              "StoneText": "য়"
+              "StoneText": "অ"
             }
           ]
         },
@@ -79,10 +79,10 @@
           },
           "foilstones": [
             {
-              "StoneText": "ম"
+              "StoneText": "ত"
             },
             {
-              "StoneText": "ম"
+              "StoneText": "অ"
             }
           ]
         },
@@ -99,10 +99,10 @@
           },
           "foilstones": [
             {
-              "StoneText": "অ"
+              "StoneText": "ত"
             },
             {
-              "StoneText": "য়"
+              "StoneText": "ত"
             }
           ]
         },
@@ -119,13 +119,13 @@
           },
           "foilstones": [
             {
-              "StoneText": "ত"
-            },
-            {
               "StoneText": "য়"
             },
             {
-              "StoneText": "ত"
+              "StoneText": "অ"
+            },
+            {
+              "StoneText": "অ"
             }
           ]
         }
@@ -157,10 +157,10 @@
               "StoneText": "র"
             },
             {
-              "StoneText": "অ"
+              "StoneText": "ত"
             },
             {
-              "StoneText": "ত"
+              "StoneText": "অ"
             }
           ]
         },
@@ -180,10 +180,10 @@
               "StoneText": "অ"
             },
             {
-              "StoneText": "অ"
+              "StoneText": "ত"
             },
             {
-              "StoneText": "র"
+              "StoneText": "অ"
             }
           ]
         },
@@ -200,13 +200,13 @@
           },
           "foilstones": [
             {
-              "StoneText": "ত"
-            },
-            {
               "StoneText": "র"
             },
             {
-              "StoneText": "অ"
+              "StoneText": "য়"
+            },
+            {
+              "StoneText": "ত"
             }
           ]
         },
@@ -226,10 +226,10 @@
               "StoneText": "র"
             },
             {
-              "StoneText": "অ"
+              "StoneText": "ম"
             },
             {
-              "StoneText": "ম"
+              "StoneText": "অ"
             }
           ]
         },
@@ -246,16 +246,16 @@
           },
           "foilstones": [
             {
-              "StoneText": "ত"
+              "StoneText": "র"
+            },
+            {
+              "StoneText": "য়"
             },
             {
               "StoneText": "ত"
             },
             {
-              "StoneText": "ত"
-            },
-            {
-              "StoneText": "অ"
+              "StoneText": "র"
             }
           ]
         }
@@ -284,10 +284,10 @@
           },
           "foilstones": [
             {
-              "StoneText": "প"
+              "StoneText": "ম"
             },
             {
-              "StoneText": "অ"
+              "StoneText": "ক"
             }
           ]
         },
@@ -304,10 +304,10 @@
           },
           "foilstones": [
             {
-              "StoneText": "অ"
+              "StoneText": "ত"
             },
             {
-              "StoneText": "প"
+              "StoneText": "ক"
             }
           ]
         },
@@ -347,7 +347,7 @@
               "StoneText": "অ"
             },
             {
-              "StoneText": "ত"
+              "StoneText": "প"
             }
           ]
         },
@@ -364,13 +364,13 @@
           },
           "foilstones": [
             {
-              "StoneText": "ক"
-            },
-            {
               "StoneText": "প"
             },
             {
               "StoneText": "অ"
+            },
+            {
+              "StoneText": "প"
             }
           ]
         }
@@ -399,10 +399,10 @@
           },
           "foilstones": [
             {
-              "StoneText": "র"
+              "StoneText": "ট"
             },
             {
-              "StoneText": "ক"
+              "StoneText": "ম"
             }
           ]
         },
@@ -419,10 +419,10 @@
           },
           "foilstones": [
             {
-              "StoneText": "র"
+              "StoneText": "অ"
             },
             {
-              "StoneText": "প"
+              "StoneText": "ক"
             }
           ]
         },
@@ -439,10 +439,10 @@
           },
           "foilstones": [
             {
-              "StoneText": "র"
+              "StoneText": "য়"
             },
             {
-              "StoneText": "প"
+              "StoneText": "অ"
             }
           ]
         },
@@ -459,10 +459,10 @@
           },
           "foilstones": [
             {
-              "StoneText": "ট"
+              "StoneText": "ম"
             },
             {
-              "StoneText": "ক"
+              "StoneText": "প"
             }
           ]
         },
@@ -479,13 +479,13 @@
           },
           "foilstones": [
             {
-              "StoneText": "ক"
+              "StoneText": "ট"
             },
             {
-              "StoneText": "র"
+              "StoneText": "অ"
             },
             {
-              "StoneText": "ত"
+              "StoneText": "ম"
             }
           ]
         }
@@ -514,13 +514,13 @@
           },
           "foilstones": [
             {
-              "StoneText": "ক"
+              "StoneText": "প"
             },
             {
-              "StoneText": "অ"
+              "StoneText": "ম"
             },
             {
-              "StoneText": "ক"
+              "StoneText": "প"
             }
           ]
         },
@@ -537,13 +537,13 @@
           },
           "foilstones": [
             {
-              "StoneText": "ট"
+              "StoneText": "ম"
             },
             {
-              "StoneText": "ত"
+              "StoneText": "ম"
             },
             {
-              "StoneText": "য়"
+              "StoneText": "ম"
             }
           ]
         },
@@ -563,10 +563,10 @@
               "StoneText": "প"
             },
             {
-              "StoneText": "ক"
+              "StoneText": "ট"
             },
             {
-              "StoneText": "প"
+              "StoneText": "অ"
             }
           ]
         },
@@ -583,13 +583,13 @@
           },
           "foilstones": [
             {
-              "StoneText": "প"
+              "StoneText": "য়"
             },
             {
-              "StoneText": "ম"
+              "StoneText": "ক"
             },
             {
-              "StoneText": "প"
+              "StoneText": "ক"
             }
           ]
         },
@@ -606,16 +606,16 @@
           },
           "foilstones": [
             {
+              "StoneText": "ম"
+            },
+            {
               "StoneText": "প"
             },
             {
               "StoneText": "ম"
             },
             {
-              "StoneText": "ত"
-            },
-            {
-              "StoneText": "ক"
+              "StoneText": "র"
             }
           ]
         }
@@ -644,13 +644,13 @@
           },
           "foilstones": [
             {
-              "StoneText": "ট"
+              "StoneText": "ক"
             },
             {
               "StoneText": "প"
             },
             {
-              "StoneText": "র"
+              "StoneText": "প"
             }
           ]
         },
@@ -670,10 +670,10 @@
               "StoneText": "ট"
             },
             {
-              "StoneText": "র"
+              "StoneText": "ম"
             },
             {
-              "StoneText": "ট"
+              "StoneText": "য়"
             }
           ]
         },
@@ -690,13 +690,13 @@
           },
           "foilstones": [
             {
-              "StoneText": "র"
+              "StoneText": "য়"
             },
             {
-              "StoneText": "র"
+              "StoneText": "ট"
             },
             {
-              "StoneText": "ক"
+              "StoneText": "ম"
             }
           ]
         },
@@ -713,13 +713,13 @@
           },
           "foilstones": [
             {
+              "StoneText": "ট"
+            },
+            {
               "StoneText": "প"
             },
             {
-              "StoneText": "ট"
-            },
-            {
-              "StoneText": "ট"
+              "StoneText": "ত"
             }
           ]
         },
@@ -736,16 +736,16 @@
           },
           "foilstones": [
             {
-              "StoneText": "ত"
-            },
-            {
-              "StoneText": "ক"
-            },
-            {
-              "StoneText": "ম"
-            },
-            {
               "StoneText": "ট"
+            },
+            {
+              "StoneText": "অ"
+            },
+            {
+              "StoneText": "অ"
+            },
+            {
+              "StoneText": "র"
             }
           ]
         }
@@ -780,13 +780,13 @@
           },
           "foilstones": [
             {
-              "StoneText": "অ"
-            },
-            {
               "StoneText": "র"
             },
             {
-              "StoneText": "প"
+              "StoneText": "ত"
+            },
+            {
+              "StoneText": "অ"
             }
           ]
         },
@@ -812,10 +812,10 @@
               "StoneText": "অ"
             },
             {
-              "StoneText": "অ"
+              "StoneText": "ম"
             },
             {
-              "StoneText": "র"
+              "StoneText": "অ"
             }
           ]
         },
@@ -838,13 +838,13 @@
           },
           "foilstones": [
             {
-              "StoneText": "ম"
+              "StoneText": "ত"
+            },
+            {
+              "StoneText": "অ"
             },
             {
               "StoneText": "ম"
-            },
-            {
-              "StoneText": "ক্ষ"
             }
           ]
         },
@@ -867,13 +867,13 @@
           },
           "foilstones": [
             {
-              "StoneText": "প"
+              "StoneText": "ম"
             },
             {
-              "StoneText": "অ"
+              "StoneText": "র"
             },
             {
-              "StoneText": "প"
+              "StoneText": "য়"
             }
           ]
         },
@@ -896,16 +896,16 @@
           },
           "foilstones": [
             {
+              "StoneText": "ম"
+            },
+            {
+              "StoneText": "র"
+            },
+            {
+              "StoneText": "অ"
+            },
+            {
               "StoneText": "প"
-            },
-            {
-              "StoneText": "অ"
-            },
-            {
-              "StoneText": "অ"
-            },
-            {
-              "StoneText": "অ"
             }
           ]
         }
@@ -940,7 +940,7 @@
           },
           "foilstones": [
             {
-              "StoneText": "ম"
+              "StoneText": "অ"
             },
             {
               "StoneText": "প"
@@ -969,10 +969,10 @@
           },
           "foilstones": [
             {
-              "StoneText": "ম"
+              "StoneText": "ক্ষ"
             },
             {
-              "StoneText": "অ"
+              "StoneText": "র"
             },
             {
               "StoneText": "অ"
@@ -995,13 +995,13 @@
           },
           "foilstones": [
             {
+              "StoneText": "র"
+            },
+            {
               "StoneText": "ত"
             },
             {
               "StoneText": "অ"
-            },
-            {
-              "StoneText": "য়"
             }
           ]
         },
@@ -1024,10 +1024,10 @@
           },
           "foilstones": [
             {
-              "StoneText": "ম"
+              "StoneText": "প"
             },
             {
-              "StoneText": "অ"
+              "StoneText": "প"
             },
             {
               "StoneText": "অ"
@@ -1056,13 +1056,13 @@
               "StoneText": "ক্ষ"
             },
             {
-              "StoneText": "প"
+              "StoneText": "ত"
             },
             {
-              "StoneText": "ম"
+              "StoneText": "অ"
             },
             {
-              "StoneText": "ক"
+              "StoneText": "র"
             }
           ]
         }
@@ -1094,13 +1094,13 @@
           },
           "foilstones": [
             {
+              "StoneText": "অ"
+            },
+            {
               "StoneText": "ম"
             },
             {
               "StoneText": "অ"
-            },
-            {
-              "StoneText": "ক্ষ"
             }
           ]
         },
@@ -1123,13 +1123,13 @@
           },
           "foilstones": [
             {
-              "StoneText": "ক্ষ"
+              "StoneText": "য়"
             },
             {
               "StoneText": "ম"
             },
             {
-              "StoneText": "ক"
+              "StoneText": "অ"
             }
           ]
         },
@@ -1152,7 +1152,7 @@
           },
           "foilstones": [
             {
-              "StoneText": "ত"
+              "StoneText": "ম"
             },
             {
               "StoneText": "ক্ষ"
@@ -1178,13 +1178,13 @@
           },
           "foilstones": [
             {
-              "StoneText": "ম"
+              "StoneText": "প"
+            },
+            {
+              "StoneText": "অ"
             },
             {
               "StoneText": "ক্ষ"
-            },
-            {
-              "StoneText": "য়"
             }
           ]
         },
@@ -1207,16 +1207,16 @@
           },
           "foilstones": [
             {
-              "StoneText": "র"
+              "StoneText": "ক্ষ"
             },
             {
-              "StoneText": "র"
+              "StoneText": "ত"
             },
             {
-              "StoneText": "র"
+              "StoneText": "ত"
             },
             {
-              "StoneText": "ট"
+              "StoneText": "অ"
             }
           ]
         }
@@ -1245,13 +1245,13 @@
           },
           "foilstones": [
             {
-              "StoneText": "ড়"
+              "StoneText": "ম"
             },
             {
-              "StoneText": "অ"
+              "StoneText": "ঢ়"
             },
             {
-              "StoneText": "ড়"
+              "StoneText": "ষ"
             }
           ]
         },
@@ -1268,16 +1268,16 @@
           },
           "foilstones": [
             {
-              "StoneText": "র"
+              "StoneText": "ঢ়"
             },
             {
               "StoneText": "ঢ়"
             },
             {
-              "StoneText": "র"
+              "StoneText": "য়"
             },
             {
-              "StoneText": "ষ"
+              "StoneText": "ড়"
             }
           ]
         },
@@ -1294,13 +1294,13 @@
           },
           "foilstones": [
             {
-              "StoneText": "ষ"
+              "StoneText": "ক"
             },
             {
-              "StoneText": "র"
+              "StoneText": "ত"
             },
             {
-              "StoneText": "ষ"
+              "StoneText": "প"
             }
           ]
         },
@@ -1317,13 +1317,13 @@
           },
           "foilstones": [
             {
-              "StoneText": "র"
+              "StoneText": "ড়"
             },
             {
-              "StoneText": "র"
+              "StoneText": "ট"
             },
             {
-              "StoneText": "ষ"
+              "StoneText": "ঢ়"
             }
           ]
         },
@@ -1340,13 +1340,13 @@
           },
           "foilstones": [
             {
-              "StoneText": "ত"
-            },
-            {
               "StoneText": "র"
             },
             {
-              "StoneText": "ড়"
+              "StoneText": "ম"
+            },
+            {
+              "StoneText": "ঢ়"
             }
           ]
         }
@@ -1375,13 +1375,13 @@
           },
           "foilstones": [
             {
-              "StoneText": "র"
-            },
-            {
               "StoneText": "আ"
             },
             {
               "StoneText": "ম"
+            },
+            {
+              "StoneText": "ট"
             }
           ]
         },
@@ -1401,10 +1401,10 @@
               "StoneText": "ল"
             },
             {
-              "StoneText": "অ"
+              "StoneText": "ম"
             },
             {
-              "StoneText": "ল"
+              "StoneText": "আ"
             }
           ]
         },
@@ -1421,13 +1421,13 @@
           },
           "foilstones": [
             {
-              "StoneText": "য়"
-            },
-            {
               "StoneText": "ল"
             },
             {
-              "StoneText": "ঢ়"
+              "StoneText": "আ"
+            },
+            {
+              "StoneText": "র"
             }
           ]
         },
@@ -1444,16 +1444,16 @@
           },
           "foilstones": [
             {
-              "StoneText": "প"
+              "StoneText": "ক"
             },
             {
-              "StoneText": "ত"
+              "StoneText": "র"
+            },
+            {
+              "StoneText": "র"
             },
             {
               "StoneText": "আ"
-            },
-            {
-              "StoneText": "ড়"
             }
           ]
         },
@@ -1470,13 +1470,13 @@
           },
           "foilstones": [
             {
-              "StoneText": "র"
+              "StoneText": "ষ"
             },
             {
               "StoneText": "আ"
             },
             {
-              "StoneText": "আ"
+              "StoneText": "প"
             }
           ]
         }
@@ -1505,13 +1505,13 @@
           },
           "foilstones": [
             {
-              "StoneText": "র"
+              "StoneText": "ট"
             },
             {
-              "StoneText": "ঢ়"
+              "StoneText": "আ"
             },
             {
-              "StoneText": "ল"
+              "StoneText": "ষ"
             }
           ]
         },
@@ -1528,13 +1528,13 @@
           },
           "foilstones": [
             {
-              "StoneText": "ল"
+              "StoneText": "প"
             },
             {
-              "StoneText": "ল"
+              "StoneText": "ষ"
             },
             {
-              "StoneText": "ঢ়"
+              "StoneText": "প"
             }
           ]
         },
@@ -1551,13 +1551,13 @@
           },
           "foilstones": [
             {
-              "StoneText": "ত"
+              "StoneText": "র"
             },
             {
-              "StoneText": "ত"
+              "StoneText": "ক"
             },
             {
-              "StoneText": "ম"
+              "StoneText": "র"
             }
           ]
         },
@@ -1574,13 +1574,13 @@
           },
           "foilstones": [
             {
-              "StoneText": "ক"
+              "StoneText": "ষ"
             },
             {
-              "StoneText": "র"
+              "StoneText": "ষ"
             },
             {
-              "StoneText": "ম"
+              "StoneText": "অ"
             }
           ]
         },
@@ -1597,13 +1597,13 @@
           },
           "foilstones": [
             {
-              "StoneText": "ড়"
+              "StoneText": "য়"
             },
             {
-              "StoneText": "র"
+              "StoneText": "ঢ়"
             },
             {
-              "StoneText": "ড়"
+              "StoneText": "আ"
             },
             {
               "StoneText": "ল"
@@ -1638,10 +1638,10 @@
               "StoneText": "আ"
             },
             {
-              "StoneText": "ড়"
+              "StoneText": "ষ"
             },
             {
-              "StoneText": "ড়"
+              "StoneText": "আ"
             }
           ]
         },
@@ -1658,13 +1658,13 @@
           },
           "foilstones": [
             {
-              "StoneText": "ঢ়"
+              "StoneText": "ড়"
             },
             {
-              "StoneText": "ষ"
+              "StoneText": "ত"
             },
             {
-              "StoneText": "য়"
+              "StoneText": "ল"
             }
           ]
         },
@@ -1681,13 +1681,13 @@
           },
           "foilstones": [
             {
-              "StoneText": "ঢ়"
+              "StoneText": "অ"
             },
             {
-              "StoneText": "ঢ়"
+              "StoneText": "আ"
             },
             {
-              "StoneText": "ক"
+              "StoneText": "য়"
             }
           ]
         },
@@ -1704,13 +1704,13 @@
           },
           "foilstones": [
             {
-              "StoneText": "ম"
+              "StoneText": "ল"
+            },
+            {
+              "StoneText": "ট"
             },
             {
               "StoneText": "ড়"
-            },
-            {
-              "StoneText": "ম"
             }
           ]
         },
@@ -1727,16 +1727,16 @@
           },
           "foilstones": [
             {
-              "StoneText": "অ"
+              "StoneText": "প"
             },
             {
-              "StoneText": "ঢ়"
-            },
-            {
-              "StoneText": "আ"
+              "StoneText": "র"
             },
             {
               "StoneText": "ল"
+            },
+            {
+              "StoneText": "আ"
             }
           ]
         }
@@ -1765,13 +1765,13 @@
           },
           "foilstones": [
             {
+              "StoneText": "অ"
+            },
+            {
               "StoneText": "ক"
             },
             {
-              "StoneText": "র"
-            },
-            {
-              "StoneText": "র"
+              "StoneText": "অ"
             }
           ]
         },
@@ -1788,13 +1788,13 @@
           },
           "foilstones": [
             {
-              "StoneText": "ঢ়"
-            },
-            {
               "StoneText": "য়"
             },
             {
-              "StoneText": "ষ"
+              "StoneText": "ঙ"
+            },
+            {
+              "StoneText": "র"
             }
           ]
         },
@@ -1817,7 +1817,7 @@
               "StoneText": "র"
             },
             {
-              "StoneText": "র"
+              "StoneText": "ঢ়"
             }
           ]
         },
@@ -1834,13 +1834,13 @@
           },
           "foilstones": [
             {
-              "StoneText": "ত"
+              "StoneText": "র"
             },
             {
-              "StoneText": "ষ"
+              "StoneText": "য়"
             },
             {
-              "StoneText": "ষ"
+              "StoneText": "ড়"
             }
           ]
         },
@@ -1857,16 +1857,16 @@
           },
           "foilstones": [
             {
-              "StoneText": "ষ"
+              "StoneText": "ঢ়"
+            },
+            {
+              "StoneText": "ঙ"
             },
             {
               "StoneText": "র"
             },
             {
-              "StoneText": "ত"
-            },
-            {
-              "StoneText": "ষ"
+              "StoneText": "র"
             }
           ]
         }
@@ -1895,7 +1895,7 @@
           },
           "foilstones": [
             {
-              "StoneText": "ল"
+              "StoneText": "ক"
             },
             {
               "StoneText": "ক"
@@ -1915,10 +1915,10 @@
           },
           "foilstones": [
             {
-              "StoneText": "ম"
+              "StoneText": "ক"
             },
             {
-              "StoneText": "ষ"
+              "StoneText": "ম"
             }
           ]
         },
@@ -1935,10 +1935,10 @@
           },
           "foilstones": [
             {
-              "StoneText": "প"
+              "StoneText": "ট"
             },
             {
-              "StoneText": "অ"
+              "StoneText": "ষ"
             }
           ]
         },
@@ -1955,10 +1955,10 @@
           },
           "foilstones": [
             {
-              "StoneText": "র"
+              "StoneText": "ম"
             },
             {
-              "StoneText": "ড়"
+              "StoneText": "ষ"
             }
           ]
         },
@@ -1975,7 +1975,7 @@
           },
           "foilstones": [
             {
-              "StoneText": "ষ"
+              "StoneText": "র"
             },
             {
               "StoneText": "ড়"
@@ -2013,13 +2013,13 @@
           },
           "foilstones": [
             {
-              "StoneText": "ঙা"
+              "StoneText": "আ"
             },
             {
-              "StoneText": "ঙ"
+              "StoneText": "প"
             },
             {
-              "StoneText": "রা"
+              "StoneText": "ল"
             }
           ]
         },
@@ -2042,13 +2042,13 @@
           },
           "foilstones": [
             {
-              "StoneText": "ল"
+              "StoneText": "রা"
             },
             {
-              "StoneText": "ঙ"
+              "StoneText": "ঙা"
             },
             {
-              "StoneText": "ডা"
+              "StoneText": "ষ"
             }
           ]
         },
@@ -2068,13 +2068,13 @@
           },
           "foilstones": [
             {
-              "StoneText": "রা"
-            },
-            {
-              "StoneText": "লা"
+              "StoneText": "ড়া"
             },
             {
               "StoneText": "ঙা"
+            },
+            {
+              "StoneText": "অ"
             }
           ]
         },
@@ -2094,13 +2094,13 @@
           },
           "foilstones": [
             {
-              "StoneText": "ঢ়"
+              "StoneText": "ঙা"
             },
             {
               "StoneText": "ঙা"
             },
             {
-              "StoneText": "প"
+              "StoneText": "ট"
             }
           ]
         },
@@ -2123,10 +2123,10 @@
               "StoneText": "রা"
             },
             {
-              "StoneText": "ঙা"
+              "StoneText": "ল"
             },
             {
-              "StoneText": "প"
+              "StoneText": "রা"
             },
             {
               "StoneText": "রা"
@@ -2164,19 +2164,19 @@
           },
           "foilstones": [
             {
-              "StoneText": "ল"
+              "StoneText": "ঙ"
             },
             {
-              "StoneText": "আ"
+              "StoneText": "ঢ়"
+            },
+            {
+              "StoneText": "ল"
             },
             {
               "StoneText": "ড়"
             },
             {
-              "StoneText": "প"
-            },
-            {
-              "StoneText": "ড়া"
+              "StoneText": "ট"
             }
           ]
         },
@@ -2196,16 +2196,16 @@
           },
           "foilstones": [
             {
+              "StoneText": "ঢ়"
+            },
+            {
               "StoneText": "লা"
             },
             {
-              "StoneText": "ত"
+              "StoneText": "ল"
             },
             {
-              "StoneText": "ঙ"
-            },
-            {
-              "StoneText": "ঙ"
+              "StoneText": "ডা"
             }
           ]
         },
@@ -2228,13 +2228,13 @@
           },
           "foilstones": [
             {
+              "StoneText": "য়"
+            },
+            {
               "StoneText": "আ"
             },
             {
-              "StoneText": "ক"
-            },
-            {
-              "StoneText": "র"
+              "StoneText": "লা"
             }
           ]
         },
@@ -2254,16 +2254,16 @@
           },
           "foilstones": [
             {
-              "StoneText": "ক"
+              "StoneText": "ম"
             },
             {
-              "StoneText": "আ"
+              "StoneText": "প"
             },
             {
-              "StoneText": "ডা"
+              "StoneText": "ত"
             },
             {
-              "StoneText": "ল"
+              "StoneText": "অ"
             }
           ]
         },
@@ -2286,16 +2286,16 @@
           },
           "foilstones": [
             {
+              "StoneText": "ল"
+            },
+            {
+              "StoneText": "ল"
+            },
+            {
+              "StoneText": "ঙ"
+            },
+            {
               "StoneText": "লা"
-            },
-            {
-              "StoneText": "ত"
-            },
-            {
-              "StoneText": "ল"
-            },
-            {
-              "StoneText": "ল"
             }
           ]
         }
@@ -2330,13 +2330,13 @@
           },
           "foilstones": [
             {
-              "StoneText": "রা"
+              "StoneText": "ড়া"
             },
             {
               "StoneText": "লা"
             },
             {
-              "StoneText": "ঢ়"
+              "StoneText": "আ"
             },
             {
               "StoneText": "ল"
@@ -2365,13 +2365,13 @@
               "StoneText": "ঙ"
             },
             {
-              "StoneText": "লা"
+              "StoneText": "ল"
             },
             {
-              "StoneText": "ম"
+              "StoneText": "ল"
             },
             {
-              "StoneText": "লা"
+              "StoneText": "ঢ়"
             }
           ]
         },
@@ -2394,16 +2394,16 @@
           },
           "foilstones": [
             {
-              "StoneText": "আ"
-            },
-            {
-              "StoneText": "আ"
-            },
-            {
-              "StoneText": "ঙ"
+              "StoneText": "ম"
             },
             {
               "StoneText": "ল"
+            },
+            {
+              "StoneText": "ট"
+            },
+            {
+              "StoneText": "আ"
             }
           ]
         },
@@ -2423,16 +2423,16 @@
           },
           "foilstones": [
             {
-              "StoneText": "ঙ"
+              "StoneText": "আ"
             },
             {
               "StoneText": "ল"
             },
             {
-              "StoneText": "প"
+              "StoneText": "লা"
             },
             {
-              "StoneText": "লা"
+              "StoneText": "ম"
             }
           ]
         },
@@ -2455,19 +2455,19 @@
               "StoneText": "ড়া"
             },
             {
-              "StoneText": "ড়া"
+              "StoneText": "র"
             },
             {
-              "StoneText": "আ"
+              "StoneText": "ঙ"
+            },
+            {
+              "StoneText": "র"
             },
             {
               "StoneText": "ল"
             },
             {
-              "StoneText": "ঙা"
-            },
-            {
-              "StoneText": "ম"
+              "StoneText": "অ"
             }
           ]
         }
@@ -2496,16 +2496,16 @@
           },
           "foilstones": [
             {
-              "StoneText": "ঠ"
-            },
-            {
-              "StoneText": "ট"
-            },
-            {
-              "StoneText": "ই"
-            },
-            {
               "StoneText": "ঞ"
+            },
+            {
+              "StoneText": "জ"
+            },
+            {
+              "StoneText": "র"
+            },
+            {
+              "StoneText": "ঢ়"
             }
           ]
         },
@@ -2522,16 +2522,16 @@
           },
           "foilstones": [
             {
-              "StoneText": "প"
+              "StoneText": "ই"
             },
             {
-              "StoneText": "ঠ"
-            },
-            {
-              "StoneText": "ঞ"
+              "StoneText": "জ"
             },
             {
               "StoneText": "ঢ়"
+            },
+            {
+              "StoneText": "ই"
             }
           ]
         },
@@ -2548,16 +2548,16 @@
           },
           "foilstones": [
             {
+              "StoneText": "জ"
+            },
+            {
               "StoneText": "ড়"
             },
             {
-              "StoneText": "র"
+              "StoneText": "জ"
             },
             {
-              "StoneText": "য়"
-            },
-            {
-              "StoneText": "ঞ"
+              "StoneText": "ম"
             }
           ]
         },
@@ -2574,16 +2574,16 @@
           },
           "foilstones": [
             {
-              "StoneText": "ত"
+              "StoneText": "ই"
             },
             {
-              "StoneText": "ম"
+              "StoneText": "ঢ়"
             },
             {
-              "StoneText": "অ"
+              "StoneText": "ঠ"
             },
             {
-              "StoneText": "ক"
+              "StoneText": "ঠ"
             }
           ]
         },
@@ -2600,22 +2600,22 @@
           },
           "foilstones": [
             {
-              "StoneText": "ঞ"
-            },
-            {
-              "StoneText": "ঞ"
-            },
-            {
               "StoneText": "ঠ"
             },
             {
-              "StoneText": "অ"
+              "StoneText": "ঞ"
             },
             {
-              "StoneText": "ম"
+              "StoneText": "ল"
             },
             {
-              "StoneText": "ম"
+              "StoneText": "প"
+            },
+            {
+              "StoneText": "ই"
+            },
+            {
+              "StoneText": "ঢ়"
             }
           ]
         }
@@ -2644,13 +2644,13 @@
           },
           "foilstones": [
             {
-              "StoneText": "ড়"
+              "StoneText": "ঠ"
             },
             {
-              "StoneText": "চ"
+              "StoneText": "আ"
             },
             {
-              "StoneText": "ম"
+              "StoneText": "ষ"
             },
             {
               "StoneText": "ঝ"
@@ -2670,16 +2670,16 @@
           },
           "foilstones": [
             {
-              "StoneText": "অ"
+              "StoneText": "ক"
             },
             {
-              "StoneText": "চ"
+              "StoneText": "ল"
             },
             {
-              "StoneText": "চ"
+              "StoneText": "ঝ"
             },
             {
-              "StoneText": "ন"
+              "StoneText": "ঝ"
             }
           ]
         },
@@ -2696,16 +2696,16 @@
           },
           "foilstones": [
             {
-              "StoneText": "চ"
+              "StoneText": "ই"
             },
             {
-              "StoneText": "প"
+              "StoneText": "ঝ"
             },
             {
-              "StoneText": "ড়"
+              "StoneText": "ন"
             },
             {
-              "StoneText": "চ"
+              "StoneText": "ঢ়"
             }
           ]
         },
@@ -2722,16 +2722,16 @@
           },
           "foilstones": [
             {
+              "StoneText": "ন"
+            },
+            {
+              "StoneText": "ন"
+            },
+            {
               "StoneText": "চ"
             },
             {
-              "StoneText": "ই"
-            },
-            {
-              "StoneText": "ঝ"
-            },
-            {
-              "StoneText": "ড়"
+              "StoneText": "চ"
             }
           ]
         },
@@ -2748,22 +2748,22 @@
           },
           "foilstones": [
             {
-              "StoneText": "ষ"
+              "StoneText": "ট"
             },
             {
               "StoneText": "ন"
             },
             {
-              "StoneText": "চ"
+              "StoneText": "য়"
             },
             {
-              "StoneText": "ল"
+              "StoneText": "ই"
             },
             {
-              "StoneText": "ড়"
+              "StoneText": "ক"
             },
             {
-              "StoneText": "ঞ"
+              "StoneText": "ঝ"
             }
           ]
         }
@@ -2792,16 +2792,16 @@
           },
           "foilstones": [
             {
-              "StoneText": "জ"
-            },
-            {
-              "StoneText": "অ"
-            },
-            {
               "StoneText": "ত"
             },
             {
-              "StoneText": "ড়"
+              "StoneText": "ল"
+            },
+            {
+              "StoneText": "আ"
+            },
+            {
+              "StoneText": "ক"
             }
           ]
         },
@@ -2818,16 +2818,16 @@
           },
           "foilstones": [
             {
-              "StoneText": "ন"
+              "StoneText": "চ"
             },
             {
-              "StoneText": "জ"
+              "StoneText": "ক"
             },
             {
-              "StoneText": "ষ"
+              "StoneText": "ল"
             },
             {
-              "StoneText": "ন"
+              "StoneText": "ক"
             }
           ]
         },
@@ -2844,16 +2844,16 @@
           },
           "foilstones": [
             {
-              "StoneText": "অ"
+              "StoneText": "য়"
             },
             {
-              "StoneText": "ল"
+              "StoneText": "র"
             },
             {
-              "StoneText": "ঠ"
+              "StoneText": "জ"
             },
             {
-              "StoneText": "চ"
+              "StoneText": "ড়"
             }
           ]
         },
@@ -2870,16 +2870,16 @@
           },
           "foilstones": [
             {
-              "StoneText": "ক"
+              "StoneText": "ঠ"
             },
             {
-              "StoneText": "ট"
+              "StoneText": "জ"
             },
             {
-              "StoneText": "ই"
+              "StoneText": "ন"
             },
             {
-              "StoneText": "র"
+              "StoneText": "চ"
             }
           ]
         },
@@ -2896,22 +2896,22 @@
           },
           "foilstones": [
             {
-              "StoneText": "চ"
+              "StoneText": "ল"
             },
             {
-              "StoneText": "ই"
+              "StoneText": "ন"
             },
             {
-              "StoneText": "ক"
+              "StoneText": "ল"
             },
             {
-              "StoneText": "ড়"
+              "StoneText": "ল"
             },
             {
-              "StoneText": "অ"
+              "StoneText": "জ"
             },
             {
-              "StoneText": "ঞ"
+              "StoneText": "জ"
             }
           ]
         }
@@ -2940,13 +2940,13 @@
           },
           "foilstones": [
             {
-              "StoneText": "ষ"
+              "StoneText": "ন"
             },
             {
-              "StoneText": "ঝ"
+              "StoneText": "ঢ়"
             },
             {
-              "StoneText": "ঞ"
+              "StoneText": "অ"
             }
           ]
         },
@@ -2963,10 +2963,10 @@
           },
           "foilstones": [
             {
-              "StoneText": "অ"
+              "StoneText": "জ"
             },
             {
-              "StoneText": "ল"
+              "StoneText": "ক"
             },
             {
               "StoneText": "ন"
@@ -2986,13 +2986,13 @@
           },
           "foilstones": [
             {
-              "StoneText": "অ"
-            },
-            {
-              "StoneText": "ক"
+              "StoneText": "ত"
             },
             {
               "StoneText": "ল"
+            },
+            {
+              "StoneText": "চ"
             }
           ]
         },
@@ -3009,13 +3009,13 @@
           },
           "foilstones": [
             {
-              "StoneText": "ঠ"
+              "StoneText": "ন"
             },
             {
-              "StoneText": "য়"
+              "StoneText": "ঢ়"
             },
             {
-              "StoneText": "ঠ"
+              "StoneText": "জ"
             }
           ]
         },
@@ -3032,16 +3032,16 @@
           },
           "foilstones": [
             {
-              "StoneText": "ন"
+              "StoneText": "অ"
             },
             {
               "StoneText": "ক"
             },
             {
-              "StoneText": "ঙ"
+              "StoneText": "র"
             },
             {
-              "StoneText": "ষ"
+              "StoneText": "ক"
             }
           ]
         }
@@ -3070,13 +3070,13 @@
           },
           "foilstones": [
             {
-              "StoneText": "ঠ"
-            },
-            {
-              "StoneText": "ঢ়"
-            },
-            {
               "StoneText": "ত"
+            },
+            {
+              "StoneText": "চ"
+            },
+            {
+              "StoneText": "চ"
             }
           ]
         },
@@ -3093,13 +3093,13 @@
           },
           "foilstones": [
             {
-              "StoneText": "চ"
+              "StoneText": "ঠ"
             },
             {
-              "StoneText": "ন"
+              "StoneText": "ঠ"
             },
             {
-              "StoneText": "র"
+              "StoneText": "ল"
             }
           ]
         },
@@ -3116,13 +3116,13 @@
           },
           "foilstones": [
             {
-              "StoneText": "ঞ"
+              "StoneText": "ম"
             },
             {
-              "StoneText": "ল"
+              "StoneText": "ঝ"
             },
             {
-              "StoneText": "ঠ"
+              "StoneText": "ই"
             }
           ]
         },
@@ -3139,13 +3139,13 @@
           },
           "foilstones": [
             {
-              "StoneText": "ন"
+              "StoneText": "ঠ"
             },
             {
-              "StoneText": "চ"
+              "StoneText": "ই"
             },
             {
-              "StoneText": "ল"
+              "StoneText": "ই"
             }
           ]
         },
@@ -3165,10 +3165,10 @@
               "StoneText": "আ"
             },
             {
-              "StoneText": "প"
+              "StoneText": "চ"
             },
             {
-              "StoneText": "ই"
+              "StoneText": "জ"
             }
           ]
         }
@@ -3200,7 +3200,7 @@
               "StoneText": "আ"
             },
             {
-              "StoneText": "ঝ"
+              "StoneText": "ষ"
             },
             {
               "StoneText": "ই"
@@ -3220,13 +3220,13 @@
           },
           "foilstones": [
             {
-              "StoneText": "ঝ"
-            },
-            {
               "StoneText": "ল"
             },
             {
               "StoneText": "ঝ"
+            },
+            {
+              "StoneText": "ই"
             }
           ]
         },
@@ -3246,13 +3246,13 @@
               "StoneText": "ঠ"
             },
             {
-              "StoneText": "ঠ"
-            },
-            {
-              "StoneText": "ড়"
-            },
-            {
               "StoneText": "ঝ"
+            },
+            {
+              "StoneText": "ম"
+            },
+            {
+              "StoneText": "প"
             }
           ]
         },
@@ -3269,13 +3269,13 @@
           },
           "foilstones": [
             {
-              "StoneText": "র"
+              "StoneText": "ঢ়"
             },
             {
-              "StoneText": "প"
+              "StoneText": "অ"
             },
             {
-              "StoneText": "ঠ"
+              "StoneText": "ম"
             }
           ]
         },
@@ -3292,13 +3292,13 @@
           },
           "foilstones": [
             {
-              "StoneText": "ঠ"
+              "StoneText": "ই"
             },
             {
-              "StoneText": "ঠ"
+              "StoneText": "ম"
             },
             {
-              "StoneText": "ঠ"
+              "StoneText": "ঝ"
             }
           ]
         }
@@ -3330,25 +3330,24 @@
           },
           "foilstones": [
             {
-              "StoneText": "চ"
+              "StoneText": "জি"
             },
             {
-              "StoneText": "ি"
+              "StoneText": "নি"
             },
             {
-              "StoneText": "প"
+              "StoneText": "জি"
             }
           ]
         },
         {
           "SegmentNumber": 1,
           "targetstones": [
-            {
-              "StoneText": "জ"
-            },
-            {
-              "StoneText": "ি"
-            }
+            [
+              {
+                "StoneText": "জি"
+              }
+            ]
           ],
           "prompt": {
             "PromptText": "জি",
@@ -3356,25 +3355,24 @@
           },
           "foilstones": [
             {
-              "StoneText": "হ্বা"
+              "StoneText": "ন"
             },
             {
-              "StoneText": "ি"
+              "StoneText": "জি"
             },
             {
-              "StoneText": "ঠ"
+              "StoneText": "জ"
             }
           ]
         },
         {
           "SegmentNumber": 2,
           "targetstones": [
-            {
-              "StoneText": "ঝ"
-            },
-            {
-              "StoneText": "ি"
-            }
+            [
+              {
+                "StoneText": "ঝি"
+              }
+            ]
           ],
           "prompt": {
             "PromptText": "ঝি",
@@ -3382,13 +3380,13 @@
           },
           "foilstones": [
             {
-              "StoneText": "ট"
+              "StoneText": "জ"
             },
             {
-              "StoneText": "ট"
+              "StoneText": "নি"
             },
             {
-              "StoneText": "ক"
+              "StoneText": "ঝি"
             }
           ]
         },
@@ -3408,13 +3406,13 @@
           },
           "foilstones": [
             {
-              "StoneText": "হ্বা"
+              "StoneText": "জ"
             },
             {
-              "StoneText": "ড়"
+              "StoneText": "জি"
             },
             {
-              "StoneText": "চ"
+              "StoneText": "ঠি"
             }
           ]
         },
@@ -3434,16 +3432,16 @@
           },
           "foilstones": [
             {
-              "StoneText": "হ্বা"
+              "StoneText": "আ"
             },
             {
-              "StoneText": "হ্বা"
+              "StoneText": "ঝি"
             },
             {
-              "StoneText": "ত"
+              "StoneText": "ঠি"
             },
             {
-              "StoneText": "চ"
+              "StoneText": "চি"
             }
           ]
         }
@@ -3475,25 +3473,24 @@
           },
           "foilstones": [
             {
-              "StoneText": "জ"
+              "StoneText": "চি"
             },
             {
-              "StoneText": "নি"
+              "StoneText": "চ"
             },
             {
-              "StoneText": "জ"
+              "StoneText": "ড়"
             }
           ]
         },
         {
           "SegmentNumber": 1,
           "targetstones": [
-            {
-              "StoneText": "চ"
-            },
-            {
-              "StoneText": "ি"
-            }
+            [
+              {
+                "StoneText": "চি"
+              }
+            ]
           ],
           "prompt": {
             "PromptText": "চি",
@@ -3501,25 +3498,24 @@
           },
           "foilstones": [
             {
-              "StoneText": "ক"
+              "StoneText": "ই"
             },
             {
-              "StoneText": "ঝ"
+              "StoneText": "ড়"
             },
             {
-              "StoneText": "জ"
+              "StoneText": "ঞ"
             }
           ]
         },
         {
           "SegmentNumber": 2,
           "targetstones": [
-            {
-              "StoneText": "ঝ"
-            },
-            {
-              "StoneText": "ি"
-            }
+            [
+              {
+                "StoneText": "ঝি"
+              }
+            ]
           ],
           "prompt": {
             "PromptText": "ঝি",
@@ -3527,13 +3523,13 @@
           },
           "foilstones": [
             {
-              "StoneText": "জি"
+              "StoneText": "ঢ়"
+            },
+            {
+              "StoneText": "আ"
             },
             {
               "StoneText": "জ"
-            },
-            {
-              "StoneText": "ষ"
             },
             {
               "StoneText": "জ"
@@ -3556,13 +3552,13 @@
           },
           "foilstones": [
             {
-              "StoneText": "ম"
+              "StoneText": "জ"
             },
             {
-              "StoneText": "চ"
+              "StoneText": "জ"
             },
             {
-              "StoneText": "নি"
+              "StoneText": "জ"
             }
           ]
         },
@@ -3582,13 +3578,13 @@
           },
           "foilstones": [
             {
-              "StoneText": "জি"
+              "StoneText": "অ"
             },
             {
-              "StoneText": "প"
+              "StoneText": "ঝি"
             },
             {
-              "StoneText": "ত"
+              "StoneText": "জ"
             }
           ]
         }
@@ -3607,12 +3603,11 @@
         {
           "SegmentNumber": 0,
           "targetstones": [
-            {
-              "StoneText": "ঝ"
-            },
-            {
-              "StoneText": "ি"
-            }
+            [
+              {
+                "StoneText": "ঝি"
+              }
+            ]
           ],
           "prompt": {
             "PromptText": "ঝি",
@@ -3620,25 +3615,24 @@
           },
           "foilstones": [
             {
-              "StoneText": "জ"
-            },
-            {
-              "StoneText": "ড়"
+              "StoneText": "নি"
             },
             {
               "StoneText": "ষ"
+            },
+            {
+              "StoneText": "ঠি"
             }
           ]
         },
         {
           "SegmentNumber": 1,
           "targetstones": [
-            {
-              "StoneText": "চ"
-            },
-            {
-              "StoneText": "ি"
-            }
+            [
+              {
+                "StoneText": "চি"
+              }
+            ]
           ],
           "prompt": {
             "PromptText": "চি",
@@ -3646,25 +3640,24 @@
           },
           "foilstones": [
             {
-              "StoneText": "চ"
+              "StoneText": "ঠ"
             },
             {
-              "StoneText": "ঢ়"
+              "StoneText": "নি"
             },
             {
-              "StoneText": "প"
+              "StoneText": "চি"
             }
           ]
         },
         {
           "SegmentNumber": 2,
           "targetstones": [
-            {
-              "StoneText": "ঠ"
-            },
-            {
-              "StoneText": "ি"
-            }
+            [
+              {
+                "StoneText": "ঠি"
+              }
+            ]
           ],
           "prompt": {
             "PromptText": "ঠি",
@@ -3672,13 +3665,13 @@
           },
           "foilstones": [
             {
-              "StoneText": "চ"
+              "StoneText": "ষ"
             },
             {
-              "StoneText": "ল"
+              "StoneText": "জ"
             },
             {
-              "StoneText": "আ"
+              "StoneText": "ঝি"
             },
             {
               "StoneText": "ই"
@@ -3701,13 +3694,13 @@
           },
           "foilstones": [
             {
-              "StoneText": "জ"
+              "StoneText": "ম"
             },
             {
-              "StoneText": "য়"
+              "StoneText": "ই"
             },
             {
-              "StoneText": "ি"
+              "StoneText": "প"
             }
           ]
         },
@@ -3727,13 +3720,13 @@
           },
           "foilstones": [
             {
-              "StoneText": "নি"
+              "StoneText": "য়"
             },
             {
-              "StoneText": "ই"
+              "StoneText": "ম"
             },
             {
-              "StoneText": "ঠ"
+              "StoneText": "ন"
             }
           ]
         }
@@ -3762,13 +3755,13 @@
           },
           "foilstones": [
             {
-              "StoneText": "শ"
+              "StoneText": "ম"
             },
             {
-              "StoneText": "ষ"
+              "StoneText": "অ"
             },
             {
-              "StoneText": "য়"
+              "StoneText": "র"
             }
           ]
         },
@@ -3785,13 +3778,13 @@
           },
           "foilstones": [
             {
-              "StoneText": "ঢ়"
+              "StoneText": "ক"
             },
             {
-              "StoneText": "জ"
+              "StoneText": "ঞ"
             },
             {
-              "StoneText": "ত"
+              "StoneText": "অ"
             }
           ]
         },
@@ -3808,13 +3801,13 @@
           },
           "foilstones": [
             {
-              "StoneText": "প"
+              "StoneText": "ণ"
             },
             {
-              "StoneText": "ঝ"
+              "StoneText": "ঈ"
             },
             {
-              "StoneText": "শ"
+              "StoneText": "ষ"
             },
             {
               "StoneText": "ঢ়"
@@ -3834,13 +3827,13 @@
           },
           "foilstones": [
             {
-              "StoneText": "ড়"
+              "StoneText": "শ"
             },
             {
-              "StoneText": "অ"
+              "StoneText": "ই"
             },
             {
-              "StoneText": "র"
+              "StoneText": "শ"
             }
           ]
         },
@@ -3857,13 +3850,13 @@
           },
           "foilstones": [
             {
-              "StoneText": "ট"
+              "StoneText": "ঢ়"
             },
             {
-              "StoneText": "ক"
+              "StoneText": "ঠ"
             },
             {
-              "StoneText": "ই"
+              "StoneText": "ঞ"
             }
           ]
         }
@@ -3892,22 +3885,22 @@
           },
           "foilstones": [
             {
-              "StoneText": "প"
+              "StoneText": "আ"
+            },
+            {
+              "StoneText": "ল"
             },
             {
               "StoneText": "ব"
             },
             {
-              "StoneText": "ষ"
-            },
-            {
-              "StoneText": "ত"
-            },
-            {
               "StoneText": "র"
             },
             {
-              "StoneText": "অ"
+              "StoneText": "ন"
+            },
+            {
+              "StoneText": "ঈ"
             }
           ]
         },
@@ -3924,19 +3917,19 @@
           },
           "foilstones": [
             {
-              "StoneText": "ঈ"
+              "StoneText": "ন"
             },
             {
-              "StoneText": "ঈ"
+              "StoneText": "ষ"
             },
             {
-              "StoneText": "ত"
+              "StoneText": "ই"
             },
             {
-              "StoneText": "ত"
+              "StoneText": "ড়"
             },
             {
-              "StoneText": "র"
+              "StoneText": "ব"
             }
           ]
         },
@@ -3953,22 +3946,22 @@
           },
           "foilstones": [
             {
-              "StoneText": "ম"
+              "StoneText": "ঞ"
             },
             {
-              "StoneText": "র"
-            },
-            {
-              "StoneText": "শ"
-            },
-            {
-              "StoneText": "ই"
+              "StoneText": "ব"
             },
             {
               "StoneText": "ণ"
             },
             {
-              "StoneText": "ন"
+              "StoneText": "ঠ"
+            },
+            {
+              "StoneText": "ব"
+            },
+            {
+              "StoneText": "শ"
             }
           ]
         },
@@ -3985,19 +3978,19 @@
           },
           "foilstones": [
             {
-              "StoneText": "র"
-            },
-            {
-              "StoneText": "ষ"
+              "StoneText": "ত"
             },
             {
               "StoneText": "ঙ"
             },
             {
-              "StoneText": "জ"
+              "StoneText": "ণ"
             },
             {
-              "StoneText": "ট"
+              "StoneText": "ঝ"
+            },
+            {
+              "StoneText": "ড়"
             }
           ]
         },
@@ -4014,22 +4007,22 @@
           },
           "foilstones": [
             {
-              "StoneText": "অ"
-            },
-            {
-              "StoneText": "আ"
+              "StoneText": "ণ"
             },
             {
               "StoneText": "ঝ"
             },
             {
-              "StoneText": "ষ"
+              "StoneText": "ট"
             },
             {
-              "StoneText": "ল"
+              "StoneText": "ণ"
             },
             {
-              "StoneText": "র"
+              "StoneText": "প"
+            },
+            {
+              "StoneText": "জ"
             }
           ]
         }
@@ -4058,22 +4051,22 @@
           },
           "foilstones": [
             {
-              "StoneText": "ম"
-            },
-            {
-              "StoneText": "ণ"
-            },
-            {
               "StoneText": "ঠ"
             },
             {
-              "StoneText": "ক"
+              "StoneText": "ত"
             },
             {
-              "StoneText": "র"
+              "StoneText": "ম"
             },
             {
-              "StoneText": "ট"
+              "StoneText": "ষ"
+            },
+            {
+              "StoneText": "ষ"
+            },
+            {
+              "StoneText": "ত"
             }
           ]
         },
@@ -4090,22 +4083,22 @@
           },
           "foilstones": [
             {
-              "StoneText": "প"
-            },
-            {
-              "StoneText": "আ"
-            },
-            {
-              "StoneText": "ণ"
-            },
-            {
-              "StoneText": "ণ"
-            },
-            {
-              "StoneText": "শ"
-            },
-            {
               "StoneText": "ড়"
+            },
+            {
+              "StoneText": "ণ"
+            },
+            {
+              "StoneText": "ম"
+            },
+            {
+              "StoneText": "ঞ"
+            },
+            {
+              "StoneText": "ত"
+            },
+            {
+              "StoneText": "ক"
             }
           ]
         },
@@ -4122,19 +4115,19 @@
           },
           "foilstones": [
             {
-              "StoneText": "শ"
+              "StoneText": "জ"
             },
             {
               "StoneText": "ব"
             },
             {
-              "StoneText": "য়"
+              "StoneText": "ট"
             },
             {
               "StoneText": "ল"
             },
             {
-              "StoneText": "ষ"
+              "StoneText": "প"
             }
           ]
         },
@@ -4151,19 +4144,19 @@
           },
           "foilstones": [
             {
-              "StoneText": "য়"
-            },
-            {
-              "StoneText": "অ"
-            },
-            {
-              "StoneText": "শ"
-            },
-            {
               "StoneText": "র"
             },
             {
-              "StoneText": "ঈ"
+              "StoneText": "ষ"
+            },
+            {
+              "StoneText": "ঠ"
+            },
+            {
+              "StoneText": "ল"
+            },
+            {
+              "StoneText": "ঙ"
             }
           ]
         },
@@ -4180,22 +4173,22 @@
           },
           "foilstones": [
             {
-              "StoneText": "ণ"
+              "StoneText": "প"
             },
             {
-              "StoneText": "ঈ"
+              "StoneText": "ক"
             },
             {
-              "StoneText": "ঈ"
+              "StoneText": "ব"
             },
             {
-              "StoneText": "ম"
+              "StoneText": "ন"
             },
             {
-              "StoneText": "র"
+              "StoneText": "ল"
             },
             {
-              "StoneText": "ষ"
+              "StoneText": "ড়"
             }
           ]
         }
@@ -4224,22 +4217,22 @@
           },
           "foilstones": [
             {
-              "StoneText": "ঈ"
+              "StoneText": "ঠ"
             },
             {
-              "StoneText": "য়"
+              "StoneText": "ঠ"
             },
             {
               "StoneText": "ষ"
             },
             {
-              "StoneText": "প"
+              "StoneText": "চ"
             },
             {
-              "StoneText": "ল"
+              "StoneText": "ই"
             },
             {
-              "StoneText": "ঈ"
+              "StoneText": "ব"
             }
           ]
         },
@@ -4256,22 +4249,22 @@
           },
           "foilstones": [
             {
-              "StoneText": "শ"
+              "StoneText": "প"
             },
             {
-              "StoneText": "ঞ"
-            },
-            {
-              "StoneText": "আ"
+              "StoneText": "ন"
             },
             {
               "StoneText": "ত"
             },
             {
-              "StoneText": "ত"
+              "StoneText": "চ"
             },
             {
-              "StoneText": "ত"
+              "StoneText": "ব"
+            },
+            {
+              "StoneText": "ই"
             }
           ]
         },
@@ -4288,19 +4281,19 @@
           },
           "foilstones": [
             {
+              "StoneText": "ঠ"
+            },
+            {
+              "StoneText": "ণ"
+            },
+            {
+              "StoneText": "ঈ"
+            },
+            {
               "StoneText": "শ"
             },
             {
-              "StoneText": "ব"
-            },
-            {
-              "StoneText": "ই"
-            },
-            {
-              "StoneText": "ন"
-            },
-            {
-              "StoneText": "ট"
+              "StoneText": "ঙ"
             }
           ]
         },
@@ -4317,19 +4310,19 @@
           },
           "foilstones": [
             {
+              "StoneText": "ঈ"
+            },
+            {
+              "StoneText": "ব"
+            },
+            {
               "StoneText": "ত"
             },
             {
-              "StoneText": "র"
+              "StoneText": "ঈ"
             },
             {
-              "StoneText": "শ"
-            },
-            {
-              "StoneText": "ই"
-            },
-            {
-              "StoneText": "ম"
+              "StoneText": "ত"
             }
           ]
         },
@@ -4346,22 +4339,22 @@
           },
           "foilstones": [
             {
-              "StoneText": "ই"
+              "StoneText": "ণ"
             },
             {
-              "StoneText": "চ"
+              "StoneText": "য়"
+            },
+            {
+              "StoneText": "ম"
+            },
+            {
+              "StoneText": "ঢ়"
+            },
+            {
+              "StoneText": "ঠ"
             },
             {
               "StoneText": "শ"
-            },
-            {
-              "StoneText": "ক"
-            },
-            {
-              "StoneText": "আ"
-            },
-            {
-              "StoneText": "ট"
             }
           ]
         }
@@ -4390,19 +4383,19 @@
           },
           "foilstones": [
             {
-              "StoneText": "ন"
+              "StoneText": "ঈ"
             },
             {
-              "StoneText": "ঝ"
+              "StoneText": "য়"
             },
             {
-              "StoneText": "ন"
+              "StoneText": "শ"
             },
             {
               "StoneText": "র"
             },
             {
-              "StoneText": "ঈ"
+              "StoneText": "ঢ়"
             }
           ]
         },
@@ -4419,22 +4412,22 @@
           },
           "foilstones": [
             {
-              "StoneText": "ঝ"
+              "StoneText": "ট"
+            },
+            {
+              "StoneText": "ব"
             },
             {
               "StoneText": "ত"
             },
             {
-              "StoneText": "ঝ"
+              "StoneText": "র"
             },
             {
               "StoneText": "র"
             },
             {
-              "StoneText": "ণ"
-            },
-            {
-              "StoneText": "ণ"
+              "StoneText": "ঈ"
             }
           ]
         },
@@ -4451,22 +4444,22 @@
           },
           "foilstones": [
             {
-              "StoneText": "র"
+              "StoneText": "ষ"
             },
             {
-              "StoneText": "ঝ"
-            },
-            {
-              "StoneText": "ঙ"
-            },
-            {
-              "StoneText": "ল"
+              "StoneText": "ব"
             },
             {
               "StoneText": "র"
             },
             {
-              "StoneText": "শ"
+              "StoneText": "র"
+            },
+            {
+              "StoneText": "ম"
+            },
+            {
+              "StoneText": "র"
             }
           ]
         },
@@ -4483,19 +4476,19 @@
           },
           "foilstones": [
             {
-              "StoneText": "য়"
-            },
-            {
               "StoneText": "ষ"
             },
             {
-              "StoneText": "ঈ"
+              "StoneText": "ঙ"
             },
             {
-              "StoneText": "ঝ"
+              "StoneText": "র"
             },
             {
-              "StoneText": "য়"
+              "StoneText": "র"
+            },
+            {
+              "StoneText": "ত"
             }
           ]
         },
@@ -4512,22 +4505,22 @@
           },
           "foilstones": [
             {
-              "StoneText": "ঈ"
+              "StoneText": "ঝ"
             },
             {
-              "StoneText": "র"
+              "StoneText": "ঠ"
             },
             {
-              "StoneText": "ল"
+              "StoneText": "য়"
             },
             {
-              "StoneText": "চ"
+              "StoneText": "ত"
             },
             {
               "StoneText": "ব"
             },
             {
-              "StoneText": "প"
+              "StoneText": "ণ"
             }
           ]
         }
@@ -4556,22 +4549,22 @@
           },
           "foilstones": [
             {
-              "StoneText": "অ"
-            },
-            {
-              "StoneText": "জ"
+              "StoneText": "আ"
             },
             {
               "StoneText": "শ"
             },
             {
-              "StoneText": "ত"
+              "StoneText": "ণ"
             },
             {
-              "StoneText": "প"
+              "StoneText": "ট"
             },
             {
               "StoneText": "ঢ়"
+            },
+            {
+              "StoneText": "শ"
             }
           ]
         },
@@ -4588,22 +4581,22 @@
           },
           "foilstones": [
             {
+              "StoneText": "ণ"
+            },
+            {
               "StoneText": "ঢ়"
             },
             {
-              "StoneText": "ঙ"
+              "StoneText": "ল"
             },
             {
               "StoneText": "শ"
             },
             {
-              "StoneText": "আ"
+              "StoneText": "র"
             },
             {
-              "StoneText": "জ"
-            },
-            {
-              "StoneText": "ঝ"
+              "StoneText": "ব"
             }
           ]
         },
@@ -4620,19 +4613,19 @@
           },
           "foilstones": [
             {
-              "StoneText": "ঝ"
+              "StoneText": "ঙ"
             },
             {
-              "StoneText": "ত"
+              "StoneText": "ঙ"
             },
             {
-              "StoneText": "ট"
+              "StoneText": "য়"
             },
             {
-              "StoneText": "প"
+              "StoneText": "ম"
             },
             {
-              "StoneText": "র"
+              "StoneText": "ঈ"
             }
           ]
         },
@@ -4649,22 +4642,22 @@
           },
           "foilstones": [
             {
-              "StoneText": "ল"
+              "StoneText": "ট"
             },
             {
-              "StoneText": "জ"
+              "StoneText": "র"
             },
             {
-              "StoneText": "ড়"
-            },
-            {
-              "StoneText": "ল"
-            },
-            {
-              "StoneText": "ড়"
+              "StoneText": "য়"
             },
             {
               "StoneText": "ঞ"
+            },
+            {
+              "StoneText": "ঞ"
+            },
+            {
+              "StoneText": "অ"
             }
           ]
         },
@@ -4681,19 +4674,19 @@
           },
           "foilstones": [
             {
-              "StoneText": "প"
+              "StoneText": "ঢ়"
             },
             {
-              "StoneText": "চ"
+              "StoneText": "ঝ"
+            },
+            {
+              "StoneText": "ষ"
             },
             {
               "StoneText": "য়"
             },
             {
-              "StoneText": "শ"
-            },
-            {
-              "StoneText": "ত"
+              "StoneText": "য়"
             }
           ]
         }
@@ -4725,22 +4718,22 @@
           },
           "foilstones": [
             {
-              "StoneText": "তী"
+              "StoneText": "ঞ"
             },
             {
-              "StoneText": "ত"
+              "StoneText": "অ"
+            },
+            {
+              "StoneText": "ব"
+            },
+            {
+              "StoneText": "ষ"
             },
             {
               "StoneText": "শী"
             },
             {
-              "StoneText": "বা"
-            },
-            {
-              "StoneText": "ত"
-            },
-            {
-              "StoneText": "ঈ"
+              "StoneText": "ম"
             }
           ]
         },
@@ -4760,22 +4753,22 @@
           },
           "foilstones": [
             {
-              "StoneText": "ব"
+              "StoneText": "শী"
             },
             {
-              "StoneText": "বা"
+              "StoneText": "তী"
+            },
+            {
+              "StoneText": "ণী"
             },
             {
               "StoneText": "ট"
             },
             {
-              "StoneText": "ঈ"
+              "StoneText": "ণী"
             },
             {
-              "StoneText": "ণ"
-            },
-            {
-              "StoneText": "ঞ"
+              "StoneText": "শী"
             }
           ]
         },
@@ -4795,19 +4788,19 @@
           },
           "foilstones": [
             {
+              "StoneText": "র"
+            },
+            {
               "StoneText": "আ"
             },
             {
-              "StoneText": "ল"
+              "StoneText": "প"
             },
             {
-              "StoneText": "র"
+              "StoneText": "বা"
             },
             {
-              "StoneText": "র"
-            },
-            {
-              "StoneText": "ত"
+              "StoneText": "ণী"
             }
           ]
         },
@@ -4827,22 +4820,22 @@
           },
           "foilstones": [
             {
-              "StoneText": "ঙ"
+              "StoneText": "ণী"
             },
             {
-              "StoneText": "বা"
-            },
-            {
-              "StoneText": "ড়"
+              "StoneText": "ষ"
             },
             {
               "StoneText": "শী"
             },
             {
-              "StoneText": "ত"
+              "StoneText": "ঙ"
             },
             {
-              "StoneText": "ষ"
+              "StoneText": "ট"
+            },
+            {
+              "StoneText": "ঞ"
             }
           ]
         },
@@ -4862,19 +4855,19 @@
           },
           "foilstones": [
             {
-              "StoneText": "য়"
-            },
-            {
-              "StoneText": "ঝ"
-            },
-            {
-              "StoneText": "ণ"
-            },
-            {
-              "StoneText": "ব"
+              "StoneText": "ত"
             },
             {
               "StoneText": "ত"
+            },
+            {
+              "StoneText": "জ"
+            },
+            {
+              "StoneText": "ই"
+            },
+            {
+              "StoneText": "শী"
             }
           ]
         }
@@ -4906,22 +4899,22 @@
           },
           "foilstones": [
             {
-              "StoneText": "বা"
+              "StoneText": "তী"
+            },
+            {
+              "StoneText": "ত"
             },
             {
               "StoneText": "বা"
             },
             {
-              "StoneText": "ণী"
+              "StoneText": "র"
             },
             {
-              "StoneText": "ণী"
+              "StoneText": "ষ"
             },
             {
-              "StoneText": "জ"
-            },
-            {
-              "StoneText": "ণ"
+              "StoneText": "বা"
             }
           ]
         },
@@ -4941,22 +4934,22 @@
           },
           "foilstones": [
             {
-              "StoneText": "ঝ"
+              "StoneText": "তী"
             },
             {
-              "StoneText": "ট"
+              "StoneText": "ব"
             },
             {
-              "StoneText": "বী"
+              "StoneText": "ণ"
             },
             {
-              "StoneText": "ণী"
+              "StoneText": "র"
             },
             {
-              "StoneText": "বা"
+              "StoneText": "ঢ়"
             },
             {
-              "StoneText": "বা"
+              "StoneText": "ড়"
             }
           ]
         },
@@ -4976,19 +4969,19 @@
           },
           "foilstones": [
             {
-              "StoneText": "অ"
+              "StoneText": "ব"
             },
             {
-              "StoneText": "ণ"
-            },
-            {
-              "StoneText": "ঙ"
+              "StoneText": "প"
             },
             {
               "StoneText": "ণী"
             },
             {
-              "StoneText": "ট"
+              "StoneText": "র"
+            },
+            {
+              "StoneText": "বী"
             }
           ]
         },
@@ -5008,22 +5001,22 @@
           },
           "foilstones": [
             {
+              "StoneText": "ণ"
+            },
+            {
               "StoneText": "ট"
             },
             {
-              "StoneText": "শ"
+              "StoneText": "বা"
             },
             {
-              "StoneText": "অ"
+              "StoneText": "ঙ"
             },
             {
-              "StoneText": "ষ"
+              "StoneText": "আ"
             },
             {
-              "StoneText": "ঠ"
-            },
-            {
-              "StoneText": "ণ"
+              "StoneText": "বা"
             }
           ]
         },
@@ -5043,19 +5036,19 @@
           },
           "foilstones": [
             {
-              "StoneText": "ন"
+              "StoneText": "ণ"
             },
             {
-              "StoneText": "বী"
+              "StoneText": "ণী"
             },
             {
-              "StoneText": "ট"
+              "StoneText": "ণী"
             },
             {
               "StoneText": "বা"
             },
             {
-              "StoneText": "ঠ"
+              "StoneText": "বী"
             }
           ]
         }
@@ -5087,28 +5080,28 @@
           },
           "foilstones": [
             {
-              "StoneText": "বা"
-            },
-            {
-              "StoneText": "ত"
-            },
-            {
-              "StoneText": "ম"
-            },
-            {
-              "StoneText": "ব"
-            },
-            {
-              "StoneText": "চ"
+              "StoneText": "র"
             },
             {
               "StoneText": "র"
             },
             {
-              "StoneText": "ত"
+              "StoneText": "অ"
             },
             {
-              "StoneText": "ষ"
+              "StoneText": "ট"
+            },
+            {
+              "StoneText": "আ"
+            },
+            {
+              "StoneText": "আ"
+            },
+            {
+              "StoneText": "বা"
+            },
+            {
+              "StoneText": "তী"
             }
           ]
         },
@@ -5128,25 +5121,25 @@
           },
           "foilstones": [
             {
-              "StoneText": "ব"
-            },
-            {
-              "StoneText": "ঢ়"
-            },
-            {
-              "StoneText": "ব"
-            },
-            {
-              "StoneText": "ত"
+              "StoneText": "বা"
             },
             {
               "StoneText": "প"
             },
             {
-              "StoneText": "ন"
+              "StoneText": "য়"
             },
             {
-              "StoneText": "ল"
+              "StoneText": "ত"
+            },
+            {
+              "StoneText": "তী"
+            },
+            {
+              "StoneText": "আ"
+            },
+            {
+              "StoneText": "ত"
             }
           ]
         },
@@ -5169,25 +5162,25 @@
               "StoneText": "ত"
             },
             {
-              "StoneText": "র"
+              "StoneText": "ক"
             },
             {
-              "StoneText": "র"
+              "StoneText": "ণী"
             },
             {
               "StoneText": "ত"
             },
             {
-              "StoneText": "তী"
+              "StoneText": "ঈ"
             },
             {
-              "StoneText": "জ"
+              "StoneText": "ত"
             },
             {
-              "StoneText": "তী"
+              "StoneText": "ট"
             },
             {
-              "StoneText": "ষ"
+              "StoneText": "ত"
             }
           ]
         },
@@ -5207,22 +5200,22 @@
           },
           "foilstones": [
             {
-              "StoneText": "আ"
+              "StoneText": "ঠ"
             },
             {
-              "StoneText": "র"
+              "StoneText": "ত"
             },
             {
-              "StoneText": "ঞ"
+              "StoneText": "ঠ"
             },
             {
-              "StoneText": "র"
+              "StoneText": "ণী"
             },
             {
-              "StoneText": "র"
+              "StoneText": "ঢ়"
             },
             {
-              "StoneText": "ঝ"
+              "StoneText": "অ"
             }
           ]
         },
@@ -5242,31 +5235,31 @@
           },
           "foilstones": [
             {
-              "StoneText": "ত"
+              "StoneText": "তী"
+            },
+            {
+              "StoneText": "ম"
+            },
+            {
+              "StoneText": "ঢ়"
+            },
+            {
+              "StoneText": "ন"
+            },
+            {
+              "StoneText": "ল"
+            },
+            {
+              "StoneText": "ড়"
+            },
+            {
+              "StoneText": "র"
             },
             {
               "StoneText": "ক"
             },
             {
-              "StoneText": "চ"
-            },
-            {
-              "StoneText": "ব"
-            },
-            {
-              "StoneText": "তী"
-            },
-            {
-              "StoneText": "তী"
-            },
-            {
-              "StoneText": "ণী"
-            },
-            {
-              "StoneText": "ত"
-            },
-            {
-              "StoneText": "শী"
+              "StoneText": "ঠ"
             }
           ]
         }
@@ -5295,25 +5288,25 @@
           },
           "foilstones": [
             {
+              "StoneText": "ড"
+            },
+            {
+              "StoneText": "ল"
+            },
+            {
+              "StoneText": "ঈ"
+            },
+            {
+              "StoneText": "ড"
+            },
+            {
+              "StoneText": "ই"
+            },
+            {
               "StoneText": "শ"
             },
             {
-              "StoneText": "ট"
-            },
-            {
-              "StoneText": "র"
-            },
-            {
-              "StoneText": "ড"
-            },
-            {
-              "StoneText": "ঞ"
-            },
-            {
-              "StoneText": "ড"
-            },
-            {
-              "StoneText": "র"
+              "StoneText": "ল"
             }
           ]
         },
@@ -5333,25 +5326,25 @@
               "StoneText": "ঝ"
             },
             {
-              "StoneText": "ল"
+              "StoneText": "ঢ়"
             },
             {
-              "StoneText": "ত"
+              "StoneText": "য়"
             },
             {
-              "StoneText": "ষ"
+              "StoneText": "প"
             },
             {
-              "StoneText": "ড়"
+              "StoneText": "ব"
             },
             {
-              "StoneText": "শ"
+              "StoneText": "ড"
             },
             {
               "StoneText": "ক"
             },
             {
-              "StoneText": "শ"
+              "StoneText": "ল"
             }
           ]
         },
@@ -5368,28 +5361,28 @@
           },
           "foilstones": [
             {
-              "StoneText": "ট"
-            },
-            {
-              "StoneText": "শ"
-            },
-            {
-              "StoneText": "র"
-            },
-            {
-              "StoneText": "দ"
-            },
-            {
-              "StoneText": "ষ"
-            },
-            {
-              "StoneText": "শ"
+              "StoneText": "ঝ"
             },
             {
               "StoneText": "ঢ়"
             },
             {
-              "StoneText": "ঞ"
+              "StoneText": "ঈ"
+            },
+            {
+              "StoneText": "ঠ"
+            },
+            {
+              "StoneText": "দ"
+            },
+            {
+              "StoneText": "শ"
+            },
+            {
+              "StoneText": "ড"
+            },
+            {
+              "StoneText": "দ"
             }
           ]
         },
@@ -5406,31 +5399,31 @@
           },
           "foilstones": [
             {
-              "StoneText": "শ"
+              "StoneText": "ত"
+            },
+            {
+              "StoneText": "ই"
+            },
+            {
+              "StoneText": "জ"
+            },
+            {
+              "StoneText": "ঞ"
+            },
+            {
+              "StoneText": "ধ"
             },
             {
               "StoneText": "য়"
             },
             {
-              "StoneText": "দ"
-            },
-            {
-              "StoneText": "ড"
-            },
-            {
-              "StoneText": "ঈ"
-            },
-            {
-              "StoneText": "র"
-            },
-            {
-              "StoneText": "ঢ়"
-            },
-            {
               "StoneText": "প"
             },
             {
-              "StoneText": "ঈ"
+              "StoneText": "ব"
+            },
+            {
+              "StoneText": "ট"
             }
           ]
         },
@@ -5447,22 +5440,22 @@
           },
           "foilstones": [
             {
-              "StoneText": "ড"
-            },
-            {
-              "StoneText": "ন"
-            },
-            {
-              "StoneText": "ব"
-            },
-            {
-              "StoneText": "ধ"
-            },
-            {
-              "StoneText": "ড়"
+              "StoneText": "ম"
             },
             {
               "StoneText": "ম"
+            },
+            {
+              "StoneText": "য়"
+            },
+            {
+              "StoneText": "শ"
+            },
+            {
+              "StoneText": "অ"
+            },
+            {
+              "StoneText": "ল"
             }
           ]
         }
@@ -5491,28 +5484,28 @@
           },
           "foilstones": [
             {
-              "StoneText": "ধ"
-            },
-            {
-              "StoneText": "ঙ"
-            },
-            {
-              "StoneText": "ণ"
-            },
-            {
-              "StoneText": "ল"
-            },
-            {
-              "StoneText": "উ"
-            },
-            {
-              "StoneText": "য়"
-            },
-            {
               "StoneText": "প"
             },
             {
-              "StoneText": "ড"
+              "StoneText": "ঞ"
+            },
+            {
+              "StoneText": "শ"
+            },
+            {
+              "StoneText": "র"
+            },
+            {
+              "StoneText": "ক"
+            },
+            {
+              "StoneText": "ঈ"
+            },
+            {
+              "StoneText": "ড়"
+            },
+            {
+              "StoneText": "ষ"
             }
           ]
         },
@@ -5529,31 +5522,31 @@
           },
           "foilstones": [
             {
-              "StoneText": "ড"
+              "StoneText": "উ"
             },
             {
-              "StoneText": "ঙ"
+              "StoneText": "ন"
             },
             {
-              "StoneText": "ক"
-            },
-            {
-              "StoneText": "র"
+              "StoneText": "উ"
             },
             {
               "StoneText": "দ"
             },
             {
-              "StoneText": "য়"
+              "StoneText": "উ"
             },
             {
-              "StoneText": "ঠ"
+              "StoneText": "আ"
             },
             {
-              "StoneText": "ঙ"
+              "StoneText": "জ"
             },
             {
-              "StoneText": "ড"
+              "StoneText": "ধ"
+            },
+            {
+              "StoneText": "চ"
             }
           ]
         },
@@ -5570,28 +5563,28 @@
           },
           "foilstones": [
             {
-              "StoneText": "ল"
+              "StoneText": "য়"
             },
             {
-              "StoneText": "ন"
+              "StoneText": "অ"
             },
             {
-              "StoneText": "ল"
-            },
-            {
-              "StoneText": "ত"
-            },
-            {
-              "StoneText": "ট"
-            },
-            {
-              "StoneText": "ড়"
+              "StoneText": "আ"
             },
             {
               "StoneText": "দ"
             },
             {
-              "StoneText": "ধ"
+              "StoneText": "দ"
+            },
+            {
+              "StoneText": "ড"
+            },
+            {
+              "StoneText": "র"
+            },
+            {
+              "StoneText": "ঠ"
             }
           ]
         },
@@ -5608,25 +5601,25 @@
           },
           "foilstones": [
             {
-              "StoneText": "ন"
+              "StoneText": "ক"
             },
             {
-              "StoneText": "আ"
-            },
-            {
-              "StoneText": "উ"
-            },
-            {
-              "StoneText": "উ"
-            },
-            {
-              "StoneText": "ন"
-            },
-            {
-              "StoneText": "ড়"
+              "StoneText": "র"
             },
             {
               "StoneText": "ধ"
+            },
+            {
+              "StoneText": "ড"
+            },
+            {
+              "StoneText": "অ"
+            },
+            {
+              "StoneText": "ক"
+            },
+            {
+              "StoneText": "ড"
             }
           ]
         },
@@ -5643,28 +5636,28 @@
           },
           "foilstones": [
             {
-              "StoneText": "উ"
-            },
-            {
-              "StoneText": "উ"
-            },
-            {
-              "StoneText": "ঠ"
-            },
-            {
-              "StoneText": "ক"
-            },
-            {
-              "StoneText": "ঝ"
-            },
-            {
               "StoneText": "র"
+            },
+            {
+              "StoneText": "দ"
             },
             {
               "StoneText": "চ"
             },
             {
+              "StoneText": "ড়"
+            },
+            {
               "StoneText": "জ"
+            },
+            {
+              "StoneText": "উ"
+            },
+            {
+              "StoneText": "ধ"
+            },
+            {
+              "StoneText": "দ"
             }
           ]
         }
@@ -5693,28 +5686,28 @@
           },
           "foilstones": [
             {
-              "StoneText": "ঈ"
+              "StoneText": "শ"
             },
             {
               "StoneText": "ট"
             },
             {
-              "StoneText": "ঝ"
+              "StoneText": "ষ"
             },
             {
-              "StoneText": "ম"
+              "StoneText": "ঈ"
             },
             {
-              "StoneText": "চ"
+              "StoneText": "ক"
             },
             {
-              "StoneText": "শ"
+              "StoneText": "য়"
             },
             {
-              "StoneText": "ধ"
+              "StoneText": "দ"
             },
             {
-              "StoneText": "শ"
+              "StoneText": "ড"
             }
           ]
         },
@@ -5731,28 +5724,28 @@
           },
           "foilstones": [
             {
-              "StoneText": "ধ"
+              "StoneText": "শ"
             },
             {
-              "StoneText": "ত"
+              "StoneText": "অ"
             },
             {
               "StoneText": "শ"
             },
             {
-              "StoneText": "ই"
+              "StoneText": "ঢ়"
+            },
+            {
+              "StoneText": "ঞ"
+            },
+            {
+              "StoneText": "ন"
             },
             {
               "StoneText": "ধ"
             },
             {
-              "StoneText": "ধ"
-            },
-            {
-              "StoneText": "ষ"
-            },
-            {
-              "StoneText": "চ"
+              "StoneText": "ট"
             }
           ]
         },
@@ -5769,28 +5762,28 @@
           },
           "foilstones": [
             {
-              "StoneText": "ঢ়"
+              "StoneText": "প"
             },
             {
-              "StoneText": "শ"
+              "StoneText": "অ"
             },
             {
-              "StoneText": "ণ"
+              "StoneText": "ঞ"
             },
             {
-              "StoneText": "ন"
+              "StoneText": "ব"
             },
             {
-              "StoneText": "ট"
+              "StoneText": "ম"
             },
             {
-              "StoneText": "দ"
+              "StoneText": "ধ"
             },
             {
-              "StoneText": "শ"
+              "StoneText": "ঈ"
             },
             {
-              "StoneText": "র"
+              "StoneText": "ল"
             }
           ]
         },
@@ -5807,25 +5800,25 @@
           },
           "foilstones": [
             {
-              "StoneText": "ণ"
+              "StoneText": "দ"
             },
             {
-              "StoneText": "ধ"
+              "StoneText": "ক"
             },
             {
-              "StoneText": "ধ"
+              "StoneText": "ঙ"
             },
             {
-              "StoneText": "শ"
-            },
-            {
-              "StoneText": "ই"
-            },
-            {
-              "StoneText": "শ"
+              "StoneText": "ড"
             },
             {
               "StoneText": "ই"
+            },
+            {
+              "StoneText": "ড"
+            },
+            {
+              "StoneText": "ঝ"
             }
           ]
         },
@@ -5842,31 +5835,31 @@
           },
           "foilstones": [
             {
-              "StoneText": "ঠ"
+              "StoneText": "ল"
             },
             {
               "StoneText": "শ"
             },
             {
-              "StoneText": "ঝ"
+              "StoneText": "ধ"
             },
             {
-              "StoneText": "ঈ"
+              "StoneText": "অ"
             },
             {
-              "StoneText": "ঞ"
-            },
-            {
-              "StoneText": "ম"
+              "StoneText": "ল"
             },
             {
               "StoneText": "শ"
             },
             {
-              "StoneText": "আ"
+              "StoneText": "ঢ়"
             },
             {
-              "StoneText": "ঠ"
+              "StoneText": "ষ"
+            },
+            {
+              "StoneText": "ড"
             }
           ]
         }
@@ -5895,28 +5888,28 @@
           },
           "foilstones": [
             {
-              "StoneText": "ঞ"
+              "StoneText": "শ"
             },
             {
               "StoneText": "অ"
             },
             {
-              "StoneText": "ঙ"
+              "StoneText": "ব"
             },
             {
-              "StoneText": "ঙ"
+              "StoneText": "ক"
             },
             {
-              "StoneText": "উ"
-            },
-            {
-              "StoneText": "শ"
-            },
-            {
-              "StoneText": "ষ"
+              "StoneText": "ট"
             },
             {
               "StoneText": "শ"
+            },
+            {
+              "StoneText": "ণ"
+            },
+            {
+              "StoneText": "চ"
             }
           ]
         },
@@ -5933,28 +5926,28 @@
           },
           "foilstones": [
             {
-              "StoneText": "ম"
+              "StoneText": "চ"
             },
             {
-              "StoneText": "উ"
+              "StoneText": "ব"
             },
             {
-              "StoneText": "ত"
+              "StoneText": "র"
+            },
+            {
+              "StoneText": "ঈ"
             },
             {
               "StoneText": "শ"
             },
             {
-              "StoneText": "ড়"
+              "StoneText": "ঈ"
             },
             {
-              "StoneText": "ড"
+              "StoneText": "ঝ"
             },
             {
-              "StoneText": "প"
-            },
-            {
-              "StoneText": "প"
+              "StoneText": "ই"
             }
           ]
         },
@@ -5971,28 +5964,28 @@
           },
           "foilstones": [
             {
-              "StoneText": "শ"
+              "StoneText": "জ"
             },
             {
-              "StoneText": "ঠ"
-            },
-            {
-              "StoneText": "প"
-            },
-            {
-              "StoneText": "প"
-            },
-            {
-              "StoneText": "ন"
+              "StoneText": "ষ"
             },
             {
               "StoneText": "দ"
             },
             {
-              "StoneText": "ল"
+              "StoneText": "দ"
             },
             {
-              "StoneText": "উ"
+              "StoneText": "য়"
+            },
+            {
+              "StoneText": "আ"
+            },
+            {
+              "StoneText": "শ"
+            },
+            {
+              "StoneText": "প"
             }
           ]
         },
@@ -6009,31 +6002,31 @@
           },
           "foilstones": [
             {
-              "StoneText": "ক"
+              "StoneText": "ট"
             },
             {
-              "StoneText": "ষ"
+              "StoneText": "র"
+            },
+            {
+              "StoneText": "শ"
+            },
+            {
+              "StoneText": "প"
+            },
+            {
+              "StoneText": "ড"
+            },
+            {
+              "StoneText": "ড়"
             },
             {
               "StoneText": "উ"
             },
             {
-              "StoneText": "প"
-            },
-            {
-              "StoneText": "ষ"
-            },
-            {
-              "StoneText": "ঙ"
-            },
-            {
-              "StoneText": "প"
-            },
-            {
-              "StoneText": "ঞ"
-            },
-            {
               "StoneText": "শ"
+            },
+            {
+              "StoneText": "ড়"
             }
           ]
         },
@@ -6056,19 +6049,19 @@
               "StoneText": "ঢ়"
             },
             {
-              "StoneText": "ধ"
+              "StoneText": "ই"
             },
             {
-              "StoneText": "ত"
+              "StoneText": "ড"
             },
             {
-              "StoneText": "উ"
+              "StoneText": "ড"
             },
             {
-              "StoneText": "র"
+              "StoneText": "ক"
             },
             {
-              "StoneText": "অ"
+              "StoneText": "ঙ"
             }
           ]
         }
@@ -6097,10 +6090,10 @@
           },
           "foilstones": [
             {
-              "StoneText": "ত"
+              "StoneText": "ঝ"
             },
             {
-              "StoneText": "ঙ"
+              "StoneText": "ণ"
             },
             {
               "StoneText": "ঞ"
@@ -6109,16 +6102,16 @@
               "StoneText": "ড"
             },
             {
-              "StoneText": "ঈ"
+              "StoneText": "ঢ়"
             },
             {
-              "StoneText": "উ"
+              "StoneText": "ড়"
+            },
+            {
+              "StoneText": "র"
             },
             {
               "StoneText": "ধ"
-            },
-            {
-              "StoneText": "ঙ"
             }
           ]
         },
@@ -6135,28 +6128,28 @@
           },
           "foilstones": [
             {
-              "StoneText": "ঞ"
+              "StoneText": "ম"
             },
             {
-              "StoneText": "ধ"
+              "StoneText": "ট"
             },
             {
-              "StoneText": "ষ"
+              "StoneText": "ড"
             },
             {
-              "StoneText": "ঠ"
+              "StoneText": "ই"
             },
             {
-              "StoneText": "শ"
+              "StoneText": "ট"
             },
             {
-              "StoneText": "র"
+              "StoneText": "ট"
             },
             {
-              "StoneText": "ঈ"
+              "StoneText": "ই"
             },
             {
-              "StoneText": "ধ"
+              "StoneText": "ই"
             }
           ]
         },
@@ -6173,19 +6166,16 @@
           },
           "foilstones": [
             {
-              "StoneText": "শ"
+              "StoneText": "দ"
             },
             {
-              "StoneText": "ড"
+              "StoneText": "ণ"
             },
             {
-              "StoneText": "ত"
+              "StoneText": "উ"
             },
             {
-              "StoneText": "ষ"
-            },
-            {
-              "StoneText": "আ"
+              "StoneText": "ই"
             },
             {
               "StoneText": "ত"
@@ -6194,7 +6184,10 @@
               "StoneText": "দ"
             },
             {
-              "StoneText": "ড"
+              "StoneText": "উ"
+            },
+            {
+              "StoneText": "ন"
             }
           ]
         },
@@ -6211,31 +6204,31 @@
           },
           "foilstones": [
             {
-              "StoneText": "ঠ"
-            },
-            {
-              "StoneText": "ঝ"
-            },
-            {
-              "StoneText": "ঙ"
+              "StoneText": "প"
             },
             {
               "StoneText": "ধ"
             },
             {
-              "StoneText": "শ"
+              "StoneText": "ধ"
             },
             {
-              "StoneText": "ণ"
+              "StoneText": "ঢ়"
             },
             {
-              "StoneText": "ই"
+              "StoneText": "ষ"
             },
             {
-              "StoneText": "ম"
+              "StoneText": "ষ"
             },
             {
-              "StoneText": "জ"
+              "StoneText": "ঝ"
+            },
+            {
+              "StoneText": "ষ"
+            },
+            {
+              "StoneText": "ধ"
             }
           ]
         },
@@ -6252,25 +6245,25 @@
           },
           "foilstones": [
             {
-              "StoneText": "র"
-            },
-            {
-              "StoneText": "ঞ"
+              "StoneText": "ড"
             },
             {
               "StoneText": "ড"
             },
             {
-              "StoneText": "দ"
+              "StoneText": "ঠ"
             },
             {
-              "StoneText": "য়"
-            },
-            {
-              "StoneText": "ব"
+              "StoneText": "শ"
             },
             {
               "StoneText": "ই"
+            },
+            {
+              "StoneText": "ঢ়"
+            },
+            {
+              "StoneText": "অ"
             }
           ]
         }
@@ -6299,28 +6292,28 @@
           },
           "foilstones": [
             {
-              "StoneText": "ই"
-            },
-            {
-              "StoneText": "উ"
-            },
-            {
-              "StoneText": "উ"
-            },
-            {
-              "StoneText": "জ"
-            },
-            {
-              "StoneText": "জ"
-            },
-            {
-              "StoneText": "উ"
-            },
-            {
-              "StoneText": "উ"
-            },
-            {
               "StoneText": "শ"
+            },
+            {
+              "StoneText": "উ"
+            },
+            {
+              "StoneText": "ন"
+            },
+            {
+              "StoneText": "ঢ়"
+            },
+            {
+              "StoneText": "দ"
+            },
+            {
+              "StoneText": "ঢ়"
+            },
+            {
+              "StoneText": "চ"
+            },
+            {
+              "StoneText": "উ"
             }
           ]
         },
@@ -6337,28 +6330,28 @@
           },
           "foilstones": [
             {
-              "StoneText": "ক"
+              "StoneText": "ড"
             },
             {
-              "StoneText": "চ"
+              "StoneText": "ঠ"
             },
             {
-              "StoneText": "ন"
+              "StoneText": "র"
             },
             {
-              "StoneText": "য়"
-            },
-            {
-              "StoneText": "শ"
-            },
-            {
-              "StoneText": "ট"
+              "StoneText": "অ"
             },
             {
               "StoneText": "ঢ়"
             },
             {
-              "StoneText": "ণ"
+              "StoneText": "অ"
+            },
+            {
+              "StoneText": "ম"
+            },
+            {
+              "StoneText": "ম"
             }
           ]
         },
@@ -6375,28 +6368,28 @@
           },
           "foilstones": [
             {
-              "StoneText": "জ"
+              "StoneText": "উ"
             },
             {
               "StoneText": "উ"
             },
             {
-              "StoneText": "ক"
+              "StoneText": "ঈ"
             },
             {
-              "StoneText": "ঙ"
+              "StoneText": "চ"
+            },
+            {
+              "StoneText": "প"
+            },
+            {
+              "StoneText": "প"
             },
             {
               "StoneText": "জ"
             },
             {
-              "StoneText": "য়"
-            },
-            {
-              "StoneText": "ঞ"
-            },
-            {
-              "StoneText": "ড়"
+              "StoneText": "উ"
             }
           ]
         },
@@ -6413,31 +6406,31 @@
           },
           "foilstones": [
             {
-              "StoneText": "ক"
+              "StoneText": "উ"
             },
             {
-              "StoneText": "ঢ়"
+              "StoneText": "দ"
             },
             {
-              "StoneText": "র"
+              "StoneText": "ম"
+            },
+            {
+              "StoneText": "ঝ"
+            },
+            {
+              "StoneText": "ম"
+            },
+            {
+              "StoneText": "ত"
             },
             {
               "StoneText": "উ"
             },
             {
-              "StoneText": "উ"
-            },
-            {
-              "StoneText": "ঞ"
+              "StoneText": "প"
             },
             {
               "StoneText": "ঠ"
-            },
-            {
-              "StoneText": "শ"
-            },
-            {
-              "StoneText": "অ"
             }
           ]
         },
@@ -6454,25 +6447,25 @@
           },
           "foilstones": [
             {
-              "StoneText": "উ"
-            },
-            {
               "StoneText": "ঝ"
             },
             {
               "StoneText": "উ"
             },
             {
-              "StoneText": "উ"
+              "StoneText": "ণ"
             },
             {
-              "StoneText": "ঞ"
+              "StoneText": "ধ"
             },
             {
-              "StoneText": "ক"
+              "StoneText": "প"
             },
             {
-              "StoneText": "র"
+              "StoneText": "আ"
+            },
+            {
+              "StoneText": "জ"
             }
           ]
         }
@@ -6507,25 +6500,25 @@
               "StoneText": "র"
             },
             {
-              "StoneText": "ডু"
-            },
-            {
-              "StoneText": "অ"
+              "StoneText": "ধু"
             },
             {
               "StoneText": "র"
             },
             {
-              "StoneText": "ষ"
+              "StoneText": "শু"
             },
             {
-              "StoneText": "অ"
+              "StoneText": "ম"
             },
             {
               "StoneText": "ধ"
             },
             {
-              "StoneText": "য়"
+              "StoneText": "শ"
+            },
+            {
+              "StoneText": "জ"
             }
           ]
         },
@@ -6548,28 +6541,28 @@
           },
           "foilstones": [
             {
+              "StoneText": "মু"
+            },
+            {
+              "StoneText": "ঙ"
+            },
+            {
+              "StoneText": "প"
+            },
+            {
+              "StoneText": "ডু"
+            },
+            {
+              "StoneText": "মু"
+            },
+            {
               "StoneText": "রু"
             },
             {
-              "StoneText": "শু"
+              "StoneText": "ষ"
             },
             {
-              "StoneText": "ধ"
-            },
-            {
-              "StoneText": "শু"
-            },
-            {
-              "StoneText": "ধু"
-            },
-            {
-              "StoneText": "ঢ়"
-            },
-            {
-              "StoneText": "শ"
-            },
-            {
-              "StoneText": "ঞ"
+              "StoneText": "ষ"
             }
           ]
         },
@@ -6589,28 +6582,28 @@
           },
           "foilstones": [
             {
-              "StoneText": "শ"
+              "StoneText": "মু"
             },
             {
-              "StoneText": "শু"
+              "StoneText": "য়"
+            },
+            {
+              "StoneText": "ট"
             },
             {
               "StoneText": "মু"
             },
             {
-              "StoneText": "ঞ"
+              "StoneText": "মু"
             },
             {
-              "StoneText": "চ"
+              "StoneText": "ড়"
             },
             {
-              "StoneText": "রু"
+              "StoneText": "ঝ"
             },
             {
-              "StoneText": "ন"
-            },
-            {
-              "StoneText": "ল"
+              "StoneText": "র"
             }
           ]
         },
@@ -6630,25 +6623,25 @@
           },
           "foilstones": [
             {
+              "StoneText": "ড"
+            },
+            {
               "StoneText": "র"
+            },
+            {
+              "StoneText": "র"
+            },
+            {
+              "StoneText": "দ"
             },
             {
               "StoneText": "ডু"
             },
             {
-              "StoneText": "র"
+              "StoneText": "শু"
             },
             {
-              "StoneText": "ক"
-            },
-            {
-              "StoneText": "ষ"
-            },
-            {
-              "StoneText": "রু"
-            },
-            {
-              "StoneText": "ঞ"
+              "StoneText": "শু"
             }
           ]
         },
@@ -6671,31 +6664,31 @@
           },
           "foilstones": [
             {
-              "StoneText": "ড"
+              "StoneText": "প"
             },
             {
-              "StoneText": "ধু"
+              "StoneText": "রু"
             },
             {
-              "StoneText": "ন"
+              "StoneText": "র"
             },
             {
-              "StoneText": "দ"
-            },
-            {
-              "StoneText": "ত"
-            },
-            {
-              "StoneText": "ডু"
-            },
-            {
-              "StoneText": "অ"
+              "StoneText": "ড়"
             },
             {
               "StoneText": "প"
             },
             {
-              "StoneText": "ক"
+              "StoneText": "ধু"
+            },
+            {
+              "StoneText": "শু"
+            },
+            {
+              "StoneText": "র"
+            },
+            {
+              "StoneText": "ত"
             }
           ]
         }
@@ -6727,28 +6720,28 @@
           },
           "foilstones": [
             {
-              "StoneText": "শু"
-            },
-            {
-              "StoneText": "প"
-            },
-            {
-              "StoneText": "ঈ"
-            },
-            {
-              "StoneText": "ণ"
-            },
-            {
               "StoneText": "জ"
             },
             {
-              "StoneText": "র"
+              "StoneText": "দু"
             },
             {
               "StoneText": "শু"
             },
             {
-              "StoneText": "প"
+              "StoneText": "ধ"
+            },
+            {
+              "StoneText": "ন"
+            },
+            {
+              "StoneText": "ধ"
+            },
+            {
+              "StoneText": "ধ"
+            },
+            {
+              "StoneText": "ঞ"
             }
           ]
         },
@@ -6768,28 +6761,28 @@
           },
           "foilstones": [
             {
-              "StoneText": "ঞ"
+              "StoneText": "ঢ়"
             },
             {
               "StoneText": "দ"
             },
             {
-              "StoneText": "ক"
+              "StoneText": "য়"
             },
             {
-              "StoneText": "ধ"
-            },
-            {
-              "StoneText": "ন"
+              "StoneText": "দু"
             },
             {
               "StoneText": "ণ"
             },
             {
-              "StoneText": "ড"
+              "StoneText": "ষ"
             },
             {
-              "StoneText": "ধ"
+              "StoneText": "ম"
+            },
+            {
+              "StoneText": "উ"
             }
           ]
         },
@@ -6809,28 +6802,28 @@
           },
           "foilstones": [
             {
-              "StoneText": "দু"
+              "StoneText": "শু"
             },
             {
-              "StoneText": "ধু"
+              "StoneText": "আ"
+            },
+            {
+              "StoneText": "ল"
+            },
+            {
+              "StoneText": "উ"
+            },
+            {
+              "StoneText": "ষ"
+            },
+            {
+              "StoneText": "অ"
             },
             {
               "StoneText": "ঞ"
             },
             {
               "StoneText": "রু"
-            },
-            {
-              "StoneText": "ন"
-            },
-            {
-              "StoneText": "ঠ"
-            },
-            {
-              "StoneText": "ণ"
-            },
-            {
-              "StoneText": "ঞ"
             }
           ]
         },
@@ -6853,22 +6846,22 @@
               "StoneText": "রু"
             },
             {
-              "StoneText": "আ"
+              "StoneText": "শু"
             },
             {
-              "StoneText": "জ"
+              "StoneText": "ধু"
             },
             {
-              "StoneText": "ধ"
+              "StoneText": "রু"
             },
             {
-              "StoneText": "ধ"
+              "StoneText": "শু"
             },
             {
-              "StoneText": "জ"
+              "StoneText": "ধু"
             },
             {
-              "StoneText": "ঝ"
+              "StoneText": "ঈ"
             }
           ]
         },
@@ -6888,31 +6881,31 @@
           },
           "foilstones": [
             {
-              "StoneText": "ণ"
+              "StoneText": "ল"
             },
             {
-              "StoneText": "ড"
+              "StoneText": "ঈ"
             },
             {
               "StoneText": "চ"
             },
             {
-              "StoneText": "র"
+              "StoneText": "উ"
             },
             {
-              "StoneText": "ঠ"
+              "StoneText": "জ"
             },
             {
-              "StoneText": "শু"
+              "StoneText": "ধ"
             },
             {
-              "StoneText": "ঙ"
+              "StoneText": "উ"
             },
             {
-              "StoneText": "ঝ"
+              "StoneText": "আ"
             },
             {
-              "StoneText": "ই"
+              "StoneText": "দু"
             }
           ]
         }
@@ -6944,28 +6937,28 @@
           },
           "foilstones": [
             {
+              "StoneText": "উ"
+            },
+            {
               "StoneText": "ম"
+            },
+            {
+              "StoneText": "ট"
+            },
+            {
+              "StoneText": "ধ"
             },
             {
               "StoneText": "ণ"
             },
             {
-              "StoneText": "রু"
+              "StoneText": "র"
             },
             {
-              "StoneText": "ই"
+              "StoneText": "ত"
             },
             {
-              "StoneText": "ঙ"
-            },
-            {
-              "StoneText": "জ"
-            },
-            {
-              "StoneText": "ধু"
-            },
-            {
-              "StoneText": "রু"
+              "StoneText": "ষ"
             }
           ]
         },
@@ -6985,28 +6978,28 @@
           },
           "foilstones": [
             {
+              "StoneText": "দু"
+            },
+            {
+              "StoneText": "ড়"
+            },
+            {
+              "StoneText": "দ"
+            },
+            {
+              "StoneText": "ট"
+            },
+            {
+              "StoneText": "শু"
+            },
+            {
               "StoneText": "ম"
             },
             {
-              "StoneText": "রু"
+              "StoneText": "দু"
             },
             {
-              "StoneText": "ঢ়"
-            },
-            {
-              "StoneText": "চ"
-            },
-            {
-              "StoneText": "য়"
-            },
-            {
-              "StoneText": "আ"
-            },
-            {
-              "StoneText": "ক"
-            },
-            {
-              "StoneText": "শ"
+              "StoneText": "শু"
             }
           ]
         },
@@ -7026,25 +7019,25 @@
           },
           "foilstones": [
             {
-              "StoneText": "ঞ"
+              "StoneText": "ম"
             },
             {
-              "StoneText": "ণ"
+              "StoneText": "ধু"
             },
             {
-              "StoneText": "ঞ"
+              "StoneText": "ধু"
             },
             {
-              "StoneText": "শু"
+              "StoneText": "ম"
             },
             {
-              "StoneText": "ত"
+              "StoneText": "ব"
             },
             {
-              "StoneText": "ঠ"
+              "StoneText": "রু"
             },
             {
-              "StoneText": "ন"
+              "StoneText": "প"
             }
           ]
         },
@@ -7064,31 +7057,31 @@
           },
           "foilstones": [
             {
-              "StoneText": "দু"
+              "StoneText": "ম"
             },
             {
-              "StoneText": "অ"
+              "StoneText": "ব"
             },
             {
-              "StoneText": "ঢ়"
+              "StoneText": "ঈ"
             },
             {
-              "StoneText": "ল"
+              "StoneText": "রু"
+            },
+            {
+              "StoneText": "র"
+            },
+            {
+              "StoneText": "শু"
             },
             {
               "StoneText": "ণ"
             },
             {
-              "StoneText": "ন"
+              "StoneText": "আ"
             },
             {
-              "StoneText": "রু"
-            },
-            {
-              "StoneText": "রু"
-            },
-            {
-              "StoneText": "ঢ়"
+              "StoneText": "আ"
             }
           ]
         },
@@ -7108,25 +7101,25 @@
           },
           "foilstones": [
             {
+              "StoneText": "ঞ"
+            },
+            {
               "StoneText": "রু"
             },
             {
-              "StoneText": "ত"
+              "StoneText": "রু"
             },
             {
-              "StoneText": "ই"
+              "StoneText": "অ"
             },
             {
-              "StoneText": "দু"
-            },
-            {
-              "StoneText": "উ"
+              "StoneText": "ঈ"
             },
             {
               "StoneText": "শু"
             },
             {
-              "StoneText": "ত"
+              "StoneText": "রু"
             },
             {
               "StoneText": "ধু"
@@ -7158,25 +7151,25 @@
           },
           "foilstones": [
             {
-              "StoneText": "জ"
+              "StoneText": "ন"
             },
             {
-              "StoneText": "প"
-            },
-            {
-              "StoneText": "আ"
-            },
-            {
-              "StoneText": "ম"
-            },
-            {
-              "StoneText": "অ"
+              "StoneText": "ণ"
             },
             {
               "StoneText": "দ"
             },
             {
-              "StoneText": "উ"
+              "StoneText": "প"
+            },
+            {
+              "StoneText": "দ"
+            },
+            {
+              "StoneText": "ণ"
+            },
+            {
+              "StoneText": "র"
             },
             {
               "StoneText": "ক"
@@ -7196,28 +7189,28 @@
           },
           "foilstones": [
             {
-              "StoneText": "ক"
+              "StoneText": "ধ"
             },
             {
-              "StoneText": "ট"
-            },
-            {
-              "StoneText": "ড়"
-            },
-            {
-              "StoneText": "ল"
-            },
-            {
-              "StoneText": "ন"
-            },
-            {
-              "StoneText": "ড়"
+              "StoneText": "ঢ়"
             },
             {
               "StoneText": "দ"
             },
             {
-              "StoneText": "য়"
+              "StoneText": "প"
+            },
+            {
+              "StoneText": "ড়"
+            },
+            {
+              "StoneText": "ষ"
+            },
+            {
+              "StoneText": "ড়"
+            },
+            {
+              "StoneText": "ব"
             }
           ]
         },
@@ -7234,18 +7227,6 @@
           },
           "foilstones": [
             {
-              "StoneText": "প"
-            },
-            {
-              "StoneText": "ম"
-            },
-            {
-              "StoneText": "র"
-            },
-            {
-              "StoneText": "প"
-            },
-            {
               "StoneText": "ঝ"
             },
             {
@@ -7255,7 +7236,19 @@
               "StoneText": "ক"
             },
             {
-              "StoneText": "আ"
+              "StoneText": "ব"
+            },
+            {
+              "StoneText": "উ"
+            },
+            {
+              "StoneText": "ল"
+            },
+            {
+              "StoneText": "ক"
+            },
+            {
+              "StoneText": "প"
             }
           ]
         },
@@ -7272,25 +7265,25 @@
           },
           "foilstones": [
             {
+              "StoneText": "শ"
+            },
+            {
+              "StoneText": "ষ"
+            },
+            {
               "StoneText": "ত"
             },
             {
-              "StoneText": "জ"
-            },
-            {
-              "StoneText": "প"
-            },
-            {
-              "StoneText": "প"
+              "StoneText": "ঠ"
             },
             {
               "StoneText": "দ"
             },
             {
-              "StoneText": "ত"
+              "StoneText": "ক"
             },
             {
-              "StoneText": "প"
+              "StoneText": "আ"
             }
           ]
         },
@@ -7307,19 +7300,19 @@
           },
           "foilstones": [
             {
-              "StoneText": "প"
+              "StoneText": "অ"
             },
             {
-              "StoneText": "প"
+              "StoneText": "ঈ"
             },
             {
-              "StoneText": "ঢ়"
+              "StoneText": "ক"
             },
             {
-              "StoneText": "ট"
+              "StoneText": "দ"
             },
             {
-              "StoneText": "ন"
+              "StoneText": "শ"
             },
             {
               "StoneText": "ন"
@@ -7328,10 +7321,10 @@
               "StoneText": "দ"
             },
             {
-              "StoneText": "জ"
+              "StoneText": "শ"
             },
             {
-              "StoneText": "ঝ"
+              "StoneText": "ঙ"
             }
           ]
         }
@@ -7360,28 +7353,28 @@
           },
           "foilstones": [
             {
-              "StoneText": "দ"
-            },
-            {
-              "StoneText": "দ"
+              "StoneText": "ঝ"
             },
             {
               "StoneText": "প"
             },
             {
-              "StoneText": "ঠ"
+              "StoneText": "ক"
             },
             {
-              "StoneText": "ব"
-            },
-            {
-              "StoneText": "আ"
-            },
-            {
-              "StoneText": "উ"
+              "StoneText": "ল"
             },
             {
               "StoneText": "প"
+            },
+            {
+              "StoneText": "প"
+            },
+            {
+              "StoneText": "প"
+            },
+            {
+              "StoneText": "ল"
             }
           ]
         },
@@ -7398,28 +7391,28 @@
           },
           "foilstones": [
             {
-              "StoneText": "ত"
+              "StoneText": "য়"
             },
             {
-              "StoneText": "আ"
+              "StoneText": "উ"
             },
             {
               "StoneText": "ন"
             },
             {
-              "StoneText": "ঢ়"
+              "StoneText": "ন"
             },
             {
-              "StoneText": "ড"
+              "StoneText": "উ"
             },
             {
               "StoneText": "ঞ"
             },
             {
-              "StoneText": "ম"
+              "StoneText": "ল"
             },
             {
-              "StoneText": "ষ"
+              "StoneText": "দ"
             }
           ]
         },
@@ -7436,28 +7429,28 @@
           },
           "foilstones": [
             {
-              "StoneText": "ড়"
+              "StoneText": "প"
+            },
+            {
+              "StoneText": "য়"
             },
             {
               "StoneText": "ল"
             },
             {
-              "StoneText": "প"
+              "StoneText": "ব"
             },
             {
-              "StoneText": "প"
+              "StoneText": "ঝ"
             },
             {
-              "StoneText": "ণ"
-            },
-            {
-              "StoneText": "ভ"
+              "StoneText": "ড"
             },
             {
               "StoneText": "ড়"
             },
             {
-              "StoneText": "প"
+              "StoneText": "ঢ়"
             }
           ]
         },
@@ -7477,22 +7470,22 @@
               "StoneText": "প"
             },
             {
+              "StoneText": "ভ"
+            },
+            {
               "StoneText": "র"
             },
             {
-              "StoneText": "ট"
+              "StoneText": "ঢ়"
             },
             {
-              "StoneText": "ড"
+              "StoneText": "চ"
             },
             {
-              "StoneText": "ঙ"
+              "StoneText": "য়"
             },
             {
-              "StoneText": "ঞ"
-            },
-            {
-              "StoneText": "ন"
+              "StoneText": "প"
             }
           ]
         },
@@ -7509,31 +7502,31 @@
           },
           "foilstones": [
             {
-              "StoneText": "য়"
+              "StoneText": "ঈ"
+            },
+            {
+              "StoneText": "জ"
+            },
+            {
+              "StoneText": "ল"
+            },
+            {
+              "StoneText": "প"
+            },
+            {
+              "StoneText": "প"
             },
             {
               "StoneText": "ত"
             },
             {
-              "StoneText": "ঠ"
+              "StoneText": "আ"
             },
             {
-              "StoneText": "ণ"
+              "StoneText": "প"
             },
             {
-              "StoneText": "ঝ"
-            },
-            {
-              "StoneText": "উ"
-            },
-            {
-              "StoneText": "ভ"
-            },
-            {
-              "StoneText": "উ"
-            },
-            {
-              "StoneText": "ত"
+              "StoneText": "ঈ"
             }
           ]
         }
@@ -7562,13 +7555,13 @@
           },
           "foilstones": [
             {
-              "StoneText": "ঊ"
+              "StoneText": "ঈ"
             },
             {
-              "StoneText": "অ"
+              "StoneText": "ঞ"
             },
             {
-              "StoneText": "ড"
+              "StoneText": "দ"
             }
           ]
         },
@@ -7585,13 +7578,13 @@
           },
           "foilstones": [
             {
-              "StoneText": "ঊ"
+              "StoneText": "ব"
             },
             {
-              "StoneText": "শ"
+              "StoneText": "ড়"
             },
             {
-              "StoneText": "র"
+              "StoneText": "ম"
             }
           ]
         },
@@ -7608,13 +7601,13 @@
           },
           "foilstones": [
             {
-              "StoneText": "র"
-            },
-            {
-              "StoneText": "র"
+              "StoneText": "ঝ"
             },
             {
               "StoneText": "ঊ"
+            },
+            {
+              "StoneText": "আ"
             }
           ]
         },
@@ -7631,16 +7624,16 @@
           },
           "foilstones": [
             {
-              "StoneText": "ট"
-            },
-            {
-              "StoneText": "ঊ"
-            },
-            {
-              "StoneText": "ভ"
+              "StoneText": "ঞ"
             },
             {
               "StoneText": "ঙ"
+            },
+            {
+              "StoneText": "দ"
+            },
+            {
+              "StoneText": "প"
             }
           ]
         },
@@ -7657,13 +7650,13 @@
           },
           "foilstones": [
             {
-              "StoneText": "ঊ"
+              "StoneText": "দ"
             },
             {
-              "StoneText": "জ"
+              "StoneText": "অ"
             },
             {
-              "StoneText": "য়"
+              "StoneText": "ণ"
             }
           ]
         }
@@ -7695,10 +7688,10 @@
               "StoneText": "ঊ"
             },
             {
-              "StoneText": "জ"
+              "StoneText": "ঢ়"
             },
             {
-              "StoneText": "ত"
+              "StoneText": "ঞ"
             }
           ]
         },
@@ -7715,13 +7708,13 @@
           },
           "foilstones": [
             {
-              "StoneText": "প"
+              "StoneText": "ঞ"
             },
             {
-              "StoneText": "প"
+              "StoneText": "ল"
             },
             {
-              "StoneText": "ঙ"
+              "StoneText": "ধ"
             }
           ]
         },
@@ -7738,13 +7731,13 @@
           },
           "foilstones": [
             {
-              "StoneText": "ঊ"
+              "StoneText": "ঙ"
             },
             {
-              "StoneText": "ঊ"
+              "StoneText": "ভ"
             },
             {
-              "StoneText": "ঊ"
+              "StoneText": "ত"
             }
           ]
         },
@@ -7761,16 +7754,16 @@
           },
           "foilstones": [
             {
-              "StoneText": "জ"
+              "StoneText": "ক"
             },
             {
-              "StoneText": "ই"
+              "StoneText": "ট"
             },
             {
-              "StoneText": "ঝ"
+              "StoneText": "উ"
             },
             {
-              "StoneText": "ঢ়"
+              "StoneText": "প"
             }
           ]
         },
@@ -7787,13 +7780,13 @@
           },
           "foilstones": [
             {
-              "StoneText": "ড"
+              "StoneText": "ঊ"
             },
             {
-              "StoneText": "জ"
+              "StoneText": "র"
             },
             {
-              "StoneText": "ই"
+              "StoneText": "ঊ"
             }
           ]
         }
@@ -7822,28 +7815,28 @@
           },
           "foilstones": [
             {
+              "StoneText": "প"
+            },
+            {
+              "StoneText": "অ"
+            },
+            {
               "StoneText": "ই"
             },
             {
-              "StoneText": "ট"
-            },
-            {
-              "StoneText": "ট"
-            },
-            {
               "StoneText": "ঊ"
             },
             {
-              "StoneText": "ঊ"
+              "StoneText": "ধ"
             },
             {
-              "StoneText": "র"
+              "StoneText": "প"
             },
             {
-              "StoneText": "ঈ"
+              "StoneText": "অ"
             },
             {
-              "StoneText": "ষ"
+              "StoneText": "ঝ"
             }
           ]
         },
@@ -7860,28 +7853,28 @@
           },
           "foilstones": [
             {
+              "StoneText": "ষ"
+            },
+            {
               "StoneText": "র"
             },
             {
-              "StoneText": "য়"
+              "StoneText": "আ"
             },
             {
-              "StoneText": "ণ"
+              "StoneText": "আ"
             },
             {
-              "StoneText": "ক"
+              "StoneText": "ভ"
             },
             {
-              "StoneText": "ধ"
+              "StoneText": "প"
             },
             {
-              "StoneText": "ঢ়"
+              "StoneText": "ঠ"
             },
             {
-              "StoneText": "ঊ"
-            },
-            {
-              "StoneText": "ঊ"
+              "StoneText": "ই"
             }
           ]
         },
@@ -7898,25 +7891,25 @@
           },
           "foilstones": [
             {
-              "StoneText": "প"
-            },
-            {
               "StoneText": "ঙ"
-            },
-            {
-              "StoneText": "ঢ়"
             },
             {
               "StoneText": "র"
             },
             {
-              "StoneText": "জ"
+              "StoneText": "অ"
             },
             {
-              "StoneText": "ঝ"
+              "StoneText": "আ"
             },
             {
-              "StoneText": "ভ"
+              "StoneText": "র"
+            },
+            {
+              "StoneText": "ষ"
+            },
+            {
+              "StoneText": "প"
             }
           ]
         },
@@ -7933,31 +7926,31 @@
           },
           "foilstones": [
             {
+              "StoneText": "র"
+            },
+            {
+              "StoneText": "জ"
+            },
+            {
+              "StoneText": "ঊ"
+            },
+            {
+              "StoneText": "দ"
+            },
+            {
+              "StoneText": "ট"
+            },
+            {
+              "StoneText": "ড"
+            },
+            {
+              "StoneText": "ধ"
+            },
+            {
+              "StoneText": "র"
+            },
+            {
               "StoneText": "ভ"
-            },
-            {
-              "StoneText": "ণ"
-            },
-            {
-              "StoneText": "প"
-            },
-            {
-              "StoneText": "ন"
-            },
-            {
-              "StoneText": "ভ"
-            },
-            {
-              "StoneText": "ঢ়"
-            },
-            {
-              "StoneText": "প"
-            },
-            {
-              "StoneText": "ল"
-            },
-            {
-              "StoneText": "ই"
             }
           ]
         },
@@ -7974,28 +7967,28 @@
           },
           "foilstones": [
             {
-              "StoneText": "ঊ"
-            },
-            {
-              "StoneText": "শ"
-            },
-            {
-              "StoneText": "চ"
+              "StoneText": "আ"
             },
             {
               "StoneText": "ধ"
             },
             {
-              "StoneText": "দ"
+              "StoneText": "আ"
             },
             {
-              "StoneText": "র"
+              "StoneText": "চ"
             },
             {
-              "StoneText": "ত"
+              "StoneText": "ই"
             },
             {
-              "StoneText": "প"
+              "StoneText": "উ"
+            },
+            {
+              "StoneText": "ই"
+            },
+            {
+              "StoneText": "ঊ"
             }
           ]
         }
@@ -8024,28 +8017,28 @@
           },
           "foilstones": [
             {
-              "StoneText": "ক"
+              "StoneText": "ব"
+            },
+            {
+              "StoneText": "জ"
             },
             {
               "StoneText": "ত"
             },
             {
-              "StoneText": "দ"
+              "StoneText": "ঞ"
             },
             {
-              "StoneText": "দ"
+              "StoneText": "ন"
             },
             {
-              "StoneText": "ণ"
+              "StoneText": "ক"
             },
             {
-              "StoneText": "চ"
+              "StoneText": "ই"
             },
             {
-              "StoneText": "ল"
-            },
-            {
-              "StoneText": "র"
+              "StoneText": "ড"
             }
           ]
         },
@@ -8062,25 +8055,25 @@
           },
           "foilstones": [
             {
-              "StoneText": "ক"
+              "StoneText": "ভ"
             },
             {
-              "StoneText": "ব"
-            },
-            {
-              "StoneText": "ষ"
+              "StoneText": "ঝ"
             },
             {
               "StoneText": "র"
             },
             {
+              "StoneText": "চ"
+            },
+            {
               "StoneText": "ধ"
             },
             {
-              "StoneText": "ত"
+              "StoneText": "ক"
             },
             {
-              "StoneText": "ঊ"
+              "StoneText": "ঈ"
             },
             {
               "StoneText": "ণ"
@@ -8100,28 +8093,28 @@
           },
           "foilstones": [
             {
-              "StoneText": "ক"
-            },
-            {
               "StoneText": "ট"
             },
             {
-              "StoneText": "ড়"
+              "StoneText": "ভ"
             },
             {
-              "StoneText": "ম"
+              "StoneText": "দ"
             },
             {
-              "StoneText": "চ"
+              "StoneText": "য়"
             },
             {
-              "StoneText": "ড়"
+              "StoneText": "ল"
             },
             {
-              "StoneText": "ম"
+              "StoneText": "ঠ"
             },
             {
               "StoneText": "ড"
+            },
+            {
+              "StoneText": "দ"
             }
           ]
         },
@@ -8138,22 +8131,22 @@
           },
           "foilstones": [
             {
-              "StoneText": "আ"
+              "StoneText": "ণ"
             },
             {
-              "StoneText": "র"
+              "StoneText": "ধ"
             },
             {
-              "StoneText": "ত"
+              "StoneText": "জ"
             },
             {
-              "StoneText": "ভ"
+              "StoneText": "ঙ"
             },
             {
-              "StoneText": "র"
+              "StoneText": "ব"
             },
             {
-              "StoneText": "ড়"
+              "StoneText": "দ"
             },
             {
               "StoneText": "দ"
@@ -8173,28 +8166,28 @@
           },
           "foilstones": [
             {
-              "StoneText": "ড়"
+              "StoneText": "ল"
             },
             {
-              "StoneText": "শ"
+              "StoneText": "ম"
             },
             {
-              "StoneText": "ন"
+              "StoneText": "ঈ"
             },
             {
-              "StoneText": "ত"
+              "StoneText": "প"
+            },
+            {
+              "StoneText": "ঝ"
+            },
+            {
+              "StoneText": "চ"
             },
             {
               "StoneText": "দ"
             },
             {
-              "StoneText": "র"
-            },
-            {
-              "StoneText": "অ"
-            },
-            {
-              "StoneText": "র"
+              "StoneText": "আ"
             },
             {
               "StoneText": "ঙ"
@@ -8229,28 +8222,28 @@
           },
           "foilstones": [
             {
-              "StoneText": "ড"
-            },
-            {
-              "StoneText": "ভ"
-            },
-            {
-              "StoneText": "ড়"
+              "StoneText": "ন"
             },
             {
               "StoneText": "দ"
             },
             {
-              "StoneText": "র"
+              "StoneText": "আ"
             },
             {
-              "StoneText": "পূ"
+              "StoneText": "দ"
+            },
+            {
+              "StoneText": "ঈ"
+            },
+            {
+              "StoneText": "ঊ"
             },
             {
               "StoneText": "প"
             },
             {
-              "StoneText": "ড়"
+              "StoneText": "ধ"
             }
           ]
         },
@@ -8270,28 +8263,28 @@
           },
           "foilstones": [
             {
-              "StoneText": "ঝ"
+              "StoneText": "ঊ"
             },
             {
-              "StoneText": "ভূ"
+              "StoneText": "ঢ়"
             },
             {
-              "StoneText": "ভূ"
+              "StoneText": "ঊ"
             },
             {
-              "StoneText": "প"
+              "StoneText": "ড়"
             },
             {
               "StoneText": "দ"
             },
             {
-              "StoneText": "শ"
+              "StoneText": "ড"
             },
             {
-              "StoneText": "প"
+              "StoneText": "ভ"
             },
             {
-              "StoneText": "র"
+              "StoneText": "উ"
             }
           ]
         },
@@ -8311,25 +8304,25 @@
           },
           "foilstones": [
             {
-              "StoneText": "ক"
-            },
-            {
-              "StoneText": "ঊ"
-            },
-            {
-              "StoneText": "ড"
-            },
-            {
-              "StoneText": "ষ"
-            },
-            {
-              "StoneText": "ন"
+              "StoneText": "আ"
             },
             {
               "StoneText": "প"
             },
             {
               "StoneText": "চ"
+            },
+            {
+              "StoneText": "ভূ"
+            },
+            {
+              "StoneText": "প"
+            },
+            {
+              "StoneText": "ড়"
+            },
+            {
+              "StoneText": "রূ"
             }
           ]
         },
@@ -8349,31 +8342,31 @@
           },
           "foilstones": [
             {
+              "StoneText": "য়"
+            },
+            {
+              "StoneText": "প"
+            },
+            {
+              "StoneText": "র"
+            },
+            {
+              "StoneText": "ঊ"
+            },
+            {
+              "StoneText": "ঊ"
+            },
+            {
+              "StoneText": "ঊ"
+            },
+            {
               "StoneText": "অ"
             },
             {
               "StoneText": "জ"
             },
             {
-              "StoneText": "ঢ়"
-            },
-            {
-              "StoneText": "র"
-            },
-            {
-              "StoneText": "অ"
-            },
-            {
-              "StoneText": "উ"
-            },
-            {
-              "StoneText": "ম"
-            },
-            {
-              "StoneText": "ঊ"
-            },
-            {
-              "StoneText": "ড়"
+              "StoneText": "ল"
             }
           ]
         },
@@ -8396,25 +8389,25 @@
               "StoneText": "রূ"
             },
             {
+              "StoneText": "ণ"
+            },
+            {
+              "StoneText": "র"
+            },
+            {
+              "StoneText": "র"
+            },
+            {
+              "StoneText": "ঠ"
+            },
+            {
+              "StoneText": "ম"
+            },
+            {
               "StoneText": "ত"
             },
             {
-              "StoneText": "আ"
-            },
-            {
-              "StoneText": "ন"
-            },
-            {
-              "StoneText": "প"
-            },
-            {
-              "StoneText": "ত"
-            },
-            {
-              "StoneText": "ঞ"
-            },
-            {
-              "StoneText": "ধ"
+              "StoneText": "র"
             }
           ]
         }
@@ -8446,28 +8439,28 @@
           },
           "foilstones": [
             {
-              "StoneText": "দূ"
+              "StoneText": "ঢ়"
             },
             {
-              "StoneText": "ভূ"
+              "StoneText": "ধ"
             },
             {
-              "StoneText": "ভূ"
-            },
-            {
-              "StoneText": "ক"
-            },
-            {
-              "StoneText": "ঈ"
+              "StoneText": "ত"
             },
             {
               "StoneText": "ব"
             },
             {
-              "StoneText": "ঢ়"
+              "StoneText": "আ"
+            },
+            {
+              "StoneText": "ব"
             },
             {
               "StoneText": "ত"
+            },
+            {
+              "StoneText": "ঠ"
             }
           ]
         },
@@ -8487,31 +8480,31 @@
           },
           "foilstones": [
             {
-              "StoneText": "ঈ"
+              "StoneText": "ত"
+            },
+            {
+              "StoneText": "ল"
             },
             {
               "StoneText": "ত"
             },
             {
-              "StoneText": "ত"
+              "StoneText": "ভূ"
             },
             {
               "StoneText": "ষ"
             },
             {
-              "StoneText": "ড়"
-            },
-            {
-              "StoneText": "চ"
+              "StoneText": "ত"
             },
             {
               "StoneText": "ত"
             },
             {
-              "StoneText": "ধ"
+              "StoneText": "ভূ"
             },
             {
-              "StoneText": "ত"
+              "StoneText": "দূ"
             }
           ]
         },
@@ -8531,28 +8524,28 @@
           },
           "foilstones": [
             {
-              "StoneText": "ই"
-            },
-            {
-              "StoneText": "ত"
-            },
-            {
-              "StoneText": "জ"
-            },
-            {
-              "StoneText": "র"
-            },
-            {
-              "StoneText": "ষ"
-            },
-            {
-              "StoneText": "ত"
+              "StoneText": "ঝ"
             },
             {
               "StoneText": "চ"
             },
             {
-              "StoneText": "শ"
+              "StoneText": "ড়"
+            },
+            {
+              "StoneText": "ভূ"
+            },
+            {
+              "StoneText": "ঊ"
+            },
+            {
+              "StoneText": "ত"
+            },
+            {
+              "StoneText": "ঢ়"
+            },
+            {
+              "StoneText": "ষ"
             }
           ]
         },
@@ -8572,25 +8565,25 @@
           },
           "foilstones": [
             {
-              "StoneText": "ড়"
-            },
-            {
-              "StoneText": "ড়"
-            },
-            {
-              "StoneText": "য়"
-            },
-            {
-              "StoneText": "ঈ"
-            },
-            {
-              "StoneText": "শ"
+              "StoneText": "ক"
             },
             {
               "StoneText": "ভূ"
             },
             {
               "StoneText": "ভূ"
+            },
+            {
+              "StoneText": "প"
+            },
+            {
+              "StoneText": "ভূ"
+            },
+            {
+              "StoneText": "ভূ"
+            },
+            {
+              "StoneText": "ত"
             }
           ]
         },
@@ -8610,28 +8603,28 @@
           },
           "foilstones": [
             {
-              "StoneText": "প"
+              "StoneText": "শ"
             },
             {
-              "StoneText": "ট"
+              "StoneText": "র"
             },
             {
-              "StoneText": "দূ"
+              "StoneText": "ঢ়"
             },
             {
-              "StoneText": "দূ"
+              "StoneText": "ড"
             },
             {
-              "StoneText": "ত"
+              "StoneText": "ষ"
             },
             {
-              "StoneText": "চ"
+              "StoneText": "আ"
             },
             {
-              "StoneText": "ঈ"
+              "StoneText": "অ"
             },
             {
-              "StoneText": "জ"
+              "StoneText": "ঙ"
             }
           ]
         }
@@ -8663,25 +8656,25 @@
           },
           "foilstones": [
             {
-              "StoneText": "ধ"
+              "StoneText": "দূ"
+            },
+            {
+              "StoneText": "দূ"
             },
             {
               "StoneText": "ই"
             },
             {
-              "StoneText": "আ"
+              "StoneText": "দূ"
             },
             {
-              "StoneText": "র"
+              "StoneText": "ই"
             },
             {
-              "StoneText": "ত"
+              "StoneText": "ড়"
             },
             {
-              "StoneText": "অ"
-            },
-            {
-              "StoneText": "চ"
+              "StoneText": "ড়"
             },
             {
               "StoneText": "দূ"
@@ -8704,28 +8697,28 @@
           },
           "foilstones": [
             {
-              "StoneText": "ঙ"
+              "StoneText": "ড"
             },
             {
-              "StoneText": "ভ"
-            },
-            {
-              "StoneText": "প"
+              "StoneText": "ত"
             },
             {
               "StoneText": "প"
             },
             {
-              "StoneText": "ট"
+              "StoneText": "ন"
             },
             {
-              "StoneText": "ঠ"
+              "StoneText": "য়"
             },
             {
-              "StoneText": "ক"
+              "StoneText": "দ"
             },
             {
-              "StoneText": "ব"
+              "StoneText": "দ"
+            },
+            {
+              "StoneText": "দূ"
             }
           ]
         },
@@ -8745,28 +8738,28 @@
           },
           "foilstones": [
             {
-              "StoneText": "প"
+              "StoneText": "ঞ"
             },
             {
-              "StoneText": "ধ"
+              "StoneText": "ব"
             },
             {
-              "StoneText": "রূ"
-            },
-            {
-              "StoneText": "ষ"
+              "StoneText": "ঙ"
             },
             {
               "StoneText": "ত"
             },
             {
-              "StoneText": "র"
+              "StoneText": "দূ"
             },
             {
-              "StoneText": "প"
+              "StoneText": "ব"
             },
             {
-              "StoneText": "ট"
+              "StoneText": "দূ"
+            },
+            {
+              "StoneText": "শ"
             }
           ]
         },
@@ -8786,25 +8779,25 @@
           },
           "foilstones": [
             {
-              "StoneText": "র"
-            },
-            {
-              "StoneText": "ড়"
-            },
-            {
-              "StoneText": "ম"
-            },
-            {
-              "StoneText": "আ"
-            },
-            {
-              "StoneText": "শ"
-            },
-            {
               "StoneText": "রূ"
             },
             {
               "StoneText": "য়"
+            },
+            {
+              "StoneText": "ত"
+            },
+            {
+              "StoneText": "চ"
+            },
+            {
+              "StoneText": "ত"
+            },
+            {
+              "StoneText": "ভ"
+            },
+            {
+              "StoneText": "রূ"
             }
           ]
         },
@@ -8824,31 +8817,31 @@
           },
           "foilstones": [
             {
-              "StoneText": "র"
-            },
-            {
               "StoneText": "দূ"
-            },
-            {
-              "StoneText": "র"
             },
             {
               "StoneText": "ঈ"
             },
             {
-              "StoneText": "শ"
+              "StoneText": "চ"
             },
             {
-              "StoneText": "দূ"
+              "StoneText": "ড"
+            },
+            {
+              "StoneText": "রূ"
             },
             {
               "StoneText": "ণ"
             },
             {
-              "StoneText": "র"
+              "StoneText": "ভ"
             },
             {
-              "StoneText": "র"
+              "StoneText": "দূ"
+            },
+            {
+              "StoneText": "প"
             }
           ]
         }
