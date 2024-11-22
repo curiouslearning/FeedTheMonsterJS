@@ -1,21 +1,21 @@
 #timer-ticking {
   position: relative;
-  top: 40px;
+  top: 16%;
   width: 100%; /* Adjust based on timer width */
-  height: 100px; /* Adjust based on timer height */
+
 
   #timer-empty {
     position: absolute;
     bottom: 0px;
     width: 100%;
-    height: auto;
+    height: 40px;
   }
 
   #rotating-clock {
+    bottom: -3px;
     position: absolute;
-    top: 45%;
-    height: 60px;
-    left: 30px;
+    height: 50px;
+    left: 25px;
     animation: rotateClock 2s linear infinite;
   }
 
@@ -25,7 +25,7 @@
     left: 14%;
     width: 100%;
     overflow: hidden;
-    height:5vh; /* Adjust percentage based on design needs */
+    height:40px; 
 
     #timer-full {
       position: absolute;
