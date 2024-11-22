@@ -16,8 +16,6 @@ export class LevelEndScene {
   static renderButtonsHTML() {
     throw new Error('Method not implemented.');
   }
-  public height: number;
-  public width: number;
   public starCount: number;
   public currentLevel: number;
   public switchToGameplayCB: Function;
@@ -29,11 +27,8 @@ export class LevelEndScene {
   public nextButtonInstance: NextButtonHtml;
   public retryButtonInstance: RetryButtonHtml;
   public mapButtonInstance: MapButton;
-  constructor(switchToGameplayCB, switchToLevelSelectionCB, data) {
-    const {height, width} = gameStateService.getGamePlaySceneDetails();
-    const {starCount, currentLevel} = gameStateService.getLevelEndSceneData();
-    this.height = height;
-    this.width = width;
+  constructor(switchToGameplayCB, switchToLevelSelectionCB) {
+    const {starCount, currentLevel, data} = gameStateService.getLevelEndSceneData();
     this.switchToGameplayCB = switchToGameplayCB;
     this.switchToLevelSelectionCB = switchToLevelSelectionCB;
     this.data = data;

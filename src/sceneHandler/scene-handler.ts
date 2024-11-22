@@ -162,13 +162,11 @@ export class SceneHandler {
   switchSceneToEndLevel = () => {
     this.timerWrapper(
       () => {
-        console.log(this.data);
         this.addScene(
           SCENE_NAME_LEVEL_END,
           new LevelEndScene(
             this.switchSceneToGameplay,
-            this.switchSceneToLevelSelection,
-            this.data, //to do - use DAO.
+            this.switchSceneToLevelSelection
           )
         );
         this.gotoScene(SCENE_NAME_LEVEL_END);

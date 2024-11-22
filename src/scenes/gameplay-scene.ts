@@ -526,6 +526,8 @@ export class GameplayScene {
         currentLevel: this.levelNumber,
         isTimerEnded: timerEnded
       }
+
+      console.log(levelEndData);
       gameStateService.publish(gameStateService.EVENTS.LEVEL_END_DATA_EVENT, levelEndData);
       this.switchSceneToEnd();
     } else {

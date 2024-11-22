@@ -1,4 +1,5 @@
 import {LevelEndScene} from './levelend-scene';
+import gameStateService from '@gameStateService';
 
 describe('LevelEndScreen', () => {
   let mockSwitchToGameplayCB: jest.Mock;
@@ -51,10 +52,16 @@ describe('LevelEndScreen', () => {
     gameControlElement.id = 'game-control';
     document.body.appendChild(gameControlElement);
 
+    // mock data example
+    gameStateService.publish(gameStateService.EVENTS.LEVEL_END_DATA_EVENT, {
+      starCount: 3,
+      currentLevel: 0,
+      isTimerEnded: false,
+    });
+
     levelEndScene = new LevelEndScene(
       mockSwitchToGameplayCB,
       mockSwitchToLevelSelectionCB,
-      mockData,
     );
   });
 
@@ -70,7 +77,6 @@ describe('LevelEndScreen', () => {
       levelEndScene = new LevelEndScene(
         mockSwitchToGameplayCB,
         mockSwitchToLevelSelectionCB,
-        mockData,
       );
 
       expect(initSpy).toHaveBeenCalled();
