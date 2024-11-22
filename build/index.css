@@ -58,9 +58,11 @@ img {
   color: white;
   text-align: center;
 }
+
 #monster {
   border: 1px solid;
 }
+
 #rivecanvas {
   position: absolute;
   bottom: 150px;
@@ -68,12 +70,14 @@ img {
   z-index: 4;
   width: 100%;
 }
+
 #discription-text p {
   margin-top: 10%;
   line-height: 1.8;
   color: white;
   text-align: center;
 }
+
 #canvas {
   position: absolute;
   /* background-color: white; */
@@ -107,6 +111,7 @@ img {
   bottom: 50%;
   rotate: 90deg;
 }
+
 #loading-screen {
   position: fixed;
   top: 0;
@@ -121,28 +126,25 @@ img {
   z-index: 1000;
 }
 
-@media (min-width: 420px) {
-  #loading-screen {
-    max-width: 100%;
-  }
-}
-
 #loading-gif {
   display: flex;
   height: 100%;
   width: 100%;
-  position: absolute; /* Position it within #loading-screen */
+  position: absolute;
+  /* Position it within #loading-screen */
 }
 
 #progress-bar-container {
   display: none;
-  position: relative; /* Keep this for proper positioning */
+  position: relative;
+  /* Keep this for proper positioning */
   width: 90%;
   height: 4vh;
   background-color: #000000;
   border: 1px solid #f1b82d;
   margin-top: 20vh;
-  z-index: 9999; /* Update z-index to place it above #loading-gif */
+  z-index: 9999;
+  /* Update z-index to place it above #loading-gif */
 }
 
 #progress-bar {
@@ -151,11 +153,14 @@ img {
   background-color: #f1b82d;
   transition: width 0.3s ease-in-out;
 }
+
 .loading-spinner {
   width: 50px;
   height: 50px;
-  border: 4px solid #f3f3f3; /* color of spinner */
-  border-top: 4px solid #3498db; /* color of spinning part */
+  border: 4px solid #f3f3f3;
+  /* color of spinner */
+  border-top: 4px solid #3498db;
+  /* color of spinning part */
   border-radius: 50%;
   position: absolute;
   left: calc(50% - 25px);
@@ -168,6 +173,7 @@ img {
   0% {
     transform: rotate(0deg);
   }
+
   100% {
     transform: rotate(360deg);
   }
@@ -183,6 +189,7 @@ img {
   font-size: small;
   z-index: 9;
 }
+
 #toggle-btn {
   position: absolute;
   left: 30%;
@@ -240,16 +247,19 @@ img {
     -webkit-transform: scale(0.5);
     transform: scale(0.5);
   }
+
   100% {
     -webkit-transform: scale(1);
     transform: scale(1);
   }
 }
+
 @keyframes scale-up-center {
   0% {
     -webkit-transform: scale(0.5);
     transform: scale(0.5);
   }
+
   100% {
     -webkit-transform: scale(1);
     transform: scale(1);
@@ -264,6 +274,7 @@ img {
     transform-origin: 50% 100%;
     opacity: 1;
   }
+
   100% {
     -webkit-transform: scale(1);
     transform: scale(1);
@@ -272,6 +283,7 @@ img {
     opacity: 1;
   }
 }
+
 @keyframes scale-in-bottom {
   0% {
     -webkit-transform: scale(0);
@@ -280,6 +292,7 @@ img {
     transform-origin: 50% 100%;
     opacity: 1;
   }
+
   100% {
     -webkit-transform: scale(1);
     transform: scale(1);
@@ -291,8 +304,7 @@ img {
 
 /* Apply the animation */
 .feedback-text.show {
-  -webkit-animation: scale-up-center 0.4s cubic-bezier(0.39, 0.575, 0.565, 1)
-    both;
+  -webkit-animation: scale-up-center 0.4s cubic-bezier(0.39, 0.575, 0.565, 1) both;
   animation: scale-up-center 0.4s cubic-bezier(0.39, 0.575, 0.565, 1) both;
   z-index: 999;
   opacity: 1;
@@ -333,14 +345,17 @@ img {
   height: 100%;
   width: 100%;
 }
+
 .popup.show {
   display: block;
 }
+
 .popup .popup__overlay {
   height: 100%;
   width: 100%;
   background-color: rgba(0, 0, 0, 0.5);
 }
+
 .popup .popup__content-wrapper {
   position: absolute;
   top: 20vh;
@@ -378,9 +393,11 @@ img {
   width: 100%;
   transition: transform 300ms;
 }
+
 .btn--icon:hover img {
   transform: scale(1.1);
 }
+
 .btn--icon:active img {
   transform: scale(0.9);
 }
@@ -482,11 +499,24 @@ img {
   top: 0;
   bottom: 0;
 }
+
 .stars-container {
   width: 100%;
   position: relative;
   top: 160px;
   height: 120px;
+}
+/* Initial styles for stars */
+.stars {
+  opacity: 0; /* Initially hidden */
+  transform: scale(0); /* Initially scaled down */
+  transition: opacity 0.5s ease, transform 0.5s ease; /* Smooth animation */
+}
+
+/* Animation class to reveal the stars */
+.stars.show {
+  opacity: 1; /* Fully visible */
+  transform: scale(1); /* Full size */
 }
 .star1 {
   position: absolute;
@@ -494,6 +524,7 @@ img {
   width: 80px;
   bottom: 10px;
 }
+
 .star2 {
   width: 85px;
   top: -20px;
@@ -502,6 +533,7 @@ img {
   right: 0;
   margin: auto;
 }
+
 .star3 {
   position: absolute;
   right: 22px;
@@ -539,27 +571,38 @@ img {
   vertical-align: middle;
 }
 
-/* End dynamic buttons */
-
-
-/* Small devices (landscape phones, 540px and up) */
-@media (min-width: 576px) {
-  #rivecanvas {
-    bottom: 22%;
+/* For devices up to 300px wide */
+@media only screen and (max-width: 300px) {
+  #loading-screen {
+    max-width: 100%;
   }
+}
+
+/* For devices up to 480px wide */
+@media only screen and (max-width: 480px) {
+  #loading-screen {
+    max-width: 100%;
+  }
+
+  #rivecanvas {
+    bottom: 140px;
+  }
+
   .summer .ftm-fence {
-    left: -200px;
-    bottom: 175px;
+    left: -160px;
+    bottom: 30px;
     position: absolute;
     width: 100%;
   }
+
   .summer .ftm-totem {
     position: absolute;
-    bottom: 18%;
-    width: 55%;
+    bottom: 14%;
+    width: 60%;
     z-index: 1;
-    right: -100px;
+    right: -80px;
   }
+
   .autumn-bg .ftm-totem,
   .winter-bg .ftm-totem {
     right: -130px;
@@ -580,8 +623,68 @@ img {
   }
 }
 
-/* Medium devices (tablets, 768px and up) */
-@media (min-width: 992px) {
+/* For devices up to 768px wide */
+@media only screen and (max-width: 768px) {
+  #loading-screen {
+    max-width: 100%;
+  }
+
+  .autumn-bg .ftm-totem,
+  .winter-bg .ftm-totem {
+    right: -130px;
+    bottom: 258px;
+    width: auto;
+  }
+
+  .winter-bg .ftm-fence {
+    width: auto;
+    left: -79px;
+    bottom: 425px;
+  }
+
+  .ftm-fence {
+    rotate: 373deg;
+    left: -146px;
+    bottom: 275px;
+    position: absolute;
+    width: auto;
+  }
+}
+
+/* For devices up to 992px wide */
+@media only screen and (max-width: 992px) {
+  #loading-screen {
+    max-width: 100%;
+  }
+
+  .autumn-bg .ftm-totem,
+  .winter-bg .ftm-totem {
+    right: -130px;
+    bottom: 258px;
+    width: auto;
+  }
+
+  .winter-bg .ftm-fence {
+    width: auto;
+    left: -79px;
+    bottom: 425px;
+  }
+
+  .ftm-fence {
+    rotate: 373deg;
+    left: -146px;
+    bottom: 275px;
+    position: absolute;
+    width: auto;
+  }
+}
+
+/* For devices up to 1200px wide */
+@media only screen and (max-width: 1200px) {
+  #loading-screen {
+    max-width: 100%;
+  }
+
   .autumn-bg .ftm-totem,
   .winter-bg .ftm-totem {
     right: -130px;

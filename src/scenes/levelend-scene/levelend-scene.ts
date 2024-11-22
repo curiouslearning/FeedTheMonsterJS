@@ -1,6 +1,6 @@
-import { CLICK, isDocumentVisible } from '@common';
-import { AudioPlayer } from '@components';
-import { MapButton, NextButtonHtml, RetryButtonHtml } from '@components/buttons';
+import {isDocumentVisible} from '@common';
+import {AudioPlayer} from '@components';
+import {MapButton, NextButtonHtml, RetryButtonHtml} from '@components/buttons';
 import {
   AUDIO_INTRO,
   AUDIO_LEVEL_LOSE,
@@ -11,6 +11,7 @@ import {
 } from '@constants';
 import gameStateService from '@gameStateService';
 import './levelend-scene.scss';
+import { RiveMonsterComponent } from '@components/riveMonster/rive-monster-component';
 
 export class LevelEndScene {
   static renderButtonsHTML() {
@@ -26,7 +27,8 @@ export class LevelEndScene {
   public audioPlayer: AudioPlayer;
   public isLastLevel: boolean;
   public levelEndElement = document.getElementById('levelEnd');
-
+  public riveMonster: RiveMonsterComponent;
+  public canvasElement: HTMLCanvasElement;
   constructor(
     height: number,
     width: number,
@@ -35,7 +37,6 @@ export class LevelEndScene {
     switchToGameplayCB,
     switchToLevelSelectionCB,
     data,
-    monsterPhaseNumber: number,
   ) {
     this.height = height;
     this.width = width;
@@ -43,20 +44,32 @@ export class LevelEndScene {
     this.switchToLevelSelectionCB = switchToLevelSelectionCB;
     this.data = data;
     this.audioPlayer = new AudioPlayer();
+    this.canvasElement = document.getElementById("rivecanvas") as HTMLCanvasElement;
     this.starCount = starCount;
     this.currentLevel = currentLevel;
     this.isLastLevel = this.currentLevel ===
-      this.data.levels[this.data.levels.length - 1].levelMeta.levelNumber;
+    this.data.levels[this.data.levels.length - 1].levelMeta.levelNumber;
+    this.initializeRiveMonster();
     // Subscribe to the LEVEL_END_BACKGROUND_TOGGLE event
     this.toggleLevelEndBackground(true);
-    // this.monster = new Monster(
-    //   this.canvas,
-    //   monsterPhaseNumber,
-    //   this.switchToReactionAnimation
-    // );
     this.showLevelEndScreen(); // Display the level end screen
     this.addEventListener();
     this.renderStarsHTML();
+    // Call switchToReactionAnimation during initialization
+    this.switchToReactionAnimation();
+  }
+
+  initializeRiveMonster() {
+    // Initialize the RiveMonsterComponent instead of directly using Rive
+    this.riveMonster = new RiveMonsterComponent({
+      canvas: this.canvasElement,
+      autoplay: true,
+      fit: "contain",
+      alignment: "topCenter",
+      onLoad: () => {
+        this.riveMonster.play(RiveMonsterComponent.Animations.IDLE); // Start with the "Eat Happy" animation
+      }
+    });
   }
   // Method to show/hide the Level End background
   toggleLevelEndBackground = (shouldShow: boolean) => {
@@ -80,19 +93,19 @@ export class LevelEndScene {
       if (isDocumentVisible()) {
         this.audioPlayer.playAudio(AUDIO_LEVEL_LOSE);
       }
-      // this.monster.changeToSpitAnimation(); //Commenting to handle interactive animation
+      this.riveMonster.play(RiveMonsterComponent.Animations.EAT_DISGUST);
     } else {
       if (isDocumentVisible()) {
         this.audioPlayer.playAudio(AUDIO_LEVEL_WIN);
         this.audioPlayer.playAudio(AUDIO_INTRO);
       }
-      // this.monster.changeToEatAnimation();  //Commenting to handle interactive animation
+      this.riveMonster.play(RiveMonsterComponent.Animations.EAT_HAPPY);
     }
   };
 
   renderStarsHTML() {
     const starsContainer = document.querySelector('.stars-container');
-
+    if (!starsContainer) return;
     // Clear any previously rendered stars
     starsContainer.innerHTML = '';
 

@@ -177,7 +177,6 @@ export class SceneHandler {
             this.switchSceneToGameplay,
             this.switchSceneToLevelSelection,
             this.data, //to do - use DAO.
-            monsterPhaseNumber //to do - use DAO.
           )
         );
         this.gotoScene(SCENE_NAME_LEVEL_END);

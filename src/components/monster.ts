@@ -24,7 +24,7 @@ export class Monster extends EventManager {
     to: number;
   };
 
-  constructor(game, monsterPhase, callBackFunction?) {
+  constructor(game?, monsterPhase?, callBackFunction?) {
     super({
       stoneDropCallbackHandler: (event) => this.handleStoneDrop(event),
       loadPuzzleCallbackHandler: (event) => this.handleLoadPuzzle(event),
