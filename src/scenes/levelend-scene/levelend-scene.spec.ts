@@ -28,45 +28,24 @@ describe('LevelEndScene', () => {
   beforeEach(() => {
     jest.clearAllMocks();
 
-    // Mock level data
-    mockData = {
-      levels: [
-        {
-          levelMeta: {
-            promptFadeOut: 0,
-            letterGroup: 18,
-            levelNumber: 1,
-            protoType: 'Visible',
-            levelType: 'LetterInWord',
-          },
-          puzzles: [],
-        },
-        {
-          levelMeta: {
-            promptFadeOut: 0,
-            letterGroup: 19,
-            levelNumber: 2,
-            protoType: 'Visible',
-            levelType: 'LetterInWord',
-          },
-          puzzles: [],
-        },
-      ],
-    };
-  
+    // Mock `getGamePlaySceneDetails` to return valid data
+    (gameStateService.getGamePlaySceneDetails as jest.Mock).mockReturnValue({
+      isLastLevel: false, // Mocked value
+    });
+
     // Mock `getLevelEndSceneData` to return valid data
     (gameStateService.getLevelEndSceneData as jest.Mock).mockReturnValue({
       starCount: 3,
       currentLevel: 1,
       data: {
         levels: [
-          { levelMeta: { levelNumber: 1 } },
-          { levelMeta: { levelNumber: 2 } },
-          { levelMeta: { levelNumber: 3 } },
+          {levelMeta: {levelNumber: 1}},
+          {levelMeta: {levelNumber: 2}},
+          {levelMeta: {levelNumber: 3}},
         ],
       },
     });
-  
+
     document.body.innerHTML = `
       <div id="levelEnd"></div>
       <canvas id="rivecanvas"></canvas>
@@ -74,85 +53,16 @@ describe('LevelEndScene', () => {
       <div id="game-control"></div>
       <div id="levelEndButtons"></div>
     `;
-  
+
     mockSwitchToGameplayCB = jest.fn();
     mockSwitchToLevelSelectionCB = jest.fn();
-    
-    // Mock callback functions
-    mockSwitchToGameplayCB = jest.fn();
-    mockSwitchToLevelSelectionCB = jest.fn();
-  
-    // Mock level data
-    mockData = {
-      levels: [
-        {
-          levelMeta: {
-            promptFadeOut: 0,
-            letterGroup: 18,
-            levelNumber: 1,
-            protoType: 'Visible',
-            levelType: 'LetterInWord',
-          },
-          puzzles: [],
-        },
-        {
-          levelMeta: {
-            promptFadeOut: 0,
-            letterGroup: 19,
-            levelNumber: 2,
-            protoType: 'Visible',
-            levelType: 'LetterInWord',
-          },
-          puzzles: [],
-        },
-      ],
-    };
-  
-    // Mock the DOM elements
-    const buttonsContainer = document.createElement('div');
-    buttonsContainer.id = 'levelEndButtons';
-    document.body.appendChild(buttonsContainer);
-  
-    const starsContainer = document.createElement('div');
-    starsContainer.className = 'stars-container';
-    document.body.appendChild(starsContainer);
-  
-    const levelEndElement = document.createElement('div');
-    levelEndElement.id = 'levelEnd';
-    document.body.appendChild(levelEndElement);
-  
-    const gameControlElement = document.createElement('div');
-    gameControlElement.id = 'game-control';
-    document.body.appendChild(gameControlElement);
-  
-    // Add the mocked canvas element
-    const canvasElement = document.createElement('canvas');
-    canvasElement.id = 'rivecanvas';
-    document.body.appendChild(canvasElement);
-  
-    // Mock game state service
-    gameStateService.publish(gameStateService.EVENTS.LEVEL_END_DATA_EVENT, {
-      levelEndData: {
-        starCount: 3,
-        currentLevel: 0,
-        isTimerEnded: false,
-      },
-      data: mockData,
-    });
-  
-    // Mock the AudioPlayer instance
-    audioPlayerMock = new AudioPlayer() as jest.Mocked<AudioPlayer>;
-  
+
     // Initialize the LevelEndScene
     levelEndScene = new LevelEndScene(
       mockSwitchToGameplayCB,
       mockSwitchToLevelSelectionCB,
     );
-  
-    // Replace the audioPlayer instance in LevelEndScene with the mocked one
-    levelEndScene.audioPlayer = audioPlayerMock;
   });
-  
 
   afterEach(() => {
     jest.clearAllMocks();

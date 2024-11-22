@@ -42,7 +42,8 @@ export const createGameplaySceneDAO = (gameData) => {
 		jsonVersionNumber: versionNumber,
 		feedbackAudios: { ...gameData.feedbackAudios },
 		isGamePaused: gameData.isGamePaused,
-		data: gameData.data
+		data: gameData.data,
+		isLastLevel: gameData.isLastLevel
 	};
 }
 

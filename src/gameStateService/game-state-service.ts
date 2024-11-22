@@ -81,6 +81,7 @@ export class GameStateService extends PubSub {
         currentLevel: number,
         isTimerEnded: boolean
     };
+    public isLastLevel: boolean;
 
     constructor() {
         super();
@@ -117,6 +118,7 @@ export class GameStateService extends PubSub {
         this.initListeners();
 
         this.levelEndData = null
+        this.isLastLevel = false;
     }
 
     private initListeners() {
@@ -186,6 +188,8 @@ export class GameStateService extends PubSub {
     levelEndSceneData({levelEndData, data}) {
         this.levelEndData = {...levelEndData};
         this.data = data;
+        this.isLastLevel =
+        levelEndData.currentLevel === data.levels[data.levels.length - 1].levelMeta.levelNumber;
     }
 
     getLevelEndSceneData() {

@@ -31,6 +31,7 @@ export class LevelEndScene {
   public riveMonster: RiveMonsterComponent;
   public canvasElement: HTMLCanvasElement;
   constructor(switchToGameplayCB, switchToLevelSelectionCB) {
+    const { isLastLevel } = gameStateService.getGamePlaySceneDetails();
     const {starCount, currentLevel, data} = gameStateService.getLevelEndSceneData();
     this.switchToGameplayCB = switchToGameplayCB;
     this.switchToLevelSelectionCB = switchToLevelSelectionCB;
@@ -39,9 +40,7 @@ export class LevelEndScene {
     this.canvasElement = document.getElementById("rivecanvas") as HTMLCanvasElement;
     this.starCount = starCount;
     this.currentLevel = currentLevel;
-    this.isLastLevel =
-      this.currentLevel ===
-      this.data.levels[this.data.levels.length - 1].levelMeta.levelNumber;
+    this.isLastLevel = isLastLevel;
     this.initializeRiveMonster();
     // Subscribe to the LEVEL_END_BACKGROUND_TOGGLE event
     this.toggleLevelEndBackground(true);
