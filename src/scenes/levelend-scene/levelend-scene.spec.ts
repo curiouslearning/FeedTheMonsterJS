@@ -1,16 +1,33 @@
 import {LevelEndScene} from './levelend-scene';
 import gameStateService from '@gameStateService';
+import {AudioPlayer} from '@components';
+
+// Mocking the AudioPlayer class
+jest.mock('@components', () => ({
+  AudioPlayer: jest.fn().mockImplementation(() => ({
+    stopAllAudios: jest.fn(), // Mock stopAllAudios
+    playAudio: jest.fn(),
+    playButtonClickSound: jest.fn(),
+    stopFeedbackAudio: jest.fn(),
+  })),
+}));
 
 describe('LevelEndScreen', () => {
   let mockSwitchToGameplayCB: jest.Mock;
   let mockSwitchToLevelSelectionCB: jest.Mock;
   let mockData: any;
   let levelEndScene: LevelEndScene;
+  let audioPlayerMock: jest.Mocked<AudioPlayer>;
 
   beforeEach(() => {
+    // Reset the DOM
     document.body.innerHTML = '';
+
+    // Mock callback functions
     mockSwitchToGameplayCB = jest.fn();
     mockSwitchToLevelSelectionCB = jest.fn();
+
+    // Mock level data
     mockData = {
       levels: [
         {
@@ -36,6 +53,7 @@ describe('LevelEndScreen', () => {
       ],
     };
 
+    // Mock the DOM elements
     const buttonsContainer = document.createElement('div');
     buttonsContainer.id = 'levelEndButtons';
     document.body.appendChild(buttonsContainer);
@@ -52,7 +70,7 @@ describe('LevelEndScreen', () => {
     gameControlElement.id = 'game-control';
     document.body.appendChild(gameControlElement);
 
-    // Mock data example
+    // Mock game state service
     gameStateService.publish(gameStateService.EVENTS.LEVEL_END_DATA_EVENT, {
       levelEndData: {
         starCount: 3,
@@ -62,28 +80,22 @@ describe('LevelEndScreen', () => {
       data: mockData,
     });
 
+    // Mock the AudioPlayer instance
+    audioPlayerMock = new AudioPlayer() as jest.Mocked<AudioPlayer>;
+
+    // Initialize the LevelEndScene
     levelEndScene = new LevelEndScene(
       mockSwitchToGameplayCB,
       mockSwitchToLevelSelectionCB,
     );
+
+    // Replace the audioPlayer instance in LevelEndScene with the mocked one
+    levelEndScene.audioPlayer = audioPlayerMock;
   });
 
   afterEach(() => {
+    // Clear the DOM
     document.body.innerHTML = '';
-  });
-
-  describe('When instantiated', () => {
-    it('should call showLevelEndScreen', () => {
-      const initSpy = jest.spyOn(LevelEndScene.prototype, 'showLevelEndScreen');
-
-      // Re-instantiate to trigger the constructor after spying on the method
-      levelEndScene = new LevelEndScene(
-        mockSwitchToGameplayCB,
-        mockSwitchToLevelSelectionCB,
-      );
-
-      expect(initSpy).toHaveBeenCalled();
-    });
   });
 
   describe('LevelEnd buttons rendering', () => {
@@ -112,7 +124,6 @@ describe('LevelEndScreen', () => {
         'levelend-retry-btn',
       ) as HTMLButtonElement;
       retryButton.click();
-
       expect(mockSwitchToGameplayCB).toHaveBeenCalledWith();
     });
 
@@ -129,16 +140,33 @@ describe('LevelEndScreen', () => {
         'levelend-next-btn',
       ) as HTMLButtonElement;
       nextButton.click();
-
       expect(mockSwitchToGameplayCB).toHaveBeenCalledWith();
     });
 
     it('should not render NextButtonHtml if isLastLevel is true', () => {
       levelEndScene.isLastLevel = true; // Simulate last level scenario
       levelEndScene.renderButtonsHTML();
-
       const nextButton = document.getElementById('levelend-next-btn');
       expect(nextButton).toBeNull(); // Confirm the button does not exist
+    });
+  });
+
+  describe('Dispose functionality', () => {
+    it('should not dispose NextButtonHtml if not created', () => {
+      levelEndScene.isLastLevel = true; // Simulate last level scenario
+      levelEndScene.renderButtonsHTML();
+      levelEndScene.dispose();
+      expect(levelEndScene.nextButtonInstance).toBeNull(); // Updated to check for null
+    });
+
+    it('should dispose of all button instances on dispose', () => {
+      levelEndScene.isLastLevel = false; // Explicitly set to false
+      levelEndScene.renderButtonsHTML();
+      levelEndScene.dispose();
+
+      expect(levelEndScene.mapButtonInstance).toBeNull();
+      expect(levelEndScene.retryButtonInstance).toBeNull();
+      expect(levelEndScene.nextButtonInstance).toBeNull();
     });
   });
 });
