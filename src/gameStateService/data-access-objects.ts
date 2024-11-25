@@ -103,6 +103,7 @@ export const createStonePositionsDAO = ({
 	return randomizedStonePositions;
 }
 
+// TODO: move this back to level end component
 export const createLevelEndDataDAO = (gameState) => {
   return {
 		starCount: gameState.levelEndData.starCount,

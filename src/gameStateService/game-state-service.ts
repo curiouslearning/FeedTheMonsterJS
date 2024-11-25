@@ -184,14 +184,14 @@ export class GameStateService extends PubSub {
     getStonePositions() {
         return createStonePositionsDAO(this);
     }
-    
+    // TODO: move this back to level end scene since 
     levelEndSceneData({levelEndData, data}) {
         this.levelEndData = {...levelEndData};
         this.data = data;
         this.isLastLevel =
         levelEndData.currentLevel === data.levels[data.levels.length - 1].levelMeta.levelNumber;
     }
-
+    // TODO: move this back to level end scene since 
     getLevelEndSceneData() {
         return createLevelEndDataDAO(this);
     }
