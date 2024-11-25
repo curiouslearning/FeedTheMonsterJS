@@ -431,15 +431,16 @@ img {
   position: absolute;
   width: 100%;
   z-index: 2;
-  bottom: -7px;
+  bottom: -4px;
 }
 
 .ftm-totem {
   position: absolute;
-  bottom: 14%;
-  width: 60%;
+  bottom: 18%;
+  width: 100%;
   z-index: 1;
-  right: -80px;
+  right: -10%;
+  max-width: 380px;
 }
 
 .ftm-fence {
@@ -506,18 +507,25 @@ img {
   top: 160px;
   height: 120px;
 }
+
 /* Initial styles for stars */
 .stars {
-  opacity: 0; /* Initially hidden */
-  transform: scale(0); /* Initially scaled down */
-  transition: opacity 0.5s ease, transform 0.5s ease; /* Smooth animation */
+  opacity: 0;
+  /* Initially hidden */
+  transform: scale(0);
+  /* Initially scaled down */
+  transition: opacity 0.5s ease, transform 0.5s ease;
+  /* Smooth animation */
 }
 
 /* Animation class to reveal the stars */
 .stars.show {
-  opacity: 1; /* Fully visible */
-  transform: scale(1); /* Full size */
+  opacity: 1;
+  /* Fully visible */
+  transform: scale(1);
+  /* Full size */
 }
+
 .star1 {
   position: absolute;
   left: 40px;
@@ -560,26 +568,24 @@ img {
   background: transparent;
   display: flex;
   align-items: center;
-  width: 60px;
-  height: 60px;
+  max-width: 120px;
+  max-height: 120px;
+  width: 100%;
 }
 
 .dynamic-button .button-image {
   width: 100%;
-  max-width: 60px;
-  max-height: 60px;
-  vertical-align: middle;
 }
 
-/* For devices up to 300px wide */
-@media only screen and (max-width: 300px) {
+/* For devices up to 380px wide */
+@media only screen and (max-width: 380px) {
   #loading-screen {
     max-width: 100%;
   }
 }
 
-/* For devices up to 480px wide */
-@media only screen and (max-width: 480px) {
+/* For devices up to 500px wide */
+@media only screen and (max-width: 500px) {
   #loading-screen {
     max-width: 100%;
   }
@@ -679,10 +685,13 @@ img {
   }
 }
 
-/* For devices up to 1200px wide */
-@media only screen and (max-width: 1200px) {
+/* For devices up to 1280px wide */
+@media only screen and (max-width: 1280px) {
   #loading-screen {
     max-width: 100%;
+  }
+  #levelEnd{
+    background-size: 100% 120%;
   }
 
   .autumn-bg .ftm-totem,
@@ -700,9 +709,36 @@ img {
 
   .ftm-fence {
     rotate: 373deg;
-    left: -146px;
-    bottom: 275px;
+    left: -25%;
+    bottom: 11%;
     position: absolute;
-    width: auto;
+    width: 100%;
   }
+
+  .stars-container {
+    top: 25%;
+  }
+
+  .star1 {
+    left: 80px;
+    width: 140px;
+    bottom: -30%;
+  }
+
+  .star2 {
+    width: 160px;
+    left: 15px;
+    top: auto;
+    bottom: 50%;
+}
+
+  .star3 {
+    right: 60px;
+    width: 140px;
+    bottom: -30%;
+  }
+}
+
+@media only screen and (min-width: 992px) and (max-width: 1366px) {
+  /* Styles for larger tablets and landscape orientation */
 }
