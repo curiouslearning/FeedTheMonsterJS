@@ -690,8 +690,28 @@ img {
   #loading-screen {
     max-width: 100%;
   }
-  #levelEnd{
+
+  #levelEnd {
     background-size: 100% 120%;
+  }
+
+  .level_content-wrapper {
+    position: absolute;
+    z-index: 5;
+    max-width: 380px;
+    width: 100%;
+    top: 10px;
+    left: 40px;
+  }
+
+  .bar-level-wrapper {
+    max-width: 380px;
+    top: 4.5rem;
+  }
+  .bar-level{
+    width: 100%;
+    max-width: 35px;
+    margin: 0px 7px
   }
 
   .autumn-bg .ftm-totem,
@@ -730,7 +750,7 @@ img {
     left: 15px;
     top: auto;
     bottom: 50%;
-}
+  }
 
   .star3 {
     right: 60px;
