@@ -15,8 +15,16 @@ export class Monster extends EventManager {
   public game: any;
   public monsterPhase: number;
   public riveMonster: RiveMonsterComponent; // Now using the RiveMonsterComponent
+  private hitboxRangeX: {
+    from: number;
+    to: number;
+  };
+  private hitboxRangeY: {
+    from: number;
+    to: number;
+  };
 
-  constructor(game, monsterPhase, callBackFunction?) {
+  constructor(game?, monsterPhase?, callBackFunction?) {
     super({
       stoneDropCallbackHandler: (event) => this.handleStoneDrop(event),
       loadPuzzleCallbackHandler: (event) => this.handleLoadPuzzle(event),
@@ -29,11 +37,16 @@ export class Monster extends EventManager {
     this.context = this.canvasElement.getContext("2d");
     this.x = this.game.width / 2 - this.game.width * 0.243;
     this.y = this.game.width / 3;
-    this.fps = 10;
-
+    this.hitboxRangeX = {
+      from: 0,
+      to: 0,
+    };
+    this.hitboxRangeY = {
+      from: 0,
+      to: 0,
+    };
     // Initialize Rive Monster
     this.initializeRiveMonster();
-
     // Call callback if provided after initialization
     if (callBackFunction) {
       callBackFunction();
@@ -62,6 +75,37 @@ export class Monster extends EventManager {
     //     this.changeToIdleAnimation(); // Return to idle after any other animation
     //   }
     // });
+
+    //Adjust this range factor to control how big is the hit box for dropping stones.
+    const rangeFactorX = 70; //SUBCTRACT FROM CENTER TO LEFT, ADD FROM CENTER TO RIGHT.
+    const rangeFactorY = 50; //SUBCTRACT FROM CENTER TO TOP, ADD FROM CENTER TO BOTTOM.
+    const monsterCenterX = this.game.width / 2;
+    //Note: Rive height is currently always half of width. This might change when new rive files are to be implemented/
+    const monsterCenterY = monsterCenterX / 2; //Create different sets of height for multiple rive files or adjust this for height when replacing the current rive monster.
+
+    this.hitboxRangeX.from = monsterCenterX - rangeFactorX;
+    this.hitboxRangeX.to = monsterCenterX + rangeFactorX;
+    this.hitboxRangeY.from = monsterCenterY - rangeFactorY;
+    this.hitboxRangeY.to = monsterCenterY + rangeFactorY;
+  }
+
+  checkHitboxDistance(event) {
+    /*
+    Note: Orginally used to check if within mouth distance. But inaccurate with the rive monster.
+    Might be re-use again in the future.
+    // const distance = Math.sqrt(
+    //   (cursorX - this.x - this.width / 3.5) ** 2 +
+    //   (cursorY - this.y - (this.width / 2) / 1.8)** 2 //Adjusted the divisor to lower the target point.
+    // );
+    */
+    const rect = this.canvasElement.getBoundingClientRect();
+    const x = event.clientX - rect.left;
+    const y = event.clientY - rect.top;
+
+    const isWithinHitboxX = x >= this.hitboxRangeX.from && x <= this.hitboxRangeX.to;
+    const isWithinHitboxY = y >= this.hitboxRangeY.from && y <= this.hitboxRangeY.to;
+
+    return isWithinHitboxX && isWithinHitboxY;
   }
 
   stopRiveMonster() {

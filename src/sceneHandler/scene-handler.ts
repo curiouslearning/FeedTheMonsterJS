@@ -119,7 +119,8 @@ export class SceneHandler {
     this.lastTime = timeStamp;
     this.context.clearRect(0, 0, this.width, this.height);
     this.scenes[LOADING_TRANSITION].draw(deltaTime);
-    this.activeScene.draw(deltaTime);
+
+    this.activeScene && !(this.activeScene instanceof LevelEndScene) && this.activeScene.draw(deltaTime);
   };
 
   switchSceneToLevelSelection = () => {
@@ -158,32 +159,18 @@ export class SceneHandler {
     );
   };
 
-  switchSceneToEndLevel = (
-    starCount: number, //to do - use DAO.
-    monsterPhaseNumber: number, //to do - use DAO.
-    currentLevelNumber, //to do - use DAO.
-    isTimerEnded: boolean //to do - use DAO.
-  ) => {
+  switchSceneToEndLevel = () => {
     this.timerWrapper(
       () => {
         this.addScene(
           SCENE_NAME_LEVEL_END,
           new LevelEndScene(
-            this.canvas, //to do - use DAO.
-            this.height, //to do - use DAO.
-            this.width, //to do - use DAO.
-            this.context, //to do - use DAO.
-            starCount, //to do - use DAO.
-            currentLevelNumber, //to do - use DAO.
             this.switchSceneToGameplay,
-            this.switchSceneToLevelSelection,
-            this.data, //to do - use DAO.
-            monsterPhaseNumber //to do - use DAO.
+            this.switchSceneToLevelSelection
           )
         );
         this.gotoScene(SCENE_NAME_LEVEL_END);
-      },
-      isTimerEnded ? 0 : 4000
+      }
     )
   };
 

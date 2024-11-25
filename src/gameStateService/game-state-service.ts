@@ -3,7 +3,8 @@ import { DataModal } from "@data";
 import {
     createLoadingSceneDAO,
     createGameplaySceneDAO,
-    createStonePositionsDAO
+    createStonePositionsDAO,
+    createLevelEndDataDAO
 } from './data-access-objects';
 
 /*
@@ -22,6 +23,7 @@ export class GameStateService extends PubSub {
         GAMEPLAY_DATA_EVENT: string;
         GAME_PAUSE_STATUS_EVENT: string;
         GAME_TRAIL_EFFECT_TOGGLE_EVENT: string;
+        LEVEL_END_DATA_EVENT: string;
     }
     public data: null | DataModal;
     public canvas: null | HTMLCanvasElement;
@@ -74,6 +76,12 @@ export class GameStateService extends PubSub {
     };
     public clickTrailToggle: boolean;
     public offsetCoordinateValue: number;
+    public levelEndData: null | {
+        starCount: number,
+        currentLevel: number,
+        isTimerEnded: boolean
+    };
+    public isLastLevel: boolean;
 
     constructor() {
         super();
@@ -81,7 +89,8 @@ export class GameStateService extends PubSub {
             SCENE_LOADING_EVENT: 'SCENE_LOADING_EVENT',
             GAMEPLAY_DATA_EVENT: 'GAMEPLAY_DATA_EVENT',
             GAME_PAUSE_STATUS_EVENT: 'GAME_PAUSE_STATUS_EVENT',
-            GAME_TRAIL_EFFECT_TOGGLE_EVENT: 'GAME_TRAIL_EFFECT_TOGGLE_EVENT', // To move this event on DOM Event once created.
+            GAME_TRAIL_EFFECT_TOGGLE_EVENT: 'GAME_TRAIL_EFFECT_TOGGLE_EVENT', 
+            LEVEL_END_DATA_EVENT: 'LEVEL_END_DATA_EVENT' // To move this event on DOM Event once created.
         };
         this.data = null;
         /* Canvas States */
@@ -107,6 +116,9 @@ export class GameStateService extends PubSub {
         this.clickTrailToggle = false;
         this.offsetCoordinateValue = 32; //Default value used to offset stone coordinates.
         this.initListeners();
+
+        this.levelEndData = null
+        this.isLastLevel = false;
     }
 
     private initListeners() {
@@ -114,6 +126,7 @@ export class GameStateService extends PubSub {
         this.subscribe(this.EVENTS.GAMEPLAY_DATA_EVENT, (data) => { this.gameStateGamePlayDataListener(data); });
         this.subscribe(this.EVENTS.GAME_PAUSE_STATUS_EVENT, (data) => { this.updateGamePauseActivity(data); });
         this.subscribe(this.EVENTS.GAME_TRAIL_EFFECT_TOGGLE_EVENT, (data) => { this.updateGameTrailToggle(data); }); // To move this event on DOM Event once created.
+        this.subscribe(this.EVENTS.LEVEL_END_DATA_EVENT, (data) => { this.levelEndSceneData(data); });
     }
 
     private gameStateGamePlayDataListener(updatedGamePlayData) {
@@ -170,6 +183,17 @@ export class GameStateService extends PubSub {
 
     getStonePositions() {
         return createStonePositionsDAO(this);
+    }
+    // TODO: move this back to level end scene since 
+    levelEndSceneData({levelEndData, data}) {
+        this.levelEndData = {...levelEndData};
+        this.data = data;
+        this.isLastLevel =
+        levelEndData.currentLevel === data.levels[data.levels.length - 1].levelMeta.levelNumber;
+    }
+    // TODO: move this back to level end scene since 
+    getLevelEndSceneData() {
+        return createLevelEndDataDAO(this);
     }
 };
 
