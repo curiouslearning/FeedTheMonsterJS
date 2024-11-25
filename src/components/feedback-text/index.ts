@@ -35,6 +35,6 @@ export class FeedbackTextEffects {
     this.hideTimeoutId = window.setTimeout(() => {
       hideElement(true, this.feedbackTextElement);
       this.hideTimeoutId = null;
-    }, 4000);
+    }, 3000);
   }
 }
