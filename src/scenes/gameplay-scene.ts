@@ -299,7 +299,9 @@ export class GameplayScene {
         if (distance <= 40) {
           this.pickedStoneObject = sc;
           this.pickedStone = sc;
-          this.audioPlayer.playAudio(AUDIO_PATH_ON_DRAG); // Note: When refactoring, this should be moved alongside the StoneHandler and handled within that class.
+          if (this.pickedStone.frame > 99) {
+            this.audioPlayer.playAudio(AUDIO_PATH_ON_DRAG); // Note: When refactoring, this should be moved alongside the StoneHandler and handled within that class.
+          }
           break;
         }
       }
@@ -320,7 +322,9 @@ export class GameplayScene {
     if (stoneLetter) {
       this.pickedStoneObject = stoneLetter;
       this.pickedStone = stoneLetter;
-      this.audioPlayer.playAudio(AUDIO_PATH_ON_DRAG); // Note: When refactoring, this should be moved alongside the StoneHandler and handled within that class.
+      if (this.pickedStone.frame > 99) {
+        this.audioPlayer.playAudio(AUDIO_PATH_ON_DRAG); // Note: When refactoring, this should be moved alongside the StoneHandler and handled within that class.
+      }
 
       if (this.levelData?.levelMeta?.levelType === 'Word') {
         this.wordPuzzleLogic.setPickUpLetter(
