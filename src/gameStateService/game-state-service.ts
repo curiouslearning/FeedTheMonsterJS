@@ -85,8 +85,7 @@ export class GameStateService extends PubSub {
         };
         this.data = null;
         /*
-            Canvas State Variables - These need to be moved from the game state
-            to the game settings for better organization.
+            These need to be moved from the game state to the game settings, some to DOM events for better organization.
             To Do: Transfer Canvas States variables to game settings
             To Do: Transfer some Gameplay States - feedbackAudios, feedbackTexts, majVersion, minVersion, and offsetCoordinateValue to game settings.
             To Do: Transfer clickTrailToggle and updateGameTrailToggle to DOM Events class.
