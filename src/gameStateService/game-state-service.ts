@@ -84,7 +84,15 @@ export class GameStateService extends PubSub {
             GAME_TRAIL_EFFECT_TOGGLE_EVENT: 'GAME_TRAIL_EFFECT_TOGGLE_EVENT', // To move this event on DOM Event once created.
         };
         this.data = null;
-        /* Canvas States */
+        /*
+            Canvas State Variables - These need to be moved from the game state
+            to the game settings for better organization.
+            To Do: Transfer Canvas States variables to game settings
+            To Do: Transfer some Gameplay States - feedbackAudios, feedbackTexts, majVersion, minVersion, and offsetCoordinateValue to game settings.
+            To Do: Transfer clickTrailToggle and updateGameTrailToggle to DOM Events class.
+            To DO: Transfer createLoadingSceneDAO to game settings.
+        */
+        /* Start of Canvas States */
         this.canvas = null;
         this.width = 0;
         this.height = 0;
@@ -94,8 +102,6 @@ export class GameStateService extends PubSub {
         this.riveCanvas = null;
         this.riveCanvasWidth = 0;
         this.riveCanvasHeight = 0;
-        /* Scene Handler States */
-
         /* Gameplay States */
         this.isGamePaused = false;
         this.gamePlayData = null;
@@ -139,7 +145,7 @@ export class GameStateService extends PubSub {
         /*Original game data from FeedTheMonster.ts.*/
         this.data = data;
         /*HTML and Canvas state values.*/
-        this.canvas = canvas;
+        this.canvas = canvas; 
         this.width = canvas.width;
         this.height = canvas.height;
         this.canavsElement = canavsElement;
@@ -147,19 +153,15 @@ export class GameStateService extends PubSub {
         this.gameCanvasContext = canvas.getContext("2d", { willReadFrequently: true });
         this.loadingCanvas = document.getElementById("loading") as HTMLCanvasElement;
         this.loadingContext = this.loadingCanvas.getContext("2d");
-        //To Do - Once we have the official Rive files, set the width and height in here.
-        //To Do Add Below Here Game state values - Start Scene Data
-        //To Do Add Below Here Game state values - Level Selection Scene Data
         /*Gameplay Scene Data */
         this.feedbackTexts = data.FeedbackTexts;
         this.feedbackAudios = data.FeedbackAudios;
         this.rightToLeft = data.rightToLeft;
         this.majVersion = data.majVersion;
         this.minVersion = data.minVersion;
-        //To Do Add Below Here Game state values - Level End Scene Data
     }
 
-    getLoadingSceneDetails() {
+    getLoadingSceneDetails() { //To Do: Move this method to game settings.
         //Returns canvas measurements.
         return createLoadingSceneDAO(this);
     }
