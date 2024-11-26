@@ -41,7 +41,9 @@ export const createGameplaySceneDAO = (gameData) => {
 		rightToLeft: gameData?.rightToLeft,
 		jsonVersionNumber: versionNumber,
 		feedbackAudios: { ...gameData.feedbackAudios },
-		isGamePaused: gameData.isGamePaused
+		isGamePaused: gameData.isGamePaused,
+		data: gameData.data,
+		isLastLevel: gameData.isLastLevel
 	};
 }
 
@@ -99,6 +101,16 @@ export const createStonePositionsDAO = ({
 	).sort(() => Math.random() - 0.5);
 
 	return randomizedStonePositions;
+}
+
+// TODO: move this back to level end component
+export const createLevelEndDataDAO = (gameState) => {
+  return {
+		starCount: gameState.levelEndData.starCount,
+		currentLevel: gameState.levelEndData.currentLevel,
+		isTimerEnded: gameState.levelEndData.isTimerEnded,
+		data: gameState.data
+	};
 }
 
 //Add more data access objects below here.
