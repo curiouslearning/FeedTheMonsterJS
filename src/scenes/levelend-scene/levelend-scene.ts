@@ -11,7 +11,7 @@ import {
 } from '@constants';
 import gameStateService from '@gameStateService';
 import './levelend-scene.scss';
-import {RiveMonsterComponent} from '@components/riveMonster/rive-monster-component';
+import { RiveMonsterComponent } from '@components/riveMonster/rive-monster-component';
 
 export class LevelEndScene {
   static renderButtonsHTML() {
@@ -38,9 +38,7 @@ export class LevelEndScene {
     this.switchToLevelSelectionCB = switchToLevelSelectionCB;
     this.data = data;
     this.audioPlayer = new AudioPlayer();
-    this.canvasElement = document.getElementById(
-      'rivecanvas',
-    ) as HTMLCanvasElement;
+    this.canvasElement = document.getElementById("rivecanvas") as HTMLCanvasElement;
     this.starCount = starCount;
     this.currentLevel = currentLevel;
     this.isLastLevel = isLastLevel;
