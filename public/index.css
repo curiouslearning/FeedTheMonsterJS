@@ -627,6 +627,28 @@ img {
     width: auto;
     left: -175px;
   }
+
+  .level_content-wrapper {
+    max-width: 138px;
+    top: 5px;
+    left: 15px;
+  }
+
+  .bar-level-wrapper {
+    max-width: 118px;
+    top: 1.5rem;
+    left: 8px;
+  }
+
+  .bar-level {
+    max-width: 12px;
+    margin: 0px 4px;
+  }
+
+  .dynamic-button {
+    max-width: 70px;
+    max-height: 70px;
+  }
 }
 
 /* For devices up to 768px wide */
@@ -708,7 +730,8 @@ img {
     max-width: 380px;
     top: 4.5rem;
   }
-  .bar-level{
+
+  .bar-level {
     width: 100%;
     max-width: 35px;
     margin: 0px 7px
@@ -760,5 +783,49 @@ img {
 }
 
 @media only screen and (min-width: 992px) and (max-width: 1366px) {
+
   /* Styles for larger tablets and landscape orientation */
+  #title {
+    margin-top: 7%;
+  }
+
+  #timer-empty {
+    height: 80px;
+  }
+
+  #rotating-clock {
+    width: 115px !important;
+    left: 70px !important;
+  }
+
+  #timer-full-container {
+    height: 80px;
+    left: 14%;
+  }
+
+  .dynamic-button {
+    max-width: 140px;
+    max-height: 140px;
+  }
+
+  .game-control .level_content-wrapper {
+    max-width: 240px;
+  }
+
+  .ftm-fence {
+    rotate: 380deg;
+    left: -14%;
+    bottom: 14%;
+    position: absolute;
+    width: 100%;
+  }
+
+  .ftm-totem {
+    position: absolute;
+    bottom: 24%;
+    width: 100%;
+    z-index: 1;
+    right: -10%;
+    max-width: 430px;
+  }
 }
