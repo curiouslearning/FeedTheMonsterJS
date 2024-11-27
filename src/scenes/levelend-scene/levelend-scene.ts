@@ -11,7 +11,7 @@ import {
 } from '@constants';
 import gameStateService from '@gameStateService';
 import './levelend-scene.scss';
-import { RiveMonsterComponent } from '@components/riveMonster/rive-monster-component';
+import {RiveMonsterComponent} from '@components/riveMonster/rive-monster-component';
 
 export class LevelEndScene {
   static renderButtonsHTML() {
@@ -31,13 +31,16 @@ export class LevelEndScene {
   public riveMonster: RiveMonsterComponent;
   public canvasElement: HTMLCanvasElement;
   constructor(switchToGameplayCB, switchToLevelSelectionCB) {
-    const { isLastLevel } = gameStateService.getGamePlaySceneDetails();
-    const {starCount, currentLevel, data} = gameStateService.getLevelEndSceneData();
+    const {starCount, currentLevel, data} =
+      gameStateService.getLevelEndSceneData();
+    const {isLastLevel} = gameStateService.getGamePlaySceneDetails();
     this.switchToGameplayCB = switchToGameplayCB;
     this.switchToLevelSelectionCB = switchToLevelSelectionCB;
     this.data = data;
     this.audioPlayer = new AudioPlayer();
-    this.canvasElement = document.getElementById("rivecanvas") as HTMLCanvasElement;
+    this.canvasElement = document.getElementById(
+      'rivecanvas',
+    ) as HTMLCanvasElement;
     this.starCount = starCount;
     this.currentLevel = currentLevel;
     this.isLastLevel = isLastLevel;
@@ -188,6 +191,7 @@ export class LevelEndScene {
   }
 
   renderButtonsHTML() {
+    const nextButton = document.getElementById('levelend-next-btn');
     // Define configurations for each button
     const buttonConfigs = [
       {
@@ -205,7 +209,7 @@ export class LevelEndScene {
         },
       },
     ];
-  
+
     // Add NextButtonHtml only if not the last level and the star count is sufficient
     if (!this.isLastLevel && this.starCount >= 2) {
       buttonConfigs.push({
@@ -215,21 +219,24 @@ export class LevelEndScene {
           this.buttonCallbackFn('next');
         },
       });
-    }
-  
-    // Remove any existing NextButtonHtml if it's the last level
-    if (this.isLastLevel) {
-      const nextButton = document.getElementById('levelend-next-btn');
+    } else {
       if (nextButton) {
         nextButton.remove();
       }
     }
-  
+
+    // Remove any existing NextButtonHtml if it's the last level
+    if (this.isLastLevel) {
+      if (nextButton) {
+        nextButton.remove();
+      }
+    }
+
     // Create buttons based on configuration
     buttonConfigs.forEach(({ ButtonClass, id, onClick }) => {
       this.createButton(ButtonClass, id, onClick);
     });
-  }  
+  }
 
   addEventListener() {
     document.addEventListener('visibilitychange', this.pauseAudios, false);
