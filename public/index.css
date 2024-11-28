@@ -204,7 +204,7 @@ img {
   cursor: pointer;
   outline: none;
   z-index: 9;
-  display: none;
+  /* display: none; */
 }
 
 #toggle-btn.on {
@@ -431,7 +431,7 @@ img {
   position: absolute;
   width: 100%;
   z-index: 2;
-  bottom: -4px;
+  bottom: -3px;
 }
 
 .ftm-totem {
@@ -496,7 +496,7 @@ img {
   position: fixed;
   z-index: 7;
   background-image: url(./assets/images/WIN_screen_bg.webp);
-  background-size: 100% 115%;
+  background-size: 100% 110%;
   top: 0;
   bottom: 0;
 }
@@ -504,7 +504,7 @@ img {
 .stars-container {
   width: 100%;
   position: relative;
-  top: 160px;
+  top: 120px;
   height: 120px;
 }
 
@@ -559,7 +559,7 @@ img {
   position: absolute;
   right: 0;
   top: 0;
-  margin: 10px 20px;
+  margin: 10px 10px;
 }
 
 .dynamic-button {
@@ -568,8 +568,8 @@ img {
   background: transparent;
   display: flex;
   align-items: center;
-  max-width: 120px;
-  max-height: 120px;
+  max-width: 60px;
+  max-height: 60px;
   width: 100%;
 }
 
@@ -611,22 +611,23 @@ img {
 
   .autumn-bg .ftm-totem,
   .winter-bg .ftm-totem {
-    right: -130px;
-    bottom: 258px;
-    width: auto;
+    right: -60px !important;
+    bottom: 115px !important;
+    width: 55% !important;
   }
 
   .winter-bg .ftm-fence {
-    width: auto;
-    left: -79px;
-    bottom: 322px;
+    width: 70% !important;
+    left: -85px !important;
+    bottom: 145px !important;
   }
 
   .autumn-bg .ftm-fence {
-    bottom: 185px;
-    width: auto;
-    left: -175px;
-  }
+    bottom: 90px;
+    width: 60%;
+    left: -75px;
+    rotate: 340deg;
+}
 
   .level_content-wrapper {
     max-width: 138px;
@@ -643,11 +644,6 @@ img {
   .bar-level {
     max-width: 12px;
     margin: 0px 4px;
-  }
-
-  .dynamic-button {
-    max-width: 70px;
-    max-height: 70px;
   }
 }
 
@@ -713,9 +709,9 @@ img {
     max-width: 100%;
   }
 
-  #levelEnd {
+  /* #levelEnd {
     background-size: 100% 120%;
-  }
+  } */
 
   .level_content-wrapper {
     position: absolute;
@@ -758,7 +754,7 @@ img {
     width: 100%;
   }
 
-  .stars-container {
+  /* .stars-container {
     top: 25%;
   }
 
@@ -779,7 +775,7 @@ img {
     right: 60px;
     width: 140px;
     bottom: -30%;
-  }
+  } */
 }
 
 @media only screen and (min-width: 992px) and (max-width: 1366px) {
