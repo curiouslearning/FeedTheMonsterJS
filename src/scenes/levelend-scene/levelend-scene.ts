@@ -223,13 +223,6 @@ export class LevelEndScene {
       }
     }
 
-    // Remove any existing NextButtonHtml if it's the last level
-    if (this.isLastLevel) {
-      if (nextButton) {
-        nextButton.remove();
-      }
-    }
-
     // Create buttons based on configuration
     buttonConfigs.forEach(({ ButtonClass, id, onClick }) => {
       this.createButton(ButtonClass, id, onClick);
