@@ -299,9 +299,7 @@ export class GameplayScene {
         if (distance <= 40) {
           this.pickedStoneObject = sc;
           this.pickedStone = sc;
-          if (this.pickedStone.frame > 99) {
-            this.audioPlayer.playAudio(AUDIO_PATH_ON_DRAG); // Note: When refactoring, this should be moved alongside the StoneHandler and handled within that class.
-          }
+          this.stoneHandler.playDragAudioIfNecessary(sc);
           break;
         }
       }
@@ -322,9 +320,7 @@ export class GameplayScene {
     if (stoneLetter) {
       this.pickedStoneObject = stoneLetter;
       this.pickedStone = stoneLetter;
-      if (this.pickedStone.frame > 99) {
-        this.audioPlayer.playAudio(AUDIO_PATH_ON_DRAG); // Note: When refactoring, this should be moved alongside the StoneHandler and handled within that class.
-      }
+      this.stoneHandler.playDragAudioIfNecessary(stoneLetter);
 
       if (this.levelData?.levelMeta?.levelType === 'Word') {
         this.wordPuzzleLogic.setPickUpLetter(
@@ -527,6 +523,7 @@ export class GameplayScene {
       this.logLevelEndFirebaseEvent();
       GameScore.setGameLevelScore(this.levelData, this.score);
 
+      console.log(this.levelNumber);
       const levelEndData = {
         starCount: GameScore.calculateStarCount(this.score),
         currentLevel: this.levelNumber,

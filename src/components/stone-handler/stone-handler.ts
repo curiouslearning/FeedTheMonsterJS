@@ -9,7 +9,8 @@ import {
   AUDIO_PATH_POINTS_ADD,
   AUDIO_PATH_CORRECT_STONE,
   AUDIO_PATH_CHEERING_FUNC,
-  ASSETS_PATH_STONE_PINK_BG
+  ASSETS_PATH_STONE_PINK_BG,
+  AUDIO_PATH_ON_DRAG
 } from '@constants';
 import gameStateService from '@gameStateService';
 
@@ -361,5 +362,11 @@ export default class StoneHandler extends EventManager {
     updatedStoneCoordinates.y = posY - rect.top;
 
     return updatedStoneCoordinates;
+  }
+
+  playDragAudioIfNecessary(stone: StoneConfig) {
+    if (stone.frame > 99) {
+      this.audioPlayer.playAudio(AUDIO_PATH_ON_DRAG);
+    }
   }
 }
