@@ -1,5 +1,6 @@
 /** @type {import("ts-jest").JestConfigWithTsJest} **/
 module.exports = {
+  preset: "ts-jest",
   collectCoverage: true,
   collectCoverageFrom: [
     "<rootDir>/src/**/*.ts"
@@ -19,7 +20,8 @@ module.exports = {
     "@constants/*": "<rootDir>/src/constants/index.ts",
     "@data/*": "<rootDir>/src/data/$1",
     "@events": ["<rootDir>/src/events", "<rootDir>/src/events/$1"],
-    "@gameStateService/*": ["<rootDir>/src/gameStateService/$1"]
+    "@gameStateService/*": ["<rootDir>/src/gameStateService/$1"],
+    "^lodash-es$": "<rootDir>/node_modules/lodash/index.js"
   },
   roots: [
     "<rootDir>/src/"

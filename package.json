@@ -93,6 +93,7 @@
     "@capacitor/cli": "^4.4.0",
     "@types/howler": "^2.2.7",
     "@types/jest": "^29.5.14",
+    "@types/lodash-es": "^4.17.12",
     "@types/node": "^22.7.5",
     "compression-webpack-plugin": "^11.1.0",
     "cross-env": "^7.0.3",

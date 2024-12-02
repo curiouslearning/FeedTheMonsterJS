@@ -5,7 +5,7 @@ import { AudioPlayer } from '@components';
 import { lang } from '@common';
 import { AUDIO_ARE_YOU_SURE } from '@constants';
 import { ConfirmPopupComponent } from '@components/popups/confirm-popup/confirm-popup-component';
-import debounce from 'lodash-es/debounce';
+import { debounce } from 'lodash-es';
 
 export const PAUSE_POPUP_EVENT_DATA = {
   SELECT_LEVEL: 'select-level',
