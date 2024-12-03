@@ -29,6 +29,9 @@ body {
 
 img {
   max-width: 100%;
+  user-drag: none; /* Disables dragging on Chrome, Edge, and Safari */
+  -webkit-user-drag: none; /* Ensures dragging is disabled in Safari */
+  pointer-events: none; /* Prevents mouse events like dragging and clicking on the image */
 }
 
 #discription-text {
