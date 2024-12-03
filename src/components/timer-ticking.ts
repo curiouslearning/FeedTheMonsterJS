@@ -88,7 +88,7 @@ export default class TimerTicking extends EventManager {
             const timerDepletion = Math.max(0, 100 - this.timer);
             this.timerFullContainer.style.width = `${timerDepletion}%`;
 
-            if (timerDepletion < 5 && !this.isMyTimerOver) {
+            if (timerDepletion < 10 && !this.isMyTimerOver) {
                 this.playLevelEndAudioOnce ? this.audioPlayer.playAudio(AUDIO_TIMEOUT) : null;
                 this.playLevelEndAudioOnce = false;
             }

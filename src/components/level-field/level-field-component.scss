@@ -38,22 +38,50 @@
 }
 
 /* Medium devices (tablets, 768px and up) */
-@media (min-width: 768px) {
+@media (min-width: 768px) and (max-width: 991px) {
+  .game-control .level_content-wrapper {
+    max-width: 170px;
+  }
 
-  .bar-level-wrapper {
-    top: 2.5rem
+  .game-control .level_content-wrapper .bar-level-wrapper {
+    max-width: 165px;
+    top: 1.8rem;
+  }
+
+  .game-control .level_content-wrapper .bar-level-wrapper .bar-level {
+    max-width: 18px;
   }
 }
 
-@media (min-width: 820px) {
+@media (min-width: 991px) and (max-width: 1024px) {
+  .game-control .level_content-wrapper {
+    max-width: 230px;
+  }
 
-  .bar-level {
-    max-width: 30px;
+  .game-control .level_content-wrapper .bar-level-wrapper {
+    max-width: 215px;
+    top: 2.3rem;
+    left:5px
+  }
+
+  .game-control .level_content-wrapper .bar-level-wrapper .bar-level {
+    max-width: 25px;
   }
 }
 
-@media (min-width: 992px) {
-  .level_content-wrapper {
-    top: 1rem;
+/* For desktops or larger devices above 1080px */
+@media (min-width: 1080px){
+  .game-control .level_content-wrapper {
+    max-width: 230px;
+  }
+
+  .game-control .level_content-wrapper .bar-level-wrapper {
+    max-width: 215px;
+    top: 2.3rem;
+    left:5px
+  }
+
+  .game-control .level_content-wrapper .bar-level-wrapper .bar-level {
+    max-width: 25px;
   }
 }
