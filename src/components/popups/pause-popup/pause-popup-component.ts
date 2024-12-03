@@ -66,7 +66,7 @@ export class PausePopupComponent extends BasePopupComponent {
   }
 
   destroy(): void {
-    this.confirmPopup.destroy();
+    this.confirmPopup?.destroy();
     super.destroy();
   }
 }

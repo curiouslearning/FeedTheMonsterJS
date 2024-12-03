@@ -126,7 +126,7 @@ export class BasePopupComponent {
    * When overriding, be sure to call super.destroy(); This ensures the popup element is removed.
    */
   destroy() {
-    this.popupEl.remove();
+    this.popupEl?.remove();
     this._removeEventListeners();
   }
 
@@ -229,7 +229,7 @@ export class BasePopupComponent {
 
   private _removeEventListeners() {
     const buttons = this.popupEl?.querySelectorAll(FIXED_SELECTORS.autoClickBind);
-    if (!buttons.length) return;
+    if (!buttons?.length) return;
 
     buttons.forEach((button) => {
       button.removeEventListener('click', this._click);
