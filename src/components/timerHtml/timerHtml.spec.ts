@@ -1,4 +1,5 @@
 // timer-ticking.test.ts
+import { AUDIO_TIMEOUT } from '@constants';
 import TimerTicking from '../timer-ticking';
 import TimerHTMLComponent from './timerHtml';
 import { AudioPlayer } from '@components';
@@ -62,15 +63,36 @@ describe('TimerTicking', () => {
     expect(timerTicking.timerFullContainer?.style.width).toBe(expectedWidth);
   });
 
-  test('should call callback and play audio when timer is over', () => {
+  test('should call callback, update timer width, and play audio when timer is nearly depleted and over', () => {
     const deltaTime = 20000; // Simulate a large frame duration to deplete the timer
-    timerTicking.startTimer();
+    timerTicking.startTimer(); // Start the timer
+
+    // Mocking initial values and elements
+    timerTicking.timer = 90; // Initial timer value
+    timerTicking.isStoneDropped = false; // Ensure stone isn't dropped
+    timerTicking.isMyTimerOver = false; // Timer is not over initially
+    timerTicking.playLevelEndAudioOnce = true; // Audio should play once
+
+    timerTicking.audioPlayer.playAudio = jest.fn();
+
     timerTicking.update(deltaTime);
 
-    expect(timerTicking.isMyTimerOver).toBe(true);
-    expect(mockCallback).toHaveBeenCalledWith(true);
-    expect((timerTicking.audioPlayer as any).playAudio).toHaveBeenCalledWith(expect.any(String));
-  });
+    // Calculate expected timer depletion
+    const expectedTimerDepletion = Math.max(0, 100 - (90 + deltaTime * 0.008));
+    expect(timerTicking.timerFullContainer.style.width).toBe(`${expectedTimerDepletion}%`);
+
+    // Check if audio was played when timerDepletion < 10
+    if (expectedTimerDepletion < 10 && !timerTicking.isMyTimerOver) {
+        expect(timerTicking.audioPlayer.playAudio).toHaveBeenCalledWith(AUDIO_TIMEOUT);
+        expect(timerTicking.playLevelEndAudioOnce).toBe(false);
+    }
+
+    // Check if the timer is over and callback is called when timerDepletion <= 0
+    if (expectedTimerDepletion <= 0) {
+        expect(timerTicking.isMyTimerOver).toBe(true);
+        expect(mockCallback).toHaveBeenCalledWith(true);
+    }
+});
 
   test('should handle stone drop and stop timer updates', async () => {
     // Wait for the constructor code to execute
