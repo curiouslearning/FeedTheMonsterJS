@@ -523,7 +523,6 @@ export class GameplayScene {
       this.logLevelEndFirebaseEvent();
       GameScore.setGameLevelScore(this.levelData, this.score);
 
-      console.log(this.levelNumber);
       const levelEndData = {
         starCount: GameScore.calculateStarCount(this.score),
         currentLevel: this.levelNumber,
