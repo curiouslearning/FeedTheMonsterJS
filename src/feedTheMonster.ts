@@ -264,7 +264,7 @@ class App {
     const gameWidth = window.screen.width > 1024 ? 768 : window.innerWidth;
     this.canvas.height = window.innerHeight;
     this.canvas.width = gameWidth;
-    this.riveCanvas.height = window.innerHeight / 4;
+    this.riveCanvas.height = window.innerHeight / 4; //using the rive canvas height divide by 4 to match the coordinates at which the monster can be fed properly,can be removed once proper rive file with size is fixed.
     this.riveCanvas.width = gameWidth;
     this.background.style.width = `${gameWidth}px`;
   }
