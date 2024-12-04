@@ -510,25 +510,18 @@ img {
   top: 120px;
   height: 120px;
 }
-
 /* Initial styles for stars */
 .stars {
-  opacity: 0;
-  /* Initially hidden */
-  transform: scale(0);
-  /* Initially scaled down */
-  transition: opacity 0.5s ease, transform 0.5s ease;
-  /* Smooth animation */
+  opacity: 0; /* Initially hidden */
+  transform: scale(0); /* Initially scaled down */
+  transition: opacity 0.5s ease, transform 0.5s ease; /* Smooth animation */
 }
 
 /* Animation class to reveal the stars */
 .stars.show {
-  opacity: 1;
-  /* Fully visible */
-  transform: scale(1);
-  /* Full size */
+  opacity: 1; /* Fully visible */
+  transform: scale(1); /* Full size */
 }
-
 .star1 {
   position: absolute;
   left: 40px;
@@ -562,7 +555,7 @@ img {
   position: absolute;
   right: 0;
   top: 0;
-  margin: 10px 10px;
+  margin: 10px 20px;
 }
 
 .dynamic-button {
