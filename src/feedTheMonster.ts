@@ -25,7 +25,6 @@ declare const window: any;
 
 class App {
   private canvas: HTMLCanvasElement;
-  private riveCanvas: HTMLCanvasElement;
   private versionInfoElement: HTMLElement;
   private lang: string;
   private is_cached: Map<string, boolean>;
@@ -48,7 +47,6 @@ class App {
     this.lang = lang;
     this.currentProgress = 10; // Initialize progress to 0
     this.canvas = document.getElementById("canvas") as HTMLCanvasElement;
-    this.riveCanvas = document.getElementById("rivecanvas") as HTMLCanvasElement;
     this.background = document.getElementById("background") as HTMLElement;
     this.channel = new BroadcastChannel("my-channel");
     this.progressBar = document.getElementById("progress-bar") as HTMLElement;
@@ -264,8 +262,6 @@ class App {
     const gameWidth = window.screen.width > 1024 ? 768 : window.innerWidth;
     this.canvas.height = window.innerHeight;
     this.canvas.width = gameWidth;
-    this.riveCanvas.height = window.innerHeight / 4; //using the rive canvas height divide by 4 to match the coordinates at which the monster can be fed properly,can be removed once proper rive file with size is fixed.
-    this.riveCanvas.width = gameWidth;
     this.background.style.width = `${gameWidth}px`;
   }
 
