@@ -31,8 +31,8 @@ import { GameScore, DataModal } from "@data";
 import {
   LevelCompletedEvent,
   PuzzleCompletedEvent,
-} from "../Firebase/firebase-event-interface";
-import { FirebaseIntegration } from "../Firebase/firebase-integration";
+} from "../../Firebase/firebase-event-interface";
+import { FirebaseIntegration } from "../../Firebase/firebase-integration";
 import {
   AUDIO_PATH_ON_DRAG,
   PreviousPlayedLevel,
@@ -208,7 +208,7 @@ export class GameplayScene {
     this.data = gamePlayData.data;
   }
 
-  private setupBg = () => {
+  setupBg = () => {
     // Determine the background type based on the level number using the static method
     const selectedBackgroundType = BackgroundHtmlGenerator.createBackgroundComponent(this.levelData.levelMeta.levelNumber);
 
@@ -295,7 +295,7 @@ export class GameplayScene {
         if (distance <= 40) {
           this.pickedStoneObject = sc;
           this.pickedStone = sc;
-          this.audioPlayer.playAudio(AUDIO_PATH_ON_DRAG); // Note: When refactoring, this should be moved alongside the StoneHandler and handled within that class.
+          this.stoneHandler.playDragAudioIfNecessary(sc);
           break;
         }
       }
@@ -316,7 +316,7 @@ export class GameplayScene {
     if (stoneLetter) {
       this.pickedStoneObject = stoneLetter;
       this.pickedStone = stoneLetter;
-      this.audioPlayer.playAudio(AUDIO_PATH_ON_DRAG); // Note: When refactoring, this should be moved alongside the StoneHandler and handled within that class.
+      this.stoneHandler.playDragAudioIfNecessary(stoneLetter);
 
       if (this.levelData?.levelMeta?.levelType === 'Word') {
         this.wordPuzzleLogic.setPickUpLetter(

@@ -84,12 +84,11 @@ export default class TimerTicking extends EventManager {
     update(deltaTime) {
         if (this.startMyTimer && !this.isStoneDropped) {
             this.timer += deltaTime * 0.008;
-
             // Calculate the new width percentage for the timer
             const timerDepletion = Math.max(0, 100 - this.timer);
             this.timerFullContainer.style.width = `${timerDepletion}%`;
 
-            if (timerDepletion < 5 && !this.isMyTimerOver) {
+            if (timerDepletion < 10 && !this.isMyTimerOver) {
                 this.playLevelEndAudioOnce ? this.audioPlayer.playAudio(AUDIO_TIMEOUT) : null;
                 this.playLevelEndAudioOnce = false;
             }
