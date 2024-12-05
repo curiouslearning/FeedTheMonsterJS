@@ -530,7 +530,7 @@ export class GameplayScene {
           gameStateService.publish(gameStateService.EVENTS.LEVEL_END_DATA_EVENT, {levelEndData, data: this.data});
           this.switchSceneToEnd();
         },
-        3000
+        2500 //added delay for switching to level end screen
       );
     } else {
       const loadPuzzleEvent = new CustomEvent(LOADPUZZLE, {
