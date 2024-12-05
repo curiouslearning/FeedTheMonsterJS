@@ -117,6 +117,6 @@ export class RiveMonsterComponent {
     console.log(isWithinHitboxX);
     console.log(isWithinHitboxY);
 
-    // return isWithinHitboxX && isWithinHitboxY;
+    return isWithinHitboxX && isWithinHitboxY;
   }
 }

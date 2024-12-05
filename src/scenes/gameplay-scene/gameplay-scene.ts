@@ -45,8 +45,9 @@ import { RiveMonsterComponent } from '@components/riveMonster/rive-monster-compo
 export class GameplayScene {
   public width: number;
   public height: number;
-  public monster: Monster;
-  public riveMonster: RiveMonsterComponent;
+  // public monster: Monster;
+  public monster: RiveMonsterComponent;
+  // public riveMonster: RiveMonsterComponent;
   public jsonVersionNumber: string;
   public canvas: HTMLCanvasElement;
   public levelData: any;
@@ -160,16 +161,16 @@ export class GameplayScene {
   }
 
   private initializeRiveMonster() {
-    this.riveMonster = new RiveMonsterComponent({
-      canvas: this.riveMonsterElement,
-      autoplay: true,
-      fit: "contain",
-      alignment: "topCenter",
-      onLoad: () => {
-        this.riveMonster.play(RiveMonsterComponent.Animations.IDLE); // Start with the "Eat Happy" animation
-      },
-      gameCanvas: this.canvas
-    });
+    // this.riveMonster = new RiveMonsterComponent({
+    //   canvas: this.riveMonsterElement,
+    //   autoplay: true,
+    //   fit: "contain",
+    //   alignment: "topCenter",
+    //   onLoad: () => {
+    //     this.riveMonster.play(RiveMonsterComponent.Animations.IDLE); // Start with the "Eat Happy" animation
+    //   },
+    //   gameCanvas: this.canvas
+    // });
   }
 
   private  initializeGameComponents(gamePlayData) {
@@ -198,7 +199,17 @@ export class GameplayScene {
     );
     this.levelIndicators = new LevelIndicators();
     this.levelIndicators.setIndicators(this.counter);
-    this.monster = new Monster(this.canvas, this.monsterPhaseNumber);
+    // this.monster = new Monster(this.canvas, this.monsterPhaseNumber);
+    this.monster = new RiveMonsterComponent({
+      canvas: this.riveMonsterElement,
+      autoplay: true,
+      fit: "contain",
+      alignment: "topCenter",
+      onLoad: () => {
+        this.monster.play(RiveMonsterComponent.Animations.IDLE); // Start with the "Eat Happy" animation
+      },
+      gameCanvas: this.canvas
+    });
   }
 
   private setupUIElements() {
@@ -215,6 +226,7 @@ export class GameplayScene {
     this.height = gamePlayData.height;
     this.rightToLeft = gamePlayData.rightToLeft;
     this.canvas = gamePlayData.canvas;
+    console.log(gamePlayData.canvas);
     this.context = gamePlayData.gameCanvasContext;
     this.levelData = gamePlayData.levelData;
     this.levelNumber = gamePlayData.levelNumber;
@@ -361,7 +373,8 @@ export class GameplayScene {
         let rect = this.canvas.getBoundingClientRect();
         const x = event.clientX - rect.left;
         const y = event.clientY - rect.top;
-        this.monster.changeToDragAnimation();
+        // this.monster.changeToDragAnimation();
+        this.monster.play(RiveMonsterComponent.Animations.OPENING_MOUTH_EAT);
         this.pickedStone.x = x;
         this.pickedStone.y = y;
         trailX = x;
@@ -403,7 +416,8 @@ export class GameplayScene {
         }
       }
 
-      this.monster.changeToDragAnimation();
+      // this.monster.changeToDragAnimation();
+      this.monster.play(RiveMonsterComponent.Animations.OPENING_MOUTH_EAT);
     }
 
     this.trailParticles?.addTrailParticlesOnMove(
@@ -417,15 +431,15 @@ export class GameplayScene {
     const x = event.clientX - rect.left;
     const y = event.clientY - rect.top;
 
-    if (this.monster.onClick(x, y)) {
-      this.isGameStarted = true;
-      this.time = 0;
-      this.tutorial.setPlayMonsterClickAnimation(false);
-    }
+    // if (this.monster.onClick(x, y)) {
+    //   this.isGameStarted = true;
+    //   this.time = 0;
+    //   this.tutorial.setPlayMonsterClickAnimation(false);
+    // }
 
-    if (this.promptText.onClick(x, y)) {
-      this.promptText.playSound();
-    }
+    // if (this.promptText.onClick(x, y)) {
+    //   this.promptText.playSound();
+    // }
   };
 
   // Event to identify touch on the canvas
@@ -572,7 +586,7 @@ export class GameplayScene {
     this.unsubscribeEvent();
     this.isDisposing = true;
     this.audioPlayer.stopAllAudios();
-    this.monster.dispose();
+    // this.monster.dispose();
     this.levelIndicators.dispose();
     this.stoneHandler.dispose();
     this.promptText.dispose();
@@ -637,7 +651,8 @@ export class GameplayScene {
       }
 
       this.timerTicking.startTimer();
-      this.monster.changeToEatAnimation();
+      // this.monster.changeToEatAnimation();
+      this.monster.play(RiveMonsterComponent.Animations.EAT_HAPPY);
       this.promptText.droppedStoneIndex(
         lang == "arabic"
           ? this.stonesCount
@@ -645,12 +660,19 @@ export class GameplayScene {
       );
       this.stonesCount++;
     } else {
+      console.log('wrong')
       this.handleStoneDropEnd(isCorrect, "Word");
       this.stonesCount = 1;
     }
   }
 
   private handleStoneDropEnd(isCorrect, puzzleType: string | null = null) {
+    if(isCorrect) {
+      this.monster.play(RiveMonsterComponent.Animations.EAT_HAPPY);
+    } else {
+      this.monster.play(RiveMonsterComponent.Animations.EAT_DISGUST);
+    }
+
     this.logPuzzleEndFirebaseEvent(isCorrect, puzzleType);
     this.dispatchStoneDropEvent(isCorrect);
     this.loadPuzzle();
@@ -670,7 +692,8 @@ export class GameplayScene {
   }
 
   private initNewPuzzle(loadPuzzleEvent) {
-    this.monster.changeToIdleAnimation();
+    // this.monster.changeToIdleAnimation();
+    this.monster.play(RiveMonsterComponent.Animations.IDLE);
     this.removeEventListeners();
     this.isGameStarted = false;
     this.time = 0;
