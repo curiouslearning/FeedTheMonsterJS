@@ -1,22 +1,34 @@
-import { Rive, Layout, Fit, Alignment } from '@rive-app/canvas';
-import { EventManager } from '@events';
+import {Rive, Layout, Fit, Alignment} from '@rive-app/canvas';
 
 interface RiveMonsterComponentProps {
-  canvas: HTMLCanvasElement;
+  canvas: HTMLCanvasElement; // Canvas element where the animation will render
   autoplay: boolean;
-  fit?: string;
-  alignment?: string;
-  width?: number;
-  height?: number;
-  onLoad?: () => void;
+  fit?: string; // Fit property (e.g contain, cover, etc.)
+  alignment?: string; // Alignment property (e.g topCenter, bottomLeft, etc.)
+  width?: number; // Optional width for the Rive animation
+  height?: number; // Optional height for the Rive animation
+  onLoad?: () => void; // Callback once Rive animation is loaded
+  gameCanvas?: HTMLCanvasElement;
 }
 
-export class RiveMonsterComponent extends EventManager {
+export class RiveMonsterComponent {
   private props: RiveMonsterComponentProps;
   private riveInstance: any;
-  private src: string = './assets/monsterrive.riv';
-  private stateMachines: string = 'State Machine 1';
+  private src: string = './assets/monsterrive.riv'; // Define the .riv file path
+  private stateMachines: string = 'State Machine 1'; // Define the state machine
+  public game: any;
+  public x: number;
+  public y: number;
+  private hitboxRangeX: {
+    from: number;
+    to: number;
+  };
+  private hitboxRangeY: {
+    from: number;
+    to: number;
+  };
 
+  // Static readonly properties for all monster animations
   public static readonly Animations = {
     OPENING_MOUTH_EAT: 'Opening Mouth Eat',
     EAT_HAPPY: 'Eat Happy',
@@ -24,58 +36,23 @@ export class RiveMonsterComponent extends EventManager {
     EAT_DISGUST: 'Eat Disgust',
   };
 
-  public zindex: number;
-  public width: number;
-  public height: number;
-  public x: number;
-  public y: number;
-  public fps: number;
-  public canvasElement: HTMLCanvasElement;
-  public context: CanvasRenderingContext2D;
-  public game: any;
-  public monsterPhase: number;
-  private hitboxRangeX: { from: number; to: number };
-  private hitboxRangeY: { from: number; to: number };
+  constructor(props: RiveMonsterComponentProps) {
+    this.props = props;
+    this.game = this.props.gameCanvas;
 
-  constructor(game?, monsterPhase?, callBackFunction?) {
-    super({
-      stoneDropCallbackHandler: (event) => this.handleStoneDrop(event),
-      loadPuzzleCallbackHandler: (event) => this.handleLoadPuzzle(event),
-    });
-
-    this.game = game;
-    this.monsterPhase = monsterPhase;
-    this.width = this.game.width;
-    this.height = this.game.height;
-    this.canvasElement = document.getElementById('rivecanvas') as HTMLCanvasElement;
-    this.context = this.canvasElement.getContext('2d');
+    console.log(this.props.gameCanvas);
     this.x = this.game.width / 2 - this.game.width * 0.243;
     this.y = this.game.width / 3;
-    this.hitboxRangeX = { from: 0, to: 0 };
-    this.hitboxRangeY = { from: 0, to: 0 };
-
-    this.props = {
-      canvas: this.canvasElement,
-      autoplay: true,
-      fit: 'contain',
-      alignment: 'topCenter',
-      width: this.canvasElement.width,
-      height: this.canvasElement.height,
-      onLoad: () => {
-        this.play(RiveMonsterComponent.Animations.IDLE);
-        this.drawHitbox(); // Ensure hitbox is drawn on load
-      },
+    this.hitboxRangeX = {
+      from: 0,
+      to: 0,
+    };
+    this.hitboxRangeY = {
+      from: 0,
+      to: 0,
     };
 
-    this.initializeRive();
-    this.initializeHitbox();
-
-    if (callBackFunction) {
-      callBackFunction();
-    }
-  }
-
-  private initializeRive() {
+    // Initialize Rive
     this.riveInstance = new Rive({
       src: this.src,
       canvas: this.props.canvas,
@@ -85,55 +62,28 @@ export class RiveMonsterComponent extends EventManager {
         fit: Fit[this.props.fit || 'Contain'],
         alignment: Alignment[this.props.alignment || 'TopCenter'],
       }),
-      onLoad: this.props.onLoad,
+      onLoad: () => {
+        if (this.props.onLoad) {
+          this.props.onLoad();
+        }
+      },
     });
-  }
 
-  private initializeHitbox() {
-    const rangeFactorX = 70;
-    const rangeFactorY = 50;
+    //Adjust this range factor to control how big is the hit box for dropping stones.
+    const rangeFactorX = 70; //SUBCTRACT FROM CENTER TO LEFT, ADD FROM CENTER TO RIGHT.
+    const rangeFactorY = 50; //SUBCTRACT FROM CENTER TO TOP, ADD FROM CENTER TO BOTTOM.
     const monsterCenterX = this.game.width / 2;
-    const monsterCenterY = monsterCenterX / 2;
+    //Note: Rive height is currently always half of width. This might change when new rive files are to be implemented/
+    const monsterCenterY = monsterCenterX / 2; //Create different sets of height for multiple rive files or adjust this for height when replacing the current rive monster.
 
     this.hitboxRangeX.from = monsterCenterX - rangeFactorX;
     this.hitboxRangeX.to = monsterCenterX + rangeFactorX;
     this.hitboxRangeY.from = monsterCenterY - rangeFactorY;
     this.hitboxRangeY.to = monsterCenterY + rangeFactorY;
-
-    console.log('Hitbox initialized:', {
-      hitboxRangeX: this.hitboxRangeX,
-      hitboxRangeY: this.hitboxRangeY,
-    });
-
-    this.drawHitbox();
-  }
-
-  public drawHitbox() {
-    if (!this.context) {
-      console.error('Canvas context is not initialized.');
-      return;
-    }
-
-    const width = this.hitboxRangeX.to - this.hitboxRangeX.from;
-    const height = this.hitboxRangeY.to - this.hitboxRangeY.from;
-
-    // console.log('Drawing hitbox with dimensions:', { width, height });
-    // console.log('this.hitboxRangeX.to:', this.hitboxRangeX.to);
-    // console.log('this.hitboxRangeX.from:', this.hitboxRangeX.from);
-
-    this.context.clearRect(0, 0, this.canvasElement.width, this.canvasElement.height); // Clear previous frame
-    this.context.beginPath();
-    this.context.strokeStyle = 'red';
-    this.context.lineWidth = 2;
-    this.context.rect(this.hitboxRangeX.from, this.hitboxRangeY.from, width, height);
-    this.context.stroke();
-    this.context.closePath();
   }
 
   play(animationName: string) {
-    console.log(this.riveInstance);
     if (this.riveInstance) {
-      console.log(animationName);
       this.riveInstance.play(animationName);
     }
   }
@@ -144,40 +94,29 @@ export class RiveMonsterComponent extends EventManager {
     }
   }
 
+  // Check animation completion via a state machine listener need to have statemachines properly to test this
+  onStateChange(callback: (stateName: string) => void) {
+    this.riveInstance.stateMachine.inputs.forEach(input => {
+      input.onStateChange(state => {
+        callback(state);
+      });
+    });
+  }
+
   checkHitboxDistance(event) {
-    const rect = this.canvasElement.getBoundingClientRect();
+    console.log('checkHitboxDistance', this.props.canvas);
+
+    const rect = this.props.canvas.getBoundingClientRect();
     const x = event.clientX - rect.left;
     const y = event.clientY - rect.top;
 
     const isWithinHitboxX = x >= this.hitboxRangeX.from && x <= this.hitboxRangeX.to;
     const isWithinHitboxY = y >= this.hitboxRangeY.from && y <= this.hitboxRangeY.to;
 
+    console.log('x y', x, y);
+    console.log(isWithinHitboxX);
+    console.log(isWithinHitboxY);
+
     // return isWithinHitboxX && isWithinHitboxY;
-    return true;
-  }
-
-  handleStoneDrop(event) {
-    if (event.detail.isCorrect) {
-      this.play(RiveMonsterComponent.Animations.EAT_HAPPY);
-    } else {
-      this.play(RiveMonsterComponent.Animations.EAT_DISGUST);
-    }
-  }
-
-  handleLoadPuzzle(event) {
-    this.play(RiveMonsterComponent.Animations.IDLE);
-  }
-
-  dispose() {
-    this.stop();
-    this.unregisterEventListener();
-  }
-
-  onClick(xClick: number, yClick: number): boolean {
-    const distance = Math.sqrt(
-      (xClick - this.x - this.width / 4) ** 2 +
-        (yClick - this.y - this.height / 2.2) ** 2,
-    );
-    return distance <= 100;
   }
 }

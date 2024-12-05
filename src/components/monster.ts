@@ -105,6 +105,10 @@ export class Monster extends EventManager {
     const isWithinHitboxX = x >= this.hitboxRangeX.from && x <= this.hitboxRangeX.to;
     const isWithinHitboxY = y >= this.hitboxRangeY.from && y <= this.hitboxRangeY.to;
 
+    console.log('x y', x, y);
+    console.log(isWithinHitboxX);
+    console.log(isWithinHitboxY);
+
     return isWithinHitboxX && isWithinHitboxY;
   }
 

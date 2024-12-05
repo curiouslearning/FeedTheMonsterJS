@@ -1,4 +1,5 @@
 import {
+  Monster,
   TimerTicking,
   PromptText,
   PauseButton,
@@ -10,7 +11,6 @@ import {
   AudioPlayer,
   TrailEffect,
 } from "@components";
-import { RiveMonsterComponent } from '@components/riveMonster/rive-monster-component';
 import {
   StoneConfig,
   CLICK,
@@ -40,11 +40,13 @@ import {
 import { WordPuzzleLogic } from '@gamepuzzles';
 import gameStateService from '@gameStateService';
 import { PAUSE_POPUP_EVENT_DATA, PausePopupComponent } from '@components/popups/pause-popup/pause-popup-component';
+import { RiveMonsterComponent } from '@components/riveMonster/rive-monster-component';
 
 export class GameplayScene {
   public width: number;
   public height: number;
-  public monster: RiveMonsterComponent;
+  public monster: Monster;
+  public riveMonster: RiveMonsterComponent;
   public jsonVersionNumber: string;
   public canvas: HTMLCanvasElement;
   public levelData: any;
@@ -157,6 +159,19 @@ export class GameplayScene {
     this.setupBg();
   }
 
+  private initializeRiveMonster() {
+    this.riveMonster = new RiveMonsterComponent({
+      canvas: this.riveMonsterElement,
+      autoplay: true,
+      fit: "contain",
+      alignment: "topCenter",
+      onLoad: () => {
+        this.riveMonster.play(RiveMonsterComponent.Animations.IDLE); // Start with the "Eat Happy" animation
+      },
+      gameCanvas: this.canvas
+    });
+  }
+
   private  initializeGameComponents(gamePlayData) {
     this.trailParticles = new TrailEffect(this.canvas);
     this.pauseButton = new PauseButton();
@@ -183,6 +198,7 @@ export class GameplayScene {
     );
     this.levelIndicators = new LevelIndicators();
     this.levelIndicators.setIndicators(this.counter);
+    this.monster = new Monster(this.canvas, this.monsterPhaseNumber);
   }
 
   private setupUIElements() {
@@ -191,20 +207,6 @@ export class GameplayScene {
     this.riveMonsterElement.style.zIndex = "4";
     this.gameControl = document.getElementById("game-control") as HTMLCanvasElement;
     this.gameControl.style.zIndex = "5";
-    this.initializeRiveMonster();
-  }
-
-  private initializeRiveMonster() {
-    // Initialize the RiveMonsterComponent instead of directly using Rive
-    this.monster = new RiveMonsterComponent({
-      canvas: this.riveMonsterElement,
-      autoplay: true,
-      fit: "contain",
-      alignment: "topCenter",
-      onLoad: () => {
-        this.monster.play(RiveMonsterComponent.Animations.IDLE); // Start with the "Eat Happy" animation
-      }
-    });
   }
 
   private initializeProperties(gamePlayData) {
@@ -219,9 +221,11 @@ export class GameplayScene {
     this.jsonVersionNumber = gamePlayData.jsonVersionNumber;
     this.feedBackTexts = gamePlayData.feedBackTexts;
     this.data = gamePlayData.data;
+
+    this.initializeRiveMonster();
   }
 
-  private setupBg = () => {
+  setupBg = () => {
     // Determine the background type based on the level number using the static method
     const selectedBackgroundType = BackgroundHtmlGenerator.createBackgroundComponent(this.levelData.levelMeta.levelNumber);
 
@@ -308,7 +312,7 @@ export class GameplayScene {
         if (distance <= 40) {
           this.pickedStoneObject = sc;
           this.pickedStone = sc;
-          this.audioPlayer.playAudio(AUDIO_PATH_ON_DRAG); // Note: When refactoring, this should be moved alongside the StoneHandler and handled within that class.
+          this.stoneHandler.playDragAudioIfNecessary(sc);
           break;
         }
       }
@@ -329,7 +333,7 @@ export class GameplayScene {
     if (stoneLetter) {
       this.pickedStoneObject = stoneLetter;
       this.pickedStone = stoneLetter;
-      this.audioPlayer.playAudio(AUDIO_PATH_ON_DRAG); // Note: When refactoring, this should be moved alongside the StoneHandler and handled within that class.
+      this.stoneHandler.playDragAudioIfNecessary(stoneLetter);
 
       if (this.levelData?.levelMeta?.levelType === 'Word') {
         this.wordPuzzleLogic.setPickUpLetter(
@@ -357,7 +361,7 @@ export class GameplayScene {
         let rect = this.canvas.getBoundingClientRect();
         const x = event.clientX - rect.left;
         const y = event.clientY - rect.top;
-        this.monster.play(RiveMonsterComponent.Animations.OPENING_MOUTH_EAT);
+        this.monster.changeToDragAnimation();
         this.pickedStone.x = x;
         this.pickedStone.y = y;
         trailX = x;
@@ -399,7 +403,7 @@ export class GameplayScene {
         }
       }
 
-      this.monster.play(RiveMonsterComponent.Animations.OPENING_MOUTH_EAT);
+      this.monster.changeToDragAnimation();
     }
 
     this.trailParticles?.addTrailParticlesOnMove(
@@ -446,19 +450,7 @@ export class GameplayScene {
     this.trailParticles?.resetParticles();
   };
 
-  render() {
-    this.context.clearRect(0, 0, this.canvas.width, this.canvas.height);
-  
-    // Ensure hitbox is drawn
-    if (this.monster) {
-      this.monster.drawHitbox();
-    }
-  
-    // Render other game elements
-  }
-
   draw(deltaTime: number) {
-    this.render();
     if (!this.isGameStarted && !this.isPauseButtonClicked) {
       this.time = this.time + deltaTime;
       if (this.time >= 5000) {
@@ -580,8 +572,7 @@ export class GameplayScene {
     this.unsubscribeEvent();
     this.isDisposing = true;
     this.audioPlayer.stopAllAudios();
-    // this.monster.dispose();
-    this.monster.stop();
+    this.monster.dispose();
     this.levelIndicators.dispose();
     this.stoneHandler.dispose();
     this.promptText.dispose();
@@ -646,7 +637,7 @@ export class GameplayScene {
       }
 
       this.timerTicking.startTimer();
-      this.monster.play(RiveMonsterComponent.Animations.EAT_HAPPY);
+      this.monster.changeToEatAnimation();
       this.promptText.droppedStoneIndex(
         lang == "arabic"
           ? this.stonesCount
@@ -679,7 +670,7 @@ export class GameplayScene {
   }
 
   private initNewPuzzle(loadPuzzleEvent) {
-    console.log('initNewPuzzle');
+    this.monster.changeToIdleAnimation();
     this.removeEventListeners();
     this.isGameStarted = false;
     this.time = 0;
@@ -689,8 +680,6 @@ export class GameplayScene {
     this.addEventListeners();
     this.audioPlayer.stopAllAudios();
     this.startPuzzleTime();
-
-    this.initializeRiveMonster();
   }
 
   public logPuzzleEndFirebaseEvent(isCorrect: boolean, puzzleType?: string) {
