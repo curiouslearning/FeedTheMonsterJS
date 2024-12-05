@@ -11,7 +11,7 @@ export const TIMER_HTML_LAYOUT = (id: string) => `
     <img id="timer-empty" class="timer-empty" src="${TIMER_EMPTY}" alt="Timer Empty" />
     <img id="rotating-clock" class="rotating-clock" src="${ROTATING_CLOCK}" alt="Rotating Clock" />
     <div id="timer-full-container" class="timer-full-container">
-      <img id="timer-full" class="timer-full" src="${TIMER_FULL}" alt="Timer Full" />
+      <div class="timer-mask"></div>
     </div>
   </div>
 `;

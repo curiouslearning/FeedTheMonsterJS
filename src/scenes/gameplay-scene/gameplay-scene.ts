@@ -253,6 +253,7 @@ export class GameplayScene {
       /*
         Note: TO DO: Should use stone-handler.ts method resetStonePosition.
       */
+
       if (
         this.pickedStone &&
         this.pickedStoneObject &&
@@ -260,16 +261,11 @@ export class GameplayScene {
         typeof this.pickedStoneObject.origx === "number" &&
         typeof this.pickedStoneObject.origy === "number"
       ) {
-        const xLimit = 50;
-        const halfWidth = this.width / 2;
-        this.pickedStone.x =
-          this.pickedStone.text.length <= 3 &&
-            this.pickedStoneObject.origx < xLimit &&
-            this.pickedStoneObject.origx < halfWidth
-            ? this.pickedStoneObject.origx + 25
-            : this.pickedStoneObject.origx;
+        //Resets stones to original position after dragging.
+        this.pickedStone.x = this.pickedStoneObject.origx;
         this.pickedStone.y = this.pickedStoneObject.origy;
       }
+
     }
     this.pickedStone = null;
     this.wordPuzzleLogic.clearPickedUp();
@@ -519,18 +515,23 @@ export class GameplayScene {
     this.isGameStarted = false;
 
     if (this.counter === this.levelData.puzzles.length) {
-      this.levelIndicators.setIndicators(this.counter);
-      this.logLevelEndFirebaseEvent();
-      GameScore.setGameLevelScore(this.levelData, this.score);
+      setTimeout(
+        () => {
+          this.levelIndicators.setIndicators(this.counter);
+          this.logLevelEndFirebaseEvent();
+          GameScore.setGameLevelScore(this.levelData, this.score);
 
-      const levelEndData = {
-        starCount: GameScore.calculateStarCount(this.score),
-        currentLevel: this.levelNumber,
-        isTimerEnded: timerEnded
-      }
-
-      gameStateService.publish(gameStateService.EVENTS.LEVEL_END_DATA_EVENT, {levelEndData, data: this.data});
-      this.switchSceneToEnd();
+          const levelEndData = {
+            starCount: GameScore.calculateStarCount(this.score),
+            currentLevel: this.levelNumber,
+            isTimerEnded: timerEnded
+          }
+    
+          gameStateService.publish(gameStateService.EVENTS.LEVEL_END_DATA_EVENT, {levelEndData, data: this.data});
+          this.switchSceneToEnd();
+        },
+        2500 //added delay for switching to level end screen
+      );
     } else {
       const loadPuzzleEvent = new CustomEvent(LOADPUZZLE, {
         detail: {
