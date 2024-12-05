@@ -129,7 +129,7 @@ describe('GameplayScene with BasePopupComponent', () => {
 
     expect(mockSwitchSceneToEnd).not.toHaveBeenCalled();
 
-    jest.advanceTimersByTime(2500);
+    jest.advanceTimersByTime(3000);
 
     expect(mockSwitchSceneToEnd).toHaveBeenCalledTimes(1);
   });

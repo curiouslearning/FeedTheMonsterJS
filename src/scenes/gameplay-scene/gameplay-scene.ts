@@ -530,7 +530,7 @@ export class GameplayScene {
           gameStateService.publish(gameStateService.EVENTS.LEVEL_END_DATA_EVENT, {levelEndData, data: this.data});
           this.switchSceneToEnd();
         },
-        2500
+        3000
       );
     } else {
       const loadPuzzleEvent = new CustomEvent(LOADPUZZLE, {
