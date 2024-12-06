@@ -91,7 +91,7 @@ export class GameplayScene {
   public gameControl: HTMLCanvasElement;
   private unsubscribeEvent: () => void;
   public timeTicker: HTMLElement;
-  private isFeedBackTriggered: boolean;
+  isFeedBackTriggered: boolean;
   constructor({
     monsterPhaseNumber,
     switchSceneToEnd,
