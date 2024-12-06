@@ -93,7 +93,6 @@ export class BaseButtonComponent {
   }
 
   public _destroy() {
-    console.log('this.id ', this.id)
     const element = document.getElementById(this.id);
     if (element) element.remove();
   }
