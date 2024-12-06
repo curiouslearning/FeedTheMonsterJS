@@ -35,6 +35,8 @@ jest.mock('@components', () => {
       resetStonePosition: jest.fn(),
       handlePickStoneUp: jest.fn(),
       handleMovingStoneLetter: jest.fn(),
+      getCorrectTargetStone: jest.fn().mockReturnValue('MockedTargetStone'), // Mocked method
+      getFoilStones: jest.fn().mockReturnValue(['FoilStone1', 'FoilStone2']), // Mocked method
     })),
     Tutorial: jest.fn().mockImplementation(() => ({
       play: jest.fn(),
@@ -123,14 +125,57 @@ describe('GameplayScene with BasePopupComponent', () => {
     document.body.innerHTML = '';
   });
 
-  it('should call switchSceneToEnd after 2500ms when last puzzle is completed', () => {
+  it('should call switchSceneToEnd immediately (0ms) when timerEnded is true and !isFeedBackTriggered is true', () => {
+    // Arrange
     gameplayScene.counter = 2; // Last puzzle index
-    gameplayScene.loadPuzzle();
-
+    gameplayScene.isFeedBackTriggered = false; // Feedback not triggered
+    const timerEnded = true; // Simulate timer has ended
+  
+    // Act
+    gameplayScene.loadPuzzle(timerEnded);
+  
+    // Force immediate execution of timers
+    jest.runAllTimers();
+  
+    // Assert
+    expect(mockSwitchSceneToEnd).toHaveBeenCalledTimes(1); // Should be called immediately
+  });    
+  
+  it('should call switchSceneToEnd after 4500ms when timerEnded is false or isFeedBackTriggered is true', () => {
+    // Arrange
+    gameplayScene.counter = 2; // Last puzzle index
+    gameplayScene.isFeedBackTriggered = true; // Feedback triggered
+    const timerEnded = true; // Simulate timer has ended
+  
+    // Act
+    gameplayScene.loadPuzzle(timerEnded);
+  
+    // Assert: Ensure it is not called immediately
     expect(mockSwitchSceneToEnd).not.toHaveBeenCalled();
-
-    jest.advanceTimersByTime(3000);
-
-    expect(mockSwitchSceneToEnd).toHaveBeenCalledTimes(1);
+  
+    // Advance time by 4500ms
+    jest.advanceTimersByTime(4500);
+  
+    // Assert
+    expect(mockSwitchSceneToEnd).toHaveBeenCalledTimes(1); // Called after 4500ms
   });
+  
+  it('should call switchSceneToEnd after 4500ms when timerEnded is false and isFeedBackTriggered is false', () => {
+    // Arrange
+    gameplayScene.counter = 2; // Last puzzle index
+    gameplayScene.isFeedBackTriggered = false; // Feedback not triggered
+    const timerEnded = false; // Timer not ended
+  
+    // Act
+    gameplayScene.loadPuzzle(timerEnded);
+  
+    // Assert: Ensure it is not called immediately
+    expect(mockSwitchSceneToEnd).not.toHaveBeenCalled();
+  
+    // Advance time by 4500ms
+    jest.advanceTimersByTime(4500);
+  
+    // Assert
+    expect(mockSwitchSceneToEnd).toHaveBeenCalledTimes(1); // Called after 4500ms
+  });  
 });
