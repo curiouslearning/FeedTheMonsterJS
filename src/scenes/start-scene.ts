@@ -1,4 +1,4 @@
-import { Monster, AudioPlayer } from "@components";
+import { Monster, AudioPlayer, BackgroundHtmlGenerator } from "@components";
 import { PlayButton } from "@buttons";
 import { DataModal } from "@data";
 import {
@@ -7,11 +7,9 @@ import {
   Utils,
 } from "@common";
 import { FirebaseIntegration } from "../Firebase/firebase-integration";
-import { createBackground, defaultBgDrawing } from "@compositions"; // to be removed once background component has been fully used
 import {
   FirebaseUserClicked,
   PWAInstallStatus,
-  DEFAULT_BG_GROUP_IMGS,
 } from "@constants";
 import { RiveMonsterComponent } from "@components/riveMonster/rive-monster-component";
 import gameStateService from '@gameStateService';
@@ -37,7 +35,6 @@ export class StartScene {
   public handler: HTMLCanvasElement;
   public static SceneName: string;
   public switchSceneToLevelSelection: Function;
-  public background: any;
   audioPlayer: AudioPlayer;
   private toggleBtn: HTMLElement;
   private pwa_install_status: Event;
@@ -81,13 +78,15 @@ export class StartScene {
   }
 
   private setupBg = async () => {
-    this.background = await createBackground(
-      this.context,
-      this.width,
-      this.height,
-      DEFAULT_BG_GROUP_IMGS,
-      defaultBgDrawing
-    );
+    // Determine the background type based on the level number using the static method.
+    //Level 1 will be used as a default background for Start Scene.
+    const selectedBackgroundType = BackgroundHtmlGenerator.createBackgroundComponent(1);
+
+    // Apply the logic to update the HTML or visual representation of the background
+    const backgroundGenerator = new BackgroundHtmlGenerator();
+
+    // Dynamically update the background based on the selected type
+    backgroundGenerator.generateBackground(selectedBackgroundType);
   };
 
   devToggle = () => {
@@ -102,7 +101,6 @@ export class StartScene {
 
   draw = (deltaTime: number) => {
     this.context.clearRect(0, 0, this.width, this.height);
-    this.background?.draw();
     this.playButton.draw();
   };
 
