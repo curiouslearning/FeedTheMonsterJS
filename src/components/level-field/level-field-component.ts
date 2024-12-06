@@ -10,7 +10,7 @@ import {
 import './level-field-component.scss';
 
 export const DEFAULT_SELECTORS = {
-  root: '.game-scene', //Class name of game scene div.
+  root: '.game-control', //Class name of game scene div.
   bars: '.bar-level'
 };
 
@@ -18,12 +18,10 @@ export const DEFAULT_SELECTORS = {
 export const LEVEL_FIELD_LAYOUT = (id: string) => {
   return (`
     <div id="${id}" class="level_content-wrapper">
-      <div class="level-field">
         <img class="level-background" src="${LEVEL_INDICATOR}"/>
         <div class="bar-level-wrapper">
            ${Array(5).fill(`<img class="bar-level" src="${BAR_EMPTY}" alt="bar" />`).join('')}
         </div>
-      </div>
     </div>
   `);
 }
