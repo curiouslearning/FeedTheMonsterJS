@@ -458,9 +458,9 @@ img {
 
 .winter-bg .ftm-fence {
   position: absolute;
-  bottom: 150px;
+  bottom: 135px;
   left: -130px;
-  transform: rotate(-30deg);
+  transform: rotate(-25deg);
   z-index: 1;
   width: 80%;
 }
