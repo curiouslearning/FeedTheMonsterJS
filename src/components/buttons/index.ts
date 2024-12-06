@@ -13,6 +13,7 @@ import YesButtonHtml from './yes-button/yes-button';
 import NoButton from './no-button'; // once popup is applied. this will be cancel-button component and this file can be removed
 import PlayButton from './play-button';
 import LevelBloonButton from './level-button';
+import PlayButtonHtml from './play-button/play-button';
 
 export {
   CloseButton,
@@ -29,4 +30,5 @@ export {
   PlayButton,
   LevelBloonButton,
   NoButton,
+  PlayButtonHtml
 };

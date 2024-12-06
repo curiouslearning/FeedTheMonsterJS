@@ -10,14 +10,15 @@ export interface ButtonOptions {
 }
 
 export class BaseButtonComponent {
+  protected id: string;
   protected element: HTMLElement;
   protected audioPlayer: AudioPlayer;
   private clickListener: (event: Event) => void;
 
   constructor(options: ButtonOptions) {
+    this.id = options.id;
     this.audioPlayer = new AudioPlayer();
     const existingElement = document.getElementById(options.id);
-
     if (existingElement) {
       this.element = existingElement;
     } else {
@@ -89,5 +90,11 @@ export class BaseButtonComponent {
   // Optional getter for accessing the element
   public getElement(): HTMLElement {
     return this.element;
+  }
+
+  public _destroy() {
+    console.log('this.id ', this.id)
+    const element = document.getElementById(this.id);
+    if (element) element.remove();
   }
 }

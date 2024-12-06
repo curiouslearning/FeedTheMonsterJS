@@ -1,0 +1,44 @@
+.game-scene {
+  #play-button {
+      position: absolute;
+      top: 23vh;
+      left: 50%;
+      right: 50%;
+      transform: translate(-50%, -50%);
+  }
+}
+
+//xsm
+@media (max-width: 576px) {
+  #play-button {
+    max-width: 115px;
+    max-height: 115px;
+  }
+}
+
+//sm
+@media (min-width: 576px) {
+}
+
+//md
+@media (min-width: 768px) {
+  #play-button {
+    max-width: 200px;
+    max-height: 200px;
+  }
+}
+
+//lg
+@media (min-width: 992px) {
+
+}
+
+//xl
+@media (min-width: 1200px) {
+
+}
+
+//xxl
+@media (min-width: 1400px) {
+
+}
