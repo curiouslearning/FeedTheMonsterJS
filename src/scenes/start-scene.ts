@@ -7,12 +7,14 @@ import {
   Utils,
 } from "@common";
 import { FirebaseIntegration } from "../Firebase/firebase-integration";
-import { createBackground, defaultBgDrawing } from "@compositions";
+import { createBackground, defaultBgDrawing } from "@compositions"; // to be removed once background component has been fully used
 import {
   FirebaseUserClicked,
   PWAInstallStatus,
   DEFAULT_BG_GROUP_IMGS,
 } from "@constants";
+import { RiveMonsterComponent } from "@components/riveMonster/rive-monster-component";
+import gameStateService from '@gameStateService';
 
 export class StartScene {
   public canvas: HTMLCanvasElement;
@@ -25,6 +27,7 @@ export class StartScene {
   public firebase_analytics: { logEvent: any };
   public id: string;
   public canavsElement: HTMLCanvasElement;
+  public riveMonsterElement: HTMLCanvasElement;
   public context: CanvasRenderingContext2D;
   public buttonContext: CanvasRenderingContext2D;
   public playButton: PlayButton;
@@ -39,7 +42,7 @@ export class StartScene {
   private toggleBtn: HTMLElement;
   private pwa_install_status: Event;
   private titleTextElement: HTMLElement | null;
-
+  public riveMonster: RiveMonsterComponent;
   constructor(
     canvas: HTMLCanvasElement,
     data: DataModal,
@@ -50,11 +53,22 @@ export class StartScene {
     this.data = data;
     this.width = canvas.width;
     this.height = canvas.height;
+    this.riveMonsterElement = document.getElementById("rivecanvas") as HTMLCanvasElement;
     this.canavsElement = document.getElementById("canvas") as HTMLCanvasElement;
     this.context = this.canavsElement.getContext("2d");
     // console.log(this.context,"testing canvas");
     this.toggleBtn = document.getElementById("toggle-btn") as HTMLElement;
-    this.monster = new Monster(this.canvas, 4);
+    this.riveMonster = new RiveMonsterComponent({
+      canvas: this.riveMonsterElement,
+      autoplay: true,
+      fit: "contain",
+      alignment: "topCenter",
+      width: this.canavsElement.width, // Example width and height, adjust as needed
+      height: this.canavsElement.height,
+      onLoad: () => {
+        this.riveMonster.play(RiveMonsterComponent.Animations.IDLE); // Start with the "Idle" animation
+      }
+    });
     this.switchSceneToLevelSelection = switchSceneToLevelSelection;
     this.audioPlayer = new AudioPlayer();
     this.pwa_status = localStorage.getItem(PWAInstallStatus);
@@ -65,6 +79,7 @@ export class StartScene {
     this.setupBg();
     this.titleTextElement = document.getElementById("title");
     this.generateGameTitle();
+    this.riveMonsterElement.style.zIndex = '6';
   }
 
   private setupBg = async () => {
@@ -87,10 +102,9 @@ export class StartScene {
     this.titleTextElement.textContent = this.data.title;
   };
 
-  animation = (deltaTime: number) => {
+  draw = (deltaTime: number) => {
     this.context.clearRect(0, 0, this.width, this.height);
     this.background?.draw();
-    this.monster.update(deltaTime);
     this.playButton.draw();
   };
 
@@ -126,12 +140,12 @@ export class StartScene {
       });
       this.toggleBtn.style.display = "none";
       this.audioPlayer.playButtonClickSound();
-      self.switchSceneToLevelSelection("StartScene");
+      gameStateService.publish(gameStateService.EVENTS.SCENE_LOADING_EVENT, true);
+      self.switchSceneToLevelSelection();
     }
   };
 
   dispose() {
-    this.monster.dispose();
     this.audioPlayer.stopAllAudios();
     this.handler.removeEventListener("click", this.handleMouseClick, false);
     window.removeEventListener(

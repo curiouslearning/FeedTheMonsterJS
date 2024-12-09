@@ -1,15 +1,30 @@
 const path = require('path');
-var nodeEnv = process.env.NODE_ENV || 'development';
-var isDev = (nodeEnv !== 'production');
+const nodeEnv = process.env.NODE_ENV || 'development';
+const isDev = (nodeEnv !== 'production');
 const CopyPlugin = require("copy-webpack-plugin");
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const TerserPlugin = require('terser-webpack-plugin');
+const ESLintPlugin = require('eslint-webpack-plugin');
+
+const eslintConfig = require('./.eslintrc.json');
+
 // const CompressionPlugin = require('compression-webpack-plugin');
 
+const mode = isDev ? 'development' : 'production';
+
 var config = {
-  mode: 'development',
-  watch: true,
-  entry: './feedTheMonster.ts',
+  mode,
+  entry: './src/feedTheMonster.ts',
+  devServer: {
+    static: {
+      directory: path.join(__dirname, 'build'),
+    },
+    client: {
+      overlay: true,
+    },
+    compress: false,
+    port: 8080
+  },
   module: {
     rules: [
       {
@@ -17,10 +32,14 @@ var config = {
         use: [MiniCssExtractPlugin.loader, 'css-loader'],
       },
       {
+        test: /\.s[ac]ss$/,
+        use: ["style-loader", "css-loader", "sass-loader"],
+      },
+      {
         test: /\.ts?$/,
         use: 'ts-loader',
         exclude: /node_modules/,
-      },
+      }
     ],
   },
   output: {
@@ -33,7 +52,7 @@ var config = {
       '@buttons': path.resolve(__dirname, 'src/components/buttons/'),
       '@popups': path.resolve(__dirname, 'src/components/popups/'),
       '@common': path.resolve(__dirname, 'src/common/'),
-      '@compositions': path.resolve(__dirname, 'src/compositions/'),
+      '@compositions': path.resolve(__dirname, 'src/compositions/'), // to be removed once background component has been fully integrated
       '@constants': path.resolve(__dirname, 'src/constants/'),
       '@data': path.resolve(__dirname, 'src/data/'),
       '@interfaces': path.resolve(__dirname, 'src/interfaces/'),
@@ -41,7 +60,8 @@ var config = {
       '@scenes': path.resolve(__dirname, 'src/scenes/'),
       '@events': path.resolve(__dirname, 'src/events/'),
       '@feedbackText': path.resolve(__dirname, 'src/components/feedback-text/'),
-      '@gamepuzzles': path.resolve(__dirname, 'src/gamepuzzles/')
+      '@gamepuzzles': path.resolve(__dirname, 'src/gamepuzzles/'),
+      '@gameStateService': path.resolve(__dirname, 'src/gameStateService/')
     },
     extensions: ['.tsx', '.ts', '.js', '.json', '.css', '.sh', '.babelrc', '.eslintignore', '.gitignore', '.d'],
   },
@@ -53,12 +73,21 @@ var config = {
     // }),
     new CopyPlugin({
       patterns: [
-        { from: "./index.html", to: "./" },
-        { from: "./index.css", to: "./" },
-        { from: "./assets", to: "./assets" },
+        { from: "./public/index.html", to: "./" },
+        { from: "./public/index.css", to: "./" },
+        { from: "./public/assets", to: "./assets" },
         { from: "./lang", to: "./lang" },
       ],
     }),
+
+    // TODO: fix lint issues first
+    // lint can be tested by running `npm run lint`
+    // new ESLintPlugin({
+    //   ...eslintConfig,
+
+    //   // TODO: set this to isDev once we fix all the lint errors.
+    //   failOnError: false
+    // })
   ],
   optimization: {
     minimize: true,

@@ -22,11 +22,16 @@ body {
 .game-scene {
   height: 100vh;
   max-height: -webkit-fill-available;
-  min-width: 768px;
+  min-width: 320px;
+  max-width: 100%;
+  position: relative;
 }
 
 img {
-  display: none;
+  max-width: 100%;
+  user-drag: none; /* Disables dragging on Chrome, Edge, and Safari */
+  -webkit-user-drag: none; /* Ensures dragging is disabled in Safari */
+  pointer-events: none; /* Prevents mouse events like dragging and clicking on the image */
 }
 
 #discription-text {
@@ -56,15 +61,26 @@ img {
   color: white;
   text-align: center;
 }
+
 #monster {
   border: 1px solid;
 }
+
+#rivecanvas {
+  position: absolute;
+  bottom: 150px;
+  left: 0;
+  z-index: 4;
+  width: 100%;
+}
+
 #discription-text p {
   margin-top: 10%;
   line-height: 1.8;
   color: white;
   text-align: center;
 }
+
 #canvas {
   position: absolute;
   /* background-color: white; */
@@ -73,7 +89,7 @@ img {
   transform: translate(-50%, 0%);
   /* aspect-ratio: 2/3; */
   max-height: -webkit-fill-available;
-  z-index: 1;
+  z-index: 4;
   background-repeat: no-repeat;
   background-size: cover;
 }
@@ -96,8 +112,9 @@ img {
   position: absolute;
   left: 30%;
   bottom: 50%;
-  rotate: 90deg;
+  transform: rotate(90deg);
 }
+
 #loading-screen {
   position: fixed;
   top: 0;
@@ -112,30 +129,25 @@ img {
   z-index: 1000;
 }
 
-@media (min-width: 420px) {
-  #loading-screen {
-    max-width: 100%;
-  }
-}
-
 #loading-gif {
   display: flex;
-  width: 60%;
+  height: 100%;
+  width: 100%;
   position: absolute;
-  left: 0;
-  right: 0;
-  margin: auto;
+  /* Position it within #loading-screen */
 }
 
 #progress-bar-container {
   display: none;
-  position: relative; /* Keep this for proper positioning */
+  position: relative;
+  /* Keep this for proper positioning */
   width: 90%;
   height: 4vh;
   background-color: #000000;
   border: 1px solid #f1b82d;
   margin-top: 20vh;
-  z-index: 9999; /* Update z-index to place it above #loading-gif */
+  z-index: 9999;
+  /* Update z-index to place it above #loading-gif */
 }
 
 #progress-bar {
@@ -144,11 +156,14 @@ img {
   background-color: #f1b82d;
   transition: width 0.3s ease-in-out;
 }
+
 .loading-spinner {
   width: 50px;
   height: 50px;
-  border: 4px solid #f3f3f3; /* color of spinner */
-  border-top: 4px solid #3498db; /* color of spinning part */
+  border: 4px solid #f3f3f3;
+  /* color of spinner */
+  border-top: 4px solid #3498db;
+  /* color of spinning part */
   border-radius: 50%;
   position: absolute;
   left: calc(50% - 25px);
@@ -161,6 +176,7 @@ img {
   0% {
     transform: rotate(0deg);
   }
+
   100% {
     transform: rotate(360deg);
   }
@@ -176,6 +192,7 @@ img {
   font-size: small;
   z-index: 9;
 }
+
 #toggle-btn {
   position: absolute;
   left: 30%;
@@ -190,7 +207,7 @@ img {
   cursor: pointer;
   outline: none;
   z-index: 9;
-  display: none;
+  /* display: none; */
 }
 
 #toggle-btn.on {
@@ -202,7 +219,7 @@ img {
 }
 
 .feedback-text {
-  font-family: "AtmaSemiBold", system-ui;
+  font-family: 'AtmaSemiBold', system-ui;
   font-size: 10vw;
   font-weight: 700;
   position: absolute;
@@ -214,8 +231,14 @@ img {
   white-space: nowrap;
   opacity: 0;
   pointer-events: none;
-  text-shadow: -2px -2px 0 #f8b618, 2px -2px 0 #f8b618, -2px 2px 0 #f8b618,
-    2px 2px 0 #f8b618, -3px 0 0 #f8b618, 3px 0 0 #f8b618, 0 -3px 0 #f8b618,
+  text-shadow:
+    -2px -2px 0 #f8b618,
+    2px -2px 0 #f8b618,
+    -2px 2px 0 #f8b618,
+    2px 2px 0 #f8b618,
+    -3px 0 0 #f8b618,
+    3px 0 0 #f8b618,
+    0 -3px 0 #f8b618,
     0 3px 0 #f8b618;
   letter-spacing: 3px;
   z-index: 0;
@@ -227,16 +250,19 @@ img {
     -webkit-transform: scale(0.5);
     transform: scale(0.5);
   }
+
   100% {
     -webkit-transform: scale(1);
     transform: scale(1);
   }
 }
+
 @keyframes scale-up-center {
   0% {
     -webkit-transform: scale(0.5);
     transform: scale(0.5);
   }
+
   100% {
     -webkit-transform: scale(1);
     transform: scale(1);
@@ -251,6 +277,7 @@ img {
     transform-origin: 50% 100%;
     opacity: 1;
   }
+
   100% {
     -webkit-transform: scale(1);
     transform: scale(1);
@@ -259,6 +286,7 @@ img {
     opacity: 1;
   }
 }
+
 @keyframes scale-in-bottom {
   0% {
     -webkit-transform: scale(0);
@@ -267,6 +295,7 @@ img {
     transform-origin: 50% 100%;
     opacity: 1;
   }
+
   100% {
     -webkit-transform: scale(1);
     transform: scale(1);
@@ -278,24 +307,668 @@ img {
 
 /* Apply the animation */
 .feedback-text.show {
-  -webkit-animation: scale-up-center 0.4s cubic-bezier(0.39, 0.575, 0.565, 1)
-    both;
+  -webkit-animation: scale-up-center 0.4s cubic-bezier(0.39, 0.575, 0.565, 1) both;
   animation: scale-up-center 0.4s cubic-bezier(0.39, 0.575, 0.565, 1) both;
-  z-index: 999;
+  z-index: 5;
   opacity: 1;
 }
 
 #title {
   font-family: Atma-SemiBold, sans-serif;
   margin-top: 15%;
-  z-index: 2;
-  position: fixed;
+  z-index: 6;
+  position: absolute;
   width: 100%;
   text-align: center;
   padding: 10px;
   font-size: 8vw;
   color: #f8b618;
-  text-shadow: -2px -2px 0 #fff, 2px -2px 0 #fff, -2px 2px 0 #fff,
-    2px 2px 0 #fff, -3px 0 0 #fff, 3px 0 0 #fff, 0 -3px 0 #fff, 0 3px 0 #fff;
+  text-shadow:
+    -2px -2px 0 #fff,
+    2px -2px 0 #fff,
+    -2px 2px 0 #fff,
+    2px 2px 0 #fff,
+    -3px 0 0 #fff,
+    3px 0 0 #fff,
+    0 -3px 0 #fff,
+    0 3px 0 #fff;
   overflow: hidden;
+}
+
+/* TODO: move to scss */
+/* POPUPS */
+.popup {
+  display: none;
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 1000;
+  height: 100%;
+  width: 100%;
+}
+
+.popup.show {
+  display: block;
+}
+
+.popup .popup__overlay {
+  height: 100%;
+  width: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+}
+
+.popup .popup__content-wrapper {
+  position: absolute;
+  top: 20vh;
+  left: 10vw;
+  right: 10vw;
+  padding: 35px 50px;
+  height: 80vw;
+  background-repeat: no-repeat;
+  background-size: contain;
+}
+
+.popup .popup__content-wrapper [data-click='close'] {
+  position: absolute;
+  top: -15px;
+  left: 15px;
+
+  display: block;
+}
+
+.popup .popup__content-wrapper .popup__content-container {
+  padding: 15px;
+  color: #fff;
+}
+
+/* BUTTONS */
+.btn--icon {
+  height: calc(100vw * 0.19);
+  width: calc(100vw * 0.19);
+  display: inline-block;
+}
+
+.btn--icon img {
+  display: block;
+  height: 100%;
+  width: 100%;
+  transition: transform 300ms;
+}
+
+.btn--icon:hover img {
+  transform: scale(1.1);
+}
+
+.btn--icon:active img {
+  transform: scale(0.9);
+}
+
+.autumn,
+.summer,
+.winter {
+  display: none;
+}
+
+.autumn-bg .autumn,
+.summer-bg .summer,
+.winter-bg .winter {
+  display: block;
+}
+
+#background {
+  margin: auto;
+  width: 100%;
+  height: 100vh;
+  max-width: 1024px;
+  margin: auto;
+  left: 0;
+  top: 0;
+  top: 0;
+  background-size: cover;
+  background-repeat: no-repeat;
+  overflow: hidden;
+  position: relative;
+}
+
+.ftm-mountain {
+  position: absolute;
+  width: 100%;
+  z-index: 2;
+  bottom: -5px;
+}
+
+.ftm-totem {
+  position: absolute;
+  bottom: 14%;
+  width: 55%;
+  z-index: 1;
+  right: -15%;
+  max-width: 380px;
+}
+
+.ftm-fence {
+  left: -140px;
+  bottom: 70px;
+  position: absolute;
+  width: 80%;
+  transform: rotate(10deg);
+}
+
+.winter-bg .ftm-fence {
+  position: absolute;
+  bottom: 135px;
+  left: -130px;
+  transform: rotate(-25deg);
+  z-index: 1;
+  width: 80%;
+}
+
+.autumn-bg .ftm-fence {
+  left: -100px;
+  position: absolute;
+  bottom: 8%;
+  z-index: 1;
+  transform: rotate(342deg);
+  width: 70%;
+}
+
+.autumn-bg .ftm-totem,
+.winter-bg .ftm-totem {
+  position: absolute;
+  bottom: 110px;
+  right: -90px;
+  z-index: 1;
+  width: 70%
+}
+
+.winter-bg {
+  background-image: url('./assets/images/Winter_bg_01.webp');
+}
+
+.autumn-bg {
+  background-image: url('./assets/images/Autumn_bg_v01.webp');
+}
+
+.summer-bg {
+  background-image: url('./assets/images/bg_v01.webp');
+}
+
+#levelEnd {
+  display: none;
+  height: 100vh;
+  width: 100%;
+  position: fixed;
+  z-index: 7;
+  background-image: url(./assets/images/WIN_screen_bg.webp);
+  background-size: 100% 115%;
+  top: 0;
+  bottom: 0;
+}
+
+.stars-container {
+  width: 100%;
+  position: relative;
+  top: 120px;
+  height: 120px;
+}
+
+/* Initial styles for stars */
+.stars {
+  opacity: 0;
+  /* Initially hidden */
+  transform: scale(0);
+  /* Initially scaled down */
+  transition: opacity 0.5s ease, transform 0.5s ease;
+  /* Smooth animation */
+}
+
+/* Animation class to reveal the stars */
+.stars.show {
+  opacity: 1;
+  /* Fully visible */
+  transform: scale(1);
+  /* Full size */
+}
+
+.star1 {
+  position: absolute;
+  left: 40px;
+  width: 80px;
+  bottom: 10px;
+}
+
+.star2 {
+  width: 85px;
+  top: -20px;
+  position: absolute;
+  left: 0;
+  right: 0;
+  margin: auto;
+}
+
+.star3 {
+  position: absolute;
+  right: 22px;
+  width: 80px;
+  bottom: 10px;
+}
+
+/* Dynamic Buttons */
+.game-control {
+  position: relative;
+  z-index: 5;
+}
+
+#pause-button {
+  position: absolute;
+  right: 0;
+  top: 0;
+  margin: 10px 10px;
+}
+
+.dynamic-button {
+  cursor: pointer;
+  border: none;
+  background: transparent;
+  display: flex;
+  align-items: center;
+  max-width: 60px;
+  max-height: 60px;
+  width: 100%;
+}
+
+.dynamic-button .button-image {
+  width: 100%;
+}
+
+/* For small phones, up to 360px wide */
+@media (min-width: 320px) and (max-width: 360px) {
+  #loading-screen {
+    max-width: 100%;
+  }
+
+  .ftm-totem {
+    bottom: 12%;
+  }
+
+  .ftm-fence {
+    left: -30%;
+    bottom: 7%;
+  }
+
+  #rivecanvas {
+    bottom: 15%;
+  }
+
+  .dynamic-button {
+    max-width: 50px;
+    max-height: 50px;
+  }
+
+  #levelEnd {
+    background-size: 100% 118%;
+  }
+}
+
+/* For medium-sized phones, up to 500px wide */
+@media (min-width: 361px) and (max-width: 500px) {
+  .ftm-fence {
+    bottom: 60px;
+  }
+}
+
+/* For tablets, up to 768px wide */
+@media (min-width: 501px) and (max-width: 768px) {
+  #loading-screen {
+    max-width: 100%;
+  }
+
+  #rivecanvas {
+    bottom: 140px;
+  }
+
+  .summer .ftm-fence {
+    left: -25%;
+    bottom: 12%;
+    transform: rotate(15deg);
+  }
+
+  .summer .ftm-totem {
+    position: absolute;
+    bottom: 20%;
+    z-index: 1;
+    right: -12%;
+    width: 50%;
+  }
+
+  .autumn-bg .ftm-totem,
+  .winter-bg .ftm-totem {
+    right: -3%;
+    bottom: 30%;
+    width: 50%;
+  }
+
+  .winter-bg .ftm-fence {
+    width: 60%;
+    left: -15%;
+    bottom: 30%;
+    transform: rotate(-20deg);
+  }
+
+  .autumn-bg .ftm-fence {
+    bottom: 20%;
+    width: 50%;
+    left: -10%;
+    transform: rotate(340deg);
+  }
+
+  #title {
+    margin-top: 5%;
+  }
+
+  .dynamic-button {
+    max-width: 80px;
+    max-height: 80px;
+  }
+
+  .popup #cancel-button {
+    top: 10px;
+    left: 40px
+  }
+
+  .stars-container {
+    top: 25%;
+    height: 125px;
+  }
+
+  .star1 {
+    left: 15%;
+    width: 100px;
+    bottom: 0%;
+  }
+
+  .star2 {
+    width: 110px;
+    top: -50%;
+  }
+
+  .star3 {
+    right: 13%;
+    width: 100px;
+    bottom: 0%;
+  }
+
+  .buttons-container {
+    gap: 60px !important;
+  }
+
+  .feedback-text{
+    font-size: 8vw;
+  }
+}
+
+/* For tablets, up to 992px wide */
+@media (min-width: 769px) and (max-width: 992px) {
+  #loading-screen {
+    max-width: 100%;
+  }
+
+  .summer .ftm-fence {
+    left: -25%;
+    bottom: 12%;
+    transform: rotate(15deg);
+  }
+
+  .summer .ftm-totem {
+    position: absolute;
+    bottom: 20%;
+    z-index: 1;
+    right: -12%;
+    width: 50%;
+  }
+
+  .autumn-bg .ftm-totem,
+  .winter-bg .ftm-totem {
+    right: -3%;
+    bottom: 26%;
+    width: 50%;
+  }
+
+  .winter-bg .ftm-fence {
+    width: 60%;
+    left: -15%;
+    bottom: 28%;
+    transform: rotate(-20deg);
+  }
+
+  .autumn-bg .ftm-fence {
+    bottom: 20%;
+    width: 50%;
+    left: -10%;
+    transform: rotate(340deg);
+  }
+
+  #title {
+    margin-top: 5%;
+  }
+
+  .dynamic-button {
+    max-width: 100px;
+    max-height: 100px;
+  }
+
+  .popup #cancel-button {
+    top: 10px;
+    left: 40px
+  }
+
+  .stars-container {
+    top: 25%;
+    height: 125px;
+  }
+
+  .star1 {
+    left: 15%;
+    width: 100px;
+    bottom: 0%;
+  }
+
+  .star2 {
+    width: 110px;
+    top: -50%;
+  }
+
+  .star3 {
+    right: 13%;
+    width: 100px;
+    bottom: 0%;
+  }
+
+  .buttons-container {
+    gap: 60px !important;
+  }
+
+  .feedback-text{
+    font-size: 8vw !important;
+  }
+}
+
+/* For desktops or larger devices */
+@media (min-width: 993px) and (max-width: 1024px) {
+  #loading-screen {
+    max-width: 100%;
+  }
+  .summer .ftm-fence {
+    left: -15%;
+    bottom: 18%;
+    transform: rotate(10deg);
+    width: 100%;
+  }
+
+  .summer .ftm-totem {
+    position: absolute;
+    bottom: 23%;
+    z-index: 1;
+    right: -10%;
+    max-width: 450px;
+    width: 100%;
+  }
+
+  .autumn-bg .ftm-totem,
+  .winter-bg .ftm-totem {
+    right: -3%;
+    bottom: 26%;
+    width: 50%;
+  }
+
+  .winter-bg .ftm-fence {
+    width: 60%;
+    left: -15%;
+    bottom: 28%;
+    transform: rotate(-20deg);
+  }
+
+  .autumn-bg .ftm-fence {
+    bottom: 20%;
+    width: 50%;
+    left: -10%;
+    transform: rotate(340deg);
+  }
+  .dynamic-button {
+    max-width: 100px;
+    max-height: 100px;
+  }
+
+  .popup #cancel-button {
+    top: 1% !important;
+    left: 10% !important;
+  }
+
+  .stars-container {
+    top: 25%;
+    height: 125px;
+  }
+
+  .star1 {
+    left: 15%;
+    width: 130px;
+    bottom: 0%;
+  }
+
+  .star2 {
+    width: 160px;
+    top: -100%;
+  }
+
+  .star3 {
+    right: 13%;
+    width: 130px;
+    bottom: 0%;
+  }
+
+  .buttons-container {
+    gap: 60px !important;
+  }
+
+  .feedback-text{
+    font-size: 8vw !important;
+  }
+  #title{
+    margin-top: 5%;
+    font-size: 7vw;
+  }
+  #levelEnd{
+    background-size: 100% 120%;
+  }
+}
+@media (min-width: 1080px){
+  #title{
+    font-size: 6vw;
+    margin-top: 10%;
+  }
+  .summer .ftm-fence {
+    left: -15%;
+    bottom: 18%;
+    transform: rotate(10deg);
+    width: 100%;
+  }
+
+  .summer .ftm-totem {
+    position: absolute;
+    bottom: 23%;
+    z-index: 1;
+    right: -10%;
+    max-width: 450px;
+    width: 100%;
+  }
+
+  .autumn-bg .ftm-totem,
+  .winter-bg .ftm-totem {
+    right: -3%;
+    bottom: 20%;
+    width: 50%;
+  }
+
+  .winter-bg .ftm-fence {
+    width: 60%;
+    left: -15%;
+    bottom: 28%;
+    transform: rotate(-20deg);
+  }
+
+  .autumn-bg .ftm-fence {
+    bottom: 17%;
+    width: 50%;
+    left: -11%;
+    transform: rotate(340deg);
+  }
+  .dynamic-button {
+    max-width: 100px;
+    max-height: 100px;
+  }
+
+  .popup #cancel-button {
+    top: 1% !important;
+    left: 10% !important;
+  }
+
+  .stars-container {
+    top: 25%;
+    height: 125px;
+  }
+
+  .star1 {
+    left: 15%;
+    width: 130px;
+    bottom: 0%;
+  }
+
+  .star2 {
+    width: 160px;
+    top: -100%;
+  }
+
+  .star3 {
+    right: 13%;
+    width: 130px;
+    bottom: 0%;
+  }
+
+  .buttons-container {
+    gap: 60px !important;
+  }
+
+  .feedback-text{
+    font-size: 8vw !important;
+  }
+  #title{
+    margin-top: 5%;
+    font-size: 7vw;
+  }
+  #levelEnd{
+    background-size: 100% 120%;
+  }
+  
 }

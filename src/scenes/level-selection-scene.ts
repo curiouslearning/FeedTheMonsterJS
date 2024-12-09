@@ -14,15 +14,17 @@ import {
   createLevelObject,
   getdefaultCloudBtnsPos,
   loadLevelImages
-} from "@compositions";
+} from "@compositions"; // to be removed once background component has been fully used
 import {
   PreviousPlayedLevel,
   LEVEL_SELECTION_BACKGROUND,
   NEXT_BTN_IMG,
   BACK_BTN_IMG,
   AUDIO_INTRO,
+  SCENE_NAME_LEVEL_SELECT,
 } from "@constants";
 import { LevelBloonButton } from '@buttons';
+import gameStateService from '@gameStateService';
 
 export class LevelSelectionScreen {
   private canvas: HTMLCanvasElement;
@@ -56,7 +58,8 @@ export class LevelSelectionScreen {
   private leftBtnX: number;
   private leftBtnY: number;
   private levelButtons: any
-
+  public riveMonsterElement: HTMLCanvasElement;
+  public gameControl: HTMLCanvasElement;
   constructor(canvas: HTMLCanvasElement, data: any, callBack: Function) {
     // console.log("level selection loaded");
     this.canvas = canvas;
@@ -72,6 +75,9 @@ export class LevelSelectionScreen {
     this.levels = [];
     this.firebaseIntegration = new FirebaseIntegration();
     this.init();
+    this.riveMonsterElement = document.getElementById("rivecanvas") as HTMLCanvasElement;
+    this.gameControl = document.getElementById("game-control") as HTMLCanvasElement;
+
     this.canvasElement = document.getElementById("canvas") as HTMLCanvasElement;
     this.context = this.canvasElement.getContext("2d");
     this.createLevelButtons();
@@ -89,6 +95,7 @@ export class LevelSelectionScreen {
         10 * Math.floor(this.previousPlayedLevelNumber / 10);
     }
     this.setupBg();
+    this.riveMonsterElement.style.zIndex = "-1";
     this.images = {
       nextbtn: NEXT_BTN_IMG,
       backbtn: BACK_BTN_IMG,
@@ -109,6 +116,7 @@ export class LevelSelectionScreen {
     this.leftBtnSize = 10;
     this.leftBtnX = 10;
     this.leftBtnY = 1.3;
+    this.gameControl.style.zIndex = "-1";
   }
 
   private async init() {
@@ -235,13 +243,14 @@ export class LevelSelectionScreen {
     const isLeft = isWithinButtonArea(this.canvas.width / 10);
 
     if (isLeft || isRight) {
-      this.audioPlayer.playButtonClickSound();
       const pageIndex = this.levelSelectionPageIndex;
       if (isRight && pageIndex != this.levelsSectionCount * 10 - 10) {
+        this.audioPlayer.playButtonClickSound();
         this.levelSelectionPageIndex = pageIndex + 10;
         this.rightBtnSize = 10.5;
         this.rightBtnY = 1.299;
       } else if (isLeft && pageIndex != 0) {
+        this.audioPlayer.playButtonClickSound();
         this.levelSelectionPageIndex = pageIndex - 10;
         this.leftBtnSize = 10.3;
         this.leftBtnY = 1.299;
@@ -266,9 +275,11 @@ export class LevelSelectionScreen {
 
   private drawLevel(levelBtn: any, gameLevelData: []) {
     const currentLevelIndex = levelBtn.levelData.index + this.levelSelectionPageIndex;
-    const currentLevel = this.previousPlayedLevelNumber + 1;
+    const currentLevel = currentLevelIndex - 1;
 
-    if (currentLevelIndex === currentLevel) {
+    const nextLevelPlay = this.unlockLevelIndex + 1;
+
+    if (nextLevelPlay === currentLevel) {
       levelBtn.applyPulseEffect();
     }
 
@@ -291,7 +302,7 @@ export class LevelSelectionScreen {
         : null;
     }
   }
-  private draw() {
+  private drawLevelSelection() {
     for (let levelBtn of this.levelButtons) {
       this.drawLevel(
         levelBtn,
@@ -360,8 +371,10 @@ export class LevelSelectionScreen {
       },
       selectedLevelNumber: level_number,
     };
+    gameStateService.publish(gameStateService.EVENTS.GAMEPLAY_DATA_EVENT, gamePlayData);
+    gameStateService.publish(gameStateService.EVENTS.SCENE_LOADING_EVENT, true);
     this.logSelectedLevelEvent();
-    this.callBack(gamePlayData, "LevelSelection");
+    this.callBack(SCENE_NAME_LEVEL_SELECT);
   }
   public logSelectedLevelEvent() {
     const selectedLeveltData: SelectedLevel = {
@@ -377,10 +390,10 @@ export class LevelSelectionScreen {
     };
     this.firebaseIntegration.sendSelectedLevelEvent(selectedLeveltData);
   }
-  public drawLevelSelection() {
+  public draw() {
     if (this.imagesLoaded) {
       this.background?.draw();
-      this.draw();
+      this.drawLevelSelection();
       this.downButton(this.levelSelectionPageIndex);
     }
   }

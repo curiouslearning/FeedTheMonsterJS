@@ -1,0 +1,87 @@
+.game-control {
+  .level_content-wrapper {
+    position: absolute;
+    z-index: 5;
+    max-width: 130px;
+    width: 100%;
+    top: 5px;
+    left: 15px;
+
+    .bar-level-wrapper {
+      position: absolute;
+      width: 100%;
+      max-width: 125px;
+      top: 1.4rem;
+      left: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+
+      .bar-level {
+        position: relative;
+        width: 100%;
+        max-width: 12px;
+        margin: 0px 2.5px;
+      }
+    }
+  }
+}
+
+
+
+
+/* Small devices (landscape phones, 540px and up) */
+@media (min-width: 576px) {
+  .level_content-wrapper {
+    top: 0.5rem;
+  }
+}
+
+/* Medium devices (tablets, 768px and up) */
+@media (min-width: 768px) and (max-width: 991px) {
+  .game-control .level_content-wrapper {
+    max-width: 170px;
+  }
+
+  .game-control .level_content-wrapper .bar-level-wrapper {
+    max-width: 165px;
+    top: 1.8rem;
+  }
+
+  .game-control .level_content-wrapper .bar-level-wrapper .bar-level {
+    max-width: 18px;
+  }
+}
+
+@media (min-width: 991px) and (max-width: 1024px) {
+  .game-control .level_content-wrapper {
+    max-width: 230px;
+  }
+
+  .game-control .level_content-wrapper .bar-level-wrapper {
+    max-width: 215px;
+    top: 2.3rem;
+    left:5px
+  }
+
+  .game-control .level_content-wrapper .bar-level-wrapper .bar-level {
+    max-width: 25px;
+  }
+}
+
+/* For desktops or larger devices above 1080px */
+@media (min-width: 1080px){
+  .game-control .level_content-wrapper {
+    max-width: 230px;
+  }
+
+  .game-control .level_content-wrapper .bar-level-wrapper {
+    max-width: 215px;
+    top: 2.3rem;
+    left:5px
+  }
+
+  .game-control .level_content-wrapper .bar-level-wrapper .bar-level {
+    max-width: 25px;
+  }
+}
