@@ -55,4 +55,14 @@ describe('BaseButtonComponent', () => {
       expect(buttonComponent['audioPlayer']).toBeNull();
     });
   });
+
+  describe('When deleting the button element.', () => {
+    it('It should remove the button element on the DOM tree.', () => {
+      //Destroy the button element from DOM tree.
+      buttonComponent._destroy();
+
+      const button = document.getElementById('test-button');
+      expect(button).toBeNull();
+    });
+  });
 });
