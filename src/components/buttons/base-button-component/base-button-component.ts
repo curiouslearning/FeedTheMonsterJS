@@ -92,7 +92,7 @@ export class BaseButtonComponent {
     return this.element;
   }
 
-  public _destroy() {
+  public destroy() {
     const element = document.getElementById(this.id);
     if (element) element.remove();
   }

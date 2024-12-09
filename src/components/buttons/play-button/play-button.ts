@@ -10,7 +10,7 @@ export default class PlayButtonHtml extends BaseButtonComponent {
     super({
       id: options.id || 'play-button',
       className: options.className || 'play-button-image',
-      imageSrc: PLAY_BTN_IMG,
+      imageSrc: options?.imageSrc || PLAY_BTN_IMG,
       imageAlt: options.imageAlt || 'Play Icon',
       targetId: options.targetId || 'game-scene',
       ...options, // Allows any additional overrides

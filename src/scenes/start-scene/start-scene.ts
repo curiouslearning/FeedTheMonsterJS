@@ -10,8 +10,8 @@ import {
   pseudoId,
   lang
 } from "@common";
-import { FirebaseIntegration } from "../Firebase/firebase-integration";
-import { TappedStart } from "../Firebase/firebase-event-interface";
+import { FirebaseIntegration } from "../../Firebase/firebase-integration";
+import { TappedStart } from "../../Firebase/firebase-event-interface";
 import {
   FirebaseUserClicked,
   PWAInstallStatus,
@@ -150,7 +150,7 @@ export class StartScene {
     this.audioPlayer.stopAllAudios();
     this.handler.removeEventListener("click", this.handleMouseClick, false);
     this.playButton.dispose();
-    this.playButton._destroy();
+    this.playButton.destroy();
     window.removeEventListener(
       "beforeinstallprompt",
       this.handlerInstallPrompt,
