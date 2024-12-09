@@ -1,8 +1,29 @@
 
 
+## [1.0.37](https://github.com/curiouslearning/FeedTheMonsterJS/compare/1.0.36...1.0.37) (2024-12-09)
+
+
+### Features
+
+* Enhance feedback animation (FM-69) ([bd4c5f8](https://github.com/curiouslearning/FeedTheMonsterJS/commit/bd4c5f8f49f1e2b391f52008d9d1a21b6279dc61))
+* FM-243 - reusable helpers and applied adjustments Build Folder deployment ([19cecad](https://github.com/curiouslearning/FeedTheMonsterJS/commit/19cecadc3ccc31129fc14f16e97b6dd5684e8fe6))
+* FM-245 - remove unused imports/code ([f6d6f00](https://github.com/curiouslearning/FeedTheMonsterJS/commit/f6d6f009e02b3e43dc16ad6faf0a84d558186a0d))
+* FM-245 - remove unused imports/code ([04ac190](https://github.com/curiouslearning/FeedTheMonsterJS/commit/04ac1900eb3f7e028f9108f49b42df4d30672f0a))
+* Update build files ([48ee4a0](https://github.com/curiouslearning/FeedTheMonsterJS/commit/48ee4a0cd915029a9b5bc3c237292c2d10ee972a))
+* Update build files ([#1350](https://github.com/curiouslearning/FeedTheMonsterJS/issues/1350)) ([db0ebe8](https://github.com/curiouslearning/FeedTheMonsterJS/commit/db0ebe836f472fa759bdb553a6142eff0b6b0559))
+* Update build folder ([a5c740b](https://github.com/curiouslearning/FeedTheMonsterJS/commit/a5c740b24ce179c993d4a0bb702a05f46cde012e))
+* Update build folder ([#1339](https://github.com/curiouslearning/FeedTheMonsterJS/issues/1339)) ([208b4f2](https://github.com/curiouslearning/FeedTheMonsterJS/commit/208b4f29fce8c1e63bcdc6d4b89ec23fd80864cc)), closes [#1325](https://github.com/curiouslearning/FeedTheMonsterJS/issues/1325) [#1335](https://github.com/curiouslearning/FeedTheMonsterJS/issues/1335)
+
+### Bug Fixes
+* assetlinks.json ([7123282](https://github.com/curiouslearning/FeedTheMonsterJS/commit/7123282f8f0a816226f5126e78f8bf82665143f5))
+* Bangla  json fix ([be47ea6](https://github.com/curiouslearning/FeedTheMonsterJS/commit/be47ea6e8fd088d9101489a0bd4eb618c9fde741))
+* Oromo build ([cbb28d2](https://github.com/curiouslearning/FeedTheMonsterJS/commit/cbb28d2a54fa0e7b2429eda07438a3383332dbad))
+* release notes testing ([32dd129](https://github.com/curiouslearning/FeedTheMonsterJS/commit/32dd1293e173303011cee8e41726eab8893e8d61))
+
 ## [1.0.36](https://github.com/curiouslearning/FeedTheMonsterJS/compare/1.0.35...1.0.36) (2024-11-13)
 
 ### Features
+
 * Enhance feedback animation (FM-69) ([c130913](https://github.com/curiouslearning/FeedTheMonsterJS/commit/c130913afd93805683b69878b7e46dfbb0b69625))
 * Ensure feedback text effect fits properly in all devices (FM-278) ([#1354](https://github.com/curiouslearning/FeedTheMonsterJS/issues/1354)) ([ab9cd74](https://github.com/curiouslearning/FeedTheMonsterJS/commit/ab9cd74c4547df9c3e1bdd7d0e701a33f2cb8a23))
 * Ensures ensures that load Title and Feedback Custom Font loads before anything (FM-278) ([#1357](https://github.com/curiouslearning/FeedTheMonsterJS/issues/1357)) ([f47c849](https://github.com/curiouslearning/FeedTheMonsterJS/commit/f47c8491ebe9b80ca0f5ff5281808a9c1dc0f1b1))
