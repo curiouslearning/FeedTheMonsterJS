@@ -91,6 +91,7 @@ export class GameplayScene {
   public gameControl: HTMLCanvasElement;
   private unsubscribeEvent: () => void;
   public timeTicker: HTMLElement;
+  isFeedBackTriggered: boolean;
   constructor({
     monsterPhaseNumber,
     switchSceneToEnd,
@@ -530,7 +531,7 @@ export class GameplayScene {
           gameStateService.publish(gameStateService.EVENTS.LEVEL_END_DATA_EVENT, {levelEndData, data: this.data});
           this.switchSceneToEnd();
         },
-        2500 //added delay for switching to level end screen
+        timerEnded && !this.isFeedBackTriggered ? 0 : 4500 //added delay for switching to level end screen
       );
     } else {
       const loadPuzzleEvent = new CustomEvent(LOADPUZZLE, {
@@ -591,9 +592,13 @@ export class GameplayScene {
       droppedStone,
       feedBackIndex
     );
+    
     if (isCorrect) {
       this.handleCorrectStoneDrop(feedBackIndex);
     }
+
+    this.isFeedBackTriggered = true;
+
     this.handleStoneDropEnd(isCorrect);
   }
 

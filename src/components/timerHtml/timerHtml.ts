@@ -3,7 +3,7 @@ import { TIMER_EMPTY, ROTATING_CLOCK, TIMER_FULL } from "@constants";
 import './timerHtml.scss';
 
 export const TIMER_HTML_SELECTORS = {
-  root: '.gameplay-wrapper', // Class name of the game scene div
+  root: '#background',
 };
 
 export const TIMER_HTML_LAYOUT = (id: string) => `
