@@ -61,12 +61,12 @@ export class StartScene {
     this.riveMonster = new RiveMonsterComponent({
       canvas: this.riveMonsterElement,
       autoplay: true,
-      fit: "contain",
+      fit: "cover",
       alignment: "topCenter",
       width: this.canavsElement.width, // Example width and height, adjust as needed
       height: this.canavsElement.height,
       onLoad: () => {
-        this.riveMonster.play(RiveMonsterComponent.Animations.IDLE); // Start with the "Idle" animation
+        this.riveMonster.play(RiveMonsterComponent.Animations.HAPPY2); // Start with the "Idle" animation
       }
     });
     this.switchSceneToLevelSelection = switchSceneToLevelSelection;

@@ -13,8 +13,8 @@ interface RiveMonsterComponentProps {
 export class RiveMonsterComponent {
     private props: RiveMonsterComponentProps;
     private riveInstance: any;
-    private src: string = './assets/monsterrive.riv';  // Define the .riv file path
-    private stateMachines: string = 'State Machine 1';  // Define the state machine
+    private src: string = './assets/text_v1.riv';  // Define the .riv file path
+    // private stateMachines: string = 'State Machine 1';  // Define the state machine
 
     // Static readonly properties for all monster animations
     public static readonly Animations = {
@@ -22,6 +22,14 @@ export class RiveMonsterComponent {
         EAT_HAPPY: 'Eat Happy',
         IDLE: 'Idle',
         EAT_DISGUST: 'Eat Disgust',
+        SAD: 'Sad',
+        STOMP2: 'Stomp 2', //Not working
+        HAPPY2: 'Happy 2',
+        SPIT: 'Spit/disgust',
+        CHEW: 'Chew', //Not working
+        MOUTHOPEN: 'Mouth Open',
+        MOUTHCLOSED: 'Mouth Closed', //Not working
+        STOMP_HAPPY: 'Happy', //Not working
     };
 
 
@@ -34,7 +42,7 @@ export class RiveMonsterComponent {
             src: this.src,
             canvas: this.props.canvas,
             autoplay: this.props.autoplay,
-            stateMachines: this.stateMachines,
+            // stateMachines: this.stateMachines,
             layout: new Layout({
                 fit: Fit[this.props.fit || "Contain"],
                 alignment: Alignment[this.props.alignment || "TopCenter"],
