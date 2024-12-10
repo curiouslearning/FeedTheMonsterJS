@@ -1,9 +1,10 @@
 .game-scene {
   #play-button {
-      position: absolute;
-      top: 23vh;
-      left: 50%;
-      transform: translate(-50%, -50%);
+    position: relative;
+    top: 14vh;
+    display: block;
+    margin: 0 auto;
+    z-index: 5;
   }
 }
 
