@@ -91,6 +91,7 @@ export class GameplayScene {
   public gameControl: HTMLCanvasElement;
   private unsubscribeEvent: () => void;
   public timeTicker: HTMLElement;
+  isFeedBackTriggered: boolean;
   constructor({
     monsterPhaseNumber,
     switchSceneToEnd,
@@ -515,18 +516,23 @@ export class GameplayScene {
     this.isGameStarted = false;
 
     if (this.counter === this.levelData.puzzles.length) {
-      this.levelIndicators.setIndicators(this.counter);
-      this.logLevelEndFirebaseEvent();
-      GameScore.setGameLevelScore(this.levelData, this.score);
+      setTimeout(
+        () => {
+          this.levelIndicators.setIndicators(this.counter);
+          this.logLevelEndFirebaseEvent();
+          GameScore.setGameLevelScore(this.levelData, this.score);
 
-      const levelEndData = {
-        starCount: GameScore.calculateStarCount(this.score),
-        currentLevel: this.levelNumber,
-        isTimerEnded: timerEnded
-      }
-
-      gameStateService.publish(gameStateService.EVENTS.LEVEL_END_DATA_EVENT, {levelEndData, data: this.data});
-      this.switchSceneToEnd();
+          const levelEndData = {
+            starCount: GameScore.calculateStarCount(this.score),
+            currentLevel: this.levelNumber,
+            isTimerEnded: timerEnded
+          }
+    
+          gameStateService.publish(gameStateService.EVENTS.LEVEL_END_DATA_EVENT, {levelEndData, data: this.data});
+          this.switchSceneToEnd();
+        },
+        timerEnded && !this.isFeedBackTriggered ? 0 : 4500 //added delay for switching to level end screen
+      );
     } else {
       const loadPuzzleEvent = new CustomEvent(LOADPUZZLE, {
         detail: {
@@ -586,9 +592,13 @@ export class GameplayScene {
       droppedStone,
       feedBackIndex
     );
+    
     if (isCorrect) {
       this.handleCorrectStoneDrop(feedBackIndex);
     }
+
+    this.isFeedBackTriggered = true;
+
     this.handleStoneDropEnd(isCorrect);
   }
 

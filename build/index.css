@@ -29,6 +29,9 @@ body {
 
 img {
   max-width: 100%;
+  user-drag: none; /* Disables dragging on Chrome, Edge, and Safari */
+  -webkit-user-drag: none; /* Ensures dragging is disabled in Safari */
+  pointer-events: none; /* Prevents mouse events like dragging and clicking on the image */
 }
 
 #discription-text {
@@ -306,7 +309,7 @@ img {
 .feedback-text.show {
   -webkit-animation: scale-up-center 0.4s cubic-bezier(0.39, 0.575, 0.565, 1) both;
   animation: scale-up-center 0.4s cubic-bezier(0.39, 0.575, 0.565, 1) both;
-  z-index: 10;
+  z-index: 5;
   opacity: 1;
 }
 
@@ -455,9 +458,9 @@ img {
 
 .winter-bg .ftm-fence {
   position: absolute;
-  bottom: 150px;
+  bottom: 135px;
   left: -130px;
-  transform: rotate(-30deg);
+  transform: rotate(-25deg);
   z-index: 1;
   width: 80%;
 }
@@ -465,7 +468,7 @@ img {
 .autumn-bg .ftm-fence {
   left: -100px;
   position: absolute;
-  bottom: 80px;
+  bottom: 8%;
   z-index: 1;
   transform: rotate(342deg);
   width: 70%;
@@ -474,7 +477,7 @@ img {
 .autumn-bg .ftm-totem,
 .winter-bg .ftm-totem {
   position: absolute;
-  bottom: 130px;
+  bottom: 110px;
   right: -90px;
   z-index: 1;
   width: 70%
