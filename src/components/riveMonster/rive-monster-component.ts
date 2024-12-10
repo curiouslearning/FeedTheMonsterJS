@@ -13,15 +13,18 @@ interface RiveMonsterComponentProps {
 export class RiveMonsterComponent {
     private props: RiveMonsterComponentProps;
     private riveInstance: any;
-    private src: string = './assets/text_v1.riv';  // Define the .riv file path
+    private src: string = './assets/mainegg.riv';  // Define the .riv file path
     // private stateMachines: string = 'State Machine 1';  // Define the state machine
 
     // Static readonly properties for all monster animations
     public static readonly Animations = {
         OPENING_MOUTH_EAT: 'Opening Mouth Eat',
-        EAT_HAPPY: 'Eat Happy',
-        IDLE: 'Idle',
+        EATHAPPY: 'Eat Happy',
         EAT_DISGUST: 'Eat Disgust',
+        IDLE: 'Idle',
+
+        //new animation
+        NEWIDLE: 'Idle',
         SAD: 'Sad',
         STOMP2: 'Stomp 2', //Not working
         HAPPY2: 'Happy 2',
@@ -29,7 +32,7 @@ export class RiveMonsterComponent {
         CHEW: 'Chew', //Not working
         MOUTHOPEN: 'Mouth Open',
         MOUTHCLOSED: 'Mouth Closed', //Not working
-        STOMP_HAPPY: 'Happy', //Not working
+        HAPPY: 'Happy', //Not working
     };
 
 

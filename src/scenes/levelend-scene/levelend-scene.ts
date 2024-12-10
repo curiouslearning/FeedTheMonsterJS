@@ -92,7 +92,7 @@ export class LevelEndScene {
         this.audioPlayer.playAudio(AUDIO_LEVEL_WIN);
         this.audioPlayer.playAudio(AUDIO_INTRO);
       }
-      this.riveMonster.play(RiveMonsterComponent.Animations.EAT_HAPPY);
+      this.riveMonster.play(RiveMonsterComponent.Animations.EATHAPPY);
     }
   };
 

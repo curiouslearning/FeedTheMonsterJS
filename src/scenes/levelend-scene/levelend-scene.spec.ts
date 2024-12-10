@@ -101,7 +101,7 @@ describe('LevelEndScene', () => {
     levelEndScene.starCount = 2;
     levelEndScene.switchToReactionAnimation();
     expect(levelEndScene.riveMonster.play).toHaveBeenCalledWith(
-      RiveMonsterComponent.Animations.EAT_HAPPY,
+      RiveMonsterComponent.Animations.EATHAPPY,
     );
   });
 

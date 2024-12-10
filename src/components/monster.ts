@@ -63,7 +63,7 @@ export class Monster extends EventManager {
       width: this.canvasElement.width, // Example width and height, adjust as needed
       height: this.canvasElement.height,
       onLoad: () => {
-        this.riveMonster.play(RiveMonsterComponent.Animations.IDLE); // Start with the "Eat Happy" animation
+        this.riveMonster.play(RiveMonsterComponent.Animations.CHEW); // Start with the "Eat Happy" animation
       }
     });
 
@@ -122,7 +122,7 @@ export class Monster extends EventManager {
   }
 
   changeToEatAnimation() {
-    this.riveMonster.play(RiveMonsterComponent.Animations.EAT_HAPPY);
+    this.riveMonster.play(RiveMonsterComponent.Animations.HAPPY);
   }
 
   changeToIdleAnimation() {

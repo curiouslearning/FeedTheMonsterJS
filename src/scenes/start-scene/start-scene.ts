@@ -83,7 +83,7 @@ export class StartScene {
     this.setupBg();
     this.titleTextElement = document.getElementById("title");
     this.generateGameTitle();
-    this.riveMonsterElement.style.zIndex = '6';
+    this.riveMonsterElement.style.zIndex = '4';
     this.firebaseIntegration = new FirebaseIntegration();
   }
 
