@@ -118,11 +118,11 @@ export class Monster extends EventManager {
 
   // Switch animation states for different behaviors
   changeToDragAnimation() {
-    this.riveMonster.play(RiveMonsterComponent.Animations.OPENING_MOUTH_EAT);
+    this.riveMonster.play(RiveMonsterComponent.Animations.MOUTHOPEN);
   }
 
   changeToEatAnimation() {
-    this.riveMonster.play(RiveMonsterComponent.Animations.HAPPY);
+    this.riveMonster.play(RiveMonsterComponent.Animations.CHEW);
   }
 
   changeToIdleAnimation() {
@@ -130,7 +130,7 @@ export class Monster extends EventManager {
   }
 
   changeToSpitAnimation() {
-    this.riveMonster.play(RiveMonsterComponent.Animations.EAT_DISGUST);
+    this.riveMonster.play(RiveMonsterComponent.Animations.SPIT);
   }
 
 

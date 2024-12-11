@@ -13,49 +13,49 @@ interface RiveMonsterComponentProps {
 export class RiveMonsterComponent {
     private props: RiveMonsterComponentProps;
     private riveInstance: any;
-    private src: string = './assets/mainegg.riv';  // Define the .riv file path
-    // private stateMachines: string = 'State Machine 1';  // Define the state machine
+    private src: string = './assets/EggMonsterFinal.riv';  // Define the .riv file path
+    private stateMachineName: string = "State Machine 1"  // Define the state machine
 
     // Static readonly properties for all monster animations
     public static readonly Animations = {
-        OPENING_MOUTH_EAT: 'Opening Mouth Eat',
-        EATHAPPY: 'Eat Happy',
-        EAT_DISGUST: 'Eat Disgust',
-        IDLE: 'Idle',
-
         //new animation
-        NEWIDLE: 'Idle',
-        SAD: 'Sad',
-        STOMP2: 'Stomp 2', //Not working
-        HAPPY2: 'Happy 2',
-        SPIT: 'Spit/disgust',
-        CHEW: 'Chew', //Not working
-        MOUTHOPEN: 'Mouth Open',
-        MOUTHCLOSED: 'Mouth Closed', //Not working
-        HAPPY: 'Happy', //Not working
+        IDLE: "Idle",
+        SAD: "Sad",
+        STOMP: "Stomp", //Not working
+        STOMPHAPPY: "StompHappy",
+        SPIT: "Spit",
+        CHEW: "Chew", //Not working
+        MOUTHOPEN: "MouthOpen",
+        MOUTHCLOSED: "MouthClosed", //Not working
+        HAPPY: "Happy", //Not working
     };
 
 
     constructor(props: RiveMonsterComponentProps) {
         this.props = props;
 
-        
+
         // Initialize Rive
         this.riveInstance = new Rive({
             src: this.src,
             canvas: this.props.canvas,
             autoplay: this.props.autoplay,
-            // stateMachines: this.stateMachines,
+            stateMachines: [this.stateMachineName],
             layout: new Layout({
                 fit: Fit[this.props.fit || "Contain"],
                 alignment: Alignment[this.props.alignment || "TopCenter"],
             }),
             onLoad: () => {
-                if (this.props.onLoad) {
-                    this.props.onLoad();
-                }
+                console.log(`Rive file loaded successfully.`);
+                console.log(`State Machine: ${this.stateMachineName}`);
+                console.log(`Available Inputs:`, this.getInputs());
+                if (this.props.onLoad) this.props.onLoad();
             },
         });
+    }
+
+    getInputs() {
+        return this.riveInstance.stateMachineInputs(this.stateMachineName);
     }
 
     play(animationName: string) {
@@ -70,11 +70,24 @@ export class RiveMonsterComponent {
         }
     }
 
-    // Check animation completion via a state machine listener need to have statemachines properly to test this
+    setInput(inputName: string, value: any) {
+        const inputs = this.getInputs();
+        console.log("New Input ===>", inputs);
+        
+        const input = inputs.find((input) => input.name === inputName);
+        if (input) {
+            input.value = value;
+            console.log(`Input "${inputName}" set to:`, value);
+        } else {
+            console.error(`Input "${inputName}" not found.`);
+        }
+    }
+
     onStateChange(callback: (stateName: string) => void) {
-        this.riveInstance.stateMachine.inputs.forEach(input => {
+        this.getInputs().forEach((input) => {
             input.onStateChange((state) => {
-                callback(state);
+                console.log(`State changed to: ${state.name}`);
+                callback(state.name);
             });
         });
     }
