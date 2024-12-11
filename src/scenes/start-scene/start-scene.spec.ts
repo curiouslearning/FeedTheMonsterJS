@@ -2,12 +2,24 @@ import { StartScene } from './start-scene';
 import { PlayButtonHtml } from '@components/buttons';
 import { FirebaseIntegration } from "../../Firebase/firebase-integration";
 import { FeedbackAudios, FeedbackTexts } from '@data/data-modal';
-
+import { AudioPlayer } from "../../components/audio-player";
+import gameStateService from '@gameStateService';
 
 jest.mock("../../Firebase/firebase-integration", () => ({
   FirebaseIntegration: jest.fn().mockImplementation(() => ({
     sendTappedStartEvent: jest.fn()
   })),
+}));
+jest.mock("../../components/audio-player", () => ({
+  AudioPlayer: jest.fn().mockImplementation(() => ({
+    playButtonClickSound: jest.fn()
+  })),
+}));
+jest.mock('@gameStateService', () => ({
+  EVENTS: {
+    SCENE_LOADING_EVENT: 'SCENE_LOADING_EVENT'
+  },
+  publish: jest.fn()
 }));
 
 
@@ -16,6 +28,8 @@ describe('Start Scene Test', () => {
   let mockPlayBtn;
   let mockOnClickCallback;
   let mockFirebase;
+  let mockAudioPlayer;
+  const switchSceneMockFunc = jest.fn();
 
   beforeEach(() => {
     document.body.innerHTML = `
@@ -51,6 +65,9 @@ describe('Start Scene Test', () => {
     // Mock the Firebase instance (this is what is used in your StartScene class)
     mockFirebase = new FirebaseIntegration();
 
+    //Mock Audio Player instance
+    mockAudioPlayer = new AudioPlayer();
+
     // Mock canvas
     const mockCanvas = document.getElementById('canvas') as HTMLCanvasElement;
     mockCanvas.getContext = jest.fn().mockReturnValue({
@@ -83,8 +100,10 @@ describe('Start Scene Test', () => {
       () => {}
     );
 
-    // Ensure startScene uses the mockFirebase
+    // Ensure startScene uses the mock data
     startScene.firebaseIntegration = mockFirebase;
+    startScene.audioPlayer = mockAudioPlayer;
+    startScene.switchSceneToLevelSelection = switchSceneMockFunc;
 
     // Create the play button and mock the callback
     mockPlayBtn = {
@@ -100,22 +119,57 @@ describe('Start Scene Test', () => {
     startScene.createPlayButton();
   });
 
-  it('When Play Button is clicked, the onClick callback should be called', () => {
-    if (mockOnClickCallback) {
-      mockOnClickCallback();
-    }
+  describe('When Play Button is clicked ', () => {
+    it('Callback for switching scene should be called.', () => {
+      // Trigger the onClick callback directly by calling the mock callback
+      if (mockOnClickCallback) {
+        mockOnClickCallback(); // Simulate the button click
+      }
 
-    // Check if the mock play button's onClick handler was called
-    expect(mockPlayBtn.onClick).toHaveBeenCalledTimes(1);
+      // Check if switchSceneToLevelSelection was called
+      // Using toHaveBeenCalled for testing as plat button has multiple scenarions that calls multiple functions.
+      expect(startScene.switchSceneToLevelSelection).toHaveBeenCalled();
+    });
+
+    it('The game state publish should be called', () => {
+      // Trigger the onClick callback directly by calling the mock callback
+      if (mockOnClickCallback) {
+        mockOnClickCallback(); // Simulate the button click
+      }
+
+      // Check if gameStateService.publish was called
+      // Using toHaveBeenCalled for testing as plat button has multiple scenarions that calls multiple functions.
+      expect(gameStateService.publish).toHaveBeenCalled();
+    });
+
+    it('The audio player playButtonClickSound should be called', () => {
+      // Trigger the onClick callback directly by calling the mock callback
+      if (mockOnClickCallback) {
+        mockOnClickCallback(); // Simulate the button click
+      }
+
+      // audioPlayer.playButtonClickSound
+      expect(startScene.audioPlayer.playButtonClickSound).toHaveBeenCalledTimes(1);
+    });
+
+    it('The onClick callback should be called', () => {
+      if (mockOnClickCallback) {
+        mockOnClickCallback();
+      }
+
+      // Check if the mock play button's onClick handler was called
+      expect(mockPlayBtn.onClick).toHaveBeenCalledTimes(1);
+    });
+
+    it('The sendTappedStartEvent should be called', () => {
+      // Trigger the onClick callback directly by calling the mock callback
+      if (mockOnClickCallback) {
+        mockOnClickCallback(); // Simulate the button click
+      }
+
+      // Check if sendTappedStartEvent was called
+      expect(mockFirebase.sendTappedStartEvent).toHaveBeenCalledTimes(1); // Assuming mockFirebase is correctly set
+    });
   });
 
-  it('When Play Button is clicked, sendTappedStartEvent should be called', () => {
-    // Trigger the onClick callback directly by calling the mock callback
-    if (mockOnClickCallback) {
-      mockOnClickCallback(); // Simulate the button click
-    }
-
-    // Check if sendTappedStartEvent was called
-    expect(mockFirebase.sendTappedStartEvent).toHaveBeenCalledTimes(1); // Assuming mockFirebase is correctly set
-  });
 });
