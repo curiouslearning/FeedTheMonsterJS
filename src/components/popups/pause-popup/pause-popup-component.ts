@@ -18,19 +18,24 @@ export class PausePopupComponent extends BasePopupComponent {
   confirmPopup?: ConfirmPopupComponent;
   openConfirm = () => {};
   protected audioPlayer = new AudioPlayer();
-  protected clickTimeout?;
+  private enableTimeoutId?: number; // Timeout ID to avoid memory leaks
   protected override id = 'pause-popup';
 
   onInit() {
     const targetId = this.contentContainerId;
-    // TODO integrate buttons
+
+    // Initialize buttons and attach event listeners
     this.selectLevelButton = new MapButton({ id: 'map-button', className: 'me-4', targetId });
-    this.selectLevelButton.onClick(() => this.handleClick('select-level'));
+    if (this.selectLevelButton) {
+      this.selectLevelButton.onClick(() => this.handleClick('select-level'));
+    }
+
     this.restartLevelButton = new RetryButtonHtml({ targetId });
+   if (this.restartLevelButton) {
     this.restartLevelButton.onClick(() => this.handleClick('restart-level'));
-    this.confirmPopup = new ConfirmPopupComponent({
-      hideClose: true
-    });
+  }
+
+    this.confirmPopup = new ConfirmPopupComponent({ hideClose: true });
 
     this.openConfirm = debounce(() => {
       this.confirmPopup.open();
@@ -39,33 +44,82 @@ export class PausePopupComponent extends BasePopupComponent {
   }
 
   handleClick(data: any) {
+    // Disable both buttons to prevent double clicks
+    this.disableButtons();
+
     if (lang === 'english') {
       const unsub = this.confirmPopup.onClose((confirmData) => {
         unsub();
         this.handleConfirmClose(confirmData, data);
+        this.scheduleEnableButtons(800); // Schedule re-enable after 2 seconds
       });
 
       this.openConfirm();
       
     } else {
       super.handleClick(data);
+      this.scheduleEnableButtons(800); // Schedule re-enable after 2 seconds
     }
   }
 
   /**
-   * 
-   * @param confirmClickEvent Function that handles closing of the confirmation popup.
-   * @param pauseData 
+   * Handles confirmation popup close.
+   * @param confirmClickEvent - The event data returned when the popup closes.
+   * @param pauseData - The pause data (select-level or restart-level).
    */
   handleConfirmClose(confirmClickEvent: PopupClickEvent, pauseData: any) {
-    // if confirmation was "yes", we pass pause data to base click handler (pause data = level-reset or level-select)
-    if (confirmClickEvent.data) super.handleClick(pauseData);
+    if (confirmClickEvent.data) {
+      // If the confirmation was "yes", call the base handler
+      super.handleClick(pauseData);
+    }
 
-    // if confimation was "no", we pass false with 0 timeout to base click handler.
+    // If the confirmation was "no", call the base handler with false data
     super.handleClick(false, 0);
   }
 
+  /**
+   * Disables both select and restart buttons.
+   */
+  disableButtons() {
+    this.selectLevelButton?.setDisabled(true);
+    this.restartLevelButton?.setDisabled(true);
+  }
+
+  /**
+   * Enables both select and restart buttons.
+   */
+  enableButtons() {
+    this.selectLevelButton?.setDisabled(false);
+    this.restartLevelButton?.setDisabled(false);
+  }
+
+  /**
+   * Schedule enabling of the buttons after a delay.
+   * Prevents multiple timeouts from being active at the same time.
+   * 
+   * @param delay - Delay in milliseconds before enabling the buttons.
+   */
+  scheduleEnableButtons(delay: number) {
+    // Clear any existing timeout to prevent multiple re-enable timeouts
+    if (this.enableTimeoutId) {
+      clearTimeout(this.enableTimeoutId);
+    }
+
+    // Schedule a new timeout and store the timeout ID
+    this.enableTimeoutId = window.setTimeout(() => {
+      this.enableButtons();
+      this.enableTimeoutId = undefined; // Clear the reference after execution
+    }, delay);
+  }
+
+  /**
+   * Called when the component is destroyed.
+   * Ensures no pending timeouts are left.
+   */
   destroy(): void {
+    if (this.enableTimeoutId) {
+      clearTimeout(this.enableTimeoutId);
+    }
     this.confirmPopup?.destroy();
     super.destroy();
   }

@@ -1,4 +1,4 @@
-import {AudioPlayer} from '@components/audio-player';
+import { AudioPlayer } from '@components/audio-player';
 
 export interface ButtonOptions {
   id: string;
@@ -36,6 +36,12 @@ export class BaseButtonComponent {
   public onClick(callback: () => void): void {
     this.clickListener = (event: Event) => {
       event.preventDefault();
+      
+      if (this.element.hasAttribute('disabled')) {
+        // If the button is disabled, do nothing
+        return;
+      }
+
       if (this.audioPlayer) {
         this.audioPlayer.playButtonClickSound();
       }
@@ -76,14 +82,23 @@ export class BaseButtonComponent {
     }
   }
 
+  // Method to disable or enable the button
+  public setDisabled(isDisabled: boolean): void {
+    if (isDisabled) {
+      this.element.setAttribute('disabled', 'true');
+      this.element.classList.add('disabled');
+    } else {
+      this.element.removeAttribute('disabled');
+      this.element.classList.remove('disabled');
+    }
+  }
+
   // Method to dispose of the button, removing event listeners and cleaning up
   public dispose(): void {
-    // Remove the click event listener to prevent interactions with a disposed button
     if (this.clickListener) {
       this.element.removeEventListener('click', this.clickListener);
       this.clickListener = null;
     }
-    // Set audioPlayer to null to free up memory and audio cleanup
     this.audioPlayer = null;
   }
 
