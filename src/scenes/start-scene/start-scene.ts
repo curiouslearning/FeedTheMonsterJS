@@ -1,20 +1,23 @@
-import { Monster, AudioPlayer } from "@components";
-import { PlayButton } from "@buttons";
+import { Monster, AudioPlayer, BackgroundHtmlGenerator } from "@components";
+import { PlayButtonHtml } from '@components/buttons';
+import { BaseButtonComponent } from '@components/buttons/base-button-component/base-button-component';
+import { RiveMonsterComponent } from "@components/riveMonster/rive-monster-component";
 import { DataModal } from "@data";
 import {
   StoneConfig,
   toggleDebugMode,
   Utils,
+  pseudoId,
+  lang
 } from "@common";
-import { FirebaseIntegration } from "../Firebase/firebase-integration";
-import { createBackground, defaultBgDrawing } from "@compositions"; // to be removed once background component has been fully used
+import { FirebaseIntegration } from "../../Firebase/firebase-integration";
+import { TappedStart } from "../../Firebase/firebase-event-interface";
 import {
   FirebaseUserClicked,
   PWAInstallStatus,
-  DEFAULT_BG_GROUP_IMGS,
 } from "@constants";
-import { RiveMonsterComponent } from "@components/riveMonster/rive-monster-component";
 import gameStateService from '@gameStateService';
+
 
 export class StartScene {
   public canvas: HTMLCanvasElement;
@@ -30,19 +33,20 @@ export class StartScene {
   public riveMonsterElement: HTMLCanvasElement;
   public context: CanvasRenderingContext2D;
   public buttonContext: CanvasRenderingContext2D;
-  public playButton: PlayButton;
+  public playButton: BaseButtonComponent;
   public images: Object;
   public loadedImages: any;
   public imagesLoaded: boolean = false;
   public handler: HTMLCanvasElement;
   public static SceneName: string;
   public switchSceneToLevelSelection: Function;
-  public background: any;
   audioPlayer: AudioPlayer;
   private toggleBtn: HTMLElement;
   private pwa_install_status: Event;
   private titleTextElement: HTMLElement | null;
   public riveMonster: RiveMonsterComponent;
+  private firebaseIntegration: FirebaseIntegration;
+
   constructor(
     canvas: HTMLCanvasElement,
     data: DataModal,
@@ -79,16 +83,19 @@ export class StartScene {
     this.titleTextElement = document.getElementById("title");
     this.generateGameTitle();
     this.riveMonsterElement.style.zIndex = '6';
+    this.firebaseIntegration = new FirebaseIntegration();
   }
 
   private setupBg = async () => {
-    this.background = await createBackground(
-      this.context,
-      this.width,
-      this.height,
-      DEFAULT_BG_GROUP_IMGS,
-      defaultBgDrawing
-    );
+    // Determine the background type based on the level number using the static method.
+    //Level 1 will be used as a default background for Start Scene.
+    const selectedBackgroundType = BackgroundHtmlGenerator.createBackgroundComponent(1);
+
+    // Apply the logic to update the HTML or visual representation of the background
+    const backgroundGenerator = new BackgroundHtmlGenerator();
+
+    // Dynamically update the background based on the selected type
+    backgroundGenerator.generateBackground(selectedBackgroundType);
   };
 
   devToggle = () => {
@@ -103,17 +110,13 @@ export class StartScene {
 
   draw = (deltaTime: number) => {
     this.context.clearRect(0, 0, this.width, this.height);
-    this.background?.draw();
-    this.playButton.draw();
   };
 
   createPlayButton() {
-    this.playButton = new PlayButton(
-      this.context,
-      this.canvas,
-      this.canvas.width * 0.35,
-      this.canvas.height / 7
-    );
+    this.playButton = new PlayButtonHtml({ targetId: 'background' });
+    this.playButton.onClick(() => {
+      this.logTappedStartFirebaseEvent();
+    });
     document.addEventListener("selectstart", function (e) {
       e.preventDefault();
     });
@@ -147,6 +150,8 @@ export class StartScene {
   dispose() {
     this.audioPlayer.stopAllAudios();
     this.handler.removeEventListener("click", this.handleMouseClick, false);
+    this.playButton.dispose();
+    this.playButton.destroy();
     window.removeEventListener(
       "beforeinstallprompt",
       this.handlerInstallPrompt,
@@ -159,4 +164,17 @@ export class StartScene {
     this.pwa_install_status = event;
     localStorage.setItem(PWAInstallStatus, "false");
   };
+
+  /*Note: This was from PlayButton canvas class onclick method.*/
+  private logTappedStartFirebaseEvent() {
+    let endTime = Date.now();
+    const tappedStartData: TappedStart = {
+      cr_user_id: pseudoId,
+      ftm_language: lang,
+      profile_number: 0,
+      version_number: document.getElementById("version-info-id").innerHTML,
+      json_version_number: !!this.data.majVersion && !!this.data.minVersion ? this.data.majVersion.toString() + "." + this.data.minVersion.toString() : "",
+    };
+    this.firebaseIntegration.sendTappedStartEvent(tappedStartData);
+  }
 }

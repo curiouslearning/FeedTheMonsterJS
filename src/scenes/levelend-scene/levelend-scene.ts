@@ -207,7 +207,6 @@ export class LevelEndScene {
         },
       },
     ];
-
     // Add NextButtonHtml only if not the last level and the star count is sufficient
     if (!this.isLastLevel && this.starCount >= 2) {
       buttonConfigs.push({
@@ -222,7 +221,6 @@ export class LevelEndScene {
         nextButton.remove();
       }
     }
-
     // Create buttons based on configuration
     buttonConfigs.forEach(({ ButtonClass, id, onClick }) => {
       this.createButton(ButtonClass, id, onClick);
