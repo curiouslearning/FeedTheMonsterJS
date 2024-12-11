@@ -161,19 +161,6 @@ export class GameplayScene {
     this.setupBg();
   }
 
-  private initializeRiveMonster() {
-    // this.riveMonster = new RiveMonsterComponent({
-    //   canvas: this.riveMonsterElement,
-    //   autoplay: true,
-    //   fit: "contain",
-    //   alignment: "topCenter",
-    //   onLoad: () => {
-    //     this.riveMonster.play(RiveMonsterComponent.Animations.IDLE); // Start with the "Eat Happy" animation
-    //   },
-    //   gameCanvas: this.canvas
-    // });
-  }
-
   private  initializeGameComponents(gamePlayData) {
     this.trailParticles = new TrailEffect(this.canvas);
     this.pauseButton = new PauseButton();
@@ -234,8 +221,6 @@ export class GameplayScene {
     this.jsonVersionNumber = gamePlayData.jsonVersionNumber;
     this.feedBackTexts = gamePlayData.feedBackTexts;
     this.data = gamePlayData.data;
-
-    this.initializeRiveMonster();
   }
 
   setupBg = () => {
@@ -703,7 +688,18 @@ export class GameplayScene {
 
   private initNewPuzzle(loadPuzzleEvent) {
     // this.monster.changeToIdleAnimation();
-    this.monster.play(RiveMonsterComponent.Animations.IDLE);
+    console.log('initNewPuzzle');
+    this.monster = new RiveMonsterComponent({
+      canvas: this.riveMonsterElement,
+      autoplay: true,
+      fit: "contain",
+      alignment: "topCenter",
+      onLoad: () => {
+        this.monster.play(RiveMonsterComponent.Animations.IDLE); // Start with the "Eat Happy" animation
+      },
+      gameCanvas: this.canvas
+    });
+
     this.removeEventListeners();
     this.isGameStarted = false;
     this.time = 0;

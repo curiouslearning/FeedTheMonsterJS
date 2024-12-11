@@ -69,6 +69,8 @@ export class RiveMonsterComponent {
       },
     });
 
+    console.log(this.riveInstance.animationNames)
+
     //Adjust this range factor to control how big is the hit box for dropping stones.
     const rangeFactorX = 70; //SUBCTRACT FROM CENTER TO LEFT, ADD FROM CENTER TO RIGHT.
     const rangeFactorY = 50; //SUBCTRACT FROM CENTER TO TOP, ADD FROM CENTER TO BOTTOM.
