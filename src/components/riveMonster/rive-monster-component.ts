@@ -13,7 +13,7 @@ interface RiveMonsterComponentProps {
 export class RiveMonsterComponent {
     private props: RiveMonsterComponentProps;
     private riveInstance: any;
-    private src: string = './assets/EggMonsterFinal.riv';  // Define the .riv file path
+    private src: string = './assets/eggMonstermain.riv';  // Define the .riv file path
     private stateMachineName: string = "State Machine 1"  // Define the state machine
 
     // Static readonly properties for all monster animations
@@ -45,12 +45,67 @@ export class RiveMonsterComponent {
                 fit: Fit[this.props.fit || "Contain"],
                 alignment: Alignment[this.props.alignment || "TopCenter"],
             }),
-            onLoad: () => {
-                console.log(`Rive file loaded successfully.`);
-                console.log(`State Machine: ${this.stateMachineName}`);
-                console.log(`Available Inputs:`, this.getInputs());
-                if (this.props.onLoad) this.props.onLoad();
+            onStateChange: (event) => {
+                console.log('State changed:', event);
             },
+            onLoad: () => {
+                // Retrieve state machine inputs
+                const inputs = this.riveInstance.stateMachineInputs(this.stateMachineName);
+                inputs.forEach(triggers => {
+                    console.log(triggers.name);
+                    
+                });
+
+                // Find specific inputs
+                const isStompStone = inputs.find(input => input.name === 'Trigger 1'); //stomp trigger
+                const stoneDragged = inputs.find(input => input.name === 'Boolean 1'); //drag
+                const stoneFed = inputs.find(input => input.name === 'Boolean 2'); //mouth close
+                const isCorrectStone = inputs.find(input => input.name === 'Boolean 3'); //chew
+            
+                if (!stoneDragged || !stoneFed || !isCorrectStone || !isStompStone) {
+                    console.error('One or more inputs are missing from the state machine.');
+                    return;
+                }
+
+                // Simulate dragging the stone to open the mouth
+                document.getElementById('stompStoneBtn').addEventListener('click', () => {
+                    console.log('Egg Stomped. Transitioning to Stomp');
+                    console.log(isStompStone);
+                    
+                    isStompStone.fire();
+                })
+            
+                // Simulate dragging the stone to open the mouth
+                document.getElementById('dragStoneBtn').addEventListener('click', () => {
+                    console.log('Stone dragged. Transitioning to MOUTH OPEN.');
+                    this.riveInstance.play(RiveMonsterComponent.Animations.MOUTHOPEN);
+                });
+            
+                // Simulate feeding the stone to transition to CHEWING
+                document.getElementById('feedStoneBtn').addEventListener('click', () => {
+                    console.log('Stone fed. Transitioning to MOUTH CLOSE.');
+                    this.riveInstance.play(RiveMonsterComponent.Animations.MOUTHCLOSED);
+            
+                    // Set isCorrectStone dynamically (true for correct, false for incorrect)
+                    const isCorrect = Math.random() > 0.5; // Example logic, replace with your own
+                    isCorrectStone.value = isCorrect;
+            
+                    console.log(`Fed stone is ${isCorrect ? 'correct' : 'incorrect'}.`);
+                });
+
+                // Simulate dragging the stone to open the mouth
+                document.getElementById('checkStoneBtn').addEventListener('click', () => {
+                    console.log('Mouth Closed. Transitioning to MOUTH Closed.');
+                    this.riveInstance.play(RiveMonsterComponent.Animations.CHEW);
+                });
+            
+                // Callback to handle state changes (optional debugging)
+                this.riveInstance.onStateChange = (state) => {
+                    console.log('Current state:', state);
+                };
+            
+                if (this.props.onLoad) this.props.onLoad();
+            }
         });
     }
 
@@ -70,25 +125,12 @@ export class RiveMonsterComponent {
         }
     }
 
-    setInput(inputName: string, value: any) {
-        const inputs = this.getInputs();
-        console.log("New Input ===>", inputs);
-        
-        const input = inputs.find((input) => input.name === inputName);
-        if (input) {
-            input.value = value;
-            console.log(`Input "${inputName}" set to:`, value);
-        } else {
-            console.error(`Input "${inputName}" not found.`);
-        }
-    }
-
-    onStateChange(callback: (stateName: string) => void) {
-        this.getInputs().forEach((input) => {
-            input.onStateChange((state) => {
-                console.log(`State changed to: ${state.name}`);
-                callback(state.name);
-            });
-        });
-    }
+    // onStateChange(callback: (stateName: string) => void) {
+    //     this.getInputs().forEach((input) => {
+    //         input.onStateChange((state) => {
+    //             console.log(`State changed to: ${state.name}`);
+    //             callback(state.name);
+    //         });
+    //     });
+    // }
 }

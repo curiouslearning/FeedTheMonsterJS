@@ -972,3 +972,11 @@ img {
   }
   
 }
+
+
+/* Reseach */
+#dragStoneBtn, #feedStoneBtn, #checkStoneBtn, #stompStoneBtn{
+  height: 50px;
+  z-index: 22;
+  position: relative;
+}

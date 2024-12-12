@@ -69,19 +69,19 @@ export class StartScene {
       width: this.canavsElement.width, // Example width and height, adjust as needed
       height: this.canavsElement.height,
       onLoad: () => {
-        // this.riveMonster.play(RiveMonsterComponent.Animations.STOMPHAPPY); // Start with the "Idle" animation
+        // this.riveMonster.play(RiveMonsterComponent.Animations.MOUTHOPEN); // Start with the "Idle" animation
         // Trigger a "Happy" animation
        // Set initial state inputs
-       this.riveMonster.setInput("On Click",RiveMonsterComponent.Animations.IDLE);
+      //  this.riveMonster.setInput(RiveMonsterComponent.Animations.IDLE,true);
 
        // Listen for state changes
-       this.riveMonster.onStateChange((stateName) => {
-           console.log('New State:', stateName);
-       });
+      //  this.riveMonster.onStateChange((stateName) => {
+      //      console.log('New State:', stateName);
+      //  });
 
        // Example: Trigger "Sad" state after 2 seconds
        setTimeout(() => {
-           this.riveMonster.setInput("On Click",RiveMonsterComponent.Animations.STOMP);
+          //  this.riveMonster.setInput(RiveMonsterComponent.Animations.STOMP,true);
        }, 2000);
       }
     });
