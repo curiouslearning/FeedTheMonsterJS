@@ -51,13 +51,17 @@ export class RiveMonsterComponent {
             onLoad: () => {
                 // Retrieve state machine inputs
                 const inputs = this.riveInstance.stateMachineInputs(this.stateMachineName);
-                inputs.forEach(triggers => {
-                    console.log(triggers.name);
-                    
+                inputs.forEach(input => {
+                    console.log(`Input Name: ${input.name}, Type: ${input.type}`);
                 });
 
                 // Find specific inputs
                 const isStompStone = inputs.find(input => input.name === 'Trigger 1'); //stomp trigger
+                console.log('Trigger Input:', isStompStone);
+                if (!isStompStone || typeof isStompStone.fire !== 'function') {
+                    console.error('Trigger input "Trigger 1" not found or is invalid.');
+                    return;
+                }
                 const stoneDragged = inputs.find(input => input.name === 'Boolean 1'); //drag
                 const stoneFed = inputs.find(input => input.name === 'Boolean 2'); //mouth close
                 const isCorrectStone = inputs.find(input => input.name === 'Boolean 3'); //chew
@@ -67,30 +71,28 @@ export class RiveMonsterComponent {
                     return;
                 }
 
-                // Simulate dragging the stone to open the mouth
+                // Simulate dragging the stone to stomp
                 document.getElementById('stompStoneBtn').addEventListener('click', () => {
                     console.log('Egg Stomped. Transitioning to Stomp');
-                    console.log(isStompStone);
-                    
                     isStompStone.fire();
                 })
             
                 // Simulate dragging the stone to open the mouth
                 document.getElementById('dragStoneBtn').addEventListener('click', () => {
-                    console.log('Stone dragged. Transitioning to MOUTH OPEN.');
+                    // console.log('Stone dragged. Transitioning to MOUTH OPEN.');
                     this.riveInstance.play(RiveMonsterComponent.Animations.MOUTHOPEN);
                 });
             
                 // Simulate feeding the stone to transition to CHEWING
                 document.getElementById('feedStoneBtn').addEventListener('click', () => {
-                    console.log('Stone fed. Transitioning to MOUTH CLOSE.');
+                    // console.log('Stone fed. Transitioning to MOUTH CLOSE.');
                     this.riveInstance.play(RiveMonsterComponent.Animations.MOUTHCLOSED);
             
                     // Set isCorrectStone dynamically (true for correct, false for incorrect)
                     const isCorrect = Math.random() > 0.5; // Example logic, replace with your own
                     isCorrectStone.value = isCorrect;
             
-                    console.log(`Fed stone is ${isCorrect ? 'correct' : 'incorrect'}.`);
+                    // console.log(`Fed stone is ${isCorrect ? 'correct' : 'incorrect'}.`);
                 });
 
                 // Simulate dragging the stone to open the mouth
