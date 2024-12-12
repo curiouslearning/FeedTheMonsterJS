@@ -1,5 +1,4 @@
 import {
-  Monster,
   TimerTicking,
   PromptText,
   PauseButton,
@@ -34,7 +33,6 @@ import {
 } from "../../Firebase/firebase-event-interface";
 import { FirebaseIntegration } from "../../Firebase/firebase-integration";
 import {
-  AUDIO_PATH_ON_DRAG,
   PreviousPlayedLevel,
 } from "@constants";
 import { WordPuzzleLogic } from '@gamepuzzles';
@@ -45,9 +43,7 @@ import { RiveMonsterComponent } from '@components/riveMonster/rive-monster-compo
 export class GameplayScene {
   public width: number;
   public height: number;
-  // public monster: Monster;
   public monster: RiveMonsterComponent;
-  // public riveMonster: RiveMonsterComponent;
   public jsonVersionNumber: string;
   public canvas: HTMLCanvasElement;
   public levelData: any;
@@ -417,15 +413,15 @@ export class GameplayScene {
     const x = event.clientX - rect.left;
     const y = event.clientY - rect.top;
 
-    // if (this.monster.onClick(x, y)) {
-    //   this.isGameStarted = true;
-    //   this.time = 0;
-    //   this.tutorial.setPlayMonsterClickAnimation(false);
-    // }
+    if (this.monster.onClick(x, y)) {
+      this.isGameStarted = true;
+      this.time = 0;
+      this.tutorial.setPlayMonsterClickAnimation(false);
+    }
 
-    // if (this.promptText.onClick(x, y)) {
-    //   this.promptText.playSound();
-    // }
+    if (this.promptText.onClick(x, y)) {
+      this.promptText.playSound();
+    }
   };
 
   // Event to identify touch on the canvas
