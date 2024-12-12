@@ -40,7 +40,6 @@ export class RiveMonsterComponent {
     this.props = props;
     this.game = this.props.gameCanvas;
 
-    console.log(this.props.gameCanvas);
     this.x = this.game.width / 2 - this.game.width * 0.243;
     this.y = this.game.width / 3;
     this.hitboxRangeX = {
@@ -68,8 +67,6 @@ export class RiveMonsterComponent {
         }
       },
     });
-
-    console.log(this.riveInstance.animationNames)
 
     //Adjust this range factor to control how big is the hit box for dropping stones.
     const rangeFactorX = 70; //SUBCTRACT FROM CENTER TO LEFT, ADD FROM CENTER TO RIGHT.
@@ -106,31 +103,29 @@ export class RiveMonsterComponent {
   }
 
   checkHitboxDistance(event) {
-    console.log('checkHitboxDistance', this.props.canvas);
 
     const rect = this.props.canvas.getBoundingClientRect();
     const x = event.clientX - rect.left;
     const y = event.clientY - rect.top;
 
-    const isWithinHitboxX = x >= this.hitboxRangeX.from && x <= this.hitboxRangeX.to;
-    const isWithinHitboxY = y >= this.hitboxRangeY.from && y <= this.hitboxRangeY.to;
-
-    console.log('x y', x, y);
-    console.log(isWithinHitboxX);
-    console.log(isWithinHitboxY);
+    const isWithinHitboxX =
+      x >= this.hitboxRangeX.from && x <= this.hitboxRangeX.to;
+    const isWithinHitboxY =
+      y >= this.hitboxRangeY.from && y <= this.hitboxRangeY.to;
 
     return isWithinHitboxX && isWithinHitboxY;
   }
 
   // Example click handler
   onClick(xClick: number, yClick: number): boolean {
+    const centerX = this.x + this.game.width / 4;
+    const centerY = this.y + this.game.height / 2.2;
+
     const distance = Math.sqrt(
-      (xClick - this.x - this.game.width / 4) * (xClick - this.x - this.game.width / 4) +
-      (yClick - this.y - this.game.height / 2.2) *
-      (yClick - this.y - this.game.height / 2.2)
+      (xClick - centerX) * (xClick - centerX) +
+        (yClick - centerY) * (yClick - centerY),
     );
-    if (distance <= 100) {
-      return true;
-    }
+
+    return distance <= 100; // Explicitly return true or false
   }
 }

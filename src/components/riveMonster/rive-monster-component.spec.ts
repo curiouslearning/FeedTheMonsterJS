@@ -1,21 +1,21 @@
-import { RiveMonsterComponent } from './rive-monster-component';
-import { Rive, Layout, Fit, Alignment } from '@rive-app/canvas';
+import {RiveMonsterComponent} from './rive-monster-component';
+import {Rive, Layout, Fit, Alignment} from '@rive-app/canvas';
 
 // Mock Rive library to avoid actual Rive implementation during tests
 jest.mock('@rive-app/canvas', () => {
   return {
-    Rive: jest.fn().mockImplementation(({ onLoad }) => {
+    Rive: jest.fn().mockImplementation(({onLoad}) => {
       if (onLoad) onLoad();
       return {
         play: jest.fn(),
         stop: jest.fn(),
-        stateMachine: { inputs: [{ onStateChange: jest.fn() }] },
+        stateMachine: {inputs: [{onStateChange: jest.fn()}]},
         animationNames: ['Idle', 'Eat Happy'],
       };
     }),
     Layout: jest.fn(),
-    Fit: { Contain: 'Contain' },
-    Alignment: { TopCenter: 'TopCenter' },
+    Fit: {Contain: 'Contain'},
+    Alignment: {TopCenter: 'TopCenter'},
   };
 });
 
@@ -63,7 +63,12 @@ describe('RiveMonsterComponent', () => {
 
   it('should call onLoad callback if provided', () => {
     const onLoadMock = jest.fn();
-    new RiveMonsterComponent({ canvas, autoplay: true, onLoad: onLoadMock, gameCanvas });
+    new RiveMonsterComponent({
+      canvas,
+      autoplay: true,
+      onLoad: onLoadMock,
+      gameCanvas,
+    });
     expect(onLoadMock).toHaveBeenCalled();
   });
 
@@ -85,29 +90,27 @@ describe('RiveMonsterComponent', () => {
   });
 
   it('should return true if the click is within the hitbox range', () => {
-    const mockEvent = { clientX: 400, clientY: 200 };
-    canvas.getBoundingClientRect = jest.fn().mockReturnValue({ left: 0, top: 0, width: 800, height: 600 });
+    const mockEvent = {clientX: 400, clientY: 200};
+    canvas.getBoundingClientRect = jest
+      .fn()
+      .mockReturnValue({left: 0, top: 0, width: 800, height: 600});
 
-    console.log('Expected Hitbox:', component['hitboxRangeX'], component['hitboxRangeY']);
     expect(component['hitboxRangeX'].from).toBe(330);
     expect(component['hitboxRangeX'].to).toBe(470);
     expect(component['hitboxRangeY'].from).toBe(150);
     expect(component['hitboxRangeY'].to).toBe(250);
 
     const isHit = component.checkHitboxDistance(mockEvent);
-    console.log('Mouse Position:', { x: mockEvent.clientX, y: mockEvent.clientY });
-    console.log('Hitbox Check X:', isHit);
     expect(isHit).toBe(true);
   });
 
   it('should return false if the click is outside the hitbox range', () => {
-    const mockEvent = { clientX: 10, clientY: 10 };
-    canvas.getBoundingClientRect = jest.fn().mockReturnValue({ left: 0, top: 0, width: 800, height: 600 });
+    const mockEvent = {clientX: 10, clientY: 10};
+    canvas.getBoundingClientRect = jest
+      .fn()
+      .mockReturnValue({left: 0, top: 0, width: 800, height: 600});
 
-    console.log('Expected Hitbox:', component['hitboxRangeX'], component['hitboxRangeY']);
     const isHit = component.checkHitboxDistance(mockEvent);
-    console.log('Mouse Position:', { x: mockEvent.clientX, y: mockEvent.clientY });
-    console.log('Hitbox Check X:', isHit);
     expect(isHit).toBe(false);
   });
 
@@ -115,14 +118,15 @@ describe('RiveMonsterComponent', () => {
     const stateChangeCallback = jest.fn();
     component.onStateChange(stateChangeCallback);
 
-    const mockStateChange = component['riveInstance'].stateMachine.inputs[0].onStateChange;
+    const mockStateChange =
+      component['riveInstance'].stateMachine.inputs[0].onStateChange;
     mockStateChange.mock.calls[0][0]('Eating');
 
     expect(stateChangeCallback).toHaveBeenCalledWith('Eating');
   });
 
   it('should correctly calculate onClick hit detection', () => {
-    const isHit = component.onClick(400, 300);
-    expect(isHit).toBe(false); // Updated expected value based on actual hit detection logic
+    const isHit = component.onClick(400, 540); // Match the monster's center
+    expect(isHit).toBe(true); // Expect a valid hit
   });
 });
