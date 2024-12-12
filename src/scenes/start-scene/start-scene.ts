@@ -18,7 +18,6 @@ import {
 } from "@constants";
 import gameStateService from '@gameStateService';
 
-
 export class StartScene {
   public canvas: HTMLCanvasElement;
   public data: any;
@@ -115,6 +114,9 @@ export class StartScene {
     this.playButton = new PlayButtonHtml({ targetId: 'background' });
     this.playButton.onClick(() => {
       this.logTappedStartFirebaseEvent();
+      this.audioPlayer.playButtonClickSound();
+      gameStateService.publish(gameStateService.EVENTS.SCENE_LOADING_EVENT, true);
+      this.switchSceneToLevelSelection();
     });
     document.addEventListener("selectstart", function (e) {
       e.preventDefault();
