@@ -458,7 +458,7 @@ img {
 
 .winter-bg .ftm-fence {
   position: absolute;
-  bottom: 135px;
+  bottom: 120px;
   left: -130px;
   transform: rotate(-25deg);
   z-index: 1;
@@ -477,7 +477,7 @@ img {
 .autumn-bg .ftm-totem,
 .winter-bg .ftm-totem {
   position: absolute;
-  bottom: 110px;
+  bottom: 105px;
   right: -90px;
   z-index: 1;
   width: 70%
@@ -603,8 +603,8 @@ img {
   }
 
   .dynamic-button {
-    max-width: 50px;
-    max-height: 50px;
+    max-width: 60px;
+    max-height: 60px;
   }
 
   #levelEnd {
@@ -714,7 +714,9 @@ img {
   #loading-screen {
     max-width: 100%;
   }
-
+  .confirm-message{
+    font-size: 36px !important;
+  }
   .summer .ftm-fence {
     left: -25%;
     bottom: 12%;
@@ -731,20 +733,21 @@ img {
 
   .autumn-bg .ftm-totem,
   .winter-bg .ftm-totem {
-    right: -3%;
-    bottom: 26%;
-    width: 50%;
+    right: -5%;
+    bottom: 25%;
+    width: 60%;
+    max-width: 450px;
   }
 
   .winter-bg .ftm-fence {
-    width: 60%;
+    width: 80%;
     left: -15%;
     bottom: 28%;
     transform: rotate(-20deg);
   }
 
   .autumn-bg .ftm-fence {
-    bottom: 20%;
+    bottom: 18%;
     width: 50%;
     left: -10%;
     transform: rotate(340deg);
@@ -755,13 +758,17 @@ img {
   }
 
   .dynamic-button {
-    max-width: 100px;
-    max-height: 100px;
+    max-width: 110px;
+    max-height: 110px;
   }
 
   .popup #cancel-button {
-    top: 10px;
-    left: 40px
+    top: 10px !important;
+    left: 40px !important;
+  }
+
+  #levelEnd{
+    background-size: 100% 120%;
   }
 
   .stars-container {
@@ -788,6 +795,7 @@ img {
 
   .buttons-container {
     gap: 60px !important;
+    bottom: 65px !important;
   }
 
   .feedback-text{
