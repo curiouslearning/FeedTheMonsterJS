@@ -157,7 +157,20 @@ export class GameplayScene {
     this.setupBg();
   }
 
-  private  initializeGameComponents(gamePlayData) {
+  private initializeRiveMonster(initialAnimation: string = RiveMonsterComponent.Animations.IDLE): RiveMonsterComponent {
+    return new RiveMonsterComponent({
+      canvas: this.riveMonsterElement,
+      autoplay: true,
+      fit: "contain",
+      alignment: "topCenter",
+      onLoad: () => {
+        this.monster.play(initialAnimation);
+      },
+      gameCanvas: this.canvas
+    });
+  }
+
+  private initializeGameComponents(gamePlayData) {
     this.trailParticles = new TrailEffect(this.canvas);
     this.pauseButton = new PauseButton();
     this.pauseButton.onClick(() => {
@@ -183,16 +196,7 @@ export class GameplayScene {
     );
     this.levelIndicators = new LevelIndicators();
     this.levelIndicators.setIndicators(this.counter);
-    this.monster = new RiveMonsterComponent({
-      canvas: this.riveMonsterElement,
-      autoplay: true,
-      fit: "contain",
-      alignment: "topCenter",
-      onLoad: () => {
-        this.monster.play(RiveMonsterComponent.Animations.IDLE); // Start with the "Eat Happy" animation
-      },
-      gameCanvas: this.canvas
-    });
+    this.monster = this.initializeRiveMonster();
   }
 
   private setupUIElements() {
@@ -678,17 +682,7 @@ export class GameplayScene {
   }
 
   private initNewPuzzle(loadPuzzleEvent) {
-    this.monster = new RiveMonsterComponent({
-      canvas: this.riveMonsterElement,
-      autoplay: true,
-      fit: "contain",
-      alignment: "topCenter",
-      onLoad: () => {
-        this.monster.play(RiveMonsterComponent.Animations.IDLE); // Start with the "Eat Happy" animation
-      },
-      gameCanvas: this.canvas
-    });
-
+    this.monster = this.initializeRiveMonster();
     this.removeEventListeners();
     this.isGameStarted = false;
     this.time = 0;
