@@ -983,8 +983,9 @@ img {
 
 
 /* Reseach */
-#dragStoneBtn, #feedStoneBtn, #checkStoneBtn, #stompStoneBtn{
+#dragStoneBtn, #feedStoneBtn, #checkStoneBtn, #stompStoneBtn, #happyStoneBtn, #spitStoneBtn, #sadStoneBtn{
   height: 50px;
   z-index: 22;
   position: relative;
+  padding: 0px 20px;
 }
