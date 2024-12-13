@@ -209,8 +209,7 @@ export class GameplayScene {
     this.width = gamePlayData.width;
     this.height = gamePlayData.height;
     this.rightToLeft = gamePlayData.rightToLeft;
-    this.canvas = gamePlayData.canvas;
-    console.log(gamePlayData.canvas);
+    this.canvas = gamePlayData.canvas
     this.context = gamePlayData.gameCanvasContext;
     this.levelData = gamePlayData.levelData;
     this.levelNumber = gamePlayData.levelNumber;
