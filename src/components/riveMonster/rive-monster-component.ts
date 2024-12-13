@@ -128,4 +128,25 @@ export class RiveMonsterComponent {
 
     return distance <= 100; // Explicitly return true or false
   }
+
+  stopRiveMonster() {
+    if (this.riveInstance) {
+      this.riveInstance.stop();
+      console.log("Rive Monster animation stopped.");
+    }
+  }
+
+  private unregisterEventListener() {
+    if (this.riveInstance) {
+      this.riveInstance.cleanup();
+    }
+  }
+
+  public dispose() {
+    console.log('Rive Monster disposed.');
+    this.unregisterEventListener();
+    if (this.riveInstance) {
+      this.riveInstance = null;
+    }
+  }
 }

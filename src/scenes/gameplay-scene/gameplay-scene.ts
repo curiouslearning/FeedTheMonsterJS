@@ -183,7 +183,6 @@ export class GameplayScene {
     );
     this.levelIndicators = new LevelIndicators();
     this.levelIndicators.setIndicators(this.counter);
-    // this.monster = new Monster(this.canvas, this.monsterPhaseNumber);
     this.monster = new RiveMonsterComponent({
       canvas: this.riveMonsterElement,
       autoplay: true,
@@ -354,7 +353,6 @@ export class GameplayScene {
         let rect = this.canvas.getBoundingClientRect();
         const x = event.clientX - rect.left;
         const y = event.clientY - rect.top;
-        // this.monster.changeToDragAnimation();
         this.monster.play(RiveMonsterComponent.Animations.OPENING_MOUTH_EAT);
         this.pickedStone.x = x;
         this.pickedStone.y = y;
@@ -397,7 +395,6 @@ export class GameplayScene {
         }
       }
 
-      // this.monster.changeToDragAnimation();
       this.monster.play(RiveMonsterComponent.Animations.OPENING_MOUTH_EAT);
     }
 
@@ -572,7 +569,7 @@ export class GameplayScene {
     this.unsubscribeEvent();
     this.isDisposing = true;
     this.audioPlayer.stopAllAudios();
-    // this.monster.dispose();
+    this.monster.dispose();
     this.levelIndicators.dispose();
     this.stoneHandler.dispose();
     this.promptText.dispose();
@@ -641,7 +638,6 @@ export class GameplayScene {
       }
 
       this.timerTicking.startTimer();
-      // this.monster.changeToEatAnimation();
       this.monster.play(RiveMonsterComponent.Animations.EAT_HAPPY);
       this.promptText.droppedStoneIndex(
         lang == "arabic"
@@ -682,8 +678,6 @@ export class GameplayScene {
   }
 
   private initNewPuzzle(loadPuzzleEvent) {
-    // this.monster.changeToIdleAnimation();
-    console.log('initNewPuzzle');
     this.monster = new RiveMonsterComponent({
       canvas: this.riveMonsterElement,
       autoplay: true,
