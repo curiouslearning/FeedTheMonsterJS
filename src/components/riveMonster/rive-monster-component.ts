@@ -8,7 +8,7 @@ interface RiveMonsterComponentProps {
   width?: number; // Optional width for the Rive animation
   height?: number; // Optional height for the Rive animation
   onLoad?: () => void; // Callback once Rive animation is loaded
-  gameCanvas?: HTMLCanvasElement;
+  gameCanvas?: HTMLCanvasElement; // Main canvas element
 }
 
 export class RiveMonsterComponent {
