@@ -158,7 +158,7 @@ export class GameplayScene {
     this.setupBg();
   }
 
-  private  initializeGameComponents(gamePlayData) {
+  private initializeGameComponents(gamePlayData) {
     this.trailParticles = new TrailEffect(this.canvas);
     this.pauseButton = new PauseButton();
     this.pauseButton.onClick(() => {
@@ -526,12 +526,12 @@ export class GameplayScene {
           currentLevel: this.levelNumber,
           isTimerEnded: timerEnded
         }
-  
-        gameStateService.publish(gameStateService.EVENTS.LEVEL_END_DATA_EVENT, {levelEndData, data: this.data});
+
+        gameStateService.publish(gameStateService.EVENTS.LEVEL_END_DATA_EVENT, { levelEndData, data: this.data });
         this.switchSceneToEnd();
       };
 
-      if (timerEnded && !this.isFeedBackTriggered) {
+      if (timerEnded || !this.isFeedBackTriggered) {
         // If timer ended and no feedback is playing, switch immediately
         handleLevelEnd();
       } else {
@@ -572,7 +572,7 @@ export class GameplayScene {
     if (this.timerTicking) {
       this.timerTicking.destroy();
       this.timerTicking = null;
-  }
+    }
     this.trailParticles.clearTrailSubscription();
     this.unsubscribeEvent();
     this.isDisposing = true;
@@ -608,7 +608,7 @@ export class GameplayScene {
       droppedStone,
       feedBackIndex
     );
-    
+
     if (isCorrect) {
       this.handleCorrectStoneDrop(feedBackIndex);
     }
@@ -667,7 +667,16 @@ export class GameplayScene {
 
   private handleCorrectStoneDrop = (feedbackIndex: number): void => {
     this.score += 100;
-    this.feedbackTextEffects.wrapText(this.getRandomFeedBackText(feedbackIndex));
+    const feedbackText = this.getRandomFeedBackText(feedbackIndex);
+
+    // Show feedback text immediately
+    this.feedbackTextEffects.wrapText(feedbackText);
+
+    // Wait for feedback audio to finish
+    const totalAudioDuration = 4000; // Approximate total duration of all feedback audio (eating + cheering + points)
+    setTimeout(() => {
+      this.feedbackTextEffects.hideText();
+    }, totalAudioDuration);
   };
 
   private dispatchStoneDropEvent(isCorrect: boolean): void {
