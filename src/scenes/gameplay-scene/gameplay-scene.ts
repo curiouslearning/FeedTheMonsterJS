@@ -650,7 +650,6 @@ export class GameplayScene {
       );
       this.stonesCount++;
     } else {
-      console.log('wrong')
       this.handleStoneDropEnd(isCorrect, "Word");
       this.stonesCount = 1;
     }
