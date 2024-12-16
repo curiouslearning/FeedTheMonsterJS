@@ -5,7 +5,14 @@ import TimerHTMLComponent from './timerHtml';
 import { AudioPlayer } from '@components';
 
 // Mock dependencies
-jest.mock('./timerHtml');
+jest.mock('./timerHtml', () => {
+  // Return a mock class with the 'destroy' method
+  return jest.fn().mockImplementation(() => {
+    return {
+      destroy: jest.fn(),  // Mock the 'destroy' method
+    };
+  });
+});
 jest.mock('@components', () => ({
   AudioPlayer: jest.fn(() => ({
     playAudio: jest.fn(),
@@ -28,6 +35,7 @@ describe('TimerTicking', () => {
 
     // Initialize TimerTicking instance
     timerTicking = new TimerTicking(800, 600, mockCallback);
+
   });
 
   afterEach(() => {
@@ -125,4 +133,25 @@ describe('TimerTicking', () => {
     // Assert that stopTimer was called
     expect(stopTimerSpy).toHaveBeenCalled();
   });
+
+  test('should destroy timer HTML when destroy timerTicking method is called. ', () => {
+    //Create an instance of TimerHTML with a mock destroy method
+    const mockDestroy = jest.fn();
+
+    // Mock TimerHTML class constructor to return an object with destroy as mockDestroy
+    (TimerHTMLComponent as jest.Mock).mockImplementationOnce(() => {
+      return {
+        destroy: mockDestroy,  // Mock the destroy method for this instance
+      };
+    });
+
+    //Initialize timer HTML
+    timerTicking.timerHtmlComponent = new TimerHTMLComponent('timer-ticking');
+
+    //Call the destroy method
+    timerTicking.destroy();
+
+    // Check that the destroy method was called
+    expect(mockDestroy).toHaveBeenCalledTimes(1);
+  })
 });
