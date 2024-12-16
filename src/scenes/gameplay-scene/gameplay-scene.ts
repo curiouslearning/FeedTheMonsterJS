@@ -1,5 +1,4 @@
 import {
-  Monster,
   TimerTicking,
   PromptText,
   PauseButton,
@@ -34,17 +33,17 @@ import {
 } from "../../Firebase/firebase-event-interface";
 import { FirebaseIntegration } from "../../Firebase/firebase-integration";
 import {
-  AUDIO_PATH_ON_DRAG,
   PreviousPlayedLevel,
 } from "@constants";
 import { WordPuzzleLogic } from '@gamepuzzles';
 import gameStateService from '@gameStateService';
 import { PAUSE_POPUP_EVENT_DATA, PausePopupComponent } from '@components/popups/pause-popup/pause-popup-component';
+import { RiveMonsterComponent } from '@components/riveMonster/rive-monster-component';
 
 export class GameplayScene {
   public width: number;
   public height: number;
-  public monster: Monster;
+  public monster: RiveMonsterComponent;
   public jsonVersionNumber: string;
   public canvas: HTMLCanvasElement;
   public levelData: any;
@@ -158,7 +157,20 @@ export class GameplayScene {
     this.setupBg();
   }
 
-  private  initializeGameComponents(gamePlayData) {
+  private initializeRiveMonster(initialAnimation: string = RiveMonsterComponent.Animations.IDLE): RiveMonsterComponent {
+    return new RiveMonsterComponent({
+      canvas: this.riveMonsterElement,
+      autoplay: true,
+      fit: "contain",
+      alignment: "topCenter",
+      onLoad: () => {
+        this.monster.play(initialAnimation);
+      },
+      gameCanvas: this.canvas
+    });
+  }
+
+  private initializeGameComponents(gamePlayData) {
     this.trailParticles = new TrailEffect(this.canvas);
     this.pauseButton = new PauseButton();
     this.pauseButton.onClick(() => {
@@ -184,7 +196,7 @@ export class GameplayScene {
     );
     this.levelIndicators = new LevelIndicators();
     this.levelIndicators.setIndicators(this.counter);
-    this.monster = new Monster(this.canvas, this.monsterPhaseNumber);
+    this.monster = this.initializeRiveMonster();
   }
 
   private setupUIElements() {
@@ -200,7 +212,7 @@ export class GameplayScene {
     this.width = gamePlayData.width;
     this.height = gamePlayData.height;
     this.rightToLeft = gamePlayData.rightToLeft;
-    this.canvas = gamePlayData.canvas;
+    this.canvas = gamePlayData.canvas
     this.context = gamePlayData.gameCanvasContext;
     this.levelData = gamePlayData.levelData;
     this.levelNumber = gamePlayData.levelNumber;
@@ -345,7 +357,7 @@ export class GameplayScene {
         let rect = this.canvas.getBoundingClientRect();
         const x = event.clientX - rect.left;
         const y = event.clientY - rect.top;
-        this.monster.changeToDragAnimation();
+        this.monster.play(RiveMonsterComponent.Animations.OPENING_MOUTH_EAT);
         this.pickedStone.x = x;
         this.pickedStone.y = y;
         trailX = x;
@@ -387,7 +399,7 @@ export class GameplayScene {
         }
       }
 
-      this.monster.changeToDragAnimation();
+      this.monster.play(RiveMonsterComponent.Animations.OPENING_MOUTH_EAT);
     }
 
     this.trailParticles?.addTrailParticlesOnMove(
@@ -630,7 +642,7 @@ export class GameplayScene {
       }
 
       this.timerTicking.startTimer();
-      this.monster.changeToEatAnimation();
+      this.monster.play(RiveMonsterComponent.Animations.EAT_HAPPY);
       this.promptText.droppedStoneIndex(
         lang == "arabic"
           ? this.stonesCount
@@ -644,6 +656,12 @@ export class GameplayScene {
   }
 
   private handleStoneDropEnd(isCorrect, puzzleType: string | null = null) {
+    if(isCorrect) {
+      this.monster.play(RiveMonsterComponent.Animations.EAT_HAPPY);
+    } else {
+      this.monster.play(RiveMonsterComponent.Animations.EAT_DISGUST);
+    }
+
     this.logPuzzleEndFirebaseEvent(isCorrect, puzzleType);
     this.dispatchStoneDropEvent(isCorrect);
     this.loadPuzzle();
@@ -663,7 +681,7 @@ export class GameplayScene {
   }
 
   private initNewPuzzle(loadPuzzleEvent) {
-    this.monster.changeToIdleAnimation();
+    this.monster = this.initializeRiveMonster();
     this.removeEventListeners();
     this.isGameStarted = false;
     this.time = 0;
