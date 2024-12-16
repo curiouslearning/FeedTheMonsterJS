@@ -71,7 +71,7 @@ img {
   left: 0;
   z-index: 4;
   width: 100%;
-  bottom: -50px;
+  /* bottom: -50px; */
 }
 
 #discription-text p {
@@ -626,7 +626,7 @@ img {
   }
 
   #rivecanvas {
-    bottom: 140px;
+    /* bottom: 140px; */
   }
 
   .summer .ftm-fence {
@@ -983,7 +983,7 @@ img {
 
 
 /* Reseach */
-#dragStoneBtn, #feedStoneBtn, #checkStoneBtn, #stompStoneBtn, #happyStoneBtn, #spitStoneBtn, #sadStoneBtn{
+#dragStoneBtn, #feedStoneBtn, #checkStoneBtn, #stompStoneBtn, #happyStoneBtn, #spitStoneBtn, #sadStoneBtn, #IdleBtn{
   height: 50px;
   z-index: 22;
   position: relative;
