@@ -67,8 +67,7 @@ export class StartScene {
       height: this.canavsElement.height,
       onLoad: () => {
         this.riveMonster.play(RiveMonsterComponent.Animations.IDLE); // Start with the "Idle" animation
-      },
-      gameCanvas: this.canvas
+      }
     });
     this.switchSceneToLevelSelection = switchSceneToLevelSelection;
     this.audioPlayer = new AudioPlayer();

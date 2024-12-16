@@ -54,7 +54,6 @@ export class LevelEndScene {
   }
 
   initializeRiveMonster() {
-    const gamePlayData = gameStateService.getGamePlaySceneDetails();
     // Initialize the RiveMonsterComponent instead of directly using Rive
     this.riveMonster = new RiveMonsterComponent({
       canvas: this.canvasElement,
@@ -63,8 +62,7 @@ export class LevelEndScene {
       alignment: "topCenter",
       onLoad: () => {
         this.riveMonster.play(RiveMonsterComponent.Animations.IDLE); // Start with the "Eat Happy" animation
-      },
-      gameCanvas: this.canvasElement
+      }
     });
   }
   // Method to show/hide the Level End background
