@@ -516,23 +516,39 @@ export class GameplayScene {
     this.isGameStarted = false;
 
     if (this.counter === this.levelData.puzzles.length) {
-      setTimeout(
-        () => {
-          this.levelIndicators.setIndicators(this.counter);
-          this.logLevelEndFirebaseEvent();
-          GameScore.setGameLevelScore(this.levelData, this.score);
+      const handleLevelEnd = () => {
+        this.levelIndicators.setIndicators(this.counter);
+        this.logLevelEndFirebaseEvent();
+        GameScore.setGameLevelScore(this.levelData, this.score);
 
-          const levelEndData = {
-            starCount: GameScore.calculateStarCount(this.score),
-            currentLevel: this.levelNumber,
-            isTimerEnded: timerEnded
+        const levelEndData = {
+          starCount: GameScore.calculateStarCount(this.score),
+          currentLevel: this.levelNumber,
+          isTimerEnded: timerEnded
+        }
+  
+        gameStateService.publish(gameStateService.EVENTS.LEVEL_END_DATA_EVENT, {levelEndData, data: this.data});
+        this.switchSceneToEnd();
+      };
+
+      if (timerEnded && !this.isFeedBackTriggered) {
+        // If timer ended and no feedback is playing, switch immediately
+        handleLevelEnd();
+      } else {
+        // Wait for feedback audio to finish before switching
+        setTimeout(() => {
+          // Check if there are any active audio sources
+          const hasActiveAudio = this.audioPlayer?.audioSourcs?.length > 0;
+          if (hasActiveAudio) {
+            // Get the last audio source and wait for it to finish
+            const lastAudio = this.audioPlayer.audioSourcs[this.audioPlayer.audioSourcs.length - 1];
+            lastAudio.onended = handleLevelEnd;
+          } else {
+            // If no audio is playing, switch after the normal delay
+            handleLevelEnd();
           }
-    
-          gameStateService.publish(gameStateService.EVENTS.LEVEL_END_DATA_EVENT, {levelEndData, data: this.data});
-          this.switchSceneToEnd();
-        },
-        timerEnded && !this.isFeedBackTriggered ? 0 : 4500 //added delay for switching to level end screen
-      );
+        }, 4500);
+      }
     } else {
       const loadPuzzleEvent = new CustomEvent(LOADPUZZLE, {
         detail: {
