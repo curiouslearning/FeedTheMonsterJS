@@ -70,7 +70,7 @@
 /* For small phones, up to 360px wide */
 @media (min-width: 320px) and (max-width: 360px) {
   #timer-ticking {
-    top: 110px;
+    top: 100px;
   }
   #timer-ticking #timer-full-container {
     height: 30px;
@@ -101,14 +101,14 @@
 /* For tablets, up to 768px wide */
 @media (min-width: 501px) and (max-width: 768px) {
   #timer-ticking {
-    top: 16%;
+    top: 180px;
   }
   #timer-ticking #timer-empty{
     height: 60px;
   }
   #timer-ticking #rotating-clock {
     width: 80px;
-    bottom: -10px;
+    bottom: -8px;
     left: 7%;
   }
 
@@ -117,7 +117,7 @@
   }
 
   #timer-ticking #timer-full-container .timer-mask {
-    height: 36px;
+    height: 37px;
     margin: 9px 0px 0px 5px;
   }
 }
