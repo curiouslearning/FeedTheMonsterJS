@@ -39,6 +39,7 @@ export class RiveMonsterComponent {
   constructor(props: RiveMonsterComponentProps) {
     this.props = props;
 
+    // To Do: To be removed once FM-333 pixelate issue fix has been applied
     if (this.props.gameCanvas) {
       this.game = this.props.gameCanvas;
       this.x = this.game.width / 2 - this.game.width * 0.243;
@@ -134,7 +135,6 @@ export class RiveMonsterComponent {
   stopRiveMonster() {
     if (this.riveInstance) {
       this.riveInstance.stop();
-      console.log("Rive Monster animation stopped.");
     }
   }
 
@@ -145,7 +145,6 @@ export class RiveMonsterComponent {
   }
 
   public dispose() {
-    console.log('Rive Monster disposed.');
     this.unregisterEventListener();
     if (this.riveInstance) {
       this.riveInstance = null;
