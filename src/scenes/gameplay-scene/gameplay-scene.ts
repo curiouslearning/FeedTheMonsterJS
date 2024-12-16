@@ -166,7 +166,6 @@ export class GameplayScene {
       onLoad: () => {
         this.monster.play(initialAnimation);
       },
-      gameCanvas: this.canvas
     });
   }
 
@@ -286,6 +285,7 @@ export class GameplayScene {
       gameStateService.EVENTS.GAME_TRAIL_EFFECT_TOGGLE_EVENT,
       false
     );
+    /* TO DO: Add mouth close animation here. */
   };
 
   // Event to identify mouse moved down on the canvas
@@ -309,6 +309,9 @@ export class GameplayScene {
           this.pickedStoneObject = sc;
           this.pickedStone = sc;
           this.stoneHandler.playDragAudioIfNecessary(sc);
+
+          /* TO DO: Add the open mouth animation trigger here. */
+
           break;
         }
       }
@@ -357,7 +360,7 @@ export class GameplayScene {
         let rect = this.canvas.getBoundingClientRect();
         const x = event.clientX - rect.left;
         const y = event.clientY - rect.top;
-        this.monster.play(RiveMonsterComponent.Animations.OPENING_MOUTH_EAT);
+        this.monster.play(RiveMonsterComponent.Animations.OPENING_MOUTH_EAT); //TO DO: TO BE REMOVED.
         this.pickedStone.x = x;
         this.pickedStone.y = y;
         trailX = x;

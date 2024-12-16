@@ -16,7 +16,6 @@ export class RiveMonsterComponent {
   private riveInstance: any;
   private src: string = './assets/monsterrive.riv'; // Define the .riv file path
   private stateMachines: string = 'State Machine 1'; // Define the state machine
-  public game: any;
   public x: number;
   public y: number;
   private hitboxRangeX: {
@@ -38,33 +37,28 @@ export class RiveMonsterComponent {
 
   constructor(props: RiveMonsterComponentProps) {
     this.props = props;
+    this.x = this.props.canvas.width;
+    this.y = this.props.canvas.height;
+    this.hitboxRangeX = {
+      from: 0,
+      to: 0,
+    };
+    this.hitboxRangeY = {
+      from: 0,
+      to: 0,
+    };
 
-    // To Do: To be removed once FM-333 pixelate issue fix has been applied
-    if (this.props.gameCanvas) {
-      this.game = this.props.gameCanvas;
-      this.x = this.game.width / 2 - this.game.width * 0.243;
-      this.y = this.game.width / 3;
-      this.hitboxRangeX = {
-        from: 0,
-        to: 0,
-      };
-      this.hitboxRangeY = {
-        from: 0,
-        to: 0,
-      };
+    //Adjust this range factor to control how big is the hit box for dropping stones.
+    const rangeFactorX = 70; //SUBCTRACT FROM CENTER TO LEFT, ADD FROM CENTER TO RIGHT.
+    const rangeFactorY = 50; //SUBCTRACT FROM CENTER TO TOP, ADD FROM CENTER TO BOTTOM.
+    const monsterCenterX = this.x / 2;
+    //Note: Rive height is currently always half of width. This might change when new rive files are to be implemented/
+    const monsterCenterY = this.y / 2; //Create different sets of height for multiple rive files or adjust this for height when replacing the current rive monster.
 
-      //Adjust this range factor to control how big is the hit box for dropping stones.
-      const rangeFactorX = 70; //SUBCTRACT FROM CENTER TO LEFT, ADD FROM CENTER TO RIGHT.
-      const rangeFactorY = 50; //SUBCTRACT FROM CENTER TO TOP, ADD FROM CENTER TO BOTTOM.
-      const monsterCenterX = this.game.width / 2;
-      //Note: Rive height is currently always half of width. This might change when new rive files are to be implemented/
-      const monsterCenterY = monsterCenterX / 2; //Create different sets of height for multiple rive files or adjust this for height when replacing the current rive monster.
-
-      this.hitboxRangeX.from = monsterCenterX - rangeFactorX;
-      this.hitboxRangeX.to = monsterCenterX + rangeFactorX;
-      this.hitboxRangeY.from = monsterCenterY - rangeFactorY;
-      this.hitboxRangeY.to = monsterCenterY + rangeFactorY;
-    }
+    this.hitboxRangeX.from = monsterCenterX - rangeFactorX;
+    this.hitboxRangeX.to = monsterCenterX + rangeFactorX;
+    this.hitboxRangeY.from = monsterCenterY - rangeFactorY;
+    this.hitboxRangeY.to = monsterCenterY + rangeFactorY;
 
     // Initialize Rive
     this.riveInstance = new Rive({
@@ -121,8 +115,8 @@ export class RiveMonsterComponent {
 
   // Example click handler
   onClick(xClick: number, yClick: number): boolean {
-    const centerX = this.x + this.game.width / 4;
-    const centerY = this.y + this.game.height / 2.2;
+    const centerX = this.x + this.props.canvas.width / 4;
+    const centerY = this.y + this.props.canvas.height / 2.2;
 
     const distance = Math.sqrt(
       (xClick - centerX) * (xClick - centerX) +
