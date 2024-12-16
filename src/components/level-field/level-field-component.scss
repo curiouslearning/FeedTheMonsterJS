@@ -27,8 +27,19 @@
   }
 }
 
+@media (min-width: 320px) and (max-width: 360px) {
+  .game-control .level_content-wrapper .bar-level-wrapper {
+    max-width: 105px;
+    top: 1.1rem;
+  }
 
-
+  .game-control .level_content-wrapper {
+    max-width: 110px;
+    width: 100%;
+    top: 5px;
+    left: 12%;
+  }
+}
 
 /* Small devices (landscape phones, 540px and up) */
 @media (min-width: 576px) {
@@ -62,7 +73,7 @@
   .game-control .level_content-wrapper .bar-level-wrapper {
     max-width: 215px;
     top: 2.3rem;
-    left:5px
+    left: 5px
   }
 
   .game-control .level_content-wrapper .bar-level-wrapper .bar-level {
@@ -71,7 +82,7 @@
 }
 
 /* For desktops or larger devices above 1080px */
-@media (min-width: 1080px){
+@media (min-width: 1080px) {
   .game-control .level_content-wrapper {
     max-width: 230px;
   }
@@ -79,7 +90,7 @@
   .game-control .level_content-wrapper .bar-level-wrapper {
     max-width: 215px;
     top: 2.3rem;
-    left:5px
+    left: 5px
   }
 
   .game-control .level_content-wrapper .bar-level-wrapper .bar-level {

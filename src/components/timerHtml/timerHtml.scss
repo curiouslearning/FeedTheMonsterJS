@@ -80,13 +80,14 @@
   }
 
   #timer-ticking #timer-full-container .timer-mask {
-    height: 20px;
+    height: 19px;
     margin: 4px 0px 0px 2px;
   }
 
   #timer-ticking #rotating-clock {
-    width: 35px;
-    bottom: -2px;
+    width: 40px;
+    bottom: -5px;
+    left: 25px;
   }
 }
 
