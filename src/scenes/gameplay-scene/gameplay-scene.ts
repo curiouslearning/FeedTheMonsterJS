@@ -568,7 +568,7 @@ export class GameplayScene {
     if (this.timerTicking) {
       this.timerTicking.destroy();
       this.timerTicking = null;
-  }
+    }
     this.trailParticles.clearTrailSubscription();
     this.unsubscribeEvent();
     this.isDisposing = true;

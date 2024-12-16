@@ -112,6 +112,7 @@ export class StartScene {
   createPlayButton() {
     this.playButton = new PlayButtonHtml({ targetId: 'background' });
     this.playButton.onClick(() => {
+      this.toggleBtn.style.display = "none";
       this.logTappedStartFirebaseEvent();
       this.audioPlayer.playButtonClickSound();
       gameStateService.publish(gameStateService.EVENTS.SCENE_LOADING_EVENT, true);
