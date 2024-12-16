@@ -170,6 +170,17 @@ describe('Start Scene Test', () => {
       // Check if sendTappedStartEvent was called
       expect(mockFirebase.sendTappedStartEvent).toHaveBeenCalledTimes(1); // Assuming mockFirebase is correctly set
     });
+
+    it('Should remove the dev button.', () => {
+      // Trigger the onClick callback directly by calling the mock callback
+      if (mockOnClickCallback) {
+        mockOnClickCallback(); // Simulate the button click
+      }
+
+      const devBtn = document.getElementById('toggle-btn');
+
+      expect(devBtn.style.display).toEqual('none');
+    })
   });
 
 });
