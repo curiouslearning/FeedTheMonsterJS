@@ -166,6 +166,7 @@ export class GameplayScene {
       onLoad: () => {
         this.monster.play(initialAnimation);
       },
+      gameCanvas: this.canvas
     });
   }
 
