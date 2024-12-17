@@ -531,21 +531,24 @@ export class GameplayScene {
         this.switchSceneToEnd();
       };
 
-      const handleLevelEndTimeout = () => {
-        if (this.isDisposing) return;
-        handleLevelEnd();
-      };
-
       if (timerEnded) {
-        handleLevelEndTimeout();
-      } else if (this.isFeedBackTriggered) {
-        const lastAudio = this.audioPlayer?.audioSourcs?.[this.audioPlayer.audioSourcs.length - 1];
-        if (lastAudio) {
-          lastAudio.onended = handleLevelEndTimeout;
-        }
+        handleLevelEnd();
+        return;
       }
 
-      setTimeout(handleLevelEndTimeout, 4500);
+      const timeoutId = setTimeout(handleLevelEnd, 4500);
+
+      if (this.isFeedBackTriggered) {
+        const audioSources = this.audioPlayer?.audioSourcs || [];
+        const lastAudio = audioSources[audioSources.length - 1];
+        
+        if (lastAudio) {
+          lastAudio.onended = () => {
+            clearTimeout(timeoutId);
+            handleLevelEnd();
+          };
+        }
+      }
     } else {
       const loadPuzzleEvent = new CustomEvent(LOADPUZZLE, {
         detail: {
