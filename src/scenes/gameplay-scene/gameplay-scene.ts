@@ -531,24 +531,26 @@ export class GameplayScene {
         this.switchSceneToEnd();
       };
 
-      if (timerEnded || !this.isFeedBackTriggered) {
-        // If timer ended and no feedback is playing, switch immediately
+      if (timerEnded) {
         handleLevelEnd();
-      } else {
-        // Wait for feedback audio to finish before switching
-        setTimeout(() => {
-          // Check if there are any active audio sources
-          const hasActiveAudio = this.audioPlayer?.audioSourcs?.length > 0;
-          if (hasActiveAudio) {
-            // Get the last audio source and wait for it to finish
-            const lastAudio = this.audioPlayer.audioSourcs[this.audioPlayer.audioSourcs.length - 1];
-            lastAudio.onended = handleLevelEnd;
-          } else {
-            // If no audio is playing, switch after the normal delay
-            handleLevelEnd();
-          }
+      } else if (this.isFeedBackTriggered === true) {
+        const audioSources = this.audioPlayer?.audioSourcs || [];
+        const timeoutId = setTimeout(() => {
+          handleLevelEnd();
         }, 4500);
-      }
+      
+        if (audioSources.length > 0) {
+          const lastAudio = audioSources[audioSources.length - 1];
+          lastAudio.onended = () => {
+            clearTimeout(timeoutId);
+            handleLevelEnd();
+          };
+        }
+      } else {
+        setTimeout(() => {
+          handleLevelEnd();
+        }, 4500);
+      }        
     } else {
       const loadPuzzleEvent = new CustomEvent(LOADPUZZLE, {
         detail: {
