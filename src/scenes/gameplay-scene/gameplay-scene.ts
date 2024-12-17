@@ -360,7 +360,7 @@ export class GameplayScene {
         let rect = this.canvas.getBoundingClientRect();
         const x = event.clientX - rect.left;
         const y = event.clientY - rect.top;
-        this.monster.play(RiveMonsterComponent.Animations.OPENING_MOUTH_EAT); //TO DO: TO BE REMOVED.
+        this.monster.play(RiveMonsterComponent.Animations.MOUTHOPEN); //TO DO: TO BE REMOVED.
         this.pickedStone.x = x;
         this.pickedStone.y = y;
         trailX = x;
