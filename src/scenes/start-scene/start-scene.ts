@@ -44,6 +44,7 @@ export class StartScene {
   private titleTextElement: HTMLElement | null;
   public riveMonster: RiveMonsterComponent;
   private firebaseIntegration: FirebaseIntegration;
+  private loadingElement: HTMLElement;
 
   constructor(
     canvas: HTMLCanvasElement,
@@ -58,6 +59,7 @@ export class StartScene {
     this.canavsElement = document.getElementById("canvas") as HTMLCanvasElement;
     this.context = this.canavsElement.getContext("2d");
     this.toggleBtn = document.getElementById("toggle-btn") as HTMLElement;
+    this.loadingElement = document.getElementById("loading-screen") as HTMLElement;
     this.riveMonster = new RiveMonsterComponent({
       canvas: this.riveMonsterElement,
       autoplay: true,
@@ -81,6 +83,7 @@ export class StartScene {
     this.generateGameTitle();
     this.riveMonsterElement.style.zIndex = '6';
     this.firebaseIntegration = new FirebaseIntegration();
+    this.hideInitialLoading();
   }
 
   private setupBg = async () => {
@@ -94,6 +97,13 @@ export class StartScene {
     // Dynamically update the background based on the selected type
     backgroundGenerator.generateBackground(selectedBackgroundType);
   };
+
+  private hideInitialLoading = () => {
+    setTimeout(() => {
+      this.loadingElement.style.zIndex = "-1";
+      this.loadingElement.style.display = "none";
+    }, 750);
+  }
 
   devToggle = () => {
     this.toggleBtn.addEventListener("click", () =>
