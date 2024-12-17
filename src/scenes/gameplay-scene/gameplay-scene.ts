@@ -402,7 +402,7 @@ export class GameplayScene {
         }
       }
 
-      this.monster.play(RiveMonsterComponent.Animations.OPENING_MOUTH_EAT);
+      this.monster.play(RiveMonsterComponent.Animations.MOUTHOPEN);
     }
 
     this.trailParticles?.addTrailParticlesOnMove(
@@ -645,7 +645,7 @@ export class GameplayScene {
       }
 
       this.timerTicking.startTimer();
-      this.monster.play(RiveMonsterComponent.Animations.EAT_HAPPY);
+      this.monster.play(RiveMonsterComponent.Animations.HAPPY);
       this.promptText.droppedStoneIndex(
         lang == "arabic"
           ? this.stonesCount
@@ -660,9 +660,9 @@ export class GameplayScene {
 
   private handleStoneDropEnd(isCorrect, puzzleType: string | null = null) {
     if(isCorrect) {
-      this.monster.play(RiveMonsterComponent.Animations.EAT_HAPPY);
+      this.monster.play(RiveMonsterComponent.Animations.HAPPY);
     } else {
-      this.monster.play(RiveMonsterComponent.Animations.EAT_DISGUST);
+      this.monster.play(RiveMonsterComponent.Animations.SAD);
     }
 
     this.logPuzzleEndFirebaseEvent(isCorrect, puzzleType);

@@ -61,6 +61,7 @@ export class LevelSelectionScreen {
   public riveMonsterElement: HTMLCanvasElement;
   public gameControl: HTMLCanvasElement;
   constructor(canvas: HTMLCanvasElement, data: any, callBack: Function) {
+    // console.log("level selection loaded");
     this.canvas = canvas;
     this.data = data;
     this.width = canvas.width;

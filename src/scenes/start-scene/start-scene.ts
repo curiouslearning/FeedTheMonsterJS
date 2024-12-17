@@ -50,7 +50,20 @@ export class StartScene {
       width: this.riveMonsterElement.width, // Example width and height, adjust as needed
       height: this.riveMonsterElement.height,
       onLoad: () => {
-        this.riveMonster.play(RiveMonsterComponent.Animations.IDLE); // Start with the "Idle" animation
+        // this.riveMonster.play(RiveMonsterComponent.Animations.MOUTHOPEN); // Start with the "Idle" animation
+        // Trigger a "Happy" animation
+       // Set initial state inputs
+      //  this.riveMonster.setInput(RiveMonsterComponent.Animations.IDLE,true);
+
+       // Listen for state changes
+      //  this.riveMonster.onStateChange((stateName) => {
+      //      console.log('New State:', stateName);
+      //  });
+
+       // Example: Trigger "Sad" state after 2 seconds
+       setTimeout(() => {
+          //  this.riveMonster.setInput(RiveMonsterComponent.Animations.STOMP,true);
+       }, 2000);
       }
     });
     this.switchSceneToLevelSelection = switchSceneToLevelSelection;
@@ -63,7 +76,7 @@ export class StartScene {
     this.setupBg();
     this.titleTextElement = document.getElementById("title");
     this.generateGameTitle();
-    this.riveMonsterElement.style.zIndex = '6';
+    this.riveMonsterElement.style.zIndex = '4';
     this.firebaseIntegration = new FirebaseIntegration();
   }
 
