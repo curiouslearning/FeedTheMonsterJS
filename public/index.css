@@ -74,7 +74,6 @@ img {
   left: 0;
   z-index: 4;
   width: 100%;
-  /* bottom: -50px; */
 }
 
 #discription-text p {
@@ -601,9 +600,6 @@ img {
     bottom: 7%;
   }
 
-  #rivecanvas {
-    bottom: 15%;
-  }
 
   .dynamic-button {
     max-width: 45px;
@@ -648,10 +644,6 @@ img {
 @media (min-width: 501px) and (max-width: 768px) {
   #loading-screen {
     max-width: 100%;
-  }
-
-  #rivecanvas {
-    /* bottom: 140px; */
   }
 
   .summer .ftm-fence {
