@@ -20,20 +20,57 @@
       .bar-level {
         position: relative;
         width: 100%;
-        max-width: 12px;
-        margin: 0px 2.5px;
+        max-width: 10px;
+        margin: 0px 2.2px;
       }
     }
   }
 }
 
+@media (min-width: 320px) and (max-width: 360px) {
+  .game-control .level_content-wrapper .bar-level-wrapper {
+    max-width: 100px;
+    top: 1rem;
+  }
 
-
+  .game-control .level_content-wrapper {
+    max-width: 100px;
+    width: 100%;
+    top: 5px;
+    left: 12%;
+  }
+}
 
 /* Small devices (landscape phones, 540px and up) */
-@media (min-width: 576px) {
+@media (min-width: 361px) and (max-width: 500px) {
   .level_content-wrapper {
     top: 0.5rem;
+  }
+  .game-control .level_content-wrapper{
+    max-width: 130px;
+  }
+  .game-control .level_content-wrapper .bar-level-wrapper .bar-level{
+    max-width:13px;
+  }
+  .game-control .level_content-wrapper .bar-level-wrapper {
+    max-width: 120px;
+    top: 1.4rem;
+  }
+}
+/* Medium devices (tablets, 768px and up) */
+@media (min-width: 501px) and (max-width: 767px) {
+  .game-control .level_content-wrapper {
+    max-width: 200px;
+  }
+
+  .game-control .level_content-wrapper .bar-level-wrapper {
+    max-width: 190px;
+    top: 2rem;
+  }
+
+  .game-control .level_content-wrapper .bar-level-wrapper .bar-level {
+    max-width: 22px;
+    margin: 0px 2.5px;
   }
 }
 
@@ -62,7 +99,7 @@
   .game-control .level_content-wrapper .bar-level-wrapper {
     max-width: 215px;
     top: 2.3rem;
-    left:5px
+    left: 5px
   }
 
   .game-control .level_content-wrapper .bar-level-wrapper .bar-level {
@@ -71,7 +108,7 @@
 }
 
 /* For desktops or larger devices above 1080px */
-@media (min-width: 1080px){
+@media (min-width: 1080px) {
   .game-control .level_content-wrapper {
     max-width: 230px;
   }
@@ -79,7 +116,7 @@
   .game-control .level_content-wrapper .bar-level-wrapper {
     max-width: 215px;
     top: 2.3rem;
-    left:5px
+    left: 5px
   }
 
   .game-control .level_content-wrapper .bar-level-wrapper .bar-level {

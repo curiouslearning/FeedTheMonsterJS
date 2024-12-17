@@ -33,7 +33,8 @@ export class LevelEndScene {
   constructor(switchToGameplayCB, switchToLevelSelectionCB) {
     const {starCount, currentLevel, data} =
       gameStateService.getLevelEndSceneData();
-    const {isLastLevel} = gameStateService.getGamePlaySceneDetails();
+    const {isLastLevel, canvas} = gameStateService.getGamePlaySceneDetails();
+    this.canvasElement = canvas;
     this.switchToGameplayCB = switchToGameplayCB;
     this.switchToLevelSelectionCB = switchToLevelSelectionCB;
     this.data = data;

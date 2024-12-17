@@ -1,4 +1,4 @@
-import { Monster, AudioPlayer, BackgroundHtmlGenerator } from "@components";
+import { AudioPlayer, BackgroundHtmlGenerator } from "@components";
 import { PlayButtonHtml } from '@components/buttons';
 import { BaseButtonComponent } from '@components/buttons/base-button-component/base-button-component';
 import { RiveMonsterComponent } from "@components/riveMonster/rive-monster-component";
@@ -23,7 +23,6 @@ export class StartScene {
   public data: any;
   public width: number;
   public height: number;
-  public monster: Monster;
   public pickedStone: StoneConfig;
   public pwa_status: string;
   public firebase_analytics: { logEvent: any };
@@ -128,6 +127,7 @@ export class StartScene {
   createPlayButton() {
     this.playButton = new PlayButtonHtml({ targetId: 'background' });
     this.playButton.onClick(() => {
+      this.toggleBtn.style.display = "none";
       this.logTappedStartFirebaseEvent();
       this.audioPlayer.playButtonClickSound();
       gameStateService.publish(gameStateService.EVENTS.SCENE_LOADING_EVENT, true);

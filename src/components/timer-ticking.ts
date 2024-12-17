@@ -16,7 +16,6 @@ export default class TimerTicking extends EventManager {
     public isTimerStarted: boolean;
     public isTimerEnded: boolean;
     public isTimerRunningOut: boolean;
-    public timeTickerElement: HTMLElement;
     public timer_full: HTMLImageElement;
     public pauseButtonClicked: boolean;
     public images: Object;
@@ -40,7 +39,6 @@ export default class TimerTicking extends EventManager {
         this.height = height;
         this.widthToClear = this.width / 3.4;
         this.callback = callback;
-        this.timeTickerElement = document.getElementById("timer-ticking");
         this.timer = 0;
         this.isTimerStarted = false;
         this.isTimerEnded = false;
@@ -120,6 +118,7 @@ export default class TimerTicking extends EventManager {
 
     public destroy(): void {
         this.stopTimer();
+        this.timerHtmlComponent?.destroy();
     }
 
 
