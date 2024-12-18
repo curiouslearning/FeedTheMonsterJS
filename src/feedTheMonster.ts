@@ -185,8 +185,6 @@ class App {
 
   private handleLoadingScreen = () => {
     if (this.is_cached.get(lang)) {
-      this.loadingElement.style.zIndex = "-1";
-      this.loadingElement.style.display = "none";
       this.progressBarContainer.style.display = "none";
       this.progressBar.style.display = "none";
     } else {
@@ -194,6 +192,7 @@ class App {
       this.progressBar.style.display = "flex";
       this.progressBar.style.width = "10%";
     }
+
   };
 
   private async registerWorkbox(): Promise<void> {
