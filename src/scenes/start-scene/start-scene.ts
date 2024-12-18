@@ -1,4 +1,4 @@
-import { Monster, AudioPlayer, BackgroundHtmlGenerator } from "@components";
+import { AudioPlayer, BackgroundHtmlGenerator } from "@components";
 import { PlayButtonHtml } from '@components/buttons';
 import { BaseButtonComponent } from '@components/buttons/base-button-component/base-button-component';
 import { RiveMonsterComponent } from "@components/riveMonster/rive-monster-component";
@@ -23,7 +23,6 @@ export class StartScene {
   public data: any;
   public width: number;
   public height: number;
-  public monster: Monster;
   public pickedStone: StoneConfig;
   public pwa_status: string;
   public firebase_analytics: { logEvent: any };
@@ -45,6 +44,7 @@ export class StartScene {
   private titleTextElement: HTMLElement | null;
   public riveMonster: RiveMonsterComponent;
   private firebaseIntegration: FirebaseIntegration;
+  private loadingElement: HTMLElement;
 
   constructor(
     canvas: HTMLCanvasElement,
@@ -59,6 +59,7 @@ export class StartScene {
     this.canavsElement = document.getElementById("canvas") as HTMLCanvasElement;
     this.context = this.canavsElement.getContext("2d");
     this.toggleBtn = document.getElementById("toggle-btn") as HTMLElement;
+    this.loadingElement = document.getElementById("loading-screen") as HTMLElement;
     this.riveMonster = new RiveMonsterComponent({
       canvas: this.riveMonsterElement,
       autoplay: true,
@@ -82,6 +83,7 @@ export class StartScene {
     this.generateGameTitle();
     this.riveMonsterElement.style.zIndex = '6';
     this.firebaseIntegration = new FirebaseIntegration();
+    this.hideInitialLoading();
   }
 
   private setupBg = async () => {
@@ -95,6 +97,13 @@ export class StartScene {
     // Dynamically update the background based on the selected type
     backgroundGenerator.generateBackground(selectedBackgroundType);
   };
+
+  private hideInitialLoading = () => {
+    setTimeout(() => {
+      this.loadingElement.style.zIndex = "-1";
+      this.loadingElement.style.display = "none";
+    }, 750);
+  }
 
   devToggle = () => {
     this.toggleBtn.addEventListener("click", () =>
@@ -113,6 +122,7 @@ export class StartScene {
   createPlayButton() {
     this.playButton = new PlayButtonHtml({ targetId: 'background' });
     this.playButton.onClick(() => {
+      this.toggleBtn.style.display = "none";
       this.logTappedStartFirebaseEvent();
       this.audioPlayer.playButtonClickSound();
       gameStateService.publish(gameStateService.EVENTS.SCENE_LOADING_EVENT, true);
