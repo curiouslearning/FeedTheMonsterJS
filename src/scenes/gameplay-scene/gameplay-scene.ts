@@ -528,23 +528,38 @@ export class GameplayScene {
     this.isGameStarted = false;
 
     if (this.counter === this.levelData.puzzles.length) {
-      setTimeout(
-        () => {
-          this.levelIndicators.setIndicators(this.counter);
-          this.logLevelEndFirebaseEvent();
-          GameScore.setGameLevelScore(this.levelData, this.score);
+      const handleLevelEnd = () => {
+        this.levelIndicators.setIndicators(this.counter);
+        this.logLevelEndFirebaseEvent();
+        GameScore.setGameLevelScore(this.levelData, this.score);
 
-          const levelEndData = {
-            starCount: GameScore.calculateStarCount(this.score),
-            currentLevel: this.levelNumber,
-            isTimerEnded: timerEnded
-          }
-    
-          gameStateService.publish(gameStateService.EVENTS.LEVEL_END_DATA_EVENT, {levelEndData, data: this.data});
-          this.switchSceneToEnd();
-        },
-        timerEnded && !this.isFeedBackTriggered ? 0 : 4500 //added delay for switching to level end screen
-      );
+        const levelEndData = {
+          starCount: GameScore.calculateStarCount(this.score),
+          currentLevel: this.levelNumber,
+          isTimerEnded: timerEnded
+        }
+
+        gameStateService.publish(gameStateService.EVENTS.LEVEL_END_DATA_EVENT, { levelEndData, data: this.data });
+        this.switchSceneToEnd();
+      };
+
+      if (timerEnded) {
+        handleLevelEnd();
+        return;
+      }
+
+      const timeoutId = setTimeout(handleLevelEnd, 4500); // added delay for switching to level end screen
+      if (this.isFeedBackTriggered) {
+        const audioSources = this.audioPlayer?.audioSourcs || [];
+        const lastAudio = audioSources[audioSources.length - 1];
+        
+        if (lastAudio) {
+          lastAudio.onended = () => {
+            clearTimeout(timeoutId);
+            handleLevelEnd();
+          };
+        }
+      }
     } else {
       const loadPuzzleEvent = new CustomEvent(LOADPUZZLE, {
         detail: {
@@ -558,7 +573,7 @@ export class GameplayScene {
             this.timerTicking.startTimer(); // Start the timer for the new puzzle
           }
         },
-        timerEnded ? 0 : 4500
+        timerEnded ? 0 : 4500 // added delay for switching to level end screen
       );
     }
   };
@@ -604,7 +619,7 @@ export class GameplayScene {
       droppedStone,
       feedBackIndex
     );
-    
+
     if (isCorrect) {
       this.handleCorrectStoneDrop(feedBackIndex);
     }
@@ -669,7 +684,16 @@ export class GameplayScene {
 
   private handleCorrectStoneDrop = (feedbackIndex: number): void => {
     this.score += 100;
-    this.feedbackTextEffects.wrapText(this.getRandomFeedBackText(feedbackIndex));
+    const feedbackText = this.getRandomFeedBackText(feedbackIndex);
+
+    // Show feedback text immediately
+    this.feedbackTextEffects.wrapText(feedbackText);
+
+    // Wait for feedback audio to finish
+    const totalAudioDuration = 4500; // Approximate total duration of all feedback audio (eating + cheering + points)
+    setTimeout(() => {
+      this.feedbackTextEffects.hideText();
+    }, totalAudioDuration);
   };
 
   private dispatchStoneDropEvent(isCorrect: boolean): void {
