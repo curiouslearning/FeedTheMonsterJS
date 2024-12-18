@@ -36,6 +36,7 @@ describe('Start Scene Test', () => {
       <div>
         <div id="title" class="title" style="font-family: Atma-SemiBold, sans-serif;">Feed the Monster</div>
         <button id="toggle-btn" class="off">Dev</button>
+        <div id="loading-screen" style="display: none; z-index: -1;"></div>
         <div class="game-scene"></div>
         <div id="canvas"></div>
         <canvas id="rivecanvas"></canvas>
@@ -117,6 +118,15 @@ describe('Start Scene Test', () => {
 
     // Create the play button
     startScene.createPlayButton();
+  });
+
+  describe('During start scene initialization.', () => {
+    it('It should hide the initial loading screen once start scene has fully loaded.', () => {
+      const loadingElement = document.getElementById("loading-screen");
+
+      expect(loadingElement.style.zIndex).toEqual("-1");
+      expect(loadingElement.style.display).toEqual("none");
+    });
   });
 
   describe('When Play Button is clicked ', () => {
