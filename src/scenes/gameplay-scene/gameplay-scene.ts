@@ -690,7 +690,7 @@ export class GameplayScene {
     this.feedbackTextEffects.wrapText(feedbackText);
 
     // Wait for feedback audio to finish
-    const totalAudioDuration = 4000; // Approximate total duration of all feedback audio (eating + cheering + points)
+    const totalAudioDuration = 4500; // Approximate total duration of all feedback audio (eating + cheering + points)
     setTimeout(() => {
       this.feedbackTextEffects.hideText();
     }, totalAudioDuration);
