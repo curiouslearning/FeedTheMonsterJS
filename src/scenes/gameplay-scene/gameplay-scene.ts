@@ -548,8 +548,7 @@ export class GameplayScene {
         return;
       }
 
-      const timeoutId = setTimeout(handleLevelEnd, 4500);
-
+      const timeoutId = setTimeout(handleLevelEnd, 4500); // added delay for switching to level end screen
       if (this.isFeedBackTriggered) {
         const audioSources = this.audioPlayer?.audioSourcs || [];
         const lastAudio = audioSources[audioSources.length - 1];
@@ -574,7 +573,7 @@ export class GameplayScene {
             this.timerTicking.startTimer(); // Start the timer for the new puzzle
           }
         },
-        timerEnded ? 0 : 4500
+        timerEnded ? 0 : 4500 // added delay for switching to level end screen
       );
     }
   };
