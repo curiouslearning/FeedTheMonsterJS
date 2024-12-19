@@ -9,7 +9,7 @@ export class AudioPlayer {
   private promptAudioBuffer: AudioBuffer | null;
   private clickSoundBuffer: AudioBuffer | null;
   private static audioBuffers: Map<string, AudioBuffer> = new Map();
-  private audioSourcs: Array<AudioBufferSourceNode> = [];
+  public audioSourcs: Array<AudioBufferSourceNode> = [];
   private isClickSoundLoaded: boolean;
 
   constructor() {
