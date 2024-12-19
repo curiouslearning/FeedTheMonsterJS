@@ -165,6 +165,12 @@ export class GameplayScene {
       alignment: "topCenter",
       onLoad: () => {
         this.monster.play(initialAnimation);
+        console.log('called');
+        
+      },
+      onStop: (initialAnimation) => {
+        console.log(`${initialAnimation} has stopped.`);
+        // Add your logic here
       },
       gameCanvas: this.canvas
     });
@@ -592,11 +598,14 @@ export class GameplayScene {
   };
 
   private checkStoneDropped(stone, feedBackIndex, isWord = false) {
-    return this.stoneHandler.isStoneLetterDropCorrect(
-      stone,
-      feedBackIndex,
-      isWord
-    );
+    
+    // Play the first animation
+    this.monster.play(RiveMonsterComponent.Animations.MOUTHCLOSED, () => {
+      // Your logic after the animation completes
+      this.monster.play(RiveMonsterComponent.Animations.CHEW);
+    });
+  
+    return this.stoneHandler.isStoneLetterDropCorrect(stone, feedBackIndex, isWord);
   }
 
   public letterPuzzle(droppedStone: string) {
@@ -663,6 +672,7 @@ export class GameplayScene {
     if(isCorrect) {
       this.monster.play(RiveMonsterComponent.Animations.HAPPY);
     } else {
+      this.monster.play(RiveMonsterComponent.Animations.SPIT);
       this.monster.play(RiveMonsterComponent.Animations.SAD);
     }
 
@@ -685,6 +695,7 @@ export class GameplayScene {
   }
 
   private initNewPuzzle(loadPuzzleEvent) {
+    this.monster.play(RiveMonsterComponent.Animations.IDLE); //TO DO: TO BE REMOVED.
     this.monster = this.initializeRiveMonster();
     this.removeEventListeners();
     this.isGameStarted = false;

@@ -8,6 +8,7 @@ interface RiveMonsterComponentProps {
   width?: number; // Optional width for the Rive animation
   height?: number; // Optional height for the Rive animation
   onLoad?: () => void; // Callback once Rive animation is loaded
+  onStop?: (animationName?: string) => void; // Callback when an animation stops
   gameCanvas?: HTMLCanvasElement; // Main canvas element
 }
 
@@ -43,32 +44,26 @@ export class RiveMonsterComponent {
 
   constructor(props: RiveMonsterComponentProps) {
     this.props = props;
-
-    // To Do: To be removed once FM-333 pixelate issue fix has been applied
-    if (this.props.gameCanvas) {
-      this.game = this.props.gameCanvas;
-      this.x = this.game.width / 2 - this.game.width * 0.243;
-      this.y = this.game.width / 3;
-      this.hitboxRangeX = {
-        from: 0,
-        to: 0,
-      };
-      this.hitboxRangeY = {
-        from: 0,
-        to: 0,
-      };
-      //Adjust this range factor to control how big is the hit box for dropping stones.
-      const rangeFactorX = 70; //SUBCTRACT FROM CENTER TO LEFT, ADD FROM CENTER TO RIGHT.
-      const rangeFactorY = 50; //SUBCTRACT FROM CENTER TO TOP, ADD FROM CENTER TO BOTTOM.
-      const monsterCenterX = this.game.width / 2;
-      //Note: Rive height is currently always half of width. This might change when new rive files are to be implemented/
-      const monsterCenterY = monsterCenterX / 2; //Create different sets of height for multiple rive files or adjust this for height when replacing the current rive monster.
-
-      this.hitboxRangeX.from = monsterCenterX - rangeFactorX;
-      this.hitboxRangeX.to = monsterCenterX + rangeFactorX;
-      this.hitboxRangeY.from = monsterCenterY - rangeFactorY;
-      this.hitboxRangeY.to = monsterCenterY + rangeFactorY;
-    }
+    this.x = this.props.canvas.width;
+    this.y = this.props.canvas.height;
+    this.hitboxRangeX = {
+      from: 0,
+      to: 0,
+    };
+    this.hitboxRangeY = {
+      from: 0,
+      to: 0,
+    };
+    //Adjust this range factor to control how big is the hit box for dropping stones.
+    const rangeFactorX = 70; //SUBCTRACT FROM CENTER TO LEFT, ADD FROM CENTER TO RIGHT.
+    const rangeFactorY = 50; //SUBCTRACT FROM CENTER TO TOP, ADD FROM CENTER TO BOTTOM.
+    const monsterCenterX = this.x / 2;
+    //Note: Rive height is currently always half of width. This might change when new rive files are to be implemented/
+    const monsterCenterY = this.y / 2; //Create different sets of height for multiple rive files or adjust this for height when replacing the current rive monster.
+    this.hitboxRangeX.from = monsterCenterX - rangeFactorX;
+    this.hitboxRangeX.to = monsterCenterX + rangeFactorX;
+    this.hitboxRangeY.from = monsterCenterY - rangeFactorY;
+    this.hitboxRangeY.to = monsterCenterY + rangeFactorY;
 
 
     // Initialize Rive
@@ -84,15 +79,14 @@ export class RiveMonsterComponent {
       onStateChange: (event) => {
         console.log('State changed:', event);
       },
+      onStop: (animation)=>{
+        console.log('Animation called',animation);
+        
+      },
       onLoad: () => {
-        console.log(`Animation Names:`, this.riveInstance.animationNames);
+        // console.log(`Animation Names:`, this.riveInstance.animationNames);
         // Retrieve state machine inputs
         const inputs = this.riveInstance.stateMachineInputs(this.stateMachineName);
-        inputs.forEach(input => {
-          console.log(input);
-          console.log('Trigger Input:', input.name);
-          console.log(`Input Name: ${input.name}, Type: ${input.type}`);
-        });
 
         // Find specific inputs
         const isIdle = inputs.find(input => input.name === 'backToIdle'); //stomp trigger
@@ -116,43 +110,36 @@ export class RiveMonsterComponent {
 
         // Simulate  to stomp
         document.getElementById('IdleBtn').addEventListener('click', () => {
-          console.log('Egg Idle');
           isIdle.fire();
         })
 
         // Simulate  to stomp
         document.getElementById('stompStoneBtn').addEventListener('click', () => {
-          console.log('Egg Stomped');
           isStompStone.fire();
         })
 
         // Simulate  open the mouth
         document.getElementById('dragStoneBtn').addEventListener('click', () => {
-          console.log('Egg Mouth opened');
           isMouthOpened.fire();
         });
 
         // Simulate to mouth closed
         document.getElementById('feedStoneBtn').addEventListener('click', () => {
-          console.log('Egg Mouth Closed');
           isMouthClosed.fire();
         });
 
         // Simulate  to Chewing
         document.getElementById('checkStoneBtn').addEventListener('click', () => {
-          console.log('Egg Chewed');
           isChewing.fire();
         });
 
         // Simulate  to happy stone
         document.getElementById('happyStoneBtn').addEventListener('click', () => {
-          console.log('Egg Happy');
           isHappy.fire();
         });
 
         // Simulate  to Spit
         document.getElementById('spitStoneBtn').addEventListener('click', () => {
-          console.log('Egg Spit');
           isSpit.fire();
         });
 
@@ -176,9 +163,17 @@ export class RiveMonsterComponent {
     return this.riveInstance.stateMachineInputs(this.stateMachineName);
   }
 
-  play(animationName: string) {
+  play(animationName: string, onComplete: (() => void) | null = null) {
     if (this.riveInstance) {
       this.riveInstance.play(animationName);
+      
+      // Check if the onComplete callback is provided
+      if (onComplete) {
+        // Assuming you can detect when the animation finishes (adjust with your animation system)
+        this.riveInstance.on('animationComplete', () => {
+          onComplete(); // Call the onComplete callback when the animation finishes
+        });
+      }
     }
   }
 
@@ -214,8 +209,8 @@ export class RiveMonsterComponent {
 
   // Example click handler
   onClick(xClick: number, yClick: number): boolean {
-    const centerX = this.x + this.game.width / 4;
-    const centerY = this.y + this.game.height / 2.2;
+    const centerX = this.x + this.props.canvas.width / 4;
+    const centerY = this.y + this.props.canvas.height / 2.2;
 
     const distance = Math.sqrt(
       (xClick - centerX) * (xClick - centerX) +
