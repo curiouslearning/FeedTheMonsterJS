@@ -1,5 +1,13 @@
 
 
+## [1.0.38](https://github.com/curiouslearning/FeedTheMonsterJS/compare/1.0.37...1.0.38) (2024-12-20)
+
+
+### Features
+
+* Update caboverdecreole.json (CR-159)([9f79685](https://github.com/curiouslearning/FeedTheMonsterJS/commit/9f7968584b93233f9cf4a6e58c97b777f290bb09))
+
+
 ## [1.0.37](https://github.com/curiouslearning/FeedTheMonsterJS/compare/1.0.36...1.0.37) (2024-12-09)
 
 
