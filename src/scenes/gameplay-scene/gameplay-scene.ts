@@ -58,7 +58,7 @@ export class GameplayScene {
   public monsterPhaseNumber: number;
   public pickedStone: StoneConfig;
   public puzzleStartTime: number;
-  pausePopupComponent: PausePopupComponent = new PausePopupComponent();
+  pausePopupComponent: PausePopupComponent
   public showTutorial: boolean;
   public feedBackTexts: any;
   public isPuzzleCompleted: boolean;
@@ -98,6 +98,7 @@ export class GameplayScene {
     reloadScene
   }) {
     const gamePlayData = gameStateService.getGamePlaySceneDetails();
+    this.pausePopupComponent = new PausePopupComponent();
     // Assign state properties based on game state
     this.initializeProperties(gamePlayData);
     // UI element setup
