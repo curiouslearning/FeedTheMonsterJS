@@ -79,6 +79,7 @@ export class GameplayScene {
   public switchToLevelSelection: Function;
   public reloadScene: Function;
   private data: DataModal;
+  public triggerInputs: any;
   audioPlayer: AudioPlayer;
   firebaseIntegration: FirebaseIntegration;
   startTime: number;
@@ -165,12 +166,6 @@ export class GameplayScene {
       alignment: "topCenter",
       onLoad: () => {
         this.monster.play(initialAnimation);
-        console.log('called');
-        
-      },
-      onStop: (initialAnimation) => {
-        console.log(`${initialAnimation} has stopped.`);
-        // Add your logic here
       },
       gameCanvas: this.canvas
     });
@@ -283,6 +278,17 @@ export class GameplayScene {
         //Resets stones to original position after dragging.
         this.pickedStone.x = this.pickedStoneObject.origx;
         this.pickedStone.y = this.pickedStoneObject.origy;
+        const triggerInputs = this.monster.getInputs();
+
+        // Fetch relevant triggers
+        const isMouthClosed = triggerInputs.find(input => input.name === 'isMouthClosed');
+        const backToIdle = triggerInputs.find(input => input.name === 'backToIdle');
+
+        /* TO DO: Add mouth close animation here. */
+        isMouthClosed.fire();
+        setTimeout(() => {
+          backToIdle.fire();
+        }, 1300);
       }
 
     }
@@ -292,7 +298,6 @@ export class GameplayScene {
       gameStateService.EVENTS.GAME_TRAIL_EFFECT_TOGGLE_EVENT,
       false
     );
-    /* TO DO: Add mouth close animation here. */
   };
 
   // Event to identify mouse moved down on the canvas
@@ -351,6 +356,8 @@ export class GameplayScene {
   }
 
   handleMouseMove = (event) => {
+    const triggerInputs = this.monster.getInputs();
+    const isMouthOpened = triggerInputs.find(input => input.name === 'isMouthOpen'); //drag
     if (this.pickedStone && this.pickedStone.frame <= 99) {
       return; // Prevent dragging if the stone is animating
     }
@@ -367,7 +374,8 @@ export class GameplayScene {
         let rect = this.canvas.getBoundingClientRect();
         const x = event.clientX - rect.left;
         const y = event.clientY - rect.top;
-        this.monster.play(RiveMonsterComponent.Animations.MOUTHOPEN); //TO DO: TO BE REMOVED.
+        // Simulate  open the mouth
+        isMouthOpened.fire();
         this.pickedStone.x = x;
         this.pickedStone.y = y;
         trailX = x;
@@ -411,7 +419,6 @@ export class GameplayScene {
 
       this.monster.play(RiveMonsterComponent.Animations.MOUTHOPEN);
     }
-
     this.trailParticles?.addTrailParticlesOnMove(
       trailX,
       trailY
@@ -562,7 +569,7 @@ export class GameplayScene {
       if (this.isFeedBackTriggered) {
         const audioSources = this.audioPlayer?.audioSourcs || [];
         const lastAudio = audioSources[audioSources.length - 1];
-        
+
         if (lastAudio) {
           lastAudio.onended = () => {
             clearTimeout(timeoutId);
@@ -613,13 +620,7 @@ export class GameplayScene {
   };
 
   private checkStoneDropped(stone, feedBackIndex, isWord = false) {
-    
-    // Play the first animation
-    this.monster.play(RiveMonsterComponent.Animations.MOUTHCLOSED, () => {
-      // Your logic after the animation completes
-      this.monster.play(RiveMonsterComponent.Animations.CHEW);
-    });
-  
+    // Return the result of the drop handler logic
     return this.stoneHandler.isStoneLetterDropCorrect(stone, feedBackIndex, isWord);
   }
 
@@ -643,6 +644,14 @@ export class GameplayScene {
   }
 
   public wordPuzzle(droppedStoneInstance: StoneConfig) {
+    const triggerInputs = this.monster.getInputs();
+    // Fetch relevant triggers
+    const isHappy = triggerInputs.find(input => input.name === 'isHappy');
+
+    if (!isHappy) {
+      console.error("Missing triggers for animations.");
+      return false;
+    }
     if (droppedStoneInstance.frame <= 99) {
       return; // Prevent dragging if the stone is animating
     }
@@ -670,7 +679,11 @@ export class GameplayScene {
       }
 
       this.timerTicking.startTimer();
-      this.monster.play(RiveMonsterComponent.Animations.HAPPY);
+      // Trigger animations via fire
+      setTimeout(() => {
+        isHappy.fire();
+        console.log("Happy animation Triggered");
+      }, 3000);
       this.promptText.droppedStoneIndex(
         lang == "arabic"
           ? this.stonesCount
@@ -684,11 +697,39 @@ export class GameplayScene {
   }
 
   private handleStoneDropEnd(isCorrect, puzzleType: string | null = null) {
-    if(isCorrect) {
-      this.monster.play(RiveMonsterComponent.Animations.HAPPY);
+    const triggerInputs = this.monster.getInputs();
+    const isHappy = triggerInputs.find(input => input.name === 'isHappy');
+    const isSpit = triggerInputs.find(input => input.name === 'isSpit');
+    const isSad = triggerInputs.find(input => input.name === 'isSad');
+    const isChewing = triggerInputs.find(input => input.name === 'isChewing');
+    if (!isChewing) {
+      console.error("Missing triggers for animations.");
+      return false;
+    }
+    if (!isHappy || !isSpit || !isSad) {
+      console.error("Missing triggers for animations.");
+      return false;
+    }
+    if (isCorrect) {
+      // setTimeout(() => {
+      isChewing.fire();
+      console.log('triggered chew');
+      // }, 350);
+      setTimeout(() => {
+        isHappy.fire();
+        console.log("Happy animation Triggered");
+      }, 1800);
+
     } else {
-      this.monster.play(RiveMonsterComponent.Animations.SPIT);
-      this.monster.play(RiveMonsterComponent.Animations.SAD);
+      // setTimeout(() => {
+      isSpit.fire();
+      console.log("Spit animation Triggered");
+      // }, 1000);
+
+      setTimeout(() => {
+        isSad.fire();
+        console.log("Sad animation Triggered");
+      }, 1030);
     }
 
     this.logPuzzleEndFirebaseEvent(isCorrect, puzzleType);

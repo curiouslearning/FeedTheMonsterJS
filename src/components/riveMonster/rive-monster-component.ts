@@ -15,7 +15,7 @@ interface RiveMonsterComponentProps {
 export class RiveMonsterComponent {
   private props: RiveMonsterComponentProps;
   private riveInstance: any;
-  private src: string = './assets/eggRiveMonsterFinal.riv';  // Define the .riv file path
+  private src: string = './assets/finalEggMonster.riv';  // Define the .riv file path
   private stateMachineName: string = "State Machine 1"  // Define the state machine
   public game: any;
   public x: number;
@@ -76,82 +76,21 @@ export class RiveMonsterComponent {
         fit: Fit[this.props.fit || "Contain"],
         alignment: Alignment[this.props.alignment || "TopCenter"],
       }),
-      onStateChange: (event) => {
-        console.log('State changed:', event);
-      },
-      onStop: (animation)=>{
-        console.log('Animation called',animation);
-        
-      },
       onLoad: () => {
-        // console.log(`Animation Names:`, this.riveInstance.animationNames);
         // Retrieve state machine inputs
         const inputs = this.riveInstance.stateMachineInputs(this.stateMachineName);
 
-        // Find specific inputs
-        const isIdle = inputs.find(input => input.name === 'backToIdle'); //stomp trigger
-        const isStompStone = inputs.find(input => input.name === 'isStomped'); //stomp trigger
-        if (!isStompStone || typeof isStompStone.fire !== 'function') {
-          console.error('Trigger input "isStomped" not found or is invalid.');
-          return;
+        // Validate all necessary triggers are available
+        const requiredTriggers = ['backToIdle', 'isStomped', 'isMouthOpen', 'isMouthClosed', 'isChewing', 'isHappy', 'isSpit', 'isSad'];
+        const missingTriggers = requiredTriggers.filter(name => !inputs.some(input => input.name === name));
+
+        if (missingTriggers.length) {
+          console.error(`Missing state machine inputs: ${missingTriggers.join(', ')}`);
         }
-        const isMouthOpened = inputs.find(input => input.name === 'isMouthOpen'); //drag
-        const isMouthClosed = inputs.find(input => input.name === 'isMouthClosed'); //mouth close
-        const isChewing = inputs.find(input => input.name === 'isChewing'); //chew
-        const isHappy = inputs.find(input => input.name === 'isHappy'); //happy
-        const isSpit = inputs.find(input => input.name === 'isSpit'); //spit
-        const isSad = inputs.find(input => input.name === 'isSad'); //sad
-
-
-        if (!isIdle || !isMouthOpened || !isStompStone || !isMouthClosed || !isChewing || !isHappy || !isSpit || !isSad) {
-          console.error('One or more inputs are missing from the state machine.');
-          return;
-        }
-
-        // Simulate  to stomp
-        document.getElementById('IdleBtn').addEventListener('click', () => {
-          isIdle.fire();
-        })
-
-        // Simulate  to stomp
-        document.getElementById('stompStoneBtn').addEventListener('click', () => {
-          isStompStone.fire();
-        })
-
-        // Simulate  open the mouth
-        document.getElementById('dragStoneBtn').addEventListener('click', () => {
-          isMouthOpened.fire();
-        });
-
-        // Simulate to mouth closed
-        document.getElementById('feedStoneBtn').addEventListener('click', () => {
-          isMouthClosed.fire();
-        });
-
-        // Simulate  to Chewing
-        document.getElementById('checkStoneBtn').addEventListener('click', () => {
-          isChewing.fire();
-        });
-
-        // Simulate  to happy stone
-        document.getElementById('happyStoneBtn').addEventListener('click', () => {
-          isHappy.fire();
-        });
-
-        // Simulate  to Spit
-        document.getElementById('spitStoneBtn').addEventListener('click', () => {
-          isSpit.fire();
-        });
-
-        // Simulate  to Sad
-        document.getElementById('sadStoneBtn').addEventListener('click', () => {
-          console.log('Egg Sad');
-          isSad.fire();
-        });
 
         // Callback to handle state changes (optional debugging)
         this.riveInstance.onStateChange = (state) => {
-          console.log('Current state:', state);
+          // console.log('Current state:', state);
         };
 
         if (this.props.onLoad) this.props.onLoad();
@@ -166,7 +105,7 @@ export class RiveMonsterComponent {
   play(animationName: string, onComplete: (() => void) | null = null) {
     if (this.riveInstance) {
       this.riveInstance.play(animationName);
-      
+
       // Check if the onComplete callback is provided
       if (onComplete) {
         // Assuming you can detect when the animation finishes (adjust with your animation system)
