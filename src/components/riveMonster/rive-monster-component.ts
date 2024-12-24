@@ -14,8 +14,8 @@ interface RiveMonsterComponentProps {
 export class RiveMonsterComponent {
   private props: RiveMonsterComponentProps;
   private riveInstance: any;
-  private src: string = './assets/monsterrive.riv'; // Define the .riv file path
-  private stateMachines: string = 'State Machine 1'; // Define the state machine
+  private src: string = './assets/finalEggMonster.riv';  // Define the .riv file path
+  private stateMachineName: string = "State Machine 1"  // Define the state machine
   public game: any;
   public x: number;
   public y: number;
@@ -27,86 +27,106 @@ export class RiveMonsterComponent {
     from: number;
     to: number;
   };
-
   // Static readonly properties for all monster animations
   public static readonly Animations = {
-    OPENING_MOUTH_EAT: 'Opening Mouth Eat',
-    EAT_HAPPY: 'Eat Happy',
-    IDLE: 'Idle',
-    EAT_DISGUST: 'Eat Disgust',
+    //new animation
+    IDLE: "Idle",
+    SAD: "Sad",
+    STOMP: "Stomp", //Not working
+    STOMPHAPPY: "StompHappy",
+    SPIT: "Spit",
+    CHEW: "Chew", //Not working
+    MOUTHOPEN: "MouthOpen",
+    MOUTHCLOSED: "MouthClosed", //Not working
+    HAPPY: "Happy", //Not working
   };
 
   constructor(props: RiveMonsterComponentProps) {
     this.props = props;
+    this.moveCanvasUpOrDown(50); // Move down by 50px
+    const monsterCenterX = props.canvas.width / 2;
+    const monsterCenterY = props.canvas.height / 2; 
+    const rangeFactorX = 55;
+    const rangeFactorY = 100;
 
-    // To Do: To be removed once FM-333 pixelate issue fix has been applied
-    if (this.props.gameCanvas) {
-      this.game = this.props.gameCanvas;
-      this.x = this.game.width / 2 - this.game.width * 0.243;
-      this.y = this.game.width / 3;
-      this.hitboxRangeX = {
-        from: 0,
-        to: 0,
-      };
-      this.hitboxRangeY = {
-        from: 0,
-        to: 0,
-      };
+    this.hitboxRangeX = {
+      from: monsterCenterX - rangeFactorX,
+      to: monsterCenterX + rangeFactorX,
+    };
+    this.hitboxRangeY = {
+      from: monsterCenterY + (rangeFactorY / 2),
+      to: monsterCenterY + (rangeFactorY * 2),
+    };
 
-      //Adjust this range factor to control how big is the hit box for dropping stones.
-      const rangeFactorX = 70; //SUBCTRACT FROM CENTER TO LEFT, ADD FROM CENTER TO RIGHT.
-      const rangeFactorY = 50; //SUBCTRACT FROM CENTER TO TOP, ADD FROM CENTER TO BOTTOM.
-      const monsterCenterX = this.game.width / 2;
-      //Note: Rive height is currently always half of width. This might change when new rive files are to be implemented/
-      const monsterCenterY = monsterCenterX / 2; //Create different sets of height for multiple rive files or adjust this for height when replacing the current rive monster.
+    this.initializeRive();
+  }
 
-      this.hitboxRangeX.from = monsterCenterX - rangeFactorX;
-      this.hitboxRangeX.to = monsterCenterX + rangeFactorX;
-      this.hitboxRangeY.from = monsterCenterY - rangeFactorY;
-      this.hitboxRangeY.to = monsterCenterY + rangeFactorY;
-    }
-
-    // Initialize Rive
+  private initializeRive() {
     this.riveInstance = new Rive({
       src: this.src,
       canvas: this.props.canvas,
       autoplay: this.props.autoplay,
-      stateMachines: this.stateMachines,
-      layout: new Layout({
-        fit: Fit[this.props.fit || 'Contain'],
-        alignment: Alignment[this.props.alignment || 'TopCenter'],
-      }),
-      onLoad: () => {
-        if (this.props.onLoad) {
-          this.props.onLoad();
-        }
-      },
+      stateMachines: [this.stateMachineName],
+      layout: new Layout({ fit: Fit.Contain, alignment: Alignment.Center }),
+      onLoad: this.handleLoad.bind(this),
     });
+  }
+
+  getInputs() {
+    return this.riveInstance.stateMachineInputs(this.stateMachineName);
+  }
+
+  public moveCanvasUpOrDown(offsetY: number) {
+    const canvas = this.props.canvas;
+    const currentTop = parseFloat(window.getComputedStyle(canvas).top) || 0;
+    if (currentTop === 0) {
+      // Set the new top value based on the offset
+      const newTop = currentTop + offsetY;
+
+      // Apply the new position
+      canvas.style.top = `${newTop}px`;
+      canvas.style.position = 'absolute';
+      canvas.style.zIndex = '5';         // Set z-index to a high value to bring it on top
+    }
+  }
+
+  private handleLoad() {
+    const inputs = this.getInputs();
+    const requiredTriggers = [
+      'backToIdle', 'isStomped', 'isMouthOpen', 'isMouthClosed',
+      'isChewing', 'isHappy', 'isSpit', 'isSad',
+    ];
+
+    const missingTriggers = requiredTriggers.filter(
+      (name) => !inputs.some((input) => input.name === name)
+    );
+
+    if (missingTriggers.length) {
+      console.error(`Missing state machine inputs: ${missingTriggers.join(', ')}`);
+    }
+
+    if (this.props.onLoad) this.props.onLoad();
+  }
+
+  public triggerInput(inputName: string) {
+    const stateMachineInput = this.getInputs().find(input => input.name === inputName);
+    if (stateMachineInput) {
+      stateMachineInput.fire(); // Trigger input
+    } else {
+      console.warn(`Input ${inputName} not found.`);
+    }
   }
 
   play(animationName: string) {
-    if (this.riveInstance) {
-      this.riveInstance.play(animationName);
-    }
+    this.riveInstance?.play(animationName);
   }
+
 
   stop() {
-    if (this.riveInstance) {
-      this.riveInstance.stop();
-    }
-  }
-
-  // Check animation completion via a state machine listener need to have statemachines properly to test this
-  onStateChange(callback: (stateName: string) => void) {
-    this.riveInstance.stateMachine.inputs.forEach(input => {
-      input.onStateChange(state => {
-        callback(state);
-      });
-    });
+    this.riveInstance?.stop();
   }
 
   checkHitboxDistance(event) {
-
     const rect = this.props.canvas.getBoundingClientRect();
     const x = event.clientX - rect.left;
     const y = event.clientY - rect.top;
@@ -121,8 +141,8 @@ export class RiveMonsterComponent {
 
   // Example click handler
   onClick(xClick: number, yClick: number): boolean {
-    const centerX = this.x + this.game.width / 4;
-    const centerY = this.y + this.game.height / 2.2;
+    const centerX = this.x + this.props.canvas.width / 4;
+    const centerY = this.y + this.props.canvas.height / 2.2;
 
     const distance = Math.sqrt(
       (xClick - centerX) * (xClick - centerX) +
@@ -133,21 +153,12 @@ export class RiveMonsterComponent {
   }
 
   stopRiveMonster() {
-    if (this.riveInstance) {
-      this.riveInstance.stop();
-    }
+    this.riveInstance?.stop();
   }
 
-  private unregisterEventListener() {
-    if (this.riveInstance) {
-      this.riveInstance.cleanup();
-    }
-  }
 
   public dispose() {
-    this.unregisterEventListener();
-    if (this.riveInstance) {
-      this.riveInstance = null;
-    }
+    this.riveInstance?.cleanup();
+    this.riveInstance = null;
   }
 }

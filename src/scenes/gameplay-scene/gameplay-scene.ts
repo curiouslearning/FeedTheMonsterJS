@@ -79,6 +79,7 @@ export class GameplayScene {
   public switchToLevelSelection: Function;
   public reloadScene: Function;
   private data: DataModal;
+  public triggerInputs: any;
   audioPlayer: AudioPlayer;
   firebaseIntegration: FirebaseIntegration;
   startTime: number;
@@ -163,7 +164,7 @@ export class GameplayScene {
       canvas: this.riveMonsterElement,
       autoplay: true,
       fit: "contain",
-      alignment: "topCenter",
+      alignment: "bottomCenter",
       onLoad: () => {
         this.monster.play(initialAnimation);
       },
@@ -250,6 +251,16 @@ export class GameplayScene {
     return Math.floor(Math.random() * (definedValuesMaxCount - min + 1)) + min;
   }
 
+  private triggerMonsterAnimation(animationName: string, delay: number = 0) {
+    if (delay > 0) {
+      setTimeout(() => {
+        this.monster.triggerInput(animationName);
+      }, delay);
+    } else {
+      this.monster.triggerInput(animationName);
+    }
+  }
+
   handleMouseUp = (event) => {
     if (this.monster.checkHitboxDistance(event) && this.pickedStone) {
       const { text } = this.pickedStone; // Use destructuring for clarity
@@ -278,6 +289,10 @@ export class GameplayScene {
         //Resets stones to original position after dragging.
         this.pickedStone.x = this.pickedStoneObject.origx;
         this.pickedStone.y = this.pickedStoneObject.origy;
+        // Trigger animations
+        this.triggerMonsterAnimation('isMouthClosed');
+        this.triggerMonsterAnimation('backToIdle', 1300);
+
       }
 
     }
@@ -310,6 +325,9 @@ export class GameplayScene {
           this.pickedStoneObject = sc;
           this.pickedStone = sc;
           this.stoneHandler.playDragAudioIfNecessary(sc);
+
+          // Trigger open mouth animation
+          this.triggerMonsterAnimation('isMouthOpen');
           break;
         }
       }
@@ -342,6 +360,7 @@ export class GameplayScene {
   }
 
   handleMouseMove = (event) => {
+    // const isMouthOpened = triggerInputs.find(input => input.name === 'isMouthOpen'); //drag
     if (this.pickedStone && this.pickedStone.frame <= 99) {
       return; // Prevent dragging if the stone is animating
     }
@@ -358,7 +377,6 @@ export class GameplayScene {
         let rect = this.canvas.getBoundingClientRect();
         const x = event.clientX - rect.left;
         const y = event.clientY - rect.top;
-        this.monster.play(RiveMonsterComponent.Animations.OPENING_MOUTH_EAT);
         this.pickedStone.x = x;
         this.pickedStone.y = y;
         trailX = x;
@@ -393,6 +411,7 @@ export class GameplayScene {
               this.pickedStone,
               this.pickedStoneObject
             );
+            
             //After resetting its original position replace it with the new letter.
             this.pickedStoneObject = newStoneLetter;
             this.pickedStone = newStoneLetter;
@@ -400,9 +419,9 @@ export class GameplayScene {
         }
       }
 
-      this.monster.play(RiveMonsterComponent.Animations.OPENING_MOUTH_EAT);
+      // Trigger open mouth animation
+    this.triggerMonsterAnimation('isMouthOpen');
     }
-
     this.trailParticles?.addTrailParticlesOnMove(
       trailX,
       trailY
@@ -553,7 +572,7 @@ export class GameplayScene {
       if (this.isFeedBackTriggered) {
         const audioSources = this.audioPlayer?.audioSourcs || [];
         const lastAudio = audioSources[audioSources.length - 1];
-        
+
         if (lastAudio) {
           lastAudio.onended = () => {
             clearTimeout(timeoutId);
@@ -604,11 +623,8 @@ export class GameplayScene {
   };
 
   private checkStoneDropped(stone, feedBackIndex, isWord = false) {
-    return this.stoneHandler.isStoneLetterDropCorrect(
-      stone,
-      feedBackIndex,
-      isWord
-    );
+    // Return the result of the drop handler logic
+    return this.stoneHandler.isStoneLetterDropCorrect(stone, feedBackIndex, isWord);
   }
 
   public letterPuzzle(droppedStone: string) {
@@ -631,6 +647,7 @@ export class GameplayScene {
   }
 
   public wordPuzzle(droppedStoneInstance: StoneConfig) {
+   
     if (droppedStoneInstance.frame <= 99) {
       return; // Prevent dragging if the stone is animating
     }
@@ -650,15 +667,17 @@ export class GameplayScene {
     );
 
     if (isCorrect) {
-      if (this.wordPuzzleLogic.validateWordPuzzle()) {
+      if (this.wordPuzzleLogic.validateWordPuzzle()) { 
         this.handleCorrectStoneDrop(feedBackIndex);
         this.handleStoneDropEnd(isCorrect, "Word");
         this.stonesCount = 1;
         return;
       }
-
+      this.triggerMonsterAnimation('isMouthClosed');
+      this.triggerMonsterAnimation('backToIdle', 350);
       this.timerTicking.startTimer();
-      this.monster.play(RiveMonsterComponent.Animations.EAT_HAPPY);
+      // // Trigger animations via fire
+      // this.triggerMonsterAnimation('isHappy',3000)
       this.promptText.droppedStoneIndex(
         lang == "arabic"
           ? this.stonesCount
@@ -672,10 +691,25 @@ export class GameplayScene {
   }
 
   private handleStoneDropEnd(isCorrect, puzzleType: string | null = null) {
-    if(isCorrect) {
-      this.monster.play(RiveMonsterComponent.Animations.EAT_HAPPY);
+    const triggerInputs = this.monster.getInputs();
+    const isHappy = triggerInputs.find(input => input.name === 'isHappy');
+    const isSpit = triggerInputs.find(input => input.name === 'isSpit');
+    const isSad = triggerInputs.find(input => input.name === 'isSad');
+    const isChewing = triggerInputs.find(input => input.name === 'isChewing');
+    if (!isChewing) {
+      console.error("Missing triggers for animations.");
+      return false;
+    }
+    if (!isHappy || !isSpit || !isSad) {
+      console.error("Missing triggers for animations.");
+      return false;
+    }
+    if (isCorrect) {
+      this.triggerMonsterAnimation('isChewing');
+      this.triggerMonsterAnimation('isHappy',1700);
     } else {
-      this.monster.play(RiveMonsterComponent.Animations.EAT_DISGUST);
+      this.triggerMonsterAnimation('isSpit');
+      this.triggerMonsterAnimation('isSad',1030);
     }
 
     this.logPuzzleEndFirebaseEvent(isCorrect, puzzleType);
@@ -706,6 +740,7 @@ export class GameplayScene {
   }
 
   private initNewPuzzle(loadPuzzleEvent) {
+    this.monster.play(RiveMonsterComponent.Animations.IDLE); //TO DO: TO BE REMOVED.
     this.monster = this.initializeRiveMonster();
     this.removeEventListeners();
     this.isGameStarted = false;

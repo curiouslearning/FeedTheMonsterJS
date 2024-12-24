@@ -87,13 +87,13 @@ export class LevelEndScene {
       if (isDocumentVisible()) {
         this.audioPlayer.playAudio(AUDIO_LEVEL_LOSE);
       }
-      this.riveMonster.play(RiveMonsterComponent.Animations.EAT_DISGUST);
+      this.riveMonster.play(RiveMonsterComponent.Animations.SAD);
     } else {
       if (isDocumentVisible()) {
         this.audioPlayer.playAudio(AUDIO_LEVEL_WIN);
         this.audioPlayer.playAudio(AUDIO_INTRO);
       }
-      this.riveMonster.play(RiveMonsterComponent.Animations.EAT_HAPPY);
+      this.riveMonster.play(RiveMonsterComponent.Animations.HAPPY);
     }
   };
 

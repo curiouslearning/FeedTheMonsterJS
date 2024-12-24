@@ -69,19 +69,8 @@ describe('Start Scene Test', () => {
     //Mock Audio Player instance
     mockAudioPlayer = new AudioPlayer();
 
-    // Mock canvas
-    const mockCanvas = document.getElementById('canvas') as HTMLCanvasElement;
-    mockCanvas.getContext = jest.fn().mockReturnValue({
-      fillRect: jest.fn(),
-      clearRect: jest.fn(),
-      drawImage: jest.fn(),
-      save: jest.fn(),
-      restore: jest.fn(),
-    });
-
     // Create the startScene instance
     startScene = new StartScene(
-      mockCanvas,
       {
         title: '',
         otherAudios: {
