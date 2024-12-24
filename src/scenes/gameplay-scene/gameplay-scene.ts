@@ -377,8 +377,6 @@ export class GameplayScene {
         let rect = this.canvas.getBoundingClientRect();
         const x = event.clientX - rect.left;
         const y = event.clientY - rect.top;
-        // Simulate  open the mouth
-        // isMouthOpened.fire();
         this.pickedStone.x = x;
         this.pickedStone.y = y;
         trailX = x;
@@ -436,8 +434,6 @@ export class GameplayScene {
     const y = event.clientY - rect.top;
 
     if (this.monster.onClick(x, y)) {
-      console.log("clicked");
-      
       this.isGameStarted = true;
       this.time = 0;
       this.tutorial.setPlayMonsterClickAnimation(false);
@@ -651,14 +647,7 @@ export class GameplayScene {
   }
 
   public wordPuzzle(droppedStoneInstance: StoneConfig) {
-    const triggerInputs = this.monster.getInputs();
-    // Fetch relevant triggers
-    const isHappy = triggerInputs.find(input => input.name === 'isHappy');
-
-    if (!isHappy) {
-      console.error("Missing triggers for animations.");
-      return false;
-    }
+   
     if (droppedStoneInstance.frame <= 99) {
       return; // Prevent dragging if the stone is animating
     }
@@ -716,21 +705,11 @@ export class GameplayScene {
       return false;
     }
     if (isCorrect) {
-      // setTimeout(() => {
-      isChewing.fire();
-      // }, 350);
-      setTimeout(() => {
-        isHappy.fire();
-      }, 1800);
-
+      this.triggerMonsterAnimation('isChewing');
+      this.triggerMonsterAnimation('isHappy',1700);
     } else {
-      // setTimeout(() => {
-      isSpit.fire();
-      // }, 1000);
-
-      setTimeout(() => {
-        isSad.fire();
-      }, 1030);
+      this.triggerMonsterAnimation('isSpit');
+      this.triggerMonsterAnimation('isSad',1030);
     }
 
     this.logPuzzleEndFirebaseEvent(isCorrect, puzzleType);

@@ -45,9 +45,7 @@ export class RiveMonsterComponent {
     this.props = props;
     this.moveCanvasUpOrDown(50); // Move down by 50px
     const monsterCenterX = props.canvas.width / 2;
-    const monsterCenterY = props.canvas.height / 2;
-    console.log(monsterCenterX,monsterCenterY);
-    
+    const monsterCenterY = props.canvas.height / 2; 
     const rangeFactorX = 55;
     const rangeFactorY = 100;
 
@@ -59,7 +57,6 @@ export class RiveMonsterComponent {
       from: monsterCenterY + (rangeFactorY / 2),
       to: monsterCenterY + (rangeFactorY * 2),
     };
-console.log(this.hitboxRangeX,this.hitboxRangeY);
 
     this.initializeRive();
   }
