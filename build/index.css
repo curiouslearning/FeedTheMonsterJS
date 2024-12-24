@@ -43,7 +43,7 @@ img {
   left: 50%;
   bottom: 0%;
   width: 100%;
-  max-width: 768px;
+  max-width: 420px;
   height: 30%;
   background-color: rgba(0, 0, 0, 0.5);
   transform: translate(-50%, 0%);
@@ -71,10 +71,7 @@ img {
 
 #rivecanvas {
   position: absolute;
-  bottom: 150px;
-  left: 0;
   z-index: 4;
-  width: 100%;
 }
 
 #discription-text p {
@@ -128,7 +125,7 @@ img {
   transform: translate(-50%, 0%);
   justify-content: center;
   align-items: center;
-  background-color: rgb(255 255 255);
+  background-color: rgba(0, 0, 0, 0.8);
   z-index: 1000;
 }
 
@@ -600,10 +597,6 @@ img {
     bottom: 7%;
   }
 
-  #rivecanvas {
-    bottom: 15%;
-  }
-
   .dynamic-button {
     max-width: 45px;
     max-height: 45px;
@@ -647,10 +640,6 @@ img {
 @media (min-width: 501px) and (max-width: 768px) {
   #loading-screen {
     max-width: 100%;
-  }
-
-  #rivecanvas {
-    bottom: 140px;
   }
 
   .summer .ftm-fence {
@@ -1027,5 +1016,14 @@ img {
   #levelEnd {
     background-size: 100% 120%;
   }
+  
+}
 
+
+/* Reseach */
+#dragStoneBtn, #feedStoneBtn, #checkStoneBtn, #stompStoneBtn, #happyStoneBtn, #spitStoneBtn, #sadStoneBtn, #IdleBtn{
+  height: 50px;
+  z-index: 22;
+  position: relative;
+  padding: 0px 20px;
 }

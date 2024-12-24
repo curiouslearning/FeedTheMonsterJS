@@ -164,7 +164,7 @@ export class GameplayScene {
       canvas: this.riveMonsterElement,
       autoplay: true,
       fit: "contain",
-      alignment: "topCenter",
+      alignment: "bottomCenter",
       onLoad: () => {
         this.monster.play(initialAnimation);
       },
@@ -251,6 +251,16 @@ export class GameplayScene {
     return Math.floor(Math.random() * (definedValuesMaxCount - min + 1)) + min;
   }
 
+  private triggerMonsterAnimation(animationName: string, delay: number = 0) {
+    if (delay > 0) {
+      setTimeout(() => {
+        this.monster.triggerInput(animationName);
+      }, delay);
+    } else {
+      this.monster.triggerInput(animationName);
+    }
+  }
+
   handleMouseUp = (event) => {
     if (this.monster.checkHitboxDistance(event) && this.pickedStone) {
       const { text } = this.pickedStone; // Use destructuring for clarity
@@ -279,17 +289,10 @@ export class GameplayScene {
         //Resets stones to original position after dragging.
         this.pickedStone.x = this.pickedStoneObject.origx;
         this.pickedStone.y = this.pickedStoneObject.origy;
-        const triggerInputs = this.monster.getInputs();
+        // Trigger animations
+        this.triggerMonsterAnimation('isMouthClosed');
+        this.triggerMonsterAnimation('backToIdle', 1300);
 
-        // Fetch relevant triggers
-        const isMouthClosed = triggerInputs.find(input => input.name === 'isMouthClosed');
-        const backToIdle = triggerInputs.find(input => input.name === 'backToIdle');
-
-        /* TO DO: Add mouth close animation here. */
-        isMouthClosed.fire();
-        setTimeout(() => {
-          backToIdle.fire();
-        }, 1300);
       }
 
     }
@@ -323,8 +326,8 @@ export class GameplayScene {
           this.pickedStone = sc;
           this.stoneHandler.playDragAudioIfNecessary(sc);
 
-          /* TO DO: Add the open mouth animation trigger here. */
-
+          // Trigger open mouth animation
+          this.triggerMonsterAnimation('isMouthOpen');
           break;
         }
       }
@@ -357,8 +360,7 @@ export class GameplayScene {
   }
 
   handleMouseMove = (event) => {
-    const triggerInputs = this.monster.getInputs();
-    const isMouthOpened = triggerInputs.find(input => input.name === 'isMouthOpen'); //drag
+    // const isMouthOpened = triggerInputs.find(input => input.name === 'isMouthOpen'); //drag
     if (this.pickedStone && this.pickedStone.frame <= 99) {
       return; // Prevent dragging if the stone is animating
     }
@@ -376,7 +378,7 @@ export class GameplayScene {
         const x = event.clientX - rect.left;
         const y = event.clientY - rect.top;
         // Simulate  open the mouth
-        isMouthOpened.fire();
+        // isMouthOpened.fire();
         this.pickedStone.x = x;
         this.pickedStone.y = y;
         trailX = x;
@@ -411,6 +413,7 @@ export class GameplayScene {
               this.pickedStone,
               this.pickedStoneObject
             );
+            
             //After resetting its original position replace it with the new letter.
             this.pickedStoneObject = newStoneLetter;
             this.pickedStone = newStoneLetter;
@@ -418,7 +421,8 @@ export class GameplayScene {
         }
       }
 
-      this.monster.play(RiveMonsterComponent.Animations.MOUTHOPEN);
+      // Trigger open mouth animation
+    this.triggerMonsterAnimation('isMouthOpen');
     }
     this.trailParticles?.addTrailParticlesOnMove(
       trailX,
@@ -432,6 +436,8 @@ export class GameplayScene {
     const y = event.clientY - rect.top;
 
     if (this.monster.onClick(x, y)) {
+      console.log("clicked");
+      
       this.isGameStarted = true;
       this.time = 0;
       this.tutorial.setPlayMonsterClickAnimation(false);
@@ -672,19 +678,17 @@ export class GameplayScene {
     );
 
     if (isCorrect) {
-      if (this.wordPuzzleLogic.validateWordPuzzle()) {
+      if (this.wordPuzzleLogic.validateWordPuzzle()) { 
         this.handleCorrectStoneDrop(feedBackIndex);
         this.handleStoneDropEnd(isCorrect, "Word");
         this.stonesCount = 1;
         return;
       }
-
+      this.triggerMonsterAnimation('isMouthClosed');
+      this.triggerMonsterAnimation('backToIdle', 350);
       this.timerTicking.startTimer();
-      // Trigger animations via fire
-      setTimeout(() => {
-        isHappy.fire();
-        console.log("Happy animation Triggered");
-      }, 3000);
+      // // Trigger animations via fire
+      // this.triggerMonsterAnimation('isHappy',3000)
       this.promptText.droppedStoneIndex(
         lang == "arabic"
           ? this.stonesCount
@@ -714,22 +718,18 @@ export class GameplayScene {
     if (isCorrect) {
       // setTimeout(() => {
       isChewing.fire();
-      console.log('triggered chew');
       // }, 350);
       setTimeout(() => {
         isHappy.fire();
-        console.log("Happy animation Triggered");
       }, 1800);
 
     } else {
       // setTimeout(() => {
       isSpit.fire();
-      console.log("Spit animation Triggered");
       // }, 1000);
 
       setTimeout(() => {
         isSad.fire();
-        console.log("Sad animation Triggered");
       }, 1030);
     }
 
