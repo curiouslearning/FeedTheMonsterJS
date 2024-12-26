@@ -572,7 +572,6 @@ export class GameplayScene {
       if (this.isFeedBackTriggered) {
         const audioSources = this.audioPlayer?.audioSourcs || [];
         const lastAudio = audioSources[audioSources.length - 1];
-
         if (lastAudio) {
           lastAudio.onended = () => {
             clearTimeout(timeoutId);
