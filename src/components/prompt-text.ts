@@ -172,20 +172,22 @@ export class PromptText extends EventManager {
             this.width / 2 -
             this.context.measureText(this.currentPromptText).width / 2;
         let currentWordWidth = 0;
-        var letterHighlight: Array<string> =
-            this.currentPuzzleData.targetStones[0].split("");
+        var letterHighlight=
+            this.currentPuzzleData.targetStones[0];
+            var highlightedText ="";
         for (let i = 0; i < promptTextLetters.length; i++) {
             switch (this.levelData.levelMeta.levelType) {
                 case "LetterInWord": {
                     if (this.levelData.levelMeta.protoType == "Visible") {
                     if (letterHighlight.includes(promptTextLetters[i])) {
-                        letterHighlight = letterHighlight.slice(1, letterHighlight.length);
-                        this.context.fillStyle = "red";
-                        this.context.fillText(
-                            promptTextLetters[i],
-                            startPrompttextX,
-                            y
-                        );
+                        highlightedText+=promptTextLetters[i];
+                            this.context.fillStyle = "red";
+                            this.context.fillText(
+                                highlightedText===this.currentPuzzleData.targetStones[0] && letterHighlight.length<promptTextLetters.length ?highlightedText:"",
+                                startPrompttextX,
+                                y
+                            );
+                            letterHighlight = letterHighlight.slice(1, letterHighlight.length);
                     } else {
                         this.context.fillStyle = "black";
                         this.context.fillText(
