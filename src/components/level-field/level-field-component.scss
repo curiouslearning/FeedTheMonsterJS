@@ -30,14 +30,18 @@
 @media (min-width: 320px) and (max-width: 360px) {
   .game-control .level_content-wrapper .bar-level-wrapper {
     max-width: 100px;
-    top: 1rem;
+    top: 1.1rem;
+    left: 6px;
   }
 
   .game-control .level_content-wrapper {
-    max-width: 100px;
+    max-width: 115px;
     width: 100%;
     top: 5px;
     left: 12%;
+  }
+  .game-control .level_content-wrapper .bar-level-wrapper .bar-level{
+    max-width: 13px;
   }
 }
 
