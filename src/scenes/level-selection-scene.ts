@@ -139,24 +139,13 @@ export class LevelSelectionScreen {
     const poss = getdefaultCloudBtnsPos(this.canvas);
     const totalLevels = this.data.levels.length;
     const buttonsPerPage = 10;
-    const currentPage = Math.floor(this.levelSelectionPageIndex / buttonsPerPage);
     const remainingButtons = Math.max(0, totalLevels - this.levelSelectionPageIndex);
     const buttonsToCreate = Math.min(buttonsPerPage, remainingButtons);
-
-    console.log('Creating buttons:', {
-      totalLevels,
-      currentPage,
-      remainingButtons,
-      buttonsToCreate,
-      levelSelectionPageIndex: this.levelSelectionPageIndex
-    });
 
     // Only take the positions we need for this page
     const positions = poss[0].slice(0, buttonsToCreate);
     
     const levelsArr = positions.map((coordinates, index) => {
-      const actualLevel = this.levelSelectionPageIndex + index;
-      console.log('Creating level object for level:', actualLevel);
       return createLevelObject(
         coordinates[0],
         coordinates[1],
