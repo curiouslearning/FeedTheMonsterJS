@@ -151,7 +151,7 @@ export class LevelSelectionScreen {
       return new LevelBloonButton(
         this.canvas,
         this.context,
-        {...btnCoordinates},
+        { ...btnCoordinates },
       )
     });
   }
@@ -258,7 +258,13 @@ export class LevelSelectionScreen {
       this.downButton(this.levelSelectionPageIndex);
     }
 
-    for(let btn of this.levelButtons) {
+    for (let btn of this.levelButtons) {
+      // Check if the level exists before allowing click
+      const levelIndex = btn.levelData.index + this.levelSelectionPageIndex;
+      if (levelIndex > this.data.levels.length) {
+        continue; // Skip this button if level doesn't exist
+      }
+
       btn.onClick(
         x,
         y,
@@ -269,15 +275,15 @@ export class LevelSelectionScreen {
           this.levelNumber = index + this.levelSelectionPageIndex - 1;
           this.startGame(this.levelNumber);
         }
-      )
+      );
     }
   };
 
   private drawLevel(levelBtn: any, gameLevelData: []) {
     const currentLevelIndex = levelBtn.levelData.index + this.levelSelectionPageIndex;
     const currentLevel = currentLevelIndex - 1;
-
-    const nextLevelPlay = this.unlockLevelIndex + 1;
+    const isLastLevelUnlocked = this.unlockLevelIndex === this.data.levels.length - 1;
+    const nextLevelPlay = this.unlockLevelIndex + (isLastLevelUnlocked ? 0 : 1);
 
     if (nextLevelPlay === currentLevel) {
       levelBtn.applyPulseEffect();
@@ -294,11 +300,11 @@ export class LevelSelectionScreen {
 
       Debugger.DebugMode
         ? this.context.fillText(
-            this.data.levels[currentLevelIndex - 1]
-              .levelMeta.levelType,
-            levelBtn.levelData.x + levelBtn.btnSize / 3.5,
-            levelBtn.levelData.y + levelBtn.btnSize / 1.3
-          )
+          this.data.levels[currentLevelIndex - 1]
+            .levelMeta.levelType,
+          levelBtn.levelData.x + levelBtn.btnSize / 3.5,
+          levelBtn.levelData.y + levelBtn.btnSize / 1.3
+        )
         : null;
     }
   }
@@ -350,15 +356,16 @@ export class LevelSelectionScreen {
   }
 
   checkUnlockedLevel(gameLevelData) {
-    if (gameLevelData.length != undefined) {
-        for (let game of gameLevelData) {
-          if (this.unlockLevelIndex < parseInt(game.levelNumber)) {
-            game.starCount >= 2
-              ? (this.unlockLevelIndex = parseInt(game.levelNumber))
-              : null;
-          }
-        }
+    if (!Array.isArray(gameLevelData)) return;
+
+    const maxLevel = this.data.levels.length - 1;
+    
+    for (const game of gameLevelData) {
+      const levelNumber = Math.min(parseInt(game.levelNumber), maxLevel);
+      if (game.starCount >= 2 && this.unlockLevelIndex < levelNumber) {
+        this.unlockLevelIndex = levelNumber;
       }
+    }
   }
 
   private startGame(level_number: string | number) {
