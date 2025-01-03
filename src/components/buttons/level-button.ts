@@ -64,7 +64,6 @@ export default class LevelBloonButton {
         levelSelectionPageIndex,
         unlockLevelIndex,
         gameLevelData,
-        totalGameLevels
     ) {
         this.context.drawImage(
             this.levelData?.balloonImg,
@@ -96,7 +95,6 @@ export default class LevelBloonButton {
             levelSelectionPageIndex,
             unlockLevelIndex,
             gameLevelData,
-            totalGameLevels
         );
     }
 
@@ -139,14 +137,13 @@ export default class LevelBloonButton {
         pageIndex,
         unlockLevelIndex,
         gameLevelData,
-        totalGameLevels
     ) {
         const index = this.levelData.index;
         if (!Debugger.DebugMode) {
             (index + pageIndex - 1 > unlockLevelIndex + 1) && this.drawLock();
         }
 
-        if (gameLevelData.length && index + pageIndex <= totalGameLevels) {
+        if (gameLevelData.length && index + pageIndex <= this.totalGameLevels) {
           for (let i = 0; i < gameLevelData.length; i++) {
             if (
               index - 1 + pageIndex ===
