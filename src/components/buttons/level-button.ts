@@ -27,14 +27,17 @@ export default class LevelBloonButton {
     private btnSize: number;
     private lockSize: number;
     private textFontSize: number;
+    private totalGameLevels: number;
 
     constructor(
         canvas,
         context,
         levelData,
+        totalGameLevels
     ) {
         this.context = context;
         this.levelData = levelData;
+        this.totalGameLevels = totalGameLevels;
         this.posX = this.levelData.x;
         this.posY = this.levelData.y;
         this.originalPosX = this.posX;
@@ -209,6 +212,12 @@ export default class LevelBloonButton {
         unlockLevelIndex: number,
         callBack
     ) {
+        // Check if this level exists
+        const levelIndex = this.levelData.index + levelSelectionPageIndex + 1;
+        if (levelIndex > this.totalGameLevels) {
+            return; // Don't process click for non-existent levels
+        }
+
         const distance =  Math.sqrt(
             (xClick -  this.levelData.x - this.radiusOffSet) *
             (xClick -  this.levelData.x - this.radiusOffSet) +
@@ -225,6 +234,6 @@ export default class LevelBloonButton {
                 
                 callBack(this.levelData.index)
             }
-      }
+        }
     }
 }

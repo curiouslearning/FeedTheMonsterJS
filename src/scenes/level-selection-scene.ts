@@ -151,6 +151,7 @@ export class LevelSelectionScreen {
         this.canvas,
         this.context,
         {...btnCoordinates},
+        this.data.levels.length
       )
     });
   }
@@ -258,12 +259,6 @@ export class LevelSelectionScreen {
     }
 
     for(let btn of this.levelButtons) {
-      // Check if the level exists before allowing click
-      const levelIndex = btn.levelData.index + this.levelSelectionPageIndex;
-      if (levelIndex > this.data.levels.length) {
-        continue; // Skip this button if level doesn't exist
-      }
-
       btn.onClick(
         x,
         y,
