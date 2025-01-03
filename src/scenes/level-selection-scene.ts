@@ -258,6 +258,12 @@ export class LevelSelectionScreen {
     }
 
     for(let btn of this.levelButtons) {
+      // Check if the level exists before allowing click
+      const levelIndex = btn.levelData.index + this.levelSelectionPageIndex;
+      if (levelIndex > this.data.levels.length) {
+        continue; // Skip this button if level doesn't exist
+      }
+
       btn.onClick(
         x,
         y,
@@ -275,8 +281,8 @@ export class LevelSelectionScreen {
   private drawLevel(levelBtn: any, gameLevelData: []) {
     const currentLevelIndex = levelBtn.levelData.index + this.levelSelectionPageIndex;
     const currentLevel = currentLevelIndex - 1;
-
-    const nextLevelPlay = this.unlockLevelIndex + 1;
+    const isLastLevelUnlocked = this.unlockLevelIndex === this.data.levels.length - 1;
+    const nextLevelPlay = this.unlockLevelIndex + (isLastLevelUnlocked ? 0 : 1);
 
     if (nextLevelPlay === currentLevel) {
       levelBtn.applyPulseEffect();
