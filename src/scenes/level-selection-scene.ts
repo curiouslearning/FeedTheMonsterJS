@@ -283,13 +283,26 @@ export class LevelSelectionScreen {
     }
   };
 
+  /**
+   * Checks if a level is considered completed based on star count.
+   * A level is completed when the player has earned 2 or more stars.
+   * Used to determine if the level button should show the pulse effect,
+   * as incomplete levels need to draw player's attention.
+   * @param levelNumber - The level to check completion status for
+   * @param gameLevelData - Array of level data containing star counts
+   * @returns true if level has 2+ stars, false otherwise
+   */
+  private isLevelCompleted(levelNumber: number, gameLevelData: any[]): boolean {
+    const levelInfo = gameLevelData.find(level => level.levelNumber === levelNumber);
+    return (levelInfo?.starCount || 0) >= 2;
+  }
+
   private drawLevel(levelBtn: any, gameLevelData: []) {
     const currentLevelIndex = levelBtn.levelData.index + this.levelSelectionPageIndex;
     const currentLevel = currentLevelIndex - 1;
-    const isLastLevelUnlocked = this.unlockLevelIndex === this.data.levels.length - 1;
-    const nextLevelPlay = this.unlockLevelIndex + (isLastLevelUnlocked ? 0 : 1);
+    const nextLevelPlay = this.unlockLevelIndex + 1;
 
-    if (nextLevelPlay === currentLevel) {
+    if (nextLevelPlay === currentLevel && !this.isLevelCompleted(currentLevel, gameLevelData)) {
       levelBtn.applyPulseEffect();
     }
 
