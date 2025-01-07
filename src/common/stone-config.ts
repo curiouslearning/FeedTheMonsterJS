@@ -120,8 +120,8 @@ export class StoneConfig {
         if (this.frame < 100) {
             this.frame = this.frame + 1;
         }
-        else if (this.tutorialInstance != null || this.tutorialInstance != undefined) {
-            this.tutorialInstance.draw(deltaTime, this.img, this.imageSize);
+        else if(this.tutorialInstance!=null || this.tutorialInstance!=undefined){
+            this.tutorialInstance.draw(deltaTime,this.img,this.imageSize);
         }
     }
 }
