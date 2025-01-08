@@ -1,6 +1,7 @@
 import { AudioPlayer, BackgroundHtmlGenerator } from "@components";
 import { PlayButtonHtml } from '@components/buttons';
 import { BaseButtonComponent } from '@components/buttons/base-button-component/base-button-component';
+import { BaseHTML } from '@components/baseHTML/base-html';
 import { RiveMonsterComponent } from "@components/riveMonster/rive-monster-component";
 import { DataModal } from "@data";
 import {
@@ -35,7 +36,7 @@ export class StartScene {
   public images: Object;
   public loadedImages: any;
   public imagesLoaded: boolean = false;
-  public handler: HTMLCanvasElement;
+  public handler: HTMLBodyElement;
   public static SceneName: string;
   public switchSceneToLevelSelection: Function;
   audioPlayer: AudioPlayer;
@@ -45,6 +46,7 @@ export class StartScene {
   public riveMonster: RiveMonsterComponent;
   private firebaseIntegration: FirebaseIntegration;
   private loadingElement: HTMLElement;
+  private onClickArea: BaseHTML;
 
   constructor(
     canvas: HTMLCanvasElement,
@@ -71,10 +73,19 @@ export class StartScene {
         this.riveMonster.play(RiveMonsterComponent.Animations.IDLE); // Start with the "Idle" animation
       }
     });
+    this.onClickArea = new BaseHTML(
+      {
+        selectors: {
+          root: '#background'
+        }
+      },
+      'start-scene-click-area',
+      (id) => (`<div id="${id}"></div>`)
+    );
     this.switchSceneToLevelSelection = switchSceneToLevelSelection;
     this.audioPlayer = new AudioPlayer();
     this.pwa_status = localStorage.getItem(PWAInstallStatus);
-    this.handler = document.getElementById("canvas") as HTMLCanvasElement;
+    this.handler = document.getElementById('start-scene-click-area') as HTMLBodyElement;
     this.devToggle();
     this.createPlayButton();
     window.addEventListener("beforeinstallprompt", this.handlerInstallPrompt);
@@ -84,6 +95,7 @@ export class StartScene {
     this.riveMonsterElement.style.zIndex = '6';
     this.firebaseIntegration = new FirebaseIntegration();
     this.hideInitialLoading();
+    this.setOnClicknAreaStyle();
   }
 
   private setupBg = async () => {
@@ -97,6 +109,13 @@ export class StartScene {
     // Dynamically update the background based on the selected type
     backgroundGenerator.generateBackground(selectedBackgroundType);
   };
+
+  private setOnClicknAreaStyle = () => {
+    this.handler.style.width = 'inherit'; //inherit the full width.
+    this.handler.style.height = 'inherit'; //inherit the full height.
+    this.handler.style.position = 'absolute';
+    this.handler.style.zIndex = '5'; //on top of rive but below the play button.
+  }
 
   private hideInitialLoading = () => {
     setTimeout(() => {
@@ -135,27 +154,16 @@ export class StartScene {
   }
 
   handleMouseClick = (event) => {
-    let self = this;
-    const selfElement = document.getElementById("canvas") as HTMLCanvasElement;
     event.preventDefault();
-    var rect = selfElement.getBoundingClientRect();
-    const x = event.clientX - rect.left;
-    const y = event.clientY - rect.top;
-    const { excludeX, excludeY } = Utils.getExcludedCoordinates(
-      selfElement,
-      15
-    );
-    if (!(x < excludeX && y < excludeY)) {
-      FirebaseIntegration.getInstance().sendUserClickedOnPlayEvent();
-      // @ts-ignore
-      fbq("trackCustom", FirebaseUserClicked, {
-        event: "click",
-      });
-      this.toggleBtn.style.display = "none";
-      this.audioPlayer.playButtonClickSound();
-      gameStateService.publish(gameStateService.EVENTS.SCENE_LOADING_EVENT, true);
-      self.switchSceneToLevelSelection();
-    }
+    FirebaseIntegration.getInstance().sendUserClickedOnPlayEvent();
+    // @ts-ignore
+    fbq("trackCustom", FirebaseUserClicked, {
+      event: "click",
+    });
+    this.toggleBtn.style.display = "none";
+    this.audioPlayer.playButtonClickSound();
+    gameStateService.publish(gameStateService.EVENTS.SCENE_LOADING_EVENT, true);
+    this.switchSceneToLevelSelection();
   };
 
   dispose() {
@@ -163,6 +171,7 @@ export class StartScene {
     this.handler.removeEventListener("click", this.handleMouseClick, false);
     this.playButton.dispose();
     this.playButton.destroy();
+    this.onClickArea.destroy();
     window.removeEventListener(
       "beforeinstallprompt",
       this.handlerInstallPrompt,
