@@ -137,7 +137,15 @@ export class LevelSelectionScreen {
   private async createLevelButtons() {
     const images = await loadLevelImages();
     const poss = getdefaultCloudBtnsPos(this.canvas);
-    const levelsArr = poss[0].map((coordinates, index) => {
+    const totalLevels = this.data.levels.length;
+    const buttonsPerPage = 10;
+    const remainingButtons = Math.max(0, totalLevels - this.levelSelectionPageIndex);
+    const buttonsToCreate = Math.min(buttonsPerPage, remainingButtons);
+
+    // Only take the positions we need for this page
+    const positions = poss[0].slice(0, buttonsToCreate);
+    
+    const levelsArr = positions.map((coordinates, index) => {
       return createLevelObject(
         coordinates[0],
         coordinates[1],
@@ -145,14 +153,21 @@ export class LevelSelectionScreen {
         images
       );
     });
+
     this.levels = await Promise.all(levelsArr);
     this.levelButtons = this.levels.map(btnCoordinates => {
       return new LevelBloonButton(
         this.canvas,
         this.context,
-        {...btnCoordinates},
-      )
+        {...btnCoordinates}
+      );
     });
+  }
+
+  private async updatePage(newPageIndex: number) {
+    this.levelSelectionPageIndex = newPageIndex;
+    await this.createLevelButtons(); // Recreate buttons for new page
+    this.downButton(this.levelSelectionPageIndex);
   }
 
   private addListeners() {
@@ -207,16 +222,13 @@ export class LevelSelectionScreen {
       /*most significant*/
       if (xDiff > 0) {
         if (this.levelSelectionPageIndex != this.levelsSectionCount * 10 - 10) {
-          this.levelSelectionPageIndex = this.levelSelectionPageIndex + 10;
-          this.downButton(this.levelSelectionPageIndex);
+          this.updatePage(this.levelSelectionPageIndex + 10);
         }
         /* right swipe */
       } else {
         if (this.levelSelectionPageIndex != 0) {
-          this.levelSelectionPageIndex = this.levelSelectionPageIndex - 10;
+          this.updatePage(this.levelSelectionPageIndex - 10);
         }
-        this.downButton(this.levelSelectionPageIndex);
-        /* left swipe */
       }
     }
     /* reset values */
@@ -245,16 +257,15 @@ export class LevelSelectionScreen {
       const pageIndex = this.levelSelectionPageIndex;
       if (isRight && pageIndex != this.levelsSectionCount * 10 - 10) {
         this.audioPlayer.playButtonClickSound();
-        this.levelSelectionPageIndex = pageIndex + 10;
+        this.updatePage(pageIndex + 10);
         this.rightBtnSize = 10.5;
         this.rightBtnY = 1.299;
       } else if (isLeft && pageIndex != 0) {
         this.audioPlayer.playButtonClickSound();
-        this.levelSelectionPageIndex = pageIndex - 10;
+        this.updatePage(pageIndex - 10);
         this.leftBtnSize = 10.3;
         this.leftBtnY = 1.299;
       }
-      this.downButton(this.levelSelectionPageIndex);
     }
 
     for(let btn of this.levelButtons) {
@@ -272,13 +283,26 @@ export class LevelSelectionScreen {
     }
   };
 
+  /**
+   * Checks if a level is considered completed based on star count.
+   * A level is completed when the player has earned 2 or more stars.
+   * Used to determine if the level button should show the pulse effect,
+   * as incomplete levels need to draw player's attention.
+   * @param levelNumber - The level to check completion status for
+   * @param gameLevelData - Array of level data containing star counts
+   * @returns true if level has 2+ stars, false otherwise
+   */
+  private isLevelCompleted(levelNumber: number, gameLevelData: any[]): boolean {
+    const levelInfo = gameLevelData.find(level => level.levelNumber === levelNumber);
+    return (levelInfo?.starCount || 0) >= 2;
+  }
+
   private drawLevel(levelBtn: any, gameLevelData: []) {
     const currentLevelIndex = levelBtn.levelData.index + this.levelSelectionPageIndex;
     const currentLevel = currentLevelIndex - 1;
-
     const nextLevelPlay = this.unlockLevelIndex + 1;
 
-    if (nextLevelPlay === currentLevel) {
+    if (nextLevelPlay === currentLevel && !this.isLevelCompleted(currentLevel, gameLevelData)) {
       levelBtn.applyPulseEffect();
     }
 
