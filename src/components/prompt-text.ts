@@ -187,18 +187,28 @@ export class PromptText extends EventManager {
                     startPrompttextX,
                     y
                 );         
+                currentWordWidth = (this.context.measureText(
+                    leftPromptText
+                ).width + this.context.measureText(
+                    letterHighlight
+                ).width) / 2;
+                startPrompttextX += currentWordWidth;
             }
             if(letterHighlight.length>0){
-                startPrompttextX += this.context.measureText(leftPromptText).width;
                 this.context.fillStyle = "red";
                 this.context.fillText(
                     letterHighlight,
                     startPrompttextX,
                     y
                 );
+                currentWordWidth = (this.context.measureText(
+                    letterHighlight
+                ).width + this.context.measureText(
+                    rightPromptText
+                ).width) / 2;
+                startPrompttextX += currentWordWidth;
             }
             if(rightPromptText.length>0) {
-                startPrompttextX += this.context.measureText(letterHighlight).width;
                 this.context.fillStyle = "black";
                 this.context.fillText(
                     rightPromptText,
