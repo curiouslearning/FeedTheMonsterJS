@@ -51,6 +51,7 @@ export default class StoneHandler extends EventManager {
       stoneDropCallbackHandler: (event) => this.handleStoneDrop(event),
       loadPuzzleCallbackHandler: (event) => this.handleLoadPuzzle(event),
     });
+    this.cleanup();
     this.context = context;
     this.canvas = canvas;
     this.puzzleNumber = puzzleNumber;
@@ -282,7 +283,24 @@ export default class StoneHandler extends EventManager {
     this.correctStoneAudio.play();
   }
 
-	resetStonePosition(
+  cleanup() {
+    // Clear existing stones
+    this.foilStones = [];
+    
+    // Clean up audio resources
+    if (this.correctStoneAudio) {
+      this.correctStoneAudio.pause();
+      this.correctStoneAudio.src = '';
+    }
+    
+    // Remove event listeners
+    document.removeEventListener(VISIBILITY_CHANGE, this.handleVisibilityChange);
+    if (this.unsubscribeEvent) {
+      this.unsubscribeEvent();
+    }
+  }
+
+  resetStonePosition(
     width: number,
     pickedStone: StoneConfig,
     pickedStoneObject: StoneConfig
