@@ -14,7 +14,7 @@ interface RiveMonsterComponentProps {
 export class RiveMonsterComponent {
   private props: RiveMonsterComponentProps;
   private riveInstance: any;
-  private src: string = './assets/finalEggMonster.riv';  // Define the .riv file path
+  private src: string = './assets/finalEggMonster.riv';  // Define the .riv file path eggMonsterfinal
   private stateMachineName: string = "State Machine 1"  // Define the state machine
   public game: any;
   public x: number;
