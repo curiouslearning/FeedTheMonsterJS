@@ -2,16 +2,18 @@ version: 2.1
 
 orbs:
   aws-s3: circleci/aws-s3@3.0
+  node: circleci/node@7.0.0
 
 jobs:
   npm-build:
-    docker:
-      - image: cimg/node@18.20.5
+    executor: node/default
     steps:
       - checkout
-      - run: npm install
-      - run: npm build
-    working_directory: ~/app
+      - run: sudo npm install -g npm@latest
+      - node/install-packages:
+          cache-path: ~/project/node_modules
+          override-ci-command: npm install
+      - run: npm run build
 
   s3-deploy:
     docker:
