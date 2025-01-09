@@ -5,7 +5,7 @@
   "main": "feedTheMonster.js",
   "scripts": {
     "release": "release-it",
-    "dev": "webpack --config webpack.config.js"
+    "build": "webpack --config webpack.config.js --mode=production"
   },
   "repository": {
     "type": "git",
