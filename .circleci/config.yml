@@ -2,7 +2,7 @@ version: 2.1
 
 orbs:
   aws-s3: circleci/aws-s3@3.0
-  node: circleci/node@18.20
+  node: cimg/node@18.20
 
 jobs:
   npm-build:
