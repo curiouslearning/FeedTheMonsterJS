@@ -2,8 +2,18 @@ version: 2.1
 
 orbs:
   aws-s3: circleci/aws-s3@3.0
+  node: circleci/node@18.20
 
 jobs:
+  npm-build:
+    docker:
+      - image: circleci/node:18.20.5
+    steps:
+      - checkout
+      - run: npm install
+      - run: npm build
+    working_directory: ~/app
+
   s3-deploy:
     docker:
       - image: 'cimg/python:3.6'
@@ -18,7 +28,22 @@ jobs:
           aws-secret-access-key: AWS_SECRET_ACCESS_KEY
           from: ./build/
           to: 's3://feedthemonster-development'
-  
+
+  s3-deploy-test:
+    docker:
+      - image: 'cimg/python:3.6'
+    steps:
+      - checkout
+      - aws-s3/sync:
+          arguments: |
+            --acl public-read \
+            --cache-control "max-age=86400"
+          aws-access-key-id: AWS_ACCESS_KEY
+          aws-region: AWS_DEFAULT_REGION
+          aws-secret-access-key: AWS_SECRET_ACCESS_KEY
+          from: ./build/
+          to: 's3://globallit-aws-s3-static-webapp-test-us-east-2/feed-the-monster'
+
   s3-deploy-prod:
     docker:
       - image: 'cimg/python:3.6'
@@ -39,11 +64,17 @@ jobs:
 workflows:
   s3-deploy-workflow:
     jobs:
+      - npm-build
       - s3-deploy:
           filters:
             branches:
               only:
                 - develop
+      - s3-deploy-test:
+          filters:
+            branches:
+              only:
+                - test
       - s3-deploy-prod:
           filters:
             branches:
