@@ -1,6 +1,10 @@
 import { font } from "@common";
 import { TimerTicking, Tutorial } from "@components";
 
+/**
+ * Performance optimized stone configuration class.
+ * Uses time-based animation and position caching to improve rendering performance.
+ */
 export class StoneConfig {
     public x: number;
     public y: number;
@@ -18,8 +22,15 @@ export class StoneConfig {
     public tutorialInstance: Tutorial;
     public timerTickingInstance: TimerTicking;
     public frame: number = 0;
+    public isDisposed: boolean = false;
+    // Performance optimization: Use time-based animation for smoother movement
+    private animationStartTime: number = 0;
+    private animationDuration: number = 1000; // 1 second animation
+    // Performance optimization: Cache calculated positions to reduce per-frame calculations
+    private cachedX: number = 0;
+    private cachedY: number = 0;
 
-    constructor(context, canvasWidth, canvasHeight, stoneLetter, xPos, yPos, img,timerTickingInstance,tutorialInstance?) {
+    constructor(context, canvasWidth, canvasHeight, stoneLetter, xPos, yPos, img,timerTickingInstance, tutorialInstance?) {
         this.x = xPos;
         this.y = yPos;
         this.origx = xPos;
@@ -34,7 +45,14 @@ export class StoneConfig {
         this.imageCenterOffsetX = this.imageSize / 2.3;
         this.imageCenterOffsetY = this.imageSize / 1.5;
         this.timerTickingInstance = timerTickingInstance;
+    }
 
+    public initialize() {
+        this.frame = 0;
+        this.isDisposed = false;
+        this.animationStartTime = 0;
+        this.cachedX = 0;
+        this.cachedY = 0;
     }
 
     calculateImageAndFontSize() {
@@ -53,75 +71,109 @@ export class StoneConfig {
         }
     }
 
-    getEase = (currentProgress, start, distance, steps) => {
-        return -distance / 2 * (Math.cos(Math.PI * currentProgress / steps) - 1) + start;
+    getEase = (currentProgress: number, start: number, distance: number) => {
+        return -distance / 2 * (Math.cos(Math.PI * currentProgress) - 1) + start;
     };
 
+    /**
+     * Performance optimization: Cache position calculations
+     * Returns cached X position if available to avoid recalculation
+     */
     getX = () => {
-        if (this.frame >= 100) {
-            // Animation has ended, return the final stone position
-            return this.x;
-        }
-        return this.getEase(this.frame, 0, this.x, 100);
+        if (this.frame >= 100) return this.x;
+        if (this.cachedX) return this.cachedX;
+        this.cachedX = this.getEase(this.frame / 100, 0, this.x);
+        return this.cachedX;
     }
 
+    /**
+     * Performance optimization: Cache position calculations
+     * Returns cached Y position if available to avoid recalculation
+     */
     getY = () => {
-        if (this.frame >= 100) {
-            // Animation has ended, return the final stone position
-            return this.y;
-        }
-
-        return this.getEase(this.frame, 0, this.y, 100);
+        if (this.frame >= 100) return this.y;
+        if (this.cachedY) return this.cachedY;
+        this.cachedY = this.getEase(this.frame / 100, 0, this.y);
+        return this.cachedY;
     }
 
     adjustSize(shouldResize, num) {
         return shouldResize ? num * 1.25 : num;
     }
 
+    /**
+     * Performance optimized draw method
+     * - Uses time-based animation for smooth movement
+     * - Caches position calculations
+     * - Only applies effects when necessary
+     */
     draw(deltaTime: number, shouldResize: boolean = false) {
-        // Cache adjusted size calculations
-        const adjustedImageSize = this.adjustSize(shouldResize, this.imageSize);
-        const adjustedOffsetX = this.adjustSize(shouldResize, this.imageCenterOffsetX);
-        const adjustedOffsetY = this.adjustSize(shouldResize, this.imageCenterOffsetY);
+        if (this.isDisposed || !this.img || !this.context) return;
 
-        const x = this.getX() - adjustedOffsetX;
-        const y = this.getY() - adjustedOffsetY;
+        // Update animation based on actual time elapsed
+        if (this.frame < 100) {
+            if (this.animationStartTime === 0) {
+                this.animationStartTime = performance.now();
+            }
+            const elapsed = performance.now() - this.animationStartTime;
+            this.frame = Math.min(100, (elapsed / this.animationDuration) * 100);
+            // Reset cached positions when frame updates
+            this.cachedX = 0;
+            this.cachedY = 0;
+        }
 
-        // Only apply shadow effects when stone is being dragged (shouldResize is true)
+        const x = this.getX() - (shouldResize ? this.imageCenterOffsetX * 1.25 : this.imageCenterOffsetX);
+        const y = this.getY() - (shouldResize ? this.imageCenterOffsetY * 1.25 : this.imageCenterOffsetY);
+        const size = shouldResize ? this.imageSize * 1.25 : this.imageSize;
+
+        // Only apply shadow effects when stone is being dragged
         if (shouldResize) {
             this.context.shadowColor = 'rgba(255, 255, 255, 1)';
             this.context.shadowBlur = 12;
             this.context.shadowOffsetX = 0;
             this.context.shadowOffsetY = 0;
-        } else {
-            this.context.shadowColor = 'transparent';
-            this.context.shadowBlur = 0;
-            this.context.shadowOffsetX = 0;
-            this.context.shadowOffsetY = 0;
         }
 
-        this.context.drawImage(
-            this.img,
-            x,
-            y,
-            adjustedImageSize,
-            adjustedImageSize
-        );
+        // Draw the stone image
+        this.context.drawImage(this.img, x, y, size, size);
 
-        // Reset shadow effects
+        // Reset shadow effects and draw text
         this.context.shadowColor = 'transparent';
         this.context.shadowBlur = 0;
-
         this.context.fillStyle = "white";
         this.context.font = this.textFontSize + `px ${font}, monospace`;
         this.context.textAlign = "center";
         this.context.fillText(this.text, this.getX(), this.getY());
 
-        if (this.frame < 100) {
-            this.frame = this.frame + 1;
+        if (this.tutorialInstance && this.frame >= 100) {
+            this.tutorialInstance.draw(deltaTime, this.img, this.imageSize);
         }
-        else if(this.tutorialInstance!=null || this.tutorialInstance!=undefined){
-            this.tutorialInstance.draw(deltaTime,this.img,this.imageSize);
-        }
+    }
+
+    /**
+     * Properly dispose of stone resources to prevent memory leaks.
+     * This is crucial for performance when playing consecutive levels.
+     */
+    public dispose() {
+        this.isDisposed = true;
+        this.img = null;
+        this.context = null;
+        this.tutorialInstance = null;
+        this.timerTickingInstance = null;
+        this.frame = 0;
+        this.cachedX = 0;
+        this.cachedY = 0;
+    }
+
+    /**
+     * Reset stone position and state.
+     * Used when stones need to return to their original position.
+     */
+    public reset() {
+        this.x = this.origx;
+        this.y = this.origy;
+        this.isDisposed = false;
+        this.cachedX = 0;
+        this.cachedY = 0;
     }
 }

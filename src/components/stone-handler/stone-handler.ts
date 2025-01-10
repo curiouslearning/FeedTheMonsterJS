@@ -89,43 +89,58 @@ export default class StoneHandler extends EventManager {
     );
   }
 
+  /**
+   * Performance optimized stone creation
+   * Properly initializes stones and prevents memory leaks
+   */
   createStones(img) {
     const foilStones = this.getFoilStones();
+    // Clear existing stones first to prevent memory leaks
+    this.foilStones = [];
+    
     for (let i = 0; i < foilStones.length; i++) {
       // if (foilStones[i] == this.correctTargetStone) {
       //   //this.tutorial.updateTargetStonePositions(this.stonePos[i]); //temporary disabled
       // }
-      this.foilStones.push(
-        new StoneConfig(
-          this.context,
-          this.canvas.width,
-          this.canvas.height,
-          foilStones[i],
-          this.stonePos[i][0],
-          this.stonePos[i][1],
-          img,
-          this.timerTickingInstance,
-          //i == foilStones.length - 1 ? this.tutorial : null //temporary disabled
-          null
-        )
+      const stone = new StoneConfig(
+        this.context,
+        this.canvas.width,
+        this.canvas.height,
+        foilStones[i],
+        this.stonePos[i][0],
+        this.stonePos[i][1],
+        img,
+        this.timerTickingInstance,
+        //i == foilStones.length - 1 ? this.tutorial : null //temporary disabled
+        null
       );
+      stone.initialize(); // Initialize new stones with proper animation state
+      this.foilStones.push(stone);
     }
   }
 
+  /**
+   * Performance optimized draw loop
+   * Only processes active stones and updates timer efficiently
+   */
   draw(deltaTime: number) {
-    if (this.foilStones.length > 0) {
-      this.foilStones.forEach((stone) => {
-        if (stone && stone.frame !== undefined) {
-          stone.draw(deltaTime);
-        }
-      });
+    if (this.foilStones.length === 0) return;
 
-      if (
-        this.foilStones[this.foilStones.length - 1].frame >= 100 &&
-        !this.isGamePaused
-      ) {
-        this.timerTickingInstance.update(deltaTime);
+    // Only check animation completion once per frame
+    let isAnimationComplete = true;
+    const activeStones = this.foilStones.filter(stone => stone && !stone.isDisposed);
+    
+    // Draw only active stones
+    for (const stone of activeStones) {
+      if (stone.frame < 100) {
+        isAnimationComplete = false;
       }
+      stone.draw(deltaTime);
+    }
+
+    // Update timer only once animation is complete and game is not paused
+    if (isAnimationComplete && !this.isGamePaused) {
+      this.timerTickingInstance.update(deltaTime);
     }
   }
 
@@ -155,10 +170,10 @@ export default class StoneHandler extends EventManager {
   }
 
   public handleStoneDrop(event) {
-    this.foilStones = [];
+    this.disposeStones();
   }
   public handleLoadPuzzle(event) {
-    this.foilStones = [];
+    this.disposeStones();
     this.tutorial.setPuzzleNumber(event.detail.counter);
     this.puzzleNumber = event.detail.counter;
     this.setTargetStone(this.puzzleNumber);
@@ -270,28 +285,54 @@ export default class StoneHandler extends EventManager {
     ];
   }
 
-  playCorrectAnswerFeedbackSound(feedBackIndex: number) {
-    const randomNumber = Utils.getRandomNumber(1, 3).toString();
-    this.audioPlayer.playFeedbackAudios(
-      false,
-      AUDIO_PATH_EATS,
-      AUDIO_PATH_CHEERING_FUNC(randomNumber),
-      AUDIO_PATH_POINTS_ADD,
-      Utils.getConvertedDevProdURL(this.feedbackAudios[feedBackIndex]),
-    );
-    // to play the audio parrallely.
-    this.correctStoneAudio.play();
+  /**
+   * Performance optimization: Parallel audio playback
+   * Disposes stones immediately while playing audio in parallel
+   */
+  async playCorrectAnswerFeedbackSound(feedBackIndex: number) {
+    try {
+      // Dispose stones immediately - don't wait for audio
+      this.disposeStones();
+      
+      // Play feedback audio in parallel for better performance
+      const randomNumber = Utils.getRandomNumber(1, 3).toString();
+      await Promise.allSettled([
+        this.correctStoneAudio.play(),
+        this.audioPlayer.playFeedbackAudios(
+          false,
+          AUDIO_PATH_EATS,
+          AUDIO_PATH_CHEERING_FUNC(randomNumber),
+          AUDIO_PATH_POINTS_ADD,
+          Utils.getConvertedDevProdURL(this.feedbackAudios[feedBackIndex])
+        )
+      ]);
+    } catch (error) {
+      console.warn('Audio playback failed:', error);
+    }
+  }
+
+  /**
+   * Performance optimization: Proper resource cleanup
+   * Ensures stones are properly disposed to prevent memory leaks
+   */
+  private disposeStones() {
+    // Properly dispose each stone to prevent memory leaks
+    for (const stone of this.foilStones) {
+      if (stone && !stone.isDisposed) {
+        stone.dispose();
+      }
+    }
+    this.foilStones = [];
   }
 
   cleanup() {
-    // Clear existing stones
-    this.foilStones = [];
-    
     // Clean up audio resources
     if (this.correctStoneAudio) {
       this.correctStoneAudio.pause();
       this.correctStoneAudio.src = '';
     }
+    
+    this.disposeStones();
     
     // Remove event listeners
     document.removeEventListener(VISIBILITY_CHANGE, this.handleVisibilityChange);
