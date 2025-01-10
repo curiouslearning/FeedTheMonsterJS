@@ -6,10 +6,21 @@ const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const TerserPlugin = require('terser-webpack-plugin');
 // const CompressionPlugin = require('compression-webpack-plugin');
 
+const mode = isDev ? 'development' : 'production';
+
 var config = {
-  mode: nodeEnv,
-  watch: isDev,
+  mode,
   entry: './feedTheMonster.ts',
+  devServer: {
+    static: {
+      directory: path.join(__dirname, 'build'),
+    },
+    client: {
+      overlay: true,
+    },
+    compress: false,
+    port: 8080
+  },
   module: {
     rules: [
       {
