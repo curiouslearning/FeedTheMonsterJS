@@ -21,92 +21,92 @@ export const StartScene1 = "StartScene1";
 export const LevelSelection1 = "LevelSelection1";
 export const GameScene1 = "GameScene1";
 export const EndScene1 = "EndScene1";
-export const FONT_BASE_PATH = './assets/fonts/';
+export const FONT_BASE_PATH = '/assets/fonts/';
 
 //Audio paths
-export const AUDIO_PATH_EATS = "./assets/audios/Eat.mp3";
-export const AUDIO_PATH_MONSTER_SPIT = "./assets/audios/MonsterSpit.mp3";
+export const AUDIO_PATH_EATS = "/assets/audios/Eat.mp3";
+export const AUDIO_PATH_MONSTER_SPIT = "/assets/audios/MonsterSpit.mp3";
 export const AUDIO_PATH_MONSTER_DISSAPOINTED =
-  "./assets/audios/Disapointed-05.mp3";
+  "/assets/audios/Disapointed-05.mp3";
 export const AUDIO_PATH_POINTS_ADD = "assets/audios/PointsAdd.wav";
 export const AUDIO_PATH_CORRECT_STONE = "assets/audios/CorrectStoneFinal.mp3";
 export const AUDIO_PATH_CHEERING_FUNC = (randomNumber) =>
-  `./assets/audios/Cheering-0${randomNumber}.mp3`;
-export const AUDIO_PATH_BTN_CLICK = "./assets/audios/ButtonClick.mp3";
-export const AUDIO_PATH_ON_DRAG = "./assets/audios/onDrag.mp3";
-export const AUDIO_ARE_YOU_SURE = "./assets/audios/are-you-sure.mp3";
-export const AUDIO_TIMEOUT = "./assets/audios/timeout.mp3";
-export const AUDIO_INTRO = "./assets/audios/intro.mp3";
-export const AUDIO_LEVEL_LOSE = "./assets/audios/LevelLoseFanfare.mp3";
-export const AUDIO_LEVEL_WIN = "./assets/audios/LevelWinFanfare.mp3";
+  `/assets/audios/Cheering-0${randomNumber}.mp3`;
+export const AUDIO_PATH_BTN_CLICK = "/assets/audios/ButtonClick.mp3";
+export const AUDIO_PATH_ON_DRAG = "/assets/audios/onDrag.mp3";
+export const AUDIO_ARE_YOU_SURE = "/assets/audios/are-you-sure.mp3";
+export const AUDIO_TIMEOUT = "/assets/audios/timeout.mp3";
+export const AUDIO_INTRO = "/assets/audios/intro.mp3";
+export const AUDIO_LEVEL_LOSE = "/assets/audios/LevelLoseFanfare.mp3";
+export const AUDIO_LEVEL_WIN = "/assets/audios/LevelWinFanfare.mp3";
 export const AUDIO_URL_PRELOAD = [
-  "./assets/audios/intro.mp3",
-  "./assets/audios/Cheering-02.mp3",
-  "./assets/audios/Cheering-03.mp3",
-  "./assets/audios/Cheering-01.mp3",
-  "./assets/audios/onDrag.mp3",
-  "./assets/audios/timeout.mp3",
-  "./assets/audios/LevelWinFanfare.mp3",
-  "./assets/audios/LevelLoseFanfare.mp3",
-  "./assets/audios/ButtonClick.mp3",
-  "./assets/audios/Monster Spits wrong stones-01.mp3",
-  "./assets/audios/Disapointed-05.mp3",
-  "./assets/audios/MonsterSpit.mp3",
-  "./assets/audios/Eat.mp3",
-  "./assets/audios/PointsAdd.wav",
-  "./assets/audios/are-you-sure.mp3",
+  "/assets/audios/intro.mp3",
+  "/assets/audios/Cheering-02.mp3",
+  "/assets/audios/Cheering-03.mp3",
+  "/assets/audios/Cheering-01.mp3",
+  "/assets/audios/onDrag.mp3",
+  "/assets/audios/timeout.mp3",
+  "/assets/audios/LevelWinFanfare.mp3",
+  "/assets/audios/LevelLoseFanfare.mp3",
+  "/assets/audios/ButtonClick.mp3",
+  "/assets/audios/Monster Spits wrong stones-01.mp3",
+  "/assets/audios/Disapointed-05.mp3",
+  "/assets/audios/MonsterSpit.mp3",
+  "/assets/audios/Eat.mp3",
+  "/assets/audios/PointsAdd.wav",
+  "/assets/audios/are-you-sure.mp3",
 ];
 
 //Image paths
-export const ASSETS_PATH_STONE_PINK_BG = "./assets/images/stone_pink.webp"; //stone_pink_v02.png
-export const ASSETS_PATH_TOTEM = "./assets/images/Totem_v02_v01.webp";
-export const ASSETS_PATH_BG_01 = "./assets/images/bg_v01.webp";
-export const ASSETS_PATH_HILL = "./assets/images/hill_v01.webp";
-export const ASSETS_PATH_FENCE = "./assets/images/fence_v01.webp";
-export const ASSETS_PATH_MONSTER_IDLE = "./assets/images/idle4.png";
-export const DEFAULT_BACKGROUND_1 = "./assets/images/bg_v01.webp";
-export const AUTUMN_BACKGROUND_1 = "./assets/images/Autumn_bg_v01.webp";
-export const AUTUMN_HILL_1 = "./assets/images/Autumn_hill_v01.webp";
-export const AUTUMN_PILLAR_1 = "./assets/images/Autumn_sign_v01.webp";
-export const AUTUMN_SIGN_1 = "./assets/images/Autumn_sign_v01.webp";
-export const AUTUMN_FENCE_1 = "./assets/images/Autumn_fence_v01.webp";
-export const WINTER_BACKGROUND_1 = "./assets/images/Winter_bg_01.webp";
-export const WINTER_HILL_1 = "./assets/images/Winter_hill_v01.webp";
-export const WINTER_SIGN_1 = "./assets/images/Winter_sign_v01.webp";
-export const WINTER_FENCE_1 = "./assets/images/Winter_fence_v01.webp";
-export const WINTER_PILLAR_1 = "./assets/images/Winter_sign_v01.webp";
-export const LEVEL_SELECTION_BACKGROUND = "./assets/images/map.webp";
-export const PROMPT_TEXT_BG = "./assets/images/promptTextBg.webp";
-export const PROMPT_PLAY_BUTTON = "./assets/images/promptPlayButton.webp";
-export const LEVEL_INDICATOR = "./assets/images/levels_v01.webp";
-export const BAR_EMPTY = "./assets/images/bar_empty_v01.webp";
-export const BAR_FULL = "./assets/images/bar_full_v01.webp";
-export const TIMER_EMPTY = "./assets/images/timer_empty.webp";
-export const ROTATING_CLOCK = "./assets/images/timer.webp";
-export const TIMER_FULL = "./assets/images/timer_full.png";
-export const TUTORIAL_HAND = "./assets/images/tutorial_hand.webp";
-export const WIN_BG = "./assets/images/WIN_screen_bg.webp";
-export const PIN_STAR_1 = "./assets/images/pinStar1.webp";
-export const PIN_STAR_2 = "./assets/images/pinStar2.webp";
-export const PIN_STAR_3 = "./assets/images/pinStar3.webp";
-export const CLOUD_6 = "./assets/images/cloud_01.png";
-export const CLOUD_7 = "./assets/images/cloud_02.png";
-export const CLOUD_8 = "./assets/images/cloud_03.png";
+export const ASSETS_PATH_STONE_PINK_BG = "/assets/images/stone_pink.webp"; //stone_pink_v02.png
+export const ASSETS_PATH_TOTEM = "/assets/images/Totem_v02_v01.webp";
+export const ASSETS_PATH_BG_01 = "/assets/images/bg_v01.webp";
+export const ASSETS_PATH_HILL = "/assets/images/hill_v01.webp";
+export const ASSETS_PATH_FENCE = "/assets/images/fence_v01.webp";
+export const ASSETS_PATH_MONSTER_IDLE = "/assets/images/idle4.png";
+export const DEFAULT_BACKGROUND_1 = "/assets/images/bg_v01.webp";
+export const AUTUMN_BACKGROUND_1 = "/assets/images/Autumn_bg_v01.webp";
+export const AUTUMN_HILL_1 = "/assets/images/Autumn_hill_v01.webp";
+export const AUTUMN_PILLAR_1 = "/assets/images/Autumn_sign_v01.webp";
+export const AUTUMN_SIGN_1 = "/assets/images/Autumn_sign_v01.webp";
+export const AUTUMN_FENCE_1 = "/assets/images/Autumn_fence_v01.webp";
+export const WINTER_BACKGROUND_1 = "/assets/images/Winter_bg_01.webp";
+export const WINTER_HILL_1 = "/assets/images/Winter_hill_v01.webp";
+export const WINTER_SIGN_1 = "/assets/images/Winter_sign_v01.webp";
+export const WINTER_FENCE_1 = "/assets/images/Winter_fence_v01.webp";
+export const WINTER_PILLAR_1 = "/assets/images/Winter_sign_v01.webp";
+export const LEVEL_SELECTION_BACKGROUND = "/assets/images/map.webp";
+export const PROMPT_TEXT_BG = "/assets/images/promptTextBg.webp";
+export const PROMPT_PLAY_BUTTON = "/assets/images/promptPlayButton.webp";
+export const LEVEL_INDICATOR = "/assets/images/levels_v01.webp";
+export const BAR_EMPTY = "/assets/images/bar_empty_v01.webp";
+export const BAR_FULL = "/assets/images/bar_full_v01.webp";
+export const TIMER_EMPTY = "/assets/images/timer_empty.webp";
+export const ROTATING_CLOCK = "/assets/images/timer.webp";
+export const TIMER_FULL = "/assets/images/timer_full.png";
+export const TUTORIAL_HAND = "/assets/images/tutorial_hand.webp";
+export const WIN_BG = "/assets/images/WIN_screen_bg.webp";
+export const PIN_STAR_1 = "/assets/images/pinStar1.webp";
+export const PIN_STAR_2 = "/assets/images/pinStar2.webp";
+export const PIN_STAR_3 = "/assets/images/pinStar3.webp";
+export const CLOUD_6 = "/assets/images/cloud_01.png";
+export const CLOUD_7 = "/assets/images/cloud_02.png";
+export const CLOUD_8 = "/assets/images/cloud_03.png";
 
-export const PLAY_BTN_IMG = "./assets/images/Play_button.webp";
-export const PAUSE_BTN_IMG = "./assets/images/pause_v01.webp";
-export const MAP_BTN_IMG = "./assets/images/map_btn.webp";
-export const MAP_ICON_IMG = "./assets/images/mapIcon.webp";
+export const PLAY_BTN_IMG = "/assets/images/Play_button.webp";
+export const PAUSE_BTN_IMG = "/assets/images/pause_v01.webp";
+export const MAP_BTN_IMG = "/assets/images/map_btn.webp";
+export const MAP_ICON_IMG = "/assets/images/mapIcon.webp";
 export const MAP_ICON_SPECIAL_IMG =
-  "./assets/images/map_icon_monster_level_v01.webp";
-export const MAP_LOCK_IMG = "./assets/images/mapLock.webp";
-export const STAR_IMG = "./assets/images/star.webp";
-export const NEXT_BTN_IMG = "./assets/images/next_btn.webp";
-export const BACK_BTN_IMG = "./assets/images/back_btn.webp";
-export const RETRY_BTN_IMG = "./assets/images/retry_btn.webp";
-export const CANCEL_BTN_IMG = "./assets/images/close_btn.webp";
-export const YES_BTN_IMG = "./assets/images/confirm_btn.webp";
-export const POPUP_BG_IMG = "./assets/images/popup_bg_v01.webp";
+  "/assets/images/map_icon_monster_level_v01.webp";
+export const MAP_LOCK_IMG = "/assets/images/mapLock.webp";
+export const STAR_IMG = "/assets/images/star.webp";
+export const NEXT_BTN_IMG = "/assets/images/next_btn.webp";
+export const BACK_BTN_IMG = "/assets/images/back_btn.webp";
+export const RETRY_BTN_IMG = "/assets/images/retry_btn.webp";
+export const CANCEL_BTN_IMG = "/assets/images/close_btn.webp";
+export const YES_BTN_IMG = "/assets/images/confirm_btn.webp";
+export const POPUP_BG_IMG = "/assets/images/popup_bg_v01.webp";
 
 //Background Group Images
 export const GAMEPLAY_BG_GROUP_IMGS = {

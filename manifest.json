@@ -3,7 +3,7 @@
     "name": "Feed The Monster Progressive Web App",
     "icons": [
       {
-        "src": "./assets/images/favicon.png",
+        "src": "/assets/images/favicon.png",
         "sizes": "512x512",
         "type": "image/png"
       }

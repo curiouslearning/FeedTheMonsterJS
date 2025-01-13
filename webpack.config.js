@@ -68,6 +68,7 @@ var config = {
         { from: "./index.css", to: "./" },
         { from: "./assets", to: "./assets" },
         { from: "./lang", to: "./lang" },
+        { from: "./manifest.json", to: "./" },
       ],
     }),
   ],
