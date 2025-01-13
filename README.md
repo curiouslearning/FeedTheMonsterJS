@@ -255,7 +255,7 @@ import { PromptTextLayer, ScoreCardLayer } from "../common/common.js";
 import { CanvasStack } from "../utility/canvas-stack.js";
 var self: any;
 var score_cardimg = new Image();
-score_cardimg.src = "./assets/images/score_v01.png";
+score_cardimg.src = "/assets/images/score_v01.png";
 export class ScoreCard {
 public game: any;
 public width: any;

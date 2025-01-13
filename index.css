@@ -1,6 +1,6 @@
 @font-face {
   font-family: Atma-SemiBold;
-  src: url(./assets/fonts/Atma-SemiBold.ttf);
+  src: url(/assets/fonts/Atma-SemiBold.ttf);
 }
 
 * {
