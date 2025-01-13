@@ -172,38 +172,55 @@ export class PromptText extends EventManager {
             this.width / 2 -
             this.context.measureText(this.currentPromptText).width / 2;
         let currentWordWidth = 0;
-        var letterHighlight: Array<string> =
-            this.currentPuzzleData.targetStones[0].split("");
+        var letterHighlight=this.currentPuzzleData.targetStones[0];
+        var leftPromptText = 
+            this.currentPromptText.substring
+            (0,this.currentPromptText.indexOf(letterHighlight));
+        var rightPromptText = 
+            this.currentPromptText.substring
+            (this.currentPromptText.indexOf(letterHighlight)+letterHighlight.length);
+        if (this.levelData.levelMeta.levelType === "LetterInWord" && this.levelData.levelMeta.protoType == "Visible" ) {
+            if (leftPromptText.length>0) {
+                this.context.fillStyle = "black";
+                this.context.fillText(
+                    leftPromptText,
+                    startPrompttextX,
+                    y
+                );         
+                currentWordWidth = (this.context.measureText(
+                    leftPromptText
+                ).width + this.context.measureText(
+                    letterHighlight
+                ).width) / 2;
+                startPrompttextX += currentWordWidth;
+            }
+            if(letterHighlight.length>0){
+                this.context.fillStyle = "red";
+                this.context.fillText(
+                    letterHighlight,
+                    startPrompttextX,
+                    y
+                );
+                currentWordWidth = (this.context.measureText(
+                    letterHighlight
+                ).width + this.context.measureText(
+                    rightPromptText
+                ).width) / 2;
+                startPrompttextX += currentWordWidth;
+            }
+            if(rightPromptText.length>0) {
+                this.context.fillStyle = "black";
+                this.context.fillText(
+                    rightPromptText,
+                    startPrompttextX,
+                    y
+                );
+            }
+        }
         for (let i = 0; i < promptTextLetters.length; i++) {
             switch (this.levelData.levelMeta.levelType) {
                 case "LetterInWord": {
-                    if (this.levelData.levelMeta.protoType == "Visible") {
-                    if (letterHighlight.includes(promptTextLetters[i])) {
-                        letterHighlight = letterHighlight.slice(1, letterHighlight.length);
-                        this.context.fillStyle = "red";
-                        this.context.fillText(
-                            promptTextLetters[i],
-                            startPrompttextX,
-                            y
-                        );
-                    } else {
-                        this.context.fillStyle = "black";
-                        this.context.fillText(
-                            promptTextLetters[i],
-                            startPrompttextX,
-                            y
-                        );
-                    }
                     break;
-                    }else{
-                        this.context.drawImage(
-                            this.promptPlayButton,
-                            this.width / 2.4,
-                            y / 1.25,
-                            scaledWidth / 4,
-                            scaledHeight / 4
-                          );
-                    }
                 }
                 case "Word": {
                     if (this.levelData.levelMeta.protoType == "Visible") {
