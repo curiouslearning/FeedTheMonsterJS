@@ -90,31 +90,53 @@ export default class StoneHandler extends EventManager {
   }
 
   /**
+   * Shuffles an array randomly
+   * @param array Array to shuffle
+   * @returns Shuffled array
+   */
+  private shuffleArray<T>(array: T[]): T[] {
+    const shuffled = [...array];
+    for (let i = shuffled.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+    }
+    return shuffled;
+  }
+
+  /**
    * Performance optimized stone creation
    * Properly initializes stones and prevents memory leaks
    */
   createStones(img) {
-    const foilStones = this.getFoilStones();
     // Clear existing stones first to prevent memory leaks
-    this.foilStones = [];
+    this.disposeStones();
+    
+    // Create stone pool for reuse
+    const stonePool = new Map();
+    
+    const foilStones = this.getFoilStones();
+    // Randomize stone positions
+    const positions = this.shuffleArray(this.stonePos);
     
     for (let i = 0; i < foilStones.length; i++) {
-      // if (foilStones[i] == this.correctTargetStone) {
-      //   //this.tutorial.updateTargetStonePositions(this.stonePos[i]); //temporary disabled
-      // }
+      // Create new stone with all required parameters
       const stone = new StoneConfig(
         this.context,
         this.canvas.width,
         this.canvas.height,
         foilStones[i],
-        this.stonePos[i][0],
-        this.stonePos[i][1],
+        positions[i][0],
+        positions[i][1],
         img,
         this.timerTickingInstance,
-        //i == foilStones.length - 1 ? this.tutorial : null //temporary disabled
-        null
+        null // tutorial instance is optional
       );
-      stone.initialize(); // Initialize new stones with proper animation state
+      
+      // Initialize stone
+      stone.initialize();
+      
+      // Store in pool for potential reuse
+      stonePool.set(foilStones[i], stone);
       this.foilStones.push(stone);
     }
   }
@@ -272,6 +294,20 @@ export default class StoneHandler extends EventManager {
     return this.currentPuzzleData.foilStones.sort(() => Math.random() - 0.5);
   }
 
+  /**
+   * Performance optimization: Proper resource cleanup
+   * Ensures stones are properly disposed to prevent memory leaks
+   */
+  private disposeStones() {
+    // Properly dispose each stone
+    for (const stone of this.foilStones) {
+      if (stone && !stone.isDisposed) {
+        stone.dispose();
+      }
+    }
+    this.foilStones = [];
+  }
+
   handleVisibilityChange = () => {
     this.audioPlayer.stopAllAudios();
     this.correctStoneAudio.pause();
@@ -309,20 +345,6 @@ export default class StoneHandler extends EventManager {
     } catch (error) {
       console.warn('Audio playback failed:', error);
     }
-  }
-
-  /**
-   * Performance optimization: Proper resource cleanup
-   * Ensures stones are properly disposed to prevent memory leaks
-   */
-  private disposeStones() {
-    // Properly dispose each stone to prevent memory leaks
-    for (const stone of this.foilStones) {
-      if (stone && !stone.isDisposed) {
-        stone.dispose();
-      }
-    }
-    this.foilStones = [];
   }
 
   cleanup() {

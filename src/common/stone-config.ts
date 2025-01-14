@@ -26,9 +26,6 @@ export class StoneConfig {
     // Performance optimization: Use time-based animation for smoother movement
     private animationStartTime: number = 0;
     private animationDuration: number = 1000; // 1 second animation
-    // Performance optimization: Cache calculated positions to reduce per-frame calculations
-    private cachedX: number = 0;
-    private cachedY: number = 0;
 
     constructor(context, canvasWidth, canvasHeight, stoneLetter, xPos, yPos, img,timerTickingInstance, tutorialInstance?) {
         this.x = xPos;
@@ -51,8 +48,6 @@ export class StoneConfig {
         this.frame = 0;
         this.isDisposed = false;
         this.animationStartTime = 0;
-        this.cachedX = 0;
-        this.cachedY = 0;
     }
 
     calculateImageAndFontSize() {
@@ -76,25 +71,19 @@ export class StoneConfig {
     };
 
     /**
-     * Performance optimization: Cache position calculations
-     * Returns cached X position if available to avoid recalculation
+     * Performance optimization: Calculate position based on animation progress
      */
     getX = () => {
         if (this.frame >= 100) return this.x;
-        if (this.cachedX) return this.cachedX;
-        this.cachedX = this.getEase(this.frame / 100, 0, this.x);
-        return this.cachedX;
+        return this.getEase(this.frame / 100, 0, this.x);
     }
 
     /**
-     * Performance optimization: Cache position calculations
-     * Returns cached Y position if available to avoid recalculation
+     * Performance optimization: Calculate position based on animation progress
      */
     getY = () => {
         if (this.frame >= 100) return this.y;
-        if (this.cachedY) return this.cachedY;
-        this.cachedY = this.getEase(this.frame / 100, 0, this.y);
-        return this.cachedY;
+        return this.getEase(this.frame / 100, 0, this.y);
     }
 
     adjustSize(shouldResize, num) {
@@ -104,7 +93,6 @@ export class StoneConfig {
     /**
      * Performance optimized draw method
      * - Uses time-based animation for smooth movement
-     * - Caches position calculations
      * - Only applies effects when necessary
      */
     draw(deltaTime: number, shouldResize: boolean = false) {
@@ -117,9 +105,6 @@ export class StoneConfig {
             }
             const elapsed = performance.now() - this.animationStartTime;
             this.frame = Math.min(100, (elapsed / this.animationDuration) * 100);
-            // Reset cached positions when frame updates
-            this.cachedX = 0;
-            this.cachedY = 0;
         }
 
         const x = this.getX() - (shouldResize ? this.imageCenterOffsetX * 1.25 : this.imageCenterOffsetX);
@@ -161,8 +146,6 @@ export class StoneConfig {
         this.tutorialInstance = null;
         this.timerTickingInstance = null;
         this.frame = 0;
-        this.cachedX = 0;
-        this.cachedY = 0;
     }
 
     /**
@@ -173,7 +156,5 @@ export class StoneConfig {
         this.x = this.origx;
         this.y = this.origy;
         this.isDisposed = false;
-        this.cachedX = 0;
-        this.cachedY = 0;
     }
 }

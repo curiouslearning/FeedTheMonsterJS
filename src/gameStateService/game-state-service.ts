@@ -183,6 +183,7 @@ export class GameStateService extends PubSub {
     }
 
     getStonePositions() {
+        console.log('createStonePositionsDAO(this)', createStonePositionsDAO(this));
         return createStonePositionsDAO(this);
     }
     // TODO: move this back to level end scene since 

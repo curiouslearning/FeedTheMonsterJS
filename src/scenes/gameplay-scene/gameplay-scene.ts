@@ -578,29 +578,92 @@ export class GameplayScene {
     }
   };
 
+  private initNewPuzzle(loadPuzzleEvent) {
+    // Dispose old monster first to prevent memory leaks
+    if (this.monster) {
+      this.monster.dispose();
+    }
+    this.monster = this.initializeRiveMonster();
+    this.removeEventListeners();
+    this.isGameStarted = false;
+    this.time = 0;
+    this.wordPuzzleLogic.updatePuzzleLevel(loadPuzzleEvent?.detail?.counter);
+    this.pickedStone = null;
+    document.dispatchEvent(loadPuzzleEvent);
+    this.addEventListeners();
+    this.audioPlayer.stopAllAudios();
+    this.startPuzzleTime();
+  }
+
   public dispose = () => {
-    // Ensure TimerTicking is disposed of properly
+    this.isDisposing = true;
+    
+    // Cleanup audio
+    if (this.audioPlayer) {
+      this.audioPlayer.stopAllAudios();
+      this.audioPlayer = null;
+    }
+    
+    // Dispose visual elements
+    if (this.monster) {
+      this.monster.dispose();
+      this.monster = null;
+    }
+    
+    if (this.stoneHandler) {
+      this.stoneHandler.dispose();
+      this.stoneHandler = null;
+    }
+    
+    // Clear timers
     if (this.timerTicking) {
       this.timerTicking.destroy();
       this.timerTicking = null;
     }
-    this.trailParticles.clearTrailSubscription();
-    this.unsubscribeEvent();
-    this.isDisposing = true;
-    this.audioPlayer.stopAllAudios();
-    this.monster.dispose();
-    this.levelIndicators.dispose();
-    this.stoneHandler.dispose();
-    this.promptText.dispose();
+    
+    if (this.trailParticles) {
+      this.trailParticles.clearTrailSubscription();
+      this.trailParticles = null;
+    }
+    
+    // Clear event listeners
+    if (this.unsubscribeEvent) {
+      this.unsubscribeEvent();
+      this.unsubscribeEvent = null;
+    }
+    
     document.removeEventListener(
       VISIBILITY_CHANGE,
       this.handleVisibilityChange,
       false
     );
     this.removeEventListeners();
-    this.pausePopupComponent.destroy();
-    this.pauseButton.dispose();
-  };
+    
+    // Clear other components
+    if (this.levelIndicators) {
+      this.levelIndicators.dispose();
+      this.levelIndicators = null;
+    }
+    
+    if (this.promptText) {
+      this.promptText.dispose();
+      this.promptText = null;
+    }
+    
+    if (this.pauseButton) {
+      this.pauseButton.dispose();
+      this.pauseButton = null;
+    }
+    
+    if (this.pausePopupComponent) {
+      this.pausePopupComponent.destroy();
+      this.pausePopupComponent = null;
+    }
+    
+    // Clear game state
+    this.pickedStone = null;
+    this.pickedStoneObject = null;
+  }
 
   private checkStoneDropped(stone, feedBackIndex, isWord = false) {
     return this.stoneHandler.isStoneLetterDropCorrect(
@@ -702,19 +765,6 @@ export class GameplayScene {
     });
 
     document.dispatchEvent(dropStoneEvent);
-  }
-
-  private initNewPuzzle(loadPuzzleEvent) {
-    this.monster = this.initializeRiveMonster();
-    this.removeEventListeners();
-    this.isGameStarted = false;
-    this.time = 0;
-    this.wordPuzzleLogic.updatePuzzleLevel(loadPuzzleEvent?.detail?.counter);
-    this.pickedStone = null;
-    document.dispatchEvent(loadPuzzleEvent);
-    this.addEventListeners();
-    this.audioPlayer.stopAllAudios();
-    this.startPuzzleTime();
   }
 
   public logPuzzleEndFirebaseEvent(isCorrect: boolean, puzzleType?: string) {
