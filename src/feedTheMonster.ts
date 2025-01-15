@@ -20,6 +20,7 @@ import {
 } from "./Firebase/firebase-event-interface";
 import { URL } from "@data";
 import './styles/main.scss';
+import { featureFlagService } from './services/feature-flags/feature-flags-service';
 
 declare const window: any;
 
@@ -76,6 +77,8 @@ class App {
     await this.loadAndCacheFont(font, `./assets/fonts/${font}.ttf`);
     await this.loadTitleFeedbackCustomFont();
     await this.preloadGameAudios();
+    await featureFlagService.initialize();
+    console.log(featureFlagService);
     this.handleLoadingScreen();
     this.setupCanvas();
     const data = await getData();
