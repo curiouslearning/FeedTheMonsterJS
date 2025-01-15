@@ -78,7 +78,6 @@ class App {
     await this.loadTitleFeedbackCustomFont();
     await this.preloadGameAudios();
     await featureFlagService.initialize();
-    console.log(featureFlagService);
     this.handleLoadingScreen();
     this.setupCanvas();
     const data = await getData();

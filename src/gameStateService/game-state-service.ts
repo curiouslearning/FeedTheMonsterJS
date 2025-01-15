@@ -21,6 +21,7 @@ export class GameStateService extends PubSub {
     public EVENTS: {
         SCENE_LOADING_EVENT: string;
         GAMEPLAY_DATA_EVENT: string;
+        GAME_START: string;
         GAME_PAUSE_STATUS_EVENT: string;
         GAME_TRAIL_EFFECT_TOGGLE_EVENT: string;
         LEVEL_END_DATA_EVENT: string;
@@ -88,6 +89,7 @@ export class GameStateService extends PubSub {
         this.EVENTS = {
             SCENE_LOADING_EVENT: 'SCENE_LOADING_EVENT',
             GAMEPLAY_DATA_EVENT: 'GAMEPLAY_DATA_EVENT',
+            GAME_START: 'GAME_START',
             GAME_PAUSE_STATUS_EVENT: 'GAME_PAUSE_STATUS_EVENT',
             GAME_TRAIL_EFFECT_TOGGLE_EVENT: 'GAME_TRAIL_EFFECT_TOGGLE_EVENT', 
             LEVEL_END_DATA_EVENT: 'LEVEL_END_DATA_EVENT' // To move this event on DOM Event once created.
@@ -135,7 +137,6 @@ export class GameStateService extends PubSub {
     }
 
     private gameStateGamePlayDataListener(updatedGamePlayData) {
-        console.log('gamestateservice', updatedGamePlayData);
         //Updated gamePlayData comes from level-selection and level-end scene.
         this.gamePlayData = updatedGamePlayData;
         this.isGamePaused = false;

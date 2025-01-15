@@ -6,7 +6,7 @@ import {
   LevelEndScene,
 } from "@scenes";
 import { DataModal, GameScore } from "@data";
-import { Debugger } from "@common";
+import { Debugger, lang } from "@common";
 import {
   LOADING_TRANSITION,
   SCENE_NAME_START,
@@ -14,8 +14,11 @@ import {
   SCENE_NAME_GAME_PLAY,
   SCENE_NAME_LEVEL_END,
   PWAInstallStatus,
+  PreviousPlayedLevel,
 } from "@constants";
 import gameStateService from '@gameStateService';
+import { featureFlagService } from '../services/feature-flags/feature-flags-service';
+import { FEATURE_QUICK_START } from '../services/feature-flags/features';
 
 export class SceneHandler {
   private scenes: {
@@ -70,6 +73,26 @@ export class SceneHandler {
       )
     );
     this.gotoScene(SCENE_NAME_START);
+
+    gameStateService.subscribe(gameStateService.EVENTS.GAME_START, (data) => {
+      if (featureFlagService.isEnabled(FEATURE_QUICK_START)) {
+        // recreate data needed for gameplay scene
+        const level = localStorage.getItem(PreviousPlayedLevel + lang) || 0;
+  
+        // TODO: this should really be in the gameplay state. Maybe create a LevelState that is managed by gameplaystate.
+        const gamePlayData = {
+          currentLevelData: {
+            ...this.data.levels[level],
+            levelNumber: level,
+          },
+          selectedLevelNumber: level,
+        };
+        gameStateService.publish(gameStateService.EVENTS.GAMEPLAY_DATA_EVENT, gamePlayData);
+        this.switchSceneToGameplay();
+      } else {
+        this.switchSceneToLevelSelection();
+      }
+    });
   }
 
   private addScene(key: string, Class: LoadingScene | StartScene | LevelSelectionScreen | GameplayScene | LevelEndScene) {
@@ -155,6 +178,7 @@ export class SceneHandler {
           })
         );
         this.gotoScene(SCENE_NAME_GAME_PLAY);
+        this.titleTextElement.style.display = "none";
       }
     );
   };

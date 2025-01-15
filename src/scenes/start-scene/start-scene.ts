@@ -145,7 +145,7 @@ export class StartScene {
       this.logTappedStartFirebaseEvent();
       this.audioPlayer.playButtonClickSound();
       gameStateService.publish(gameStateService.EVENTS.SCENE_LOADING_EVENT, true);
-      this.switchSceneToLevelSelection();
+      gameStateService.publish(gameStateService.EVENTS.GAME_START, true);
     });
     document.addEventListener("selectstart", function (e) {
       e.preventDefault();
@@ -154,6 +154,7 @@ export class StartScene {
   }
 
   handleMouseClick = (event) => {
+    console.log('StartScene.handleMouseClick', event)
     event.preventDefault();
     FirebaseIntegration.getInstance().sendUserClickedOnPlayEvent();
     // @ts-ignore
@@ -163,7 +164,7 @@ export class StartScene {
     this.toggleBtn.style.display = "none";
     this.audioPlayer.playButtonClickSound();
     gameStateService.publish(gameStateService.EVENTS.SCENE_LOADING_EVENT, true);
-    this.switchSceneToLevelSelection();
+    gameStateService.publish(gameStateService.EVENTS.GAME_START, true);
   };
 
   dispose() {
