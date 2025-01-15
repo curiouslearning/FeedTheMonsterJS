@@ -38,7 +38,6 @@ export class StartScene {
   public imagesLoaded: boolean = false;
   public handler: HTMLBodyElement;
   public static SceneName: string;
-  public switchSceneToLevelSelection: Function;
   audioPlayer: AudioPlayer;
   private toggleBtn: HTMLElement;
   private pwa_install_status: Event;
@@ -50,8 +49,7 @@ export class StartScene {
 
   constructor(
     canvas: HTMLCanvasElement,
-    data: DataModal,
-    switchSceneToLevelSelection: Function
+    data: DataModal
   ) {
     this.canvas = canvas;
     this.data = data;
@@ -82,7 +80,6 @@ export class StartScene {
       'start-scene-click-area',
       (id) => (`<div id="${id}"></div>`)
     );
-    this.switchSceneToLevelSelection = switchSceneToLevelSelection;
     this.audioPlayer = new AudioPlayer();
     this.pwa_status = localStorage.getItem(PWAInstallStatus);
     this.handler = document.getElementById('start-scene-click-area') as HTMLBodyElement;

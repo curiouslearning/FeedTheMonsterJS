@@ -68,8 +68,7 @@ export class SceneHandler {
       SCENE_NAME_START,
       new StartScene(
         canvas, //to do - use DAO.
-        data, //to do - use DAO.
-        this.switchSceneToLevelSelection
+        data //to do - use DAO.
       )
     );
     this.gotoScene(SCENE_NAME_START);
