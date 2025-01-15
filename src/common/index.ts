@@ -1,4 +1,4 @@
-import { StoneConfig } from "./stone-config";
+import { StoneConfig } from "./stone-config/stone-config";
 import {
   Utils,
   loadImages,
