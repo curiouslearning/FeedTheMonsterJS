@@ -80,7 +80,7 @@ export class SceneHandler {
     this.activeScene = this.scenes[key];
   }
 
-  private timerWrapper = (callback: () => void, customTime:number = 800) => {
+  private timerWrapper = (callback: () => void, customTime: number = 800) => {
     //This is for reusable setTimeout with default 800 miliseconds.
     setTimeout(() => { callback(); }, customTime);
   }
@@ -107,11 +107,11 @@ export class SceneHandler {
     });
   }
 
-  public checkMonsterPhaseUpdation(): number {
-    const totalStarCount = GameScore.getTotalStarCount();
-    const monsterPhaseNumber = Math.floor(totalStarCount / 12) + 1 || 1;
-    return monsterPhaseNumber <= 4 ? monsterPhaseNumber : 4;
-  }
+  // public checkMonsterPhaseUpdation(): number {
+  //   const totalStarCount = GameScore.getTotalStarCount();
+  //   const monsterPhaseNumber = Math.floor(totalStarCount / 12) + 1 || 1;
+  //   return monsterPhaseNumber <= 4 ? monsterPhaseNumber : 4;
+  // }
 
   animation = (timeStamp: number) => {
     const deltaTime = timeStamp - this.lastTime;
@@ -142,20 +142,32 @@ export class SceneHandler {
     );
   };
 
-  switchSceneToGameplay = () => {  
+  switchSceneToGameplay = () => {
     this.timerWrapper(
       () => {
-        this.addScene(
-          SCENE_NAME_GAME_PLAY,
-          new GameplayScene({
-            monsterPhaseNumber: this.checkMonsterPhaseUpdation(),
-            switchSceneToEnd: this.switchSceneToEndLevel,
-            switchToLevelSelection: () => {
-              this.switchSceneToLevelSelection();
-            },
-            reloadScene: this.switchSceneToGameplay
-          })
-        );
+        const totalStars = GameScore.getTotalStarCount();
+        gameStateService.updateMonsterPhaseBasedOnStars(totalStars); // Update phase
+        const updatedPhase = gameStateService.getMonsterPhase(); // Retrieve the current phase
+
+        // Check if the GameplayScene instance exists and has a RiveMonsterComponent
+        const gameplayScene = new GameplayScene({
+          monsterPhaseNumber: updatedPhase,
+          switchSceneToEnd: this.switchSceneToEndLevel,
+          switchToLevelSelection: () => {
+            this.switchSceneToLevelSelection();
+          },
+          reloadScene: this.switchSceneToGameplay,
+        });
+
+        // Access the RiveMonsterComponent instance and update the source
+        if (gameplayScene.monster) {
+          gameplayScene.monster.updateSrcByPhase(updatedPhase);
+        } else {
+          console.error('RiveMonsterComponent is not initialized in GameplayScene.');
+        }
+
+        // Add the scene to the handler and navigate to it
+        this.addScene(SCENE_NAME_GAME_PLAY, gameplayScene);
         this.gotoScene(SCENE_NAME_GAME_PLAY);
       }
     );
@@ -164,14 +176,25 @@ export class SceneHandler {
   switchSceneToEndLevel = () => {
     this.timerWrapper(
       () => {
-        this.addScene(
-          SCENE_NAME_LEVEL_END,
-          new LevelEndScene(
-            this.switchSceneToGameplay,
-            this.switchSceneToLevelSelection
-          )
-        );
-        this.gotoScene(SCENE_NAME_LEVEL_END);
+        // Dynamically update the monster phase
+        const updatedPhase = gameStateService.getMonsterPhase(); // Get the current phase
+        // Initialize the LevelEndScene
+    const levelEndScene = new LevelEndScene(
+      this.switchSceneToGameplay,
+      this.switchSceneToLevelSelection,
+      updatedPhase // Pass the dynamic phase
+    );
+
+    // Access RiveMonsterComponent if it exists in LevelEndScene
+    if (levelEndScene.riveMonster) {
+      levelEndScene.riveMonster.updateSrcByPhase(updatedPhase);
+    } else {
+      console.error('RiveMonsterComponent is not initialized in LevelEndScene.');
+    }
+
+    // Add the scene and navigate to it
+    this.addScene(SCENE_NAME_LEVEL_END, levelEndScene);
+    this.gotoScene(SCENE_NAME_LEVEL_END);
       }
     )
   };

@@ -22,8 +22,7 @@ describe('LevelEndScene', () => {
   let levelEndScene: LevelEndScene;
   let mockSwitchToGameplayCB: jest.Mock;
   let mockSwitchToLevelSelectionCB: jest.Mock;
-  let mockData: any;
-  let audioPlayerMock: jest.Mocked<AudioPlayer>;
+  let mockUpdateSrcByPhase: jest.SpyInstance;
 
   beforeEach(() => {
     jest.clearAllMocks();
@@ -56,11 +55,13 @@ describe('LevelEndScene', () => {
 
     mockSwitchToGameplayCB = jest.fn();
     mockSwitchToLevelSelectionCB = jest.fn();
-
+    // Mock RiveMonsterComponent to intercept updateSrcByPhase
+    mockUpdateSrcByPhase = jest.spyOn(RiveMonsterComponent.prototype, 'updateSrcByPhase');
     // Initialize the LevelEndScene
     levelEndScene = new LevelEndScene(
       mockSwitchToGameplayCB,
       mockSwitchToLevelSelectionCB,
+      mockUpdateSrcByPhase // Pass the dynamic phase
     );
   });
 

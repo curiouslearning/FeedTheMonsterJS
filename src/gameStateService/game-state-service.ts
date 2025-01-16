@@ -61,7 +61,7 @@ export class GameStateService extends PubSub {
         selectedLevelNumber: number
 
     };
-    public feedbackTexts: null |  {
+    public feedbackTexts: null | {
         amazing: string,
         fantastic: string,
         great: string
@@ -82,14 +82,14 @@ export class GameStateService extends PubSub {
         isTimerEnded: boolean
     };
     public isLastLevel: boolean;
-
+    public monsterPhase: number;
     constructor() {
         super();
         this.EVENTS = {
             SCENE_LOADING_EVENT: 'SCENE_LOADING_EVENT',
             GAMEPLAY_DATA_EVENT: 'GAMEPLAY_DATA_EVENT',
             GAME_PAUSE_STATUS_EVENT: 'GAME_PAUSE_STATUS_EVENT',
-            GAME_TRAIL_EFFECT_TOGGLE_EVENT: 'GAME_TRAIL_EFFECT_TOGGLE_EVENT', 
+            GAME_TRAIL_EFFECT_TOGGLE_EVENT: 'GAME_TRAIL_EFFECT_TOGGLE_EVENT',
             LEVEL_END_DATA_EVENT: 'LEVEL_END_DATA_EVENT' // To move this event on DOM Event once created.
         };
         this.data = null;
@@ -119,6 +119,7 @@ export class GameStateService extends PubSub {
         this.majVersion = 0;
         this.minVersion = 0;
         this.clickTrailToggle = false;
+        this.monsterPhase = 1; // Default to phase 1
         this.offsetCoordinateValue = 32; //Default value used to offset stone coordinates.
         this.initListeners();
 
@@ -132,6 +133,19 @@ export class GameStateService extends PubSub {
         this.subscribe(this.EVENTS.GAME_PAUSE_STATUS_EVENT, (data) => { this.updateGamePauseActivity(data); });
         this.subscribe(this.EVENTS.GAME_TRAIL_EFFECT_TOGGLE_EVENT, (data) => { this.updateGameTrailToggle(data); }); // To move this event on DOM Event once created.
         this.subscribe(this.EVENTS.LEVEL_END_DATA_EVENT, (data) => { this.levelEndSceneData(data); });
+    }
+
+    // Method to retrieve the current monster phase
+    getMonsterPhase(): number {
+        return this.monsterPhase;
+    }
+
+    // Method to set and update the monster phase
+    setMonsterPhase(newPhase: number): void {
+        if (newPhase !== this.monsterPhase) {
+            this.monsterPhase = newPhase;
+            console.log(`Monster phase updated to: ${newPhase}`);
+        }
     }
 
     private gameStateGamePlayDataListener(updatedGamePlayData) {
@@ -157,7 +171,7 @@ export class GameStateService extends PubSub {
         /*Original game data from FeedTheMonster.ts.*/
         this.data = data;
         /*HTML and Canvas state values.*/
-        this.canvas = canvas; 
+        this.canvas = canvas;
         this.width = canvas.width;
         this.height = canvas.height;
         this.canavsElement = canavsElement;
@@ -173,6 +187,14 @@ export class GameStateService extends PubSub {
         this.minVersion = data.minVersion;
     }
 
+    // Dynamically calculate the monster phase based on total stars
+    updateMonsterPhaseBasedOnStars(totalStars: number): void {
+        const calculatedPhase = Math.floor(totalStars / 12) + 1;
+        const maxPhase = 4; // Adjust if the game has more phases
+        const newPhase = Math.min(calculatedPhase, maxPhase);
+        this.setMonsterPhase(newPhase); // Update the phase
+    }
+
     getLoadingSceneDetails() { //To Do: Move this method to game settings.
         //Returns canvas measurements.
         return createLoadingSceneDAO(this);
@@ -186,8 +208,8 @@ export class GameStateService extends PubSub {
         return createStonePositionsDAO(this);
     }
     // TODO: move this back to level end scene since 
-    levelEndSceneData({levelEndData, data}) {
-        this.levelEndData = {...levelEndData};
+    levelEndSceneData({ levelEndData, data }) {
+        this.levelEndData = { ...levelEndData };
         this.data = data;
         this.isLastLevel = levelEndData.currentLevel === data.levels[data.levels.length - 1].levelMeta.levelNumber;
     }

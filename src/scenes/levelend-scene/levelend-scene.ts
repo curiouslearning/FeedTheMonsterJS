@@ -30,10 +30,12 @@ export class LevelEndScene {
   public mapButtonInstance: MapButton;
   public riveMonster: RiveMonsterComponent;
   public canvasElement: HTMLCanvasElement;
-  constructor(switchToGameplayCB, switchToLevelSelectionCB) {
+  public monsterPhaseNumber: number;
+  constructor(switchToGameplayCB, switchToLevelSelectionCB,monsterPhaseNumber) {
     const {starCount, currentLevel, data} =
       gameStateService.getLevelEndSceneData();
     const {isLastLevel, canvas} = gameStateService.getGamePlaySceneDetails();
+    this.monsterPhaseNumber = monsterPhaseNumber;
     this.canvasElement = canvas;
     this.switchToGameplayCB = switchToGameplayCB;
     this.switchToLevelSelectionCB = switchToLevelSelectionCB;
@@ -64,6 +66,9 @@ export class LevelEndScene {
         this.riveMonster.play(RiveMonsterComponent.Animations.IDLE); // Start with the "Eat Happy" animation
       }
     });
+
+    // Update the Rive file based on the initial monster phase
+    this.riveMonster.updateSrcByPhase(this.monsterPhaseNumber);
   }
   // Method to show/hide the Level End background
   toggleLevelEndBackground = (shouldShow: boolean) => {

@@ -1,4 +1,5 @@
 import { Rive, Layout, Fit, Alignment } from '@rive-app/canvas';
+import { SceneHandler } from '@sceneHandler/scene-handler';
 
 interface RiveMonsterComponentProps {
   canvas: HTMLCanvasElement; // Canvas element where the animation will render
@@ -14,7 +15,7 @@ interface RiveMonsterComponentProps {
 export class RiveMonsterComponent {
   private props: RiveMonsterComponentProps;
   private riveInstance: any;
-  private src: string = './assets/finalEggMonster.riv';  // Define the .riv file path eggMonsterfinal
+  private src: string = '/assets/monsterrive.riv';  // Define the .riv file path eggMonsterfinal
   private stateMachineName: string = "State Machine 1"  // Define the state machine
   public game: any;
   public x: number;
@@ -27,25 +28,29 @@ export class RiveMonsterComponent {
     from: number;
     to: number;
   };
+
+  private sceneHandler: any; // Assume sceneHandler will give us the monster phase
+  private currentPhase: number = 1;  // Default phase, can be dynamically set
   // Static readonly properties for all monster animations
   public static readonly Animations = {
     //new animation
     IDLE: "Idle",
     SAD: "Sad",
-    STOMP: "Stomp", //Not working
+    STOMP: "Stomp",
     STOMPHAPPY: "StompHappy",
     SPIT: "Spit",
-    CHEW: "Chew", //Not working
+    CHEW: "Chew",
     MOUTHOPEN: "MouthOpen",
-    MOUTHCLOSED: "MouthClosed", //Not working
-    HAPPY: "Happy", //Not working
+    MOUTHCLOSED: "MouthClosed",
+    HAPPY: "Happy",
   };
 
   constructor(props: RiveMonsterComponentProps) {
     this.props = props;
+    this.sceneHandler = SceneHandler;  // Assuming sceneHandler is passed in here
     this.moveCanvasUpOrDown(50); // Move down by 50px
     const monsterCenterX = props.canvas.width / 2;
-    const monsterCenterY = props.canvas.height / 2; 
+    const monsterCenterY = props.canvas.height / 2;
     const rangeFactorX = 55;
     const rangeFactorY = 100;
 
@@ -57,8 +62,46 @@ export class RiveMonsterComponent {
       from: monsterCenterY + (rangeFactorY / 2),
       to: monsterCenterY + (rangeFactorY * 2),
     };
-
+    // this.getMonsterPhase();
     this.initializeRive();
+  }
+
+  // Dynamically gets the monster phase from the scene handler
+  public getMonsterPhase(): number {
+    // Dynamically fetch the current monster phase from the sceneHandler
+    this.currentPhase = this.sceneHandler.getMonsterPhase(); // Assuming this method returns the current phase
+    console.log("Monster Phase :", this.currentPhase);
+
+    return this.currentPhase;  // Return the current monster phase
+  }
+
+  public updateSrcByPhase(phase: number) {
+    const newSrc = RiveMonsterComponent.getSrcForMonsterPhase(phase);
+
+    // Check if the source has actually changed
+    if (this.src !== newSrc) {
+      console.log(`Switching .riv file from ${this.src} to ${newSrc}`);
+      this.src = newSrc; // Update the source
+
+      // Dispose of the current instance to avoid memory leaks
+      if (this.riveInstance) {
+        this.dispose();
+      }
+
+      // Reinitialize the Rive instance with the new source
+      this.initializeRive();
+    } else {
+      console.log('Phase is the same, no need to switch .riv file.');
+    }
+  }
+
+  public static getSrcForMonsterPhase(phase: number): string {
+    const srcMapping = {
+      1: '/assets/finalEggMonster.riv',
+      2: '/assets/monsterrive.riv',
+    };
+
+    return srcMapping[phase] || '/assets/monsterrive.riv';
   }
 
   private initializeRive() {

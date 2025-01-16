@@ -92,8 +92,8 @@ export class GameplayScene {
   private unsubscribeEvent: () => void;
   public timeTicker: HTMLElement;
   isFeedBackTriggered: boolean;
-  constructor({
-    monsterPhaseNumber,
+  constructor(props:{
+    monsterPhaseNumber:number,
     switchSceneToEnd,
     switchToLevelSelection,
     reloadScene
@@ -104,10 +104,10 @@ export class GameplayScene {
     this.initializeProperties(gamePlayData);
     // UI element setup
     this.setupUIElements();
-    this.monsterPhaseNumber = monsterPhaseNumber || 1;
-    this.switchSceneToEnd = switchSceneToEnd;
-    this.switchToLevelSelection = switchToLevelSelection;
-    this.reloadScene = reloadScene;
+    this.monsterPhaseNumber = props.monsterPhaseNumber;
+    this.switchSceneToEnd = props.switchSceneToEnd;
+    this.switchToLevelSelection = props.switchToLevelSelection;
+    this.reloadScene = props.reloadScene;
     this.isDisposing = false;
     // Initialize additional game elements
     this.initializeGameComponents(gamePlayData);
@@ -159,8 +159,8 @@ export class GameplayScene {
     this.setupBg();
   }
 
-  private initializeRiveMonster(initialAnimation: string = RiveMonsterComponent.Animations.IDLE): RiveMonsterComponent {
-    return new RiveMonsterComponent({
+  private initializeRiveMonster(initialAnimation: string = RiveMonsterComponent.Animations.IDLE) {
+    this.monster =new RiveMonsterComponent({
       canvas: this.riveMonsterElement,
       autoplay: true,
       fit: "contain",
@@ -170,6 +170,8 @@ export class GameplayScene {
       },
       gameCanvas: this.canvas
     });
+    // Update the Rive file based on the initial monster phase
+    this.monster.updateSrcByPhase(this.monsterPhaseNumber);
   }
 
   private initializeGameComponents(gamePlayData) {
@@ -198,7 +200,7 @@ export class GameplayScene {
     );
     this.levelIndicators = new LevelIndicators();
     this.levelIndicators.setIndicators(this.counter);
-    this.monster = this.initializeRiveMonster();
+    this.initializeRiveMonster();
   }
 
   private setupUIElements() {
@@ -735,7 +737,7 @@ export class GameplayScene {
 
   private initNewPuzzle(loadPuzzleEvent) {
     this.monster.play(RiveMonsterComponent.Animations.IDLE); //TO DO: TO BE REMOVED.
-    this.monster = this.initializeRiveMonster();
+    this.initializeRiveMonster();
     this.removeEventListeners();
     this.isGameStarted = false;
     this.time = 0;
