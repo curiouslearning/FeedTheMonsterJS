@@ -25,7 +25,7 @@ export class StoneConfig {
     public isDisposed: boolean = false;
     // Performance optimization: Use time-based animation for smoother movement
     private animationStartTime: number = 0;
-    private animationDuration: number = 1000; // 1 second animation
+    private animationDuration: number = 1500; // 1 second animation
 
     constructor(context, canvasWidth, canvasHeight, stoneLetter, xPos, yPos, img,timerTickingInstance, tutorialInstance?) {
         this.x = xPos;
