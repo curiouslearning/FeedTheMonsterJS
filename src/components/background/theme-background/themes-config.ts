@@ -13,6 +13,7 @@ export const themeSample1 = {
   name: "sunny-day",
 
   background_color: "skyblue", //"#2a2b2d",  // Dark blue for a night-time feel
+  className: 'theme_sample_1',
   gridAreas: [  //Defines how many grid areas we want,
     {
       id: 'grid-area-1',
@@ -80,7 +81,7 @@ export const themeSample1 = {
   ],
 }
 
-
+//This will be moved in game settings as this is the list of all themes we have.
 export const theme_config = {
   default: themeSample1,
   /** declare more c */

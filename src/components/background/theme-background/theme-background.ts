@@ -38,6 +38,8 @@ export class ThemeBackground {
     themeElement.classList.add(theme_config[themeName].name);  // Add theme-specific class for background color
 
 
+    gridContainer.classList.add(theme_config[themeName].className)
+
     //Generate the grid areas based on the config.
     theme_config[themeName].gridAreas.forEach((areaConfig, index) => {
       const newGridArea = this.testBaseBG.createElementWithImage(
