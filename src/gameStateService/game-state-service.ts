@@ -195,6 +195,15 @@ export class GameStateService extends PubSub {
     getLevelEndSceneData() {
         return createLevelEndDataDAO(this);
     }
+
+    //This is the logic to which how themes would be determined
+
+    getThemes() {
+        //Add logic here
+
+        //WIP for the logic.
+        return 'default';
+    }
 };
 
 const gameStateServiceInstance = new GameStateService();

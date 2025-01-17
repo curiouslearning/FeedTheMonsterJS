@@ -144,3 +144,14 @@ export const SCENE_NAME_LEVEL_END = "LevelEnd";
 
 //Levels
 export const SPECIAL_LEVELS = [5, 13, 20, 30, 42];
+
+
+//Themes Images - Test assets
+export const cloud = './assets/test_img/Cloud.png';
+export const cloud_1 = './assets/test_img/cloud_1.png';
+export const cloud_2 = './assets/test_img/cloud_2.png';
+export const cloud_3 = './assets/test_img/cloud_3.png';
+export const tree = './assets/test_img/Tree_Layer.png';
+export const land = './assets/test_img/ground_1.png';
+export const house = './assets/test_img/House_Layer.png';
+export const stage = './assets/test_img/stage.png';

@@ -18,11 +18,14 @@ export class BaseBackgroundComponent {
     wrapperClassName: string,
     imageSrc: string,
     imageAlt: string,
-    imageId: string
+    imageId: string,
+    wrapperId: string | null = null
   ): HTMLDivElement {
     const wrapperDiv = document.createElement("div");
     wrapperDiv.className = wrapperClassName;
-
+    if (wrapperId) {
+      wrapperDiv.id = wrapperId;
+    }
     const imgElement = document.createElement("img");
     imgElement.src = imageSrc;
     imgElement.alt = imageAlt;

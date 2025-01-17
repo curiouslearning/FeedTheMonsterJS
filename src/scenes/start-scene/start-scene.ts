@@ -18,6 +18,7 @@ import {
   PWAInstallStatus,
 } from "@constants";
 import gameStateService from '@gameStateService';
+import { ThemeBackground } from '@components/background/theme-background/theme-background';
 
 export class StartScene {
   public canvas: HTMLCanvasElement;
@@ -47,7 +48,7 @@ export class StartScene {
   private firebaseIntegration: FirebaseIntegration;
   private loadingElement: HTMLElement;
   private onClickArea: BaseHTML;
-
+  public test: any
   constructor(
     canvas: HTMLCanvasElement,
     data: DataModal,
@@ -80,7 +81,8 @@ export class StartScene {
         }
       },
       'start-scene-click-area',
-      (id) => (`<div id="${id}"></div>`)
+      (id) => (`<div id="${id}"></div>`),
+      true
     );
     this.switchSceneToLevelSelection = switchSceneToLevelSelection;
     this.audioPlayer = new AudioPlayer();
@@ -89,13 +91,14 @@ export class StartScene {
     this.devToggle();
     this.createPlayButton();
     window.addEventListener("beforeinstallprompt", this.handlerInstallPrompt);
-    this.setupBg();
+    //this.setupBg();
     this.titleTextElement = document.getElementById("title");
     this.generateGameTitle();
     this.riveMonsterElement.style.zIndex = '6';
     this.firebaseIntegration = new FirebaseIntegration();
     this.hideInitialLoading();
     this.setOnClicknAreaStyle();
+    this.test = new ThemeBackground()
   }
 
   private setupBg = async () => {
