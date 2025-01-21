@@ -97,8 +97,7 @@ describe('Start Scene Test', () => {
         FeedbackTexts: new FeedbackTexts(feedTextMock),
         FeedbackAudios: new FeedbackAudios(feedAudioMock),
         getLevels: () => {}
-      },
-      () => {}
+      }
     );
 
     // Ensure startScene uses the mock data

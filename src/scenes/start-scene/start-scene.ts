@@ -151,7 +151,6 @@ export class StartScene {
   }
 
   handleMouseClick = (event) => {
-    console.log('StartScene.handleMouseClick', event)
     event.preventDefault();
     FirebaseIntegration.getInstance().sendUserClickedOnPlayEvent();
     // @ts-ignore
