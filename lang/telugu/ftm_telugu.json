@@ -10,9 +10,9 @@
     "minversion": 12,
     "langname": "TELUGU",
     "FeedbackAudios": [
-      "https://feedthemonster.curiouscontent.org/lang/hindi/audios/fantastic.mp3",
-      "https://feedthemonster.curiouscontent.org/lang/hindi/audios/great.mp3",
-      "https://feedthemonster.curiouscontent.org/lang/hindi/audios/amazing.mp3"
+      "https://feedthemonster.curiouscontent.org/lang/telugu/audios/fantastic.mp3",
+      "https://feedthemonster.curiouscontent.org/lang/telugu/audios/great.mp3",
+      "https://feedthemonster.curiouscontent.org/lang/telugu/audios/amazing.mp3"
     ],
     "OtherAudios": {
       "Select your player": "https://feedthemonster.curiouscontent.org/lang/telugu/audios/Select-your-player.mp3",
