@@ -18,7 +18,7 @@ import {
   PWAInstallStatus,
 } from "@constants";
 import gameStateService from '@gameStateService';
-import { ThemeBackground } from '@components/background/theme-background/theme-background';
+import '@components/background/background-styles/game-backgrounds.scss';
 
 export class StartScene {
   public canvas: HTMLCanvasElement;
@@ -48,7 +48,7 @@ export class StartScene {
   private firebaseIntegration: FirebaseIntegration;
   private loadingElement: HTMLElement;
   private onClickArea: BaseHTML;
-  public test: any
+
   constructor(
     canvas: HTMLCanvasElement,
     data: DataModal,
@@ -91,26 +91,36 @@ export class StartScene {
     this.devToggle();
     this.createPlayButton();
     window.addEventListener("beforeinstallprompt", this.handlerInstallPrompt);
-    //this.setupBg();
+    this.setupBg();
     this.titleTextElement = document.getElementById("title");
     this.generateGameTitle();
     this.riveMonsterElement.style.zIndex = '6';
     this.firebaseIntegration = new FirebaseIntegration();
     this.hideInitialLoading();
     this.setOnClicknAreaStyle();
-    this.test = new ThemeBackground()
   }
 
   private setupBg = async () => {
     // Determine the background type based on the level number using the static method.
     //Level 1 will be used as a default background for Start Scene.
-    const selectedBackgroundType = BackgroundHtmlGenerator.createBackgroundComponent(1);
+    // const selectedBackgroundType = BackgroundHtmlGenerator.createBackgroundComponent(1);
 
-    // Apply the logic to update the HTML or visual representation of the background
+    // // Apply the logic to update the HTML or visual representation of the background
+    // const backgroundGenerator = new BackgroundHtmlGenerator();
+
+    // // Dynamically update the background based on the selected type
+    // backgroundGenerator.generateBackground(selectedBackgroundType);
+
+
+
+    //We will get the value from the state to determine what assets to use on loading the background.
+    const assetName = gameStateService.loadGameplayAssets();
+    console.log({ assetName })
+
+    //Following the same logic as to how our season backgrounds are loaded
     const backgroundGenerator = new BackgroundHtmlGenerator();
 
-    // Dynamically update the background based on the selected type
-    backgroundGenerator.generateBackground(selectedBackgroundType);
+    backgroundGenerator.generateGameBackground(assetName);
   };
 
   private setOnClicknAreaStyle = () => {

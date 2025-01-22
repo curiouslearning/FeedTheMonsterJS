@@ -1,0 +1,70 @@
+/*
+  Note: This is not an optmized CSS styling but rather for demonstration only for this POC.
+  We will still be utilizing the Flexbox Grid Layout to help us out in ensuring the consistency
+  of the assets alignment and positioning.
+
+  Media queries are still required but more on utilizing it to resize the images on different screen sizes.
+*/
+.SUNNY_DAY_VERSION_1_EXAMPLE {
+  position: relative;
+  width: 100%;
+  height: 100vh;
+  max-width: 1080px;
+  background-color: skyblue;
+  display: grid;
+  grid-template-columns: repeat(12, 1fr);
+  grid-template-rows: repeat(20, 1fr);
+  grid-column-gap: 0;
+  grid-row-gap: 0;
+
+  .grid-area {
+    width: 100%;
+    height: 100%;
+    position: relative;
+  }
+  .ftm-clouds {
+    grid-area: 1 / 1 / 4 / 13;
+  }
+
+  .ftm-tree {
+    grid-area: 12 / 9 / 16 / 13;
+    position: relative;
+    width: 100%;
+    max-width: 100%;
+    height: auto;
+    text-align: center;
+  }
+
+  .ftm-tree img {
+    max-width: 60%;
+    height: 100%;
+  }
+
+  .ftm-land {
+    grid-area: 15 / 1 / 21 / 13;
+    position: relative;
+  }
+
+  .ftm-land img {
+    position: absolute;
+    bottom: 0;
+    max-width: 100%;
+    object-fit: cover;
+  }
+
+  .ftm-house {
+    grid-area: 10 / 2 / 16 / 8;
+    position: relative;
+    height: 100%;
+    text-align: center;
+  }
+
+  .ftm-house {
+    max-width: 100%;
+    height: 90%;
+  }
+
+  @media screen {
+    //Add media queries here for more handling and different screens.
+  }
+}

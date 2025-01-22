@@ -135,6 +135,32 @@ export const WINTER_BG_GROUP_IMGS = {
   WINTER_PILLAR_1,
 };
 
+//Test New Background Images - Not the actual assets for the new background.
+const cloud_img = './assets/test_img/Cloud.png';
+const cloud_1 = './assets/test_img/cloud_1.png';
+const cloud_2 = './assets/test_img/cloud_2.png';
+const cloud_3 = './assets/test_img/cloud_3.png';
+const tree_img = './assets/test_img/Tree_Layer.png';
+const land_img = './assets/test_img/ground_1.png';
+const house_img = './assets/test_img/House_Layer.png';
+const stage = './assets/test_img/stage.png';
+
+export const NEW_BACKGROUNDS_IMGS = {
+  //Following how the group images for seasons are formatted.
+  SUNNY_DAY_VERSION_1_EXAMPLE: {
+    cloud: cloud_img,
+    tree: tree_img,
+    land: land_img,
+    house: house_img,
+  },
+  SUNNY_DAY_VERSION_2_EXAMPLE: {
+    cloud: cloud_img,
+    tree: tree_img,
+    land: land_img,
+    house: house_img,
+  }
+};
+
 //Scene Names
 export const LOADING_TRANSITION = 'LoadingTransition';
 export const SCENE_NAME_START = "StartScene";
@@ -144,14 +170,3 @@ export const SCENE_NAME_LEVEL_END = "LevelEnd";
 
 //Levels
 export const SPECIAL_LEVELS = [5, 13, 20, 30, 42];
-
-
-//Themes Images - Test assets
-export const cloud = './assets/test_img/Cloud.png';
-export const cloud_1 = './assets/test_img/cloud_1.png';
-export const cloud_2 = './assets/test_img/cloud_2.png';
-export const cloud_3 = './assets/test_img/cloud_3.png';
-export const tree = './assets/test_img/Tree_Layer.png';
-export const land = './assets/test_img/ground_1.png';
-export const house = './assets/test_img/House_Layer.png';
-export const stage = './assets/test_img/stage.png';

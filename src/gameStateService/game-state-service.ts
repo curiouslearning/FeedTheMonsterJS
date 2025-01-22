@@ -204,6 +204,26 @@ export class GameStateService extends PubSub {
         //WIP for the logic.
         return 'default';
     }
+
+    /* Note: The loadGameplayAssets will be temporary placed here. This is a temporary measure as part of the Proof of Concept (POC).
+        The reason behind this placement is to ensure accessibility for background assets,
+        which are tightly coupled with the Rive feature.
+        Once the game settings are established, the responsibility for loading and managing gameplay assets
+        will be moved to the appropriate location, such as a dedicated game settings module or a more appropriate service.
+
+        This temporary implementation ensures that we can demonstrate the integration of these assets
+        while continuing to develop the overall architecture.
+    */
+    loadGameplayAssets() {
+        /*Add logic here that determines what Rive and background to load. The new background assets are tied up and connected
+        to what Rive file to use.
+
+        Logic for handling what assets (rive and background images) to use is not part of this POC. */
+
+
+        return 'SUNNY_DAY_VERSION_1_EXAMPLE' //For POC I will just return this name for the assets to be used.
+    }
+
 };
 
 const gameStateServiceInstance = new GameStateService();

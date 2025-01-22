@@ -3,6 +3,7 @@ import {
   DEFAULT_BG_GROUP_IMGS,
   AUTUMN_BG_GROUP_IMGS,
   WINTER_BG_GROUP_IMGS,
+  NEW_BACKGROUNDS_IMGS
 } from "@constants";
 
 interface BackgroundAssets {
@@ -27,7 +28,7 @@ export class BackgroundHtmlGenerator extends BaseBackgroundComponent {
 
     const assets = this.getAssetsForSeason(season);
     this.clearBackgroundContent();
-    const section = this.createBackgroundSection(season, assets);
+    const section = this.createSeasonBackgroundSection(season, assets);
     backgroundElementsContainer.appendChild(section);
   }
 
@@ -119,8 +120,8 @@ export class BackgroundHtmlGenerator extends BaseBackgroundComponent {
     }
   }
 
-  // Creates the background section using assets for a specific season
-  private createBackgroundSection(
+  // Creates the season background section using assets for a specific season
+  private createSeasonBackgroundSection(
     season: Season,
     assets: BackgroundAssets
   ): HTMLDivElement {
@@ -160,4 +161,58 @@ export class BackgroundHtmlGenerator extends BaseBackgroundComponent {
       backgroundElement.className = newClass;
     }
   }
+
+  // Generates and appends the background section for a given season
+  public generateGameBackground(assetName: string): void {
+    const backgroundElementsContainer = document.getElementById(
+      "background-elements"
+    );
+    if (!backgroundElementsContainer) return;
+
+    //const assets = this.createGameBackgroundSection(assetName season);
+    this.clearBackgroundContent();
+    const section = this.createGameBackgroundSection(assetName, NEW_BACKGROUNDS_IMGS[assetName]);
+    backgroundElementsContainer.appendChild(section);
+  }
+
+  // Creates the season background section using assets for a specific season
+  private createGameBackgroundSection(
+    bgName: string,
+    assets: any
+  ): HTMLDivElement {
+    const section = document.createElement("div");
+    section.className = bgName;
+
+    const cloudDiv = this.createElementWithImage(
+      "ftm-clouds grid-area",
+      assets.cloud,
+      "Clouds",
+      "cloud-img"
+    );
+    const treeDiv = this.createElementWithImage(
+      "ftm-tree grid-area",
+      assets.tree,
+      "Tree",
+      "tree-img"
+    );
+
+    const landDiv = this.createElementWithImage(
+      "ftm-land grid-area",
+      assets.land,
+      "Land",
+      "land-img"
+    );
+
+    const houseDiv = this.createElementWithImage(
+      "ftm-house grid-area",
+      assets.house,
+      "House",
+      "house-img"
+    );
+
+    section.append(cloudDiv, treeDiv, landDiv, houseDiv);
+    return section;
+  }
+
+
 }
