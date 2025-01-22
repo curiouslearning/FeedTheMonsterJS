@@ -196,15 +196,6 @@ export class GameStateService extends PubSub {
         return createLevelEndDataDAO(this);
     }
 
-    //This is the logic to which how themes would be determined
-
-    getThemes() {
-        //Add logic here
-
-        //WIP for the logic.
-        return 'default';
-    }
-
     /* Note: The loadGameplayAssets will be temporary placed here. This is a temporary measure as part of the Proof of Concept (POC).
         The reason behind this placement is to ensure accessibility for background assets,
         which are tightly coupled with the Rive feature.

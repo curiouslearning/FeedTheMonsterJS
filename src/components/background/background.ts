@@ -175,7 +175,7 @@ export class BackgroundHtmlGenerator extends BaseBackgroundComponent {
     backgroundElementsContainer.appendChild(section);
   }
 
-  // Creates the season background section using assets for a specific season
+  // Creates the game background section using assets for a specific season
   private createGameBackgroundSection(
     bgName: string,
     assets: any
