@@ -112,7 +112,7 @@ export class StartScene {
     // backgroundGenerator.generateBackground(selectedBackgroundType);
 
 
-
+    //Note: This is suppose to be for gameplay but for the sake of demo I will just place it here in the start-scene.
     //We will get the value from the state to determine what assets to use on loading the background.
     const assetName = gameStateService.loadGameplayAssets();
     console.log({ assetName })
