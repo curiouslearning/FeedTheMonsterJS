@@ -52,7 +52,7 @@ describe('RiveMonsterComponent', () => {
 
   it('should call Rive with correct parameters on instantiation', () => {
     expect(Rive).toHaveBeenCalledWith({
-      src: './assets/monsterrive.riv',
+      src: './assets/eggMonsterFTM.riv',
       canvas: canvas,
       autoplay: true,
       stateMachines: 'State Machine 1',
