@@ -319,14 +319,9 @@ img {
   font-family: Atma-SemiBold, sans-serif;
   margin-top: 15%;
   z-index: 6;
-  /* position: absolute; */
-  /* width: 94%; */
-  /* left: 50%; */
-  /* transform: translateX(-50%); */
   text-align: center;
   padding: 15px 10px;
   font-size: 8vw;
-  /* line-height: 1.15; */
   color: #f8b618;
   text-shadow:
     -2px -2px 0 #fff,
@@ -341,13 +336,11 @@ img {
   -webkit-line-clamp: 2;
   -webkit-box-orient: vertical;
   overflow: hidden;
-  /* max-height: calc(7.5vw * 2.3); */
   word-wrap: break-word;
 }
 
 #title.title-long {
   font-size: 6.5vw;
-  /* line-height: 1.15; */
   margin-top: 18%;
   padding: 10px;
 }
