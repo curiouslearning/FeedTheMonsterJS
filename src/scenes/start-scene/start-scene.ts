@@ -80,7 +80,8 @@ export class StartScene {
         }
       },
       'start-scene-click-area',
-      (id) => (`<div id="${id}"></div>`)
+      (id) => (`<div id="${id}"></div>`),
+      true
     );
     this.switchSceneToLevelSelection = switchSceneToLevelSelection;
     this.audioPlayer = new AudioPlayer();
@@ -131,7 +132,16 @@ export class StartScene {
   };
 
   generateGameTitle = () => {
-    this.titleTextElement.textContent = this.data.title;
+    if (this.titleTextElement) {
+      this.titleTextElement.textContent = this.data.title;
+      
+      // Check if current language needs long title treatment
+      if (this.data.title && this.data.title.length > 20) {
+        this.titleTextElement.classList.add('title-long');
+      } else {
+        this.titleTextElement.classList.remove('title-long');
+      }
+    }
   };
 
   draw = (deltaTime: number) => {
