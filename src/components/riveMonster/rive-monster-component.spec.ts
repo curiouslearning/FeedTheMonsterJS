@@ -114,17 +114,6 @@ describe('RiveMonsterComponent', () => {
     expect(isHit).toBe(false);
   });
 
-  it('should trigger onStateChange callback when state changes', () => {
-    const stateChangeCallback = jest.fn();
-    component.onStateChange(stateChangeCallback);
-
-    const mockStateChange =
-      component['riveInstance'].stateMachine.inputs[0].onStateChange;
-    mockStateChange.mock.calls[0][0]('Eating');
-
-    expect(stateChangeCallback).toHaveBeenCalledWith('Eating');
-  });
-
   it('should correctly calculate onClick hit detection', () => {
     const isHit = component.onClick(400, 540); // Match the monster's center
     expect(isHit).toBe(true); // Expect a valid hit

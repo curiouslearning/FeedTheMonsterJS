@@ -64,7 +64,6 @@ export class SceneHandler {
     this.addScene(
       SCENE_NAME_START,
       new StartScene(
-        canvas, //to do - use DAO.
         data, //to do - use DAO.
         this.switchSceneToLevelSelection
       )
@@ -120,7 +119,10 @@ export class SceneHandler {
     this.context.clearRect(0, 0, this.width, this.height);
     this.scenes[LOADING_TRANSITION].draw(deltaTime);
 
-    this.activeScene && !(this.activeScene instanceof LevelEndScene) && this.activeScene.draw(deltaTime);
+    this.activeScene && !(
+      this.activeScene instanceof LevelEndScene
+      || this.activeScene instanceof StartScene
+    ) && this.activeScene.draw(deltaTime);
   };
 
   switchSceneToLevelSelection = () => {

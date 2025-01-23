@@ -5,7 +5,8 @@ token.json
 credentials.json
 convertAudios
 .DS_Store
-.idea
+/.idea
+/build/.idea
 */build/.well-known/*
 coverage
 git
