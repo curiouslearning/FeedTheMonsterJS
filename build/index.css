@@ -602,6 +602,11 @@ img {
     max-height: 52px;
   }
 
+  .dynamic-button {
+    max-width: 52px;
+    max-height: 52px;
+  }
+
   .me-4 {
     margin-right: 22px !important;
   }
