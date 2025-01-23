@@ -5,9 +5,7 @@ import { BaseHTML } from '@components/baseHTML/base-html';
 import { RiveMonsterComponent } from "@components/riveMonster/rive-monster-component";
 import { DataModal } from "@data";
 import {
-  StoneConfig,
   toggleDebugMode,
-  Utils,
   pseudoId,
   lang
 } from "@common";
@@ -20,17 +18,12 @@ import {
 import gameStateService from '@gameStateService';
 
 export class StartScene {
-  public canvas: HTMLCanvasElement;
   public data: any;
-  public width: number;
-  public height: number;
-  public pickedStone: StoneConfig;
   public pwa_status: string;
   public firebase_analytics: { logEvent: any };
   public id: string;
   public canavsElement: HTMLCanvasElement;
   public riveMonsterElement: HTMLCanvasElement;
-  public context: CanvasRenderingContext2D;
   public buttonContext: CanvasRenderingContext2D;
   public playButton: BaseButtonComponent;
   public images: Object;
@@ -49,28 +42,35 @@ export class StartScene {
   private onClickArea: BaseHTML;
 
   constructor(
-    canvas: HTMLCanvasElement,
     data: DataModal,
     switchSceneToLevelSelection: Function
   ) {
-    this.canvas = canvas;
     this.data = data;
-    this.width = canvas.width;
-    this.height = canvas.height;
     this.riveMonsterElement = document.getElementById("rivecanvas") as HTMLCanvasElement;
-    this.canavsElement = document.getElementById("canvas") as HTMLCanvasElement;
-    this.context = this.canavsElement.getContext("2d");
     this.toggleBtn = document.getElementById("toggle-btn") as HTMLElement;
     this.loadingElement = document.getElementById("loading-screen") as HTMLElement;
     this.riveMonster = new RiveMonsterComponent({
       canvas: this.riveMonsterElement,
       autoplay: true,
       fit: "contain",
-      alignment: "topCenter",
-      width: this.canavsElement.width, // Example width and height, adjust as needed
-      height: this.canavsElement.height,
+      alignment: "bottomCenter",
+      width: this.riveMonsterElement.width, // Example width and height, adjust as needed
+      height: this.riveMonsterElement.height,
       onLoad: () => {
-        this.riveMonster.play(RiveMonsterComponent.Animations.IDLE); // Start with the "Idle" animation
+        // this.riveMonster.play(RiveMonsterComponent.Animations.MOUTHOPEN); // Start with the "Idle" animation
+        // Trigger a "Happy" animation
+       // Set initial state inputs
+      //  this.riveMonster.setInput(RiveMonsterComponent.Animations.IDLE,true);
+
+       // Listen for state changes
+      //  this.riveMonster.onStateChange((stateName) => {
+      //      console.log('New State:', stateName);
+      //  });
+
+       // Example: Trigger "Sad" state after 2 seconds
+       setTimeout(() => {
+          //  this.riveMonster.setInput(RiveMonsterComponent.Animations.STOMP,true);
+       }, 2000);
       }
     });
     this.onClickArea = new BaseHTML(
@@ -92,7 +92,7 @@ export class StartScene {
     this.setupBg();
     this.titleTextElement = document.getElementById("title");
     this.generateGameTitle();
-    this.riveMonsterElement.style.zIndex = '6';
+    this.riveMonsterElement.style.zIndex = '4';
     this.firebaseIntegration = new FirebaseIntegration();
     this.hideInitialLoading();
     this.setOnClicknAreaStyle();
@@ -134,10 +134,6 @@ export class StartScene {
     this.titleTextElement.textContent = this.data.title;
   };
 
-  draw = (deltaTime: number) => {
-    this.context.clearRect(0, 0, this.width, this.height);
-  };
-
   createPlayButton() {
     this.playButton = new PlayButtonHtml({ targetId: 'background' });
     this.playButton.onClick(() => {
@@ -150,7 +146,7 @@ export class StartScene {
     document.addEventListener("selectstart", function (e) {
       e.preventDefault();
     });
-    this.handler.addEventListener("click", this.handleMouseClick, false);
+    //this.handler.addEventListener("click", this.handleMouseClick, false); //Doesn't work adding on riveCanvas and doesn't work anymore due to riveCanvas using full width and height.
   }
 
   handleMouseClick = (event) => {
@@ -168,7 +164,7 @@ export class StartScene {
 
   dispose() {
     this.audioPlayer.stopAllAudios();
-    this.handler.removeEventListener("click", this.handleMouseClick, false);
+    //this.handler.removeEventListener("click", this.handleMouseClick, false);
     this.playButton.dispose();
     this.playButton.destroy();
     this.onClickArea.destroy();
@@ -185,9 +181,7 @@ export class StartScene {
     localStorage.setItem(PWAInstallStatus, "false");
   };
 
-  /*Note: This was from PlayButton canvas class onclick method.*/
   private logTappedStartFirebaseEvent() {
-    let endTime = Date.now();
     const tappedStartData: TappedStart = {
       cr_user_id: pseudoId,
       ftm_language: lang,
