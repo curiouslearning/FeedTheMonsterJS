@@ -49,7 +49,7 @@ self.registration.addEventListener("updatefound", function (e) {
 // Preload additional assets
 async function preloadAdditionalAssets() {
   const assetsToCache = [
-    "../public/assets/eggMonsterfinal.riv", // Additional Rive asset
+    "../public/assets/eggMonsterFTM.riv", // Additional Rive asset
   ];
   const cache = await caches.open("dynamic-cache");
 
