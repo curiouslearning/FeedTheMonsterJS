@@ -145,7 +145,7 @@ export class StartScene {
   };
 
   createPlayButton() {
-    this.playButton = new PlayButtonHtml({ targetId: 'background' });
+    this.playButton = new PlayButtonHtml({ targetId: 'title-and-play-button' });
     this.playButton.onClick(() => {
       this.toggleBtn.style.display = "none";
       this.logTappedStartFirebaseEvent();

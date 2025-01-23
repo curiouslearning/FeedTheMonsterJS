@@ -312,10 +312,15 @@ img {
   opacity: 1;
 }
 
+#title-and-play-button {
+  position: absolute;
+  width: 100%;
+}
+
 #title {
+  width: 100%;
   font-family: Atma-SemiBold, sans-serif;
   margin-top: 15%;
-  z-index: 6;
   text-align: center;
   padding: 15px 10px;
   font-size: 8vw;
