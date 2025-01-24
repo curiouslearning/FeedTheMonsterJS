@@ -6,7 +6,6 @@ export class Utils {
   public static subdomain: string = "https://feedthemonster.curiouscontent.org";
 
   public static getConvertedDevProdURL(url: string): string {
-    console.log("Debugger.DevelopmentLink : ", Debugger.DevelopmentLink, " Debugger.TestLink ", Debugger.TestLink);
     if (Debugger.DevelopmentLink) {
       return url.slice(
         0,
