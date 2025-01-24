@@ -1,17 +1,20 @@
 import { Debugger } from "@common";
+import { TestServer } from "@constants";
 import { languageFontMapping } from "@data/i18-font-mapping";
 export class Utils {
   public static UrlSubstring: string = "/feedthemonster";
+  public static subdomain: string = "https://feedthemonster.curiouscontent.org";
 
   public static getConvertedDevProdURL(url: string): string {
-    return Debugger.DevelopmentLink
-      ? url.slice(
-          0,
-          url.indexOf(this.UrlSubstring) + this.UrlSubstring.length
-        ) +
-          "dev" +
-          url.slice(url.indexOf(this.UrlSubstring) + this.UrlSubstring.length)
-      : url;
+    console.log("Debugger.DevelopmentLink : ", Debugger.DevelopmentLink, " Debugger.TestLink ", Debugger.TestLink);
+    if (Debugger.DevelopmentLink) {
+      return url.slice(
+        0,
+        url.indexOf(this.UrlSubstring) + this.UrlSubstring.length
+      ) + "dev" + url.slice(url.indexOf(this.UrlSubstring) + this.UrlSubstring.length);
+    } else if (Debugger.TestLink) {
+      return url.replace(this.subdomain, TestServer);
+    } return url;
   }
 
   public static getLanguageSpecificFont(language: string): string {
@@ -144,7 +147,7 @@ export function isClickInsideButton(
     // Check for circular button
     const distance = Math.sqrt(
       (xClick - (buttonX + buttonWidth / 2)) ** 2 +
-        (yClick - (buttonY + buttonHeight / 2)) ** 2
+      (yClick - (buttonY + buttonHeight / 2)) ** 2
     );
     return distance < buttonWidth / 2;
   } else {
