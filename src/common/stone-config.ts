@@ -39,10 +39,10 @@ export class StoneConfig {
 
     calculateImageAndFontSize() {
         if (
-            this.context.measureText(this.text).width * 1.4 >
+            this.context.measureText(this.text).width * 1.7 >
             this.canvasHeight / 9.5
         ) {
-            this.imageSize = this.context.measureText(this.text).width * 1.1;
+            this.imageSize =  this.context.measureText(this.text).width * 1.7;
             this.textFontSize = this.canvasHeight / 25;
             if (this.text.length >= 3  && this.origx<50 && this.origx< this.canvasWidth/2 ) {
                   this.x = this.origx + 21;
