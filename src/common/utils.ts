@@ -5,6 +5,12 @@ export class Utils {
   public static UrlSubstring: string = "/feedthemonster";
   public static subdomain: string = "https://feedthemonster.curiouscontent.org";
 
+  /*
+   * TODO: - update level gen script so that it uses relative urls
+   *       - update ftm build to generate necessary environment-based base-url
+   *       - update circle ci so that it builds using the correct environment variables
+   */
+
   public static getConvertedDevProdURL(url: string): string {
     if (Debugger.DevelopmentLink) {
       return url.slice(
