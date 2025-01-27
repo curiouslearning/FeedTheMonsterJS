@@ -20,7 +20,7 @@ export class FeatureFlagsService {
       await this.statsigClient.initializeAsync();
       this.loadAndStore();
     } catch (e) {
-      // do nothing, or catch errors when in PWA context.
+      // do nothing, or catch errors when in PWA context. Here, we rely on whatever's stored in localstorage.
     }
   }
 
