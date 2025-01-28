@@ -286,7 +286,7 @@ class App {
   }
 
   private updateVersionInfoElement(dataModal: DataModal): void {
-    if (this.is_cached.has(this.lang) && Debugger.DevelopmentLink) {
+    if (this.is_cached.has(this.lang) && (Debugger.TestLink || Debugger.DevelopmentLink)) {
       if (dataModal.majVersion && dataModal.minVersion) {
         this.versionInfoElement.innerHTML += `/j.v${dataModal.majVersion}.${dataModal.minVersion}`;
       } else if (dataModal.version) {
