@@ -25,7 +25,6 @@
   top: 20vh;
   left: 10vw;
   right: 10vw;
-  padding: 35px 50px;
   height: 80vw;
   background-repeat: no-repeat;
   background-size: contain;
@@ -35,11 +34,11 @@
   position: absolute;
   top: -15px;
   left: 15px;
-
   display: block;
 }
 
 .popup .popup__content-wrapper .popup__content-container {
+  position: absolute;
   padding: 15px;
   color: #fff;
   display: flex;
@@ -57,4 +56,12 @@
     top: 4px;
     left: 24px;
   }
+}
+
+#popup-bg {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  top: 0px;
+  left: 0px;
 }
