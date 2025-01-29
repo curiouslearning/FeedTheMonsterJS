@@ -55,78 +55,32 @@ export const createStonePositionsDAO = ({
 	riveCanvasHeight
 }) => {
 	/**
-	 * Canvas dimension configuration for stone positioning system.
-	 * Provides fallback mechanism when Rive canvas dimensions are unavailable.
-	 * 
-	 * @remarks
-	 * The system uses a two-tier approach for dimension handling:
-	 * 1. Primary: Rive canvas dimensions (when available)
-	 * 2. Fallback: Original canvas dimensions
-	 * 
-	 * This ensures consistent stone positioning across different screen sizes
-	 * and prevents layout issues when Rive dimensions are not yet loaded.
+	 * Use Rive canvas dimensions when available, fallback to original canvas.
+	 * Ensures consistent stone positioning across screen sizes.
 	 */
 	const widthVal = riveCanvasWidth ? riveCanvasWidth : width;
 	const heightVal = riveCanvasHeight ? riveCanvasHeight : height;
 
 	/**
-	 * Device width threshold for responsive stone positioning.
-	 * Critical breakpoint that determines when to switch between standard
-	 * and compact layouts.
+	 * Breakpoint width for stone positioning (in pixels).
+	 * Standard layout > 540px, compact layout ≤ 540px.
 	 * 
-	 * @constant
 	 * @type {number}
 	 * @default 540
-	 * 
-	 * @remarks
-	 * - Screens wider than 540px use standard stone positioning
-	 * - Screens narrower than or equal to 540px use compact positioning
-	 * - Value determined through testing various device sizes
 	 */
 	const deviceWidth = 540;
 
 	/**
-	 * Calculates appropriate coordinate factors for stone positioning based on screen width.
+	 * Calculates coordinate factors for stone positioning based on screen width.
+	 * Temporary solution until Rive animation integration.
 	 * 
-	 * @param {number} defaultVal - Standard coordinate factor for wider screens
-	 *                             Used when width > 540px
-	 *                             Typically ranges from 2.0 to 5.0
-	 * @param {number} smallerVal - Compact coordinate factor for narrow screens
-	 *                             Used when width ≤ 540px
-	 *                             Usually 1.2x to 1.5x larger than defaultVal
-	 * @returns {number} The calculated coordinate factor
+	 * @param {number} defaultVal - Factor for screens > 540px (2.0-5.0)
+	 * @param {number} smallerVal - Factor for screens ≤ 540px (1.2-1.5x larger)
+	 * @returns {number} Calculated coordinate factor
 	 * 
-	 * @remarks
-	 * This is a temporary implementation pending the final Rive animation integration.
-	 * Current limitations:
-	 * - Uses static breakpoint (540px)
-	 * - Binary switching between values
-	 * 
-	 * @example
-	 * // For left stone positioning
-	 * const leftPos = setCoordinateFactor(2.0, 3.0);
-	 * // Returns 2.0 for screens > 540px
-	 * // Returns 3.0 for screens ≤ 540px
-	 * 
-	 * // For right stone positioning
-	 * const rightPos = setCoordinateFactor(4.0, 5.5);
-	 * // Moves stones further right on narrow screens
-	 * 
-	 * @todo
-	 * - Replace with dynamic positioning system using Rive dimensions
-	 * - Implement smooth transitions between screen sizes
-	 * - Add support for different aspect ratios
-	 * - Consider monster hitbox in calculations
+	 * @todo Replace with Rive-based dynamic positioning
 	 */
 	const setCoordinateFactor = (defaultVal, smallerVal) => {
-/*
-		 * Temp handling to make sure no stones are overlap on rive monster.
-		 * This function can be removed once we have the official rive file
-		 * as we will have the origial width and height to properly adjust the
-		 * stone coordinates.
-		 *
-		 * Returns a static factor value used for setting coordinates.
-		*/
 		return deviceWidth > widthVal ? smallerVal : defaultVal;
 	}
 
