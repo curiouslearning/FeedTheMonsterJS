@@ -406,7 +406,6 @@ class App {
   hideLoadingScreen() {
     try {
       localStorage.setItem("version" + this.lang, this.getJsonVersionNumber());
-      this.loadingElement.style.display = "none";
       this.handleResize(this.dataModal);
     } catch (error) {
       console.error("Error hiding loading screen:", error);

@@ -18,7 +18,8 @@ const CSS_SHOW = 'show';
 export const POPUP_LAYOUT = (id: string, content: string, showClose: boolean = true): string => `
   <div id="${id}" class="popup">
     <div class="popup__overlay"></div>
-    <div id="${id}-content-wrapper" class="popup__content-wrapper" style="background-image: url(${POPUP_BG_IMG})">
+    <div id="${id}-content-wrapper" class="popup__content-wrapper" >
+      <img id="popup-bg" src="${POPUP_BG_IMG}" />
       <div id="${id}-content-container" class="popup__content-container">${content}</div>
     </div>
   </div>
