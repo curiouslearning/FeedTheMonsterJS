@@ -124,7 +124,7 @@ export class SceneHandler {
     this.scenes[LOADING_TRANSITION].draw(deltaTime);
     const img = new Image(); // Create a new Image object
     img.src = '/assets/images/duck-trimmed.svg'; // Set the image source
-    this.svgcontext.drawImage(img, 220, 170, 200, 239);
+    this.svgcontext.drawImage(img, 200, 150, 150, 179);
 
     this.activeScene && !(
       this.activeScene instanceof LevelEndScene

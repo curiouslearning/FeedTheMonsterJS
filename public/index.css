@@ -995,15 +995,15 @@ img {
 #svg-img {
   position: absolute;
   z-index: 16;
-  top: 170px;
-  width: 200px;
+  top: 150px;
+  width: 150px;
   max-width: 100%;
   display: none;
   left: 10px;
 }
 #toggleSVG{
   position: absolute;
-    left: 2%;
+    left: 15%;
     top: 5px;
     width: 40px;
     height: 40px;
@@ -1033,4 +1033,6 @@ img {
 }
 #svgcanvas{
   display: none;
+  z-index: 4;
+  position: absolute;
 }
