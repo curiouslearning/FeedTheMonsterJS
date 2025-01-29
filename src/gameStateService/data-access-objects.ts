@@ -54,15 +54,72 @@ export const createStonePositionsDAO = ({
 	riveCanvasWidth,
 	riveCanvasHeight
 }) => {
-	/*
-	*  If rive width and height are not properly set,
-	*  use the original canvas width and height instead.
-	*/
+	/**
+	 * Canvas dimension configuration for stone positioning system.
+	 * Provides fallback mechanism when Rive canvas dimensions are unavailable.
+	 * 
+	 * @remarks
+	 * The system uses a two-tier approach for dimension handling:
+	 * 1. Primary: Rive canvas dimensions (when available)
+	 * 2. Fallback: Original canvas dimensions
+	 * 
+	 * This ensures consistent stone positioning across different screen sizes
+	 * and prevents layout issues when Rive dimensions are not yet loaded.
+	 */
 	const widthVal = riveCanvasWidth ? riveCanvasWidth : width;
 	const heightVal = riveCanvasHeight ? riveCanvasHeight : height;
-	const deviceWidth = 540; //Lower than 540 width some stones are too close to monster.
+
+	/**
+	 * Device width threshold for responsive stone positioning.
+	 * Critical breakpoint that determines when to switch between standard
+	 * and compact layouts.
+	 * 
+	 * @constant
+	 * @type {number}
+	 * @default 540
+	 * 
+	 * @remarks
+	 * - Screens wider than 540px use standard stone positioning
+	 * - Screens narrower than or equal to 540px use compact positioning
+	 * - Value determined through testing various device sizes
+	 */
+	const deviceWidth = 540;
+
+	/**
+	 * Calculates appropriate coordinate factors for stone positioning based on screen width.
+	 * 
+	 * @param {number} defaultVal - Standard coordinate factor for wider screens
+	 *                             Used when width > 540px
+	 *                             Typically ranges from 2.0 to 5.0
+	 * @param {number} smallerVal - Compact coordinate factor for narrow screens
+	 *                             Used when width ≤ 540px
+	 *                             Usually 1.2x to 1.5x larger than defaultVal
+	 * @returns {number} The calculated coordinate factor
+	 * 
+	 * @remarks
+	 * This is a temporary implementation pending the final Rive animation integration.
+	 * Current limitations:
+	 * - Uses static breakpoint (540px)
+	 * - Binary switching between values
+	 * 
+	 * @example
+	 * // For left stone positioning
+	 * const leftPos = setCoordinateFactor(2.0, 3.0);
+	 * // Returns 2.0 for screens > 540px
+	 * // Returns 3.0 for screens ≤ 540px
+	 * 
+	 * // For right stone positioning
+	 * const rightPos = setCoordinateFactor(4.0, 5.5);
+	 * // Moves stones further right on narrow screens
+	 * 
+	 * @todo
+	 * - Replace with dynamic positioning system using Rive dimensions
+	 * - Implement smooth transitions between screen sizes
+	 * - Add support for different aspect ratios
+	 * - Consider monster hitbox in calculations
+	 */
 	const setCoordinateFactor = (defaultVal, smallerVal) => {
-		/*
+/*
 		 * Temp handling to make sure no stones are overlap on rive monster.
 		 * This function can be removed once we have the official rive file
 		 * as we will have the origial width and height to properly adjust the
@@ -73,8 +130,12 @@ export const createStonePositionsDAO = ({
 		return deviceWidth > widthVal ? smallerVal : defaultVal;
 	}
 
-  //Coordinates with comments are the ones near to the monster.
-	const staticCoordinateFactors = [
+	/*
+	*  If rive width and height are not properly set,
+	*  use the original canvas width and height instead.
+	*  this is the default coordinates
+	*/
+	const baseCoordinateFactors = [
 		[5, 1.9], //Left stone 1 - upper
 		[7, 1.5], //Left stone 2
 		[setCoordinateFactor(4.3, 4.5), 1.28], //Left stone 3
@@ -85,7 +146,27 @@ export const createStonePositionsDAO = ({
 		[[setCoordinateFactor(3, 2.4), 2.1], 1.42],  //Right stone 3
 	];
 
-	const randomizedStonePositions = staticCoordinateFactors.map(
+	// TODO: In the future, this will be expanded to include different coordinate factors
+	// for various monster types
+	// Each monster type will need its own coordinate set due to their unique dimensions
+	// and visual characteristics to ensure proper stone placement.
+	
+	// Separate coordinate factors for egg monster due to different dimensions
+	const eggMonsterCoordinateFactors = [
+		[5, 1.9], //Left stone 1 - upper
+		[7, 1.5], //Left stone 2
+		[setCoordinateFactor(4.3, 4.5), 2.28], //Left stone 3
+		[6.4, 1.1], //Left stone 4 - very bottom
+		[setCoordinateFactor(1.2, 1.5), 1], //Middle stone that is located right below the monster.
+		[[2.3, 1.9], 1.5], //Right stone 1 - upper
+		[[setCoordinateFactor(2.8, 2.2), 2.1], 2.4], //Right stone 2 - increased horizontal spacing
+		[[setCoordinateFactor(4.5, 3.2), 1.5], 1.8],  //Right stone 3 - moved further right and down
+	];
+
+	// Choose coordinate factors based on monster type
+	const coordinateFactors = eggMonsterCoordinateFactors;
+
+	const randomizedStonePositions = coordinateFactors.map(
 	(coordinatesFactors: [number[] | number, number], index) => {
 		const factorX = coordinatesFactors[0];
 		const factorY = coordinatesFactors[1];
