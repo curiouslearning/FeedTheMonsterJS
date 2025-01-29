@@ -27,13 +27,11 @@ export class SceneHandler {
   };
   private activeScene: null | StartScene | LevelSelectionScreen | GameplayScene | LevelEndScene;
   public canvas: HTMLCanvasElement; //Remove and use DAO.
-  public svgcanvas : HTMLCanvasElement;
   public data: DataModal; //Remove and use DAO.
   public width: number; //Remove and use DAO.
   public height: number; //Remove and use DAO.
   public canavasElement: HTMLCanvasElement; //Remove and use DAO.
   public context: CanvasRenderingContext2D; //Remove and use DAO.
-  public svgcontext : CanvasRenderingContext2D;
   private lastTime: number = 0;
   private toggleBtn: HTMLElement;
   private titleTextElement: HTMLElement;
@@ -48,8 +46,6 @@ export class SceneHandler {
     this.activeScene = null;
     /* Remove these and, create and use DAO. */
     this.canvas = canvas; //Create and use DAO.
-    this.svgcanvas = document.getElementById('svgcanvas') as HTMLCanvasElement;
-    this.svgcontext = this.svgcanvas.getContext("2d");
     this.data = data; //Create and use DAO.
     this.width = canvas.width; //Create and use DAO.
     this.height = canvas.height; //Create and use DAO.
@@ -122,9 +118,6 @@ export class SceneHandler {
     this.lastTime = timeStamp;
     this.context.clearRect(0, 0, this.width, this.height);
     this.scenes[LOADING_TRANSITION].draw(deltaTime);
-    const img = new Image(); // Create a new Image object
-    img.src = '/assets/images/duck-trimmed.svg'; // Set the image source
-    this.svgcontext.drawImage(img, 200, 150, 150, 179);
 
     this.activeScene && !(
       this.activeScene instanceof LevelEndScene
