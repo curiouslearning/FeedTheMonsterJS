@@ -195,7 +195,7 @@ img {
 
 #toggle-btn {
   position: absolute;
-  left: 30%;
+  right: 2%;
   top: 5px;
   width: 80px;
   height: 40px;
@@ -1036,4 +1036,49 @@ img {
     background-size: 100% 120%;
   }
 
+}
+
+
+/* research */
+#svg-img {
+  position: absolute;
+  z-index: 16;
+  top: 170px;
+  width: 200px;
+  max-width: 100%;
+  display: none;
+  left: 10px;
+}
+#toggleSVG{
+  position: absolute;
+    left: 2%;
+    top: 5px;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    border: none;
+    background-color: #bbb;
+    color: #fff;
+    font-size: 14px;
+    cursor: pointer;
+    outline: none;
+    z-index: 9;
+}
+#toggleCanvas{
+  position: absolute;
+    left: 30%;
+    top: 5px;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    border: none;
+    background-color: #bbb;
+    color: #fff;
+    font-size: 14px;
+    cursor: pointer;
+    outline: none;
+    z-index: 9;
+}
+#svgcanvas{
+  display: none;
 }
