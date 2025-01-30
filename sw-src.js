@@ -67,6 +67,7 @@ async function getCacheName(language) {
 
 async function getALLAudioUrls(cacheName, language) {
   let audioList = new Set(); // Use Set to filter duplicates
+  let testURL = "https://globallit-aws-s3-static-webapp-test-us-east-2.s3.us-west-2.amazonaws.com/feed-the-monster";
   audioList.add(`/lang/${language}/ftm_${language}.json`);
   fetch(`./lang/${language}/ftm_${language}.json`, {
     method: "GET",
@@ -79,15 +80,18 @@ async function getALLAudioUrls(cacheName, language) {
 
       for (const level of data.Levels) {
         for (const puzzle of level.Puzzles) {
-          let file = puzzle.prompt.PromptAudio;
-          audioList.add(
-            self.location.href.includes("https://feedthemonsterdev.curiouscontent.org")
-              ? file.slice(0, file.indexOf("/feedthemonster") + "/feedthemonster".length) +
-                "dev" + file.slice(file.indexOf("/feedthemonster") + "/feedthemonster".length)
-              : file
-          );
+            let file = puzzle.prompt.PromptAudio;
+            audioList.add(
+                self.location.href.includes("https://feedthemonsterdev.curiouscontent.org")
+                    ? file.slice(0, file.indexOf("/feedthemonster") + "/feedthemonster".length) + 
+                        "dev" + file.slice(file.indexOf("/feedthemonster") + "/feedthemonster".length)
+                    : self.location.href.includes(testURL)
+                    ? testURL + file
+                    : file
+            );
         }
-      }
+    }
+    
       cacheAudiosFiles(Array.from(audioList), language); // Convert Set back to array
     })
   );
