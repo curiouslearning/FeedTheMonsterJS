@@ -79,7 +79,7 @@ export class PromptText extends EventManager {
     }
     drawRTLLang() {
         var x = this.width / 2;
-        const y = this.height * 0.26;
+        const y = this.height * 0.28;
         this.context.textAlign = "center";
         var fontSize = this.calculateFont();
         const scaledWidth = this.promptImageWidth;
