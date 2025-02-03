@@ -315,7 +315,7 @@ img {
 #title {
   font-family: Atma-SemiBold, sans-serif;
   margin-top: 15%;
-  z-index: 6;
+  z-index: 4;
   position: absolute;
   width: 100%;
   text-align: center;
@@ -995,11 +995,31 @@ img {
 #svg-img {
   position: absolute;
   z-index: 16;
-  top: 150px;
   width: 150px;
   max-width: 100%;
   display: none;
   left: 10px;
+  bottom: 100px;
+}
+#cloudpng {
+  position: absolute;
+  z-index: 16;
+  top: 100px;
+  width: 200px;
+  max-width: 100%;
+  display: none;
+  left: 0;
+  margin: auto;
+  right: 0;
+}
+#pinstar {
+  position: absolute;
+  z-index: 16;
+  top: 50px;
+  width: 75px;
+  max-width: 100%;
+  display: none;
+  right: 0;
 }
 #toggleSVG{
   position: absolute;

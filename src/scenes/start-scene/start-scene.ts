@@ -144,8 +144,10 @@ export class StartScene {
         // Toggle the display style between 'none' and 'block'
         if (element.style.display === "none" || element.style.display === "") {
           element.style.display = "block"; // Show the element
+          this.riveMonsterElement.style.display = "none";
         } else {
           element.style.display = "none"; // Hide the element
+          this.riveMonsterElement.style.display = "block";
         }
       } else {
         console.warn(`Element with ID "${element}" not found.`);
@@ -156,12 +158,20 @@ export class StartScene {
   toggleSvg = () => {
     this.toggleSVG.addEventListener("click", () => {
       const element = document.getElementById('svg-img');
+      const elementtwo = document.getElementById('cloudpng');
+      const elementthree = document.getElementById('pinstar');
       if (element) {
         // Toggle the display style between 'none' and 'block'
         if (element.style.display === "none" || element.style.display === "") {
           element.style.display = "block"; // Show the element
+          this.riveMonsterElement.style.display = "none";
+          elementtwo.style.display = "block"
+          elementthree.style.display = "block"
         } else {
           element.style.display = "none"; // Hide the element
+          this.riveMonsterElement.style.display = "block";
+          elementtwo.style.display = "none"
+          elementthree.style.display = "none"
         }
       } else {
         console.warn(`Element with ID "${element}" not found.`);
