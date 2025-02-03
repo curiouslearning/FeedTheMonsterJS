@@ -34,15 +34,17 @@ describe('Start Scene Test', () => {
   beforeEach(() => {
     document.body.innerHTML = `
       <div>
-        <div id="title" class="title" style="font-family: Atma-SemiBold, sans-serif;">Feed the Monster</div>
+        <div id="title-and-play-button"></div>
         <button id="toggle-btn" class="off">Dev</button>
         <div id="loading-screen" style="display: none; z-index: -1;"></div>
         <div class="game-scene"></div>
         <div id="canvas"></div>
+        <div id="background"></div>
         <canvas id="rivecanvas"></canvas>
         <canvas id="game-control"></canvas>
         <div id="popup-root"></div>
         <div id="version-info-id">1.0.0</div>
+        <div id="start-scene-click-area"></div>
       </div>
     `;
 
@@ -72,7 +74,7 @@ describe('Start Scene Test', () => {
     // Create the startScene instance
     startScene = new StartScene(
       {
-        title: '',
+        title: 'Feed the Monster',
         otherAudios: {
           areYouSure: '',
           watchMeGrow: '',
@@ -87,13 +89,17 @@ describe('Start Scene Test', () => {
         FeedbackAudios: new FeedbackAudios(feedAudioMock),
         getLevels: () => {}
       },
-      () => {}
+      switchSceneMockFunc
     );
+
+    // Initialize required elements
+    startScene.titleTextElement = document.getElementById('title');
+    startScene.handler = document.getElementById('start-scene-click-area');
+    startScene.toggleBtn = document.getElementById('toggle-btn');
 
     // Ensure startScene uses the mock data
     startScene.firebaseIntegration = mockFirebase;
     startScene.audioPlayer = mockAudioPlayer;
-    startScene.switchSceneToLevelSelection = switchSceneMockFunc;
 
     // Create the play button and mock the callback
     mockPlayBtn = {
@@ -115,6 +121,28 @@ describe('Start Scene Test', () => {
 
       expect(loadingElement.style.zIndex).toEqual("-1");
       expect(loadingElement.style.display).toEqual("none");
+    });
+
+    it('Should add title-long class when title length exceeds 20 characters', () => {
+      const titleElement = document.getElementById("title");
+      expect(titleElement).not.toBeNull();
+      
+      startScene.data.title = "This is a very long title that should get the long class";
+      startScene.titleTextElement = titleElement;
+      startScene.generateGameTitle();
+      
+      expect(titleElement.classList.contains('title-long')).toBeTruthy();
+    });
+
+    it('Should not add title-long class when title length is 20 or less', () => {
+      const titleElement = document.getElementById("title");
+      expect(titleElement).not.toBeNull();
+      
+      startScene.data.title = "Short Title";
+      startScene.titleTextElement = titleElement;
+      startScene.generateGameTitle();
+      
+      expect(titleElement.classList.contains('title-long')).toBeFalsy();
     });
   });
 
