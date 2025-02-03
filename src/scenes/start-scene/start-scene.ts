@@ -16,6 +16,7 @@ import {
   PWAInstallStatus,
 } from "@constants";
 import gameStateService from '@gameStateService';
+import './start-scene.scss';
 
 export class StartScene {
   public data: any;
@@ -40,6 +41,7 @@ export class StartScene {
   private firebaseIntegration: FirebaseIntegration;
   private loadingElement: HTMLElement;
   private onClickArea: BaseHTML;
+  private titleElement: BaseHTML;
 
   constructor(
     data: DataModal,
@@ -73,6 +75,21 @@ export class StartScene {
        }, 2000);
       }
     });
+
+    /** 
+     * Initialize the title element in the title-and-play-button container
+     * Creates a div with the game title that supports long text handling
+     */
+    this.titleElement = new BaseHTML(
+      {
+        selectors: {
+          root: '#title-and-play-button'
+        }
+      },
+      'title',
+      (id) => (`<div id="${id}">${this.data.title}</div>`),
+      true
+    );
     this.onClickArea = new BaseHTML(
       {
         selectors: {
@@ -80,7 +97,8 @@ export class StartScene {
         }
       },
       'start-scene-click-area',
-      (id) => (`<div id="${id}"></div>`)
+      (id) => (`<div id="${id}"></div>`),
+      true
     );
     this.switchSceneToLevelSelection = switchSceneToLevelSelection;
     this.audioPlayer = new AudioPlayer();
@@ -131,11 +149,20 @@ export class StartScene {
   };
 
   generateGameTitle = () => {
-    this.titleTextElement.textContent = this.data.title;
+    if (this.titleTextElement) {
+      this.titleTextElement.textContent = this.data.title;
+      
+      // Check if current language needs long title treatment
+      if (this.data.title && this.data.title.length > 20) {
+        this.titleTextElement.classList.add('title-long');
+      } else {
+        this.titleTextElement.classList.remove('title-long');
+      }
+    }
   };
 
   createPlayButton() {
-    this.playButton = new PlayButtonHtml({ targetId: 'background' });
+    this.playButton = new PlayButtonHtml({ targetId: 'title-and-play-button' });
     this.playButton.onClick(() => {
       this.toggleBtn.style.display = "none";
       this.logTappedStartFirebaseEvent();
@@ -168,6 +195,7 @@ export class StartScene {
     this.playButton.dispose();
     this.playButton.destroy();
     this.onClickArea.destroy();
+    this.titleElement.destroy();
     window.removeEventListener(
       "beforeinstallprompt",
       this.handlerInstallPrompt,
