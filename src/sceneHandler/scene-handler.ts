@@ -53,7 +53,6 @@ export class SceneHandler {
     this.context = this.canavasElement.getContext("2d"); //Create and use DAO.
     /***********************************************************************/
     this.toggleBtn = document.getElementById("toggle-btn") as HTMLElement;
-    this.titleTextElement = document.getElementById("title") as HTMLElement;
     window.addEventListener("beforeinstallprompt", this.handleInstallPrompt);
     this.startAnimationLoop();
     this.init(canvas, data);
@@ -137,7 +136,6 @@ export class SceneHandler {
           )
         );
         this.gotoScene(SCENE_NAME_LEVEL_SELECT);
-        this.titleTextElement.style.display = "none";
       }
     );
   };
