@@ -54,27 +54,42 @@ export const createStonePositionsDAO = ({
 	riveCanvasWidth,
 	riveCanvasHeight
 }) => {
-	/*
-	*  If rive width and height are not properly set,
-	*  use the original canvas width and height instead.
-	*/
+	/**
+	 * Use Rive canvas dimensions when available, fallback to original canvas.
+	 * Ensures consistent stone positioning across screen sizes.
+	 */
 	const widthVal = riveCanvasWidth ? riveCanvasWidth : width;
 	const heightVal = riveCanvasHeight ? riveCanvasHeight : height;
-	const deviceWidth = 540; //Lower than 540 width some stones are too close to monster.
+
+	/**
+	 * Breakpoint width for stone positioning (in pixels).
+	 * Standard layout > 540px, compact layout ≤ 540px.
+	 * 
+	 * @type {number}
+	 * @default 540
+	 */
+	const deviceWidth = 540;
+
+	/**
+	 * Calculates coordinate factors for stone positioning based on screen width.
+	 * Temporary solution until Rive animation integration.
+	 * 
+	 * @param {number} defaultVal - Factor for screens > 540px (2.0-5.0)
+	 * @param {number} smallerVal - Factor for screens ≤ 540px (1.2-1.5x larger)
+	 * @returns {number} Calculated coordinate factor
+	 * 
+	 * @todo Replace with Rive-based dynamic positioning
+	 */
 	const setCoordinateFactor = (defaultVal, smallerVal) => {
-		/*
-		 * Temp handling to make sure no stones are overlap on rive monster.
-		 * This function can be removed once we have the official rive file
-		 * as we will have the origial width and height to properly adjust the
-		 * stone coordinates.
-		 *
-		 * Returns a static factor value used for setting coordinates.
-		*/
 		return deviceWidth > widthVal ? smallerVal : defaultVal;
 	}
 
-  //Coordinates with comments are the ones near to the monster.
-	const staticCoordinateFactors = [
+	/*
+	*  If rive width and height are not properly set,
+	*  use the original canvas width and height instead.
+	*  this is the default coordinates
+	*/
+	const baseCoordinateFactors = [
 		[5, 1.9], //Left stone 1 - upper
 		[7, 1.5], //Left stone 2
 		[setCoordinateFactor(4.3, 4.5), 1.28], //Left stone 3
@@ -85,7 +100,27 @@ export const createStonePositionsDAO = ({
 		[[setCoordinateFactor(3, 2.4), 2.1], 1.42],  //Right stone 3
 	];
 
-	const randomizedStonePositions = staticCoordinateFactors.map(
+	// TODO: In the future, this will be expanded to include different coordinate factors
+	// for various monster types
+	// Each monster type will need its own coordinate set due to their unique dimensions
+	// and visual characteristics to ensure proper stone placement.
+	
+	// Separate coordinate factors for egg monster due to different dimensions
+	const eggMonsterCoordinateFactors = [
+		[5, 1.9], //Left stone 1 - upper
+		[7, 1.5], //Left stone 2
+		[setCoordinateFactor(4.3, 4.5), 2.28], //Left stone 3
+		[6.4, 1.1], //Left stone 4 - very bottom
+		[setCoordinateFactor(1.2, 1.5), 1], //Middle stone that is located right below the monster.
+		[[2.3, 1.9], 1.5], //Right stone 1 - upper
+		[[setCoordinateFactor(2.8, 2.2), 2.1], 2.4], //Right stone 2 - increased horizontal spacing
+		[[setCoordinateFactor(4.5, 3.2), 1.5], 1.8],  //Right stone 3 - moved further right and down
+	];
+
+	// Choose coordinate factors based on monster type
+	const coordinateFactors = eggMonsterCoordinateFactors;
+
+	const randomizedStonePositions = coordinateFactors.map(
 	(coordinatesFactors: [number[] | number, number], index) => {
 		const factorX = coordinatesFactors[0];
 		const factorY = coordinatesFactors[1];
