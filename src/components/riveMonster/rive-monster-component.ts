@@ -146,7 +146,7 @@ export class RiveMonsterComponent {
   // Example click handler
   onClick(xClick: number, yClick: number): boolean {
 
-    return this.validateRange(xClick, yClick);; // Explicitly return true or false
+    return this.validateRange(xClick, yClick); // Explicitly return true or false
   }
 
   stopRiveMonster() {
