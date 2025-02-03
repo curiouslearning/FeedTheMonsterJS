@@ -312,28 +312,6 @@ img {
   opacity: 1;
 }
 
-#title {
-  font-family: Atma-SemiBold, sans-serif;
-  margin-top: 15%;
-  z-index: 6;
-  position: absolute;
-  width: 100%;
-  text-align: center;
-  padding: 10px;
-  font-size: 8vw;
-  color: #f8b618;
-  text-shadow:
-    -2px -2px 0 #fff,
-    2px -2px 0 #fff,
-    -2px 2px 0 #fff,
-    2px 2px 0 #fff,
-    -3px 0 0 #fff,
-    3px 0 0 #fff,
-    0 -3px 0 #fff,
-    0 3px 0 #fff;
-  overflow: hidden;
-}
-
 /* BUTTONS */
 .btn--icon {
   height: calc(100vw * 0.19);
