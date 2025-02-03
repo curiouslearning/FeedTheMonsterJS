@@ -131,6 +131,10 @@ export class RiveMonsterComponent {
     const x = event.clientX - rect.left;
     const y = event.clientY - rect.top;
 
+    return this.validateRange(x, y);
+  }
+
+  private validateRange(x, y) {
     const isWithinHitboxX =
       x >= this.hitboxRangeX.from && x <= this.hitboxRangeX.to;
     const isWithinHitboxY =
@@ -141,15 +145,8 @@ export class RiveMonsterComponent {
 
   // Example click handler
   onClick(xClick: number, yClick: number): boolean {
-    const centerX = this.x + this.props.canvas.width / 4;
-    const centerY = this.y + this.props.canvas.height / 2.2;
 
-    const distance = Math.sqrt(
-      (xClick - centerX) * (xClick - centerX) +
-      (yClick - centerY) * (yClick - centerY),
-    );
-
-    return distance <= 100; // Explicitly return true or false
+    return this.validateRange(xClick, yClick); // Explicitly return true or false
   }
 
   stopRiveMonster() {
