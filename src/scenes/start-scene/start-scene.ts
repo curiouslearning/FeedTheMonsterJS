@@ -16,6 +16,7 @@ import {
   PWAInstallStatus,
 } from "@constants";
 import gameStateService from '@gameStateService';
+import './start-scene.scss';
 
 export class StartScene {
   public data: any;
@@ -40,6 +41,7 @@ export class StartScene {
   private firebaseIntegration: FirebaseIntegration;
   private loadingElement: HTMLElement;
   private onClickArea: BaseHTML;
+  private titleElement: BaseHTML;
 
   constructor(
     data: DataModal,
@@ -73,6 +75,21 @@ export class StartScene {
        }, 2000);
       }
     });
+
+    /** 
+     * Initialize the title element in the title-and-play-button container
+     * Creates a div with the game title that supports long text handling
+     */
+    this.titleElement = new BaseHTML(
+      {
+        selectors: {
+          root: '#title-and-play-button'
+        }
+      },
+      'title',
+      (id) => (`<div id="${id}">${this.data.title}</div>`),
+      true
+    );
     this.onClickArea = new BaseHTML(
       {
         selectors: {
@@ -178,6 +195,7 @@ export class StartScene {
     this.playButton.dispose();
     this.playButton.destroy();
     this.onClickArea.destroy();
+    this.titleElement.destroy();
     window.removeEventListener(
       "beforeinstallprompt",
       this.handlerInstallPrompt,

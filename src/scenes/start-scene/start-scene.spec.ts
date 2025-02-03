@@ -34,7 +34,7 @@ describe('Start Scene Test', () => {
   beforeEach(() => {
     document.body.innerHTML = `
       <div>
-        <div id="title" class="title">Feed the Monster</div>
+        <div id="title-and-play-button"></div>
         <button id="toggle-btn" class="off">Dev</button>
         <div id="loading-screen" style="display: none; z-index: -1;"></div>
         <div class="game-scene"></div>
