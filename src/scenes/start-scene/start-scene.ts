@@ -51,8 +51,16 @@ export class StartScene {
   ) {
     this.data = data;
     this.riveMonsterElement = document.getElementById("rivecanvas") as HTMLCanvasElement;
+    // Get the device pixel ratio for high-DPI devices
+    const scale = window.devicePixelRatio || 1;
+    // Adjust canvas dimensions according to the device's pixel ratio
+    this.riveMonsterElement.width = this.riveMonsterElement.clientWidth * scale;
+    this.riveMonsterElement.height = this.riveMonsterElement.clientHeight * scale;
     this.toggleBtn = document.getElementById("toggle-btn") as HTMLElement;
     this.loadingElement = document.getElementById("loading-screen") as HTMLElement;
+    // Adjust canvas dimensions according to the device's pixel ratio
+    this.riveMonsterElement.width = this.riveMonsterElement.clientWidth * scale;
+    this.riveMonsterElement.height = this.riveMonsterElement.clientHeight * scale;
     this.riveMonster = new RiveMonsterComponent({
       canvas: this.riveMonsterElement,
       autoplay: true,
@@ -66,18 +74,18 @@ export class StartScene {
         this.hideInitialLoading();
         // this.riveMonster.play(RiveMonsterComponent.Animations.MOUTHOPEN); // Start with the "Idle" animation
         // Trigger a "Happy" animation
-       // Set initial state inputs
-      //  this.riveMonster.setInput(RiveMonsterComponent.Animations.IDLE,true);
+        // Set initial state inputs
+        //  this.riveMonster.setInput(RiveMonsterComponent.Animations.IDLE,true);
 
-       // Listen for state changes
-      //  this.riveMonster.onStateChange((stateName) => {
-      //      console.log('New State:', stateName);
-      //  });
+        // Listen for state changes
+        //  this.riveMonster.onStateChange((stateName) => {
+        //      console.log('New State:', stateName);
+        //  });
 
-       // Example: Trigger "Sad" state after 2 seconds
-       setTimeout(() => {
+        // Example: Trigger "Sad" state after 2 seconds
+        setTimeout(() => {
           //  this.riveMonster.setInput(RiveMonsterComponent.Animations.STOMP,true);
-       }, 2000);
+        }, 2000);
       }
     });
 
@@ -161,7 +169,7 @@ export class StartScene {
   generateGameTitle = () => {
     if (this.titleTextElement) {
       this.titleTextElement.textContent = this.data.title;
-      
+
       // Check if current language needs long title treatment
       if (this.data.title && this.data.title.length > 20) {
         this.titleTextElement.classList.add('title-long');
