@@ -43,6 +43,8 @@ export class StartScene {
   private firebaseIntegration: FirebaseIntegration;
   private loadingElement: HTMLElement;
   private onClickArea: BaseHTML;
+  private hasBGLoaded: boolean = false;
+  private hasRiveLoaded: boolean = false;
   private titleElement: BaseHTML;
 
   constructor(
@@ -64,6 +66,9 @@ export class StartScene {
       width: this.riveMonsterElement.width, // Example width and height, adjust as needed
       height: this.riveMonsterElement.height,
       onLoad: () => {
+        //Sets if Rive file flag has been loaded to true and trigger to remove the initial loading.
+        this.hasRiveLoaded = true;
+        this.hideInitialLoading();
         // this.riveMonster.play(RiveMonsterComponent.Animations.MOUTHOPEN); // Start with the "Idle" animation
         // Trigger a "Happy" animation
         // Set initial state inputs
@@ -118,7 +123,6 @@ export class StartScene {
     this.generateGameTitle();
     this.riveMonsterElement.style.zIndex = '4';
     this.firebaseIntegration = new FirebaseIntegration();
-    this.hideInitialLoading();
     this.setOnClicknAreaStyle();
   }
 
@@ -132,6 +136,10 @@ export class StartScene {
 
     // Dynamically update the background based on the selected type
     backgroundGenerator.generateBackground(selectedBackgroundType);
+
+    //Sets if BG flag has been loaded to true and trigger to remove the initial loading.
+    this.hasBGLoaded = true;
+    this.hideInitialLoading();
   };
 
   private setOnClicknAreaStyle = () => {
@@ -142,10 +150,12 @@ export class StartScene {
   }
 
   private hideInitialLoading = () => {
-    setTimeout(() => {
-      this.loadingElement.style.zIndex = "-1";
-      this.loadingElement.style.display = "none";
-    }, 750);
+    if (this.hasBGLoaded && this.hasRiveLoaded) {
+      setTimeout(() => {
+        this.loadingElement.style.zIndex = "-1";
+        this.loadingElement.style.display = "none";
+      }, 750);
+    }
   }
 
   devToggle = () => {
