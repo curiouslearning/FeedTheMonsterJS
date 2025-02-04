@@ -191,7 +191,7 @@ export class StartScene {
     document.addEventListener("selectstart", function (e) {
       e.preventDefault();
     });
-    //this.handler.addEventListener("click", this.handleMouseClick, false); //Doesn't work adding on riveCanvas and doesn't work anymore due to riveCanvas using full width and height.
+    this.handler.addEventListener("click", this.handleMouseClick, false); //Doesn't work adding on riveCanvas and doesn't work anymore due to riveCanvas using full width and height.
   }
 
   handleMouseClick = (event) => {
