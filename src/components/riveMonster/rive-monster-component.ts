@@ -69,6 +69,7 @@ export class RiveMonsterComponent {
       stateMachines: [this.stateMachineName],
       layout: new Layout({ fit: Fit.Contain, alignment: Alignment.Center }),
       onLoad: this.handleLoad.bind(this),
+      useOffscreenRenderer: true, // Improves performance
     });
   }
 
