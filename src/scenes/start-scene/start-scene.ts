@@ -51,8 +51,16 @@ export class StartScene {
   ) {
     this.data = data;
     this.riveMonsterElement = document.getElementById("rivecanvas") as HTMLCanvasElement;
+    // Get the device pixel ratio for high-DPI devices
+    const scale = window.devicePixelRatio || 1;
+    // Adjust canvas dimensions according to the device's pixel ratio
+    this.riveMonsterElement.width = this.riveMonsterElement.clientWidth * scale;
+    this.riveMonsterElement.height = this.riveMonsterElement.clientHeight * scale;
     this.toggleBtn = document.getElementById("toggle-btn") as HTMLElement;
     this.loadingElement = document.getElementById("loading-screen") as HTMLElement;
+    // Adjust canvas dimensions according to the device's pixel ratio
+    this.riveMonsterElement.width = this.riveMonsterElement.clientWidth * scale;
+    this.riveMonsterElement.height = this.riveMonsterElement.clientHeight * scale;
     this.riveMonster = new RiveMonsterComponent({
       canvas: this.riveMonsterElement,
       autoplay: true,
@@ -183,7 +191,7 @@ export class StartScene {
     document.addEventListener("selectstart", function (e) {
       e.preventDefault();
     });
-    //this.handler.addEventListener("click", this.handleMouseClick, false); //Doesn't work adding on riveCanvas and doesn't work anymore due to riveCanvas using full width and height.
+    this.handler.addEventListener("click", this.handleMouseClick, false); //Doesn't work adding on riveCanvas and doesn't work anymore due to riveCanvas using full width and height.
   }
 
   handleMouseClick = (event) => {
