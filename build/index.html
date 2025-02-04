@@ -47,6 +47,9 @@
   <div class="game-scene">
     <h1 id="version-info-id">v1.0.38</h1>
     <button id="toggle-btn" class="off">Dev</button>
+    <!-- Buttons to toggle -->
+    <button id="toggleSVG">Svg</button>
+    <button id="toggleCanvas">Can</button>
     <!--Keep the server url in href-->
     <a href="https://devcuriousreader.wpcomstaging.com/FeedTheMonsterJS2.2/" target="_blank" id="pwa_app"></a>
     <div id="loading-screen">
@@ -65,11 +68,15 @@
       </p>
     </div>
     <canvas id="loading"></canvas>
+    <img src="./assets/images/duck-trimmed.svg" id="svg-img"> 
+    <img src="./assets/images/cloud_02.png" id="cloudpng">
+    <img src="./assets/images/pinStar1.webp" id="pinstar">
     <div id="background" class="gameplay-wrapper">
       <div id="title-and-play-button"></div>
       <div id="feedback-text" class="feedback-text"></div>
       <div id="game-control" class="game-control"></div>
       <canvas id="rivecanvas"></canvas> <!--- Rive Monster Canvas-->
+      <canvas id="svgcanvas"></canvas> <!--- SVG Canvas-->
       <canvas id="canvas"></canvas> <!--Main Canvas to Hold Stones-->
       <div id="background-elements"></div>
     </div>
