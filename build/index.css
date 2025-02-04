@@ -312,76 +312,6 @@ img {
   opacity: 1;
 }
 
-#title {
-  font-family: Atma-SemiBold, sans-serif;
-  margin-top: 15%;
-  z-index: 6;
-  position: absolute;
-  width: 100%;
-  text-align: center;
-  padding: 10px;
-  font-size: 8vw;
-  color: #f8b618;
-  text-shadow:
-    -2px -2px 0 #fff,
-    2px -2px 0 #fff,
-    -2px 2px 0 #fff,
-    2px 2px 0 #fff,
-    -3px 0 0 #fff,
-    3px 0 0 #fff,
-    0 -3px 0 #fff,
-    0 3px 0 #fff;
-  overflow: hidden;
-}
-
-/* TODO: move to scss */
-/* POPUPS */
-.popup {
-  display: none;
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  z-index: 1000;
-  height: 100%;
-  width: 100%;
-}
-
-.popup.show {
-  display: block;
-}
-
-.popup .popup__overlay {
-  height: 100%;
-  width: 100%;
-  background-color: rgba(0, 0, 0, 0.5);
-}
-
-.popup .popup__content-wrapper {
-  position: absolute;
-  top: 20vh;
-  left: 10vw;
-  right: 10vw;
-  padding: 35px 50px;
-  height: 80vw;
-  background-repeat: no-repeat;
-  background-size: contain;
-}
-
-.popup .popup__content-wrapper [data-click='close'] {
-  position: absolute;
-  top: -15px;
-  left: 15px;
-
-  display: block;
-}
-
-.popup .popup__content-wrapper .popup__content-container {
-  padding: 15px;
-  color: #fff;
-}
-
 /* BUTTONS */
 .btn--icon {
   height: calc(100vw * 0.19);
@@ -595,6 +525,11 @@ img {
   .ftm-fence {
     left: -30%;
     bottom: 7%;
+  }
+
+  .dynamic-button {
+    max-width: 52px;
+    max-height: 52px;
   }
 
   .dynamic-button {

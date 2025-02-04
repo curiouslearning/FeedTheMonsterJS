@@ -291,7 +291,7 @@ export class GameplayScene {
         this.pickedStone.y = this.pickedStoneObject.origy;
         // Trigger animations
         this.triggerMonsterAnimation('isMouthClosed');
-        this.triggerMonsterAnimation('backToIdle', 1300);
+        this.triggerMonsterAnimation('backToIdle', 350);
 
       }
 
@@ -359,8 +359,7 @@ export class GameplayScene {
     }
   }
 
-  handleMouseMove = (event) => {
-    // const isMouthOpened = triggerInputs.find(input => input.name === 'isMouthOpen'); //drag
+  handleMouseMove = (event) => {    
     if (this.pickedStone && this.pickedStone.frame <= 99) {
       return; // Prevent dragging if the stone is animating
     }
@@ -411,16 +410,14 @@ export class GameplayScene {
               this.pickedStone,
               this.pickedStoneObject
             );
-            
             //After resetting its original position replace it with the new letter.
             this.pickedStoneObject = newStoneLetter;
             this.pickedStone = newStoneLetter;
           }
         }
       }
-
       // Trigger open mouth animation
-    this.triggerMonsterAnimation('isMouthOpen');
+      this.triggerMonsterAnimation('isMouthOpen');
     }
     this.trailParticles?.addTrailParticlesOnMove(
       trailX,
@@ -572,7 +569,6 @@ export class GameplayScene {
       if (this.isFeedBackTriggered) {
         const audioSources = this.audioPlayer?.audioSourcs || [];
         const lastAudio = audioSources[audioSources.length - 1];
-
         if (lastAudio) {
           lastAudio.onended = () => {
             clearTimeout(timeoutId);
@@ -710,7 +706,6 @@ export class GameplayScene {
   }
 
   public wordPuzzle(droppedStoneInstance: StoneConfig) {
-   
     if (droppedStoneInstance.frame <= 99) {
       return; // Prevent dragging if the stone is animating
     }
@@ -769,10 +764,10 @@ export class GameplayScene {
     }
     if (isCorrect) {
       this.triggerMonsterAnimation('isChewing');
-      this.triggerMonsterAnimation('isHappy',1700);
+      this.triggerMonsterAnimation('isHappy', 1700);
     } else {
       this.triggerMonsterAnimation('isSpit');
-      this.triggerMonsterAnimation('isSad',1030);
+      this.triggerMonsterAnimation('isSad', 1030);
     }
 
     this.logPuzzleEndFirebaseEvent(isCorrect, puzzleType);

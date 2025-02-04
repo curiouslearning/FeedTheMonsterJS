@@ -16,6 +16,7 @@ import {
   PWAInstallStatus,
 } from "@constants";
 import gameStateService from '@gameStateService';
+import './start-scene.scss';
 
 export class StartScene {
   public data: any;
@@ -40,6 +41,9 @@ export class StartScene {
   private firebaseIntegration: FirebaseIntegration;
   private loadingElement: HTMLElement;
   private onClickArea: BaseHTML;
+  private hasBGLoaded: boolean = false;
+  private hasRiveLoaded: boolean = false;
+  private titleElement: BaseHTML;
 
   constructor(
     data: DataModal,
@@ -47,18 +51,50 @@ export class StartScene {
   ) {
     this.data = data;
     this.riveMonsterElement = document.getElementById("rivecanvas") as HTMLCanvasElement;
-    this.canavsElement = document.getElementById("canvas") as HTMLCanvasElement;
     this.toggleBtn = document.getElementById("toggle-btn") as HTMLElement;
     this.loadingElement = document.getElementById("loading-screen") as HTMLElement;
     this.riveMonster = new RiveMonsterComponent({
       canvas: this.riveMonsterElement,
       autoplay: true,
       fit: "contain",
-      alignment: "topCenter",
-      width: this.canavsElement.width, // Example width and height, adjust as needed
-      height: this.canavsElement.height,
-      onLoad: () => {}
+      alignment: "bottomCenter",
+      width: this.riveMonsterElement.width, // Example width and height, adjust as needed
+      height: this.riveMonsterElement.height,
+      onLoad: () => {
+        //Sets if Rive file flag has been loaded to true and trigger to remove the initial loading.
+        this.hasRiveLoaded = true;
+        this.hideInitialLoading();
+        // this.riveMonster.play(RiveMonsterComponent.Animations.MOUTHOPEN); // Start with the "Idle" animation
+        // Trigger a "Happy" animation
+       // Set initial state inputs
+      //  this.riveMonster.setInput(RiveMonsterComponent.Animations.IDLE,true);
+
+       // Listen for state changes
+      //  this.riveMonster.onStateChange((stateName) => {
+      //      console.log('New State:', stateName);
+      //  });
+
+       // Example: Trigger "Sad" state after 2 seconds
+       setTimeout(() => {
+          //  this.riveMonster.setInput(RiveMonsterComponent.Animations.STOMP,true);
+       }, 2000);
+      }
     });
+
+    /** 
+     * Initialize the title element in the title-and-play-button container
+     * Creates a div with the game title that supports long text handling
+     */
+    this.titleElement = new BaseHTML(
+      {
+        selectors: {
+          root: '#title-and-play-button'
+        }
+      },
+      'title',
+      (id) => (`<div id="${id}">${this.data.title}</div>`),
+      true
+    );
     this.onClickArea = new BaseHTML(
       {
         selectors: {
@@ -66,7 +102,8 @@ export class StartScene {
         }
       },
       'start-scene-click-area',
-      (id) => (`<div id="${id}"></div>`)
+      (id) => (`<div id="${id}"></div>`),
+      true
     );
     this.switchSceneToLevelSelection = switchSceneToLevelSelection;
     this.audioPlayer = new AudioPlayer();
@@ -78,9 +115,8 @@ export class StartScene {
     this.setupBg();
     this.titleTextElement = document.getElementById("title");
     this.generateGameTitle();
-    this.riveMonsterElement.style.zIndex = '6';
+    this.riveMonsterElement.style.zIndex = '4';
     this.firebaseIntegration = new FirebaseIntegration();
-    this.hideInitialLoading();
     this.setOnClicknAreaStyle();
   }
 
@@ -94,6 +130,10 @@ export class StartScene {
 
     // Dynamically update the background based on the selected type
     backgroundGenerator.generateBackground(selectedBackgroundType);
+
+    //Sets if BG flag has been loaded to true and trigger to remove the initial loading.
+    this.hasBGLoaded = true;
+    this.hideInitialLoading();
   };
 
   private setOnClicknAreaStyle = () => {
@@ -104,10 +144,12 @@ export class StartScene {
   }
 
   private hideInitialLoading = () => {
-    setTimeout(() => {
-      this.loadingElement.style.zIndex = "-1";
-      this.loadingElement.style.display = "none";
-    }, 750);
+    if (this.hasBGLoaded && this.hasRiveLoaded) {
+      setTimeout(() => {
+        this.loadingElement.style.zIndex = "-1";
+        this.loadingElement.style.display = "none";
+      }, 750);
+    }
   }
 
   devToggle = () => {
@@ -117,11 +159,20 @@ export class StartScene {
   };
 
   generateGameTitle = () => {
-    this.titleTextElement.textContent = this.data.title;
+    if (this.titleTextElement) {
+      this.titleTextElement.textContent = this.data.title;
+      
+      // Check if current language needs long title treatment
+      if (this.data.title && this.data.title.length > 20) {
+        this.titleTextElement.classList.add('title-long');
+      } else {
+        this.titleTextElement.classList.remove('title-long');
+      }
+    }
   };
 
   createPlayButton() {
-    this.playButton = new PlayButtonHtml({ targetId: 'background' });
+    this.playButton = new PlayButtonHtml({ targetId: 'title-and-play-button' });
     this.playButton.onClick(() => {
       this.toggleBtn.style.display = "none";
       this.logTappedStartFirebaseEvent();
@@ -132,6 +183,7 @@ export class StartScene {
     document.addEventListener("selectstart", function (e) {
       e.preventDefault();
     });
+    //this.handler.addEventListener("click", this.handleMouseClick, false); //Doesn't work adding on riveCanvas and doesn't work anymore due to riveCanvas using full width and height.
   }
 
   handleMouseClick = (event) => {
@@ -149,9 +201,11 @@ export class StartScene {
 
   dispose() {
     this.audioPlayer.stopAllAudios();
+    //this.handler.removeEventListener("click", this.handleMouseClick, false);
     this.playButton.dispose();
     this.playButton.destroy();
     this.onClickArea.destroy();
+    this.titleElement.destroy();
     window.removeEventListener(
       "beforeinstallprompt",
       this.handlerInstallPrompt,
