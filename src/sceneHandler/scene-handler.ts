@@ -27,11 +27,13 @@ export class SceneHandler {
   };
   private activeScene: null | StartScene | LevelSelectionScreen | GameplayScene | LevelEndScene;
   public canvas: HTMLCanvasElement; //Remove and use DAO.
+  public svgcanvas: HTMLCanvasElement;
   public data: DataModal; //Remove and use DAO.
   public width: number; //Remove and use DAO.
   public height: number; //Remove and use DAO.
   public canavasElement: HTMLCanvasElement; //Remove and use DAO.
   public context: CanvasRenderingContext2D; //Remove and use DAO.
+  public svgcontext: CanvasRenderingContext2D;
   private lastTime: number = 0;
   private toggleBtn: HTMLElement;
   private titleTextElement: HTMLElement;
@@ -46,6 +48,8 @@ export class SceneHandler {
     this.activeScene = null;
     /* Remove these and, create and use DAO. */
     this.canvas = canvas; //Create and use DAO.
+    this.svgcanvas = document.getElementById('svgcanvas') as HTMLCanvasElement;
+    this.svgcontext = this.svgcanvas.getContext("2d");
     this.data = data; //Create and use DAO.
     this.width = canvas.width; //Create and use DAO.
     this.height = canvas.height; //Create and use DAO.
@@ -79,7 +83,7 @@ export class SceneHandler {
     this.activeScene = this.scenes[key];
   }
 
-  private timerWrapper = (callback: () => void, customTime:number = 800) => {
+  private timerWrapper = (callback: () => void, customTime: number = 800) => {
     //This is for reusable setTimeout with default 800 miliseconds.
     setTimeout(() => { callback(); }, customTime);
   }
@@ -117,12 +121,33 @@ export class SceneHandler {
     this.lastTime = timeStamp;
     this.context.clearRect(0, 0, this.width, this.height);
     this.scenes[LOADING_TRANSITION].draw(deltaTime);
+    this.loadAndDrawImages();
 
     this.activeScene && !(
       this.activeScene instanceof LevelEndScene
       || this.activeScene instanceof StartScene
     ) && this.activeScene.draw(deltaTime);
   };
+
+  loadAndDrawImages() {
+    let loadedImages = 0;
+    const images = [
+      { src: '/assets/images/duck-trimmed.svg', x: 160, y: 460, width: 150, height: 179 },
+      { src: '/assets/images/cloud_02.png', x: 80, y: 250, width: 200, height: 100 },
+      { src: '/assets/images/pinStar1.webp', x: 200, y: 50, width: 75, height: 75 }
+    ];
+    images.forEach((imgData, index) => {
+        const img = new Image();
+        img.src = imgData.src;
+        img.onload = () => {
+            this.svgcontext.drawImage(img, imgData.x, imgData.y, imgData.width, imgData.height);
+            loadedImages++;
+        };
+        img.onerror = () => {
+            console.error(`Error loading image: ${imgData.src}`);
+        };
+    });
+}
 
   switchSceneToLevelSelection = () => {
     this.timerWrapper(
@@ -140,7 +165,7 @@ export class SceneHandler {
     );
   };
 
-  switchSceneToGameplay = () => {  
+  switchSceneToGameplay = () => {
     this.timerWrapper(
       () => {
         this.addScene(

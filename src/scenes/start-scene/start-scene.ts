@@ -35,6 +35,8 @@ export class StartScene {
   public switchSceneToLevelSelection: Function;
   audioPlayer: AudioPlayer;
   private toggleBtn: HTMLElement;
+  private toggleSVG: HTMLElement;
+  private togglecanvasBtn: HTMLElement;
   private pwa_install_status: Event;
   private titleTextElement: HTMLElement | null;
   public riveMonster: RiveMonsterComponent;
@@ -48,8 +50,11 @@ export class StartScene {
     switchSceneToLevelSelection: Function
   ) {
     this.data = data;
+    this.canavsElement = document.getElementById("canvas") as HTMLCanvasElement;
     this.riveMonsterElement = document.getElementById("rivecanvas") as HTMLCanvasElement;
     this.toggleBtn = document.getElementById("toggle-btn") as HTMLElement;
+    this.toggleSVG = document.getElementById("toggleSVG") as HTMLElement;
+    this.togglecanvasBtn = document.getElementById("toggleCanvas") as HTMLElement;
     this.loadingElement = document.getElementById("loading-screen") as HTMLElement;
     this.riveMonster = new RiveMonsterComponent({
       canvas: this.riveMonsterElement,
@@ -61,18 +66,18 @@ export class StartScene {
       onLoad: () => {
         // this.riveMonster.play(RiveMonsterComponent.Animations.MOUTHOPEN); // Start with the "Idle" animation
         // Trigger a "Happy" animation
-       // Set initial state inputs
-      //  this.riveMonster.setInput(RiveMonsterComponent.Animations.IDLE,true);
+        // Set initial state inputs
+        //  this.riveMonster.setInput(RiveMonsterComponent.Animations.IDLE,true);
 
-       // Listen for state changes
-      //  this.riveMonster.onStateChange((stateName) => {
-      //      console.log('New State:', stateName);
-      //  });
+        // Listen for state changes
+        //  this.riveMonster.onStateChange((stateName) => {
+        //      console.log('New State:', stateName);
+        //  });
 
-       // Example: Trigger "Sad" state after 2 seconds
-       setTimeout(() => {
+        // Example: Trigger "Sad" state after 2 seconds
+        setTimeout(() => {
           //  this.riveMonster.setInput(RiveMonsterComponent.Animations.STOMP,true);
-       }, 2000);
+        }, 2000);
       }
     });
 
@@ -97,14 +102,15 @@ export class StartScene {
         }
       },
       'start-scene-click-area',
-      (id) => (`<div id="${id}"></div>`),
-      true
+      (id) => (`<div id="${id}"></div>`), true
     );
     this.switchSceneToLevelSelection = switchSceneToLevelSelection;
     this.audioPlayer = new AudioPlayer();
     this.pwa_status = localStorage.getItem(PWAInstallStatus);
     this.handler = document.getElementById('start-scene-click-area') as HTMLBodyElement;
     this.devToggle();
+    this.toggleSvg();
+    this.toggleCanvas();
     this.createPlayButton();
     window.addEventListener("beforeinstallprompt", this.handlerInstallPrompt);
     this.setupBg();
@@ -148,6 +154,49 @@ export class StartScene {
     );
   };
 
+  toggleCanvas= () =>{
+    this.togglecanvasBtn.addEventListener("click", ()=>{
+      const element = document.getElementById('svgcanvas');
+      if (element) {
+        // Toggle the display style between 'none' and 'block'
+        if (element.style.display === "none" || element.style.display === "") {
+          element.style.display = "block"; // Show the element
+          this.riveMonsterElement.style.display = "none";
+        } else {
+          element.style.display = "none"; // Hide the element
+          this.riveMonsterElement.style.display = "block";
+        }
+      } else {
+        console.warn(`Element with ID "${element}" not found.`);
+      }
+    })
+  }
+
+  toggleSvg = () => {
+    this.toggleSVG.addEventListener("click", () => {
+      const element = document.getElementById('svg-img');
+      const elementtwo = document.getElementById('cloudpng');
+      const elementthree = document.getElementById('pinstar');
+      if (element) {
+        // Toggle the display style between 'none' and 'block'
+        if (element.style.display === "none" || element.style.display === "") {
+          element.style.display = "block"; // Show the element
+          this.riveMonsterElement.style.display = "none";
+          elementtwo.style.display = "block"
+          elementthree.style.display = "block"
+        } else {
+          element.style.display = "none"; // Hide the element
+          this.riveMonsterElement.style.display = "block";
+          elementtwo.style.display = "none"
+          elementthree.style.display = "none"
+        }
+      } else {
+        console.warn(`Element with ID "${element}" not found.`);
+      }
+
+    })
+  }
+
   generateGameTitle = () => {
     if (this.titleTextElement) {
       this.titleTextElement.textContent = this.data.title;
@@ -173,7 +222,7 @@ export class StartScene {
     document.addEventListener("selectstart", function (e) {
       e.preventDefault();
     });
-    //this.handler.addEventListener("click", this.handleMouseClick, false); //Doesn't work adding on riveCanvas and doesn't work anymore due to riveCanvas using full width and height.
+    this.handler.addEventListener("click", this.handleMouseClick, false); 
   }
 
   handleMouseClick = (event) => {
