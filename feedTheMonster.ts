@@ -136,6 +136,11 @@ class App {
       default:
         console.warn(`Unsupported progress percentage: ${percentage}`);
     }
+    if ((percentage === 25 && this.logged25) ||
+        (percentage === 50 && this.logged50) ||
+        (percentage === 75 && this.logged75)) {
+       return;
+      }; // Event already logged, no need to send again }
   }
   private logSessionStartFirebaseEvent() {
     let lastSessionEndTime = localStorage.getItem("lastSessionEndTime");
@@ -377,6 +382,7 @@ class App {
           this.logDownloadPercentageComplete(75);
           this.logged75 = true;
         }
+        
         // Check if download completed
         if (this.isDownloadCompleted(this.currentProgress)) {
           this.cacheLanguage();
