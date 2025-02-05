@@ -401,7 +401,7 @@ export default class StoneHandler extends EventManager {
     let ctr = 0;
     for (let sc of this.foilStones) {
       const distance = this.computeCursorDistance(posX, posY, sc);
-      if (distance <= 40) {
+      if (distance <= 50) { 
         stoneLetter = sc;
         /* Adds a unique identifier to tell which letter is which in case there are two or more of the same letter.*/
         stoneLetter['foilStoneIndex'] = ctr;
@@ -424,7 +424,7 @@ export default class StoneHandler extends EventManager {
     for (let sc of this.foilStones) {
       const distance = this.computeCursorDistance(posX, posY, sc);
 
-      if (distance <= 40 && shouldGroupLetter(sc.text, ctr)) {
+      if (distance <= 50 && shouldGroupLetter(sc.text, ctr)) { 
         stoneLetter = sc;
         /* Adds a unique identifier to tell which letter is which in case there are two or more of the same letter.*/
         stoneLetter['foilStoneIndex'] = ctr;

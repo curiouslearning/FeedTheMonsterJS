@@ -321,7 +321,7 @@ export class GameplayScene {
       */
       for (let sc of this.stoneHandler.foilStones) {
         const distance = Math.sqrt((x - sc.x) ** 2 + (y - sc.y) ** 2);
-        if (distance <= 40) {
+        if (distance <= 50) { 
           this.pickedStoneObject = sc;
           this.pickedStone = sc;
           this.stoneHandler.playDragAudioIfNecessary(sc);

@@ -44,18 +44,27 @@ export class RiveMonsterComponent {
   constructor(props: RiveMonsterComponentProps) {
     this.props = props;
     this.moveCanvasUpOrDown(50); // Move down by 50px
+    
+    // Calculate monster dimensions based on canvas size
+    const monsterWidth = props.canvas.width * 0.25; // Monster takes up 25% of canvas width
+    const monsterHeight = props.canvas.height * 0.15; // Monster takes up 25% of canvas height
+    
+    // Position monster at bottom center
     const monsterCenterX = props.canvas.width / 2;
-    const monsterCenterY = props.canvas.height / 2; 
-    const rangeFactorX = 55;
-    const rangeFactorY = 100;
+    const monsterBottomY = props.canvas.height * 0.80; // Position at 80% from top
+    
+    // Define hitbox dimensions (make it slightly larger than the egg)
+    const hitboxWidth = monsterWidth * 1.2; // Hitbox is 20% wider than monster
+    const hitboxHeight = monsterHeight * 1.2; // Hitbox is 20% taller than monster
 
     this.hitboxRangeX = {
-      from: monsterCenterX - rangeFactorX,
-      to: monsterCenterX + rangeFactorX,
+      from: monsterCenterX - (hitboxWidth / 2),
+      to: monsterCenterX + (hitboxWidth / 2),
     };
+    
     this.hitboxRangeY = {
-      from: monsterCenterY + (rangeFactorY / 2),
-      to: monsterCenterY + (rangeFactorY * 2),
+      from: monsterBottomY - hitboxHeight,
+      to: monsterBottomY,
     };
 
     this.initializeRive();
@@ -68,9 +77,63 @@ export class RiveMonsterComponent {
       autoplay: this.props.autoplay,
       stateMachines: [this.stateMachineName],
       layout: new Layout({ fit: Fit.Contain, alignment: Alignment.Center }),
-      onLoad: this.handleLoad.bind(this),
-      useOffscreenRenderer: true, // Improves performance
+      onLoad: () => {
+        this.handleLoad();
+        // Start continuous hitbox drawing
+        const drawLoop = () => {
+          requestAnimationFrame(() => {
+            this.drawHitbox();
+            drawLoop();
+          });
+        };
+        drawLoop();
+      },
+      useOffscreenRenderer: true,
     });
+  }
+
+  private drawHitbox() {
+    // Draw on the monster's canvas
+    const ctx = this.props.canvas.getContext('2d');
+    if (!ctx) return;
+
+    // Save current context state
+    ctx.save();
+
+    // Make the hitbox very visible
+    ctx.strokeStyle = '#FF0000';
+    ctx.fillStyle = 'rgba(255, 0, 0, 0.3)';
+    ctx.lineWidth = 4;
+
+    // Draw hitbox rectangle
+    const hitboxWidth = this.hitboxRangeX.to - this.hitboxRangeX.from;
+    const hitboxHeight = this.hitboxRangeY.to - this.hitboxRangeY.from;
+    
+    // Draw the rectangle
+    ctx.beginPath();
+    ctx.rect(
+      this.hitboxRangeX.from,
+      this.hitboxRangeY.from,
+      hitboxWidth,
+      hitboxHeight
+    );
+    ctx.stroke();
+    ctx.fill();
+
+    // Add crosshair at center
+    const centerX = this.hitboxRangeX.from + (hitboxWidth / 2);
+    const centerY = this.hitboxRangeY.from + (hitboxHeight / 2);
+    const crosshairSize = 20;
+    
+    ctx.beginPath();
+    ctx.moveTo(centerX - crosshairSize, centerY);
+    ctx.lineTo(centerX + crosshairSize, centerY);
+    ctx.moveTo(centerX, centerY - crosshairSize);
+    ctx.lineTo(centerX, centerY + crosshairSize);
+    ctx.stroke();
+
+    // Restore context state
+    ctx.restore();
   }
 
   getInputs() {
@@ -132,14 +195,30 @@ export class RiveMonsterComponent {
     const x = event.clientX - rect.left;
     const y = event.clientY - rect.top;
 
-    return this.validateRange(x, y);
+    // Get canvas dimensions
+    const canvasWidth = this.props.canvas.width;
+    const canvasHeight = this.props.canvas.height;
+
+    // Convert client coordinates to canvas coordinates
+    const canvasX = (x / rect.width) * canvasWidth;
+    const canvasY = (y / rect.height) * canvasHeight;
+
+    return this.validateRange(canvasX, canvasY);
   }
 
   private validateRange(x, y) {
+    // Add debug logging
+    console.log('Mouse position:', x, y);
+    console.log('Hitbox X range:', this.hitboxRangeX.from, this.hitboxRangeX.to);
+    console.log('Hitbox Y range:', this.hitboxRangeY.from, this.hitboxRangeY.to);
+
     const isWithinHitboxX =
       x >= this.hitboxRangeX.from && x <= this.hitboxRangeX.to;
     const isWithinHitboxY =
       y >= this.hitboxRangeY.from && y <= this.hitboxRangeY.to;
+
+    // Log the result
+    console.log('Within hitbox:', isWithinHitboxX && isWithinHitboxY);
 
     return isWithinHitboxX && isWithinHitboxY;
   }
