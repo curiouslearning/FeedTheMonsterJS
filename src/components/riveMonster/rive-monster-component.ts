@@ -44,8 +44,9 @@ export class RiveMonsterComponent {
   constructor(props: RiveMonsterComponentProps) {
     this.props = props;
     this.moveCanvasUpOrDown(50); // Move down by 50px
-    const monsterCenterX = props.canvas.width / 2;
-    const monsterCenterY = props.canvas.height / 2; 
+    const scale = window.devicePixelRatio || 1;
+    const monsterCenterX = (props.canvas.width / scale) / 2;
+    const monsterCenterY = (props.canvas.height / scale) / 2; 
     const rangeFactorX = 55;
     const rangeFactorY = 100;
 
