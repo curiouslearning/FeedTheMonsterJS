@@ -58,6 +58,9 @@ export class StartScene {
     this.riveMonsterElement.height = this.riveMonsterElement.clientHeight * scale;
     this.toggleBtn = document.getElementById("toggle-btn") as HTMLElement;
     this.loadingElement = document.getElementById("loading-screen") as HTMLElement;
+    // Adjust canvas dimensions according to the device's pixel ratio
+    this.riveMonsterElement.width = this.riveMonsterElement.clientWidth * scale;
+    this.riveMonsterElement.height = this.riveMonsterElement.clientHeight * scale;
     this.riveMonster = new RiveMonsterComponent({
       canvas: this.riveMonsterElement,
       autoplay: true,
