@@ -14,12 +14,17 @@ jobs:
           cache-path: ~/project/node_modules
           override-ci-command: npm install
       - run: npm run build
+      - persist_to_workspace:
+          root: ~/project
+          paths:
+            - .
 
   s3-deploy:
     docker:
       - image: 'cimg/python:3.6'
     steps:
-      - checkout
+      - attach_workspace:
+          at: ~/project
       - aws-s3/sync:
           arguments: |
             --acl public-read \
@@ -34,7 +39,8 @@ jobs:
     docker:
       - image: 'cimg/python:3.6'
     steps:
-      - checkout
+      - attach_workspace:
+          at: ~/project
       - aws-s3/sync:
           arguments: |
             --acl public-read \
@@ -49,7 +55,8 @@ jobs:
     docker:
       - image: 'cimg/python:3.6'
     steps:
-      - checkout
+      - attach_workspace:
+          at: ~/project
       - aws-s3/sync:
           arguments: |
             --acl public-read \
@@ -67,16 +74,22 @@ workflows:
     jobs:
       - npm-build
       - s3-deploy:
+          requires:
+            - npm-build
           filters:
             branches:
               only:
                 - develop
       - s3-deploy-test:
+          requires:
+            - npm-build
           filters:
             branches:
               only:
                 - test
       - s3-deploy-prod:
+          requires:
+            - npm-build
           filters:
             branches:
               only:

@@ -8,3 +8,6 @@ convertAudios
 .DS_Store
 .idea
 */build/.well-known/*
+coverage
+build
+*/build
