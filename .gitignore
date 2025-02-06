@@ -9,3 +9,4 @@ convertAudios
 .idea
 */build/.well-known/*
 coverage
+build
