@@ -11,6 +11,11 @@ export interface SessionStart extends CommonEventProperties{
 export interface SessionEnd extends CommonEventProperties{
     duration: number;
 }
+
+export interface DowloadPercentCompleted extends CommonEventProperties{
+       timestamps:Number;
+   }
+
 export interface TappedStart extends CommonEventProperties{
    
 }
