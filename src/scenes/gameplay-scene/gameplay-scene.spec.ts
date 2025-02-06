@@ -167,7 +167,6 @@ describe('GameplayScene with BasePopupComponent', () => {
 
     // Initialize GameplayScene
     gameplayScene = new GameplayScene({
-      monsterPhaseNumber: 1,
       switchSceneToEnd: mockSwitchSceneToEnd,
       switchToLevelSelection: jest.fn(),
       reloadScene: mockReloadScene,

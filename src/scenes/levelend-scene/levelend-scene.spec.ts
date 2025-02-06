@@ -22,8 +22,6 @@ describe('LevelEndScene', () => {
   let levelEndScene: LevelEndScene;
   let mockSwitchToGameplayCB: jest.Mock;
   let mockSwitchToLevelSelectionCB: jest.Mock;
-  let mockData: any;
-  let audioPlayerMock: jest.Mocked<AudioPlayer>;
 
   beforeEach(() => {
     jest.clearAllMocks();
@@ -59,6 +57,7 @@ describe('LevelEndScene', () => {
 
     // Initialize the LevelEndScene
     levelEndScene = new LevelEndScene(
+      1,
       mockSwitchToGameplayCB,
       mockSwitchToLevelSelectionCB,
     );

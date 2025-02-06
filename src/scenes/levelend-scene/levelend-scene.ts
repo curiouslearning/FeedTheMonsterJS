@@ -21,6 +21,7 @@ export class LevelEndScene {
   public currentLevel: number;
   public switchToGameplayCB: Function;
   public switchToLevelSelectionCB: Function;
+  public monsterPhaseNumber: number;
   public data: any;
   public audioPlayer: AudioPlayer;
   public isLastLevel: boolean;
@@ -30,7 +31,8 @@ export class LevelEndScene {
   public mapButtonInstance: MapButton;
   public riveMonster: RiveMonsterComponent;
   public canvasElement: HTMLCanvasElement;
-  constructor(switchToGameplayCB, switchToLevelSelectionCB) {
+  constructor(monsterPhaseNumber,switchToGameplayCB, switchToLevelSelectionCB) {
+    this.monsterPhaseNumber = monsterPhaseNumber;
     const {starCount, currentLevel, data} =
       gameStateService.getLevelEndSceneData();
     const {isLastLevel, canvas} = gameStateService.getGamePlaySceneDetails();
@@ -131,7 +133,17 @@ export class LevelEndScene {
         console.log(starImg)
         starImg.classList.add('show');
       }, i * 500); // Half-second delay between each star
+
+          // Call function after all stars have rendered
+    setTimeout(() => {
+      this.callEvolutionAnimation();
+    }, this.starCount * 500);
     }
+  }
+
+  callEvolutionAnimation() {
+    console.log('All stars have been rendered and phase '+ this.monsterPhaseNumber + ' monster loaded');
+    // Additional logic can be added here
   }
 
   private createButton(

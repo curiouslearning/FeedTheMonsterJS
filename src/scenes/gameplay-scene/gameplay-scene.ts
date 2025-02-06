@@ -55,7 +55,6 @@ export class GameplayScene {
   public context: CanvasRenderingContext2D;
   public levelIndicators: LevelIndicators;
   public stonesCount: number = 1;
-  public monsterPhaseNumber: number;
   public pickedStone: StoneConfig;
   public puzzleStartTime: number;
   pausePopupComponent: PausePopupComponent
@@ -93,7 +92,6 @@ export class GameplayScene {
   public timeTicker: HTMLElement;
   isFeedBackTriggered: boolean;
   constructor({
-    monsterPhaseNumber,
     switchSceneToEnd,
     switchToLevelSelection,
     reloadScene
@@ -104,7 +102,8 @@ export class GameplayScene {
     this.initializeProperties(gamePlayData);
     // UI element setup
     this.setupUIElements();
-    this.monsterPhaseNumber = monsterPhaseNumber || 1;
+  
+    
     this.switchSceneToEnd = switchSceneToEnd;
     this.switchToLevelSelection = switchToLevelSelection;
     this.reloadScene = reloadScene;
