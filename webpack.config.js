@@ -64,6 +64,7 @@ var config = {
     // }),
     new CopyPlugin({
       patterns: [
+        { from: "./manifest.json", to: "./" },
         { from: "./index.html", to: "./" },
         { from: "./index.css", to: "./" },
         { from: "./assets", to: "./assets" },

@@ -19,7 +19,6 @@ jobs:
     docker:
       - image: 'cimg/python:3.6'
     steps:
-      - checkout
       - aws-s3/sync:
           arguments: |
             --acl public-read \
@@ -34,7 +33,6 @@ jobs:
     docker:
       - image: 'cimg/python:3.6'
     steps:
-      - checkout
       - aws-s3/sync:
           arguments: |
             --acl public-read \
@@ -49,7 +47,6 @@ jobs:
     docker:
       - image: 'cimg/python:3.6'
     steps:
-      - checkout
       - aws-s3/sync:
           arguments: |
             --acl public-read \
