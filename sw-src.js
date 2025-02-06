@@ -93,6 +93,9 @@ async function getALLAudioUrls(cacheName, language) {
           );
         }
       }
+      if (self.location.href.includes(testURL)) {
+        audioList.add(`${testURL}/lang/${language}/ftm_${language}.json`);
+      }
       cacheAudiosFiles(Array.from(audioList), language); // Convert Set back to array
     })
   );
@@ -230,6 +233,7 @@ async function cacheFeedBackAudio(feedBackAudios, language) {
 
 self.addEventListener("fetch", function (event) {
   const requestUrl = new URL(event.request.url);
+  console.log(requestUrl);
   if (requestUrl.searchParams.has('cache-bust')) {
     return event.respondWith(fetch(event.request));
   }
@@ -238,7 +242,11 @@ self.addEventListener("fetch", function (event) {
       if (response) {
         return response;
       }
-      return fetch(event.request);
+
+      return fetch(event.request).catch(function () {
+        // If the fetch fails (like when offline), return a fallback response
+        return new Response('Network unavailable in sw', { status: 503 });
+      });;
     })
   );
 });
