@@ -9,12 +9,13 @@ interface RiveMonsterComponentProps {
   height?: number; // Optional height for the Rive animation
   onLoad?: () => void; // Callback once Rive animation is loaded
   gameCanvas?: HTMLCanvasElement; // Main canvas element
+  src?: string; // Source path for the Rive animation file
 }
 
 export class RiveMonsterComponent {
   private props: RiveMonsterComponentProps;
   private riveInstance: any;
-  private src: string = './assets/eggMonsterFTM.riv';  // Define the .riv file path eggMonsterFTM
+  private src: string = './assets/eggMonsterFTM.riv';  // Default fallback value
   private stateMachineName: string = "State Machine 1"  // Define the state machine
   public game: any;
   public x: number;
@@ -43,6 +44,7 @@ export class RiveMonsterComponent {
 
   constructor(props: RiveMonsterComponentProps) {
     this.props = props;
+    this.src = props.src || this.src; // Use provided src or default
     this.moveCanvasUpOrDown(50); // Move down by 50px
     const scale = window.devicePixelRatio || 1;
     const monsterCenterX = (props.canvas.width / scale) / 2;
@@ -120,9 +122,24 @@ export class RiveMonsterComponent {
   }
 
   play(animationName: string) {
-    this.riveInstance?.play(animationName);
+    try {
+      // First try to play as a state machine input
+      const input = this.getInputs().find(input => input.name === animationName);
+      if (input) {
+        input.fire();
+        return;
+      }
+      
+      // If not found as input, try to play as animation
+      if (this.riveInstance) {
+        this.riveInstance.play(animationName);
+      } else {
+        console.warn('Rive instance not initialized');
+      }
+    } catch (error) {
+      console.error(`Error playing animation ${animationName}:`, error);
+    }
   }
-
 
   stop() {
     this.riveInstance?.stop();

@@ -60,8 +60,9 @@ export class LevelEndScene {
       autoplay: true,
       fit: "contain",
       alignment: "topCenter",
+      src: './assets/monsterEvolution1.riv',
       onLoad: () => {
-        this.riveMonster.play(RiveMonsterComponent.Animations.IDLE); // Start with the "Eat Happy" animation
+        this.riveMonster.play('Evolution'); // Start with the "Eat Happy" animation
       }
     });
   }
@@ -98,8 +99,15 @@ export class LevelEndScene {
   };
 
   renderStarsHTML() {
+    console.log('renderStarsHTML');
     const starsContainer = document.querySelector('.stars-container');
     if (!starsContainer) return;
+
+    // Check if star count reaches 8
+    if (this.starCount >= 8) {
+      alert('Congratulations! You have reached 8 stars!');
+    }
+
     // Clear any previously rendered stars
     starsContainer.innerHTML = '';
 
@@ -108,6 +116,8 @@ export class LevelEndScene {
       PIN_STAR_2, // Path to star 2 image
       PIN_STAR_3, // Path to star 3 image
     ];
+
+    console.log('this.starCount' , this.starCount);
 
     for (let i = 0; i < this.starCount; i++) {
       const starImg = document.createElement('img');
@@ -118,6 +128,7 @@ export class LevelEndScene {
 
       // Delay the addition of the 'show' class
       setTimeout(() => {
+        console.log(starImg)
         starImg.classList.add('show');
       }, i * 500); // Half-second delay between each star
     }
