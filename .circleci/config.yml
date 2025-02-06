@@ -18,8 +18,6 @@ jobs:
   s3-deploy:
     docker:
       - image: 'cimg/python:3.6'
-    requires:
-      - npm-build
     steps:
       - checkout
       - aws-s3/sync:
@@ -35,8 +33,6 @@ jobs:
   s3-deploy-test:
     docker:
       - image: 'cimg/python:3.6'
-    requires:
-      - npm-build
     steps:
       - checkout
       - aws-s3/sync:
@@ -52,8 +48,6 @@ jobs:
   s3-deploy-prod:
     docker:
       - image: 'cimg/python:3.6'
-    requires:
-      - npm-build
     steps:
       - checkout
       - aws-s3/sync:
@@ -73,16 +67,22 @@ workflows:
     jobs:
       - npm-build
       - s3-deploy:
+          requires:
+            - npm-build
           filters:
             branches:
               only:
                 - develop
       - s3-deploy-test:
+          requires:
+            - npm-build
           filters:
             branches:
               only:
                 - test
       - s3-deploy-prod:
+          requires:
+            - npm-build
           filters:
             branches:
               only:
