@@ -108,8 +108,13 @@ export class SceneHandler {
 
   public checkMonsterPhaseUpdation(): number {
     const totalStarCount = GameScore.getTotalStarCount();
-    const monsterPhaseNumber = Math.floor(totalStarCount / 12) + 1 || 1;
-    return monsterPhaseNumber <= 4 ? monsterPhaseNumber : 4;
+    if (totalStarCount >= 38) {
+      return 4; // Phase 4
+    } else if (totalStarCount >= 8) {
+      return 2; // Phase 2
+    } else {
+      return 1; // Phase 1 (default)
+    }
   }
 
   animation = (timeStamp: number) => {
@@ -146,7 +151,6 @@ export class SceneHandler {
         this.addScene(
           SCENE_NAME_GAME_PLAY,
           new GameplayScene({
-            monsterPhaseNumber: this.checkMonsterPhaseUpdation(),
             switchSceneToEnd: this.switchSceneToEndLevel,
             switchToLevelSelection: () => {
               this.switchSceneToLevelSelection();
@@ -165,6 +169,7 @@ export class SceneHandler {
         this.addScene(
           SCENE_NAME_LEVEL_END,
           new LevelEndScene(
+            this.checkMonsterPhaseUpdation(),
             this.switchSceneToGameplay,
             this.switchSceneToLevelSelection
           )
