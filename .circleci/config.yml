@@ -67,16 +67,22 @@ workflows:
     jobs:
       - npm-build
       - s3-deploy:
+          requires:
+            - npm-build
           filters:
             branches:
               only:
                 - develop
       - s3-deploy-test:
+          requires:
+            - npm-build
           filters:
             branches:
               only:
                 - test
       - s3-deploy-prod:
+          requires:
+            - npm-build
           filters:
             branches:
               only:
