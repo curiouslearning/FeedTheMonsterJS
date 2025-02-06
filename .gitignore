@@ -10,3 +10,4 @@ convertAudios
 */build/.well-known/*
 coverage
 build
+*/build
