@@ -16,7 +16,7 @@ import {
   PWAInstallStatus,
 } from "@constants";
 import gameStateService from '@gameStateService';
-import gameSettingService from '@gameSettingsService';
+import gameSettingsService from '@gameSettingsService';
 
 export class SceneHandler {
   private scenes: {
@@ -27,12 +27,11 @@ export class SceneHandler {
     SCENE_NAME_LEVEL_END?: LevelEndScene;
   };
   private activeScene: null | StartScene | LevelSelectionScreen | GameplayScene | LevelEndScene;
-  public canvas: HTMLCanvasElement; //Remove and use DAO.
-  public data: DataModal; //Remove and use DAO.
-  public width: number; //Remove and use DAO.
-  public height: number; //Remove and use DAO.
-  public canavasElement: HTMLCanvasElement; //Remove and use DAO.
-  public context: CanvasRenderingContext2D; //Remove and use DAO.
+  public canvas: HTMLCanvasElement;
+  public data: DataModal;
+  public width: number;
+  public height: number;
+  public context: CanvasRenderingContext2D;
   private lastTime: number = 0;
   private toggleBtn: HTMLElement;
   private titleTextElement: HTMLElement;
@@ -51,17 +50,13 @@ export class SceneHandler {
       canvasWidth,
       canvasHeight,
       context
-    } = gameSettingService.getCanvasSizeValues();
+    } = gameSettingsService.getCanvasSizeValues();
 
-
-    /* Remove these and, create and use DAO. */
     this.data = data; //Create and use DAO.
     this.canvas = canvasElem;
-    this.width = canvasWidth;
-    this.height = canvasHeight;
-    this.context = context;
-
-    /***********************************************************************/
+    this.width = canvasWidth; //Used for Canvas clearRect animation.
+    this.height = canvasHeight; //Used for Canvas clearRect animation.
+    this.context = context; //Used for Canvas clearRect animation.
     this.toggleBtn = document.getElementById("toggle-btn") as HTMLElement;
     window.addEventListener("beforeinstallprompt", this.handleInstallPrompt);
     this.startAnimationLoop();
@@ -155,7 +150,7 @@ export class SceneHandler {
     );
   };
 
-  switchSceneToGameplay = () => {  
+  switchSceneToGameplay = () => {
     this.timerWrapper(
       () => {
         this.addScene(

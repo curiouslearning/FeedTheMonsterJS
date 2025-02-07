@@ -16,6 +16,7 @@ import {
   PWAInstallStatus,
 } from "@constants";
 import gameStateService from '@gameStateService';
+import gameSettingsService from '@gameSettingsService';
 import './start-scene.scss';
 
 export class StartScene {
@@ -50,17 +51,9 @@ export class StartScene {
     switchSceneToLevelSelection: Function
   ) {
     this.data = data;
-    this.riveMonsterElement = document.getElementById("rivecanvas") as HTMLCanvasElement;
-    // Get the device pixel ratio for high-DPI devices
-    const scale = window.devicePixelRatio || 1;
-    // Adjust canvas dimensions according to the device's pixel ratio
-    this.riveMonsterElement.width = this.riveMonsterElement.clientWidth * scale;
-    this.riveMonsterElement.height = this.riveMonsterElement.clientHeight * scale;
+    this.riveMonsterElement = gameSettingsService.getRiveCanvasValue();
     this.toggleBtn = document.getElementById("toggle-btn") as HTMLElement;
     this.loadingElement = document.getElementById("loading-screen") as HTMLElement;
-    // Adjust canvas dimensions according to the device's pixel ratio
-    this.riveMonsterElement.width = this.riveMonsterElement.clientWidth * scale;
-    this.riveMonsterElement.height = this.riveMonsterElement.clientHeight * scale;
     this.riveMonster = new RiveMonsterComponent({
       canvas: this.riveMonsterElement,
       autoplay: true,
