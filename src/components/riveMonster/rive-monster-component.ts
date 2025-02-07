@@ -1,3 +1,4 @@
+import { MONSTER_PHASE_1 } from '@constants';
 import { Rive, Layout, Fit, Alignment } from '@rive-app/canvas';
 
 interface RiveMonsterComponentProps {
@@ -9,12 +10,13 @@ interface RiveMonsterComponentProps {
   height?: number; // Optional height for the Rive animation
   onLoad?: () => void; // Callback once Rive animation is loaded
   gameCanvas?: HTMLCanvasElement; // Main canvas element
+  src?: string; // Source path for the Rive animation file
 }
 
 export class RiveMonsterComponent {
   private props: RiveMonsterComponentProps;
   private riveInstance: any;
-  private src: string = './assets/eggMonsterFTM.riv';  // Define the .riv file path eggMonsterFTM
+  private src?: string;  // Will be set from props or default
   private stateMachineName: string = "State Machine 1"  // Define the state machine
   public game: any;
   public x: number;
@@ -43,6 +45,7 @@ export class RiveMonsterComponent {
 
   constructor(props: RiveMonsterComponentProps) {
     this.props = props;
+    this.src = props.src || MONSTER_PHASE_1; // Use provided src or default
     this.moveCanvasUpOrDown(50); // Move down by 50px
     const scale = window.devicePixelRatio || 1;
     const monsterCenterX = (props.canvas.width / scale) / 2;

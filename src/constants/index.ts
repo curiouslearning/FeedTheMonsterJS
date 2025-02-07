@@ -144,3 +144,6 @@ export const SCENE_NAME_LEVEL_END = "LevelEnd";
 
 //Levels
 export const SPECIAL_LEVELS = [5, 13, 20, 30, 42];
+
+// monster paths
+export const MONSTER_PHASE_1 = './assets/eggMonsterFTM.riv'
