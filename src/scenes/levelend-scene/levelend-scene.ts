@@ -5,6 +5,7 @@ import {
   AUDIO_INTRO,
   AUDIO_LEVEL_LOSE,
   AUDIO_LEVEL_WIN,
+  MONSTER_EVOLUTION,
   PIN_STAR_1,
   PIN_STAR_2,
   PIN_STAR_3,
@@ -59,12 +60,15 @@ export class LevelEndScene {
     // Initialize the RiveMonsterComponent instead of directly using Rive
     this.riveMonster = new RiveMonsterComponent({
       canvas: this.canvasElement,
-      autoplay: true,
+      autoplay: false, // Changed to false to prevent immediate autoplay
       fit: "contain",
       alignment: "topCenter",
-      src: './assets/monsterEvolution1.riv',
+      src: MONSTER_EVOLUTION.FIRST,
+      isEvolving: true,
+      moveCanvasUpOrDown: 0,
       onLoad: () => {
-        this.riveMonster.play('Evolution'); // Start with the "Eat Happy" animation
+        // Don't play any animation initially, wait for stars
+        console.log('Evolution monster loaded');
       }
     });
   }
@@ -143,7 +147,16 @@ export class LevelEndScene {
 
   callEvolutionAnimation() {
     console.log('All stars have been rendered and phase '+ this.monsterPhaseNumber + ' monster loaded');
-    // Additional logic can be added here
+    try {
+      // Get the list of available animations first
+      const animations = this.riveMonster.getAvailableAnimations();
+      console.log('Available animations:', animations);
+
+      // Try to play the evolution animation using our enum
+      this.riveMonster.play(RiveMonsterComponent.Animations.EVOLUTION);
+    } catch (error) {
+      console.error('Failed to play evolution animation:', error);
+    }
   }
 
   private createButton(

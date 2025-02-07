@@ -144,3 +144,15 @@ export const SCENE_NAME_LEVEL_END = "LevelEnd";
 
 //Levels
 export const SPECIAL_LEVELS = [5, 13, 20, 30, 42];
+
+
+// monsters
+export const MONSTER = {
+  PHASE_1: './assets/eggMonsterFTM.riv',
+  PHASE_2: './assets/eggMonsterFTM.riv',
+  PHASE_4: './assets/eggMonsterFTM.riv',
+}
+
+export const MONSTER_EVOLUTION = {
+  FIRST: './assets/monsterEvolution1.riv'
+}

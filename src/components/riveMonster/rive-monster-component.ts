@@ -9,7 +9,9 @@ interface RiveMonsterComponentProps {
   height?: number; // Optional height for the Rive animation
   onLoad?: () => void; // Callback once Rive animation is loaded
   gameCanvas?: HTMLCanvasElement; // Main canvas element
-  src?: string; // Source path for the Rive animation file
+  src?: string; // Source path for the Rive animation file,
+  isEvolving?: boolean; // Flag to indicate if the monster is evolving
+  moveCanvasUpOrDown?: number;
 }
 
 export class RiveMonsterComponent {
@@ -40,12 +42,13 @@ export class RiveMonsterComponent {
     MOUTHOPEN: "MouthOpen",
     MOUTHCLOSED: "MouthClosed", //Not working
     HAPPY: "Happy", //Not working
+    EVOLUTION: "Evolution", //New animation
   };
 
   constructor(props: RiveMonsterComponentProps) {
     this.props = props;
     this.src = props.src || this.src; // Use provided src or default
-    this.moveCanvasUpOrDown(50); // Move down by 50px
+    this.moveCanvasUpOrDown(this.props.moveCanvasUpOrDown || 50); // Move down by 50px
     const scale = window.devicePixelRatio || 1;
     const monsterCenterX = (props.canvas.width / scale) / 2;
     const monsterCenterY = (props.canvas.height / scale) / 2; 
@@ -65,18 +68,28 @@ export class RiveMonsterComponent {
   }
 
   private initializeRive() {
-    this.riveInstance = new Rive({
+    const config = {
       src: this.src,
       canvas: this.props.canvas,
       autoplay: this.props.autoplay,
-      stateMachines: [this.stateMachineName],
-      layout: new Layout({ fit: Fit.Contain, alignment: Alignment.Center }),
+      layout: new Layout({ 
+        fit: Fit.Contain, 
+        alignment: Alignment.Center 
+      }),
       onLoad: this.handleLoad.bind(this),
-      useOffscreenRenderer: true, // Improves performance
-    });
+      useOffscreenRenderer: true // Improves performance
+    };
+
+    // For evolution animations, we don't use state machines
+    if (!this.props.isEvolving) {
+      config['stateMachines'] = [this.stateMachineName];
+    }
+
+    this.riveInstance = new Rive(config);
   }
 
   getInputs() {
+    console.log('getInputs', this.riveInstance.stateMachineInputs(this.stateMachineName));
     return this.riveInstance.stateMachineInputs(this.stateMachineName);
   }
 
@@ -95,18 +108,21 @@ export class RiveMonsterComponent {
   }
 
   private handleLoad() {
-    const inputs = this.getInputs();
-    const requiredTriggers = [
-      'backToIdle', 'isStomped', 'isMouthOpen', 'isMouthClosed',
-      'isChewing', 'isHappy', 'isSpit', 'isSad',
-    ];
+    // Skip trigger checks if monster is evolving
+    if (!this.props.isEvolving) {
+      const inputs = this.getInputs();
+      const requiredTriggers = [
+        'backToIdle', 'isStomped', 'isMouthOpen', 'isMouthClosed',
+        'isChewing', 'isHappy', 'isSpit', 'isSad',
+      ];
 
-    const missingTriggers = requiredTriggers.filter(
-      (name) => !inputs.some((input) => input.name === name)
-    );
+      const missingTriggers = requiredTriggers.filter(
+        (name) => !inputs.some((input) => input.name === name)
+      );
 
-    if (missingTriggers.length) {
-      console.error(`Missing state machine inputs: ${missingTriggers.join(', ')}`);
+      if (missingTriggers.length) {
+        console.error(`Missing state machine inputs: ${missingTriggers.join(', ')}`);
+      }
     }
 
     if (this.props.onLoad) this.props.onLoad();
@@ -123,18 +139,32 @@ export class RiveMonsterComponent {
 
   play(animationName: string) {
     try {
-      // First try to play as a state machine input
-      const input = this.getInputs().find(input => input.name === animationName);
-      if (input) {
-        input.fire();
-        return;
-      }
-      
-      // If not found as input, try to play as animation
-      if (this.riveInstance) {
-        this.riveInstance.play(animationName);
+      if (this.props.isEvolving) {
+        // For evolution animations, directly play the animation
+        if (this.riveInstance) {
+          // Get available animations
+          const animations = RiveMonsterComponent.Animations;
+          console.log('Static animations:', animations);
+          console.log('Available animations:', this.riveInstance.animations);
+          
+          if (this.riveInstance.animations.includes(animationName)) {
+            this.riveInstance.play(animationName);
+          } else {
+            console.warn(`Animation ${animationName} not found. Available animations:`, this.riveInstance.animations);
+          }
+        }
       } else {
-        console.warn('Rive instance not initialized');
+        // For regular monster animations, try state machine first
+        const input = this.getInputs().find(input => input.name === animationName);
+        if (input) {
+          input.fire();
+          return;
+        }
+        
+        // Fallback to direct animation
+        if (this.riveInstance) {
+          this.riveInstance.play(animationName);
+        }
       }
     } catch (error) {
       console.error(`Error playing animation ${animationName}:`, error);
@@ -172,6 +202,11 @@ export class RiveMonsterComponent {
     this.riveInstance?.stop();
   }
 
+  // Add this method to get available animations
+  public getAvailableAnimations(): string[] {
+    console.log('riveInstance', this.riveInstance);
+    return this.riveInstance?.animations || [];
+  }
 
   public dispose() {
     this.riveInstance?.cleanup();
