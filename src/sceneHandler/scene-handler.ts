@@ -16,6 +16,7 @@ import {
   PWAInstallStatus,
 } from "@constants";
 import gameStateService from '@gameStateService';
+import gameSettingService from '@gameSettingsService';
 
 export class SceneHandler {
   private scenes: {
@@ -44,21 +45,30 @@ export class SceneHandler {
     );
     this.scenes = {};
     this.activeScene = null;
+
+    const {
+      canvasElem,
+      canvasWidth,
+      canvasHeight,
+      context
+    } = gameSettingService.getCanvasSizeValues();
+
+
     /* Remove these and, create and use DAO. */
-    this.canvas = canvas; //Create and use DAO.
     this.data = data; //Create and use DAO.
-    this.width = canvas.width; //Create and use DAO.
-    this.height = canvas.height; //Create and use DAO.
-    this.canavasElement = document.getElementById("canvas") as HTMLCanvasElement; //Create and use DAO.
-    this.context = this.canavasElement.getContext("2d"); //Create and use DAO.
+    this.canvas = canvasElem;
+    this.width = canvasWidth;
+    this.height = canvasHeight;
+    this.context = context;
+
     /***********************************************************************/
     this.toggleBtn = document.getElementById("toggle-btn") as HTMLElement;
     window.addEventListener("beforeinstallprompt", this.handleInstallPrompt);
     this.startAnimationLoop();
-    this.init(canvas, data);
+    this.init(data);
   }
 
-  private init(canvas: HTMLCanvasElement, data: DataModal) {
+  private init(data: DataModal) {
     this.addScene(LOADING_TRANSITION, new LoadingScene());
     this.addScene(
       SCENE_NAME_START,

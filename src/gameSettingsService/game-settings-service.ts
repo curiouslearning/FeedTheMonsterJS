@@ -23,5 +23,16 @@ export class GameSettingsService extends PubSub{
   private updateGameTrailToggle(isTrailEffectOn: boolean) {
     this.clickTrailToggle = isTrailEffectOn;
   }
+
+  public getCanvasSizeValues() {
+    const canvas = document.getElementById("canvas") as HTMLCanvasElement;
+
+    return {
+      canvasElem: canvas,
+      canvasWidth: canvas.width,
+      canvasHeight: canvas.height,
+      context: canvas.getContext("2d"),
+    }
+  }
 }
 
