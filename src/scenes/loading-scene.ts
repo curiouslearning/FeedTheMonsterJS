@@ -1,6 +1,7 @@
 import { loadImages } from "@common";
 import { CLOUD_6, CLOUD_7, CLOUD_8 } from "@constants";
-import gameStateService from '@gameStateService';
+import gameSettingsService from '@gameSettingsService';
+
 export class LoadingScene {
   public canvas: HTMLCanvasElement;
   height: number;
@@ -16,11 +17,11 @@ export class LoadingScene {
   private unsubscribeEvent: () => void;
 
   constructor() {
-    const loadingSceneCanvas = gameStateService.getLoadingSceneDetails();
-    this.canvas = loadingSceneCanvas.canvas;
-    this.height = loadingSceneCanvas.height;
-    this.width = loadingSceneCanvas.width;
-    this.context = loadingSceneCanvas.context;
+    const { loadingCanvas, loadingContext } = gameSettingsService.getCanvasSizeValues();
+    this.canvas = loadingCanvas;
+    this.height = loadingCanvas.height;
+    this.width = loadingCanvas.width;
+    this.context = loadingContext;
     this.shouldShowLoading = false;
     this.images = {
       cloud6: CLOUD_6,
@@ -31,8 +32,8 @@ export class LoadingScene {
       this.loadedImages = Object.assign({}, images);
       this.imagesLoaded = true;
     });
-    this.unsubscribeEvent = gameStateService.subscribe(
-      gameStateService.EVENTS.SCENE_LOADING_EVENT,
+    this.unsubscribeEvent = gameSettingsService.subscribe(
+      gameSettingsService.EVENTS.SCENE_LOADING_EVENT,
       (shouldShow: boolean) => {
         /* Note loading-scene SCENE_LOADING_EVENT has no method to unsubscribe as this is being reused throughout the entire game.*/
         this.handleLoadingScreen(shouldShow);
@@ -52,7 +53,7 @@ export class LoadingScene {
     this.cloudXPosition += deltaTime * 0.75;
     this.cloudMovingTimeOut += deltaTime;
     if (this.cloudMovingTimeOut>2983){
-      gameStateService.publish(gameStateService.EVENTS.SCENE_LOADING_EVENT, false);
+      gameSettingsService.publish(gameSettingsService.EVENTS.SCENE_LOADING_EVENT, false);
     }
     if (this.cloudXPosition >= this.width * 0.5 && !this.stopCloudMoving) {
       this.cloudMovingTimeOut += deltaTime;

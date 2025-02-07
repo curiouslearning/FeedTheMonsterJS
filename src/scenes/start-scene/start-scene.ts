@@ -15,7 +15,6 @@ import {
   FirebaseUserClicked,
   PWAInstallStatus,
 } from "@constants";
-import gameStateService from '@gameStateService';
 import gameSettingsService from '@gameSettingsService';
 import './start-scene.scss';
 
@@ -178,7 +177,7 @@ export class StartScene {
       this.toggleBtn.style.display = "none";
       this.logTappedStartFirebaseEvent();
       this.audioPlayer.playButtonClickSound();
-      gameStateService.publish(gameStateService.EVENTS.SCENE_LOADING_EVENT, true);
+      gameSettingsService.publish(gameSettingsService.EVENTS.SCENE_LOADING_EVENT, true);
       this.switchSceneToLevelSelection();
     });
     document.addEventListener("selectstart", function (e) {
@@ -196,7 +195,7 @@ export class StartScene {
     });
     this.toggleBtn.style.display = "none";
     this.audioPlayer.playButtonClickSound();
-    gameStateService.publish(gameStateService.EVENTS.SCENE_LOADING_EVENT, true);
+    gameSettingsService.publish(gameSettingsService.EVENTS.SCENE_LOADING_EVENT, true);
     this.switchSceneToLevelSelection();
   };
 

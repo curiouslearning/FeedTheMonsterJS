@@ -143,11 +143,11 @@ export class GameplayScene {
             currentLevelData: this.levelData,
             selectedLevelNumber: this.levelNumber,
           });
-          gameStateService.publish(gameStateService.EVENTS.SCENE_LOADING_EVENT, true)
+          gameSettingsService.publish(gameSettingsService.EVENTS.SCENE_LOADING_EVENT, true)
           this.reloadScene('GamePlay');
           break;
         case PAUSE_POPUP_EVENT_DATA.SELECT_LEVEL:
-          gameStateService.publish(gameStateService.EVENTS.SCENE_LOADING_EVENT, true);
+          gameSettingsService.publish(gameSettingsService.EVENTS.SCENE_LOADING_EVENT, true);
           gameStateService.publish(gameStateService.EVENTS.GAME_PAUSE_STATUS_EVENT, false);
           this.switchToLevelSelection('GamePlay');
         default:

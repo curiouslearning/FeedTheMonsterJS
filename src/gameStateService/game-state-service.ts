@@ -1,7 +1,6 @@
 import { PubSub } from '../events/pub-sub-events';
 import { DataModal } from "@data";
 import {
-    createLoadingSceneDAO,
     createGameplaySceneDAO,
     createStonePositionsDAO,
     createLevelEndDataDAO
@@ -19,7 +18,6 @@ import {
 
 export class GameStateService extends PubSub {
     public EVENTS: {
-        SCENE_LOADING_EVENT: string;
         GAMEPLAY_DATA_EVENT: string;
         GAME_PAUSE_STATUS_EVENT: string;
         LEVEL_END_DATA_EVENT: string;
@@ -34,8 +32,6 @@ export class GameStateService extends PubSub {
     public riveCanvas: null | CanvasRenderingContext2D;
     public riveCanvasWidth: number;
     public riveCanvasHeight: number;
-    public loadingCanvas: null | HTMLCanvasElement;
-    public loadingContext: null | CanvasRenderingContext2D;
     public isGamePaused: boolean;
     public gamePlayData: null | {
         currentLevelData: {
@@ -85,7 +81,6 @@ export class GameStateService extends PubSub {
     constructor() {
         super();
         this.EVENTS = {
-            SCENE_LOADING_EVENT: 'SCENE_LOADING_EVENT',
             GAMEPLAY_DATA_EVENT: 'GAMEPLAY_DATA_EVENT',
             GAME_PAUSE_STATUS_EVENT: 'GAME_PAUSE_STATUS_EVENT',
             LEVEL_END_DATA_EVENT: 'LEVEL_END_DATA_EVENT' // To move this event on DOM Event once created.
@@ -154,19 +149,12 @@ export class GameStateService extends PubSub {
         this.canavsElement = canavsElement;
         this.context = canavsElement.getContext("2d");
         this.gameCanvasContext = canvas.getContext("2d", { willReadFrequently: true });
-        this.loadingCanvas = document.getElementById("loading") as HTMLCanvasElement;
-        this.loadingContext = this.loadingCanvas.getContext("2d");
         /*Gameplay Scene Data */
         this.feedbackTexts = data.FeedbackTexts;
         this.feedbackAudios = data.FeedbackAudios;
         this.rightToLeft = data.rightToLeft;
         this.majVersion = data.majVersion;
         this.minVersion = data.minVersion;
-    }
-
-    getLoadingSceneDetails() { //To Do: Move this method to game settings.
-        //Returns canvas measurements.
-        return createLoadingSceneDAO(this);
     }
 
     getGamePlaySceneDetails() {

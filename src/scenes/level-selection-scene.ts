@@ -396,7 +396,7 @@ export class LevelSelectionScreen {
       selectedLevelNumber: level_number,
     };
     gameStateService.publish(gameStateService.EVENTS.GAMEPLAY_DATA_EVENT, gamePlayData);
-    gameStateService.publish(gameStateService.EVENTS.SCENE_LOADING_EVENT, true);
+    gameSettingsService.publish(gameSettingsService.EVENTS.SCENE_LOADING_EVENT, true);
     this.logSelectedLevelEvent();
     this.callBack(SCENE_NAME_LEVEL_SELECT);
   }

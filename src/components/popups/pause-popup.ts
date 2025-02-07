@@ -4,6 +4,7 @@ import { AudioPlayer } from "@components";
 import AreYouSurePopUp from "@popups/sure-popup";
 import { AUDIO_ARE_YOU_SURE, POPUP_BG_IMG } from "@constants";
 import gameStateService from '@gameStateService';
+import gameSettingsService from '@gameSettingsService';
 
 /**
  * Canvas-based pause popup component.
@@ -112,11 +113,11 @@ export default class PausePopUp {
 
   private handleRetryPublish() {
     gameStateService.publish(gameStateService.EVENTS.GAMEPLAY_DATA_EVENT, this.gameplayData);
-    gameStateService.publish(gameStateService.EVENTS.SCENE_LOADING_EVENT, true);
+    gameSettingsService.publish(gameSettingsService.EVENTS.SCENE_LOADING_EVENT, true);
   }
 
   private handleClosePublish() {
-    gameStateService.publish(gameStateService.EVENTS.SCENE_LOADING_EVENT, true);
+    gameSettingsService.publish(gameSettingsService.EVENTS.SCENE_LOADING_EVENT, true);
     gameStateService.publish(gameStateService.EVENTS.GAME_PAUSE_STATUS_EVENT, false);
   }
 

@@ -1,5 +1,6 @@
 import {GameplayScene} from './gameplay-scene';
 import gameStateService from '@gameStateService';
+import gameSettingsService from '@gameSettingsService';
 
 // Mocking dependencies
 jest.mock('@components', () => {
@@ -365,7 +366,7 @@ describe('GameplayScene with BasePopupComponent', () => {
       const onCloseCallback = (props: any) => {
         if (props.data === 'RESTART_LEVEL') {
           gameStateService.publish(gameStateService.EVENTS.GAMEPLAY_DATA_EVENT, {});
-          gameStateService.publish(gameStateService.EVENTS.SCENE_LOADING_EVENT, true);
+          gameSettingsService.publish(gameSettingsService.EVENTS.SCENE_LOADING_EVENT, true);
           mockReloadScene('GamePlay');
         }
       };
@@ -377,8 +378,8 @@ describe('GameplayScene with BasePopupComponent', () => {
         gameStateService.EVENTS.GAMEPLAY_DATA_EVENT,
         expect.any(Object)
       );
-      expect(gameStateService.publish).toHaveBeenCalledWith(
-        gameStateService.EVENTS.SCENE_LOADING_EVENT,
+      expect(gameSettingsService.publish).toHaveBeenCalledWith(
+        gameSettingsService.EVENTS.SCENE_LOADING_EVENT,
         true
       );
       expect(mockReloadScene).toHaveBeenCalledWith('GamePlay');

@@ -10,6 +10,7 @@ import {
   PIN_STAR_3,
 } from '@constants';
 import gameStateService from '@gameStateService';
+import gameSettingsService from '@gameSettingsService';
 import './levelend-scene.scss';
 import { RiveMonsterComponent } from '@components/riveMonster/rive-monster-component';
 
@@ -251,8 +252,8 @@ export class LevelEndScene {
         gamePlayData,
       );
     }
-    gameStateService.publish(
-      gameStateService.EVENTS.SCENE_LOADING_EVENT,
+    gameSettingsService.publish(
+      gameSettingsService.EVENTS.SCENE_LOADING_EVENT,
       shouldShowLoading,
     );
     setTimeout(() => {
