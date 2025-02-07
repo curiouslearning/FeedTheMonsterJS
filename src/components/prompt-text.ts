@@ -81,6 +81,7 @@ export class PromptText extends EventManager {
         var x = this.width / 2;
         const y = this.height * 0.28;
         this.context.textAlign = "center";
+        let currentWordWidth = 0;
         var fontSize = this.calculateFont();
         const scaledWidth = this.promptImageWidth;
         const scaledHeight = this.promptImageHeight;
@@ -100,7 +101,7 @@ export class PromptText extends EventManager {
             this.context.fillStyle = "black";
             this.context.fillText(
                 letterInWord,
-                x - this.context.measureText(this.targetStones[0]).width / 2,
+                x - this.context.measureText(letterInWord).width/2 -5,
                 y
             );}
                 else{
@@ -229,9 +230,15 @@ export class PromptText extends EventManager {
                         this.context.fillStyle = (this.droppedStoneCount>i || this.droppedStoneCount==undefined)?"black":"red";
                         this.context.fillText(
                             this.targetStones[i],
-                            startPrompttextX+startPrompttextX/10,
+                            startPrompttextX,
                             y
                         );    
+                        currentWordWidth = (this.context.measureText(
+                            this.targetStones[i]
+                        ).width + this.context.measureText(
+                            this.targetStones[i + 1]
+                        ).width) / 2;
+                        startPrompttextX += currentWordWidth;
                 }
                 break;
                 }else{
@@ -241,6 +248,12 @@ export class PromptText extends EventManager {
                             startPrompttextX,
                             y
                         );
+                        currentWordWidth = (this.context.measureText(
+                            promptTextLetters[i]
+                        ).width + this.context.measureText(
+                            promptTextLetters[i + 1]
+                        ).width) / 2;
+                        startPrompttextX += currentWordWidth;
                     
                     break;
                 }}
