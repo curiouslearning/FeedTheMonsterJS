@@ -22,7 +22,6 @@ export class GameStateService extends PubSub {
         SCENE_LOADING_EVENT: string;
         GAMEPLAY_DATA_EVENT: string;
         GAME_PAUSE_STATUS_EVENT: string;
-        GAME_TRAIL_EFFECT_TOGGLE_EVENT: string;
         LEVEL_END_DATA_EVENT: string;
     }
     public data: null | DataModal;
@@ -74,7 +73,7 @@ export class GameStateService extends PubSub {
         fantastic: string,
         great: string
     };
-    public clickTrailToggle: boolean;
+    //public clickTrailToggle: boolean;
     public offsetCoordinateValue: number;
     public levelEndData: null | {
         starCount: number,
@@ -89,7 +88,6 @@ export class GameStateService extends PubSub {
             SCENE_LOADING_EVENT: 'SCENE_LOADING_EVENT',
             GAMEPLAY_DATA_EVENT: 'GAMEPLAY_DATA_EVENT',
             GAME_PAUSE_STATUS_EVENT: 'GAME_PAUSE_STATUS_EVENT',
-            GAME_TRAIL_EFFECT_TOGGLE_EVENT: 'GAME_TRAIL_EFFECT_TOGGLE_EVENT', 
             LEVEL_END_DATA_EVENT: 'LEVEL_END_DATA_EVENT' // To move this event on DOM Event once created.
         };
         this.data = null;
@@ -118,7 +116,6 @@ export class GameStateService extends PubSub {
         this.rightToLeft = false;
         this.majVersion = 0;
         this.minVersion = 0;
-        this.clickTrailToggle = false;
         this.offsetCoordinateValue = 32; //Default value used to offset stone coordinates.
         this.initListeners();
 
@@ -130,7 +127,6 @@ export class GameStateService extends PubSub {
         /* Listeners to update game state values. */
         this.subscribe(this.EVENTS.GAMEPLAY_DATA_EVENT, (data) => { this.gameStateGamePlayDataListener(data); });
         this.subscribe(this.EVENTS.GAME_PAUSE_STATUS_EVENT, (data) => { this.updateGamePauseActivity(data); });
-        this.subscribe(this.EVENTS.GAME_TRAIL_EFFECT_TOGGLE_EVENT, (data) => { this.updateGameTrailToggle(data); }); // To move this event on DOM Event once created.
         this.subscribe(this.EVENTS.LEVEL_END_DATA_EVENT, (data) => { this.levelEndSceneData(data); });
     }
 
@@ -142,11 +138,6 @@ export class GameStateService extends PubSub {
 
     private updateGamePauseActivity(isPaused: boolean) {
         this.isGamePaused = isPaused;
-    }
-
-    private updateGameTrailToggle(isTrailEffectOn: boolean) {
-        //To do - Move this to DOM-Events once it has been created.
-        this.clickTrailToggle = isTrailEffectOn;
     }
 
     setDefaultGameStateValues(

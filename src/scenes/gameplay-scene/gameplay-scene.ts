@@ -37,6 +37,7 @@ import {
 } from "@constants";
 import { WordPuzzleLogic } from '@gamepuzzles';
 import gameStateService from '@gameStateService';
+import gameSettingsService from '@gameSettingsService';
 import { PAUSE_POPUP_EVENT_DATA, PausePopupComponent } from '@components/popups/pause-popup/pause-popup-component';
 import { RiveMonsterComponent } from '@components/riveMonster/rive-monster-component';
 
@@ -297,8 +298,8 @@ export class GameplayScene {
     }
     this.pickedStone = null;
     this.wordPuzzleLogic.clearPickedUp();
-    gameStateService.publish(
-      gameStateService.EVENTS.GAME_TRAIL_EFFECT_TOGGLE_EVENT,
+    gameSettingsService.publish(
+      gameSettingsService.EVENTS.GAME_TRAIL_EFFECT_TOGGLE_EVENT,
       false
     );
   };
@@ -331,7 +332,7 @@ export class GameplayScene {
       this.setPickedUp(x, y);
     }
 
-    gameStateService.publish(gameStateService.EVENTS.GAME_TRAIL_EFFECT_TOGGLE_EVENT, true);
+    gameSettingsService.publish(gameSettingsService.EVENTS.GAME_TRAIL_EFFECT_TOGGLE_EVENT, true);
   };
 
   setPickedUp(x, y) {
