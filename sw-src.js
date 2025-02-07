@@ -233,7 +233,6 @@ async function cacheFeedBackAudio(feedBackAudios, language) {
 
 self.addEventListener("fetch", function (event) {
   const requestUrl = new URL(event.request.url);
-  console.log(requestUrl);
   if (requestUrl.searchParams.has('cache-bust')) {
     return event.respondWith(fetch(event.request));
   }
