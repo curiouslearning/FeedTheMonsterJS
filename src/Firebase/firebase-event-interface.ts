@@ -13,13 +13,14 @@ export interface SessionEnd extends CommonEventProperties{
 }
 
 export interface DowloadPercentCompleted extends CommonEventProperties{
-       timestamps:Number;
+    ms_since_session_start:Number;
    }
 
 export interface TappedStart extends CommonEventProperties{
    
 }
 export interface DownloadCompleted extends CommonEventProperties{
+    ms_since_session_start:Number;
    
 }
 export interface SelectedLevel extends CommonEventProperties{

@@ -121,10 +121,11 @@ class App {
       json_version_number: this.majVersion && this.minVersion
         ? `${this.majVersion}.${this.minVersion}`
         : "",
-      timestamps: Date.now(),
+        ms_since_session_start: Date.now()-this.startSessionTime,
     };
     switch (percentage) {
       case 25:
+        
         this.firebaseIntegration.sendDownload25PercentCompletedEvent(downloadCompleteData);
         break;
       case 50:
@@ -420,6 +421,7 @@ class App {
       profile_number: 0,
       version_number: this.versionInfoElement.innerHTML,
       json_version_number: this.getJsonVersionNumber(),
+      ms_since_session_start: Date.now()-this.startSessionTime,
     };
     this.firebaseIntegration.sendDownloadCompletedEvent(downloadCompleted);
   }
