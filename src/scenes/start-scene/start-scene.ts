@@ -202,7 +202,7 @@ export class StartScene {
 
   dispose() {
     this.audioPlayer.stopAllAudios();
-    //this.handler.removeEventListener("click", this.handleMouseClick, false);
+    this.handler.removeEventListener("click", this.handleMouseClick, false);
     this.playButton.dispose();
     this.playButton.destroy();
     this.onClickArea.destroy();
@@ -212,6 +212,7 @@ export class StartScene {
       this.handlerInstallPrompt,
       false
     );
+    this.riveMonsterElement.style.zIndex = "-1"; //Originally in LevelSelectionConstructor, moving it here so no need to have Rive logic in that scene.
   }
 
   handlerInstallPrompt = (event) => {

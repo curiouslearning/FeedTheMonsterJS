@@ -611,72 +611,73 @@ export class GameplayScene {
 
   public dispose = () => {
     this.isDisposing = true;
-    
+
     // Cleanup audio
     if (this.audioPlayer) {
       this.audioPlayer.stopAllAudios();
       this.audioPlayer = null;
     }
-    
+
     // Dispose visual elements
     if (this.monster) {
       this.monster.dispose();
       this.monster = null;
     }
-    
+
     if (this.stoneHandler) {
       this.stoneHandler.dispose();
       this.stoneHandler = null;
     }
-    
+
     // Clear timers
     if (this.timerTicking) {
       this.timerTicking.destroy();
       this.timerTicking = null;
     }
-    
+
     if (this.trailParticles) {
       this.trailParticles.clearTrailSubscription();
       this.trailParticles = null;
     }
-    
+
     // Clear event listeners
     if (this.unsubscribeEvent) {
       this.unsubscribeEvent();
       this.unsubscribeEvent = null;
     }
-    
+
     document.removeEventListener(
       VISIBILITY_CHANGE,
       this.handleVisibilityChange,
       false
     );
     this.removeEventListeners();
-    
+
     // Clear other components
     if (this.levelIndicators) {
       this.levelIndicators.dispose();
       this.levelIndicators = null;
     }
-    
+
     if (this.promptText) {
       this.promptText.dispose();
       this.promptText = null;
     }
-    
+
     if (this.pauseButton) {
       this.pauseButton.dispose();
       this.pauseButton = null;
     }
-    
+
     if (this.pausePopupComponent) {
       this.pausePopupComponent.destroy();
       this.pausePopupComponent = null;
     }
-    
+
     // Clear game state
     this.pickedStone = null;
     this.pickedStoneObject = null;
+    this.gameControl.style.zIndex = "-1";
   }
 
   private checkStoneDropped(stone, feedBackIndex, isWord = false) {

@@ -140,8 +140,7 @@ export class SceneHandler {
         this.addScene(
           SCENE_NAME_LEVEL_SELECT,
           new LevelSelectionScreen(
-            this.canvas, //to do - use DAO.
-            this.data, //to do - use DAO.
+            this.data,
             this.switchSceneToGameplay
           )
         );

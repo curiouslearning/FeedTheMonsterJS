@@ -25,13 +25,13 @@ import {
 } from "@constants";
 import { LevelBloonButton } from '@buttons';
 import gameStateService from '@gameStateService';
+import gameSettingsService from '@gameSettingsService';
 
 export class LevelSelectionScreen {
   private canvas: HTMLCanvasElement;
   private data: any;
   public width: number;
   public height: number;
-  private canvasElement: HTMLCanvasElement;
   private context: CanvasRenderingContext2D;
   private levels: any;
   private gameLevelData: any;
@@ -59,13 +59,20 @@ export class LevelSelectionScreen {
   private leftBtnY: number;
   private levelButtons: any
   public riveMonsterElement: HTMLCanvasElement;
-  public gameControl: HTMLCanvasElement;
-  constructor(canvas: HTMLCanvasElement, data: any, callBack: Function) {
-    // console.log("level selection loaded");
-    this.canvas = canvas;
+
+  constructor(data: any, callBack: Function) {
+    const {
+      canvasElem,
+      canvasWidth,
+      canvasHeight,
+      context
+    } = gameSettingsService.getCanvasSizeValues();
+    this.canvas = canvasElem;
+    this.width = canvasWidth;
+    this.height = canvasHeight;
+    this.context = context;
+
     this.data = data;
-    this.width = canvas.width;
-    this.height = canvas.height;
     let self = this;
     this.callBack = callBack;
     this.levelsSectionCount =
@@ -75,11 +82,6 @@ export class LevelSelectionScreen {
     this.levels = [];
     this.firebaseIntegration = new FirebaseIntegration();
     this.init();
-    this.riveMonsterElement = document.getElementById("rivecanvas") as HTMLCanvasElement;
-    this.gameControl = document.getElementById("game-control") as HTMLCanvasElement;
-
-    this.canvasElement = document.getElementById("canvas") as HTMLCanvasElement;
-    this.context = this.canvasElement.getContext("2d");
     this.createLevelButtons();
     this.gameLevelData = GameScore.getAllGameLevelInfo();
     this.audioPlayer = new AudioPlayer();
@@ -95,7 +97,6 @@ export class LevelSelectionScreen {
         10 * Math.floor(this.previousPlayedLevelNumber / 10);
     }
     this.setupBg();
-    this.riveMonsterElement.style.zIndex = "-1";
     this.images = {
       nextbtn: NEXT_BTN_IMG,
       backbtn: BACK_BTN_IMG,
@@ -116,7 +117,6 @@ export class LevelSelectionScreen {
     this.leftBtnSize = 10;
     this.leftBtnX = 10;
     this.leftBtnY = 1.3;
-    this.gameControl.style.zIndex = "-1";
   }
 
   private async init() {
