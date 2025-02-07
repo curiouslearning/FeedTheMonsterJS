@@ -16,7 +16,7 @@ interface RiveMonsterComponentProps {
 export class RiveMonsterComponent {
   private props: RiveMonsterComponentProps;
   private riveInstance: any;
-  private src?: string;
+  private src: string;
   private stateMachineName: string = "State Machine 1"  // Define the state machine
   public game: any;
   public x: number;
