@@ -16,7 +16,6 @@ import { AudioPlayer } from "@components";
 import {
   SessionStart,
   SessionEnd,
-  DownloadCompleted,
 } from "./src/Firebase/firebase-event-interface";
 import { URL } from "@data";
 declare const window: any;
@@ -112,20 +111,19 @@ class App {
       }
     });
   }
-  private logDownloadPercentageComplete(percentage: number) {
+  private logDownloadPercentageComplete(percentage: number,timeDifferenceFromSessonStart:number) {
     const downloadCompleteData = {
       cr_user_id: pseudoId,
       ftm_language: lang,
       profile_number: 0,
       version_number: this.versionInfoElement.innerHTML,
-      json_version_number: this.majVersion && this.minVersion
-        ? `${this.majVersion}.${this.minVersion}`
-        : "",
-        ms_since_session_start: Date.now()-this.startSessionTime,
+      json_version_number: this.getJsonVersionNumber(),
+      ms_since_session_start: timeDifferenceFromSessonStart,
     };
+    
     switch (percentage) {
       case 25:
-        
+         
         this.firebaseIntegration.sendDownload25PercentCompletedEvent(downloadCompleteData);
         break;
       case 50:
@@ -133,6 +131,9 @@ class App {
         break;
       case 75:
         this.firebaseIntegration.sendDownload75PercentCompletedEvent(downloadCompleteData);
+        break;
+      case 100:
+        this.firebaseIntegration.sendDownloadCompletedEvent(downloadCompleteData);
         break;
       default:
         console.warn(`Unsupported progress percentage: ${percentage}`);
@@ -372,22 +373,22 @@ class App {
         this.progressBar.style.width = `${this.currentProgress}%`;
         // Log events only once when progress crosses thresholds
         if (this.currentProgress >= 25 && !this.logged25) {
-          this.logDownloadPercentageComplete(25);
+          this.logDownloadPercentageComplete(25,Date.now()-this.startSessionTime);
           this.logged25 = true;
         }
         if (this.currentProgress >= 50 && !this.logged50) {
-          this.logDownloadPercentageComplete(50);
+          this.logDownloadPercentageComplete(50,Date.now()-this.startSessionTime);
           this.logged50 = true;
         }
         if (this.currentProgress >= 75 && !this.logged75) {
-          this.logDownloadPercentageComplete(75);
+          this.logDownloadPercentageComplete(75,Date.now()-this.startSessionTime);
           this.logged75 = true;
         }
         
         // Check if download completed
         if (this.isDownloadCompleted(this.currentProgress)) {
           this.cacheLanguage();
-          this.sendCompletionEvent();
+          this.logDownloadPercentageComplete(100,Date.now()-this.startSessionTime);
           this.hideLoadingScreen();
         }
       }
@@ -412,18 +413,6 @@ class App {
     } catch (error) {
       console.error("Error caching language:", error);
     }
-  }
-  // Handles Event sending.
-  sendCompletionEvent() {
-    const downloadCompleted: DownloadCompleted = {
-      cr_user_id: pseudoId,
-      ftm_language: lang,
-      profile_number: 0,
-      version_number: this.versionInfoElement.innerHTML,
-      json_version_number: this.getJsonVersionNumber(),
-      ms_since_session_start: Date.now()-this.startSessionTime,
-    };
-    this.firebaseIntegration.sendDownloadCompletedEvent(downloadCompleted);
   }
 
   getJsonVersionNumber() {

@@ -1,5 +1,5 @@
 import { BaseFirebaseIntegration } from "./base-firebase-integration";
-import { DowloadPercentCompleted, DownloadCompleted, LevelCompletedEvent, PuzzleCompletedEvent, SelectedLevel, SessionEnd, SessionStart, TappedStart } from "./firebase-event-interface";
+import { DowloadPercentCompleted, LevelCompletedEvent, PuzzleCompletedEvent, SelectedLevel, SessionEnd, SessionStart, TappedStart } from "./firebase-event-interface";
 
 export class FirebaseIntegration extends BaseFirebaseIntegration {
     static instance: FirebaseIntegration;
@@ -38,7 +38,7 @@ export class FirebaseIntegration extends BaseFirebaseIntegration {
         this.customEvents('user_clicked', { click: 'Click' });
     }
 
-    public sendDownloadCompletedEvent(data: DownloadCompleted): void {
+    public sendDownloadCompletedEvent(data: DowloadPercentCompleted): void {
         this.customEvents('download_completed', data);
     }public sendDownload25PercentCompletedEvent(data:DowloadPercentCompleted): void {
         this.customEvents('download_25',data);

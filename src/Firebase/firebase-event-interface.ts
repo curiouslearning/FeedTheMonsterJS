@@ -19,10 +19,6 @@ export interface DowloadPercentCompleted extends CommonEventProperties{
 export interface TappedStart extends CommonEventProperties{
    
 }
-export interface DownloadCompleted extends CommonEventProperties{
-    ms_since_session_start:Number;
-   
-}
 export interface SelectedLevel extends CommonEventProperties{
     level_selected: number;
 }
