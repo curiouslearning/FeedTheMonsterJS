@@ -14,6 +14,7 @@ interface RiveMonsterComponentProps {
 export class RiveMonsterComponent {
   private props: RiveMonsterComponentProps;
   private riveInstance: any;
+  private phaseIndex: number = this.loadPhaseIndex();
   private src: string = './assets/eggMonsterFTM.riv';  // Define the .riv file path eggMonsterFTM
   private stateMachineName: string = "State Machine 1"  // Define the state machine
   public game: any;
@@ -27,44 +28,47 @@ export class RiveMonsterComponent {
     from: number;
     to: number;
   };
+  private static readonly phases = [
+    './assets/eggMonsterFTM.riv',
+    './assets/blue_egg.riv',
+    './assets/green_egg.riv',
+  ];
+
   // Static readonly properties for all monster animations
   public static readonly Animations = {
     //new animation
     IDLE: "Idle",
     SAD: "Sad",
-    STOMP: "Stomp", //Not working
+    STOMP: "Stomp",
     STOMPHAPPY: "StompHappy",
     SPIT: "Spit",
-    CHEW: "Chew", //Not working
+    CHEW: "Chew",
     MOUTHOPEN: "MouthOpen",
-    MOUTHCLOSED: "MouthClosed", //Not working
-    HAPPY: "Happy", //Not working
+    MOUTHCLOSED: "MouthClosed",
+    HAPPY: "Happy",
   };
 
   constructor(props: RiveMonsterComponentProps) {
     this.props = props;
     this.moveCanvasUpOrDown(50); // Move down by 50px
+    this.initializeHitbox();
+    this.initializeRive();
+  }
+
+  private initializeHitbox() {
     const scale = window.devicePixelRatio || 1;
-    const monsterCenterX = (props.canvas.width / scale) / 2;
-    const monsterCenterY = (props.canvas.height / scale) / 2; 
+    const monsterCenterX = (this.props.canvas.width / scale) / 2;
+    const monsterCenterY = (this.props.canvas.height / scale) / 2;
     const rangeFactorX = 55;
     const rangeFactorY = 100;
 
-    this.hitboxRangeX = {
-      from: monsterCenterX - rangeFactorX,
-      to: monsterCenterX + rangeFactorX,
-    };
-    this.hitboxRangeY = {
-      from: monsterCenterY + (rangeFactorY / 2),
-      to: monsterCenterY + (rangeFactorY * 2),
-    };
-
-    this.initializeRive();
+    this.hitboxRangeX = { from: monsterCenterX - rangeFactorX, to: monsterCenterX + rangeFactorX };
+    this.hitboxRangeY = { from: monsterCenterY + (rangeFactorY / 2), to: monsterCenterY + (rangeFactorY * 2) };
   }
 
   private initializeRive() {
     this.riveInstance = new Rive({
-      src: this.src,
+      src: RiveMonsterComponent.phases[this.phaseIndex],
       canvas: this.props.canvas,
       autoplay: this.props.autoplay,
       stateMachines: [this.stateMachineName],
@@ -155,6 +159,37 @@ export class RiveMonsterComponent {
     this.riveInstance?.stop();
   }
 
+  public changePhase(phase: number) {
+    if (phase >= 0 && phase < RiveMonsterComponent.phases.length) {
+      this.phaseIndex = phase;
+      this.savePhaseIndex();
+      if (this.riveInstance) {
+        this.riveInstance.cleanup();
+        this.riveInstance = null;
+      }
+      this.riveInstance = new Rive({
+        src: RiveMonsterComponent.phases[this.phaseIndex], // ✅ Ensure correct phase is loaded
+        canvas: this.props.canvas,
+        autoplay: this.props.autoplay,
+        stateMachines: [this.stateMachineName],
+        layout: new Layout({ fit: Fit.Contain, alignment: Alignment.Center }),
+        onLoad: this.handleLoad.bind(this),
+        useOffscreenRenderer: true, // Improves performance
+      });
+
+    } else {
+      console.warn(`Invalid phase index: ${phase}`);
+    }
+  }
+
+  private savePhaseIndex() {
+    localStorage.setItem('riveMonsterPhase', this.phaseIndex.toString());
+  }
+
+  private loadPhaseIndex(): number {
+    const savedPhase = localStorage.getItem('riveMonsterPhase');
+    return savedPhase ? parseInt(savedPhase, 10) : 0; // Default to phase 0 if not found
+  }
 
   public dispose() {
     this.riveInstance?.cleanup();
