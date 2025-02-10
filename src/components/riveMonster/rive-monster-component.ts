@@ -1,4 +1,5 @@
 import { Rive, Layout, Fit, Alignment } from '@rive-app/canvas';
+import gameSettingsService from '@gameSettingsService';
 
 interface RiveMonsterComponentProps {
   canvas: HTMLCanvasElement; // Canvas element where the animation will render
@@ -44,9 +45,9 @@ export class RiveMonsterComponent {
   constructor(props: RiveMonsterComponentProps) {
     this.props = props;
     this.moveCanvasUpOrDown(50); // Move down by 50px
-    const scale = window.devicePixelRatio || 1;
+    const scale = gameSettingsService.getDevicePixelRatioValue();
     const monsterCenterX = (props.canvas.width / scale) / 2;
-    const monsterCenterY = (props.canvas.height / scale) / 2; 
+    const monsterCenterY = (props.canvas.height / scale) / 2;
     const rangeFactorX = 55;
     const rangeFactorY = 100;
 

@@ -103,8 +103,6 @@ export class GameplayScene {
     this.initializeProperties(gamePlayData);
     // UI element setup
     this.setupUIElements();
-  
-    
     this.switchSceneToEnd = switchSceneToEnd;
     this.switchToLevelSelection = switchToLevelSelection;
     this.reloadScene = reloadScene;
@@ -202,20 +200,24 @@ export class GameplayScene {
   }
 
   private setupUIElements() {
-    this.handler = document.getElementById("canvas");
-    this.riveMonsterElement = document.getElementById("rivecanvas") as HTMLCanvasElement;
+    const { canvasElem, canvasWidth, canvasHeight, gameCanvasContext } = gameSettingsService.getCanvasSizeValues();
+    const riveMonsterElement = gameSettingsService.getRiveCanvasValue();
+    this.handler = canvasElem;
+    this.riveMonsterElement = riveMonsterElement;
     this.riveMonsterElement.style.zIndex = "4";
     this.gameControl = document.getElementById("game-control") as HTMLCanvasElement;
     this.gameControl.style.zIndex = "5";
+
+    this.canvas = canvasElem
+    this.width = canvasWidth;
+    this.height = canvasHeight;
+    this.context = gameCanvasContext;
+    console.log('clean up')
   }
 
   private initializeProperties(gamePlayData) {
     this.isPauseButtonClicked = gamePlayData?.isGamePaused;
-    this.width = gamePlayData.width;
-    this.height = gamePlayData.height;
     this.rightToLeft = gamePlayData.rightToLeft;
-    this.canvas = gamePlayData.canvas
-    this.context = gamePlayData.gameCanvasContext;
     this.levelData = gamePlayData.levelData;
     this.levelNumber = gamePlayData.levelNumber;
     this.jsonVersionNumber = gamePlayData.jsonVersionNumber;

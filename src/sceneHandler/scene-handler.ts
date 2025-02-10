@@ -27,33 +27,25 @@ export class SceneHandler {
     SCENE_NAME_LEVEL_END?: LevelEndScene;
   };
   private activeScene: null | StartScene | LevelSelectionScreen | GameplayScene | LevelEndScene;
-  public canvas: HTMLCanvasElement;
   public data: DataModal;
   public width: number;
   public height: number;
   public context: CanvasRenderingContext2D;
   private lastTime: number = 0;
   private toggleBtn: HTMLElement;
-  private titleTextElement: HTMLElement;
 
   constructor(canvas: HTMLCanvasElement, data: DataModal) {
-    gameStateService.setDefaultGameStateValues(
-      data,
-      canvas,
-      document.getElementById("canvas") as HTMLCanvasElement
-    );
+    gameStateService.setDefaultGameStateValues(data);
     this.scenes = {};
     this.activeScene = null;
 
     const {
-      canvasElem,
       canvasWidth,
       canvasHeight,
       context
     } = gameSettingsService.getCanvasSizeValues();
 
-    this.data = data; //Create and use DAO.
-    this.canvas = canvasElem;
+    this.data = data;
     this.width = canvasWidth; //Used for Canvas clearRect animation.
     this.height = canvasHeight; //Used for Canvas clearRect animation.
     this.context = context; //Used for Canvas clearRect animation.
@@ -68,7 +60,7 @@ export class SceneHandler {
     this.addScene(
       SCENE_NAME_START,
       new StartScene(
-        data, //to do - use DAO.
+        data,
         this.switchSceneToLevelSelection
       )
     );

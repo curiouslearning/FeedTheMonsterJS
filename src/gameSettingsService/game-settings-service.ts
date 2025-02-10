@@ -21,7 +21,7 @@ export class GameSettingsService extends PubSub{
 
   private initListeners() {
     /* Listeners to update game settings values. */
-    this.subscribe(this.EVENTS.GAME_TRAIL_EFFECT_TOGGLE_EVENT, (data) => { this.updateGameTrailToggle(data); }); // To move this event on DOM Event once created.
+    this.subscribe(this.EVENTS.GAME_TRAIL_EFFECT_TOGGLE_EVENT, (data) => { this.updateGameTrailToggle(data); });
   }
 
   private updateGameTrailToggle(isTrailEffectOn: boolean) {
@@ -43,6 +43,7 @@ export class GameSettingsService extends PubSub{
       canvasWidth: canvas.width,
       canvasHeight: canvas.height,
       context: canvas.getContext("2d"),
+      gameCanvasContext: canvas.getContext("2d", { willReadFrequently: true }),
       loadingCanvas,
       loadingContext
     }
