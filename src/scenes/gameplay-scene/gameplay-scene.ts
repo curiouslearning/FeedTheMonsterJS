@@ -164,7 +164,7 @@ export class GameplayScene {
       autoplay: true,
       fit: "contain",
       alignment: "bottomCenter",
-      src: './assets/eggMonsterFTM.riv',
+      moveCanvasUpOrDown: 50,
       onLoad: () => {
         this.monster.play(initialAnimation);
       },

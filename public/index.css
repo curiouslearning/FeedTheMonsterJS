@@ -434,7 +434,7 @@ img {
   width: 100%;
   position: fixed;
   z-index: 7;
-  /* background-image: url(./assets/images/WIN_screen_bg.webp); */
+  background-image: url(./assets/images/WIN_screen_bg.webp);
   background-size: 100% 115%;
   top: 0;
   bottom: 0;
