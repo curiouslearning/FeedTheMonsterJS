@@ -123,7 +123,6 @@ class App {
     
     switch (percentage) {
       case 25:
-         
         this.firebaseIntegration.sendDownload25PercentCompletedEvent(downloadCompleteData);
         break;
       case 50:
@@ -366,6 +365,7 @@ class App {
   private handleLoadingMessage = (data: { data: number; version: string }): void => {
     if (this.progressBarContainer && this.progressBar) {
       this.showProgressBar();
+      let ms_since_session_start=Date.now()-this.startSessionTime
       const progressValue = Math.min(100, Math.max(0, data.data)); // Ensure progress is between 0 and 100
       // Only update if new progress is greater than the current progress
       if (progressValue > this.currentProgress) {
@@ -373,22 +373,22 @@ class App {
         this.progressBar.style.width = `${this.currentProgress}%`;
         // Log events only once when progress crosses thresholds
         if (this.currentProgress >= 25 && !this.logged25) {
-          this.logDownloadPercentageComplete(25,Date.now()-this.startSessionTime);
+          this.logDownloadPercentageComplete(25,ms_since_session_start);
           this.logged25 = true;
         }
         if (this.currentProgress >= 50 && !this.logged50) {
-          this.logDownloadPercentageComplete(50,Date.now()-this.startSessionTime);
+          this.logDownloadPercentageComplete(50,ms_since_session_start);
           this.logged50 = true;
         }
         if (this.currentProgress >= 75 && !this.logged75) {
-          this.logDownloadPercentageComplete(75,Date.now()-this.startSessionTime);
+          this.logDownloadPercentageComplete(75,ms_since_session_start);
           this.logged75 = true;
         }
         
         // Check if download completed
         if (this.isDownloadCompleted(this.currentProgress)) {
           this.cacheLanguage();
-          this.logDownloadPercentageComplete(100,Date.now()-this.startSessionTime);
+          this.logDownloadPercentageComplete(100,ms_since_session_start);
           this.hideLoadingScreen();
         }
       }
