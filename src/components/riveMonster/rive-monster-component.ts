@@ -168,7 +168,7 @@ export class RiveMonsterComponent {
         this.riveInstance = null;
       }
       this.riveInstance = new Rive({
-        src: RiveMonsterComponent.phases[this.phaseIndex], // ✅ Ensure correct phase is loaded
+        src: RiveMonsterComponent.phases[this.phaseIndex], // Ensure correct phase is loaded
         canvas: this.props.canvas,
         autoplay: this.props.autoplay,
         stateMachines: [this.stateMachineName],
