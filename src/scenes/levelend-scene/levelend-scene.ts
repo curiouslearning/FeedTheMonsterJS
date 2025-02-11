@@ -34,12 +34,12 @@ export class LevelEndScene {
   public riveMonster: RiveMonsterComponent;
   public canvasElement: HTMLCanvasElement;
   public monsterPhaseNumber: number;
-  // private readonly EVOLUTION_STORAGE_KEY = 'hasEvolvedMonster';
-  private readonly EVOLUTION_ANIMATION_DELAY = 6000;
+  // private readonly EVOLUTION_ANIMATION_DELAY = 10000;
   private switchToGameplayCB: () => void;
   private switchToLevelSelectionCB: () => void;
   private starAnimationTimeouts: number[] = [];
   private evolutionTimeout: number | null = null;
+  private isMonsterEvolving: boolean;
 
   constructor(monsterPhaseNumber: number, switchToGameplayCB: () => void, switchToLevelSelectionCB: () => void) {
     const { starCount, currentLevel, data } =
@@ -61,6 +61,8 @@ export class LevelEndScene {
     this.renderStarsHTML();
     // Call switchToReactionAnimation during initialization
     this.switchToReactionAnimation();
+    // trigger monster evolution animation
+    this.isMonsterEvolving = true;
   }
 
   // Method to show/hide the Level End background
@@ -130,7 +132,6 @@ export class LevelEndScene {
   };
 
   private initializeEvolutionMonster() {
-    console.log('initializeEvolutionMonster');
     return new RiveMonsterComponent({
       canvas: this.canvasElement,
       autoplay: true,
@@ -140,13 +141,7 @@ export class LevelEndScene {
   }
 
   runEvolutionAnimation() {
-    const totalStarCount = GameScore.getTotalStarCount();
-    if (totalStarCount >= 8) {
-      // Dispose existing monster
-      if (this.riveMonster) {
-        this.riveMonster.dispose();
-      }
-
+    if (this.isMonsterEvolving) {
       // Clear the canvas
       const context = this.canvasElement.getContext('2d');
       if (context) {
@@ -164,7 +159,7 @@ export class LevelEndScene {
       this.setCanvasPosition('evolution');
 
       // Schedule evolution completion
-      setTimeout(this.handleEvolutionComplete, this.EVOLUTION_ANIMATION_DELAY);
+      // setTimeout(this.handleEvolutionComplete, this.EVOLUTION_ANIMATION_DELAY);
     }
   }
 

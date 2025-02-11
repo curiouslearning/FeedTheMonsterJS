@@ -16,7 +16,7 @@ interface RiveMonsterComponentProps {
 
 export class RiveMonsterComponent {
   private props: RiveMonsterComponentProps;
-  private riveInstance: any;
+  private riveInstance: Rive;
   private src: string = './assets/monsterrive.riv';  // Define the .riv file path eggMonsterFTM
   private stateMachineName: string = "State Machine 1"  // Define the state machine
   public game: any;
@@ -66,9 +66,8 @@ export class RiveMonsterComponent {
   }
 
   private initializeRive() {
-    console.log('this.props.src', this.props.src)
-    if(this.props.isEvolving) {
-      this.dispose();
+    if(this.props.isEvolving && this.riveInstance) {
+      this.riveInstance.cleanupInstances();
     }
     const riveConfig: any = {
       src: this.props.src || this.src,
@@ -115,13 +114,9 @@ export class RiveMonsterComponent {
       'isChewing', 'isHappy', 'isSpit', 'isSad',
     ];
 
-    console.log('requiredTriggers', requiredTriggers);
-
     const missingTriggers = requiredTriggers.filter(
       (name) => !inputs.some((input) => input.name === name)
     );
-
-    console.log('missingTriggers', missingTriggers);
 
     if (missingTriggers.length) {
       console.error(`Missing state machine inputs: ${missingTriggers.join(', ')}`);
@@ -177,7 +172,8 @@ export class RiveMonsterComponent {
 
 
   public dispose() {
-    this.riveInstance?.cleanup();
+    if(!this.riveInstance) return;
+    this.riveInstance.cleanup();
     this.riveInstance = null;
   }
 }
