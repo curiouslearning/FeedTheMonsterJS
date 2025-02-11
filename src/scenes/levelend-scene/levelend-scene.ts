@@ -131,12 +131,36 @@ export class LevelEndScene {
     this.setCanvasPosition('normal');
   };
 
+  /**
+   * Returns the appropriate monster evolution animation source based on the phase
+   * @param {number} phase - The current phase of monster evolution (1-3)
+   * @returns {string} The path to the Rive animation file for the specified phase
+   * @description Maps different monster evolution phases to their corresponding animation files.
+   * If the specified phase is not found in the map, it falls back to the first evolution animation.
+   * @example
+   * // Get evolution animation for phase 1
+   * const evolutionSrc = getEvolutionSource(1); // returns MONSTER_EVOLUTION[2]
+   */
+  private getEvolutionSource(phase: number): string {
+    // Map different evolution animations based on phase
+    const evolutionMap = {
+      1: MONSTER_EVOLUTION[2],
+      2: MONSTER_EVOLUTION[3],
+      3: MONSTER_EVOLUTION[4],
+      // Add more phases as needed
+    };
+    
+    return evolutionMap[phase] || MONSTER_EVOLUTION[1]; // fallback to first evolution if phase not found
+  }
+
   private initializeEvolutionMonster() {
+    const evolutionSrc = this.getEvolutionSource(1);
+
     return new RiveMonsterComponent({
       canvas: this.canvasElement,
       autoplay: true,
-      src: MONSTER_EVOLUTION[1],
-      isEvolving: true,
+      src: evolutionSrc,
+      isEvolving: this.evolveMonster,
     });
   }
 
