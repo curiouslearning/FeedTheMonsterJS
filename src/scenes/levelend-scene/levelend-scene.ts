@@ -34,12 +34,12 @@ export class LevelEndScene {
   public riveMonster: RiveMonsterComponent;
   public canvasElement: HTMLCanvasElement;
   public monsterPhaseNumber: number;
-  // private readonly EVOLUTION_ANIMATION_DELAY = 10000;
+  private readonly EVOLUTION_ANIMATION_DELAY = 5500;
   private switchToGameplayCB: () => void;
   private switchToLevelSelectionCB: () => void;
   private starAnimationTimeouts: number[] = [];
   private evolutionTimeout: number | null = null;
-  private isMonsterEvolving: boolean;
+  private evolveMonster: boolean;
 
   constructor(monsterPhaseNumber: number, switchToGameplayCB: () => void, switchToLevelSelectionCB: () => void) {
     const { starCount, currentLevel, data } =
@@ -62,7 +62,7 @@ export class LevelEndScene {
     // Call switchToReactionAnimation during initialization
     this.switchToReactionAnimation();
     // trigger monster evolution animation
-    this.isMonsterEvolving = true;
+    this.evolveMonster = true;
   }
 
   // Method to show/hide the Level End background
@@ -114,7 +114,7 @@ export class LevelEndScene {
         zIndex: '13',
       },
       normal: {
-        zIndex: '11',
+        zIndex: '4',
       }
     };
 
@@ -141,17 +141,7 @@ export class LevelEndScene {
   }
 
   runEvolutionAnimation() {
-    if (this.isMonsterEvolving) {
-      // Clear the canvas
-      const context = this.canvasElement.getContext('2d');
-      if (context) {
-        // Clear the entire canvas
-        context.clearRect(0, 0, this.canvasElement.width, this.canvasElement.height);
-        // Reset any transformations
-        context.setTransform(1, 0, 0, 1, 0, 0);
-      }
-
-      // Initialize monster and background
+    if (this.evolveMonster) {
       this.riveMonster = this.initializeEvolutionMonster();
       this.backgroundElement = this.initializeEvolutionBackground();
 
@@ -159,7 +149,7 @@ export class LevelEndScene {
       this.setCanvasPosition('evolution');
 
       // Schedule evolution completion
-      // setTimeout(this.handleEvolutionComplete, this.EVOLUTION_ANIMATION_DELAY);
+      setTimeout(this.handleEvolutionComplete, this.EVOLUTION_ANIMATION_DELAY);
     }
   }
 
@@ -167,8 +157,9 @@ export class LevelEndScene {
     const starsContainer = document.querySelector('.stars-container');
     if (!starsContainer) return;
 
-    // Clear any existing timeouts
+    // Clear any existing timeouts and previously rendered stars
     this.clearStarAnimationTimeouts();
+    starsContainer.innerHTML = '';
 
     const starImages = [
       PIN_STAR_1, // Path to star 1 image
@@ -183,8 +174,8 @@ export class LevelEndScene {
       starImg.classList.add('stars', `star${i + 1}`);
       starsContainer.appendChild(starImg); // Add star to the container
 
-      // Store the timeout ID
-      const timeout = window.setTimeout(() => {
+      // Delay the addition of the 'show' class
+      const showTimeout = window.setTimeout(() => {
         starImg.classList.add('show');
 
         // Initialize Rive monster after the last star animation only if conditions are met
@@ -198,8 +189,14 @@ export class LevelEndScene {
         }
       }, i * 500); // Half-second delay between each star
 
-      this.starAnimationTimeouts.push(timeout);
+      this.starAnimationTimeouts = [...this.starAnimationTimeouts, showTimeout];
     }
+  }
+
+  callEvolutionAnimation() {
+    console.log('All stars have been rendered and phase ' + this.monsterPhaseNumber + ' monster loaded');
+    // Additional logic can be added here
+    this.runEvolutionAnimation();
   }
 
   private clearStarAnimationTimeouts() {
@@ -385,5 +382,8 @@ export class LevelEndScene {
     }
 
     if (this.backgroundElement) this.backgroundElement.destroy();
+    if (this.riveMonster) {
+      this.riveMonster.dispose();
+    }
   };
 }
