@@ -65,7 +65,7 @@ export class RiveMonsterComponent {
     this.initializeRive();
   }
 
-  private initializeRive() {
+  initializeRive() {
     if(this.props.isEvolving && this.riveInstance) {
       this.riveInstance.cleanupInstances();
     }
@@ -107,7 +107,7 @@ export class RiveMonsterComponent {
     }
   }
 
-  private handleLoad() {
+  handleLoad() {
     const inputs = this.getInputs();
     const requiredTriggers = [
       'backToIdle', 'isStomped', 'isMouthOpen', 'isMouthClosed',
