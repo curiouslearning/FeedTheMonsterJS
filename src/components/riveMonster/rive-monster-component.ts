@@ -16,7 +16,6 @@ export class RiveMonsterComponent {
   private props: RiveMonsterComponentProps;
   private riveInstance: any;
   private phaseIndex: number = 0;
-  private src: string = './assets/eggMonsterFTM.riv';  // Define the .riv file path eggMonsterFTM
   private stateMachineName: string = "State Machine 1"  // Define the state machine
   public game: any;
   public x: number;

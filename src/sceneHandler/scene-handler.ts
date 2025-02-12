@@ -108,12 +108,13 @@ export class SceneHandler {
 
   public checkMonsterPhaseUpdation(): number {
     const totalStarCount = GameScore.getTotalStarCount();
-    if (totalStarCount >= 38) {
-      return 2; // Phase 4
-    } else if (totalStarCount >= 8) {
-      return 1; // Phase 2
-    } else {
-      return 0; // Phase 1 (default)
+    switch (true) {
+      case totalStarCount >= 38:
+        return 2; // Phase 4
+      case totalStarCount >= 8:
+        return 1; // Phase 2
+      default:
+        return 0; // Phase 1 (default)
     }
   }
 

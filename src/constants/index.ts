@@ -141,7 +141,7 @@ export const MONSTER_PHASES = [
   './assets/rive/blue_egg.riv',
   './assets/rive/green_egg.riv',
 ];
-export const EVOL_MONSTER = './assets/rive/evolve.riv';
+export const EVOL_MONSTER = ['./assets/rive/evolve.riv'];
 
 export enum MonsterState {
   PHASE = 'phase',
