@@ -88,6 +88,10 @@ export class RiveMonsterComponent {
   }
 
   getInputs() {
+    // Don't try to get state machine inputs if we're in evolution mode
+    if (this.props.isEvolving) {
+      return [];
+    }
     return this.riveInstance.stateMachineInputs(this.stateMachineName);
   }
 
@@ -169,7 +173,7 @@ export class RiveMonsterComponent {
   }
 
   public changePhase(phase: number) {
-    if (phase >= 0 && phase < MONSTER_PHASES[this.phaseIndex].length) {
+    if (phase >= 0 && phase < MONSTER_PHASES.length) {
       this.phaseIndex = phase;
 
       if (this.riveInstance) {
@@ -177,15 +181,14 @@ export class RiveMonsterComponent {
         this.riveInstance = null;
       }
       this.riveInstance = new Rive({
-        src: MONSTER_PHASES[this.phaseIndex], // Ensure correct phase is loaded
+        src: MONSTER_PHASES[this.phaseIndex],
         canvas: this.props.canvas,
         autoplay: this.props.autoplay,
         stateMachines: [this.stateMachineName],
         layout: new Layout({ fit: Fit.Contain, alignment: Alignment.Center }),
         onLoad: this.handleLoad.bind(this),
-        useOffscreenRenderer: true, // Improves performance
+        useOffscreenRenderer: true,
       });
-
     } else {
       console.warn(`Invalid phase index: ${phase}`);
     }
