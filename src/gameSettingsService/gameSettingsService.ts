@@ -2,7 +2,6 @@ import { PubSub } from '../events/pub-sub-events';
 
 export class GameSettingsService extends PubSub{
   public EVENTS: {
-    SCENE_LOADING_EVENT: string;
     GAME_TRAIL_EFFECT_TOGGLE_EVENT: string;
   };
   public clickTrailToggle: boolean;
@@ -11,7 +10,6 @@ export class GameSettingsService extends PubSub{
   constructor() {
     super();
     this.EVENTS = {
-      SCENE_LOADING_EVENT: 'SCENE_LOADING_EVENT',
       GAME_TRAIL_EFFECT_TOGGLE_EVENT: 'GAME_TRAIL_EFFECT_TOGGLE_EVENT',
     }
     this.clickTrailToggle = false;
@@ -37,6 +35,7 @@ export class GameSettingsService extends PubSub{
     loadingCanvas.width = canvas.width; //using the original "canvas" ID height.
     loadingCanvas.height = canvas.height; //using the original "canvas" ID height.
     const loadingContext = loadingCanvas.getContext("2d");
+    const gameControlElem = document.getElementById("game-control") as HTMLCanvasElement;
 
     return {
       canvasElem: canvas,
@@ -45,7 +44,8 @@ export class GameSettingsService extends PubSub{
       context: canvas.getContext("2d"),
       gameCanvasContext: canvas.getContext("2d", { willReadFrequently: true }),
       loadingCanvas,
-      loadingContext
+      loadingContext,
+      gameControlElem
     }
   }
 

@@ -33,6 +33,9 @@ import {
 } from "../../Firebase/firebase-event-interface";
 import { FirebaseIntegration } from "../../Firebase/firebase-integration";
 import {
+  SCENE_NAME_LEVEL_SELECT,
+  SCENE_NAME_GAME_PLAY,
+  SCENE_NAME_LEVEL_END,
   PreviousPlayedLevel,
 } from "@constants";
 import { WordPuzzleLogic } from '@gamepuzzles';
@@ -63,7 +66,6 @@ export class GameplayScene {
   public feedBackTexts: any;
   public isPuzzleCompleted: boolean;
   public rightToLeft: boolean;
-  public switchSceneToEnd: Function;
   public levelNumber: Function;
   stoneHandler: StoneHandler;
   public counter: number = 0;
@@ -76,8 +78,6 @@ export class GameplayScene {
   public isGameStarted: boolean = false;
   public time: number = 0;
   public score: number = 0;
-  public switchToLevelSelection: Function;
-  public reloadScene: Function;
   private data: DataModal;
   public triggerInputs: any;
   audioPlayer: AudioPlayer;
@@ -92,20 +92,14 @@ export class GameplayScene {
   private unsubscribeEvent: () => void;
   public timeTicker: HTMLElement;
   isFeedBackTriggered: boolean;
-  constructor({
-    switchSceneToEnd,
-    switchToLevelSelection,
-    reloadScene
-  }) {
+
+  constructor() {
     const gamePlayData = gameStateService.getGamePlaySceneDetails();
     this.pausePopupComponent = new PausePopupComponent();
     // Assign state properties based on game state
     this.initializeProperties(gamePlayData);
     // UI element setup
     this.setupUIElements();
-    this.switchSceneToEnd = switchSceneToEnd;
-    this.switchToLevelSelection = switchToLevelSelection;
-    this.reloadScene = reloadScene;
     this.isDisposing = false;
     // Initialize additional game elements
     this.initializeGameComponents(gamePlayData);
@@ -141,19 +135,16 @@ export class GameplayScene {
             currentLevelData: this.levelData,
             selectedLevelNumber: this.levelNumber,
           });
-          gameSettingsService.publish(gameSettingsService.EVENTS.SCENE_LOADING_EVENT, true)
-          this.reloadScene('GamePlay');
+          gameStateService.publish(gameStateService.EVENTS.SWITCH_SCENE_EVENT, SCENE_NAME_GAME_PLAY)
           break;
         case PAUSE_POPUP_EVENT_DATA.SELECT_LEVEL:
-          gameSettingsService.publish(gameSettingsService.EVENTS.SCENE_LOADING_EVENT, true);
           gameStateService.publish(gameStateService.EVENTS.GAME_PAUSE_STATUS_EVENT, false);
-          this.switchToLevelSelection('GamePlay');
+          gameStateService.publish(gameStateService.EVENTS.SWITCH_SCENE_EVENT, SCENE_NAME_LEVEL_SELECT)
         default:
           gameStateService.publish(gameStateService.EVENTS.GAME_PAUSE_STATUS_EVENT, false);
           this.resumeGame();
       }
     });
-
     this.setupBg();
   }
 
@@ -200,19 +191,18 @@ export class GameplayScene {
   }
 
   private setupUIElements() {
-    const { canvasElem, canvasWidth, canvasHeight, gameCanvasContext } = gameSettingsService.getCanvasSizeValues();
+    const { canvasElem, canvasWidth, canvasHeight, gameCanvasContext, gameControlElem } = gameSettingsService.getCanvasSizeValues();
     const riveMonsterElement = gameSettingsService.getRiveCanvasValue();
     this.handler = canvasElem;
     this.riveMonsterElement = riveMonsterElement;
     this.riveMonsterElement.style.zIndex = "4";
-    this.gameControl = document.getElementById("game-control") as HTMLCanvasElement;
+    this.gameControl = gameControlElem;
     this.gameControl.style.zIndex = "5";
 
     this.canvas = canvasElem
     this.width = canvasWidth;
     this.height = canvasHeight;
     this.context = gameCanvasContext;
-    console.log('clean up')
   }
 
   private initializeProperties(gamePlayData) {
@@ -358,7 +348,7 @@ export class GameplayScene {
     }
   }
 
-  handleMouseMove = (event) => {    
+  handleMouseMove = (event) => {
     if (this.pickedStone && this.pickedStone.frame <= 99) {
       return; // Prevent dragging if the stone is animating
     }
@@ -557,7 +547,7 @@ export class GameplayScene {
         }
 
         gameStateService.publish(gameStateService.EVENTS.LEVEL_END_DATA_EVENT, { levelEndData, data: this.data });
-        this.switchSceneToEnd();
+        gameStateService.publish(gameStateService.EVENTS.SWITCH_SCENE_EVENT, SCENE_NAME_LEVEL_END);
       };
 
       if (timerEnded) {
@@ -679,7 +669,6 @@ export class GameplayScene {
     // Clear game state
     this.pickedStone = null;
     this.pickedStoneObject = null;
-    this.gameControl.style.zIndex = "-1";
   }
 
   private checkStoneDropped(stone, feedBackIndex, isWord = false) {

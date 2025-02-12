@@ -73,23 +73,23 @@ describe('Start Scene Test', () => {
 
     // Create the startScene instance
     startScene = new StartScene(
-      {
-        title: 'Feed the Monster',
-        otherAudios: {
-          areYouSure: '',
-          watchMeGrow: '',
-          selctYourPlayer: 'test'
-        },
-        majVersion: 3,
-        minVersion: 15,
-        version: 1,
-        levels: 145,
-        rightToLeft: false,
-        FeedbackTexts: new FeedbackTexts(feedTextMock),
-        FeedbackAudios: new FeedbackAudios(feedAudioMock),
-        getLevels: () => {}
-      },
-      switchSceneMockFunc
+      // {
+      //   title: 'Feed the Monster',
+      //   otherAudios: {
+      //     areYouSure: '',
+      //     watchMeGrow: '',
+      //     selctYourPlayer: 'test'
+      //   },
+      //   majVersion: 3,
+      //   minVersion: 15,
+      //   version: 1,
+      //   levels: 145,
+      //   rightToLeft: false,
+      //   FeedbackTexts: new FeedbackTexts(feedTextMock),
+      //   FeedbackAudios: new FeedbackAudios(feedAudioMock),
+      //   getLevels: () => {}
+      // },
+      // switchSceneMockFunc
     );
 
     // Initialize required elements

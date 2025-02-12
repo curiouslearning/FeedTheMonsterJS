@@ -31,40 +31,77 @@ export class SceneHandler {
   public width: number;
   public height: number;
   public context: CanvasRenderingContext2D;
+  public gameControl: HTMLCanvasElement;
   private lastTime: number = 0;
   private toggleBtn: HTMLElement;
+  private unsubscribeEvent: () => void;
 
-  constructor(canvas: HTMLCanvasElement, data: DataModal) {
+  constructor(data: DataModal) {
     gameStateService.setDefaultGameStateValues(data);
     this.scenes = {};
     this.activeScene = null;
+    this.setupUIElements();
+    window.addEventListener("beforeinstallprompt", this.handleInstallPrompt);
+    this.initDefaultScenes();
+    this.startAnimationLoop();
+    this.unsubscribeEvent = gameStateService.subscribe(
+      gameStateService.EVENTS.SWITCH_SCENE_EVENT,
+      (sceneName: string) => { this.handleSwitchScene(sceneName); }
+    );
+  }
 
+  private setupUIElements() {
     const {
       canvasWidth,
       canvasHeight,
-      context
+      context,
+      gameControlElem
     } = gameSettingsService.getCanvasSizeValues();
-
-    this.data = data;
     this.width = canvasWidth; //Used for Canvas clearRect animation.
     this.height = canvasHeight; //Used for Canvas clearRect animation.
     this.context = context; //Used for Canvas clearRect animation.
+    this.gameControl = gameControlElem;
     this.toggleBtn = document.getElementById("toggle-btn") as HTMLElement;
-    window.addEventListener("beforeinstallprompt", this.handleInstallPrompt);
-    this.startAnimationLoop();
-    this.init(data);
   }
 
-  private init(data: DataModal) {
+  private initDefaultScenes() {
     this.addScene(LOADING_TRANSITION, new LoadingScene());
-    this.addScene(
-      SCENE_NAME_START,
-      new StartScene(
-        data,
-        this.switchSceneToLevelSelection
-      )
-    );
+    this.addScene(SCENE_NAME_START, new StartScene());
     this.gotoScene(SCENE_NAME_START);
+  }
+
+  private handleSwitchScene(sceneName: string) {
+    if (sceneName !== SCENE_NAME_LEVEL_END) {
+      //No Cloud loading scene for TRANSITIONING TO level-end scene.
+      this.scenes[LOADING_TRANSITION].toggleLoadingScreen(true);
+    }
+
+    this.timerWrapper(() => {
+      if (sceneName !== SCENE_NAME_GAME_PLAY) {
+        this.gameControl.style.zIndex = "-1";
+      }
+      this.registerScenes(sceneName);
+      this.gotoScene(sceneName);
+    });
+  }
+
+  private registerScenes(sceneName) {
+    switch (sceneName) {
+      case SCENE_NAME_LEVEL_SELECT:
+        this.addScene(SCENE_NAME_LEVEL_SELECT, new LevelSelectionScreen());
+        break;
+      case SCENE_NAME_GAME_PLAY:
+        this.addScene(SCENE_NAME_GAME_PLAY, new GameplayScene());
+        break;
+      case SCENE_NAME_LEVEL_END:
+        this.addScene(
+          SCENE_NAME_LEVEL_END,
+          new LevelEndScene(
+            this.checkMonsterPhaseUpdation(), //This is WIP on FM-382, I will address this once I pulled FM-382 branch.
+          )
+        );
+        break;
+    }
   }
 
   private addScene(key: string, Class: LoadingScene | StartScene | LevelSelectionScreen | GameplayScene | LevelEndScene) {
@@ -124,55 +161,6 @@ export class SceneHandler {
       this.activeScene instanceof LevelEndScene
       || this.activeScene instanceof StartScene
     ) && this.activeScene.draw(deltaTime);
-  };
-
-  switchSceneToLevelSelection = () => {
-    this.timerWrapper(
-      () => {
-        this.addScene(
-          SCENE_NAME_LEVEL_SELECT,
-          new LevelSelectionScreen(
-            this.data,
-            this.switchSceneToGameplay
-          )
-        );
-        this.gotoScene(SCENE_NAME_LEVEL_SELECT);
-      }
-    );
-  };
-
-  switchSceneToGameplay = () => {
-    this.timerWrapper(
-      () => {
-        this.addScene(
-          SCENE_NAME_GAME_PLAY,
-          new GameplayScene({
-            switchSceneToEnd: this.switchSceneToEndLevel,
-            switchToLevelSelection: () => {
-              this.switchSceneToLevelSelection();
-            },
-            reloadScene: this.switchSceneToGameplay
-          })
-        );
-        this.gotoScene(SCENE_NAME_GAME_PLAY);
-      }
-    );
-  };
-
-  switchSceneToEndLevel = () => {
-    this.timerWrapper(
-      () => {
-        this.addScene(
-          SCENE_NAME_LEVEL_END,
-          new LevelEndScene(
-            this.checkMonsterPhaseUpdation(),
-            this.switchSceneToGameplay,
-            this.switchSceneToLevelSelection
-          )
-        );
-        this.gotoScene(SCENE_NAME_LEVEL_END);
-      }
-    )
   };
 
   private handleInstallPrompt = (event: Event) => {

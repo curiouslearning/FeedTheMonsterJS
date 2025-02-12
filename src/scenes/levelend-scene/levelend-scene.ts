@@ -8,6 +8,8 @@ import {
   PIN_STAR_1,
   PIN_STAR_2,
   PIN_STAR_3,
+  SCENE_NAME_LEVEL_SELECT,
+  SCENE_NAME_GAME_PLAY
 } from '@constants';
 import gameStateService from '@gameStateService';
 import gameSettingsService from '@gameSettingsService';
@@ -20,8 +22,6 @@ export class LevelEndScene {
   }
   public starCount: number;
   public currentLevel: number;
-  public switchToGameplayCB: Function;
-  public switchToLevelSelectionCB: Function;
   public monsterPhaseNumber: number;
   public data: any;
   public audioPlayer: AudioPlayer;
@@ -32,14 +32,15 @@ export class LevelEndScene {
   public mapButtonInstance: MapButton;
   public riveMonster: RiveMonsterComponent;
   public canvasElement: HTMLCanvasElement;
-  constructor(monsterPhaseNumber,switchToGameplayCB, switchToLevelSelectionCB) {
+
+  constructor(
+    monsterPhaseNumber
+  ) {
     this.monsterPhaseNumber = monsterPhaseNumber;
     const {starCount, currentLevel, data} =
       gameStateService.getLevelEndSceneData();
     const {isLastLevel, canvas} = gameStateService.getGamePlaySceneDetails();
     this.canvasElement = canvas;
-    this.switchToGameplayCB = switchToGameplayCB;
-    this.switchToLevelSelectionCB = switchToLevelSelectionCB;
     this.data = data;
     this.audioPlayer = new AudioPlayer();
     this.canvasElement = document.getElementById("rivecanvas") as HTMLCanvasElement;
@@ -178,13 +179,19 @@ export class LevelEndScene {
         selectedLevelNumber: level,
       };
       this.handlePublishEvent(true, gamePlayData);
-      this.switchToGameplayCB();
+      gameStateService.publish(
+        gameStateService.EVENTS.SWITCH_SCENE_EVENT,
+        SCENE_NAME_GAME_PLAY,
+      );
     };
 
     switch (action) {
       case 'map':
         this.handlePublishEvent(true);
-        this.switchToLevelSelectionCB();
+        gameStateService.publish(
+          gameStateService.EVENTS.SWITCH_SCENE_EVENT,
+          SCENE_NAME_LEVEL_SELECT,
+        );
         break;
 
       case 'retry':
@@ -252,10 +259,7 @@ export class LevelEndScene {
         gamePlayData,
       );
     }
-    gameSettingsService.publish(
-      gameSettingsService.EVENTS.SCENE_LOADING_EVENT,
-      shouldShowLoading,
-    );
+
     setTimeout(() => {
       this.toggleLevelEndBackground(!shouldShowLoading);
     }, 800);

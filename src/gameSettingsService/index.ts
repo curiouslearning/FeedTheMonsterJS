@@ -1,4 +1,4 @@
-import { GameSettingsService } from './game-settings-service';
+import { GameSettingsService } from './gameSettingsService';
 const gameSettingsServiceInstance = new GameSettingsService();
 
 export default gameSettingsServiceInstance;

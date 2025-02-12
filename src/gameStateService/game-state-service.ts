@@ -17,6 +17,7 @@ import {
 
 export class GameStateService extends PubSub {
     public EVENTS: {
+        SWITCH_SCENE_EVENT: string;
         GAMEPLAY_DATA_EVENT: string;
         GAME_PAUSE_STATUS_EVENT: string;
         LEVEL_END_DATA_EVENT: string;
@@ -59,8 +60,6 @@ export class GameStateService extends PubSub {
         fantastic: string,
         great: string
     };
-    //public clickTrailToggle: boolean;
-    //public offsetCoordinateValue: number;
     public levelEndData: null | {
         starCount: number,
         currentLevel: number,
@@ -71,6 +70,7 @@ export class GameStateService extends PubSub {
     constructor() {
         super();
         this.EVENTS = {
+            SWITCH_SCENE_EVENT: 'SWITCH_SCENE_EVENT',
             GAMEPLAY_DATA_EVENT: 'GAMEPLAY_DATA_EVENT',
             GAME_PAUSE_STATUS_EVENT: 'GAME_PAUSE_STATUS_EVENT',
             LEVEL_END_DATA_EVENT: 'LEVEL_END_DATA_EVENT' // To move this event on DOM Event once created.
@@ -107,6 +107,10 @@ export class GameStateService extends PubSub {
         this.isGamePaused = isPaused;
     }
 
+    getFTMData() {
+        return this.data;
+    }
+
     setDefaultGameStateValues(data: DataModal) {
         /*Original game data from FeedTheMonster.ts.*/
         this.data = data;
@@ -118,6 +122,7 @@ export class GameStateService extends PubSub {
     }
 
     getGamePlaySceneDetails() {
+        console.log('getGamePlaySceneDetails this ', this)
         return createGameplaySceneDAO(this);
     }
 

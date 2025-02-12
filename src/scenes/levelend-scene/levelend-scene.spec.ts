@@ -56,10 +56,17 @@ describe('LevelEndScene', () => {
     mockSwitchToLevelSelectionCB = jest.fn();
 
     // Initialize the LevelEndScene
+    // levelEndScene = new LevelEndScene(
+    //   1,
+    //   mockSwitchToGameplayCB,
+    //   mockSwitchToLevelSelectionCB,
+    // );
+
     levelEndScene = new LevelEndScene(
-      1,
-      mockSwitchToGameplayCB,
-      mockSwitchToLevelSelectionCB,
+      1
+      // 1,
+      // mockSwitchToGameplayCB,
+      // mockSwitchToLevelSelectionCB,
     );
   });
 

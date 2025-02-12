@@ -14,7 +14,6 @@ export class LoadingScene {
   cloudXPosition: number = -500;
   stopCloudMoving: boolean = false;
   cloudMovingTimeOut: number = 0;
-  private unsubscribeEvent: () => void;
 
   constructor() {
     const { loadingCanvas, loadingContext } = gameSettingsService.getCanvasSizeValues();
@@ -32,16 +31,9 @@ export class LoadingScene {
       this.loadedImages = Object.assign({}, images);
       this.imagesLoaded = true;
     });
-    this.unsubscribeEvent = gameSettingsService.subscribe(
-      gameSettingsService.EVENTS.SCENE_LOADING_EVENT,
-      (shouldShow: boolean) => {
-        /* Note loading-scene SCENE_LOADING_EVENT has no method to unsubscribe as this is being reused throughout the entire game.*/
-        this.handleLoadingScreen(shouldShow);
-      }
-    )
   }
 
-  private handleLoadingScreen(shouldShow: boolean) {
+  toggleLoadingScreen(shouldShow) {
     shouldShow && this.initCloud();
     this.shouldShowLoading = shouldShow;
     document.getElementById("loading").style.zIndex = shouldShow ? "10" : "-1";
@@ -53,7 +45,7 @@ export class LoadingScene {
     this.cloudXPosition += deltaTime * 0.75;
     this.cloudMovingTimeOut += deltaTime;
     if (this.cloudMovingTimeOut>2983){
-      gameSettingsService.publish(gameSettingsService.EVENTS.SCENE_LOADING_EVENT, false);
+      this.toggleLoadingScreen(false)
     }
     if (this.cloudXPosition >= this.width * 0.5 && !this.stopCloudMoving) {
       this.cloudMovingTimeOut += deltaTime;

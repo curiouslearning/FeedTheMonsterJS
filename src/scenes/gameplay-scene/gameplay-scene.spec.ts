@@ -167,11 +167,13 @@ describe('GameplayScene with BasePopupComponent', () => {
     mockReloadScene = jest.fn();
 
     // Initialize GameplayScene
-    gameplayScene = new GameplayScene({
-      switchSceneToEnd: mockSwitchSceneToEnd,
-      switchToLevelSelection: jest.fn(),
-      reloadScene: mockReloadScene,
-    });
+    // gameplayScene = new GameplayScene({
+    //   switchSceneToEnd: mockSwitchSceneToEnd,
+    //   switchToLevelSelection: jest.fn(),
+    //   reloadScene: mockReloadScene,
+    // });
+
+    gameplayScene = new GameplayScene();
   });
 
   afterEach(() => {
@@ -366,7 +368,7 @@ describe('GameplayScene with BasePopupComponent', () => {
       const onCloseCallback = (props: any) => {
         if (props.data === 'RESTART_LEVEL') {
           gameStateService.publish(gameStateService.EVENTS.GAMEPLAY_DATA_EVENT, {});
-          gameSettingsService.publish(gameSettingsService.EVENTS.SCENE_LOADING_EVENT, true);
+          //gameSettingsService.publish(gameSettingsService.EVENTS.SCENE_LOADING_EVENT, true);
           mockReloadScene('GamePlay');
         }
       };
@@ -377,10 +379,6 @@ describe('GameplayScene with BasePopupComponent', () => {
       expect(gameStateService.publish).toHaveBeenCalledWith(
         gameStateService.EVENTS.GAMEPLAY_DATA_EVENT,
         expect.any(Object)
-      );
-      expect(gameSettingsService.publish).toHaveBeenCalledWith(
-        gameSettingsService.EVENTS.SCENE_LOADING_EVENT,
-        true
       );
       expect(mockReloadScene).toHaveBeenCalledWith('GamePlay');
     });

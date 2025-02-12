@@ -21,7 +21,8 @@ import {
   NEXT_BTN_IMG,
   BACK_BTN_IMG,
   AUDIO_INTRO,
-  SCENE_NAME_LEVEL_SELECT,
+  SCENE_NAME_GAME_PLAY,
+  //SCENE_NAME_LEVEL_SELECT,
 } from "@constants";
 import { LevelBloonButton } from '@buttons';
 import gameStateService from '@gameStateService';
@@ -35,7 +36,6 @@ export class LevelSelectionScreen {
   private context: CanvasRenderingContext2D;
   private levels: any;
   private gameLevelData: any;
-  public callBack: Function;
   private audioPlayer: AudioPlayer;
   private images: object;
   private loadedImages: any;
@@ -60,7 +60,7 @@ export class LevelSelectionScreen {
   private levelButtons: any
   public riveMonsterElement: HTMLCanvasElement;
 
-  constructor(data: any, callBack: Function) {
+  constructor() {
     const {
       canvasElem,
       canvasWidth,
@@ -72,9 +72,8 @@ export class LevelSelectionScreen {
     this.height = canvasHeight;
     this.context = context;
 
-    this.data = data;
+    this.data = gameStateService.getFTMData();
     let self = this;
-    this.callBack = callBack;
     this.levelsSectionCount =
       self.data.levels.length / 10 > Math.floor(self.data.levels.length / 10)
         ? Math.floor(self.data.levels.length / 10) + 1
@@ -396,9 +395,8 @@ export class LevelSelectionScreen {
       selectedLevelNumber: level_number,
     };
     gameStateService.publish(gameStateService.EVENTS.GAMEPLAY_DATA_EVENT, gamePlayData);
-    gameSettingsService.publish(gameSettingsService.EVENTS.SCENE_LOADING_EVENT, true);
     this.logSelectedLevelEvent();
-    this.callBack(SCENE_NAME_LEVEL_SELECT);
+    gameStateService.publish(gameStateService.EVENTS.SWITCH_SCENE_EVENT, SCENE_NAME_GAME_PLAY);
   }
   public logSelectedLevelEvent() {
     const selectedLeveltData: SelectedLevel = {

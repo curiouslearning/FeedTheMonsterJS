@@ -113,11 +113,11 @@ export default class PausePopUp {
 
   private handleRetryPublish() {
     gameStateService.publish(gameStateService.EVENTS.GAMEPLAY_DATA_EVENT, this.gameplayData);
-    gameSettingsService.publish(gameSettingsService.EVENTS.SCENE_LOADING_EVENT, true);
+    //gameSettingsService.publish(gameSettingsService.EVENTS.SCENE_LOADING_EVENT, true);
   }
 
   private handleClosePublish() {
-    gameSettingsService.publish(gameSettingsService.EVENTS.SCENE_LOADING_EVENT, true);
+    //gameSettingsService.publish(gameSettingsService.EVENTS.SCENE_LOADING_EVENT, true);
     gameStateService.publish(gameStateService.EVENTS.GAME_PAUSE_STATUS_EVENT, false);
   }
 

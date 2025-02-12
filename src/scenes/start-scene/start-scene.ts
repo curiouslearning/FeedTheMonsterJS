@@ -12,14 +12,16 @@ import {
 import { FirebaseIntegration } from "../../Firebase/firebase-integration";
 import { TappedStart } from "../../Firebase/firebase-event-interface";
 import {
+  SCENE_NAME_LEVEL_SELECT,
   FirebaseUserClicked,
   PWAInstallStatus,
 } from "@constants";
+import gameStateService from '@gameStateService';
 import gameSettingsService from '@gameSettingsService';
 import './start-scene.scss';
 
 export class StartScene {
-  public data: any;
+  public data: DataModal;
   public pwa_status: string;
   public firebase_analytics: { logEvent: any };
   public id: string;
@@ -32,7 +34,6 @@ export class StartScene {
   public imagesLoaded: boolean = false;
   public handler: HTMLBodyElement;
   public static SceneName: string;
-  public switchSceneToLevelSelection: Function;
   audioPlayer: AudioPlayer;
   private toggleBtn: HTMLElement;
   private pwa_install_status: Event;
@@ -45,11 +46,8 @@ export class StartScene {
   private hasRiveLoaded: boolean = false;
   private titleElement: BaseHTML;
 
-  constructor(
-    data: DataModal,
-    switchSceneToLevelSelection: Function
-  ) {
-    this.data = data;
+  constructor() {
+    this.data = gameStateService.getFTMData();
     this.riveMonsterElement = gameSettingsService.getRiveCanvasValue();
     this.toggleBtn = document.getElementById("toggle-btn") as HTMLElement;
     this.loadingElement = document.getElementById("loading-screen") as HTMLElement;
@@ -105,7 +103,6 @@ export class StartScene {
       (id) => (`<div id="${id}"></div>`),
       true
     );
-    this.switchSceneToLevelSelection = switchSceneToLevelSelection;
     this.audioPlayer = new AudioPlayer();
     this.pwa_status = localStorage.getItem(PWAInstallStatus);
     this.handler = document.getElementById('start-scene-click-area') as HTMLBodyElement;
@@ -161,7 +158,7 @@ export class StartScene {
   generateGameTitle = () => {
     if (this.titleTextElement) {
       this.titleTextElement.textContent = this.data.title;
-      
+
       // Check if current language needs long title treatment
       if (this.data.title && this.data.title.length > 20) {
         this.titleTextElement.classList.add('title-long');
@@ -177,13 +174,12 @@ export class StartScene {
       this.toggleBtn.style.display = "none";
       this.logTappedStartFirebaseEvent();
       this.audioPlayer.playButtonClickSound();
-      gameSettingsService.publish(gameSettingsService.EVENTS.SCENE_LOADING_EVENT, true);
-      this.switchSceneToLevelSelection();
+      gameStateService.publish(gameStateService.EVENTS.SWITCH_SCENE_EVENT, SCENE_NAME_LEVEL_SELECT);
     });
     document.addEventListener("selectstart", function (e) {
       e.preventDefault();
     });
-    this.handler.addEventListener("click", this.handleMouseClick, false); //Doesn't work adding on riveCanvas and doesn't work anymore due to riveCanvas using full width and height.
+    this.handler.addEventListener("click", this.handleMouseClick, false);
   }
 
   handleMouseClick = (event) => {
@@ -195,8 +191,7 @@ export class StartScene {
     });
     this.toggleBtn.style.display = "none";
     this.audioPlayer.playButtonClickSound();
-    gameSettingsService.publish(gameSettingsService.EVENTS.SCENE_LOADING_EVENT, true);
-    this.switchSceneToLevelSelection();
+    gameStateService.publish(gameStateService.EVENTS.SWITCH_SCENE_EVENT, SCENE_NAME_LEVEL_SELECT);
   };
 
   dispose() {
