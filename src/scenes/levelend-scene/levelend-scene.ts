@@ -39,7 +39,7 @@ export class LevelEndScene {
   private switchToLevelSelectionCB: () => void;
   private starAnimationTimeouts: number[] = [];
   private evolutionTimeout: number | null = null;
-  private evolveMonster: boolean;
+  public evolveMonster: boolean;
 
   constructor(monsterPhaseNumber: number, switchToGameplayCB: () => void, switchToLevelSelectionCB: () => void) {
     const { starCount, currentLevel, data } =
@@ -55,6 +55,7 @@ export class LevelEndScene {
     this.starCount = starCount;
     this.currentLevel = currentLevel;
     this.isLastLevel = isLastLevel;
+    this.initializeRiveMonster();
     this.toggleLevelEndBackground(true);
     this.showLevelEndScreen(); // Display the level end screen
     this.addEventListener();
@@ -66,6 +67,19 @@ export class LevelEndScene {
      * This is the value to determine if we need to trigger evolution animation or not
      */
     this.evolveMonster = true;
+  }
+
+  initializeRiveMonster() {
+    // Initialize the RiveMonsterComponent instead of directly using Rive
+    this.riveMonster = new RiveMonsterComponent({
+      canvas: this.canvasElement,
+      autoplay: true,
+      fit: "contain",
+      alignment: "topCenter",
+      onLoad: () => {
+        this.riveMonster.play(RiveMonsterComponent.Animations.IDLE); // Start with the "Eat Happy" animation
+      }
+    });
   }
 
   // Method to show/hide the Level End background
@@ -111,7 +125,7 @@ export class LevelEndScene {
     );
   }
 
-  private setCanvasPosition(position: 'evolution' | 'normal') {
+  setCanvasPosition(position: 'evolution' | 'normal') {
     const CANVAS_POSITIONS = {
       evolution: {
         zIndex: '13',
@@ -157,6 +171,8 @@ export class LevelEndScene {
   }
 
   private initializeEvolutionMonster() {
+    // need to dispose first. making sure that it wont go back to the old state after animating
+    this.riveMonster.dispose();
     const evolutionSrc = this.getEvolutionSource(1);
 
     return new RiveMonsterComponent({
@@ -208,9 +224,9 @@ export class LevelEndScene {
         // Initialize Rive monster after the last star animation only if conditions are met
         if (i === this.starCount - 1) {
           this.evolutionTimeout = window.setTimeout(() => {
-            // Only initialize if total stars is 8 and current level stars >= 2
+            // Only initialize if current level stars >= 2
             if (this.starCount >= 2) {
-              this.runEvolutionAnimation();
+              this.callEvolutionAnimation();
             }
           }, 500); // Wait another half second after last star appears
         }

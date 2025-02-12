@@ -1,7 +1,7 @@
 import { MONSTER_PHASES } from '@constants';
 import { Rive, Layout, Fit, Alignment } from '@rive-app/canvas';
 
-interface RiveMonsterComponentProps {
+export interface RiveMonsterComponentProps {
   canvas: HTMLCanvasElement; // Canvas element where the animation will render
   autoplay: boolean;
   fit?: string; // Fit property (e.g contain, cover, etc.)
