@@ -1,9 +1,5 @@
 import { PubSub } from '../events/pub-sub-events';
-import { DataModal } from "@data";
-import {
-    createGameplaySceneDAO,
-    createLevelEndDataDAO
-} from './data-access-objects';
+import { DataModal, GameScore } from "@data";
 
 /*
  * GameStateService.ts
@@ -85,8 +81,7 @@ export class GameStateService extends PubSub {
         this.majVersion = 0;
         this.minVersion = 0;
         this.initListeners();
-
-        this.levelEndData = null
+        this.levelEndData = null;
         this.isLastLevel = false;
     }
 
@@ -122,22 +117,48 @@ export class GameStateService extends PubSub {
     }
 
     getGamePlaySceneDetails() {
-        console.log('getGamePlaySceneDetails this ', this)
-        return createGameplaySceneDAO(this);
+        const versionNumber = !!this.majVersion && !!this.minVersion
+            ? this.majVersion.toString() + "." + this.minVersion.toString()
+            : "";
+
+        return {
+            levelData: { ...this.gamePlayData.currentLevelData },
+            levelNumber: this.gamePlayData.selectedLevelNumber,
+            feedBackTexts: { ...this.feedbackTexts },
+            rightToLeft: this?.rightToLeft,
+            jsonVersionNumber: versionNumber,
+            feedbackAudios: { ...this.feedbackAudios },
+            isGamePaused: this.isGamePaused,
+            data: this.data,
+            isLastLevel: this.isLastLevel
+        };
     }
 
-    // TODO: move this back to level end scene since 
     levelEndSceneData({levelEndData, data}) {
         this.levelEndData = {...levelEndData};
         this.data = data;
         this.isLastLevel = levelEndData.currentLevel === data.levels[data.levels.length - 1].levelMeta.levelNumber;
     }
-    // TODO: move this back to level end scene since 
+
     getLevelEndSceneData() {
-        return createLevelEndDataDAO(this);
+        return {
+            starCount: this.levelEndData.starCount,
+            currentLevel: this.levelEndData.currentLevel,
+            isTimerEnded: this.levelEndData.isTimerEnded,
+            data: this.data
+        };
+    }
+
+    public checkMonsterPhaseUpdation(): number {
+        console.log('checkMonsterPhaseUpdation ')
+        const totalStarCount = GameScore.getTotalStarCount();
+        switch (true) {
+          case totalStarCount >= 38:
+            return 2; // Phase 4
+          case totalStarCount >= 8:
+            return 1; // Phase 2
+          default:
+            return 0; // Phase 1 (default)
+        }
     }
 };
-
-const gameStateServiceInstance = new GameStateService();
-
-export default gameStateServiceInstance;

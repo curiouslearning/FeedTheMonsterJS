@@ -5,10 +5,9 @@ import {
   LoadingScene,
   LevelEndScene,
 } from "@scenes";
-import { DataModal, GameScore } from "@data";
+import { DataModal } from "@data";
 import { Debugger } from "@common";
 import {
-  LOADING_TRANSITION,
   SCENE_NAME_START,
   SCENE_NAME_LEVEL_SELECT,
   SCENE_NAME_GAME_PLAY,
@@ -19,14 +18,10 @@ import gameStateService from '@gameStateService';
 import gameSettingsService from '@gameSettingsService';
 
 export class SceneHandler {
-  private scenes: {
-    LOADING_TRANSITION?: LoadingScene;
-    SCENE_NAME_START?: StartScene;
-    SCENE_NAME_LEVEL_SELECT?: LevelSelectionScreen;
-    SCENE_NAME_GAME_PLAY?: GameplayScene;
-    SCENE_NAME_LEVEL_END?: LevelEndScene;
+  private activeScene: {
+    loading?: null | LoadingScene,
+    scene?: null | StartScene | LevelSelectionScreen | GameplayScene | LevelEndScene
   };
-  private activeScene: null | StartScene | LevelSelectionScreen | GameplayScene | LevelEndScene;
   public data: DataModal;
   public width: number;
   public height: number;
@@ -38,8 +33,7 @@ export class SceneHandler {
 
   constructor(data: DataModal) {
     gameStateService.setDefaultGameStateValues(data);
-    this.scenes = {};
-    this.activeScene = null;
+    this.activeScene = {};
     this.setupUIElements();
     window.addEventListener("beforeinstallprompt", this.handleInstallPrompt);
     this.initDefaultScenes();
@@ -65,52 +59,42 @@ export class SceneHandler {
   }
 
   private initDefaultScenes() {
-    this.addScene(LOADING_TRANSITION, new LoadingScene());
-    this.addScene(SCENE_NAME_START, new StartScene());
+    this.activeScene['loading'] = new LoadingScene();
     this.gotoScene(SCENE_NAME_START);
   }
 
   private handleSwitchScene(sceneName: string) {
     if (sceneName !== SCENE_NAME_LEVEL_END) {
       //No Cloud loading scene for TRANSITIONING TO level-end scene.
-      this.scenes[LOADING_TRANSITION].toggleLoadingScreen(true);
+      this.activeScene['loading'].toggleLoadingScreen(true);
     }
 
     this.timerWrapper(() => {
       if (sceneName !== SCENE_NAME_GAME_PLAY) {
         this.gameControl.style.zIndex = "-1";
       }
-      this.registerScenes(sceneName);
+
       this.gotoScene(sceneName);
     });
   }
 
-  private registerScenes(sceneName) {
+  private gotoScene(sceneName: string) {
+    this.activeScene['scene'] && this.activeScene['scene']?.dispose();
+    this.activeScene['scene'] = this.getScene(sceneName);
+  }
+
+
+  private getScene(sceneName) {
     switch (sceneName) {
+      case SCENE_NAME_START:
+        return new StartScene()
       case SCENE_NAME_LEVEL_SELECT:
-        this.addScene(SCENE_NAME_LEVEL_SELECT, new LevelSelectionScreen());
-        break;
+        return new LevelSelectionScreen()
       case SCENE_NAME_GAME_PLAY:
-        this.addScene(SCENE_NAME_GAME_PLAY, new GameplayScene());
-        break;
+        return new GameplayScene()
       case SCENE_NAME_LEVEL_END:
-        this.addScene(
-          SCENE_NAME_LEVEL_END,
-          new LevelEndScene(
-            this.checkMonsterPhaseUpdation(), //This is WIP on FM-382, I will address this once I pulled FM-382 branch.
-          )
-        );
-        break;
+        return new LevelEndScene()
     }
-  }
-
-  private addScene(key: string, Class: LoadingScene | StartScene | LevelSelectionScreen | GameplayScene | LevelEndScene) {
-    this.scenes[key] = Class;
-  }
-
-  private gotoScene(key: string) {
-    this.activeScene && this.activeScene?.dispose();
-    this.activeScene = this.scenes[key];
   }
 
   private timerWrapper = (callback: () => void, customTime:number = 800) => {
@@ -140,28 +124,18 @@ export class SceneHandler {
     });
   }
 
-  public checkMonsterPhaseUpdation(): number {
-    const totalStarCount = GameScore.getTotalStarCount();
-    switch (true) {
-      case totalStarCount >= 38:
-        return 2; // Phase 4
-      case totalStarCount >= 8:
-        return 1; // Phase 2
-      default:
-        return 0; // Phase 1 (default)
-    }
-  }
+  
 
   animation = (timeStamp: number) => {
     const deltaTime = timeStamp - this.lastTime;
     this.lastTime = timeStamp;
     this.context.clearRect(0, 0, this.width, this.height);
-    this.scenes[LOADING_TRANSITION].draw(deltaTime);
+    this.activeScene['loading'].draw(deltaTime);
 
-    this.activeScene && !(
-      this.activeScene instanceof LevelEndScene
-      || this.activeScene instanceof StartScene
-    ) && this.activeScene.draw(deltaTime);
+    this.activeScene['scene'] && !(
+      this.activeScene['scene'] instanceof LevelEndScene
+      || this.activeScene['scene'] instanceof StartScene
+    ) && this.activeScene['scene']?.draw(deltaTime);
   };
 
   private handleInstallPrompt = (event: Event) => {

@@ -1,3 +1,4 @@
-import gameStateService from './game-state-service';
+import { GameStateService } from './gameStateService';
+const gameStateServiceInstance = new GameStateService();
 
-export default gameStateService;
+export default gameStateServiceInstance;

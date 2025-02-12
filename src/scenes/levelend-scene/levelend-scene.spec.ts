@@ -63,10 +63,6 @@ describe('LevelEndScene', () => {
     // );
 
     levelEndScene = new LevelEndScene(
-      1
-      // 1,
-      // mockSwitchToGameplayCB,
-      // mockSwitchToLevelSelectionCB,
     );
   });
 

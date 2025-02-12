@@ -34,13 +34,13 @@ export class LevelEndScene {
   public canvasElement: HTMLCanvasElement;
 
   constructor(
-    monsterPhaseNumber
   ) {
-    this.monsterPhaseNumber = monsterPhaseNumber;
+    this.monsterPhaseNumber = gameStateService.checkMonsterPhaseUpdation();
     const {starCount, currentLevel, data} =
       gameStateService.getLevelEndSceneData();
-    const {isLastLevel, canvas} = gameStateService.getGamePlaySceneDetails();
-    this.canvasElement = canvas;
+    const {isLastLevel} = gameStateService.getGamePlaySceneDetails();
+    const { canvasElem } = gameSettingsService.getCanvasSizeValues();
+    this.canvasElement = canvasElem;
     this.data = data;
     this.audioPlayer = new AudioPlayer();
     this.canvasElement = document.getElementById("rivecanvas") as HTMLCanvasElement;
