@@ -135,6 +135,18 @@ export const WINTER_BG_GROUP_IMGS = {
   WINTER_PILLAR_1,
 };
 
+//Rive Animation
+export const MONSTER_PHASES = [
+  './assets/rive/eggMonsterFTM.riv',
+  './assets/rive/blue_egg.riv',
+  './assets/rive/green_egg.riv',
+];
+export const EVOL_MONSTER = ['./assets/rive/evolve.riv'];
+
+export enum MonsterState {
+  PHASE = 'phase',
+  EVOLUTION = 'evolution',
+}
 //Scene Names
 export const LOADING_TRANSITION = 'LoadingTransition';
 export const SCENE_NAME_START = "StartScene";
@@ -144,7 +156,3 @@ export const SCENE_NAME_LEVEL_END = "LevelEnd";
 
 //Levels
 export const SPECIAL_LEVELS = [5, 13, 20, 30, 42];
-
-export const MONSTER_EVOLUTION = {
-  1: './assets/monsterEvolution1.riv'
-}

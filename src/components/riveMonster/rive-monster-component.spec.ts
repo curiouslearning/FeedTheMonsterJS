@@ -1,28 +1,34 @@
-import {RiveMonsterComponent} from './rive-monster-component';
-import {Rive, Layout, Fit, Alignment} from '@rive-app/canvas';
+import { RiveMonsterComponent } from './rive-monster-component';
+import { Rive, Layout, Fit, Alignment } from '@rive-app/canvas';
 
-// Mock Rive library to avoid actual Rive implementation during tests
 jest.mock('@rive-app/canvas', () => {
   return {
-    Rive: jest.fn().mockImplementation(({onLoad}) => {
+    Rive: jest.fn().mockImplementation(({ onLoad }) => {
       if (onLoad) onLoad();
       return {
         play: jest.fn(),
         stop: jest.fn(),
-        stateMachine: {inputs: [{onStateChange: jest.fn()}]},
-        animationNames: ['Idle', 'Eat Happy'],
+        stateMachineInputs: jest.fn().mockReturnValue([
+          { name: 'backToIdle', fire: jest.fn() },
+          { name: 'isStomped', fire: jest.fn() },
+          { name: 'isMouthOpen', fire: jest.fn() },
+          { name: 'isMouthClosed', fire: jest.fn() },
+          { name: 'isChewing', fire: jest.fn() },
+          { name: 'isHappy', fire: jest.fn() },
+          { name: 'isSpit', fire: jest.fn() },
+          { name: 'isSad', fire: jest.fn() },
+        ]),
+        cleanup: jest.fn(),
       };
     }),
     Layout: jest.fn(),
-    Fit: {Contain: 'Contain'},
-    Alignment: {TopCenter: 'TopCenter'},
+    Fit: { Contain: 'Contain' },
+    Alignment: { Center: 'Center' },
   };
 });
 
 describe('RiveMonsterComponent', () => {
-  let canvas: HTMLCanvasElement;
-  let gameCanvas: HTMLCanvasElement;
-  let component: RiveMonsterComponent;
+  let canvas, gameCanvas, component;
 
   beforeEach(() => {
     canvas = document.createElement('canvas');
@@ -33,7 +39,7 @@ describe('RiveMonsterComponent', () => {
       canvas,
       autoplay: true,
       fit: 'Contain',
-      alignment: 'TopCenter',
+      alignment: 'Center',
       gameCanvas,
     });
   });
@@ -42,80 +48,94 @@ describe('RiveMonsterComponent', () => {
     jest.clearAllMocks();
   });
 
-  it('should initialize RiveMonsterComponent with the correct properties', () => {
+  it('should initialize RiveMonsterComponent with correct properties', () => {
     expect(component).toBeDefined();
     expect(component['riveInstance']).toBeDefined();
     expect(component['props'].canvas).toBe(canvas);
     expect(component['props'].gameCanvas).toBe(gameCanvas);
-    expect(component['riveInstance'].animationNames).toContain('Idle');
   });
 
   it('should call Rive with correct parameters on instantiation', () => {
     expect(Rive).toHaveBeenCalledWith({
-      src: './assets/monsterrive.riv',
+      src: './assets/eggMonsterFTM.riv',
       canvas: canvas,
       autoplay: true,
-      stateMachines: 'State Machine 1',
+      stateMachines: ['State Machine 1'],
       layout: expect.any(Layout),
       onLoad: expect.any(Function),
+      useOffscreenRenderer: true,
     });
   });
 
   it('should call onLoad callback if provided', () => {
     const onLoadMock = jest.fn();
-    new RiveMonsterComponent({
-      canvas,
-      autoplay: true,
-      onLoad: onLoadMock,
-      gameCanvas,
-    });
+    new RiveMonsterComponent({ canvas, autoplay: true, onLoad: onLoadMock, gameCanvas });
     expect(onLoadMock).toHaveBeenCalled();
   });
 
-  it('should call the play method of the Rive instance with the correct animation name', () => {
+  it('should play the specified animation', () => {
     component.play('Idle');
     expect(component['riveInstance'].play).toHaveBeenCalledWith('Idle');
   });
 
-  it('should call the stop method of the Rive instance', () => {
+  it('should stop the animation', () => {
     component.stop();
     expect(component['riveInstance'].stop).toHaveBeenCalled();
   });
 
-  it('should set hitboxRangeX and hitboxRangeY correctly based on gameCanvas dimensions', () => {
-    expect(component['hitboxRangeX'].from).toBeGreaterThan(0);
-    expect(component['hitboxRangeX'].to).toBeGreaterThan(0);
-    expect(component['hitboxRangeY'].from).toBeGreaterThan(0);
-    expect(component['hitboxRangeY'].to).toBeGreaterThan(0);
-  });
-
   it('should return true if the click is within the hitbox range', () => {
-    const mockEvent = {clientX: 400, clientY: 200};
-    canvas.getBoundingClientRect = jest
-      .fn()
-      .mockReturnValue({left: 0, top: 0, width: 800, height: 600});
-
-    expect(component['hitboxRangeX'].from).toBe(330);
-    expect(component['hitboxRangeX'].to).toBe(470);
-    expect(component['hitboxRangeY'].from).toBe(150);
-    expect(component['hitboxRangeY'].to).toBe(250);
+    const mockEvent = { clientX: 400, clientY: 200 };
+    canvas.getBoundingClientRect = jest.fn().mockReturnValue({ left: 0, top: 0, width: 800, height: 600 });
 
     const isHit = component.checkHitboxDistance(mockEvent);
     expect(isHit).toBe(true);
   });
 
   it('should return false if the click is outside the hitbox range', () => {
-    const mockEvent = {clientX: 10, clientY: 10};
-    canvas.getBoundingClientRect = jest
-      .fn()
-      .mockReturnValue({left: 0, top: 0, width: 800, height: 600});
+    const mockEvent = { clientX: 10, clientY: 10 };
+    canvas.getBoundingClientRect = jest.fn().mockReturnValue({ left: 0, top: 0, width: 800, height: 600 });
 
     const isHit = component.checkHitboxDistance(mockEvent);
     expect(isHit).toBe(false);
   });
 
-  it('should correctly calculate onClick hit detection', () => {
-    const isHit = component.onClick(400, 540); // Match the monster's center
-    expect(isHit).toBe(true); // Expect a valid hit
+  it('should correctly change phase and reload animation', () => {
+    component.changePhase(1);
+    expect(component['riveInstance']).toBeDefined();
+    expect(Rive).toHaveBeenCalledWith({
+      src: './assets/blue_egg.riv',
+      canvas: component['props'].canvas,
+      autoplay: component['props'].autoplay,
+      stateMachines: ['State Machine 1'],
+      layout: expect.any(Layout),
+      onLoad: expect.any(Function),
+      useOffscreenRenderer: true,
+    });
+  });
+
+  it('should not change to an invalid phase index', () => {
+    console.warn = jest.fn();
+    component.changePhase(5);
+    expect(console.warn).toHaveBeenCalledWith('Invalid phase index: 5');
+  });
+
+  it('should trigger state machine input if found', () => {
+    const fireMock = jest.fn();
+    jest.spyOn(component, 'getInputs').mockReturnValue([{ name: 'isHappy', fire: fireMock }]);
+
+    component.triggerInput('isHappy');
+    expect(fireMock).toHaveBeenCalled();
+  });
+
+  it('should log a warning if input is not found', () => {
+    console.warn = jest.fn();
+    component.triggerInput('nonExistentInput');
+    expect(console.warn).toHaveBeenCalledWith('Input nonExistentInput not found.');
+  });
+
+  it('should dispose of Rive instance', () => {
+    component.dispose();
+    expect(component['riveInstance'].cleanup).toHaveBeenCalled();
+    expect(component['riveInstance']).toBeNull();
   });
 });

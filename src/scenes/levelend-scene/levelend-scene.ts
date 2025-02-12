@@ -5,7 +5,7 @@ import {
   AUDIO_INTRO,
   AUDIO_LEVEL_LOSE,
   AUDIO_LEVEL_WIN,
-  MONSTER_EVOLUTION,
+  EVOL_MONSTER,
   PIN_STAR_1,
   PIN_STAR_2,
   PIN_STAR_3,
@@ -62,6 +62,9 @@ export class LevelEndScene {
     // Call switchToReactionAnimation during initialization
     this.switchToReactionAnimation();
     // trigger monster evolution animation
+    /**
+     * This is the value to determine if we need to trigger evolution animation or not
+     */
     this.evolveMonster = true;
   }
 
@@ -144,13 +147,13 @@ export class LevelEndScene {
   private getEvolutionSource(phase: number): string {
     // Map different evolution animations based on phase
     const evolutionMap = {
-      1: MONSTER_EVOLUTION[2],
-      2: MONSTER_EVOLUTION[3],
-      3: MONSTER_EVOLUTION[4],
+      1: EVOL_MONSTER[2],
+      2: EVOL_MONSTER[3],
+      3: EVOL_MONSTER[4],
       // Add more phases as needed
     };
     
-    return evolutionMap[phase] || MONSTER_EVOLUTION[1]; // fallback to first evolution if phase not found
+    return evolutionMap[phase] || EVOL_MONSTER[1]; // fallback to first evolution if phase not found
   }
 
   private initializeEvolutionMonster() {
@@ -218,7 +221,8 @@ export class LevelEndScene {
   }
 
   callEvolutionAnimation() {
-    console.log('All stars have been rendered and phase ' + this.monsterPhaseNumber + ' monster loaded');
+    console.log('All stars have been rendered and phase '+ this.monsterPhaseNumber + ' monster loaded');
+    this.riveMonster.changePhase(this.monsterPhaseNumber);
     // Additional logic can be added here
     this.runEvolutionAnimation();
   }
