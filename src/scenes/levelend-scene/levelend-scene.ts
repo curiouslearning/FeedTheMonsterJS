@@ -65,7 +65,7 @@ export class LevelEndScene {
     /**
      * This is the value to determine if we need to trigger evolution animation or not
      */
-    this.evolveMonster = true;
+    this.evolveMonster = false;
   }
 
   initializeRiveMonster() {
