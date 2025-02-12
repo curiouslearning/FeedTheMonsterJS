@@ -13,7 +13,6 @@ import {
 import gameStateService from '@gameStateService';
 import './levelend-scene.scss';
 import { RiveMonsterComponent } from '@components/riveMonster/rive-monster-component';
-import { GameScore } from '@data/game-score';
 import { BaseHTML } from '@components/baseHTML/base-html';
 
 export class LevelEndScene {

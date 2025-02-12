@@ -164,7 +164,6 @@ export class GameplayScene {
       autoplay: true,
       fit: "contain",
       alignment: "bottomCenter",
-      moveCanvasUpOrDown: 50,
       onLoad: () => {
         this.monster.play(initialAnimation);
       },
