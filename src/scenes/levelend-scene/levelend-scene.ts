@@ -134,6 +134,7 @@ export class LevelEndScene {
 
   callEvolutionAnimation() {
     console.log('All stars have been rendered and phase '+ this.monsterPhaseNumber + ' monster loaded');
+    this.riveMonster.changePhase(this.monsterPhaseNumber);
     // Additional logic can be added here
   }
 
