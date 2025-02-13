@@ -31,7 +31,6 @@ export class RiveMonsterComponent {
 
   constructor(props: RiveMonsterComponentProps) {
     this.props = props;
-    this.moveCanvasUpOrDown(50); // Move down by 50px
     this.initializeHitbox();
     this.initializeRive();
   }
@@ -66,29 +65,30 @@ export class RiveMonsterComponent {
       canvas: this.props.canvas,
       autoplay: this.props.autoplay,
       stateMachines: [this.stateMachineName],
-      layout: new Layout({ fit: Fit.Contain, alignment: Alignment.Center }),
-      onLoad: this.handleLoad.bind(this),
+      layout: new Layout({ 
+        fit: Fit.Contain,
+        alignment: Alignment.Center,
+        // layoutScaleFactor:1,
+        minX: 10,
+        minY: 100,
+        maxX: this.props.canvas.width,
+        maxY: this.props.canvas.height,
+       }),
+      onLoad: () => {
+        this.handleLoad();
+        // this.riveInstance.resizeDrawingSurfaceToCanvas;
+        console.log(this.riveInstance);
+      },
       useOffscreenRenderer: true, // Improves performance
     });
+
   }
+
 
   getInputs() {
     return this.riveInstance.stateMachineInputs(this.stateMachineName);
   }
 
-  public moveCanvasUpOrDown(offsetY: number) {
-    const canvas = this.props.canvas;
-    const currentTop = parseFloat(window.getComputedStyle(canvas).top) || 0;
-    if (currentTop === 0) {
-      // Set the new top value based on the offset
-      const newTop = currentTop + offsetY;
-
-      // Apply the new position
-      canvas.style.top = `${newTop}px`;
-      canvas.style.position = 'absolute';
-      canvas.style.zIndex = '5';         // Set z-index to a high value to bring it on top
-    }
-  }
 
   private handleLoad() {
     const inputs = this.getInputs();
