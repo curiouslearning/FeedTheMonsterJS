@@ -187,6 +187,7 @@ export class StartScene {
       this.audioPlayer.playButtonClickSound();
       gameStateService.publish(gameStateService.EVENTS.SCENE_LOADING_EVENT, true);
       this.switchSceneToLevelSelection();
+      this.riveMonster.dispose();
     });
     document.addEventListener("selectstart", function (e) {
       e.preventDefault();
