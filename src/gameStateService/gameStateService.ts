@@ -62,6 +62,7 @@ export class GameStateService extends PubSub {
         isTimerEnded: boolean
     };
     public isLastLevel: boolean;
+    public currentMonsterPhase: number;
 
     constructor() {
         super();
@@ -150,7 +151,6 @@ export class GameStateService extends PubSub {
     }
 
     public checkMonsterPhaseUpdation(): number {
-        console.log('checkMonsterPhaseUpdation ')
         const totalStarCount = GameScore.getTotalStarCount();
         switch (true) {
           case totalStarCount >= 38:

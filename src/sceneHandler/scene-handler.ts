@@ -87,13 +87,13 @@ export class SceneHandler {
   private getScene(sceneName) {
     switch (sceneName) {
       case SCENE_NAME_START:
-        return new StartScene()
+        return new StartScene();
       case SCENE_NAME_LEVEL_SELECT:
-        return new LevelSelectionScreen()
+        return new LevelSelectionScreen();
       case SCENE_NAME_GAME_PLAY:
-        return new GameplayScene()
+        return new GameplayScene();
       case SCENE_NAME_LEVEL_END:
-        return new LevelEndScene()
+        return new LevelEndScene();
     }
   }
 
@@ -123,8 +123,6 @@ export class SceneHandler {
       }
     });
   }
-
-  
 
   animation = (timeStamp: number) => {
     const deltaTime = timeStamp - this.lastTime;
