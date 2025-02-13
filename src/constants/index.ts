@@ -142,10 +142,7 @@ export const MONSTER_PHASES = [
   './assets/rive/green_egg.riv',
 ];
 export const EVOL_MONSTER = [
-  './assets/rive/evolve.riv', 
-  './assets/rive/evolve.riv',  // need  to change this in the future when other evol animation is ready
-  './assets/rive/evolve.riv',  // need  to change this in the future when other evol animation is ready
-  './assets/rive/evolve.riv' // need  to change this in the future when other evol animation is ready
+  './assets/rive/evolve.riv', // add new files when other evolution files are ready
 ];
 
 export enum MonsterState {

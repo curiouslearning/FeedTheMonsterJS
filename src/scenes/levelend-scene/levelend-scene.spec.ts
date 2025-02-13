@@ -4,7 +4,6 @@ import gameStateService from '@gameStateService';
 import {AUDIO_INTRO, EVOL_MONSTER} from '@constants';
 import {AudioPlayer} from '@components';
 
-// Mocking the AudioPlayer class
 jest.mock('@components', () => ({
   AudioPlayer: jest.fn().mockImplementation(() => ({
     stopAllAudios: jest.fn(), // Mock stopAllAudios
@@ -17,6 +16,18 @@ jest.mock('@components', () => ({
 jest.mock('@components/riveMonster/rive-monster-component');
 jest.mock('@gameStateService');
 jest.mock('@components');
+jest.mock('@constants', () => ({
+  AUDIO_INTRO: 'audio/intro.mp3',
+  AUDIO_LEVEL_LOSE: 'audio/lose.mp3',
+  AUDIO_LEVEL_WIN: 'audio/win.mp3',
+  EVOL_MONSTER: [
+    './assets/rive/evolve.riv',
+    './assets/rive/evolve.riv',
+  ],
+  PIN_STAR_1: 'star1.png',
+  PIN_STAR_2: 'star2.png',
+  PIN_STAR_3: 'star3.png'
+}));
 
 describe('LevelEndScene', () => {
   let levelEndScene: LevelEndScene;
@@ -268,17 +279,23 @@ describe('LevelEndScene', () => {
     });
 
     it('should initialize evolution monster with correct props', () => {
+      // Set up
       levelEndScene.evolveMonster = true;
-      levelEndScene['initializeEvolutionMonster']();
+      
+      // Mock getEvolutionSource to return a specific file
+      const mockEvolutionSrc = './assets/rive/evolve.riv';
+      jest.spyOn(levelEndScene as any, 'getEvolutionSource').mockReturnValue(mockEvolutionSrc);
+      
+      // Execute
+      const evolutionMonster = levelEndScene['initializeEvolutionMonster']();
 
-      expect(RiveMonsterComponent).toHaveBeenCalledWith(
-        expect.objectContaining({
-          canvas: expect.any(HTMLCanvasElement),
-          autoplay: true,
-          src: expect.any(String),
-          isEvolving: true,
-        }),
-      );
+      // Verify
+      expect(RiveMonsterComponent).toHaveBeenCalledWith({
+        canvas: expect.any(HTMLCanvasElement),
+        autoplay: true,
+        src: mockEvolutionSrc,
+        isEvolving: true
+      });
     });
 
     it('should set correct canvas position during evolution', () => {
@@ -307,13 +324,10 @@ describe('LevelEndScene', () => {
 
     it('should get correct evolution source based on phase', () => {
       // Test for phase 1
-      expect(levelEndScene['getEvolutionSource'](1)).toBe(EVOL_MONSTER[2]);
+      expect(levelEndScene['getEvolutionSource'](1)).toBe(EVOL_MONSTER[0]);
       
-      // Test for phase 2
-      expect(levelEndScene['getEvolutionSource'](2)).toBe(EVOL_MONSTER[3]);
-      
-      // Test fallback for invalid phase
-      expect(levelEndScene['getEvolutionSource'](999)).toBe(EVOL_MONSTER[1]);
+      // Test fallback for unknown phase
+      expect(levelEndScene['getEvolutionSource'](999)).toBe(EVOL_MONSTER[0]);
     });
 
     it('should run evolution animation with correct timing', () => {

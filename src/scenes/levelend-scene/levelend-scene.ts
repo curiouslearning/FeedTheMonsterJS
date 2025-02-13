@@ -161,9 +161,7 @@ export class LevelEndScene {
     // Map different evolution animations based on phase
     const evolutionMap = {
       1: EVOL_MONSTER[2],
-      2: EVOL_MONSTER[3],
-      3: EVOL_MONSTER[4],
-      // Add more phases as needed
+      // Add more evoluition phases as needed
     };
     
     return evolutionMap[phase] || EVOL_MONSTER[1]; // fallback to first evolution if phase not found
