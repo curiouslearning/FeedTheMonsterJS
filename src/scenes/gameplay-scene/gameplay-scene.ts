@@ -555,6 +555,7 @@ export class GameplayScene {
 
         gameStateService.publish(gameStateService.EVENTS.LEVEL_END_DATA_EVENT, { levelEndData, data: this.data });
         this.switchSceneToEnd();
+        this.monster.dispose();
       };
 
       if (timerEnded) {
