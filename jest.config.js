@@ -23,6 +23,7 @@ module.exports = {
     "@gameStateService/*": ["<rootDir>/src/gameStateService/$1"],
     "^lodash-es$": "<rootDir>/node_modules/lodash/index.js",
     "^@gamepuzzles(.*)$": "<rootDir>/src/gamepuzzles$1",
+    "@gameSettingsService/*":  ["<rootDir>/src/gameSettingsService/$1"],
   },
   roots: [
     "<rootDir>/src/"
