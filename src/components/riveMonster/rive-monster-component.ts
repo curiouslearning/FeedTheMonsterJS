@@ -2,7 +2,7 @@ import { MONSTER_PHASES } from '@constants';
 import { Rive, Layout, Fit, Alignment } from '@rive-app/canvas';
 import gameSettingsService from '@gameSettingsService';
 
-interface RiveMonsterComponentProps {
+export interface RiveMonsterComponentProps {
   canvas: HTMLCanvasElement; // Canvas element where the animation will render
   autoplay: boolean;
   fit?: string; // Fit property (e.g contain, cover, etc.)
@@ -11,11 +11,13 @@ interface RiveMonsterComponentProps {
   height?: number; // Optional height for the Rive animation
   onLoad?: () => void; // Callback once Rive animation is loaded
   gameCanvas?: HTMLCanvasElement; // Main canvas element
+  src?: string;
+  isEvolving?: boolean;
 }
 
 export class RiveMonsterComponent {
   private props: RiveMonsterComponentProps;
-  private riveInstance: any;
+  private riveInstance: Rive;
   private phaseIndex: number = 0;
   private stateMachineName: string = "State Machine 1"  // Define the state machine
   public game: any;
@@ -61,19 +63,35 @@ export class RiveMonsterComponent {
     this.hitboxRangeY = { from: monsterCenterY + (rangeFactorY / 2), to: monsterCenterY + (rangeFactorY * 2) };
   }
 
-  private initializeRive() {
-    this.riveInstance = new Rive({
-      src: MONSTER_PHASES[this.phaseIndex],
+  initializeRive() {
+    if(this.props.isEvolving && this.riveInstance) {
+      this.riveInstance.cleanupInstances();
+    }
+    const riveConfig: any = {
+      src: this.props.src || MONSTER_PHASES[this.phaseIndex],
       canvas: this.props.canvas,
       autoplay: this.props.autoplay,
-      stateMachines: [this.stateMachineName],
-      layout: new Layout({ fit: Fit.Contain, alignment: Alignment.Center }),
-      onLoad: this.handleLoad.bind(this),
+      layout: new Layout({
+        fit: Fit.Contain,
+        alignment: Alignment.Center,
+      }),
       useOffscreenRenderer: true, // Improves performance
-    });
+    };
+
+    // For evolution animations, we don't use state machines
+    if (!this.props.isEvolving) {
+      riveConfig['stateMachines'] = [this.stateMachineName];
+      riveConfig['onLoad'] = this.handleLoad.bind(this);
+    }
+
+    this.riveInstance = new Rive(riveConfig);
   }
 
   getInputs() {
+    // Don't try to get state machine inputs if we're in evolution mode
+    if (this.props.isEvolving) {
+      return [];
+    }
     return this.riveInstance.stateMachineInputs(this.stateMachineName);
   }
 
@@ -91,7 +109,7 @@ export class RiveMonsterComponent {
     }
   }
 
-  private handleLoad() {
+  handleLoad() {
     const inputs = this.getInputs();
     const requiredTriggers = [
       'backToIdle', 'isStomped', 'isMouthOpen', 'isMouthClosed',
@@ -155,7 +173,7 @@ export class RiveMonsterComponent {
   }
 
   public changePhase(phase: number) {
-    if (phase >= 0 && phase < MONSTER_PHASES[this.phaseIndex].length) {
+    if (phase >= 0 && phase < MONSTER_PHASES.length) {
       this.phaseIndex = phase;
 
       if (this.riveInstance) {
@@ -163,22 +181,22 @@ export class RiveMonsterComponent {
         this.riveInstance = null;
       }
       this.riveInstance = new Rive({
-        src: MONSTER_PHASES[this.phaseIndex], // Ensure correct phase is loaded
+        src: MONSTER_PHASES[this.phaseIndex],
         canvas: this.props.canvas,
         autoplay: this.props.autoplay,
         stateMachines: [this.stateMachineName],
         layout: new Layout({ fit: Fit.Contain, alignment: Alignment.Center }),
         onLoad: this.handleLoad.bind(this),
-        useOffscreenRenderer: true, // Improves performance
+        useOffscreenRenderer: true,
       });
-
     } else {
       console.warn(`Invalid phase index: ${phase}`);
     }
   }
 
   public dispose() {
-    this.riveInstance?.cleanup();
+    if(!this.riveInstance) return;
+    this.riveInstance.cleanup();
     this.riveInstance = null;
   }
 }

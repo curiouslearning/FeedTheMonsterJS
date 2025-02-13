@@ -207,6 +207,7 @@ export class StartScene {
       false
     );
     this.riveMonsterElement.style.zIndex = "-1"; //Originally in LevelSelectionConstructor, moving it here so no need to have Rive logic in that scene.
+    this.riveMonster.dispose();
   }
 
   handlerInstallPrompt = (event) => {
