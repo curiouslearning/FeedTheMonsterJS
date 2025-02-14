@@ -64,6 +64,7 @@ var config = {
       '@gameStateService': path.resolve(__dirname, 'src/gameStateService/')
     },
     extensions: ['.tsx', '.ts', '.js', '.json', '.css', '.sh', '.babelrc', '.eslintignore', '.gitignore', '.d'],
+    modules: ['node_modules']
   },
   plugins: [
     // new CompressionPlugin({

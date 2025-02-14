@@ -27,7 +27,7 @@
   "dependencies": {
     "@capacitor/android": "^4.4.0",
     "@capacitor/core": "^4.4.0",
-    "@curiouslearning/features": "^1.1.1",
+    "@curiouslearning/features": "^1.2.2",
     "@octokit/rest": "^20.0.1",
     "@release-it/conventional-changelog": "^8.0.1",
     "@rive-app/canvas": "^2.21.5",

@@ -74,7 +74,7 @@ export class SceneHandler {
     this.gotoScene(SCENE_NAME_START);
 
     gameStateService.subscribe(gameStateService.EVENTS.GAME_START, (data) => {
-      if (featureFlagService.isEnabled(FEATURE_QUICK_START)) {
+      if (featureFlagService.isFeatureEnabled(FEATURE_QUICK_START)) {
         // recreate data needed for gameplay scene
         const level = localStorage.getItem(PreviousPlayedLevel + lang) || 0;
   
