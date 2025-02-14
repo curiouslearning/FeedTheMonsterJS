@@ -9,8 +9,11 @@ import {
   PIN_STAR_1,
   PIN_STAR_2,
   PIN_STAR_3,
+  SCENE_NAME_LEVEL_SELECT,
+  SCENE_NAME_GAME_PLAY
 } from '@constants';
 import gameStateService from '@gameStateService';
+import gameSettingsService from '@gameSettingsService';
 import './levelend-scene.scss';
 import { RiveMonsterComponent } from '@components/riveMonster/rive-monster-component';
 import { BaseHTML } from '@components/baseHTML/base-html';
@@ -22,6 +25,7 @@ export class LevelEndScene {
 
   public starCount: number;
   public currentLevel: number;
+  public monsterPhaseNumber: number;
   public data: any;
   public audioPlayer: AudioPlayer;
   public isLastLevel: boolean;
@@ -32,22 +36,21 @@ export class LevelEndScene {
   public mapButtonInstance: MapButton;
   public riveMonster: RiveMonsterComponent;
   public canvasElement: HTMLCanvasElement;
-  public monsterPhaseNumber: number;
   private readonly EVOLUTION_ANIMATION_DELAY = 5500;
-  private switchToGameplayCB: () => void;
-  private switchToLevelSelectionCB: () => void;
   private starAnimationTimeouts: number[] = [];
   private evolutionTimeout: number | null = null;
   public evolveMonster: boolean;
 
-  constructor(monsterPhaseNumber: number, switchToGameplayCB: () => void, switchToLevelSelectionCB: () => void) {
-    const { starCount, currentLevel, data } =
-      gameStateService.getLevelEndSceneData();
-    const { isLastLevel, canvas } = gameStateService.getGamePlaySceneDetails();
-    this.monsterPhaseNumber = monsterPhaseNumber;
-    this.canvasElement = canvas;
-    this.switchToGameplayCB = switchToGameplayCB;
-    this.switchToLevelSelectionCB = switchToLevelSelectionCB;
+  constructor() {
+      this.monsterPhaseNumber = gameStateService.checkMonsterPhaseUpdation();
+      const { starCount, currentLevel, data } =
+        gameStateService.getLevelEndSceneData();
+      const { isLastLevel } = gameStateService.getGamePlaySceneDetails();
+      const { canvasElem } = gameSettingsService.getCanvasSizeValues();
+      this.canvasElement = canvasElem;
+
+
+    this.canvasElement = canvasElem;
     this.data = data;
     this.audioPlayer = new AudioPlayer();
     this.canvasElement = document.getElementById("rivecanvas") as HTMLCanvasElement;
@@ -294,13 +297,19 @@ export class LevelEndScene {
         selectedLevelNumber: level,
       };
       this.handlePublishEvent(true, gamePlayData);
-      this.switchToGameplayCB();
+      gameStateService.publish(
+        gameStateService.EVENTS.SWITCH_SCENE_EVENT,
+        SCENE_NAME_GAME_PLAY,
+      );
     };
 
     switch (action) {
       case 'map':
         this.handlePublishEvent(true);
-        this.switchToLevelSelectionCB();
+        gameStateService.publish(
+          gameStateService.EVENTS.SWITCH_SCENE_EVENT,
+          SCENE_NAME_LEVEL_SELECT,
+        );
         break;
 
       case 'retry':
@@ -368,10 +377,7 @@ export class LevelEndScene {
         gamePlayData,
       );
     }
-    gameStateService.publish(
-      gameStateService.EVENTS.SCENE_LOADING_EVENT,
-      shouldShowLoading,
-    );
+
     setTimeout(() => {
       this.toggleLevelEndBackground(!shouldShowLoading);
     }, 800);

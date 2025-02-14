@@ -150,7 +150,6 @@ export enum MonsterState {
   EVOLUTION = 'evolution',
 }
 //Scene Names
-export const LOADING_TRANSITION = 'LoadingTransition';
 export const SCENE_NAME_START = "StartScene";
 export const SCENE_NAME_LEVEL_SELECT = "LevelSelection";
 export const SCENE_NAME_GAME_PLAY = "GamePlay";

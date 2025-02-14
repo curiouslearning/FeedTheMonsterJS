@@ -1,4 +1,4 @@
-import {GameStateService} from './game-state-service';
+import {GameStateService} from './gameStateService';
 
 describe('GameStateService - isLastLevel', () => {
   let gameStateService: GameStateService;

@@ -1,5 +1,7 @@
 import {GameplayScene} from './gameplay-scene';
 import gameStateService from '@gameStateService';
+import gameSettingsService from '@gameSettingsService';
+import { SCENE_NAME_GAME_PLAY } from "@constants";
 
 // Mocking dependencies
 jest.mock('@components', () => {
@@ -102,6 +104,19 @@ jest.mock('@components', () => {
   };
 });
 
+jest.mock('@gameSettingsService', () => ({
+  __esModule: true,
+  default: {
+    getCanvasSizeValues: jest.fn(),
+    getRiveCanvasValue: jest.fn(),
+    subscribe: jest.fn(),
+    publish: jest.fn(),
+    EVENTS: {
+      GAME_TRAIL_EFFECT_TOGGLE_EVENT: 'GAME_TRAIL_EFFECT_TOGGLE_EVENT',
+    }
+  }
+}));
+
 jest.mock('@gameStateService', () => ({
   __esModule: true,
   default: {
@@ -111,7 +126,7 @@ jest.mock('@gameStateService', () => ({
     EVENTS: {
       GAME_PAUSE_STATUS_EVENT: 'GAME_PAUSE_STATUS_EVENT',
       GAMEPLAY_DATA_EVENT: 'GAMEPLAY_DATA_EVENT',
-      SCENE_LOADING_EVENT: 'SCENE_LOADING_EVENT'
+      SWITCH_SCENE_EVENT: 'SWITCH_SCENE_EVENT',
     }
   }
 }));
@@ -119,7 +134,6 @@ jest.mock('@gameStateService', () => ({
 describe('GameplayScene with BasePopupComponent', () => {
   let gameplayScene: GameplayScene;
   let mockSwitchSceneToEnd: jest.Mock;
-  let mockReloadScene: jest.Mock;
 
   beforeEach(() => {
     jest.clearAllMocks();
@@ -136,6 +150,7 @@ describe('GameplayScene with BasePopupComponent', () => {
     `;
 
     const mockCanvas = document.getElementById('canvas') as HTMLCanvasElement;
+    const mockRiveCanvas = document.getElementById("rivecanvas") as HTMLCanvasElement;
     mockCanvas.getContext = jest.fn().mockReturnValue({
       fillRect: jest.fn(),
       clearRect: jest.fn(),
@@ -145,9 +160,6 @@ describe('GameplayScene with BasePopupComponent', () => {
     });
 
     (gameStateService.getGamePlaySceneDetails as jest.Mock).mockReturnValue({
-      canvas: mockCanvas,
-      width: 800,
-      height: 600,
       levelData: {
         levelMeta: {levelNumber: 1},
         puzzles: [{}, {}, {}], // 3 puzzles for testing
@@ -155,22 +167,27 @@ describe('GameplayScene with BasePopupComponent', () => {
       levelNumber: 1,
       feedBackTexts: {0: 'Great!', 1: 'Fantastic!', 2: 'Amazing!'},
       isGamePaused: false,
-      gameCanvasContext: mockCanvas.getContext('2d'),
       rightToLeft: false,
       jsonVersionNumber: '1.0.0',
       data: {},
       feedbackAudios: {}
     });
 
+    (gameSettingsService.getCanvasSizeValues as jest.Mock).mockReturnValue({
+      canvasElem: mockCanvas,
+      canvasWidth: 800,
+      canvasHeight: 600,
+      gameCanvasContext: mockCanvas.getContext('2d'),
+      gameControlElem: document.getElementById("game-control") as HTMLCanvasElement
+    });
+
+
+    (gameSettingsService.getRiveCanvasValue as jest.Mock).mockReturnValue(mockRiveCanvas);
+
     mockSwitchSceneToEnd = jest.fn();
-    mockReloadScene = jest.fn();
 
     // Initialize GameplayScene
-    gameplayScene = new GameplayScene({
-      switchSceneToEnd: mockSwitchSceneToEnd,
-      switchToLevelSelection: jest.fn(),
-      reloadScene: mockReloadScene,
-    });
+    gameplayScene = new GameplayScene();
   });
 
   afterEach(() => {
@@ -190,8 +207,13 @@ describe('GameplayScene with BasePopupComponent', () => {
     // Force immediate execution of timers
     jest.runAllTimers();
 
+
     // Assert
-    expect(mockSwitchSceneToEnd).toHaveBeenCalledTimes(1); // Should be called immediately
+    expect(gameStateService.publish).toHaveBeenCalledWith(
+      gameStateService.EVENTS.SWITCH_SCENE_EVENT,
+      expect.any(String)
+    );
+  
   });
 
   it('should call switchSceneToEnd after 4500ms when timerEnded is false or isFeedBackTriggered is true', () => {
@@ -210,7 +232,10 @@ describe('GameplayScene with BasePopupComponent', () => {
     jest.advanceTimersByTime(4500);
 
     // Assert
-    expect(mockSwitchSceneToEnd).toHaveBeenCalledTimes(1); // Called after 4500ms
+    expect(gameStateService.publish).toHaveBeenCalledWith(
+      gameStateService.EVENTS.SWITCH_SCENE_EVENT,
+      expect.any(String)
+    ); // Called after 4500ms
   });
 
   it('should call switchSceneToEnd after 4500ms when timerEnded is false and isFeedBackTriggered is false', () => {
@@ -230,7 +255,10 @@ describe('GameplayScene with BasePopupComponent', () => {
     jest.advanceTimersByTime(1);
 
     // Assert: Now it should be called
-    expect(mockSwitchSceneToEnd).toHaveBeenCalledTimes(1);
+    expect(gameStateService.publish).toHaveBeenCalledWith(
+      gameStateService.EVENTS.SWITCH_SCENE_EVENT,
+      expect.any(String)
+    );
   });
 
   describe('Component Initialization', () => {
@@ -354,7 +382,7 @@ describe('GameplayScene with BasePopupComponent', () => {
 
     it('should handle pause popup events', () => {
       const mockEvent = { data: 'RESTART_LEVEL' };
-      
+
       // Mock the pause popup component
       const mockPausePopup = {
         onClose: jest.fn()
@@ -365,8 +393,7 @@ describe('GameplayScene with BasePopupComponent', () => {
       const onCloseCallback = (props: any) => {
         if (props.data === 'RESTART_LEVEL') {
           gameStateService.publish(gameStateService.EVENTS.GAMEPLAY_DATA_EVENT, {});
-          gameStateService.publish(gameStateService.EVENTS.SCENE_LOADING_EVENT, true);
-          mockReloadScene('GamePlay');
+          gameStateService.publish(gameStateService.EVENTS.SWITCH_SCENE_EVENT, SCENE_NAME_GAME_PLAY);
         }
       };
 
@@ -377,11 +404,11 @@ describe('GameplayScene with BasePopupComponent', () => {
         gameStateService.EVENTS.GAMEPLAY_DATA_EVENT,
         expect.any(Object)
       );
+
       expect(gameStateService.publish).toHaveBeenCalledWith(
-        gameStateService.EVENTS.SCENE_LOADING_EVENT,
-        true
+        gameStateService.EVENTS.SWITCH_SCENE_EVENT,
+        expect.any(String)
       );
-      expect(mockReloadScene).toHaveBeenCalledWith('GamePlay');
     });
   });
 });

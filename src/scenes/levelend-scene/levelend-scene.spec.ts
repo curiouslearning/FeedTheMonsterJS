@@ -68,9 +68,6 @@ describe('LevelEndScene', () => {
 
     // Initialize the LevelEndScene
     levelEndScene = new LevelEndScene(
-      1,
-      mockSwitchToGameplayCB,
-      mockSwitchToLevelSelectionCB,
     );
   });
 
