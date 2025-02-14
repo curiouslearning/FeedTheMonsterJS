@@ -55,7 +55,6 @@ export default class StoneHandler extends EventManager {
     });
     this.cleanup();
     this.offsetCoordinateValue = 32; //Default value used to offset stone coordinates.
-    const { } = gameSetttingsService.getCanvasSizeValues();
     this.context = context;
     this.canvas = canvas;
     this.puzzleNumber = puzzleNumber;
