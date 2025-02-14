@@ -53,7 +53,7 @@ export class RiveMonsterComponent {
   };
 
   private initializeHitbox() {
-    const scale = window.devicePixelRatio || 1;
+    const scale = gameSettingsService.getDevicePixelRatioValue();
     const monsterCenterX = (this.props.canvas.width / scale) / 2;
     const monsterCenterY = (this.props.canvas.height / scale) / 2;
     const rangeFactorX = 55;
@@ -139,7 +139,6 @@ export class RiveMonsterComponent {
   play(animationName: string) {
     this.riveInstance?.play(animationName);
   }
-
 
   stop() {
     this.riveInstance?.stop();

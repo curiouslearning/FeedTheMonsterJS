@@ -26,6 +26,7 @@ export class LevelEndScene {
   public starCount: number;
   public currentLevel: number;
   public monsterPhaseNumber: number;
+  public newPhaseNumber: number;
   public data: any;
   public audioPlayer: AudioPlayer;
   public isLastLevel: boolean;
@@ -42,18 +43,14 @@ export class LevelEndScene {
   public evolveMonster: boolean;
 
   constructor() {
-      this.monsterPhaseNumber = gameStateService.checkMonsterPhaseUpdation();
-      const { starCount, currentLevel, data } =
-        gameStateService.getLevelEndSceneData();
-      const { isLastLevel } = gameStateService.getGamePlaySceneDetails();
-      const { canvasElem } = gameSettingsService.getCanvasSizeValues();
-      this.canvasElement = canvasElem;
-
-
-    this.canvasElement = canvasElem;
+    const { starCount, currentLevel, data, monsterPhaseNumber } = gameStateService.getLevelEndSceneData();
+    const { isLastLevel } = gameStateService.getGamePlaySceneDetails();
+    this.monsterPhaseNumber = this.validateEvolution(monsterPhaseNumber);
+    const { canvasElem } = gameSettingsService.getCanvasSizeValues();
+    this.canvasElement = gameSettingsService.getRiveCanvasValue();
+    //this.canvasElement = canvasElem
     this.data = data;
     this.audioPlayer = new AudioPlayer();
-    this.canvasElement = document.getElementById("rivecanvas") as HTMLCanvasElement;
     this.starCount = starCount;
     this.currentLevel = currentLevel;
     this.isLastLevel = isLastLevel;
@@ -68,7 +65,21 @@ export class LevelEndScene {
     /**
      * This is the value to determine if we need to trigger evolution animation or not
      */
-    this.evolveMonster = false;
+  }
+
+  private validateEvolution(currentMonsterPhaseNum: number) {
+    const newMonsterPhaseNum = gameStateService.checkMonsterPhaseUpdation(); //Get a new phase number based on new star count.
+    console.log({
+      newMonsterPhaseNum,
+      currentMonsterPhaseNum
+    })
+    if (newMonsterPhaseNum > currentMonsterPhaseNum) {
+      //If newPhaseNum is greater than the currentMonsterPhaseNum, update the record in game state.
+      gameStateService.updateMonsterPhaseState(newMonsterPhaseNum);
+      this.evolveMonster = true; //Flag to true for Evolution.
+    }
+
+    return newMonsterPhaseNum;
   }
 
   initializeRiveMonster() {
@@ -184,6 +195,7 @@ export class LevelEndScene {
   }
 
   runEvolutionAnimation() {
+    console.log('this.evolveMonster ', this.evolveMonster)
     if (this.evolveMonster) {
       this.riveMonster = this.initializeEvolutionMonster();
       this.backgroundElement = this.initializeEvolutionBackground();

@@ -51,6 +51,7 @@ export class GameStateService extends PubSub {
     public rightToLeft: boolean;
     public majVersion: number;
     public minVersion: number;
+    public monsterPhaseNumber: number;
     public feedbackAudios: null | {
         amazing: string,
         fantastic: string,
@@ -115,6 +116,7 @@ export class GameStateService extends PubSub {
         this.rightToLeft = data.rightToLeft;
         this.majVersion = data.majVersion;
         this.minVersion = data.minVersion;
+        this.monsterPhaseNumber = this.checkMonsterPhaseUpdation();
     }
 
     getGamePlaySceneDetails() {
@@ -146,12 +148,14 @@ export class GameStateService extends PubSub {
             starCount: this.levelEndData.starCount,
             currentLevel: this.levelEndData.currentLevel,
             isTimerEnded: this.levelEndData.isTimerEnded,
-            data: this.data
+            data: this.data,
+            monsterPhaseNumber: this.monsterPhaseNumber
         };
     }
 
     public checkMonsterPhaseUpdation(): number {
         const totalStarCount = GameScore.getTotalStarCount();
+        console.log('totalStarCount ', totalStarCount)
         switch (true) {
           case totalStarCount >= 38:
             return 2; // Phase 4
@@ -160,5 +164,9 @@ export class GameStateService extends PubSub {
           default:
             return 0; // Phase 1 (default)
         }
+    }
+
+    public updateMonsterPhaseState(newMonsterPhaseNum: number) {
+        this.monsterPhaseNumber = newMonsterPhaseNum;
     }
 };
