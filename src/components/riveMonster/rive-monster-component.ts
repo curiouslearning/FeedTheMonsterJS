@@ -69,7 +69,6 @@ export class RiveMonsterComponent {
       src: this.props.src || MONSTER_PHASES[this.phaseIndex],
       canvas: this.props.canvas,
       autoplay: this.props.autoplay,
-      stateMachines: [this.stateMachineName],
       layout: new Layout({ 
         fit: Fit.Contain,
         alignment: Alignment.Center,
@@ -87,6 +86,13 @@ export class RiveMonsterComponent {
       useOffscreenRenderer: true, // Improves performance
     };
 
+    // For evolution animations, we don't use state machines
+    if (!this.props.isEvolving) {
+      riveConfig['stateMachines'] = [this.stateMachineName];
+      riveConfig['onLoad'] = this.handleLoad.bind(this);
+    }
+
+    this.riveInstance = new Rive(riveConfig);
   }
 
 
