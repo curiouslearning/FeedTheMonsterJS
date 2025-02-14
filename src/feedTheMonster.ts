@@ -308,13 +308,13 @@ class App {
 
   private reinitializeSceneHandler(dataModal: DataModal): void {
     delete this.sceneHandler;
-    this.sceneHandler = new SceneHandler(this.canvas, dataModal);
+    this.sceneHandler = new SceneHandler(dataModal);
     this.passingDataToContainer();
   }
 
   private handleCachedScenario(dataModal: DataModal): void {
     this.updateVersionInfoElement(dataModal);
-    this.sceneHandler = new SceneHandler(this.canvas, dataModal);
+    this.sceneHandler = new SceneHandler(dataModal);
     this.passingDataToContainer();
   }
 
