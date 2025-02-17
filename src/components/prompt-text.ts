@@ -168,7 +168,6 @@ export class PromptText extends EventManager {
         const scaledHeight = this.promptImageHeight;
         var fontSize = this.calculateFont();
         this.context.font = `${fontSize}px ${font}, monospace`;
-        
         let startPrompttextX =
             this.width / 2 -
             this.context.measureText(this.currentPromptText).width / 2;
