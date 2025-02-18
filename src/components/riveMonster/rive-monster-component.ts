@@ -74,16 +74,11 @@ export class RiveMonsterComponent {
         fit: Fit.Contain,
         alignment: Alignment.Center,
         // layoutScaleFactor:1,
-        minX: 10,
+        minX: 50,
         minY: 100,
         maxX: this.props.canvas.width,
         maxY: this.props.canvas.height,
-       }),
-      onLoad: () => {
-        this.handleLoad();
-        // this.riveInstance.resizeDrawingSurfaceToCanvas;
-        console.log(this.riveInstance);
-      },
+      }),
       useOffscreenRenderer: true, // Improves performance
     };
 
@@ -91,7 +86,13 @@ export class RiveMonsterComponent {
     if (!this.props.isEvolving) {
       riveConfig['stateMachines'] = [this.stateMachineName];
       riveConfig['onLoad'] = this.handleLoad.bind(this);
+      riveConfig['layout'] = new Layout({
+        fit: Fit.Contain,
+        alignment: Alignment.Center,
+      });
     }
+
+    console.log('riveConfig', riveConfig);
 
     this.riveInstance = new Rive(riveConfig);
   }

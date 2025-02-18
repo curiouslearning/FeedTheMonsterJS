@@ -68,7 +68,7 @@ export class LevelEndScene {
     /**
      * This is the value to determine if we need to trigger evolution animation or not
      */
-    this.evolveMonster = false;
+    this.evolveMonster = true;
   }
 
   initializeRiveMonster() {
@@ -163,11 +163,11 @@ export class LevelEndScene {
   private getEvolutionSource(phase: number): string {
     // Map different evolution animations based on phase
     const evolutionMap = {
-      1: EVOL_MONSTER[2],
+      1: EVOL_MONSTER[0],
       // Add more evoluition phases as needed
     };
     
-    return evolutionMap[phase] || EVOL_MONSTER[1]; // fallback to first evolution if phase not found
+    return evolutionMap[phase] || EVOL_MONSTER[0]; // fallback to first evolution if phase not found
   }
 
   private initializeEvolutionMonster() {
