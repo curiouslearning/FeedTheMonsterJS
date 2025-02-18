@@ -66,16 +66,18 @@ export class RiveMonsterComponent {
     if(this.props.isEvolving && this.riveInstance) {
       this.riveInstance.cleanupInstances();
     }
+    console.log(Layout);
+    
     const riveConfig: any = {
       src: this.props.src || MONSTER_PHASES[this.phaseIndex],
       canvas: this.props.canvas,
       autoplay: this.props.autoplay,
       layout: new Layout({ 
-        fit: Fit.Contain,
+        fit: Fit.None,
         alignment: Alignment.Center,
-        // layoutScaleFactor:1,
-        minX: 50,
-        minY: 100,
+        layoutScaleFactor:3,
+        minX: 0,
+        minY: -350,
         maxX: this.props.canvas.width,
         maxY: this.props.canvas.height,
       }),
@@ -87,8 +89,13 @@ export class RiveMonsterComponent {
       riveConfig['stateMachines'] = [this.stateMachineName];
       riveConfig['onLoad'] = this.handleLoad.bind(this);
       riveConfig['layout'] = new Layout({
-        fit: Fit.Contain,
+        fit: Fit.None,
         alignment: Alignment.Center,
+        layoutScaleFactor:3,
+        minX:0,
+        minY:500,
+        maxX: this.props.canvas.width,
+        maxY: this.props.canvas.height,
       });
     }
 

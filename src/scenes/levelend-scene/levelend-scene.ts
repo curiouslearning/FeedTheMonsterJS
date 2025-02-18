@@ -77,7 +77,7 @@ export class LevelEndScene {
       canvas: this.canvasElement,
       autoplay: true,
       fit: "contain",
-      alignment: "topCenter",
+      alignment: "botomCenter",
       onLoad: () => {
         this.riveMonster.play(RiveMonsterComponent.Animations.IDLE); // Start with the "Eat Happy" animation
       }
