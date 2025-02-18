@@ -171,7 +171,6 @@ export class PromptText extends EventManager {
         let startPrompttextX =
             this.width / 2 -
             this.context.measureText(this.currentPromptText).width / 2;
-            console.log(">< "+this.currentPromptText);
         let currentWordWidth = 0;
         var letterHighlight=this.currentPuzzleData.targetStones[0];
         var leftPromptText = 
@@ -216,7 +215,7 @@ export class PromptText extends EventManager {
                         this.context.fillStyle = (this.droppedStoneCount>i || this.droppedStoneCount==undefined)?"black":"red";
                         this.context.fillText(
                             this.targetStones[i],
-                            startPrompttextX+startPrompttextX/10,
+                            startPrompttextX,
                             y
                         );   
                         currentWordWidth = (this.context.measureText(
