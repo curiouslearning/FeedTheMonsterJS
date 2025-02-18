@@ -3,10 +3,7 @@ import { DataModal, GameScore } from "@data";
 
 /*
  * GameStateService.ts
- *
  * The GameStateService class is reponsible to managing the current state of the game (ts).
- * It also provides methods for accessing these properties using a set of getters
- * that returns data access objects (DAO), used during initialization.
  * The class also integrates with the Publish-Subscribe pattern
  * to faciliate event-drivent updates, in the game state.
 */
@@ -133,7 +130,8 @@ export class GameStateService extends PubSub {
             feedbackAudios: { ...this.feedbackAudios },
             isGamePaused: this.isGamePaused,
             data: this.data,
-            isLastLevel: this.isLastLevel
+            isLastLevel: this.isLastLevel,
+            monsterPhaseNumber: this.monsterPhaseNumber
         };
     }
 
@@ -153,9 +151,12 @@ export class GameStateService extends PubSub {
         };
     }
 
+    public getTotalStars() {
+        return GameScore.getTotalStarCount();
+    }
+
     public checkMonsterPhaseUpdation(): number {
-        const totalStarCount = GameScore.getTotalStarCount();
-        console.log('totalStarCount ', totalStarCount)
+        const totalStarCount = this.getTotalStars();
         switch (true) {
           case totalStarCount >= 38:
             return 2; // Phase 4
