@@ -66,7 +66,6 @@ export class RiveMonsterComponent {
     if(this.props.isEvolving && this.riveInstance) {
       this.riveInstance.cleanupInstances();
     }
-    console.log(Layout);
     
     const riveConfig: any = {
       src: this.props.src || MONSTER_PHASES[this.phaseIndex],
@@ -96,8 +95,6 @@ export class RiveMonsterComponent {
         maxY: this.props.canvas.height,
       });
     }
-
-    console.log('riveConfig', riveConfig);
 
     this.riveInstance = new Rive(riveConfig);
   }
