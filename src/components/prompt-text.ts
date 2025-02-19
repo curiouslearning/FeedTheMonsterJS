@@ -80,12 +80,12 @@ export class PromptText extends EventManager {
     drawRTLLang() {
         var x = this.width / 2;
         const y = this.height * 0.28;
-        this.context.textAlign = "left";
         var fontSize = this.calculateFont();
         const scaledWidth = this.promptImageWidth;
         const scaledHeight = this.promptImageHeight;
         this.context.font = `${fontSize}px ${font}, monospace`;
         if (this.levelData.levelMeta.levelType == "LetterInWord") {
+            this.context.textAlign = "left";
             if (this.levelData.levelMeta.protoType == "Visible") {
                 var letterInWord = this.currentPromptText.replace(
                     new RegExp(this.currentPuzzleData.targetStones[0],),
