@@ -94,7 +94,7 @@ export class PromptText extends EventManager {
                 var targetWidth = this.context.measureText(this.targetStones[0]).width;
                 var letterInWordWidth = this.context.measureText(letterInWord).width;
                 var totalWidth = targetWidth + letterInWordWidth;
-                var centerX = x + totalWidth / 2; 
+                var centerX = x + totalWidth / 2 - targetWidth; 
 
                 this.context.fillStyle = "red";
                 this.context.fillText(
