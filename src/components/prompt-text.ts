@@ -80,29 +80,35 @@ export class PromptText extends EventManager {
     drawRTLLang() {
         var x = this.width / 2;
         const y = this.height * 0.28;
-        this.context.textAlign = "center";
+        this.context.textAlign = "left";
         var fontSize = this.calculateFont();
         const scaledWidth = this.promptImageWidth;
         const scaledHeight = this.promptImageHeight;
         this.context.font = `${fontSize}px ${font}, monospace`;
         if (this.levelData.levelMeta.levelType == "LetterInWord") {
             if (this.levelData.levelMeta.protoType == "Visible") {
-            var letterInWord = this.currentPromptText.replace(
-                new RegExp(this.currentPuzzleData.targetStones[0], "g"),
-                ""
-            );
-            this.context.fillStyle = "red";
-            this.context.fillText(
-                this.targetStones[0],
-                x + this.context.measureText(letterInWord).width / 2,
-                y
-            );
-            this.context.fillStyle = "black";
-            this.context.fillText(
-                letterInWord,
-                x - this.context.measureText(this.targetStones[0]).width / 2,
-                y
-            );}
+                var letterInWord = this.currentPromptText.replace(
+                    new RegExp(this.currentPuzzleData.targetStones[0],),
+                    ""
+                );
+                var targetWidth = this.context.measureText(this.targetStones[0]).width;
+                var letterInWordWidth = this.context.measureText(letterInWord).width;
+                var totalWidth = targetWidth + letterInWordWidth;
+                var centerX = x + totalWidth / 2; 
+
+                this.context.fillStyle = "red";
+                this.context.fillText(
+                    this.targetStones[0],
+                    centerX ,  
+                    y
+                );
+        
+                this.context.fillStyle = "black";
+                this.context.fillText(
+                    letterInWord,
+                    centerX - letterInWordWidth , 
+                    y
+                );}
                 else{
                     this.context.drawImage(
                         this.promptPlayButton,
