@@ -91,23 +91,18 @@ export class PromptText extends EventManager {
                     new RegExp(this.currentPuzzleData.targetStones[0],),
                     ""
                 );
-                
                 var targetWidth = this.context.measureText(this.targetStones[0]).width;
                 var letterInWordWidth = this.context.measureText(letterInWord).width;
-                
-           
                 var totalWidth = targetWidth + letterInWordWidth;
-                
-        
                 var centerX = x + totalWidth / 2; 
+
                 this.context.fillStyle = "red";
                 this.context.fillText(
                     this.targetStones[0],
                     centerX ,  
                     y
                 );
-                
-
+        
                 this.context.fillStyle = "black";
                 this.context.fillText(
                     letterInWord,
