@@ -34,8 +34,6 @@ export class GameSettingsService extends PubSub{
     const loadingCanvas = document.getElementById("loading") as HTMLCanvasElement;
     loadingCanvas.width = canvas.width; //using the original "canvas" ID height.
     loadingCanvas.height = canvas.height; //using the original "canvas" ID height.
-    const loadingContext = loadingCanvas.getContext("2d");
-    const gameControlElem = document.getElementById("game-control") as HTMLCanvasElement;
 
     return {
       canvasElem: canvas,
@@ -44,8 +42,8 @@ export class GameSettingsService extends PubSub{
       context: canvas.getContext("2d"),
       gameCanvasContext: canvas.getContext("2d", { willReadFrequently: true }),
       loadingCanvas,
-      loadingContext,
-      gameControlElem
+      loadingContext: loadingCanvas.getContext("2d"),
+      gameControlElem: document.getElementById("game-control") as HTMLCanvasElement
     }
   }
 
@@ -66,4 +64,3 @@ export class GameSettingsService extends PubSub{
     return this.devicePixelRatio;
   }
 }
-

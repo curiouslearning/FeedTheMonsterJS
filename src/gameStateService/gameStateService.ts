@@ -3,10 +3,7 @@ import { DataModal, GameScore } from "@data";
 
 /*
  * GameStateService.ts
- *
  * The GameStateService class is reponsible to managing the current state of the game (ts).
- * It also provides methods for accessing these properties using a set of getters
- * that returns data access objects (DAO), used during initialization.
  * The class also integrates with the Publish-Subscribe pattern
  * to faciliate event-drivent updates, in the game state.
 */
@@ -51,6 +48,7 @@ export class GameStateService extends PubSub {
     public rightToLeft: boolean;
     public majVersion: number;
     public minVersion: number;
+    public monsterPhaseNumber: number;
     public feedbackAudios: null | {
         amazing: string,
         fantastic: string,
@@ -115,6 +113,7 @@ export class GameStateService extends PubSub {
         this.rightToLeft = data.rightToLeft;
         this.majVersion = data.majVersion;
         this.minVersion = data.minVersion;
+        this.monsterPhaseNumber = this.checkMonsterPhaseUpdation();
     }
 
     getGamePlaySceneDetails() {
@@ -131,7 +130,8 @@ export class GameStateService extends PubSub {
             feedbackAudios: { ...this.feedbackAudios },
             isGamePaused: this.isGamePaused,
             data: this.data,
-            isLastLevel: this.isLastLevel
+            isLastLevel: this.isLastLevel,
+            monsterPhaseNumber: this.monsterPhaseNumber
         };
     }
 
@@ -146,12 +146,17 @@ export class GameStateService extends PubSub {
             starCount: this.levelEndData.starCount,
             currentLevel: this.levelEndData.currentLevel,
             isTimerEnded: this.levelEndData.isTimerEnded,
-            data: this.data
+            data: this.data,
+            monsterPhaseNumber: this.monsterPhaseNumber
         };
     }
 
+    public getTotalStars() {
+        return GameScore.getTotalStarCount();
+    }
+
     public checkMonsterPhaseUpdation(): number {
-        const totalStarCount = GameScore.getTotalStarCount();
+        const totalStarCount = this.getTotalStars();
         switch (true) {
           case totalStarCount >= 38:
             return 2; // Phase 4
@@ -160,5 +165,9 @@ export class GameStateService extends PubSub {
           default:
             return 0; // Phase 1 (default)
         }
+    }
+
+    public updateMonsterPhaseState(newMonsterPhaseNum: number) {
+        this.monsterPhaseNumber = newMonsterPhaseNum;
     }
 };

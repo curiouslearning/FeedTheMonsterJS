@@ -10,7 +10,8 @@ import {
   PIN_STAR_2,
   PIN_STAR_3,
   SCENE_NAME_LEVEL_SELECT,
-  SCENE_NAME_GAME_PLAY
+  SCENE_NAME_GAME_PLAY,
+  MONSTER_PHASES
 } from '@constants';
 import gameStateService from '@gameStateService';
 import gameSettingsService from '@gameSettingsService';
@@ -26,6 +27,7 @@ export class LevelEndScene {
   public starCount: number;
   public currentLevel: number;
   public monsterPhaseNumber: number;
+  public newPhaseNumber: number;
   public data: any;
   public audioPlayer: AudioPlayer;
   public isLastLevel: boolean;
@@ -42,22 +44,17 @@ export class LevelEndScene {
   public evolveMonster: boolean;
 
   constructor() {
-      this.monsterPhaseNumber = gameStateService.checkMonsterPhaseUpdation();
-      const { starCount, currentLevel, data } =
-        gameStateService.getLevelEndSceneData();
-      const { isLastLevel } = gameStateService.getGamePlaySceneDetails();
-      const { canvasElem } = gameSettingsService.getCanvasSizeValues();
-      this.canvasElement = canvasElem;
-
-
-    this.canvasElement = canvasElem;
+    const { starCount, currentLevel, data, monsterPhaseNumber } = gameStateService.getLevelEndSceneData();
+    const { isLastLevel } = gameStateService.getGamePlaySceneDetails();
+    this.monsterPhaseNumber = gameStateService.checkMonsterPhaseUpdation();
+    this.evolveMonster = this.monsterPhaseNumber > monsterPhaseNumber;
+    this.canvasElement = gameSettingsService.getRiveCanvasValue();
     this.data = data;
     this.audioPlayer = new AudioPlayer();
-    this.canvasElement = document.getElementById("rivecanvas") as HTMLCanvasElement;
     this.starCount = starCount;
     this.currentLevel = currentLevel;
     this.isLastLevel = isLastLevel;
-    this.initializeRiveMonster();
+    this.initializeRiveMonster(monsterPhaseNumber);
     this.toggleLevelEndBackground(true);
     this.showLevelEndScreen(); // Display the level end screen
     this.addEventListener();
@@ -68,16 +65,16 @@ export class LevelEndScene {
     /**
      * This is the value to determine if we need to trigger evolution animation or not
      */
-    this.evolveMonster = false;
   }
 
-  initializeRiveMonster() {
+  initializeRiveMonster(oldMonsterPhaseNumber: number) {
     // Initialize the RiveMonsterComponent instead of directly using Rive
     this.riveMonster = new RiveMonsterComponent({
       canvas: this.canvasElement,
       autoplay: true,
       fit: "contain",
       alignment: "topCenter",
+      src: MONSTER_PHASES[oldMonsterPhaseNumber], //use old asset before evolution.
       onLoad: () => {
         this.riveMonster.play(RiveMonsterComponent.Animations.IDLE); // Start with the "Eat Happy" animation
       }
@@ -163,10 +160,10 @@ export class LevelEndScene {
   private getEvolutionSource(phase: number): string {
     // Map different evolution animations based on phase
     const evolutionMap = {
-      1: EVOL_MONSTER[2],
+      1: EVOL_MONSTER[0],
       // Add more evoluition phases as needed
     };
-    
+
     return evolutionMap[phase] || EVOL_MONSTER[1]; // fallback to first evolution if phase not found
   }
 
@@ -192,7 +189,11 @@ export class LevelEndScene {
       this.setCanvasPosition('evolution');
 
       // Schedule evolution completion
-      setTimeout(this.handleEvolutionComplete, this.EVOLUTION_ANIMATION_DELAY);
+      setTimeout(() => {
+        this.handleEvolutionComplete()
+        //update the record in game state.
+        gameStateService.updateMonsterPhaseState(this.monsterPhaseNumber);
+      }, this.EVOLUTION_ANIMATION_DELAY);
     }
   }
 

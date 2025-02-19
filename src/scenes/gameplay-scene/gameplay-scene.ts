@@ -37,6 +37,7 @@ import {
   SCENE_NAME_GAME_PLAY,
   SCENE_NAME_LEVEL_END,
   PreviousPlayedLevel,
+  MONSTER_PHASES
 } from "@constants";
 import { WordPuzzleLogic } from '@gamepuzzles';
 import gameStateService from '@gameStateService';
@@ -92,6 +93,7 @@ export class GameplayScene {
   private unsubscribeEvent: () => void;
   public timeTicker: HTMLElement;
   isFeedBackTriggered: boolean;
+  public monsterPhaseNumber: number;
 
   constructor() {
     const gamePlayData = gameStateService.getGamePlaySceneDetails();
@@ -157,7 +159,8 @@ export class GameplayScene {
       onLoad: () => {
         this.monster.play(initialAnimation);
       },
-      gameCanvas: this.canvas
+      gameCanvas: this.canvas,
+      src: MONSTER_PHASES[this.monsterPhaseNumber]
     });
   }
 
@@ -213,6 +216,7 @@ export class GameplayScene {
     this.jsonVersionNumber = gamePlayData.jsonVersionNumber;
     this.feedBackTexts = gamePlayData.feedBackTexts;
     this.data = gamePlayData.data;
+    this.monsterPhaseNumber = gamePlayData.monsterPhaseNumber;
   }
 
   setupBg = () => {
