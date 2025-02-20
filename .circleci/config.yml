@@ -2,29 +2,13 @@ version: 2.1
 
 orbs:
   aws-s3: circleci/aws-s3@3.0
-  node: circleci/node@7.0.0
 
 jobs:
-  npm-build:
-    executor: node/default
-    steps:
-      - checkout
-      - run: sudo npm install -g npm@latest
-      - node/install-packages:
-          cache-path: ~/project/node_modules
-          override-ci-command: npm install
-      - run: npm run build
-      - persist_to_workspace:
-          root: ~/project
-          paths:
-            - .
-
   s3-deploy:
     docker:
       - image: 'cimg/python:3.6'
     steps:
-      - attach_workspace:
-          at: ~/project
+      - checkout
       - aws-s3/sync:
           arguments: |
             --acl public-read \
@@ -39,8 +23,7 @@ jobs:
     docker:
       - image: 'cimg/python:3.6'
     steps:
-      - attach_workspace:
-          at: ~/project
+      - checkout
       - aws-s3/sync:
           arguments: |
             --acl public-read \
@@ -55,8 +38,7 @@ jobs:
     docker:
       - image: 'cimg/python:3.6'
     steps:
-      - attach_workspace:
-          at: ~/project
+      - checkout
       - aws-s3/sync:
           arguments: |
             --acl public-read \
@@ -72,24 +54,17 @@ jobs:
 workflows:
   s3-deploy-workflow:
     jobs:
-      - npm-build
       - s3-deploy:
-          requires:
-            - npm-build
           filters:
             branches:
               only:
                 - develop
       - s3-deploy-test:
-          requires:
-            - npm-build
           filters:
             branches:
               only:
                 - test
       - s3-deploy-prod:
-          requires:
-            - npm-build
           filters:
             branches:
               only:
