@@ -12,8 +12,13 @@
   height: 100%;
   z-index: 12;
   position: relative;
-  transition: opacity 0.3s ease;
+  transition: all 2.5s ease;
   opacity: 1;
+
+  &.gray {
+    background: #000000;
+    opacity: 1;
+  }
 
   &.fade-out {
     opacity: 0;

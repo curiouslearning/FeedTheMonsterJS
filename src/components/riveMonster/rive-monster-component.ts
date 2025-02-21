@@ -34,7 +34,6 @@ export class RiveMonsterComponent {
 
   constructor(props: RiveMonsterComponentProps) {
     this.props = props;
-    this.moveCanvasUpOrDown(50); // Move down by 50px
     this.initializeHitbox();
     this.initializeRive();
   }
@@ -53,7 +52,7 @@ export class RiveMonsterComponent {
   };
 
   private initializeHitbox() {
-    const scale = window.devicePixelRatio || 1;
+    const scale = gameSettingsService.getDevicePixelRatioValue();
     const monsterCenterX = (this.props.canvas.width / scale) / 2;
     const monsterCenterY = (this.props.canvas.height / scale) / 2;
     const rangeFactorX = 55;
@@ -67,17 +66,17 @@ export class RiveMonsterComponent {
     if(this.props.isEvolving && this.riveInstance) {
       this.riveInstance.cleanupInstances();
     }
+    
     const riveConfig: any = {
       src: this.props.src || MONSTER_PHASES[this.phaseIndex],
       canvas: this.props.canvas,
       autoplay: this.props.autoplay,
-      layout: new Layout({
-        fit: Fit.Contain,
+      layout: new Layout({ 
+        fit: Fit.None,
         alignment: Alignment.Center,
-        // layoutScaleFactor:1,
-        minX: 50,
-        minY: 100,
-        maxX: this.props.canvas.width,
+        minX: 0,
+        minY: -350,
+        maxX: this.props.canvas.width, 
         maxY: this.props.canvas.height,
       }),
       useOffscreenRenderer: true, // Improves performance
@@ -88,8 +87,12 @@ export class RiveMonsterComponent {
       riveConfig['stateMachines'] = [this.stateMachineName];
       riveConfig['onLoad'] = this.handleLoad.bind(this);
       riveConfig['layout'] = new Layout({
-        fit: Fit.Contain,
+        fit: Fit.None,
         alignment: Alignment.Center,
+        minX:0,
+        minY:500,
+        maxX: this.props.canvas.width,
+        maxY: this.props.canvas.height,
       });
     }
 
@@ -97,6 +100,7 @@ export class RiveMonsterComponent {
 
     this.riveInstance = new Rive(riveConfig);
   }
+
 
   getInputs() {
     // Don't try to get state machine inputs if we're in evolution mode
@@ -106,19 +110,6 @@ export class RiveMonsterComponent {
     return this.riveInstance.stateMachineInputs(this.stateMachineName);
   }
 
-  public moveCanvasUpOrDown(offsetY: number) {
-    const canvas = this.props.canvas;
-    const currentTop = parseFloat(window.getComputedStyle(canvas).top) || 0;
-    if (currentTop === 0) {
-      // Set the new top value based on the offset
-      const newTop = currentTop + offsetY;
-
-      // Apply the new position
-      canvas.style.top = `${newTop}px`;
-      canvas.style.position = 'absolute';
-      canvas.style.zIndex = '5';         // Set z-index to a high value to bring it on top
-    }
-  }
 
   handleLoad() {
     const inputs = this.getInputs();
@@ -150,7 +141,6 @@ export class RiveMonsterComponent {
   play(animationName: string) {
     this.riveInstance?.play(animationName);
   }
-
 
   stop() {
     this.riveInstance?.stop();
