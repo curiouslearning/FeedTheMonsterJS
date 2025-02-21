@@ -302,6 +302,7 @@ export class GameplayScene {
 
   // Event to identify mouse moved down on the canvas
   handleMouseDown = (event) => {
+    console.log('handleMouseDown');
     if (this.pickedStone && this.pickedStone.frame <= 99) {
       return; // Prevent dragging if the stone is animating
     }

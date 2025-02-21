@@ -47,7 +47,8 @@ export class LevelEndScene {
     const { starCount, currentLevel, data, monsterPhaseNumber } = gameStateService.getLevelEndSceneData();
     const { isLastLevel } = gameStateService.getGamePlaySceneDetails();
     this.monsterPhaseNumber = gameStateService.checkMonsterPhaseUpdation();
-    this.evolveMonster = this.monsterPhaseNumber > monsterPhaseNumber;
+    // this.evolveMonster = this.monsterPhaseNumber > monsterPhaseNumber;
+    this.evolveMonster = true;
     this.canvasElement = gameSettingsService.getRiveCanvasValue();
     this.data = data;
     this.audioPlayer = new AudioPlayer();
@@ -113,8 +114,8 @@ export class LevelEndScene {
     }
   };
 
-  private initializeEvolutionBackground() {
-    return new BaseHTML(
+  initializeEvolutionBackground() {
+    const background = new BaseHTML(
       {
         selectors: { root: '#background' }
       },
@@ -122,6 +123,17 @@ export class LevelEndScene {
       (id) => (`<div id="${id}"></div>`),
       true
     );
+
+    // Start with semi-transparent (default state)
+    setTimeout(() => {
+      // After 1.5s, transition to pure gray
+      const bgElement = document.getElementById('levelend-background');
+      if (bgElement) {
+        bgElement.classList.add('gray');
+      }
+    }, 1500);
+
+    return background;
   }
 
   setCanvasPosition(position: 'evolution' | 'normal') {
@@ -135,13 +147,13 @@ export class LevelEndScene {
     };
 
     const pos = CANVAS_POSITIONS[position];
-
     this.canvasElement.style.zIndex = pos.zIndex;
   }
 
   private handleEvolutionComplete = () => {
     const bgElement = document.getElementById('levelend-background');
     if (bgElement) {
+      bgElement.classList.remove('gray');
       bgElement.classList.add('fade-out');
     }
     this.setCanvasPosition('normal');
@@ -172,17 +184,26 @@ export class LevelEndScene {
     this.riveMonster.dispose();
     const evolutionSrc = this.getEvolutionSource(1);
 
-    return new RiveMonsterComponent({
+    this.riveMonster = new RiveMonsterComponent({
       canvas: this.canvasElement,
       autoplay: true,
       src: evolutionSrc,
       isEvolving: this.evolveMonster,
     });
+    // Add gray class after 2 seconds
+    const bgElement = document.getElementById('levelend-background');
+    if (bgElement) {
+      setTimeout(() => {
+        bgElement.classList.add('gray');
+      }, 2000);
+    }
+    return this.riveMonster;
   }
 
   runEvolutionAnimation() {
     if (this.evolveMonster) {
       this.riveMonster = this.initializeEvolutionMonster();
+
       this.backgroundElement = this.initializeEvolutionBackground();
 
       // Set initial position for evolution
