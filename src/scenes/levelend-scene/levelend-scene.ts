@@ -98,7 +98,15 @@ export class LevelEndScene {
     this.toggleLevelEndBackground(true); // Publish show event
     // Render the stars dynamically based on the star count
     this.renderStarsHTML();
-    this.renderButtonsHTML();
+    
+    if (this.evolveMonster) {
+      // Wait for evolution animation to complete before rendering buttons
+      setTimeout(() => {
+        this.renderButtonsHTML();
+      }, this.EVOLUTION_ANIMATION_DELAY);
+    } else {
+      this.renderButtonsHTML();
+    }
   }
 
   switchToReactionAnimation = () => {
