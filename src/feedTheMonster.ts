@@ -20,6 +20,11 @@ import {
 } from "./Firebase/firebase-event-interface";
 import { URL } from "@data";
 import './styles/main.scss';
+import { FeatureFlagsService } from '@curiouslearning/features';
+
+const featureFlagService = new FeatureFlagsService({
+  metaData: { userId: pseudoId }
+});
 
 declare const window: any;
 
@@ -78,6 +83,7 @@ class App {
     await this.loadAndCacheFont(font, `./assets/fonts/${font}.ttf`);
     await this.loadTitleFeedbackCustomFont();
     await this.preloadGameAudios();
+    await featureFlagService.initialize();
     this.handleLoadingScreen();
     this.setupCanvas();
     const data = await getData();

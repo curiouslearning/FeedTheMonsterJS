@@ -174,7 +174,7 @@ export class StartScene {
       this.toggleBtn.style.display = "none";
       this.logTappedStartFirebaseEvent();
       this.audioPlayer.playButtonClickSound();
-      gameStateService.publish(gameStateService.EVENTS.SWITCH_SCENE_EVENT, SCENE_NAME_LEVEL_SELECT);
+      gameStateService.publish(gameStateService.EVENTS.START_GAME, true);
     });
     document.addEventListener("selectstart", function (e) {
       e.preventDefault();

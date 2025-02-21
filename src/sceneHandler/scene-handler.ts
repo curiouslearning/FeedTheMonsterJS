@@ -6,17 +6,23 @@ import {
   LevelEndScene,
 } from "@scenes";
 import { DataModal } from "@data";
-import { Debugger } from "@common";
+import { Debugger, lang, pseudoId } from "@common";
 import {
   SCENE_NAME_START,
   SCENE_NAME_LEVEL_SELECT,
   SCENE_NAME_GAME_PLAY,
   SCENE_NAME_LEVEL_END,
   PWAInstallStatus,
+  PreviousPlayedLevel,
 } from "@constants";
 import gameStateService from '@gameStateService';
 import gameSettingsService from '@gameSettingsService';
+import { FeatureFlagsService} from '@curiouslearning/features';
+import { FEATURE_QUICK_START } from '../services/features/constants';
 
+const featureFlagService = new FeatureFlagsService({
+  metaData: { userId: pseudoId }
+});
 export class SceneHandler {
   private activeScene: {
     loading?: null | LoadingScene,
@@ -61,6 +67,28 @@ export class SceneHandler {
   private initDefaultScenes() {
     this.activeScene['loading'] = new LoadingScene();
     this.gotoScene(SCENE_NAME_START);
+
+    gameStateService.subscribe(gameStateService.EVENTS.START_GAME, (data) => {
+      if (featureFlagService.isFeatureEnabled(FEATURE_QUICK_START)) {
+        // recreate data needed for gameplay scene
+        const level = localStorage.getItem(PreviousPlayedLevel + lang) || 0;
+
+        const data = gameStateService.data;
+        // TODO: this should really be in the gameplay state. Maybe create a LevelState that is managed by gameplaystate.
+        const gamePlayData = {
+          currentLevelData: {
+            ...data.levels[level],
+            levelNumber: level,
+          },
+          selectedLevelNumber: level,
+        };
+        
+        gameStateService.publish(gameStateService.EVENTS.GAMEPLAY_DATA_EVENT, gamePlayData);
+        gameStateService.publish(gameStateService.EVENTS.SWITCH_SCENE_EVENT, SCENE_NAME_GAME_PLAY);
+      } else {
+        gameStateService.publish(gameStateService.EVENTS.SWITCH_SCENE_EVENT, SCENE_NAME_LEVEL_SELECT);
+      }
+    });
   }
 
   private handleSwitchScene(sceneName: string) {

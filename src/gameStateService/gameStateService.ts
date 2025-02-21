@@ -10,6 +10,7 @@ import { DataModal, GameScore } from "@data";
 
 export class GameStateService extends PubSub {
     public EVENTS: {
+        START_GAME: string;
         SWITCH_SCENE_EVENT: string;
         GAMEPLAY_DATA_EVENT: string;
         GAME_PAUSE_STATUS_EVENT: string;
@@ -65,6 +66,7 @@ export class GameStateService extends PubSub {
     constructor() {
         super();
         this.EVENTS = {
+            START_GAME: 'START_GAME',
             SWITCH_SCENE_EVENT: 'SWITCH_SCENE_EVENT',
             GAMEPLAY_DATA_EVENT: 'GAMEPLAY_DATA_EVENT',
             GAME_PAUSE_STATUS_EVENT: 'GAME_PAUSE_STATUS_EVENT',
