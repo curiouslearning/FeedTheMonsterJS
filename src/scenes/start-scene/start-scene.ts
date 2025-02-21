@@ -5,32 +5,28 @@ import { BaseHTML } from '@components/baseHTML/base-html';
 import { RiveMonsterComponent } from "@components/riveMonster/rive-monster-component";
 import { DataModal } from "@data";
 import {
-  StoneConfig,
   toggleDebugMode,
-  Utils,
   pseudoId,
   lang
 } from "@common";
 import { FirebaseIntegration } from "../../Firebase/firebase-integration";
 import { TappedStart } from "../../Firebase/firebase-event-interface";
 import {
+  SCENE_NAME_LEVEL_SELECT,
   FirebaseUserClicked,
   PWAInstallStatus,
 } from "@constants";
 import gameStateService from '@gameStateService';
+import gameSettingsService from '@gameSettingsService';
+import './start-scene.scss';
 
 export class StartScene {
-  public canvas: HTMLCanvasElement;
-  public data: any;
-  public width: number;
-  public height: number;
-  public pickedStone: StoneConfig;
+  public data: DataModal;
   public pwa_status: string;
   public firebase_analytics: { logEvent: any };
   public id: string;
   public canavsElement: HTMLCanvasElement;
   public riveMonsterElement: HTMLCanvasElement;
-  public context: CanvasRenderingContext2D;
   public buttonContext: CanvasRenderingContext2D;
   public playButton: BaseButtonComponent;
   public images: Object;
@@ -46,31 +42,57 @@ export class StartScene {
   private firebaseIntegration: FirebaseIntegration;
   private loadingElement: HTMLElement;
   private onClickArea: BaseHTML;
+  private hasBGLoaded: boolean = false;
+  private hasRiveLoaded: boolean = false;
+  private titleElement: BaseHTML;
 
-  constructor(
-    canvas: HTMLCanvasElement,
-    data: DataModal
-  ) {
-    this.canvas = canvas;
-    this.data = data;
-    this.width = canvas.width;
-    this.height = canvas.height;
-    this.riveMonsterElement = document.getElementById("rivecanvas") as HTMLCanvasElement;
-    this.canavsElement = document.getElementById("canvas") as HTMLCanvasElement;
-    this.context = this.canavsElement.getContext("2d");
+  constructor() {
+    this.data = gameStateService.getFTMData();
+    this.riveMonsterElement = gameSettingsService.getRiveCanvasValue();
     this.toggleBtn = document.getElementById("toggle-btn") as HTMLElement;
     this.loadingElement = document.getElementById("loading-screen") as HTMLElement;
     this.riveMonster = new RiveMonsterComponent({
       canvas: this.riveMonsterElement,
       autoplay: true,
       fit: "contain",
-      alignment: "topCenter",
-      width: this.canavsElement.width, // Example width and height, adjust as needed
-      height: this.canavsElement.height,
+      alignment: "bottomCenter",
+      width: this.riveMonsterElement.width, // Example width and height, adjust as needed
+      height: this.riveMonsterElement.height,
       onLoad: () => {
-        this.riveMonster.play(RiveMonsterComponent.Animations.IDLE); // Start with the "Idle" animation
+        //Sets if Rive file flag has been loaded to true and trigger to remove the initial loading.
+        this.hasRiveLoaded = true;
+        this.hideInitialLoading();
+        // this.riveMonster.play(RiveMonsterComponent.Animations.MOUTHOPEN); // Start with the "Idle" animation
+        // Trigger a "Happy" animation
+       // Set initial state inputs
+      //  this.riveMonster.setInput(RiveMonsterComponent.Animations.IDLE,true);
+
+       // Listen for state changes
+      //  this.riveMonster.onStateChange((stateName) => {
+      //      console.log('New State:', stateName);
+      //  });
+
+       // Example: Trigger "Sad" state after 2 seconds
+       setTimeout(() => {
+          //  this.riveMonster.setInput(RiveMonsterComponent.Animations.STOMP,true);
+       }, 2000);
       }
     });
+
+    /** 
+     * Initialize the title element in the title-and-play-button container
+     * Creates a div with the game title that supports long text handling
+     */
+    this.titleElement = new BaseHTML(
+      {
+        selectors: {
+          root: '#title-and-play-button'
+        }
+      },
+      'title',
+      (id) => (`<div id="${id}">${this.data.title}</div>`),
+      true
+    );
     this.onClickArea = new BaseHTML(
       {
         selectors: {
@@ -78,7 +100,8 @@ export class StartScene {
         }
       },
       'start-scene-click-area',
-      (id) => (`<div id="${id}"></div>`)
+      (id) => (`<div id="${id}"></div>`),
+      true
     );
     this.audioPlayer = new AudioPlayer();
     this.pwa_status = localStorage.getItem(PWAInstallStatus);
@@ -89,9 +112,8 @@ export class StartScene {
     this.setupBg();
     this.titleTextElement = document.getElementById("title");
     this.generateGameTitle();
-    this.riveMonsterElement.style.zIndex = '6';
+    this.riveMonsterElement.style.zIndex = '4';
     this.firebaseIntegration = new FirebaseIntegration();
-    this.hideInitialLoading();
     this.setOnClicknAreaStyle();
   }
 
@@ -105,6 +127,10 @@ export class StartScene {
 
     // Dynamically update the background based on the selected type
     backgroundGenerator.generateBackground(selectedBackgroundType);
+
+    //Sets if BG flag has been loaded to true and trigger to remove the initial loading.
+    this.hasBGLoaded = true;
+    this.hideInitialLoading();
   };
 
   private setOnClicknAreaStyle = () => {
@@ -115,10 +141,12 @@ export class StartScene {
   }
 
   private hideInitialLoading = () => {
-    setTimeout(() => {
-      this.loadingElement.style.zIndex = "-1";
-      this.loadingElement.style.display = "none";
-    }, 750);
+    if (this.hasBGLoaded && this.hasRiveLoaded) {
+      setTimeout(() => {
+        this.loadingElement.style.zIndex = "-1";
+        this.loadingElement.style.display = "none";
+      }, 750);
+    }
   }
 
   devToggle = () => {
@@ -128,21 +156,25 @@ export class StartScene {
   };
 
   generateGameTitle = () => {
-    this.titleTextElement.textContent = this.data.title;
-  };
+    if (this.titleTextElement) {
+      this.titleTextElement.textContent = this.data.title;
 
-  draw = (deltaTime: number) => {
-    this.context.clearRect(0, 0, this.width, this.height);
+      // Check if current language needs long title treatment
+      if (this.data.title && this.data.title.length > 20) {
+        this.titleTextElement.classList.add('title-long');
+      } else {
+        this.titleTextElement.classList.remove('title-long');
+      }
+    }
   };
 
   createPlayButton() {
-    this.playButton = new PlayButtonHtml({ targetId: 'background' });
+    this.playButton = new PlayButtonHtml({ targetId: 'title-and-play-button' });
     this.playButton.onClick(() => {
       this.toggleBtn.style.display = "none";
       this.logTappedStartFirebaseEvent();
       this.audioPlayer.playButtonClickSound();
-      gameStateService.publish(gameStateService.EVENTS.SCENE_LOADING_EVENT, true);
-      gameStateService.publish(gameStateService.EVENTS.GAME_START, true);
+      gameStateService.publish(gameStateService.EVENTS.SWITCH_SCENE_EVENT, SCENE_NAME_LEVEL_SELECT);
     });
     document.addEventListener("selectstart", function (e) {
       e.preventDefault();
@@ -159,8 +191,7 @@ export class StartScene {
     });
     this.toggleBtn.style.display = "none";
     this.audioPlayer.playButtonClickSound();
-    gameStateService.publish(gameStateService.EVENTS.SCENE_LOADING_EVENT, true);
-    gameStateService.publish(gameStateService.EVENTS.GAME_START, true);
+    gameStateService.publish(gameStateService.EVENTS.SWITCH_SCENE_EVENT, SCENE_NAME_LEVEL_SELECT);
   };
 
   dispose() {
@@ -169,11 +200,14 @@ export class StartScene {
     this.playButton.dispose();
     this.playButton.destroy();
     this.onClickArea.destroy();
+    this.titleElement.destroy();
     window.removeEventListener(
       "beforeinstallprompt",
       this.handlerInstallPrompt,
       false
     );
+    this.riveMonsterElement.style.zIndex = "-1"; //Originally in LevelSelectionConstructor, moving it here so no need to have Rive logic in that scene.
+    this.riveMonster.dispose();
   }
 
   handlerInstallPrompt = (event) => {
@@ -182,9 +216,7 @@ export class StartScene {
     localStorage.setItem(PWAInstallStatus, "false");
   };
 
-  /*Note: This was from PlayButton canvas class onclick method.*/
   private logTappedStartFirebaseEvent() {
-    let endTime = Date.now();
     const tappedStartData: TappedStart = {
       cr_user_id: pseudoId,
       ftm_language: lang,

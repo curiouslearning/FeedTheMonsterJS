@@ -12,7 +12,7 @@ describe('Level Field Component ', () => {
   beforeEach(() => {
     document.body.innerHTML = '';
     const roolEl = document.createElement('div');
-    roolEl.classList.add('game-scene');
+    roolEl.classList.add('game-control');
     document.body.appendChild(roolEl);
     testLevelField = new LevelFieldComponent();
   });
@@ -56,6 +56,15 @@ describe('Level Field Component ', () => {
         }
       });
       expect(updateImgCtr).toBe(5);
+    });
+  });
+
+  describe('When removing Level Field Component.', () => {
+    it('Using destroy from base HTML, level field HTML should be removed. ', () => {
+      testLevelField.destroy(); //Remove the HTML element.
+      const levelFieldElement = document.getElementById('level-field');
+
+      expect(levelFieldElement).toBeNull();
     });
   });
 

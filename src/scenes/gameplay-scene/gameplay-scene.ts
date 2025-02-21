@@ -33,10 +33,15 @@ import {
 } from "../../Firebase/firebase-event-interface";
 import { FirebaseIntegration } from "../../Firebase/firebase-integration";
 import {
+  SCENE_NAME_LEVEL_SELECT,
+  SCENE_NAME_GAME_PLAY,
+  SCENE_NAME_LEVEL_END,
   PreviousPlayedLevel,
+  MONSTER_PHASES
 } from "@constants";
 import { WordPuzzleLogic } from '@gamepuzzles';
 import gameStateService from '@gameStateService';
+import gameSettingsService from '@gameSettingsService';
 import { PAUSE_POPUP_EVENT_DATA, PausePopupComponent } from '@components/popups/pause-popup/pause-popup-component';
 import { RiveMonsterComponent } from '@components/riveMonster/rive-monster-component';
 
@@ -55,15 +60,13 @@ export class GameplayScene {
   public context: CanvasRenderingContext2D;
   public levelIndicators: LevelIndicators;
   public stonesCount: number = 1;
-  public monsterPhaseNumber: number;
   public pickedStone: StoneConfig;
   public puzzleStartTime: number;
-  pausePopupComponent: PausePopupComponent = new PausePopupComponent();
+  pausePopupComponent: PausePopupComponent
   public showTutorial: boolean;
   public feedBackTexts: any;
   public isPuzzleCompleted: boolean;
   public rightToLeft: boolean;
-  public switchSceneToEnd: Function;
   public levelNumber: Function;
   stoneHandler: StoneHandler;
   public counter: number = 0;
@@ -76,9 +79,8 @@ export class GameplayScene {
   public isGameStarted: boolean = false;
   public time: number = 0;
   public score: number = 0;
-  public switchToLevelSelection: Function;
-  public reloadScene: Function;
   private data: DataModal;
+  public triggerInputs: any;
   audioPlayer: AudioPlayer;
   firebaseIntegration: FirebaseIntegration;
   startTime: number;
@@ -91,21 +93,15 @@ export class GameplayScene {
   private unsubscribeEvent: () => void;
   public timeTicker: HTMLElement;
   isFeedBackTriggered: boolean;
-  constructor({
-    monsterPhaseNumber,
-    switchSceneToEnd,
-    switchToLevelSelection,
-    reloadScene
-  }) {
+  public monsterPhaseNumber: number;
+
+  constructor() {
     const gamePlayData = gameStateService.getGamePlaySceneDetails();
+    this.pausePopupComponent = new PausePopupComponent();
     // Assign state properties based on game state
     this.initializeProperties(gamePlayData);
     // UI element setup
     this.setupUIElements();
-    this.monsterPhaseNumber = monsterPhaseNumber || 1;
-    this.switchSceneToEnd = switchSceneToEnd;
-    this.switchToLevelSelection = switchToLevelSelection;
-    this.reloadScene = reloadScene;
     this.isDisposing = false;
     // Initialize additional game elements
     this.initializeGameComponents(gamePlayData);
@@ -141,19 +137,16 @@ export class GameplayScene {
             currentLevelData: this.levelData,
             selectedLevelNumber: this.levelNumber,
           });
-          gameStateService.publish(gameStateService.EVENTS.SCENE_LOADING_EVENT, true)
-          this.reloadScene('GamePlay');
+          gameStateService.publish(gameStateService.EVENTS.SWITCH_SCENE_EVENT, SCENE_NAME_GAME_PLAY);
           break;
         case PAUSE_POPUP_EVENT_DATA.SELECT_LEVEL:
-          gameStateService.publish(gameStateService.EVENTS.SCENE_LOADING_EVENT, true);
           gameStateService.publish(gameStateService.EVENTS.GAME_PAUSE_STATUS_EVENT, false);
-          this.switchToLevelSelection('GamePlay');
+          gameStateService.publish(gameStateService.EVENTS.SWITCH_SCENE_EVENT, SCENE_NAME_LEVEL_SELECT)
         default:
           gameStateService.publish(gameStateService.EVENTS.GAME_PAUSE_STATUS_EVENT, false);
           this.resumeGame();
       }
     });
-
     this.setupBg();
   }
 
@@ -162,11 +155,12 @@ export class GameplayScene {
       canvas: this.riveMonsterElement,
       autoplay: true,
       fit: "contain",
-      alignment: "topCenter",
+      alignment: "bottomCenter",
       onLoad: () => {
         this.monster.play(initialAnimation);
       },
-      gameCanvas: this.canvas
+      gameCanvas: this.canvas,
+      src: MONSTER_PHASES[this.monsterPhaseNumber]
     });
   }
 
@@ -200,25 +194,29 @@ export class GameplayScene {
   }
 
   private setupUIElements() {
-    this.handler = document.getElementById("canvas");
-    this.riveMonsterElement = document.getElementById("rivecanvas") as HTMLCanvasElement;
+    const { canvasElem, canvasWidth, canvasHeight, gameCanvasContext, gameControlElem } = gameSettingsService.getCanvasSizeValues();
+    const riveMonsterElement = gameSettingsService.getRiveCanvasValue();
+    this.handler = canvasElem;
+    this.riveMonsterElement = riveMonsterElement;
     this.riveMonsterElement.style.zIndex = "4";
-    this.gameControl = document.getElementById("game-control") as HTMLCanvasElement;
+    this.gameControl = gameControlElem;
     this.gameControl.style.zIndex = "5";
+
+    this.canvas = canvasElem
+    this.width = canvasWidth;
+    this.height = canvasHeight;
+    this.context = gameCanvasContext;
   }
 
   private initializeProperties(gamePlayData) {
     this.isPauseButtonClicked = gamePlayData?.isGamePaused;
-    this.width = gamePlayData.width;
-    this.height = gamePlayData.height;
     this.rightToLeft = gamePlayData.rightToLeft;
-    this.canvas = gamePlayData.canvas
-    this.context = gamePlayData.gameCanvasContext;
     this.levelData = gamePlayData.levelData;
     this.levelNumber = gamePlayData.levelNumber;
     this.jsonVersionNumber = gamePlayData.jsonVersionNumber;
     this.feedBackTexts = gamePlayData.feedBackTexts;
     this.data = gamePlayData.data;
+    this.monsterPhaseNumber = gamePlayData.monsterPhaseNumber;
   }
 
   setupBg = () => {
@@ -249,6 +247,16 @@ export class GameplayScene {
     return Math.floor(Math.random() * (definedValuesMaxCount - min + 1)) + min;
   }
 
+  private triggerMonsterAnimation(animationName: string, delay: number = 0) {
+    if (delay > 0) {
+      setTimeout(() => {
+        this.monster.triggerInput(animationName);
+      }, delay);
+    } else {
+      this.monster.triggerInput(animationName);
+    }
+  }
+
   handleMouseUp = (event) => {
     if (this.monster.checkHitboxDistance(event) && this.pickedStone) {
       const { text } = this.pickedStone; // Use destructuring for clarity
@@ -277,13 +285,17 @@ export class GameplayScene {
         //Resets stones to original position after dragging.
         this.pickedStone.x = this.pickedStoneObject.origx;
         this.pickedStone.y = this.pickedStoneObject.origy;
+        // Trigger animations
+        this.triggerMonsterAnimation('isMouthClosed');
+        this.triggerMonsterAnimation('backToIdle', 350);
+
       }
 
     }
     this.pickedStone = null;
     this.wordPuzzleLogic.clearPickedUp();
-    gameStateService.publish(
-      gameStateService.EVENTS.GAME_TRAIL_EFFECT_TOGGLE_EVENT,
+    gameSettingsService.publish(
+      gameSettingsService.EVENTS.GAME_TRAIL_EFFECT_TOGGLE_EVENT,
       false
     );
   };
@@ -316,7 +328,7 @@ export class GameplayScene {
       this.setPickedUp(x, y);
     }
 
-    gameStateService.publish(gameStateService.EVENTS.GAME_TRAIL_EFFECT_TOGGLE_EVENT, true);
+    gameSettingsService.publish(gameSettingsService.EVENTS.GAME_TRAIL_EFFECT_TOGGLE_EVENT, true);
   };
 
   setPickedUp(x, y) {
@@ -357,7 +369,6 @@ export class GameplayScene {
         let rect = this.canvas.getBoundingClientRect();
         const x = event.clientX - rect.left;
         const y = event.clientY - rect.top;
-        this.monster.play(RiveMonsterComponent.Animations.OPENING_MOUTH_EAT);
         this.pickedStone.x = x;
         this.pickedStone.y = y;
         trailX = x;
@@ -392,16 +403,16 @@ export class GameplayScene {
               this.pickedStone,
               this.pickedStoneObject
             );
+
             //After resetting its original position replace it with the new letter.
             this.pickedStoneObject = newStoneLetter;
             this.pickedStone = newStoneLetter;
           }
         }
       }
-
-      this.monster.play(RiveMonsterComponent.Animations.OPENING_MOUTH_EAT);
+      // Trigger open mouth animation
+      this.triggerMonsterAnimation('isMouthOpen');
     }
-
     this.trailParticles?.addTrailParticlesOnMove(
       trailX,
       trailY
@@ -540,7 +551,8 @@ export class GameplayScene {
         }
 
         gameStateService.publish(gameStateService.EVENTS.LEVEL_END_DATA_EVENT, { levelEndData, data: this.data });
-        this.switchSceneToEnd();
+        gameStateService.publish(gameStateService.EVENTS.SWITCH_SCENE_EVENT, SCENE_NAME_LEVEL_END);
+        this.monster.dispose(); //Adding the monster dispose here due to the scenario that this.monster is still needed when restart game level is played.
       };
 
       if (timerEnded) {
@@ -552,7 +564,6 @@ export class GameplayScene {
       if (this.isFeedBackTriggered) {
         const audioSources = this.audioPlayer?.audioSourcs || [];
         const lastAudio = audioSources[audioSources.length - 1];
-        
         if (lastAudio) {
           lastAudio.onended = () => {
             clearTimeout(timeoutId);
@@ -578,36 +589,96 @@ export class GameplayScene {
     }
   };
 
+  private initNewPuzzle(loadPuzzleEvent) {
+    // Dispose old monster first to prevent memory leaks
+    if (this.monster) {
+      this.monster.dispose();
+    }
+    this.monster = this.initializeRiveMonster();
+    this.removeEventListeners();
+    this.isGameStarted = false;
+    this.time = 0;
+    this.wordPuzzleLogic.updatePuzzleLevel(loadPuzzleEvent?.detail?.counter);
+    this.pickedStone = null;
+    document.dispatchEvent(loadPuzzleEvent);
+    this.addEventListeners();
+    this.audioPlayer.stopAllAudios();
+    this.startPuzzleTime();
+  }
+
   public dispose = () => {
-    // Ensure TimerTicking is disposed of properly
+    this.isDisposing = true;
+
+    // Cleanup audio
+    if (this.audioPlayer) {
+      this.audioPlayer.stopAllAudios();
+      this.audioPlayer = null;
+    }
+
+    // Dispose visual elements
+    if (this.monster) {
+      this.monster.dispose();
+      this.monster = null;
+    }
+
+    if (this.stoneHandler) {
+      this.stoneHandler.dispose();
+      this.stoneHandler = null;
+    }
+
+    // Clear timers
     if (this.timerTicking) {
       this.timerTicking.destroy();
       this.timerTicking = null;
     }
-    this.trailParticles.clearTrailSubscription();
-    this.unsubscribeEvent();
-    this.isDisposing = true;
-    this.audioPlayer.stopAllAudios();
-    this.monster.dispose();
-    this.levelIndicators.dispose();
-    this.stoneHandler.dispose();
-    this.promptText.dispose();
+
+    if (this.trailParticles) {
+      this.trailParticles.clearTrailSubscription();
+      this.trailParticles = null;
+    }
+
+    // Clear event listeners
+    if (this.unsubscribeEvent) {
+      this.unsubscribeEvent();
+      this.unsubscribeEvent = null;
+    }
+
     document.removeEventListener(
       VISIBILITY_CHANGE,
       this.handleVisibilityChange,
       false
     );
     this.removeEventListeners();
-    this.pausePopupComponent.destroy();
-    this.pauseButton.dispose();
-  };
+
+    // Clear other components
+    if (this.levelIndicators) {
+      this.levelIndicators.dispose();
+      this.levelIndicators = null;
+    }
+
+    if (this.promptText) {
+      this.promptText.dispose();
+      this.promptText = null;
+    }
+
+    if (this.pauseButton) {
+      this.pauseButton.dispose();
+      this.pauseButton = null;
+    }
+
+    if (this.pausePopupComponent) {
+      this.pausePopupComponent.destroy();
+      this.pausePopupComponent = null;
+    }
+
+    // Clear game state
+    this.pickedStone = null;
+    this.pickedStoneObject = null;
+  }
 
   private checkStoneDropped(stone, feedBackIndex, isWord = false) {
-    return this.stoneHandler.isStoneLetterDropCorrect(
-      stone,
-      feedBackIndex,
-      isWord
-    );
+    // Return the result of the drop handler logic
+    return this.stoneHandler.isStoneLetterDropCorrect(stone, feedBackIndex, isWord);
   }
 
   public letterPuzzle(droppedStone: string) {
@@ -630,6 +701,7 @@ export class GameplayScene {
   }
 
   public wordPuzzle(droppedStoneInstance: StoneConfig) {
+
     if (droppedStoneInstance.frame <= 99) {
       return; // Prevent dragging if the stone is animating
     }
@@ -655,9 +727,11 @@ export class GameplayScene {
         this.stonesCount = 1;
         return;
       }
-
+      this.triggerMonsterAnimation('isMouthClosed');
+      this.triggerMonsterAnimation('backToIdle', 350);
       this.timerTicking.startTimer();
-      this.monster.play(RiveMonsterComponent.Animations.EAT_HAPPY);
+      // // Trigger animations via fire
+      // this.triggerMonsterAnimation('isHappy',3000)
       this.promptText.droppedStoneIndex(
         lang == "arabic"
           ? this.stonesCount
@@ -671,10 +745,25 @@ export class GameplayScene {
   }
 
   private handleStoneDropEnd(isCorrect, puzzleType: string | null = null) {
-    if(isCorrect) {
-      this.monster.play(RiveMonsterComponent.Animations.EAT_HAPPY);
+    const triggerInputs = this.monster.getInputs();
+    const isHappy = triggerInputs.find(input => input.name === 'isHappy');
+    const isSpit = triggerInputs.find(input => input.name === 'isSpit');
+    const isSad = triggerInputs.find(input => input.name === 'isSad');
+    const isChewing = triggerInputs.find(input => input.name === 'isChewing');
+    if (!isChewing) {
+      console.error("Missing triggers for animations.");
+      return false;
+    }
+    if (!isHappy || !isSpit || !isSad) {
+      console.error("Missing triggers for animations.");
+      return false;
+    }
+    if (isCorrect) {
+      this.triggerMonsterAnimation('isChewing');
+      this.triggerMonsterAnimation('isHappy', 1700);
     } else {
-      this.monster.play(RiveMonsterComponent.Animations.EAT_DISGUST);
+      this.triggerMonsterAnimation('isSpit');
+      this.triggerMonsterAnimation('isSad', 1030);
     }
 
     this.logPuzzleEndFirebaseEvent(isCorrect, puzzleType);
@@ -702,19 +791,6 @@ export class GameplayScene {
     });
 
     document.dispatchEvent(dropStoneEvent);
-  }
-
-  private initNewPuzzle(loadPuzzleEvent) {
-    this.monster = this.initializeRiveMonster();
-    this.removeEventListeners();
-    this.isGameStarted = false;
-    this.time = 0;
-    this.wordPuzzleLogic.updatePuzzleLevel(loadPuzzleEvent?.detail?.counter);
-    this.pickedStone = null;
-    document.dispatchEvent(loadPuzzleEvent);
-    this.addEventListeners();
-    this.audioPlayer.stopAllAudios();
-    this.startPuzzleTime();
   }
 
   public logPuzzleEndFirebaseEvent(isCorrect: boolean, puzzleType?: string) {

@@ -1,6 +1,8 @@
+import { MONSTER_PHASES } from '@constants';
 import { Rive, Layout, Fit, Alignment } from '@rive-app/canvas';
+import gameSettingsService from '@gameSettingsService';
 
-interface RiveMonsterComponentProps {
+export interface RiveMonsterComponentProps {
   canvas: HTMLCanvasElement; // Canvas element where the animation will render
   autoplay: boolean;
   fit?: string; // Fit property (e.g contain, cover, etc.)
@@ -9,13 +11,15 @@ interface RiveMonsterComponentProps {
   height?: number; // Optional height for the Rive animation
   onLoad?: () => void; // Callback once Rive animation is loaded
   gameCanvas?: HTMLCanvasElement; // Main canvas element
+  src?: string;
+  isEvolving?: boolean;
 }
 
 export class RiveMonsterComponent {
   private props: RiveMonsterComponentProps;
-  private riveInstance: any;
-  private src: string = './assets/monsterrive.riv'; // Define the .riv file path
-  private stateMachines: string = 'State Machine 1'; // Define the state machine
+  private riveInstance: Rive;
+  private phaseIndex: number = 0;
+  private stateMachineName: string = "State Machine 1"  // Define the state machine
   public game: any;
   public x: number;
   public y: number;
@@ -28,89 +32,127 @@ export class RiveMonsterComponent {
     to: number;
   };
 
-  // Static readonly properties for all monster animations
-  public static readonly Animations = {
-    OPENING_MOUTH_EAT: 'Opening Mouth Eat',
-    EAT_HAPPY: 'Eat Happy',
-    IDLE: 'Idle',
-    EAT_DISGUST: 'Eat Disgust',
-  };
-
   constructor(props: RiveMonsterComponentProps) {
     this.props = props;
+    this.initializeHitbox();
+    this.initializeRive();
+  }
+  // Static readonly properties for all monster animations
+  public static readonly Animations = {
+    //new animation
+    IDLE: "Idle",
+    SAD: "Sad",
+    STOMP: "Stomp",
+    STOMPHAPPY: "StompHappy",
+    SPIT: "Spit",
+    CHEW: "Chew",
+    MOUTHOPEN: "MouthOpen",
+    MOUTHCLOSED: "MouthClosed",
+    HAPPY: "Happy",
+  };
 
-    // To Do: To be removed once FM-333 pixelate issue fix has been applied
-    if (this.props.gameCanvas) {
-      this.game = this.props.gameCanvas;
-      this.x = this.game.width / 2 - this.game.width * 0.243;
-      this.y = this.game.width / 3;
-      this.hitboxRangeX = {
-        from: 0,
-        to: 0,
-      };
-      this.hitboxRangeY = {
-        from: 0,
-        to: 0,
-      };
+  private initializeHitbox() {
+    const scale = gameSettingsService.getDevicePixelRatioValue();
+    const monsterCenterX = (this.props.canvas.width / scale) / 2;
+    const monsterCenterY = (this.props.canvas.height / scale) / 2;
+    const rangeFactorX = 55;
+    const rangeFactorY = 100;
 
-      //Adjust this range factor to control how big is the hit box for dropping stones.
-      const rangeFactorX = 70; //SUBCTRACT FROM CENTER TO LEFT, ADD FROM CENTER TO RIGHT.
-      const rangeFactorY = 50; //SUBCTRACT FROM CENTER TO TOP, ADD FROM CENTER TO BOTTOM.
-      const monsterCenterX = this.game.width / 2;
-      //Note: Rive height is currently always half of width. This might change when new rive files are to be implemented/
-      const monsterCenterY = monsterCenterX / 2; //Create different sets of height for multiple rive files or adjust this for height when replacing the current rive monster.
+    this.hitboxRangeX = { from: monsterCenterX - rangeFactorX, to: monsterCenterX + rangeFactorX };
+    this.hitboxRangeY = { from: monsterCenterY + (rangeFactorY / 2), to: monsterCenterY + (rangeFactorY * 2) };
+  }
 
-      this.hitboxRangeX.from = monsterCenterX - rangeFactorX;
-      this.hitboxRangeX.to = monsterCenterX + rangeFactorX;
-      this.hitboxRangeY.from = monsterCenterY - rangeFactorY;
-      this.hitboxRangeY.to = monsterCenterY + rangeFactorY;
+  initializeRive() {
+    if(this.props.isEvolving && this.riveInstance) {
+      this.riveInstance.cleanupInstances();
     }
-
-    // Initialize Rive
-    this.riveInstance = new Rive({
-      src: this.src,
+    
+    const riveConfig: any = {
+      src: this.props.src || MONSTER_PHASES[this.phaseIndex],
       canvas: this.props.canvas,
       autoplay: this.props.autoplay,
-      stateMachines: this.stateMachines,
-      layout: new Layout({
-        fit: Fit[this.props.fit || 'Contain'],
-        alignment: Alignment[this.props.alignment || 'TopCenter'],
+      layout: new Layout({ 
+        fit: Fit.None,
+        alignment: Alignment.Center,
+        minX: 0,
+        minY: -350,
+        maxX: this.props.canvas.width, 
+        maxY: this.props.canvas.height,
       }),
-      onLoad: () => {
-        if (this.props.onLoad) {
-          this.props.onLoad();
-        }
-      },
-    });
+      useOffscreenRenderer: true, // Improves performance
+    };
+
+    // For evolution animations, we don't use state machines
+    if (!this.props.isEvolving) {
+      riveConfig['stateMachines'] = [this.stateMachineName];
+      riveConfig['onLoad'] = this.handleLoad.bind(this);
+      riveConfig['layout'] = new Layout({
+        fit: Fit.None,
+        alignment: Alignment.Center,
+        minX:0,
+        minY:500,
+        maxX: this.props.canvas.width,
+        maxY: this.props.canvas.height,
+      });
+    }
+
+    this.riveInstance = new Rive(riveConfig);
+  }
+
+
+  getInputs() {
+    // Don't try to get state machine inputs if we're in evolution mode
+    if (this.props.isEvolving) {
+      return [];
+    }
+    return this.riveInstance.stateMachineInputs(this.stateMachineName);
+  }
+
+
+  handleLoad() {
+    const inputs = this.getInputs();
+    const requiredTriggers = [
+      'backToIdle', 'isStomped', 'isMouthOpen', 'isMouthClosed',
+      'isChewing', 'isHappy', 'isSpit', 'isSad',
+    ];
+
+    const missingTriggers = requiredTriggers.filter(
+      (name) => !inputs.some((input) => input.name === name)
+    );
+
+    if (missingTriggers.length) {
+      console.error(`Missing state machine inputs: ${missingTriggers.join(', ')}`);
+    }
+
+    if (this.props.onLoad) this.props.onLoad();
+  }
+
+  public triggerInput(inputName: string) {
+    const stateMachineInput = this.getInputs().find(input => input.name === inputName);
+    if (stateMachineInput) {
+      stateMachineInput.fire(); // Trigger input
+    } else {
+      console.warn(`Input ${inputName} not found.`);
+    }
   }
 
   play(animationName: string) {
-    if (this.riveInstance) {
-      this.riveInstance.play(animationName);
-    }
+    this.riveInstance?.play(animationName);
   }
 
   stop() {
-    if (this.riveInstance) {
-      this.riveInstance.stop();
-    }
-  }
-
-  // Check animation completion via a state machine listener need to have statemachines properly to test this
-  onStateChange(callback: (stateName: string) => void) {
-    this.riveInstance.stateMachine.inputs.forEach(input => {
-      input.onStateChange(state => {
-        callback(state);
-      });
-    });
+    this.riveInstance?.stop();
   }
 
   checkHitboxDistance(event) {
-
     const rect = this.props.canvas.getBoundingClientRect();
     const x = event.clientX - rect.left;
     const y = event.clientY - rect.top;
 
+    return this.validateRange(x, y);
+  }
+
+  private validateRange(x, y) {
     const isWithinHitboxX =
       x >= this.hitboxRangeX.from && x <= this.hitboxRangeX.to;
     const isWithinHitboxY =
@@ -121,33 +163,39 @@ export class RiveMonsterComponent {
 
   // Example click handler
   onClick(xClick: number, yClick: number): boolean {
-    const centerX = this.x + this.game.width / 4;
-    const centerY = this.y + this.game.height / 2.2;
 
-    const distance = Math.sqrt(
-      (xClick - centerX) * (xClick - centerX) +
-      (yClick - centerY) * (yClick - centerY),
-    );
-
-    return distance <= 100; // Explicitly return true or false
+    return this.validateRange(xClick, yClick); // Explicitly return true or false
   }
 
   stopRiveMonster() {
-    if (this.riveInstance) {
-      this.riveInstance.stop();
-    }
+    this.riveInstance?.stop();
   }
 
-  private unregisterEventListener() {
-    if (this.riveInstance) {
-      this.riveInstance.cleanup();
+  public changePhase(phase: number) {
+    if (phase >= 0 && phase < MONSTER_PHASES.length) {
+      this.phaseIndex = phase;
+
+      if (this.riveInstance) {
+        this.riveInstance.cleanup();
+        this.riveInstance = null;
+      }
+      this.riveInstance = new Rive({
+        src: MONSTER_PHASES[this.phaseIndex],
+        canvas: this.props.canvas,
+        autoplay: this.props.autoplay,
+        stateMachines: [this.stateMachineName],
+        layout: new Layout({ fit: Fit.Contain, alignment: Alignment.Center }),
+        onLoad: this.handleLoad.bind(this),
+        useOffscreenRenderer: true,
+      });
+    } else {
+      console.warn(`Invalid phase index: ${phase}`);
     }
   }
 
   public dispose() {
-    this.unregisterEventListener();
-    if (this.riveInstance) {
-      this.riveInstance = null;
-    }
+    if(!this.riveInstance) return;
+    this.riveInstance.cleanup();
+    this.riveInstance = null;
   }
 }

@@ -13,8 +13,10 @@ import {
   AUDIO_PATH_ON_DRAG
 } from '@constants';
 import gameStateService from '@gameStateService';
+import gameSetttingsService from '@gameSettingsService';
 
 export default class StoneHandler extends EventManager {
+  private offsetCoordinateValue: number;
   public context: CanvasRenderingContext2D;
   public canvas: HTMLCanvasElement;
   public currentPuzzleData: any;
@@ -52,12 +54,13 @@ export default class StoneHandler extends EventManager {
       loadPuzzleCallbackHandler: (event) => this.handleLoadPuzzle(event),
     });
     this.cleanup();
+    this.offsetCoordinateValue = 32; //Default value used to offset stone coordinates.
     this.context = context;
     this.canvas = canvas;
     this.puzzleNumber = puzzleNumber;
     this.levelData = levelData;
     this.setTargetStone(this.puzzleNumber);
-    this.stonePos = gameStateService.getStonePositions();
+    this.stonePos = this.getRandomizedStonePositions(canvas.width, canvas.height)
     this.correctStoneAudio = new Audio(AUDIO_PATH_CORRECT_STONE);
     this.correctStoneAudio.loop = false;
     this.feedbackAudios = this.convertFeedBackAudiosToList(feedbackAudios);
@@ -89,43 +92,80 @@ export default class StoneHandler extends EventManager {
     );
   }
 
+  /**
+   * Shuffles an array randomly
+   * @param array Array to shuffle
+   * @returns Shuffled array
+   */
+  private shuffleArray<T>(array: T[]): T[] {
+    const shuffled = [...array];
+    for (let i = shuffled.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+    }
+    return shuffled;
+  }
+
+  /**
+   * Performance optimized stone creation
+   * Properly initializes stones and prevents memory leaks
+   */
   createStones(img) {
+    // Clear existing stones first to prevent memory leaks
+    this.disposeStones();
+    
+    // Create stone pool for reuse
+    const stonePool = new Map();
+    
     const foilStones = this.getFoilStones();
+    // Randomize stone positions
+    const positions = this.shuffleArray(this.stonePos);
+    
     for (let i = 0; i < foilStones.length; i++) {
-      // if (foilStones[i] == this.correctTargetStone) {
-      //   //this.tutorial.updateTargetStonePositions(this.stonePos[i]); //temporary disabled
-      // }
-      this.foilStones.push(
-        new StoneConfig(
-          this.context,
-          this.canvas.width,
-          this.canvas.height,
-          foilStones[i],
-          this.stonePos[i][0],
-          this.stonePos[i][1],
-          img,
-          this.timerTickingInstance,
-          //i == foilStones.length - 1 ? this.tutorial : null //temporary disabled
-          null
-        )
+      // Create new stone with all required parameters
+      const stone = new StoneConfig(
+        this.context,
+        this.canvas.width,
+        this.canvas.height,
+        foilStones[i],
+        positions[i][0],
+        positions[i][1],
+        img,
+        this.timerTickingInstance,
+        null // tutorial instance is optional
       );
+      
+      // Initialize stone
+      stone.initialize();
+      
+      // Store in pool for potential reuse
+      stonePool.set(foilStones[i], stone);
+      this.foilStones.push(stone);
     }
   }
 
+  /**
+   * Performance optimized draw loop
+   * Only processes active stones and updates timer efficiently
+   */
   draw(deltaTime: number) {
-    if (this.foilStones.length > 0) {
-      this.foilStones.forEach((stone) => {
-        if (stone && stone.frame !== undefined) {
-          stone.draw(deltaTime);
-        }
-      });
+    if (this.foilStones.length === 0) return;
 
-      if (
-        this.foilStones[this.foilStones.length - 1].frame >= 100 &&
-        !this.isGamePaused
-      ) {
-        this.timerTickingInstance.update(deltaTime);
+    // Only check animation completion once per frame
+    let isAnimationComplete = true;
+    const activeStones = this.foilStones.filter(stone => stone && !stone.isDisposed);
+    
+    // Draw only active stones
+    for (const stone of activeStones) {
+      if (stone.frame < 100) {
+        isAnimationComplete = false;
       }
+      stone.draw(deltaTime);
+    }
+
+    // Update timer only once animation is complete and game is not paused
+    if (isAnimationComplete && !this.isGamePaused) {
+      this.timerTickingInstance.update(deltaTime);
     }
   }
 
@@ -155,10 +195,10 @@ export default class StoneHandler extends EventManager {
   }
 
   public handleStoneDrop(event) {
-    this.foilStones = [];
+    this.disposeStones();
   }
   public handleLoadPuzzle(event) {
-    this.foilStones = [];
+    this.disposeStones();
     this.tutorial.setPuzzleNumber(event.detail.counter);
     this.puzzleNumber = event.detail.counter;
     this.setTargetStone(this.puzzleNumber);
@@ -257,6 +297,20 @@ export default class StoneHandler extends EventManager {
     return this.currentPuzzleData.foilStones.sort(() => Math.random() - 0.5);
   }
 
+  /**
+   * Performance optimization: Proper resource cleanup
+   * Ensures stones are properly disposed to prevent memory leaks
+   */
+  private disposeStones() {
+    // Properly dispose each stone
+    for (const stone of this.foilStones) {
+      if (stone && !stone.isDisposed) {
+        stone.dispose();
+      }
+    }
+    this.foilStones = [];
+  }
+
   handleVisibilityChange = () => {
     this.audioPlayer.stopAllAudios();
     this.correctStoneAudio.pause();
@@ -270,29 +324,41 @@ export default class StoneHandler extends EventManager {
     ];
   }
 
-  playCorrectAnswerFeedbackSound(feedBackIndex: number) {
-    const randomNumber = Utils.getRandomNumber(1, 3).toString();
-    this.audioPlayer.playFeedbackAudios(
-      false,
-      AUDIO_PATH_EATS,
-      AUDIO_PATH_CHEERING_FUNC(randomNumber),
-      AUDIO_PATH_POINTS_ADD,
-      Utils.getConvertedDevProdURL(this.feedbackAudios[feedBackIndex]),
-    );
-    // to play the audio parrallely.
-    this.correctStoneAudio.play();
+  /**
+   * Performance optimization: Parallel audio playback
+   * Disposes stones immediately while playing audio in parallel
+   */
+  async playCorrectAnswerFeedbackSound(feedBackIndex: number) {
+    try {
+      // Dispose stones immediately - don't wait for audio
+      this.disposeStones();
+
+      // Play feedback audio in parallel for better performance
+      const randomNumber = Utils.getRandomNumber(1, 3).toString();
+      await Promise.allSettled([
+        this.correctStoneAudio.play(),
+        this.audioPlayer.playFeedbackAudios(
+          false,
+          AUDIO_PATH_EATS,
+          AUDIO_PATH_CHEERING_FUNC(randomNumber),
+          AUDIO_PATH_POINTS_ADD,
+          Utils.getConvertedDevProdURL(this.feedbackAudios[feedBackIndex])
+        )
+      ]);
+    } catch (error) {
+      console.warn('Audio playback failed:', error);
+    }
   }
 
   cleanup() {
-    // Clear existing stones
-    this.foilStones = [];
-    
     // Clean up audio resources
     if (this.correctStoneAudio) {
       this.correctStoneAudio.pause();
       this.correctStoneAudio.src = '';
     }
-    
+
+    this.disposeStones();
+
     // Remove event listeners
     document.removeEventListener(VISIBILITY_CHANGE, this.handleVisibilityChange);
     if (this.unsubscribeEvent) {
@@ -386,5 +452,83 @@ export default class StoneHandler extends EventManager {
     if (stone.frame > 99) {
       this.audioPlayer.playAudio(AUDIO_PATH_ON_DRAG);
     }
+  }
+
+  private getRandomizedStonePositions(widthVal, heightVal) {
+
+    /**
+     * Breakpoint width for stone positioning (in pixels).
+     * Standard layout > 540px, compact layout ≤ 540px.
+     * 
+     * @type {number}
+     * @default 540
+     */
+    const deviceWidth = 540;
+
+    /**
+     * Calculates coordinate factors for stone positioning based on screen width.
+     * Temporary solution until Rive animation integration.
+     * 
+     * @param {number} defaultVal - Factor for screens > 540px (2.0-5.0)
+     * @param {number} smallerVal - Factor for screens ≤ 540px (1.2-1.5x larger)
+     * @returns {number} Calculated coordinate factor
+     * 
+     * @todo Replace with Rive-based dynamic positioning
+     */
+    const setCoordinateFactor = (defaultVal, smallerVal) => {
+      return deviceWidth > widthVal ? smallerVal : defaultVal;
+    }
+
+    /*
+    *  If rive width and height are not properly set,
+    *  use the original canvas width and height instead.
+    *  this is the default coordinates
+    */
+    const baseCoordinateFactors = [
+      [5, 1.9], //Left stone 1 - upper
+      [7, 1.5], //Left stone 2
+      [setCoordinateFactor(4.3, 4.5), 1.28], //Left stone 3
+      [6.4, 1.1], //Left stone 4 - very bottom
+      [setCoordinateFactor(2, 1.3), 1.07], //Middle stone that is located right below the monster.
+      [[2.3, 2.1], 1.9], //Right stone 1 - upper
+      [[setCoordinateFactor(2.8, 2.5), 2], 1.2], //Right stone 2
+      [[setCoordinateFactor(3, 2.4), 2.1], 1.42],  //Right stone 3
+    ];
+
+    // Separate coordinate factors for egg monster due to different dimensions
+    const eggMonsterCoordinateFactors = [
+      [5, 1.9], //Left stone 1 - upper
+      [7, 1.5], //Left stone 2
+      [setCoordinateFactor(4.3, 4.5), 2.28], //Left stone 3
+      [6.4, 1.1], //Left stone 4 - very bottom
+      [setCoordinateFactor(1.2, 1.5), 1], //Middle stone that is located right below the monster.
+      [[2.3, 1.9], 1.5], //Right stone 1 - upper
+      [[setCoordinateFactor(2.8, 2.2), 2.1], 2.4], //Right stone 2 - increased horizontal spacing
+      [[setCoordinateFactor(4.5, 3.2), 1.5], 1.8],  //Right stone 3 - moved further right and down
+    ];
+
+    // Choose coordinate factors based on monster type
+    const coordinateFactors = eggMonsterCoordinateFactors;
+
+    const randomizedStonePositions = coordinateFactors.map(
+      (coordinatesFactors: [number[] | number, number], index) => {
+        const factorX = coordinatesFactors[0];
+        const factorY = coordinatesFactors[1];
+        let coordinateX = Array.isArray(factorX)
+          ? ((widthVal / factorX[0]) + (widthVal / factorX[1]))
+          : (widthVal / factorX);
+        let coordinateY = heightVal / factorY;
+        const offsetXAdjustment = index < 4 ? 25 : 0; //Only use +25 on stones on the left side.
+        const posX = coordinateX - this.offsetCoordinateValue;
+        const posY = coordinateY - this.offsetCoordinateValue;
+
+        return [
+          posX + offsetXAdjustment,
+          posY,
+        ]
+      }
+    ).sort(() => Math.random() - 0.5);
+
+    return randomizedStonePositions;
   }
 }

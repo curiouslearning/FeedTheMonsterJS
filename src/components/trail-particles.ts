@@ -1,4 +1,4 @@
-import gameStateService from '@gameStateService';
+import gameSettingsService from '@gameSettingsService';
 export default class TrailEffect {
     ctx: CanvasRenderingContext2D
     particles: any;
@@ -24,8 +24,8 @@ export default class TrailEffect {
 
     private init() {
         this.draw();
-        this.unsubscribeEvent = gameStateService.subscribe(
-            gameStateService.EVENTS.GAME_TRAIL_EFFECT_TOGGLE_EVENT,
+        this.unsubscribeEvent = gameSettingsService.subscribe(
+            gameSettingsService.EVENTS.GAME_TRAIL_EFFECT_TOGGLE_EVENT,
             (isTrailEffectOn: boolean) => {
                 this.clickTrailToggle = isTrailEffectOn;
             }

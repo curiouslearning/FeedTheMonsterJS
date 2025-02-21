@@ -1,9 +1,10 @@
 import { StartScene } from './start-scene';
 import { PlayButtonHtml } from '@components/buttons';
 import { FirebaseIntegration } from "../../Firebase/firebase-integration";
-import { FeedbackAudios, FeedbackTexts } from '@data/data-modal';
 import { AudioPlayer } from "../../components/audio-player";
 import gameStateService from '@gameStateService';
+import gameSettingsService from '@gameSettingsService';
+import { SCENE_NAME_LEVEL_SELECT } from "@constants";
 
 jest.mock("../../Firebase/firebase-integration", () => ({
   FirebaseIntegration: jest.fn().mockImplementation(() => ({
@@ -17,9 +18,22 @@ jest.mock("../../components/audio-player", () => ({
 }));
 jest.mock('@gameStateService', () => ({
   EVENTS: {
-    SCENE_LOADING_EVENT: 'SCENE_LOADING_EVENT'
+    SWITCH_SCENE_EVENT: 'SWITCH_SCENE_EVENT',
   },
-  publish: jest.fn()
+  publish: jest.fn(),
+  getFTMData: jest.fn(),
+}));
+jest.mock('@gameSettingsService', () => ({
+  __esModule: true,
+  default: {
+    getCanvasSizeValues: jest.fn(),
+    getRiveCanvasValue: jest.fn(),
+    subscribe: jest.fn(),
+    publish: jest.fn(),
+    EVENTS: {
+      GAME_TRAIL_EFFECT_TOGGLE_EVENT: 'GAME_TRAIL_EFFECT_TOGGLE_EVENT',
+    }
+  }
 }));
 
 
@@ -34,34 +48,19 @@ describe('Start Scene Test', () => {
   beforeEach(() => {
     document.body.innerHTML = `
       <div>
-        <div id="title" class="title" style="font-family: Atma-SemiBold, sans-serif;">Feed the Monster</div>
+        <div id="title-and-play-button"></div>
         <button id="toggle-btn" class="off">Dev</button>
         <div id="loading-screen" style="display: none; z-index: -1;"></div>
         <div class="game-scene"></div>
         <div id="canvas"></div>
+        <div id="background"></div>
         <canvas id="rivecanvas"></canvas>
         <canvas id="game-control"></canvas>
         <div id="popup-root"></div>
         <div id="version-info-id">1.0.0</div>
+        <div id="start-scene-click-area"></div>
       </div>
     `;
-
-    // Setup mock text and audio
-    const feedTextMock = {
-      FeedbackTexts: {
-        "fantastic": "Fantastic!",
-        "great": "Great!",
-        "amazing": "Amazing!"
-      }
-    };
-
-    const feedAudioMock = {
-      FeedbackAudios: {
-        "fantastic": "",
-        "great": "",
-        "amazing": ""
-      }
-    };
 
     // Mock the Firebase instance (this is what is used in your StartScene class)
     mockFirebase = new FirebaseIntegration();
@@ -69,41 +68,43 @@ describe('Start Scene Test', () => {
     //Mock Audio Player instance
     mockAudioPlayer = new AudioPlayer();
 
-    // Mock canvas
     const mockCanvas = document.getElementById('canvas') as HTMLCanvasElement;
-    mockCanvas.getContext = jest.fn().mockReturnValue({
-      fillRect: jest.fn(),
-      clearRect: jest.fn(),
-      drawImage: jest.fn(),
-      save: jest.fn(),
-      restore: jest.fn(),
+    const mockRiveCanvas = document.getElementById("rivecanvas") as HTMLCanvasElement;
+
+    (gameStateService.getFTMData as jest.Mock).mockReturnValue({
+      data: {levelData: {
+        levelMeta: { levelNumber: 1 },
+        puzzles: [{}, {}, {}], // 3 puzzles for testing
+      },
+      levelNumber: 1,
+      feedBackTexts: { 0: 'Great!', 1: 'Fantastic!', 2: 'Amazing!' },
+      isGamePaused: false,
+      rightToLeft: false,
+      jsonVersionNumber: '1.0.0',
+      data: {},
+      feedbackAudios: {}}
     });
 
+    (gameSettingsService.getCanvasSizeValues as jest.Mock).mockReturnValue({
+      canvasElem: mockCanvas,
+      canvasWidth: 800,
+      canvasHeight: 600,
+      gameControlElem: document.getElementById("game-control") as HTMLCanvasElement
+    });
+
+    (gameSettingsService.getRiveCanvasValue as jest.Mock).mockReturnValue(mockRiveCanvas);
+
     // Create the startScene instance
-    startScene = new StartScene(
-      mockCanvas,
-      {
-        title: '',
-        otherAudios: {
-          areYouSure: '',
-          watchMeGrow: '',
-          selctYourPlayer: 'test'
-        },
-        majVersion: 3,
-        minVersion: 15,
-        version: 1,
-        levels: 145,
-        rightToLeft: false,
-        FeedbackTexts: new FeedbackTexts(feedTextMock),
-        FeedbackAudios: new FeedbackAudios(feedAudioMock),
-        getLevels: () => {}
-      }
-    );
+    startScene = new StartScene();
+
+    // Initialize required elements
+    startScene.titleTextElement = document.getElementById('title');
+    startScene.handler = document.getElementById('start-scene-click-area');
+    startScene.toggleBtn = document.getElementById('toggle-btn');
 
     // Ensure startScene uses the mock data
     startScene.firebaseIntegration = mockFirebase;
     startScene.audioPlayer = mockAudioPlayer;
-    startScene.switchSceneToLevelSelection = switchSceneMockFunc;
 
     // Create the play button and mock the callback
     mockPlayBtn = {
@@ -126,6 +127,28 @@ describe('Start Scene Test', () => {
       expect(loadingElement.style.zIndex).toEqual("-1");
       expect(loadingElement.style.display).toEqual("none");
     });
+
+    it('Should add title-long class when title length exceeds 20 characters', () => {
+      const titleElement = document.getElementById("title");
+      expect(titleElement).not.toBeNull();
+
+      startScene.data.title = "This is a very long title that should get the long class";
+      startScene.titleTextElement = titleElement;
+      startScene.generateGameTitle();
+
+      expect(titleElement.classList.contains('title-long')).toBeTruthy();
+    });
+
+    it('Should not add title-long class when title length is 20 or less', () => {
+      const titleElement = document.getElementById("title");
+      expect(titleElement).not.toBeNull();
+
+      startScene.data.title = "Short Title";
+      startScene.titleTextElement = titleElement;
+      startScene.generateGameTitle();
+
+      expect(titleElement.classList.contains('title-long')).toBeFalsy();
+    });
   });
 
   describe('When Play Button is clicked ', () => {
@@ -135,9 +158,13 @@ describe('Start Scene Test', () => {
         mockOnClickCallback(); // Simulate the button click
       }
 
-      // Check if switchSceneToLevelSelection was called
-      // Using toHaveBeenCalled for testing as plat button has multiple scenarions that calls multiple functions.
-      expect(startScene.switchSceneToLevelSelection).toHaveBeenCalled();
+      gameStateService.publish(gameStateService.EVENTS.SWITCH_SCENE_EVENT, SCENE_NAME_LEVEL_SELECT);
+
+      //Expect the Game State would receive a publish to switch scene.
+      expect(gameStateService.publish).toHaveBeenCalledWith(
+        gameStateService.EVENTS.SWITCH_SCENE_EVENT,
+        expect.any(String)
+      );
     });
 
     it('The game state publish should be called', () => {
