@@ -34,6 +34,7 @@ export class RiveMonsterComponent {
 
   constructor(props: RiveMonsterComponentProps) {
     this.props = props;
+    this.moveCanvasUpOrDown(50); // Move down by 50px
     this.initializeHitbox();
     this.initializeRive();
   }
@@ -63,21 +64,24 @@ export class RiveMonsterComponent {
   }
 
   initializeRive() {
-    if(this.props.isEvolving && this.riveInstance) {
+    if (this.props.isEvolving && this.riveInstance) {
       this.riveInstance.cleanupInstances();
     }
-    
+
     const riveConfig: any = {
       src: this.props.src || MONSTER_PHASES[this.phaseIndex],
       canvas: this.props.canvas,
       autoplay: this.props.autoplay,
-      layout: new Layout({ 
-        fit: Fit.None,
+      layout: new Layout({
+        fit: Fit.Contain,
         alignment: Alignment.Center,
-        minX: 0,
-        minY: -350,
-        maxX: this.props.canvas.width, 
-        maxY: this.props.canvas.height,
+        // Disabling this since we dont have final rive file for now
+        // fit: Fit.None,
+        // alignment: Alignment.Center,
+        // minX: 0,
+        // minY: -350,
+        // maxX: this.props.canvas.width, 
+        // maxY: this.props.canvas.height,
       }),
       useOffscreenRenderer: true, // Improves performance
     };
@@ -87,12 +91,15 @@ export class RiveMonsterComponent {
       riveConfig['stateMachines'] = [this.stateMachineName];
       riveConfig['onLoad'] = this.handleLoad.bind(this);
       riveConfig['layout'] = new Layout({
-        fit: Fit.None,
+        fit: Fit.Contain,
         alignment: Alignment.Center,
-        minX:0,
-        minY:500,
-        maxX: this.props.canvas.width,
-        maxY: this.props.canvas.height,
+        // Disabling this since we dont have final rive file for now
+        // fit: Fit.None,
+        // alignment: Alignment.Center,
+        // minX:0,
+        // minY:500,
+        // maxX: this.props.canvas.width,
+        // maxY: this.props.canvas.height,
       });
     }
 
@@ -106,6 +113,20 @@ export class RiveMonsterComponent {
       return [];
     }
     return this.riveInstance.stateMachineInputs(this.stateMachineName);
+  }
+
+  public moveCanvasUpOrDown(offsetY: number) {
+    const canvas = this.props.canvas;
+    const currentTop = parseFloat(window.getComputedStyle(canvas).top) || 0;
+    if (currentTop === 0) {
+      // Set the new top value based on the offset
+      const newTop = currentTop + offsetY;
+
+      // Apply the new position
+      canvas.style.top = `${newTop}px`;
+      canvas.style.position = 'absolute';
+      canvas.style.zIndex = '5';         // Set z-index to a high value to bring it on top
+    }
   }
 
 
@@ -184,7 +205,17 @@ export class RiveMonsterComponent {
         canvas: this.props.canvas,
         autoplay: this.props.autoplay,
         stateMachines: [this.stateMachineName],
-        layout: new Layout({ fit: Fit.Contain, alignment: Alignment.Center }),
+        layout: new Layout({
+          fit: Fit.Contain,
+          alignment: Alignment.Center,
+          // Disabling this since we dont have final rive file for now
+          // fit: Fit.None,
+          // alignment: Alignment.Center,
+          // minX:0,
+          // minY:500,
+          // maxX: this.props.canvas.width,
+          // maxY: this.props.canvas.height,
+        }),
         onLoad: this.handleLoad.bind(this),
         useOffscreenRenderer: true,
       });
@@ -194,7 +225,7 @@ export class RiveMonsterComponent {
   }
 
   public dispose() {
-    if(!this.riveInstance) return;
+    if (!this.riveInstance) return;
     this.riveInstance.cleanup();
     this.riveInstance = null;
   }
