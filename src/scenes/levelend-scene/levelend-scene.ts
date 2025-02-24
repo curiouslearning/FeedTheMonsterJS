@@ -48,8 +48,7 @@ export class LevelEndScene {
     const { starCount, currentLevel, data, monsterPhaseNumber } = gameStateService.getLevelEndSceneData();
     const { isLastLevel } = gameStateService.getGamePlaySceneDetails();
     this.monsterPhaseNumber = gameStateService.checkMonsterPhaseUpdation();
-    this.evolveMonster = true;
-    // this.evolveMonster = this.monsterPhaseNumber > monsterPhaseNumber;
+    this.evolveMonster = this.monsterPhaseNumber > monsterPhaseNumber;
     this.canvasElement = gameSettingsService.getRiveCanvasValue();
     this.data = data;
     this.audioPlayer = new AudioPlayer();
