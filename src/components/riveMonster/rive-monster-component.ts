@@ -102,6 +102,9 @@ export class RiveMonsterComponent {
     return this.riveInstance.stateMachineInputs(this.stateMachineName);
   }
 
+  /**
+The extra space above the monster in the Rive file ensures proper animation, but it causes the monster to be placed at the bottom of the screen (due to those excess spaces)). The moveCanvasUpOrDown function adjusts the position of the animation after it plays, removing the unnecessary space above and only used on the evolution animation because the other Rive monsters doesn't have an excessive spacing.
+*/
   public moveCanvasUpOrDown(offsetY: number) {
     const canvas = this.props.canvas;
     const currentTop = parseFloat(window.getComputedStyle(canvas).top) || 0;
