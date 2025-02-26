@@ -75,13 +75,6 @@ export class RiveMonsterComponent {
       layout: new Layout({
         fit: Fit.Contain,
         alignment: Alignment.Center,
-        // Disabling this since we dont have final rive file for now
-        // fit: Fit.None,
-        // alignment: Alignment.Center,
-        // minX: 0,
-        // minY: -350,
-        // maxX: this.props.canvas.width, 
-        // maxY: this.props.canvas.height,
       }),
       useOffscreenRenderer: true, // Improves performance
     };
@@ -93,13 +86,6 @@ export class RiveMonsterComponent {
       riveConfig['layout'] = new Layout({
         fit: Fit.Contain,
         alignment: Alignment.Center,
-        // Disabling this since we dont have final rive file for now
-        // fit: Fit.None,
-        // alignment: Alignment.Center,
-        // minX:0,
-        // minY:500,
-        // maxX: this.props.canvas.width,
-        // maxY: this.props.canvas.height,
       });
     }
 
@@ -208,13 +194,6 @@ export class RiveMonsterComponent {
         layout: new Layout({
           fit: Fit.Contain,
           alignment: Alignment.Center,
-          // Disabling this since we dont have final rive file for now
-          // fit: Fit.None,
-          // alignment: Alignment.Center,
-          // minX:0,
-          // minY:500,
-          // maxX: this.props.canvas.width,
-          // maxY: this.props.canvas.height,
         }),
         onLoad: this.handleLoad.bind(this),
         useOffscreenRenderer: true,
