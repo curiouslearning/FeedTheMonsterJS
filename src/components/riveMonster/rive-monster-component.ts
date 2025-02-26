@@ -34,6 +34,7 @@ export class RiveMonsterComponent {
 
   constructor(props: RiveMonsterComponentProps) {
     this.props = props;
+    // add extra space above the monster in the Rive file this ensures proper animation, it will causes the monster to be placed at the bottom of the screen
     this.moveCanvasUpOrDown(50); // Move down by 50px
     this.initializeHitbox();
     this.initializeRive();
