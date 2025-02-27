@@ -34,6 +34,8 @@ export class RiveMonsterComponent {
 
   constructor(props: RiveMonsterComponentProps) {
     this.props = props;
+    // add extra space above the monster in the Rive file this ensures proper animation, it will causes the monster to be placed at the bottom of the screen
+    this.moveCanvasUpOrDown(50); // Move down by 50px
     this.initializeHitbox();
     this.initializeRive();
   }
@@ -63,21 +65,17 @@ export class RiveMonsterComponent {
   }
 
   initializeRive() {
-    if(this.props.isEvolving && this.riveInstance) {
+    if (this.props.isEvolving && this.riveInstance) {
       this.riveInstance.cleanupInstances();
     }
-    
+
     const riveConfig: any = {
       src: this.props.src || MONSTER_PHASES[this.phaseIndex],
       canvas: this.props.canvas,
       autoplay: this.props.autoplay,
-      layout: new Layout({ 
-        fit: Fit.None,
+      layout: new Layout({
+        fit: Fit.Contain,
         alignment: Alignment.Center,
-        minX: 0,
-        minY: -350,
-        maxX: this.props.canvas.width, 
-        maxY: this.props.canvas.height,
       }),
       useOffscreenRenderer: true, // Improves performance
     };
@@ -87,12 +85,8 @@ export class RiveMonsterComponent {
       riveConfig['stateMachines'] = [this.stateMachineName];
       riveConfig['onLoad'] = this.handleLoad.bind(this);
       riveConfig['layout'] = new Layout({
-        fit: Fit.None,
+        fit: Fit.Contain,
         alignment: Alignment.Center,
-        minX:0,
-        minY:500,
-        maxX: this.props.canvas.width,
-        maxY: this.props.canvas.height,
       });
     }
 
@@ -108,6 +102,23 @@ export class RiveMonsterComponent {
       return [];
     }
     return this.riveInstance.stateMachineInputs(this.stateMachineName);
+  }
+
+  /**
+The extra space above the monster in the Rive file ensures proper animation, but it causes the monster to be placed at the bottom of the screen (due to those excess spaces)). The moveCanvasUpOrDown function adjusts the position of the animation after it plays, removing the unnecessary space above and only used on the evolution animation because the other Rive monsters doesn't have an excessive spacing.
+*/
+  public moveCanvasUpOrDown(offsetY: number) {
+    const canvas = this.props.canvas;
+    const currentTop = parseFloat(window.getComputedStyle(canvas).top) || 0;
+    if (currentTop === 0) {
+      // Set the new top value based on the offset
+      const newTop = currentTop + offsetY;
+
+      // Apply the new position
+      canvas.style.top = `${newTop}px`;
+      canvas.style.position = 'absolute';
+      canvas.style.zIndex = '5';         // Set z-index to a high value to bring it on top
+    }
   }
 
 
@@ -186,7 +197,10 @@ export class RiveMonsterComponent {
         canvas: this.props.canvas,
         autoplay: this.props.autoplay,
         stateMachines: [this.stateMachineName],
-        layout: new Layout({ fit: Fit.Contain, alignment: Alignment.Center }),
+        layout: new Layout({
+          fit: Fit.Contain,
+          alignment: Alignment.Center,
+        }),
         onLoad: this.handleLoad.bind(this),
         useOffscreenRenderer: true,
       });
@@ -196,7 +210,7 @@ export class RiveMonsterComponent {
   }
 
   public dispose() {
-    if(!this.riveInstance) return;
+    if (!this.riveInstance) return;
     this.riveInstance.cleanup();
     this.riveInstance = null;
   }
