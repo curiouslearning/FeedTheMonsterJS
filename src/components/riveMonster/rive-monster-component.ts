@@ -90,8 +90,6 @@ export class RiveMonsterComponent {
       });
     }
 
-    console.log('riveConfig', riveConfig);
-
     this.riveInstance = new Rive(riveConfig);
   }
 

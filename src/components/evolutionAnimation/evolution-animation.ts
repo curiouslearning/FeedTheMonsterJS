@@ -1,6 +1,7 @@
 import { BaseHTML } from '@components/baseHTML/base-html';
 import { RiveMonsterComponent, RiveMonsterComponentProps } from '@components/riveMonster/rive-monster-component';
 import { EVOL_MONSTER } from '@constants';
+import gameStateService from '@gameStateService';
 
 export interface EvolutionAnimationProps extends RiveMonsterComponentProps {
   monsterPhaseNumber: number;
@@ -8,18 +9,29 @@ export interface EvolutionAnimationProps extends RiveMonsterComponentProps {
 }
 
 export class EvolutionAnimationComponent extends RiveMonsterComponent {
+  static shouldInitialize(): boolean {
+    const { monsterPhaseNumber } = gameStateService.getLevelEndSceneData();
+    const newPhase = gameStateService.checkMonsterPhaseUpdation();
+    console.log('shouldInitialize', newPhase, monsterPhaseNumber)
+    return newPhase > monsterPhaseNumber;
+  }
   private backgroundElement: BaseHTML;
   protected evolutionProps: EvolutionAnimationProps;
+  public monsterPhaseNumber: number;
+  public evolveMonster: boolean;
+  private readonly EVOLUTION_ANIMATION_COMPLETE_DELAY = 6500;
+  private readonly EVOLUTION_ANIMATION_FADE_EFFECT_DELAY = 500;
 
   constructor(props: EvolutionAnimationProps) {
     const evolutionSrc = EvolutionAnimationComponent.getEvolutionSource(props.monsterPhaseNumber);
     super({
       ...props,
-      src: evolutionSrc,
-      isEvolving: true,
+      src: evolutionSrc
     });
+    
     this.evolutionProps = props;
     this.initialize();
+    this.startAnimation();
   }
 
   private initialize() {
@@ -79,16 +91,19 @@ export class EvolutionAnimationComponent extends RiveMonsterComponent {
       if (levelEndBg) {
         levelEndBg.classList.add('gray');
       }
-    }, 500);
+    }, this.EVOLUTION_ANIMATION_FADE_EFFECT_DELAY);
 
     // Set timeout to handle animation completion
     setTimeout(() => {
       this.handleEvolutionComplete();
+
+      //update the record in game state.
+      gameStateService.updateMonsterPhaseState(this.monsterPhaseNumber);
       
       if (this.evolutionProps.onComplete) {
         this.evolutionProps.onComplete();
       }
-    }, 6500); // Match the EVOLUTION_ANIMATION_DELAY
+    }, this.EVOLUTION_ANIMATION_COMPLETE_DELAY);
   }
 
   public dispose() {
