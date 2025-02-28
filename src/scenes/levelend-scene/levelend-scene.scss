@@ -8,12 +8,17 @@
 }
 
 #levelend-background {
-  background: #0000009c;
+  background: #2424246b;
   height: 100%;
   z-index: 12;
   position: relative;
-  transition: opacity 0.3s ease;
+  transition: all 2.5s ease;
   opacity: 1;
+
+  &.gray {
+    background: #242424;
+    opacity: 1;
+  }
 
   &.fade-out {
     opacity: 0;

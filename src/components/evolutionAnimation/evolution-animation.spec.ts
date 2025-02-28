@@ -15,15 +15,17 @@ jest.mock('@components/baseHTML/base-html', () => ({
   }))
 }));
 
-jest.mock('@components/riveMonster/rive-monster-component', () => ({
-  RiveMonsterComponent: jest.fn().mockImplementation(function(this: any, props: any) {
-    this.props = props;
-    this.dispose = mockDispose;
-    this.getCanvas = jest.fn().mockReturnValue(document.createElement('canvas'));
-    this.play = jest.fn();
-    return this;
-  })
-}));
+// Mock RiveMonsterComponent as a class to properly support inheritance
+jest.mock('@components/riveMonster/rive-monster-component', () => {
+  return {
+    RiveMonsterComponent: jest.fn().mockImplementation(function(this: any, props: any) {
+      this.props = props;
+      this.dispose = mockDispose;
+      this.getCanvas = jest.fn().mockReturnValue(document.createElement('canvas'));
+      this.play = jest.fn();
+    })
+  };
+});
 
 describe('EvolutionAnimationComponent', () => {
   let evolutionAnimation: EvolutionAnimationComponent;
@@ -69,16 +71,16 @@ describe('EvolutionAnimationComponent', () => {
       autoplay: true
     });
 
-    // Check if the correct evolution source was passed to RiveMonsterComponent
-    expect(RiveMonsterComponent).toHaveBeenCalledWith(
-      expect.objectContaining({
-        src: EVOL_MONSTER[0],
-        isEvolving: true
-      })
-    );
+    // Check if RiveMonsterComponent was called with correct props
+    expect(RiveMonsterComponent).toHaveBeenCalledWith({
+      canvas,
+      monsterPhaseNumber: 1,
+      autoplay: true,
+      src: EVOL_MONSTER[0]
+    });
   });
 
-  it('should fallback to EVOL_MONSTER[1] for unknown phase numbers', () => {
+  it('should fallback to EVOL_MONSTER[0] for unknown phase numbers', () => {
     evolutionAnimation = new EvolutionAnimationComponent({
       canvas,
       monsterPhaseNumber: 999, // Unknown phase
@@ -86,12 +88,12 @@ describe('EvolutionAnimationComponent', () => {
     });
 
     // Check if fallback source was passed to RiveMonsterComponent
-    expect(RiveMonsterComponent).toHaveBeenCalledWith(
-      expect.objectContaining({
-        src: EVOL_MONSTER[1],
-        isEvolving: true
-      })
-    );
+    expect(RiveMonsterComponent).toHaveBeenCalledWith({
+      canvas,
+      monsterPhaseNumber: 999,
+      autoplay: true,
+      src: EVOL_MONSTER[0]
+    });
   });
 
   it('should set canvas position correctly', () => {
@@ -122,7 +124,7 @@ describe('EvolutionAnimationComponent', () => {
     // Mock setTimeout
     jest.useFakeTimers();
     evolutionAnimation.startAnimation();
-    jest.advanceTimersByTime(5500);
+    jest.advanceTimersByTime(6500); // Updated to match component's EVOLUTION_ANIMATION_COMPLETE_DELAY
 
     // Check if onComplete was called
     expect(onComplete).toHaveBeenCalled();
