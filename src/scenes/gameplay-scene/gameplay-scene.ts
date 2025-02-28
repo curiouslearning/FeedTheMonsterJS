@@ -236,7 +236,7 @@ export class GameplayScene {
   setupMonsterPhaseBg() {
     // Determine the background type based on the monster phase number using the static method
     this.backgroundGenerator = new PhasesBackground();
-    console.log('this.monsterPhaseNumber ', this.monsterPhaseNumber)
+
     // Dynamically update the background based on the selected type
     this.backgroundGenerator.generateBackground(this.monsterPhaseNumber);
   }
