@@ -127,8 +127,6 @@ export class LevelEndScene {
   };
 
   async callEvolutionAnimation() {
-    console.log('All stars have been rendered and phase '+ this.monsterPhaseNumber + ' monster loaded');
-
     if (this.evolveMonster) {
       this.riveMonster.dispose();
       

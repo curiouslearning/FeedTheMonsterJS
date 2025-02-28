@@ -8,6 +8,14 @@ export interface EvolutionAnimationProps extends RiveMonsterComponentProps {
   onComplete?: () => void;
 }
 
+const CANVAS_Z_INDEX_MAP = {
+  evolution: {
+    zIndex: '13',
+  },
+  normal: {
+    zIndex: '4',
+  }
+};
 export class EvolutionAnimationComponent extends RiveMonsterComponent {
   
   static shouldInitialize(): boolean {
@@ -62,16 +70,7 @@ export class EvolutionAnimationComponent extends RiveMonsterComponent {
   }
 
   setCanvasPosition(position: 'evolution' | 'normal') {
-    const CANVAS_POSITIONS = {
-      evolution: {
-        zIndex: '13',
-      },
-      normal: {
-        zIndex: '4',
-      }
-    };
-
-    const pos = CANVAS_POSITIONS[position];
+    const pos = CANVAS_Z_INDEX_MAP[position];
     if (this.evolutionProps.canvas) {
       this.evolutionProps.canvas.style.zIndex = pos.zIndex;
     }
