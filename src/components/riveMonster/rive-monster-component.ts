@@ -80,7 +80,7 @@ export class RiveMonsterComponent {
       useOffscreenRenderer: true, // Improves performance
     };
 
-    // For evolution animations, we don't use state machines
+    // For evolution animations, we don't use state machines. so were excluding this.
     if (!this.props.isEvolving) {
       riveConfig['stateMachines'] = [this.stateMachineName];
       riveConfig['onLoad'] = this.handleLoad.bind(this);
