@@ -16,6 +16,7 @@ const CANVAS_Z_INDEX_MAP = {
     zIndex: '4',
   }
 };
+
 export class EvolutionAnimationComponent extends RiveMonsterComponent {
   
   static shouldInitialize(): boolean {
