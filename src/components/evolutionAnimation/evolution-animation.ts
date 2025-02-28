@@ -12,7 +12,6 @@ export class EvolutionAnimationComponent extends RiveMonsterComponent {
   static shouldInitialize(): boolean {
     const { monsterPhaseNumber } = gameStateService.getLevelEndSceneData();
     const newPhase = gameStateService.checkMonsterPhaseUpdation();
-    console.log('shouldInitialize', newPhase, monsterPhaseNumber)
     return newPhase > monsterPhaseNumber;
   }
   private backgroundElement: BaseHTML;
