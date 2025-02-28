@@ -18,7 +18,7 @@ export class PhasesBackground extends BaseBackgroundComponent {
 
     if (!backgroundElementsContainer) return;
 
-    const assets = this.getAssetsForSeason(phase);
+    const assets = this.getAssetsForPhase(phase);
     this.clearBackgroundContent();
 
     const section = this.createBackgroundSection(assets);
@@ -26,7 +26,7 @@ export class PhasesBackground extends BaseBackgroundComponent {
   }
 
   // Retrieves assets based on the phase of monster.
-  private getAssetsForSeason(phase: number): BackgroundAssets {
+  private getAssetsForPhase(phase: number): BackgroundAssets {
     //Note: The phase background is currently one image, but it will soon be split. Returning an object with the asset path remains valid.
     switch (phase) {
       case 2:
@@ -45,7 +45,7 @@ export class PhasesBackground extends BaseBackgroundComponent {
     }
   }
 
-  // Creates the background section using assets for a specific season
+  // Creates the background section using assets for a specific phase
   private createBackgroundSection(
     assets: BackgroundAssets
   ): HTMLDivElement {
