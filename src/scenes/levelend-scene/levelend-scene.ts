@@ -136,6 +136,7 @@ export class LevelEndScene {
         canvas: this.canvasElement,
         monsterPhaseNumber: this.monsterPhaseNumber,
         autoplay: true,
+        isEvolving: true  
       });
     }
   }

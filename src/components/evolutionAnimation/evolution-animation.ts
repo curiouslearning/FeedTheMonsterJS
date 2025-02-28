@@ -9,6 +9,7 @@ export interface EvolutionAnimationProps extends RiveMonsterComponentProps {
 }
 
 export class EvolutionAnimationComponent extends RiveMonsterComponent {
+  
   static shouldInitialize(): boolean {
     const { monsterPhaseNumber } = gameStateService.getLevelEndSceneData();
     const newPhase = gameStateService.checkMonsterPhaseUpdation();
@@ -29,6 +30,7 @@ export class EvolutionAnimationComponent extends RiveMonsterComponent {
     });
     
     this.evolutionProps = props;
+    this.monsterPhaseNumber = gameStateService.checkMonsterPhaseUpdation();
     this.initialize();
     this.startAnimation();
   }
