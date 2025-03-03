@@ -1,20 +1,24 @@
 import { BaseBackgroundComponent } from "@components/background/base-background/base-background-component";
-import { PHASE_1_BG, PHASE_2_BG, PHASE_3_BG } from '@constants';
+import { PHASES_BG } from '@constants';
 
 interface BackgroundAssets {
   placeholder: string;
 }
+// 0 = Egg monster state | 1 = Hatched monster state | 2 = grown up monster state
+type PhaseNumber = 0 | 1 | 2;
 
 export class PhasesBackground extends BaseBackgroundComponent {
   constructor() {
     super("background");
   }
 
+  private getBackgroundElement() {
+    return document.getElementById("background-elements");
+  }
+
   // Generates and appends the background section for a given phase number.
-  public generateBackground(phase: number): void {
-    const backgroundElementsContainer = document.getElementById(
-      "background-elements"
-    );
+  public generateBackground(phase: PhaseNumber): void {
+    const backgroundElementsContainer = this.getBackgroundElement();
 
     if (!backgroundElementsContainer) return;
 
@@ -26,21 +30,21 @@ export class PhasesBackground extends BaseBackgroundComponent {
   }
 
   // Retrieves assets based on the phase of monster.
-  private getAssetsForPhase(phase: number): BackgroundAssets {
+  private getAssetsForPhase(phase: PhaseNumber): BackgroundAssets {
     //Note: The phase background is currently one image, but it will soon be split. Returning an object with the asset path remains valid.
     switch (phase) {
       case 2:
         return {
-          placeholder: PHASE_3_BG,
+          placeholder: PHASES_BG[phase],
         };
       case 1:
         return {
-          placeholder: PHASE_2_BG,
+          placeholder: PHASES_BG[phase],
         };
       case 0:
       default:
         return {
-          placeholder: PHASE_1_BG ,
+          placeholder: PHASES_BG[phase] ,
         };
     }
   }
@@ -66,9 +70,7 @@ export class PhasesBackground extends BaseBackgroundComponent {
 
   // Clears only the content within the #background-elements container
   public clearBackgroundContent(): void {
-    const backgroundElementsContainer = document.getElementById(
-      "background-elements"
-    );
+    const backgroundElementsContainer = this.getBackgroundElement();
     if (backgroundElementsContainer) {
       backgroundElementsContainer.innerHTML = ""; // Clear only dynamic background elements
     }

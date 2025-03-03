@@ -94,7 +94,7 @@ export class GameplayScene {
   private unsubscribeEvent: () => void;
   public timeTicker: HTMLElement;
   isFeedBackTriggered: boolean;
-  public monsterPhaseNumber: number;
+  public monsterPhaseNumber: 0 | 1 | 2;
   private backgroundGenerator: PhasesBackground;
 
   constructor() {

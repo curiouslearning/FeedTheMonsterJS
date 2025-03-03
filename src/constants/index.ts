@@ -159,6 +159,8 @@ export const SCENE_NAME_LEVEL_END = "LevelEnd";
 export const SPECIAL_LEVELS = [5, 13, 20, 30, 42];
 
 //Evolving Phases Backgrounds
-export const PHASE_1_BG = './assets/images/placeholder_background_1.webp';
-export const PHASE_2_BG = './assets/images/placeholder_background_2.webp';
-export const PHASE_3_BG = './assets/images/placeholder_background_3.webp';
+export const PHASES_BG ={
+  0: './assets/images/placeholder_background_1.webp',
+  1: './assets/images/placeholder_background_2.webp',
+  2: './assets/images/placeholder_background_3.webp'
+};
