@@ -9,6 +9,7 @@ import {
   FeedbackTextEffects,
   AudioPlayer,
   TrailEffect,
+  PhasesBackground
 } from "@components";
 import {
   StoneConfig,
@@ -93,7 +94,8 @@ export class GameplayScene {
   private unsubscribeEvent: () => void;
   public timeTicker: HTMLElement;
   isFeedBackTriggered: boolean;
-  public monsterPhaseNumber: number;
+  public monsterPhaseNumber: 0 | 1 | 2;
+  private backgroundGenerator: PhasesBackground;
 
   constructor() {
     const gamePlayData = gameStateService.getGamePlaySceneDetails();
@@ -147,7 +149,8 @@ export class GameplayScene {
           this.resumeGame();
       }
     });
-    this.setupBg();
+    //this.setupBg(); //Temporary disabled to try evolution background.
+    this.setupMonsterPhaseBg();
   }
 
   private initializeRiveMonster(initialAnimation: string = RiveMonsterComponent.Animations.IDLE): RiveMonsterComponent {
@@ -229,6 +232,14 @@ export class GameplayScene {
     // Dynamically update the background based on the selected type
     backgroundGenerator.generateBackground(selectedBackgroundType);
   };
+
+  setupMonsterPhaseBg() {
+    // Determine the background type based on the monster phase number using the static method
+    this.backgroundGenerator = new PhasesBackground();
+
+    // Dynamically update the background based on the selected type
+    this.backgroundGenerator.generateBackground(this.monsterPhaseNumber);
+  }
 
   resumeGame = () => {
     this.addEventListeners();

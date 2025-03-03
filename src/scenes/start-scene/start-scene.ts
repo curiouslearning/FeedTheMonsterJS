@@ -45,6 +45,7 @@ export class StartScene {
   private hasBGLoaded: boolean = false;
   private hasRiveLoaded: boolean = false;
   private titleElement: BaseHTML;
+  private backgroundGenerator: BackgroundHtmlGenerator;
 
   constructor() {
     this.data = gameStateService.getFTMData();
@@ -123,10 +124,10 @@ export class StartScene {
     const selectedBackgroundType = BackgroundHtmlGenerator.createBackgroundComponent(1);
 
     // Apply the logic to update the HTML or visual representation of the background
-    const backgroundGenerator = new BackgroundHtmlGenerator();
+    this.backgroundGenerator = new BackgroundHtmlGenerator();
 
     // Dynamically update the background based on the selected type
-    backgroundGenerator.generateBackground(selectedBackgroundType);
+    this.backgroundGenerator.generateBackground(selectedBackgroundType);
 
     //Sets if BG flag has been loaded to true and trigger to remove the initial loading.
     this.hasBGLoaded = true;
@@ -208,6 +209,7 @@ export class StartScene {
     );
     this.riveMonsterElement.style.zIndex = "-1"; //Originally in LevelSelectionConstructor, moving it here so no need to have Rive logic in that scene.
     this.riveMonster.dispose();
+    this.backgroundGenerator && this.backgroundGenerator.clearBackgroundContent();
   }
 
   handlerInstallPrompt = (event) => {

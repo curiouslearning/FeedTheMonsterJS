@@ -516,6 +516,16 @@ img {
   width: 100%;
 }
 
+.evolution-phase-bg {
+  position: absolute;
+  display: block;
+}
+
+#phasebg-img {
+    width: 100vw;
+    height: 100vh;
+}
+
 /* For small phones, up to 360px wide */
 @media (min-width: 320px) and (max-width: 360px) {
   #loading-screen {
