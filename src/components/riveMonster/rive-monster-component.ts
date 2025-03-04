@@ -31,12 +31,16 @@ export class RiveMonsterComponent {
     from: number;
     to: number;
   };
+  private scale: number;
+  private minY: number;
 
   constructor(props: RiveMonsterComponentProps) {
     this.props = props;
+    this.scale = gameSettingsService.getDevicePixelRatioValue();
     // add extra space above the monster in the Rive file this ensures proper animation, it will causes the monster to be placed at the bottom of the screen
-    this.moveCanvasUpOrDown(50); // Move down by 50px
+    //this.moveCanvasUpOrDown(50); // Move down by 50px
     this.initializeHitbox();
+    this.getRiveMinYAdjustment();
     this.initializeRive();
   }
   // Static readonly properties for all monster animations
@@ -54,14 +58,37 @@ export class RiveMonsterComponent {
   };
 
   private initializeHitbox() {
-    const scale = gameSettingsService.getDevicePixelRatioValue();
-    const monsterCenterX = (this.props.canvas.width / scale) / 2;
-    const monsterCenterY = (this.props.canvas.height / scale) / 2;
+    const monsterCenterX = (this.props.canvas.width / this.scale) / 2;
+    const monsterCenterY = (this.props.canvas.height / this.scale) / 2;
     const rangeFactorX = 55;
     const rangeFactorY = 100;
 
     this.hitboxRangeX = { from: monsterCenterX - rangeFactorX, to: monsterCenterX + rangeFactorX };
     this.hitboxRangeY = { from: monsterCenterY + (rangeFactorY / 2), to: monsterCenterY + (rangeFactorY * 2) };
+  }
+
+  private getRiveMinYAdjustment() {
+    const { width, height } = this.props.canvas
+    const scaledWidth = Math.round(width / this.scale);
+    const scaledHeight = Math.round(height / this.scale);
+
+    // Default minY adjustment
+    let minY;
+
+    // Determine minY based on scaled width and height
+    if (scaledWidth >= 500) {
+      minY = scaledHeight / 14; // Adjusted from (height / 4) / 3.5 for clarity
+    } else if (scaledWidth <= 499 && scaledWidth >= 343 && scaledHeight >= 735){
+      minY = scaledHeight / 2;
+    } else {
+      minY = scaledHeight / 4;
+    }
+
+    // Dynamic adjustment based on scaledHeight (5% of the height)
+    minY -= scaledHeight * 0.05;
+
+    // Store the calculated minY
+    this.minY = minY;
   }
 
   initializeRive() {
@@ -87,12 +114,15 @@ export class RiveMonsterComponent {
       riveConfig['layout'] = new Layout({
         fit: Fit.Contain,
         alignment: Alignment.Center,
+        minX: 0,
+        minY: this.minY,
+        maxX: this.props.canvas.width,
+        maxY: this.props.canvas.height,
       });
     }
 
     this.riveInstance = new Rive(riveConfig);
   }
-
 
   getInputs() {
     // Don't try to get state machine inputs if we're in evolution mode
