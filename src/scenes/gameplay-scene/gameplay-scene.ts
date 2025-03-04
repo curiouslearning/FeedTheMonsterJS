@@ -163,7 +163,7 @@ export class GameplayScene {
         this.monster.play(initialAnimation);
       },
       gameCanvas: this.canvas,
-      src: MONSTER_PHASES[this.monsterPhaseNumber]
+      src: MONSTER_PHASES[this.monsterPhaseNumber],
     });
   }
 
