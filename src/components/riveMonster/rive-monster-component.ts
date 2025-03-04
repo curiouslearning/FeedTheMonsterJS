@@ -40,7 +40,7 @@ export class RiveMonsterComponent {
     // add extra space above the monster in the Rive file this ensures proper animation, it will causes the monster to be placed at the bottom of the screen
     //this.moveCanvasUpOrDown(50); // Move down by 50px
     this.initializeHitbox();
-    this.getRiveMinYAdjustment();
+    this.setRiveMinYAdjustment();
     this.initializeRive();
   }
   // Static readonly properties for all monster animations
@@ -67,7 +67,11 @@ export class RiveMonsterComponent {
     this.hitboxRangeY = { from: monsterCenterY + (rangeFactorY / 2), to: monsterCenterY + (rangeFactorY * 2) };
   }
 
-  private getRiveMinYAdjustment() {
+  /**
+   * This method adjusts the alignment of the Rive animation to the evolution
+   * background on different screen sizes, ensuring consistent positioning across devices.
+   */
+  private setRiveMinYAdjustment(): void {
     const { width, height } = this.props.canvas
     const scaledWidth = Math.round(width / this.scale);
     const scaledHeight = Math.round(height / this.scale);
