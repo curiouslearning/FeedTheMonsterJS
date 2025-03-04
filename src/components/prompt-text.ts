@@ -79,30 +79,36 @@ export class PromptText extends EventManager {
     }
     drawRTLLang() {
         var x = this.width / 2;
-        const y = this.height * 0.26;
-        this.context.textAlign = "center";
+        const y = this.height * 0.28;
         var fontSize = this.calculateFont();
         const scaledWidth = this.promptImageWidth;
         const scaledHeight = this.promptImageHeight;
         this.context.font = `${fontSize}px ${font}, monospace`;
         if (this.levelData.levelMeta.levelType == "LetterInWord") {
+            this.context.textAlign = "left";
             if (this.levelData.levelMeta.protoType == "Visible") {
-            var letterInWord = this.currentPromptText.replace(
-                new RegExp(this.currentPuzzleData.targetStones[0], "g"),
-                ""
-            );
-            this.context.fillStyle = "red";
-            this.context.fillText(
-                this.targetStones[0],
-                x + this.context.measureText(letterInWord).width / 2,
-                y
-            );
-            this.context.fillStyle = "black";
-            this.context.fillText(
-                letterInWord,
-                x - this.context.measureText(this.targetStones[0]).width / 2,
-                y
-            );}
+                var letterInWord = this.currentPromptText.replace(
+                    new RegExp(this.currentPuzzleData.targetStones[0],),
+                    ""
+                );
+                var targetWidth = this.context.measureText(this.targetStones[0]).width;
+                var letterInWordWidth = this.context.measureText(letterInWord).width;
+                var totalWidth = targetWidth + letterInWordWidth;
+                var centerX = x + totalWidth / 2 - targetWidth; 
+
+                this.context.fillStyle = "red";
+                this.context.fillText(
+                    this.targetStones[0],
+                    centerX ,  
+                    y
+                );
+        
+                this.context.fillStyle = "black";
+                this.context.fillText(
+                    letterInWord,
+                    centerX - letterInWordWidth , 
+                    y
+                );}
                 else{
                     this.context.drawImage(
                         this.promptPlayButton,
@@ -172,49 +178,62 @@ export class PromptText extends EventManager {
             this.width / 2 -
             this.context.measureText(this.currentPromptText).width / 2;
         let currentWordWidth = 0;
-        var letterHighlight: Array<string> =
-            this.currentPuzzleData.targetStones[0].split("");
+        var letterHighlight=this.currentPuzzleData.targetStones[0];
+        var leftPromptText = 
+            this.currentPromptText.substring
+            (0,this.currentPromptText.indexOf(letterHighlight));
+        var rightPromptText = 
+            this.currentPromptText.substring
+            (this.currentPromptText.indexOf(letterHighlight)+letterHighlight.length);
+        if (this.levelData.levelMeta.levelType === "LetterInWord" && this.levelData.levelMeta.protoType == "Visible" ) {
+            let totalWidth = 0;  
+            this.context.textAlign = "start";
+            if (leftPromptText.length > 0) {
+                this.context.fillStyle = "black";
+                this.context.fillText(leftPromptText, startPrompttextX, y);
+                totalWidth += this.context.measureText(leftPromptText).width;  
+            }
+            if (letterHighlight.length > 0) {
+                this.context.fillStyle = "red";
+                this.context.fillText(letterHighlight, startPrompttextX + totalWidth, y);  
+                totalWidth += this.context.measureText(letterHighlight).width; 
+            }
+            if (rightPromptText.length > 0) {
+                this.context.fillStyle = "black";
+                this.context.fillText(rightPromptText, startPrompttextX + totalWidth, y);  
+                totalWidth += this.context.measureText(rightPromptText).width;  
+            }
+        }
         for (let i = 0; i < promptTextLetters.length; i++) {
             switch (this.levelData.levelMeta.levelType) {
                 case "LetterInWord": {
-                    if (this.levelData.levelMeta.protoType == "Visible") {
-                    if (letterHighlight.includes(promptTextLetters[i])) {
-                        letterHighlight = letterHighlight.slice(1, letterHighlight.length);
-                        this.context.fillStyle = "red";
-                        this.context.fillText(
-                            promptTextLetters[i],
-                            startPrompttextX,
-                            y
-                        );
-                    } else {
-                        this.context.fillStyle = "black";
-                        this.context.fillText(
-                            promptTextLetters[i],
-                            startPrompttextX,
-                            y
-                        );
-                    }
                     break;
-                    }else{
-                        this.context.drawImage(
-                            this.promptPlayButton,
-                            this.width / 2.4,
-                            y / 1.25,
-                            scaledWidth / 4,
-                            scaledHeight / 4
-                          );
-                    }
                 }
                 case "Word": {
                     if (this.levelData.levelMeta.protoType == "Visible") {
+                        if(i==0)
+                            this.context.textAlign = "start";
+                        else{
+                            this.context.textAlign = "center";
+                        }
                     if(this.targetStones.length!=this.currentPromptText.length){
                     if(this.targetStones.length>i){   
                         this.context.fillStyle = (this.droppedStoneCount>i || this.droppedStoneCount==undefined)?"black":"red";
                         this.context.fillText(
                             this.targetStones[i],
-                            startPrompttextX+startPrompttextX/10,
+                            startPrompttextX,
                             y
-                        );    
+                        );   
+                        currentWordWidth = (this.context.measureText(
+                            this.targetStones[i]
+                        ).width + this.context.measureText(
+                            this.targetStones[i + 1]
+                        ).width) / 2;
+                        startPrompttextX += currentWordWidth; 
+                        if(i==0)
+                            startPrompttextX+=this.context.measureText(
+                                this.targetStones[i]
+                            ).width/2;
                 }
                 break;
                 }else{
@@ -224,7 +243,16 @@ export class PromptText extends EventManager {
                             startPrompttextX,
                             y
                         );
-                    
+                        currentWordWidth = (this.context.measureText(
+                            promptTextLetters[i]
+                        ).width + this.context.measureText(
+                            promptTextLetters[i + 1]
+                        ).width) / 2;
+                        startPrompttextX += currentWordWidth;
+                        if(i==0)
+                            startPrompttextX+=this.context.measureText(
+                                promptTextLetters[i]
+                            ).width/2;
                     break;
                 }}
                 else{
@@ -265,12 +293,7 @@ export class PromptText extends EventManager {
                       );
                 }}
             }
-            currentWordWidth = (this.context.measureText(
-                promptTextLetters[i]
-            ).width + this.context.measureText(
-                promptTextLetters[i + 1]
-            ).width) / 2;
-            startPrompttextX += currentWordWidth;
+
         }
     }
     draw(deltaTime: number) {

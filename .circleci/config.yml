@@ -19,6 +19,21 @@ jobs:
           from: ./build/
           to: 's3://feedthemonster-development'
   
+  s3-deploy-test:
+    docker:
+      - image: 'cimg/python:3.6'
+    steps:
+      - checkout
+      - aws-s3/sync:
+          arguments: |
+            --acl public-read \
+            --cache-control "max-age=86400"
+          aws-access-key-id: AWS_ACCESS_KEY
+          aws-region: AWS_DEFAULT_REGION
+          aws-secret-access-key: AWS_SECRET_ACCESS_KEY
+          from: ./build/
+          to: 's3://globallit-aws-s3-static-webapp-test-us-east-2/feed-the-monster'
+
   s3-deploy-prod:
     docker:
       - image: 'cimg/python:3.6'
@@ -44,6 +59,11 @@ workflows:
             branches:
               only:
                 - develop
+      - s3-deploy-test:
+          filters:
+            branches:
+              only:
+                - test
       - s3-deploy-prod:
           filters:
             branches:
