@@ -1,7 +1,9 @@
 import { BaseHTML } from '@components/baseHTML/base-html';
 import { RiveMonsterComponent, RiveMonsterComponentProps } from '@components/riveMonster/rive-monster-component';
-import { EVOL_MONSTER } from '@constants';
+import { EVOL_MONSTER, AUDIO_INTRO, AUDIO_CHEERING, AUDIO_MONSTER_DISCOVERED, AUDIO_MONSTER_EVOLVE } from '@constants';
 import gameStateService from '@gameStateService';
+import { AudioPlayer } from '@components/audio-player';
+import { Layout, Fit, Alignment } from '@rive-app/canvas';
 
 export interface EvolutionAnimationProps extends RiveMonsterComponentProps {
   monsterPhaseNumber: number;
@@ -28,8 +30,9 @@ export class EvolutionAnimationComponent extends RiveMonsterComponent {
   protected evolutionProps: EvolutionAnimationProps;
   public monsterPhaseNumber: number;
   public evolveMonster: boolean;
-  private readonly EVOLUTION_ANIMATION_COMPLETE_DELAY = 6500;
+  private readonly EVOLUTION_ANIMATION_COMPLETE_DELAY = 7500;
   private readonly EVOLUTION_ANIMATION_FADE_EFFECT_DELAY = 500;
+  private audioPlayer: AudioPlayer;
 
   constructor(props: EvolutionAnimationProps) {
     const evolutionSrc = EvolutionAnimationComponent.getEvolutionSource(props.monsterPhaseNumber);
@@ -40,6 +43,7 @@ export class EvolutionAnimationComponent extends RiveMonsterComponent {
     
     this.evolutionProps = props;
     this.monsterPhaseNumber = gameStateService.checkMonsterPhaseUpdation();
+    this.audioPlayer = new AudioPlayer();
     this.initialize();
     this.startAnimation();
   }
@@ -78,11 +82,43 @@ export class EvolutionAnimationComponent extends RiveMonsterComponent {
   }
 
   private handleEvolutionComplete() {
+    // Play the audio sequence first before any visual changes
+    this.playEvolutionCompletionAudios();
+    
+    // Then handle the visual changes
     const bgElement = document.getElementById('levelend-background');
     if (bgElement) {
       bgElement.classList.add('fade-out');
     }
     this.setCanvasPosition('normal');
+  }
+  
+  // Play audio sequence after evolution animation completes
+  private playEvolutionCompletionAudios() {
+    console.log('Playing evolution completion audios');
+    
+    // First stop any currently playing audio
+    this.audioPlayer.stopAllAudios();
+    
+    // Preload all audio files to ensure they're ready to play
+    Promise.all([
+      this.audioPlayer.preloadGameAudio(AUDIO_CHEERING),
+      this.audioPlayer.preloadGameAudio(AUDIO_MONSTER_DISCOVERED),
+      this.audioPlayer.preloadGameAudio(AUDIO_MONSTER_EVOLVE),
+      this.audioPlayer.preloadGameAudio(AUDIO_INTRO)
+    ]).then(() => {
+      console.log('Audio files preloaded, playing sequence');
+      // Play audio sequence in order using the playFeedbackAudios method
+      this.audioPlayer.playFeedbackAudios(
+        false, 
+        AUDIO_CHEERING,
+        AUDIO_MONSTER_DISCOVERED,
+        AUDIO_MONSTER_EVOLVE,
+        AUDIO_INTRO
+      );
+    }).catch(error => {
+      console.error('Error preloading evolution audio files:', error);
+    });
   }
 
   public startAnimation() {
@@ -111,6 +147,12 @@ export class EvolutionAnimationComponent extends RiveMonsterComponent {
     if (this.backgroundElement) {
       this.backgroundElement.destroy();
     }
+    
+    // Stop any playing audio before disposing
+    if (this.audioPlayer) {
+      this.audioPlayer.stopAllAudios();
+    }
+    
     super.dispose();
   }
 }

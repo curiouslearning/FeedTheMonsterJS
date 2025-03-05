@@ -5,13 +5,12 @@ import {
   AUDIO_INTRO,
   AUDIO_LEVEL_LOSE,
   AUDIO_LEVEL_WIN,
-  EVOL_MONSTER,
   PIN_STAR_1,
   PIN_STAR_2,
   PIN_STAR_3,
   SCENE_NAME_LEVEL_SELECT,
   SCENE_NAME_GAME_PLAY,
-  MONSTER_PHASES
+  MONSTER_PHASES,
 } from '@constants';
 import gameStateService from '@gameStateService';
 import gameSettingsService from '@gameSettingsService';
@@ -118,7 +117,8 @@ export class LevelEndScene {
       }
       if (this.riveMonster) this.riveMonster.play(RiveMonsterComponent.Animations.SAD);
     } else {
-      if (isDocumentVisible()) {
+      // Only play audio if we're not going to evolve the monster
+      if (isDocumentVisible() && !this.evolveMonster) {
         this.audioPlayer.playAudio(AUDIO_LEVEL_WIN);
         this.audioPlayer.playAudio(AUDIO_INTRO);
       }
@@ -328,7 +328,8 @@ export class LevelEndScene {
 
   pauseAudios = () => {
     if (isDocumentVisible()) {
-      if (this.starCount >= 2) {
+      // Only play intro audio if not evolving monster and star count is sufficient
+      if (this.starCount >= 2 && !this.evolveMonster) {
         this.audioPlayer.playAudio(AUDIO_INTRO);
       }
     } else {
