@@ -241,6 +241,12 @@ export class LevelEndScene {
   }
 
   buttonCallbackFn(action: 'map' | 'retry' | 'next') {
+    // First, ensure we dispose of the evolution animation to prevent audio from playing again
+    if (this.evolutionAnimation) {
+      this.evolutionAnimation.dispose();
+      this.evolutionAnimation = null;
+    }
+
     const handleRetryOrNext = (level: number) => {
       const gamePlayData = {
         currentLevelData: {
@@ -388,6 +394,10 @@ export class LevelEndScene {
 
     if (this.riveMonster) {
       this.riveMonster.dispose();
+    }
+
+    if(this.evolutionAnimation) {
+      this.evolutionAnimation.dispose();
     }
   };
 }

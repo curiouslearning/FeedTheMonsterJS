@@ -1,6 +1,6 @@
 import { BaseHTML } from '@components/baseHTML/base-html';
 import { RiveMonsterComponent, RiveMonsterComponentProps } from '@components/riveMonster/rive-monster-component';
-import { EVOL_MONSTER, AUDIO_INTRO, AUDIO_CHEERING, AUDIO_MONSTER_DISCOVERED, AUDIO_MONSTER_EVOLVE } from '@constants';
+import { EVOL_MONSTER, AUDIO_INTRO, AUDIO_MONSTER_EVOLVE } from '@constants';
 import gameStateService from '@gameStateService';
 import { AudioPlayer } from '@components/audio-player';
 import { Layout, Fit, Alignment } from '@rive-app/canvas';
@@ -33,6 +33,7 @@ export class EvolutionAnimationComponent extends RiveMonsterComponent {
   private readonly EVOLUTION_ANIMATION_COMPLETE_DELAY = 7500;
   private readonly EVOLUTION_ANIMATION_FADE_EFFECT_DELAY = 500;
   private audioPlayer: AudioPlayer;
+  private hasPlayedEvolutionAudio: boolean = false;
 
   constructor(props: EvolutionAnimationProps) {
     const evolutionSrc = EvolutionAnimationComponent.getEvolutionSource(props.monsterPhaseNumber);
@@ -40,7 +41,9 @@ export class EvolutionAnimationComponent extends RiveMonsterComponent {
       ...props,
       src: evolutionSrc,
       onStop: () => {
-        this.playEvolutionCompletionAudios();
+        if (!this.hasPlayedEvolutionAudio) {
+          this.playEvolutionCompletionAudios();
+        }
       }
     });
     
@@ -95,6 +98,11 @@ export class EvolutionAnimationComponent extends RiveMonsterComponent {
   
   // Play audio sequence after evolution animation completes
   private playEvolutionCompletionAudios() {
+    // If already played, don't play again
+    if (this.hasPlayedEvolutionAudio) {
+      return;
+    }
+    
     console.log('Playing evolution completion audios');
     
     // First stop any currently playing audio
@@ -112,6 +120,7 @@ export class EvolutionAnimationComponent extends RiveMonsterComponent {
         AUDIO_MONSTER_EVOLVE,
         AUDIO_INTRO
       );
+      this.hasPlayedEvolutionAudio = true;
     }).catch(error => {
       console.error('Error preloading evolution audio files:', error);
     });
@@ -148,7 +157,11 @@ export class EvolutionAnimationComponent extends RiveMonsterComponent {
     // Stop any playing audio before disposing
     if (this.audioPlayer) {
       this.audioPlayer.stopAllAudios();
+      this.audioPlayer.stopFeedbackAudio();
     }
+    
+    // Reset the audio played flag
+    this.hasPlayedEvolutionAudio = false;
     
     super.dispose();
   }
