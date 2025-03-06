@@ -76,7 +76,8 @@ describe('EvolutionAnimationComponent', () => {
       canvas,
       monsterPhaseNumber: 1,
       autoplay: true,
-      src: EVOL_MONSTER[0]
+      src: EVOL_MONSTER[0],
+      onStop: expect.any(Function)
     });
   });
 
@@ -92,7 +93,8 @@ describe('EvolutionAnimationComponent', () => {
       canvas,
       monsterPhaseNumber: 999,
       autoplay: true,
-      src: EVOL_MONSTER[0]
+      src: EVOL_MONSTER[0],
+      onStop: expect.any(Function)
     });
   });
 
@@ -124,7 +126,7 @@ describe('EvolutionAnimationComponent', () => {
     // Mock setTimeout
     jest.useFakeTimers();
     evolutionAnimation.startAnimation();
-    jest.advanceTimersByTime(6500); // Updated to match component's EVOLUTION_ANIMATION_COMPLETE_DELAY
+    jest.advanceTimersByTime(7500); // Updated to match component's EVOLUTION_ANIMATION_COMPLETE_DELAY
 
     // Check if onComplete was called
     expect(onComplete).toHaveBeenCalled();

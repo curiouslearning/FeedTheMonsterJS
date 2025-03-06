@@ -38,7 +38,10 @@ export class EvolutionAnimationComponent extends RiveMonsterComponent {
     const evolutionSrc = EvolutionAnimationComponent.getEvolutionSource(props.monsterPhaseNumber);
     super({
       ...props,
-      src: evolutionSrc
+      src: evolutionSrc,
+      onStop: () => {
+        this.playEvolutionCompletionAudios();
+      }
     });
     
     this.evolutionProps = props;
@@ -82,9 +85,6 @@ export class EvolutionAnimationComponent extends RiveMonsterComponent {
   }
 
   private handleEvolutionComplete() {
-    // Play the audio sequence first before any visual changes
-    this.playEvolutionCompletionAudios();
-    
     // Then handle the visual changes
     const bgElement = document.getElementById('levelend-background');
     if (bgElement) {
@@ -102,8 +102,6 @@ export class EvolutionAnimationComponent extends RiveMonsterComponent {
     
     // Preload all audio files to ensure they're ready to play
     Promise.all([
-      this.audioPlayer.preloadGameAudio(AUDIO_CHEERING),
-      this.audioPlayer.preloadGameAudio(AUDIO_MONSTER_DISCOVERED),
       this.audioPlayer.preloadGameAudio(AUDIO_MONSTER_EVOLVE),
       this.audioPlayer.preloadGameAudio(AUDIO_INTRO)
     ]).then(() => {
@@ -111,8 +109,6 @@ export class EvolutionAnimationComponent extends RiveMonsterComponent {
       // Play audio sequence in order using the playFeedbackAudios method
       this.audioPlayer.playFeedbackAudios(
         false, 
-        AUDIO_CHEERING,
-        AUDIO_MONSTER_DISCOVERED,
         AUDIO_MONSTER_EVOLVE,
         AUDIO_INTRO
       );
@@ -132,6 +128,7 @@ export class EvolutionAnimationComponent extends RiveMonsterComponent {
 
     // Set timeout to handle animation completion
     setTimeout(() => {
+      console.log('Animation end callback: Evolution animation has completed');
       this.handleEvolutionComplete();
 
       //update the record in game state.
