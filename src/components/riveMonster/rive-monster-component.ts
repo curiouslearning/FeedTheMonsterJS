@@ -10,6 +10,7 @@ export interface RiveMonsterComponentProps {
   width?: number; // Optional width for the Rive animation
   height?: number; // Optional height for the Rive animation
   onLoad?: () => void; // Callback once Rive animation is loaded
+  onStop?: () => void; // Callback when animation stops
   gameCanvas?: HTMLCanvasElement; // Main canvas element
   src?: string;
   isEvolving?: boolean;
@@ -109,12 +110,24 @@ export class RiveMonsterComponent {
         alignment: Alignment.Center,
       }),
       useOffscreenRenderer: true, // Improves performance
+      onLoad: () => {
+        if (this.props.onLoad) {
+          this.props.onLoad();
+        }
+        if (!this.props.isEvolving) {
+          this.handleLoad();
+        }
+      },
+      onStop: () => {
+        if (this.props.onStop) {
+          this.props.onStop();
+        }
+      },
     };
 
     // For evolution animations, we don't use state machines. so were excluding this.
     if (!this.props.isEvolving) {
       riveConfig['stateMachines'] = [this.stateMachineName];
-      riveConfig['onLoad'] = this.handleLoad.bind(this);
       riveConfig['layout'] = new Layout({
         fit: Fit.Contain,
         alignment: Alignment.Center,
@@ -124,7 +137,7 @@ export class RiveMonsterComponent {
         maxY: this.props.canvas.height,
       });
     }
-
+    
     this.riveInstance = new Rive(riveConfig);
   }
 
