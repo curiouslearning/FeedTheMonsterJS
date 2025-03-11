@@ -138,7 +138,7 @@ export const WINTER_BG_GROUP_IMGS = {
 //Rive Animation
 export const MONSTER_PHASES = [
   './assets/rive/ftm_monster_1_1_v07.riv',
-  './assets/rive/blue_egg.riv',
+  './assets/rive/ftm_monster_1_2_v03.riv',
   './assets/rive/green_egg.riv',
 ];
 export const EVOL_MONSTER = [

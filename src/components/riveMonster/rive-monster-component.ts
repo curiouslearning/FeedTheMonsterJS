@@ -38,7 +38,6 @@ export class RiveMonsterComponent {
     this.props = props;
     this.scale = gameSettingsService.getDevicePixelRatioValue();
     // add extra space above the monster in the Rive file this ensures proper animation, it will causes the monster to be placed at the bottom of the screen
-    //this.moveCanvasUpOrDown(50); // Move down by 50px
     this.initializeHitbox();
     this.setRiveMinYAdjustment();
     this.initializeRive();
@@ -125,6 +124,8 @@ export class RiveMonsterComponent {
       });
     }
 
+    this.evolutionOffSet(!this.props.isEvolving ? 0 : 50);
+
     this.riveInstance = new Rive(riveConfig);
   }
 
@@ -139,18 +140,10 @@ export class RiveMonsterComponent {
   /**
 The extra space above the monster in the Rive file ensures proper animation, but it causes the monster to be placed at the bottom of the screen (due to those excess spaces)). The moveCanvasUpOrDown function adjusts the position of the animation after it plays, removing the unnecessary space above and only used on the evolution animation because the other Rive monsters doesn't have an excessive spacing.
 */
-  public moveCanvasUpOrDown(offsetY: number) {
+  public evolutionOffSet(offsetY: number) {
+    //Set a fix of 50px on top for rive to properly align the evolution scene.
     const canvas = this.props.canvas;
-    const currentTop = parseFloat(window.getComputedStyle(canvas).top) || 0;
-    if (currentTop === 0) {
-      // Set the new top value based on the offset
-      const newTop = currentTop + offsetY;
-
-      // Apply the new position
-      canvas.style.top = `${newTop}px`;
-      canvas.style.position = 'absolute';
-      canvas.style.zIndex = '5';         // Set z-index to a high value to bring it on top
-    }
+    canvas.style.top = `${offsetY}px`;
   }
 
 
