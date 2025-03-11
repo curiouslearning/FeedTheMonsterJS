@@ -212,7 +212,6 @@ class App {
 
   private handleLoadingScreen = () => {
     if (this.is_cached.get(lang)) {
-      this.logDownloadPercentageComplete(100,0);
       this.loadingElement.style.zIndex = "-1";
       this.loadingElement.style.display = "none";
       this.progressBarContainer.style.display = "none";
