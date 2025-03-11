@@ -4,7 +4,6 @@ export class GameScore {
   public static currentlanguage: string = lang;
 
   public static setGameLevelScore(currentLevelInfo, score) {
-    
     let starsGained = this.calculateStarCount(score);
     let levelPlayedInfo = {
       levelName: currentLevelInfo.levelMeta.levelType,
@@ -48,15 +47,6 @@ export class GameScore {
     );
     localStorage.setItem(this.currentlanguage + "totalStarCount", totalStarCount.toString());
   }
-
-  // public static setTotalStarCount(starsGained): void {
-  //   let starCount = this.getTotalStarCount();
-  //   console.log(starCount,starsGained);
-    
-  //   let totalStarCount = starCount + starsGained;
-  //   localStorage.setItem(this.currentlanguage + "totalStarCount",totalStarCount);
-
-  // }
 
   public static getTotalStarCount(): number {
     const starCount = localStorage.getItem(this.currentlanguage + "totalStarCount");
