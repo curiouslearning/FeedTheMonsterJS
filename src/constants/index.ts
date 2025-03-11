@@ -137,8 +137,8 @@ export const WINTER_BG_GROUP_IMGS = {
 
 //Rive Animation
 export const MONSTER_PHASES = [
-  './assets/rive/eggMonsterFTM.riv',
-  './assets/rive/blue_egg.riv',
+  './assets/rive/ftm_monster_1_1_v07.riv',
+  './assets/rive/ftm_monster_1_2_v03.riv',
   './assets/rive/green_egg.riv',
 ];
 export const EVOL_MONSTER = [
@@ -157,3 +157,10 @@ export const SCENE_NAME_LEVEL_END = "LevelEnd";
 
 //Levels
 export const SPECIAL_LEVELS = [5, 13, 20, 30, 42];
+
+//Evolving Phases Backgrounds
+export const PHASES_BG ={
+  0: './assets/images/placeholder_background_1.webp',
+  1: './assets/images/placeholder_background_2.webp',
+  2: './assets/images/placeholder_background_3.webp'
+};

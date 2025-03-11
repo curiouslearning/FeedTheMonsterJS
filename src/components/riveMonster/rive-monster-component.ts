@@ -31,10 +31,15 @@ export class RiveMonsterComponent {
     from: number;
     to: number;
   };
+  private scale: number;
+  private minY: number;
 
   constructor(props: RiveMonsterComponentProps) {
     this.props = props;
+    this.scale = gameSettingsService.getDevicePixelRatioValue();
+    // add extra space above the monster in the Rive file this ensures proper animation, it will causes the monster to be placed at the bottom of the screen
     this.initializeHitbox();
+    this.setRiveMinYAdjustment();
     this.initializeRive();
   }
   // Static readonly properties for all monster animations
@@ -52,9 +57,8 @@ export class RiveMonsterComponent {
   };
 
   private initializeHitbox() {
-    const scale = gameSettingsService.getDevicePixelRatioValue();
-    const monsterCenterX = (this.props.canvas.width / scale) / 2;
-    const monsterCenterY = (this.props.canvas.height / scale) / 2;
+    const monsterCenterX = (this.props.canvas.width / this.scale) / 2;
+    const monsterCenterY = (this.props.canvas.height / this.scale) / 2;
     const rangeFactorX = 55;
     const rangeFactorY = 100;
 
@@ -62,43 +66,68 @@ export class RiveMonsterComponent {
     this.hitboxRangeY = { from: monsterCenterY + (rangeFactorY / 2), to: monsterCenterY + (rangeFactorY * 2) };
   }
 
+  /**
+   * This method adjusts the alignment of the Rive animation to the evolution
+   * background on different screen sizes, ensuring consistent positioning across devices.
+   */
+  private setRiveMinYAdjustment(): void {
+    const { width, height } = this.props.canvas
+    const scaledWidth = Math.round(width / this.scale);
+    const scaledHeight = Math.round(height / this.scale);
+
+    // Default minY adjustment
+    let minY;
+
+    // Determine minY based on scaled width and height
+    if (scaledWidth >= 500) {
+      minY = scaledHeight / 14; // Adjusted from (height / 4) / 3.5 for clarity
+    } else if (scaledWidth <= 499 && scaledWidth >= 343 && scaledHeight >= 735){
+      minY = scaledHeight / 2;
+    } else {
+      minY = scaledHeight / 4;
+    }
+
+    // Dynamic adjustment based on scaledHeight (5% of the height)
+    minY -= scaledHeight * 0.05;
+
+    // Store the calculated minY
+    this.minY = minY;
+  }
+
   initializeRive() {
-    if(this.props.isEvolving && this.riveInstance) {
+    if (this.props.isEvolving && this.riveInstance) {
       this.riveInstance.cleanupInstances();
     }
-    
+
     const riveConfig: any = {
       src: this.props.src || MONSTER_PHASES[this.phaseIndex],
       canvas: this.props.canvas,
       autoplay: this.props.autoplay,
-      layout: new Layout({ 
-        fit: Fit.None,
+      layout: new Layout({
+        fit: Fit.Contain,
         alignment: Alignment.Center,
-        minX: 0,
-        minY: -350,
-        maxX: this.props.canvas.width, 
-        maxY: this.props.canvas.height,
       }),
       useOffscreenRenderer: true, // Improves performance
     };
 
-    // For evolution animations, we don't use state machines
+    // For evolution animations, we don't use state machines. so were excluding this.
     if (!this.props.isEvolving) {
       riveConfig['stateMachines'] = [this.stateMachineName];
       riveConfig['onLoad'] = this.handleLoad.bind(this);
       riveConfig['layout'] = new Layout({
-        fit: Fit.None,
+        fit: Fit.Contain,
         alignment: Alignment.Center,
-        minX:0,
-        minY:500,
+        minX: 0,
+        minY: this.minY,
         maxX: this.props.canvas.width,
         maxY: this.props.canvas.height,
       });
     }
 
+    this.evolutionOffSet(!this.props.isEvolving ? 0 : 50);
+
     this.riveInstance = new Rive(riveConfig);
   }
-
 
   getInputs() {
     // Don't try to get state machine inputs if we're in evolution mode
@@ -106,6 +135,15 @@ export class RiveMonsterComponent {
       return [];
     }
     return this.riveInstance.stateMachineInputs(this.stateMachineName);
+  }
+
+  /**
+The extra space above the monster in the Rive file ensures proper animation, but it causes the monster to be placed at the bottom of the screen (due to those excess spaces)). The moveCanvasUpOrDown function adjusts the position of the animation after it plays, removing the unnecessary space above and only used on the evolution animation because the other Rive monsters doesn't have an excessive spacing.
+*/
+  public evolutionOffSet(offsetY: number) {
+    //Set a fix of 50px on top for rive to properly align the evolution scene.
+    const canvas = this.props.canvas;
+    canvas.style.top = `${offsetY}px`;
   }
 
 
@@ -184,7 +222,10 @@ export class RiveMonsterComponent {
         canvas: this.props.canvas,
         autoplay: this.props.autoplay,
         stateMachines: [this.stateMachineName],
-        layout: new Layout({ fit: Fit.Contain, alignment: Alignment.Center }),
+        layout: new Layout({
+          fit: Fit.Contain,
+          alignment: Alignment.Center,
+        }),
         onLoad: this.handleLoad.bind(this),
         useOffscreenRenderer: true,
       });
@@ -194,7 +235,7 @@ export class RiveMonsterComponent {
   }
 
   public dispose() {
-    if(!this.riveInstance) return;
+    if (!this.riveInstance) return;
     this.riveInstance.cleanup();
     this.riveInstance = null;
   }

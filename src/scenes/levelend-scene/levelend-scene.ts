@@ -1,4 +1,4 @@
-import { CLICK, isDocumentVisible } from '@common';
+import { isDocumentVisible } from '@common';
 import { AudioPlayer } from '@components';
 import { MapButton, NextButtonHtml, RetryButtonHtml } from '@components/buttons';
 import {
@@ -17,7 +17,7 @@ import gameStateService from '@gameStateService';
 import gameSettingsService from '@gameSettingsService';
 import './levelend-scene.scss';
 import { RiveMonsterComponent } from '@components/riveMonster/rive-monster-component';
-import { BaseHTML } from '@components/baseHTML/base-html';
+import { EvolutionAnimationComponent } from '@components/evolutionAnimation/evolution-animation';
 
 export class LevelEndScene {
   static renderButtonsHTML() {
@@ -32,22 +32,22 @@ export class LevelEndScene {
   public audioPlayer: AudioPlayer;
   public isLastLevel: boolean;
   public levelEndElement = document.getElementById('levelEnd');
-  private backgroundElement: BaseHTML;
+  public buttonsContainer = document.getElementById('levelEndButtons');
   public nextButtonInstance: NextButtonHtml;
   public retryButtonInstance: RetryButtonHtml;
   public mapButtonInstance: MapButton;
   public riveMonster: RiveMonsterComponent;
   public canvasElement: HTMLCanvasElement;
-  private readonly EVOLUTION_ANIMATION_DELAY = 5500;
   private starAnimationTimeouts: number[] = [];
   private evolutionTimeout: number | null = null;
   public evolveMonster: boolean;
+  private evolutionAnimation: EvolutionAnimationComponent;
+  private readonly EVOLUTION_ANIMATION_DELAY = 5500;
 
   constructor() {
     const { starCount, currentLevel, data, monsterPhaseNumber } = gameStateService.getLevelEndSceneData();
     const { isLastLevel } = gameStateService.getGamePlaySceneDetails();
-    this.monsterPhaseNumber = gameStateService.checkMonsterPhaseUpdation();
-    this.evolveMonster = this.monsterPhaseNumber > monsterPhaseNumber;
+    this.evolveMonster = EvolutionAnimationComponent.shouldInitialize();
     this.canvasElement = gameSettingsService.getRiveCanvasValue();
     this.data = data;
     this.audioPlayer = new AudioPlayer();
@@ -61,10 +61,6 @@ export class LevelEndScene {
     this.renderStarsHTML();
     // Call switchToReactionAnimation during initialization
     this.switchToReactionAnimation();
-    // trigger monster evolution animation
-    /**
-     * This is the value to determine if we need to trigger evolution animation or not
-     */
   }
 
   initializeRiveMonster(oldMonsterPhaseNumber: number) {
@@ -76,7 +72,10 @@ export class LevelEndScene {
       alignment: "topCenter",
       src: MONSTER_PHASES[oldMonsterPhaseNumber], //use old asset before evolution.
       onLoad: () => {
-        this.riveMonster.play(RiveMonsterComponent.Animations.IDLE); // Start with the "Eat Happy" animation
+        // Start with the "Eat Happy" animation
+        if (this.riveMonster) {
+          this.riveMonster.play(RiveMonsterComponent.Animations.IDLE);
+        }
       }
     });
   }
@@ -95,7 +94,21 @@ export class LevelEndScene {
     this.toggleLevelEndBackground(true); // Publish show event
     // Render the stars dynamically based on the star count
     this.renderStarsHTML();
-    this.renderButtonsHTML();
+
+    if (this.evolveMonster) {
+      // Hide buttons initially
+      if (this.buttonsContainer) {
+        this.buttonsContainer.style.display = 'none';
+      }
+
+      // Remove buttons after evolution animation
+      setTimeout(() => {
+        this.renderButtonsHTML();
+        this.buttonsContainer.style.display = 'flex';
+      }, this.EVOLUTION_ANIMATION_DELAY);
+    } else {
+      this.renderButtonsHTML();
+    }
   }
 
   switchToReactionAnimation = () => {
@@ -113,87 +126,16 @@ export class LevelEndScene {
     }
   };
 
-  private initializeEvolutionBackground() {
-    return new BaseHTML(
-      {
-        selectors: { root: '#background' }
-      },
-      'levelend-background',
-      (id) => (`<div id="${id}"></div>`),
-      true
-    );
-  }
-
-  setCanvasPosition(position: 'evolution' | 'normal') {
-    const CANVAS_POSITIONS = {
-      evolution: {
-        zIndex: '13',
-      },
-      normal: {
-        zIndex: '4',
-      }
-    };
-
-    const pos = CANVAS_POSITIONS[position];
-
-    this.canvasElement.style.zIndex = pos.zIndex;
-  }
-
-  private handleEvolutionComplete = () => {
-    const bgElement = document.getElementById('levelend-background');
-    if (bgElement) {
-      bgElement.classList.add('fade-out');
-    }
-    this.setCanvasPosition('normal');
-  };
-
-  /**
-   * Returns the appropriate monster evolution animation source based on the phase
-   * @param {number} phase - The current phase of monster evolution (1-3)
-   * @returns {string} The path to the Rive animation file for the specified phase
-   * @description Maps different monster evolution phases to their corresponding animation files.
-   * If the specified phase is not found in the map, it falls back to the first evolution animation.
-   * @example
-   * // Get evolution animation for phase 1
-   * const evolutionSrc = getEvolutionSource(1); // returns MONSTER_EVOLUTION[2]
-   */
-  private getEvolutionSource(phase: number): string {
-    // Map different evolution animations based on phase
-    const evolutionMap = {
-      1: EVOL_MONSTER[0],
-      // Add more evoluition phases as needed
-    };
-
-    return evolutionMap[phase] || EVOL_MONSTER[1]; // fallback to first evolution if phase not found
-  }
-
-  private initializeEvolutionMonster() {
-    // need to dispose first. making sure that it wont go back to the old state after animating
-    this.riveMonster.dispose();
-    const evolutionSrc = this.getEvolutionSource(1);
-
-    return new RiveMonsterComponent({
-      canvas: this.canvasElement,
-      autoplay: true,
-      src: evolutionSrc,
-      isEvolving: this.evolveMonster,
-    });
-  }
-
-  runEvolutionAnimation() {
+  async callEvolutionAnimation() {
     if (this.evolveMonster) {
-      this.riveMonster = this.initializeEvolutionMonster();
-      this.backgroundElement = this.initializeEvolutionBackground();
-
-      // Set initial position for evolution
-      this.setCanvasPosition('evolution');
-
-      // Schedule evolution completion
-      setTimeout(() => {
-        this.handleEvolutionComplete()
-        //update the record in game state.
-        gameStateService.updateMonsterPhaseState(this.monsterPhaseNumber);
-      }, this.EVOLUTION_ANIMATION_DELAY);
+      this.riveMonster.dispose();
+      
+      this.evolutionAnimation = new EvolutionAnimationComponent({
+        canvas: this.canvasElement,
+        monsterPhaseNumber: this.monsterPhaseNumber,
+        autoplay: true,
+        isEvolving: true  
+      });
     }
   }
 
@@ -229,19 +171,12 @@ export class LevelEndScene {
             if (this.starCount >= 2) {
               this.callEvolutionAnimation();
             }
-          }, 500); // Wait another half second after last star appears
+          }, 1000); // Wait another 1 second after last star appears
         }
       }, i * 500); // Half-second delay between each star
 
       this.starAnimationTimeouts = [...this.starAnimationTimeouts, showTimeout];
     }
-  }
-
-  callEvolutionAnimation() {
-    console.log('All stars have been rendered and phase '+ this.monsterPhaseNumber + ' monster loaded');
-    this.riveMonster.changePhase(this.monsterPhaseNumber);
-    // Additional logic can be added here
-    this.runEvolutionAnimation();
   }
 
   private clearStarAnimationTimeouts() {
@@ -429,7 +364,10 @@ export class LevelEndScene {
       this.mapButtonInstance = null; // Clean up the reference
     }
 
-    if (this.backgroundElement) this.backgroundElement.destroy();
+    if (this.evolutionAnimation) {
+      this.evolutionAnimation.dispose();
+    }
+
     if (this.riveMonster) {
       this.riveMonster.dispose();
     }

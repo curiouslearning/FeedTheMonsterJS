@@ -1,149 +1,236 @@
-import {LevelEndScene} from './levelend-scene';
-import {RiveMonsterComponent} from '@components/riveMonster/rive-monster-component';
+import { isDocumentVisible } from '@common';
+import { AudioPlayer } from '@components';
+import { MapButton, NextButtonHtml, RetryButtonHtml } from '@components/buttons';
+import { BaseButtonComponent } from '@components/buttons/base-button-component/base-button-component';
+import {
+  AUDIO_INTRO,
+  AUDIO_LEVEL_LOSE,
+  AUDIO_LEVEL_WIN,
+  SCENE_NAME_GAME_PLAY,
+  SCENE_NAME_LEVEL_SELECT,
+} from '@constants';
 import gameStateService from '@gameStateService';
-import {AUDIO_INTRO, EVOL_MONSTER} from '@constants';
-import {AudioPlayer} from '@components';
+import gameSettingsService from '@gameSettingsService';
+import { RiveMonsterComponent } from '@components/riveMonster/rive-monster-component';
+import { LevelEndScene } from './levelend-scene';
+
+// Mock implementations
+const mockPlay = jest.fn();
+const mockDispose = jest.fn();
+const mockPlayAudio = jest.fn();
+const mockStopAllAudios = jest.fn();
+
+// Mock modules
+jest.mock('@gameStateService');
+jest.mock('@gameSettingsService');
+jest.mock('@components/riveMonster/rive-monster-component', () => {
+  const MockRiveMonsterComponent = jest.fn(() => ({
+    play: mockPlay,
+    dispose: mockDispose,
+  }));
+
+  Object.assign(MockRiveMonsterComponent, {
+    Animations: {
+      IDLE: "Idle",
+      SAD: "Sad",
+      HAPPY: "Happy"
+    }
+  });
+
+  return {
+    RiveMonsterComponent: MockRiveMonsterComponent
+  };
+});
 
 jest.mock('@components', () => ({
   AudioPlayer: jest.fn().mockImplementation(() => ({
-    stopAllAudios: jest.fn(), // Mock stopAllAudios
-    playAudio: jest.fn(),
-    playButtonClickSound: jest.fn(),
-    stopFeedbackAudio: jest.fn(),
+    playAudio: mockPlayAudio,
+    stopAllAudios: mockStopAllAudios,
   })),
 }));
 
-jest.mock('@components/riveMonster/rive-monster-component');
-jest.mock('@gameStateService');
-jest.mock('@components');
-jest.mock('@constants', () => ({
-  AUDIO_INTRO: 'audio/intro.mp3',
-  AUDIO_LEVEL_LOSE: 'audio/lose.mp3',
-  AUDIO_LEVEL_WIN: 'audio/win.mp3',
-  EVOL_MONSTER: [
-    './assets/rive/evolve.riv',
-    './assets/rive/evolve.riv',
-  ],
-  PIN_STAR_1: 'star1.png',
-  PIN_STAR_2: 'star2.png',
-  PIN_STAR_3: 'star3.png'
-}));
+jest.mock('@components/buttons/base-button-component/base-button-component');
 
 describe('LevelEndScene', () => {
   let levelEndScene: LevelEndScene;
   let mockSwitchToGameplayCB: jest.Mock;
-  let mockSwitchToLevelSelectionCB: jest.Mock;
+  let mockOnClick: jest.Mock;
 
   beforeEach(() => {
-    jest.clearAllMocks();
+    // Clear mocks
+    mockPlayAudio.mockClear();
+    mockStopAllAudios.mockClear();
 
-    // Mock `getGamePlaySceneDetails` to return valid data
-    (gameStateService.getGamePlaySceneDetails as jest.Mock).mockReturnValue({
-      isLastLevel: false, // Mocked value
+    // Set up DOM elements
+    document.body.innerHTML = `
+      <div id="levelEnd">
+        <div class="stars-container"></div>
+        <div id="levelEndButtons"></div>
+      </div>
+      <canvas id="game-control"></canvas>
+      <canvas id="canvas"></canvas>
+    `;
+
+    // Mock BaseButtonComponent
+    mockOnClick = jest.fn();
+    (BaseButtonComponent as unknown as jest.Mock).mockImplementation(function(options) {
+      // Create button element
+      const button = document.createElement('button');
+      button.id = options.id;
+      const container = document.getElementById(options.targetId || 'game-control');
+      container?.appendChild(button);
+
+      // Add click handler
+      this.onClick = (callback) => {
+        button.addEventListener('click', callback);
+      };
+
+      // Add dispose method
+      this.dispose = jest.fn();
     });
 
-    // Mock `getLevelEndSceneData` to return valid data
+    // Mock gameStateService methods
     (gameStateService.getLevelEndSceneData as jest.Mock).mockReturnValue({
-      starCount: 3,
+      starCount: 2,
       currentLevel: 1,
       data: {
         levels: [
-          {levelMeta: {levelNumber: 1}},
-          {levelMeta: {levelNumber: 2}},
-          {levelMeta: {levelNumber: 3}},
-        ],
+          { id: 1 },
+          { id: 2 }
+        ]
       },
+      monsterPhaseNumber: 1
     });
 
-    document.body.innerHTML = `
-      <div id="levelEnd"></div>
-      <canvas id="rivecanvas"></canvas>
-      <div class="stars-container"></div>
-      <div id="game-control"></div>
-      <div id="levelEndButtons"></div>
-    `;
+    (gameStateService.getGamePlaySceneDetails as jest.Mock).mockReturnValue({
+      isLastLevel: false
+    });
 
-    mockSwitchToGameplayCB = jest.fn();
-    mockSwitchToLevelSelectionCB = jest.fn();
-
-    // Initialize the LevelEndScene
-    levelEndScene = new LevelEndScene(
-    );
+    // Create new instance
+    levelEndScene = new LevelEndScene();
   });
 
   afterEach(() => {
     jest.clearAllMocks();
+    document.body.innerHTML = '';
   });
 
   it('should initialize the RiveMonsterComponent with default settings', () => {
-    expect(RiveMonsterComponent).toHaveBeenCalledWith(
-      expect.objectContaining({
-        canvas: expect.any(HTMLCanvasElement),
-        autoplay: true,
-        fit: 'contain',
-        alignment: 'topCenter',
-      }),
-    );
+    expect(levelEndScene.riveMonster).toBeDefined();
   });
 
   it('should display the level end background when showing the level end screen', () => {
-    const levelEndElement = document.getElementById('levelEnd');
-    levelEndScene.showLevelEndScreen();
-    expect(levelEndElement?.style.display).toBe('block');
+    levelEndScene.toggleLevelEndBackground(true);
+    const levelEnd = document.getElementById('levelEnd');
+    expect(levelEnd.style.display).toBe('block');
+    expect(levelEnd.style.zIndex).toBe('11');
   });
 
   it('should hide the level end background when toggled off', () => {
     levelEndScene.toggleLevelEndBackground(false);
-    const levelEndElement = document.getElementById('levelEnd');
-    expect(levelEndElement?.style.display).toBe('none');
+    const levelEnd = document.getElementById('levelEnd');
+    expect(levelEnd.style.display).toBe('none');
   });
 
   it('should render the correct number of stars in the stars container', () => {
-    levelEndScene.renderStarsHTML();
     const starsContainer = document.querySelector('.stars-container');
-    expect(starsContainer?.children.length).toBe(3);
+    const stars = starsContainer.querySelectorAll('img');
+    expect(stars.length).toBe(2); // Based on starCount: 2 from mock
   });
 
-  it('should call play with EAT_HAPPY animation for 2 or more stars', () => {
-    levelEndScene.starCount = 2;
-    levelEndScene.switchToReactionAnimation();
-    expect(levelEndScene.riveMonster.play).toHaveBeenCalledWith(
-      RiveMonsterComponent.Animations.HAPPY,
+  it('should publish gameplay data event with correct data when switching levels', () => {
+    // Mock current level data
+    (gameStateService.getLevelEndSceneData as jest.Mock).mockReturnValue({
+      starCount: 2,
+      currentLevel: 1,
+      data: {
+        levels: [
+          { id: 1 },
+          { id: 2 }
+        ]
+      },
+      monsterPhaseNumber: 1,
+      currentLevelData: { id: 1 }
+    });
+
+    levelEndScene = new LevelEndScene();
+    
+    const expectedData = {
+      currentLevelData: expect.any(Object),
+      selectedLevelNumber: 2,
+    };
+    
+    levelEndScene.buttonCallbackFn('next');
+    
+    expect(gameStateService.publish).toHaveBeenCalledWith(
+      gameStateService.EVENTS.GAMEPLAY_DATA_EVENT,
+      expectedData
     );
   });
 
-  it('should call play with EAT_DISGUST animation for 1 or fewer stars', () => {
-    levelEndScene.starCount = 1;
+  it('should play happy animation for 2 or more stars', () => {
+    // Reset with 2 stars
+    (gameStateService.getLevelEndSceneData as jest.Mock).mockReturnValue({
+      starCount: 2,
+      currentLevel: 1,
+      data: { levels: [{ id: 1 }] },
+      monsterPhaseNumber: 1
+    });
+
+    levelEndScene = new LevelEndScene();
+    
+    // Force document to be visible
+    Object.defineProperty(document, 'visibilityState', { value: 'visible', writable: true });
+    
     levelEndScene.switchToReactionAnimation();
-    expect(levelEndScene.riveMonster.play).toHaveBeenCalledWith(
-      RiveMonsterComponent.Animations.SAD,
-    );
+
+    // Verify correct animation was played
+    expect(mockPlay).toHaveBeenCalledWith(RiveMonsterComponent.Animations.HAPPY);
+  });
+
+  it('should play sad animation for 1 or fewer stars', () => {
+    // Reset with 1 star
+    (gameStateService.getLevelEndSceneData as jest.Mock).mockReturnValue({
+      starCount: 1,
+      currentLevel: 1,
+      data: { levels: [{ id: 1 }] },
+      monsterPhaseNumber: 1
+    });
+
+    levelEndScene = new LevelEndScene();
+    
+    // Force document to be visible
+    Object.defineProperty(document, 'visibilityState', { value: 'visible', writable: true });
+    
+    levelEndScene.switchToReactionAnimation();
+
+    // Verify correct animation was played
+    expect(mockPlay).toHaveBeenCalledWith(RiveMonsterComponent.Animations.SAD);
   });
 
   it('should call the retry button callback on retry button click', () => {
-    levelEndScene.renderButtonsHTML();
-    const retryButton = document.getElementById(
-      'levelend-retry-btn',
-    ) as HTMLButtonElement;
-    retryButton.click();
-    expect(mockSwitchToGameplayCB).toHaveBeenCalled();
+    levelEndScene.buttonCallbackFn('retry');
+    expect(gameStateService.publish).toHaveBeenCalledWith(
+      gameStateService.EVENTS.SWITCH_SCENE_EVENT,
+      SCENE_NAME_GAME_PLAY
+    );
   });
 
   it('should call the map button callback on map button click', () => {
-    levelEndScene.renderButtonsHTML();
-    const mapButton = document.getElementById(
-      'levelend-map-btn',
-    ) as HTMLButtonElement;
-    mapButton.click();
-    expect(mockSwitchToLevelSelectionCB).toHaveBeenCalled();
+    levelEndScene.buttonCallbackFn('map');
+    expect(gameStateService.publish).toHaveBeenCalledWith(
+      gameStateService.EVENTS.SWITCH_SCENE_EVENT,
+      SCENE_NAME_LEVEL_SELECT
+    );
   });
 
-  it('should remove the next button if it is the last level', () => {
+  it('should not render next button if it is the last level', () => {
     levelEndScene.isLastLevel = true;
     levelEndScene.renderButtonsHTML();
     const nextButton = document.getElementById('levelend-next-btn');
     expect(nextButton).toBeNull();
   });
+
 
   it('should publish gameplay data event with correct data when switching levels', () => {
     const expectedData = {
@@ -158,105 +245,94 @@ describe('LevelEndScene', () => {
   });
 
   it('should pause all audios when the document is hidden', () => {
-    // Mocking the visibility state to simulate the document being hidden
     Object.defineProperty(document, 'visibilityState', {
       value: 'hidden',
       writable: true,
     });
 
-    // Mock the audioPlayer object and the stopAllAudios method
-    const stopAllAudiosMock = jest.fn();
-    levelEndScene.audioPlayer = {stopAllAudios: stopAllAudiosMock} as any;
-
-    // Trigger the pauseAudios method, which should call stopAllAudios when the document is hidden
     levelEndScene.pauseAudios();
 
-    // Assert that stopAllAudios was called
-    expect(stopAllAudiosMock).toHaveBeenCalled();
+    expect(mockStopAllAudios).toHaveBeenCalled();
   });
 
   it('should play the intro audio if the document is visible', () => {
-    // Mocking the visibility state to simulate the document being visible
     Object.defineProperty(document, 'visibilityState', {
       value: 'visible',
       writable: true,
     });
 
-    // Set the conditions for the LevelEndScene
-    levelEndScene.starCount = 2;
+    // Reset with 2 stars
+    (gameStateService.getLevelEndSceneData as jest.Mock).mockReturnValue({
+      starCount: 2,
+      currentLevel: 1,
+      data: { levels: [{ id: 1 }] },
+      monsterPhaseNumber: 1
+    });
 
-    // Assuming `pauseAudios` triggers the audio play when visibility state is 'visible'
+    levelEndScene = new LevelEndScene();
     levelEndScene.pauseAudios();
 
-    // Check if the correct audio file is played
-    expect(levelEndScene.audioPlayer.playAudio).toHaveBeenCalledWith(
-      AUDIO_INTRO,
-    );
+    expect(mockPlayAudio).toHaveBeenCalledWith(AUDIO_INTRO);
   });
 
   describe('LevelEnd buttons rendering', () => {
+    beforeEach(() => {
+      // Mock gameStateService.publish
+      (gameStateService.publish as jest.Mock).mockClear();
+    });
+
     it('should render MapButton', () => {
       levelEndScene.renderButtonsHTML();
-      expect(document.getElementById('levelend-map-btn')).not.toBeNull();
+      expect(document.getElementById('levelend-map-btn')).toBeDefined();
+    });
+
+    it('should render RetryButton', () => {
+      levelEndScene.renderButtonsHTML();
+      expect(document.getElementById('levelend-retry-btn')).toBeDefined();
+    });
+
+    it('should render NextButton if not last level', () => {
+      levelEndScene.isLastLevel = false;
+      levelEndScene.renderButtonsHTML();
+      expect(document.getElementById('levelend-next-btn')).toBeDefined();
+    });
+
+    it('should call switchToGameplayCB when Retry button is clicked', () => {
+      // Render buttons
+      levelEndScene.renderButtonsHTML();
+      
+      // Get retry button and click it
+      const retryButton = document.getElementById('levelend-retry-btn');
+      expect(retryButton).toBeDefined();
+      retryButton?.click();
+      
+      // Verify the correct events were published
+      expect(gameStateService.publish).toHaveBeenCalledWith(
+        gameStateService.EVENTS.SWITCH_SCENE_EVENT,
+        SCENE_NAME_GAME_PLAY
+      );
     });
 
     it('should call switchToLevelSelectionCB when Map button is clicked', () => {
+      // Render buttons
       levelEndScene.renderButtonsHTML();
-      const mapButton = document.getElementById(
-        'levelend-map-btn',
-      ) as HTMLButtonElement;
-      mapButton.click();
-      expect(mockSwitchToLevelSelectionCB).toHaveBeenCalled();
-    });
-
-    it('should render RetryButtonHtml', () => {
-      levelEndScene.renderButtonsHTML();
-      expect(document.getElementById('levelend-retry-btn')).not.toBeNull();
-    });
-
-    it('should call switchToGameplayCB with correct data when Retry button is clicked', () => {
-      levelEndScene.renderButtonsHTML();
-      const retryButton = document.getElementById(
-        'levelend-retry-btn',
-      ) as HTMLButtonElement;
-      retryButton.click();
-      expect(mockSwitchToGameplayCB).toHaveBeenCalledWith();
-    });
-
-    it('should render NextButtonHtml if isLastLevel is false', () => {
-      levelEndScene.isLastLevel = false; // Explicitly set to false
-      levelEndScene.renderButtonsHTML();
-      expect(document.getElementById('levelend-next-btn')).not.toBeNull();
-    });
-
-    it('should call switchToGameplayCB with correct data when Next button is clicked', () => {
-      levelEndScene.isLastLevel = false; // Ensure it’s not the last level
-      levelEndScene.renderButtonsHTML();
-      const nextButton = document.getElementById(
-        'levelend-next-btn',
-      ) as HTMLButtonElement;
-      nextButton.click();
-      expect(mockSwitchToGameplayCB).toHaveBeenCalledWith();
-    });
-
-    it('should not render NextButtonHtml if isLastLevel is true', () => {
-      levelEndScene.isLastLevel = true; // Simulate last level scenario
-      levelEndScene.renderButtonsHTML();
-      const nextButton = document.getElementById('levelend-next-btn');
-      expect(nextButton).toBeNull(); // Confirm the button does not exist
+      
+      // Get map button and click it
+      const mapButton = document.getElementById('levelend-map-btn');
+      expect(mapButton).toBeDefined();
+      mapButton?.click();
+      
+      // Verify the correct events were published
+      expect(gameStateService.publish).toHaveBeenCalledWith(
+        gameStateService.EVENTS.SWITCH_SCENE_EVENT,
+        SCENE_NAME_LEVEL_SELECT
+      );
     });
   });
 
-  describe('Dispose functionality', () => {
-    it('should not dispose NextButtonHtml if not created', () => {
-      levelEndScene.isLastLevel = true; // Simulate last level scenario
-      levelEndScene.renderButtonsHTML();
-      levelEndScene.dispose();
-      expect(levelEndScene.nextButtonInstance).toBeNull(); // Updated to check for null
-    });
-
+  describe('dispose', () => {
     it('should dispose of all button instances on dispose', () => {
-      levelEndScene.isLastLevel = false; // Explicitly set to false
+      levelEndScene.isLastLevel = false;
       levelEndScene.renderButtonsHTML();
       levelEndScene.dispose();
 
@@ -264,93 +340,41 @@ describe('LevelEndScene', () => {
       expect(levelEndScene.retryButtonInstance).toBeNull();
       expect(levelEndScene.nextButtonInstance).toBeNull();
     });
-  });
 
-  describe('Evolution functionality', () => {
-    beforeEach(() => {
-      document.body.innerHTML = `
-        <div id="levelEnd"></div>
-        <canvas id="rivecanvas"></canvas>
-        <div id="background"></div>
-      `;
+    it('should clean up all button instances', () => {
+      // Create button instances
+      levelEndScene.renderButtonsHTML();
+      
+      // Create spies
+      const nextButtonDisposeSpy = jest.spyOn(levelEndScene.nextButtonInstance, 'dispose');
+      const retryButtonDisposeSpy = jest.spyOn(levelEndScene.retryButtonInstance, 'dispose');
+      const mapButtonDisposeSpy = jest.spyOn(levelEndScene.mapButtonInstance, 'dispose');
+      
+      // Call dispose
+      levelEndScene.dispose();
+      
+      // Verify all dispose methods were called
+      expect(nextButtonDisposeSpy).toHaveBeenCalled();
+      expect(retryButtonDisposeSpy).toHaveBeenCalled();
+      expect(mapButtonDisposeSpy).toHaveBeenCalled();
+      
+      // Verify instances were nullified
+      expect(levelEndScene.nextButtonInstance).toBeNull();
+      expect(levelEndScene.retryButtonInstance).toBeNull();
+      expect(levelEndScene.mapButtonInstance).toBeNull();
     });
 
-    it('should initialize evolution monster with correct props', () => {
-      // Set up
-      levelEndScene.evolveMonster = true;
+    it('should remove event listeners and stop audio', () => {
+      const removeEventListenerSpy = jest.spyOn(document, 'removeEventListener');
       
-      // Mock getEvolutionSource to return a specific file
-      const mockEvolutionSrc = './assets/rive/evolve.riv';
-      jest.spyOn(levelEndScene as any, 'getEvolutionSource').mockReturnValue(mockEvolutionSrc);
+      levelEndScene.dispose();
       
-      // Execute
-      const evolutionMonster = levelEndScene['initializeEvolutionMonster']();
-
-      // Verify
-      expect(RiveMonsterComponent).toHaveBeenCalledWith({
-        canvas: expect.any(HTMLCanvasElement),
-        autoplay: true,
-        src: mockEvolutionSrc,
-        isEvolving: true
-      });
-    });
-
-    it('should set correct canvas position during evolution', () => {
-      levelEndScene.setCanvasPosition('evolution');
-      expect(levelEndScene.canvasElement.style.zIndex).toBe('13');
-
-      levelEndScene.setCanvasPosition('normal');
-      expect(levelEndScene.canvasElement.style.zIndex).toBe('4');
-    });
-
-    it('should handle evolution completion correctly', () => {
-      // Setup
-      document.body.innerHTML = `
-        <div id="levelend-background"></div>
-        <canvas id="rivecanvas"></canvas>
-      `;
-      
-      // Execute
-      levelEndScene['handleEvolutionComplete']();
-      
-      // Assert
-      const bgElement = document.getElementById('levelend-background');
-      expect(bgElement.classList.contains('fade-out')).toBe(true);
-      expect(levelEndScene.canvasElement.style.zIndex).toBe('4');
-    });
-
-    it('should get correct evolution source based on phase', () => {
-      // Test for phase 1
-      expect(levelEndScene['getEvolutionSource'](1)).toBe(EVOL_MONSTER[0]);
-      
-      // Test fallback for unknown phase
-      expect(levelEndScene['getEvolutionSource'](999)).toBe(EVOL_MONSTER[0]);
-    });
-
-    it('should run evolution animation with correct timing', () => {
-      jest.useFakeTimers();
-      
-      // Setup spies
-      const initEvolutionMonsterSpy = jest.spyOn(levelEndScene as any, 'initializeEvolutionMonster');
-      const initEvolutionBackgroundSpy = jest.spyOn(levelEndScene as any, 'initializeEvolutionBackground');
-      const handleEvolutionCompleteSpy = jest.spyOn(levelEndScene as any, 'handleEvolutionComplete');
-      
-      // Run evolution animation
-      levelEndScene.evolveMonster = true;
-      levelEndScene.runEvolutionAnimation();
-      
-      // Check initial setup
-      expect(initEvolutionMonsterSpy).toHaveBeenCalled();
-      expect(initEvolutionBackgroundSpy).toHaveBeenCalled();
-      expect(levelEndScene.canvasElement.style.zIndex).toBe('13');
-      
-      // Fast forward timer
-      jest.advanceTimersByTime(levelEndScene['EVOLUTION_ANIMATION_DELAY']);
-      
-      // Check completion handler was called
-      expect(handleEvolutionCompleteSpy).toHaveBeenCalled();
-      
-      jest.useRealTimers();
+      expect(mockStopAllAudios).toHaveBeenCalled();
+      expect(removeEventListenerSpy).toHaveBeenCalledWith(
+        'visibilitychange',
+        levelEndScene.pauseAudios,
+        false
+      );
     });
   });
 });

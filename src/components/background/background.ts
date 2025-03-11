@@ -110,7 +110,7 @@ export class BackgroundHtmlGenerator extends BaseBackgroundComponent {
   }
 
   // Clears only the content within the #background-elements container
-  private clearBackgroundContent(): void {
+  public clearBackgroundContent(): void {
     const backgroundElementsContainer = document.getElementById(
       "background-elements"
     );
