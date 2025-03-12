@@ -143,6 +143,7 @@ export const MONSTER_PHASES = [
 ];
 export const EVOL_MONSTER = [
   './assets/rive/evolve.riv', // add new files when other evolution files are ready
+  './assets/rive/ftm_monster_1_2_evol_v01.riv'
 ];
 
 export enum MonsterState {
