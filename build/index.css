@@ -235,14 +235,14 @@ img {
   opacity: 0;
   pointer-events: none;
   text-shadow:
-    -2px -2px 0 #f8b618,
-    2px -2px 0 #f8b618,
-    -2px 2px 0 #f8b618,
-    2px 2px 0 #f8b618,
-    -3px 0 0 #f8b618,
-    3px 0 0 #f8b618,
-    0 -3px 0 #f8b618,
-    0 3px 0 #f8b618;
+    -2px -2px 0 #261C03,
+    2px -2px 0 #261C03,
+    -2px 2px 0 #261C03,
+    2px 2px 0 #261C03,
+    -3px 0 0 #261C03,
+    3px 0 0 #261C03,
+    0 -3px 0 #261C03,
+    0 3px 0 #261C03;
   letter-spacing: 3px;
   z-index: 0;
 }
