@@ -31,7 +31,7 @@
     .timer-mask {
       position: absolute;
       width: 86%;
-      background: repeating-linear-gradient(-45deg, red, red 20px, #ffb3b3 20px, #ffb3b3 40px);
+      background: repeating-linear-gradient(-45deg, #EA3323, #EA3323 20px, #F9AAAA 20px, #F9AAAA 40px);
       left: 0px;
       height: 25px;
       margin: 6px 0px 0px 2px;
@@ -80,8 +80,8 @@
   }
 
   #timer-ticking #timer-full-container .timer-mask {
-    height: 19px;
-    margin: 4px 0px 0px 2px;
+    height: 22px;
+    margin: 4px 0px 0px 0px;
   }
 
   #timer-ticking #rotating-clock {

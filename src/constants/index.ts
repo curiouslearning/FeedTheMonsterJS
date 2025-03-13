@@ -84,7 +84,7 @@ export const PROMPT_PLAY_BUTTON = "./assets/images/promptPlayButton.webp";
 export const LEVEL_INDICATOR = "./assets/images/levels_v01.webp";
 export const BAR_EMPTY = "./assets/images/bar_empty_v01.webp";
 export const BAR_FULL = "./assets/images/bar_full_v01.webp";
-export const TIMER_EMPTY = "./assets/images/timer_empty.webp";
+export const TIMER_EMPTY = "./assets/images/timer_emptynew.webp";
 export const ROTATING_CLOCK = "./assets/images/timer.webp";
 export const TIMER_FULL = "./assets/images/timer_full.png";
 export const TUTORIAL_HAND = "./assets/images/tutorial_hand.webp";
@@ -145,11 +145,12 @@ export const WINTER_BG_GROUP_IMGS = {
 //Rive Animation
 export const MONSTER_PHASES = [
   './assets/rive/ftm_monster_1_1_v07.riv',
-  './assets/rive/blue_egg.riv',
+  './assets/rive/ftm_monster_1_2_v03.riv',
   './assets/rive/green_egg.riv',
 ];
 export const EVOL_MONSTER = [
   './assets/rive/evolve.riv', // add new files when other evolution files are ready
+  './assets/rive/ftm_monster_1_2_evol_v01.riv'
 ];
 
 export enum MonsterState {

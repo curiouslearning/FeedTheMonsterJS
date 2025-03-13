@@ -153,15 +153,12 @@ export class GameplayScene {
     this.setupMonsterPhaseBg();
   }
 
-  private initializeRiveMonster(initialAnimation: string = RiveMonsterComponent.Animations.IDLE): RiveMonsterComponent {
+  private initializeRiveMonster(): RiveMonsterComponent {
     return new RiveMonsterComponent({
       canvas: this.riveMonsterElement,
       autoplay: true,
       fit: "contain",
       alignment: "bottomCenter",
-      onLoad: () => {
-        this.monster.play(initialAnimation);
-      },
       gameCanvas: this.canvas,
       src: MONSTER_PHASES[this.monsterPhaseNumber],
     });

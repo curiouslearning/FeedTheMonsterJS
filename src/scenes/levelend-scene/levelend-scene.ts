@@ -57,6 +57,7 @@ export class LevelEndScene {
     this.isLastLevel = isLastLevel;
     this.initializeRiveMonster(monsterPhaseNumber);
     this.toggleLevelEndBackground(true);
+    this.monsterPhaseNumber = gameStateService.checkMonsterPhaseUpdation(); //Get the updated phase before showing level-end.
     this.showLevelEndScreen(); // Display the level end screen
     this.addEventListener();
     this.renderStarsHTML();
@@ -146,7 +147,6 @@ export class LevelEndScene {
   async callEvolutionAnimation() {
     if (this.evolveMonster) {
       this.riveMonster.dispose();
-
       this.evolutionAnimation = new EvolutionAnimationComponent({
         canvas: this.canvasElement,
         monsterPhaseNumber: this.monsterPhaseNumber,

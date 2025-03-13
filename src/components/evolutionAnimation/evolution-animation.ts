@@ -69,6 +69,7 @@ export class EvolutionAnimationComponent extends RiveMonsterComponent {
     // Map different evolution animations based on phase
     const evolutionMap: { [key: number]: string } = {
       1: EVOL_MONSTER[0],
+      2: EVOL_MONSTER[1],
     };
 
     return evolutionMap[phase] || EVOL_MONSTER[0]; // fallback to first evolution if phase not found
