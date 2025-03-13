@@ -10,7 +10,9 @@ import {
   PIN_STAR_3,
   SCENE_NAME_LEVEL_SELECT,
   SCENE_NAME_GAME_PLAY,
-  MONSTER_PHASES
+  MONSTER_PHASES,
+  AUDIO_CHEERING,
+  AUDIO_MONSTER_DISCOVERED,
 } from '@constants';
 import gameStateService from '@gameStateService';
 import gameSettingsService from '@gameSettingsService';
@@ -118,9 +120,25 @@ export class LevelEndScene {
       }
       if (this.riveMonster) this.riveMonster.play(RiveMonsterComponent.Animations.SAD);
     } else {
-      if (isDocumentVisible()) {
+      // Only play audio if we're not going to evolve the monster
+      if (isDocumentVisible() && !this.evolveMonster) {
         this.audioPlayer.playAudio(AUDIO_LEVEL_WIN);
         this.audioPlayer.playAudio(AUDIO_INTRO);
+      } else {
+        // Preload all audio files to ensure they're ready to play
+        Promise.all([
+          this.audioPlayer.preloadGameAudio(AUDIO_CHEERING),
+          this.audioPlayer.preloadGameAudio(AUDIO_MONSTER_DISCOVERED),
+        ]).then(() => {
+          // Play audio sequence in order using the playFeedbackAudios method
+          this.audioPlayer.playFeedbackAudios(
+            false,
+            AUDIO_CHEERING,
+            AUDIO_MONSTER_DISCOVERED,
+          );
+        }).catch(error => {
+          console.error('Error preloading evolution audio files:', error);
+        });
       }
       if (this.riveMonster) this.riveMonster.play(RiveMonsterComponent.Animations.HAPPY);
     }
@@ -133,7 +151,7 @@ export class LevelEndScene {
         canvas: this.canvasElement,
         monsterPhaseNumber: this.monsterPhaseNumber,
         autoplay: true,
-        isEvolving: true  
+        isEvolving: true
       });
     }
   }
@@ -223,6 +241,12 @@ export class LevelEndScene {
   }
 
   buttonCallbackFn(action: 'map' | 'retry' | 'next') {
+    // First, ensure we dispose of the evolution animation to prevent audio from playing again
+    if (this.evolutionAnimation) {
+      this.evolutionAnimation.dispose();
+      this.evolutionAnimation = null;
+    }
+
     const handleRetryOrNext = (level: number) => {
       const gamePlayData = {
         currentLevelData: {
@@ -327,7 +351,8 @@ export class LevelEndScene {
 
   pauseAudios = () => {
     if (isDocumentVisible()) {
-      if (this.starCount >= 2) {
+      // Only play intro audio if not evolving monster and star count is sufficient
+      if (this.starCount >= 2 && !this.evolveMonster) {
         this.audioPlayer.playAudio(AUDIO_INTRO);
       }
     } else {
@@ -369,6 +394,10 @@ export class LevelEndScene {
 
     if (this.riveMonster) {
       this.riveMonster.dispose();
+    }
+
+    if(this.evolutionAnimation) {
+      this.evolutionAnimation.dispose();
     }
   };
 }

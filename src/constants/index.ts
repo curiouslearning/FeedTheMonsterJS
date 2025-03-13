@@ -51,7 +51,14 @@ export const AUDIO_URL_PRELOAD = [
   "./assets/audios/Eat.mp3",
   "./assets/audios/PointsAdd.wav",
   "./assets/audios/are-you-sure.mp3",
+  './assets/audios/monster_discovered_fanfare.mp3',
+  './assets/audios/monster_evolve.mp3'
 ];
+
+// Evolution audio paths
+export const AUDIO_CHEERING = './assets/audios/Cheering-03.mp3';
+export const AUDIO_MONSTER_DISCOVERED = './assets/audios/monster_discovered_fanfare.mp3';
+export const AUDIO_MONSTER_EVOLVE = './assets/audios/monster_evolve.mp3';
 
 //Image paths
 export const ASSETS_PATH_STONE_PINK_BG = "./assets/images/Pink_Stone.webp"; //Updated stone asset
