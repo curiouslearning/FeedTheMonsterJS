@@ -109,24 +109,12 @@ export class RiveMonsterComponent {
         alignment: Alignment.Center,
       }),
       useOffscreenRenderer: true, // Improves performance
-      onLoad: () => {
-        if (this.props.onLoad) {
-          this.props.onLoad();
-        }
-        if (!this.props.isEvolving) {
-          this.handleLoad();
-        }
-      },
-      onStop: () => {
-        if (this.props.onStop) {
-          this.props.onStop();
-        }
-      },
     };
 
     // For evolution animations, we don't use state machines. so were excluding this.
     if (!this.props.isEvolving) {
       riveConfig['stateMachines'] = [this.stateMachineName];
+      riveConfig['onLoad'] = this.handleLoad.bind(this);
       riveConfig['layout'] = new Layout({
         fit: Fit.Contain,
         alignment: Alignment.Center,
@@ -141,7 +129,6 @@ export class RiveMonsterComponent {
 
     this.riveInstance = new Rive(riveConfig);
   }
-
   getInputs() {
     // Don't try to get state machine inputs if we're in evolution mode
     if (this.props.isEvolving) {
