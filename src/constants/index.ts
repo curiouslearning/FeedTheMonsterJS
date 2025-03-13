@@ -61,7 +61,7 @@ export const AUDIO_MONSTER_DISCOVERED = './assets/audios/monster_discovered_fanf
 export const AUDIO_MONSTER_EVOLVE = './assets/audios/monster_evolve.mp3';
 
 //Image paths
-export const ASSETS_PATH_STONE_PINK_BG = "./assets/images/stone_pink.webp"; //stone_pink_v02.png
+export const ASSETS_PATH_STONE_PINK_BG = "./assets/images/Pink_Stone.webp"; //Updated stone asset
 export const ASSETS_PATH_TOTEM = "./assets/images/Totem_v02_v01.webp";
 export const ASSETS_PATH_BG_01 = "./assets/images/bg_v01.webp";
 export const ASSETS_PATH_HILL = "./assets/images/hill.webp";
