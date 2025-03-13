@@ -95,8 +95,6 @@ export class EvolutionAnimationComponent extends RiveMonsterComponent {
   
   // Play audio sequence after evolution animation completes
   private playEvolutionCompletionAudios() {
-    console.log('Playing evolution completion audios');
-    
     // First stop any currently playing audio
     this.audioPlayer.stopAllAudios();
     
@@ -105,7 +103,6 @@ export class EvolutionAnimationComponent extends RiveMonsterComponent {
       this.audioPlayer.preloadGameAudio(AUDIO_MONSTER_EVOLVE),
       this.audioPlayer.preloadGameAudio(AUDIO_INTRO)
     ]).then(() => {
-      console.log('Audio files preloaded, playing sequence');
       // Play audio sequence in order using the playFeedbackAudios method
       this.audioPlayer.playFeedbackAudios(
         false, 
@@ -128,7 +125,6 @@ export class EvolutionAnimationComponent extends RiveMonsterComponent {
 
     // Set timeout to handle animation completion
     setTimeout(() => {
-      console.log('Animation end callback: Evolution animation has completed');
       this.handleEvolutionComplete();
 
       //update the record in game state.
