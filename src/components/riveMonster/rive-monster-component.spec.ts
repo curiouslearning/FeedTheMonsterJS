@@ -117,7 +117,6 @@ describe('RiveMonsterComponent', () => {
       },
       stateMachines: ['State Machine 1'],
       onLoad: expect.any(Function),
-      onStop: expect.any(Function),
       useOffscreenRenderer: true
     });
   });
@@ -201,7 +200,6 @@ describe('RiveMonsterComponent', () => {
         alignment: 'Center'
       },
       onLoad: expect.any(Function),
-      onStop: expect.any(Function),
       useOffscreenRenderer: true
     });
   });

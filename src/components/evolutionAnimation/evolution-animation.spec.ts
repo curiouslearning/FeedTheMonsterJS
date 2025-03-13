@@ -6,12 +6,26 @@ import { EVOL_MONSTER } from '@constants';
 // Mock dependencies
 const mockDestroy = jest.fn();
 const mockDispose = jest.fn();
+const mockStopAllAudios = jest.fn();
+const mockPreloadGameAudio = jest.fn().mockResolvedValue(undefined);
+const mockPlayFeedbackAudios = jest.fn();
 
 jest.mock('@components/baseHTML/base-html', () => ({
   BaseHTML: jest.fn().mockImplementation(() => ({
     destroy: mockDestroy,
     _init: jest.fn(),
     render: jest.fn()
+  }))
+}));
+
+// Mock AudioPlayer
+jest.mock('@components/audio-player', () => ({
+  AudioPlayer: jest.fn().mockImplementation(() => ({
+    stopAllAudios: mockStopAllAudios,
+    preloadGameAudio: mockPreloadGameAudio,
+    playFeedbackAudios: mockPlayFeedbackAudios,
+    playAudio: jest.fn(),
+    playButtonClickSound: jest.fn()
   }))
 }));
 
@@ -77,7 +91,6 @@ describe('EvolutionAnimationComponent', () => {
       monsterPhaseNumber: 1,
       autoplay: true,
       src: EVOL_MONSTER[0],
-      onStop: expect.any(Function)
     });
   });
 
@@ -93,8 +106,7 @@ describe('EvolutionAnimationComponent', () => {
       canvas,
       monsterPhaseNumber: 999,
       autoplay: true,
-      src: EVOL_MONSTER[0],
-      onStop: expect.any(Function)
+      src: EVOL_MONSTER[0]
     });
   });
 
@@ -147,5 +159,28 @@ describe('EvolutionAnimationComponent', () => {
     
     // Check if canvas position was updated
     expect(canvas.style.zIndex).toBe('4'); // normal position
+  });
+
+  it('should call stopAllAudios when playEvolutionCompletionAudios is called', () => {
+    evolutionAnimation = new EvolutionAnimationComponent({
+      canvas,
+      monsterPhaseNumber: 1,
+      autoplay: true
+    });
+
+    // Call playEvolutionCompletionAudios directly
+    evolutionAnimation['playEvolutionCompletionAudios']();
+
+    // Check if stopAllAudios was called
+    expect(mockStopAllAudios).toHaveBeenCalled();
+    
+    // Check if preloadGameAudio was called twice (for AUDIO_MONSTER_EVOLVE and AUDIO_INTRO)
+    expect(mockPreloadGameAudio).toHaveBeenCalledTimes(2);
+    
+    // Wait for the Promise.all to resolve
+    return Promise.resolve().then(() => {
+      // Check if playFeedbackAudios was called
+      expect(mockPlayFeedbackAudios).toHaveBeenCalled();
+    });
   });
 });
