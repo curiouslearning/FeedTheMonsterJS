@@ -128,7 +128,6 @@ export class RiveMonsterComponent {
 
     this.riveInstance = new Rive(riveConfig);
   }
-
   getInputs() {
     // Don't try to get state machine inputs if we're in evolution mode
     if (this.props.isEvolving) {
