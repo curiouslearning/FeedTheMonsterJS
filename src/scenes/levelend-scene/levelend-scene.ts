@@ -273,14 +273,8 @@ export class LevelEndScene {
           this.buttonCallbackFn('map');
         },
       },
-      {
-        ButtonClass: RetryButtonHtml,
-        id: 'levelend-retry-btn',
-        onClick: () => {
-          this.buttonCallbackFn('retry');
-        },
-      },
     ];
+    
     // Add NextButtonHtml only if not the last level and the star count is sufficient
     if (!this.isLastLevel && this.starCount >= 2) {
       buttonConfigs.push({
@@ -295,6 +289,16 @@ export class LevelEndScene {
         nextButton.remove();
       }
     }
+    
+    // Add retry button last as requested
+    buttonConfigs.push({
+      ButtonClass: RetryButtonHtml,
+      id: 'levelend-retry-btn',
+      onClick: () => {
+        this.buttonCallbackFn('retry');
+      },
+    });
+    
     // Create buttons based on configuration
     buttonConfigs.forEach(({ ButtonClass, id, onClick }) => {
       this.createButton(ButtonClass, id, onClick);
