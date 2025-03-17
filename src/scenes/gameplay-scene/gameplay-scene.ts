@@ -772,7 +772,7 @@ export class GameplayScene {
     } else {
       this.triggerMonsterAnimation('isChewing');
       this.triggerMonsterAnimation('isSpit', 1700);
-      this.triggerMonsterAnimation('isSad', 3500);
+      this.triggerMonsterAnimation('isSad', 3200);
     }
 
     this.logPuzzleEndFirebaseEvent(isCorrect, puzzleType);
