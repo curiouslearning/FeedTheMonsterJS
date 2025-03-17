@@ -73,12 +73,6 @@ export class LevelEndScene {
       fit: "contain",
       alignment: "topCenter",
       src: MONSTER_PHASES[oldMonsterPhaseNumber], //use old asset before evolution.
-      onLoad: () => {
-        // Start with the "Eat Happy" animation
-        if (this.riveMonster) {
-          this.riveMonster.play(RiveMonsterComponent.Animations.IDLE);
-        }
-      }
     });
   }
 
@@ -118,7 +112,10 @@ export class LevelEndScene {
       if (isDocumentVisible()) {
         this.audioPlayer.playAudio(AUDIO_LEVEL_LOSE);
       }
-      if (this.riveMonster) this.riveMonster.play(RiveMonsterComponent.Animations.SAD);
+      if (this.riveMonster) {
+        this.riveMonster.stop(); //Stops the animations, as we have no direct idle to stop in state machines.
+        this.riveMonster.play(RiveMonsterComponent.Animations.SAD);
+      }
     } else {
       // Only play audio if we're not going to evolve the monster
       if (isDocumentVisible() && !this.evolveMonster) {
