@@ -51,7 +51,14 @@ export const AUDIO_URL_PRELOAD = [
   "./assets/audios/Eat.mp3",
   "./assets/audios/PointsAdd.wav",
   "./assets/audios/are-you-sure.mp3",
+  './assets/audios/monster_discovered_fanfare.mp3',
+  './assets/audios/monster_evolve.mp3'
 ];
+
+// Evolution audio paths
+export const AUDIO_CHEERING = './assets/audios/Cheering-03.mp3';
+export const AUDIO_MONSTER_DISCOVERED = './assets/audios/monster_discovered_fanfare.mp3';
+export const AUDIO_MONSTER_EVOLVE = './assets/audios/monster_evolve.mp3';
 
 //Image paths
 export const ASSETS_PATH_STONE_PINK_BG = "./assets/images/Pink_Stone.webp"; //Updated stone asset
@@ -78,7 +85,7 @@ export const LEVEL_INDICATOR = "./assets/images/levels_v01.webp";
 export const BAR_EMPTY = "./assets/images/bar_empty_v01.webp";
 export const BAR_FULL = "./assets/images/bar_full_v01.webp";
 export const TIMER_EMPTY = "./assets/images/timer_emptynew.webp";
-export const ROTATING_CLOCK = "./assets/images/timer.webp";
+export const ROTATING_CLOCK = "./assets/images/timer_new.webp";
 export const TIMER_FULL = "./assets/images/timer_full.png";
 export const TUTORIAL_HAND = "./assets/images/tutorial_hand.webp";
 export const WIN_BG = "./assets/images/WIN_screen_bg.webp";
@@ -138,7 +145,7 @@ export const WINTER_BG_GROUP_IMGS = {
 //Rive Animation
 export const MONSTER_PHASES = [
   './assets/rive/ftm_monster_1_1_v07.riv',
-  './assets/rive/ftm_monster_1_2_v03.riv',
+  './assets/rive/ftm_monster_1_2_v03_updated.riv', //I added the updated as git can't determine which file is the newer one.
   './assets/rive/green_egg.riv',
 ];
 export const EVOL_MONSTER = [
