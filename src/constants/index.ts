@@ -96,7 +96,7 @@ export const CLOUD_6 = "./assets/images/cloud_01.png";
 export const CLOUD_7 = "./assets/images/cloud_02.png";
 export const CLOUD_8 = "./assets/images/cloud_03.png";
 
-export const PLAY_BTN_IMG = "./assets/images/Play_Button.webp";
+export const PLAY_BTN_IMG = "./assets/images/Play_button.webp";
 export const PAUSE_BTN_IMG = "./assets/images/pause_v01.webp";
 export const MAP_BTN_IMG = "./assets/images/map_btn.webp";
 export const MAP_ICON_IMG = "./assets/images/mapIcon.webp";
