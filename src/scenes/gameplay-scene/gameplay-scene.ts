@@ -770,13 +770,16 @@ export class GameplayScene {
       this.triggerMonsterAnimation('isChewing');
       this.triggerMonsterAnimation('isHappy', 1700);
     } else {
-      this.triggerMonsterAnimation('isSpit');
-      this.triggerMonsterAnimation('isSad', 1030);
+      this.triggerMonsterAnimation('isChewing');
+      this.triggerMonsterAnimation('isSpit', 1700);
+      this.triggerMonsterAnimation('isSad', 3200);
     }
 
     this.logPuzzleEndFirebaseEvent(isCorrect, puzzleType);
     this.dispatchStoneDropEvent(isCorrect);
-    this.loadPuzzle();
+    setTimeout(() => {
+      this.loadPuzzle();
+    }, isCorrect ? 0 : 2000);
   }
 
   private handleCorrectStoneDrop = (feedbackIndex: number): void => {

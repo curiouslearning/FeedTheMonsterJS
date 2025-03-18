@@ -79,7 +79,7 @@ export const WINTER_SIGN_1 = "./assets/images/Winter_sign_v01.webp";
 export const WINTER_FENCE_1 = "./assets/images/Winter_fence_v01.webp";
 export const WINTER_PILLAR_1 = "./assets/images/Winter_sign_v01.webp";
 export const LEVEL_SELECTION_BACKGROUND = "./assets/images/map.webp";
-export const PROMPT_TEXT_BG = "./assets/images/promptTextBg.webp";
+export const PROMPT_TEXT_BG = "./assets/images/Prompt_Text_BG.webp";
 export const PROMPT_PLAY_BUTTON = "./assets/images/promptPlayButton.webp";
 export const LEVEL_INDICATOR = "./assets/images/levels_v01.webp";
 export const BAR_EMPTY = "./assets/images/bar_empty_v01.webp";
@@ -97,7 +97,7 @@ export const CLOUD_7 = "./assets/images/cloud_02.png";
 export const CLOUD_8 = "./assets/images/cloud_03.png";
 
 export const PLAY_BTN_IMG = "./assets/images/Play_button.webp";
-export const PAUSE_BTN_IMG = "./assets/images/pause_v01.webp";
+export const PAUSE_BTN_IMG = "./assets/images/Pause_Button.webp";
 export const MAP_BTN_IMG = "./assets/images/map_btn.webp";
 export const MAP_ICON_IMG = "./assets/images/mapIcon.webp";
 export const MAP_ICON_SPECIAL_IMG =
@@ -144,8 +144,8 @@ export const WINTER_BG_GROUP_IMGS = {
 
 //Rive Animation
 export const MONSTER_PHASES = [
-  './assets/rive/ftm_monster_1_1_v07.riv',
-  './assets/rive/ftm_monster_1_2_v03.riv',
+  './assets/rive/ftm_monster_1_1_v07_updated.riv', //I added the updated as git can't determine which file is the newer one.
+  './assets/rive/ftm_monster_1_2_v03.riv', //I removed the 'updated' as git can't determine which file is the newer one.
   './assets/rive/green_egg.riv',
 ];
 export const EVOL_MONSTER = [
