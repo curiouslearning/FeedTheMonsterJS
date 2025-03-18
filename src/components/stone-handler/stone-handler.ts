@@ -270,7 +270,7 @@ export default class StoneHandler extends EventManager {
           AUDIO_PATH_MONSTER_SPIT,
           Math.round(Math.random()) > 0 ? AUDIO_PATH_MONSTER_DISSAPOINTED : null
         );
-      }, 1000); //1000 time is tailored to handleStoneDropEnd 1000 delay of isSpit animation.
+      }, 1700); //1000 time is tailored to handleStoneDropEnd 1000 delay of isSpit animation.
     }
   }
 
