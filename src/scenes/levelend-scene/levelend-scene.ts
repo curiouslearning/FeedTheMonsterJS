@@ -284,6 +284,8 @@ export class LevelEndScene {
       default:
         console.warn(`Unhandled action: ${action}`);
     }
+
+    this.dispose();
   }
 
   renderButtonsHTML() {
@@ -403,5 +405,7 @@ export class LevelEndScene {
     if(this.evolutionAnimation) {
       this.evolutionAnimation.dispose();
     }
+
+    this.buttonsContainer.innerHTML = '';
   };
 }
