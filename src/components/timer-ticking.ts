@@ -57,7 +57,6 @@ export default class TimerTicking extends EventManager {
         setTimeout(() => {
             this.timerFullContainer = document.getElementById("timer-full-container");
             if (this.timerFullContainer) this.timerFullContainer.style.width = "100%";
-            console.log('timerpaused');
         }, 0);
         loadImages(this.images, (images) => {
             this.loadedImages = Object.assign({}, images);
@@ -77,9 +76,7 @@ export default class TimerTicking extends EventManager {
 
     readyTimer() {
         // make timer look full so as it get start signal..... it will start decreasing
-        this.timer = 0;
-        console.log('timerstarted');
-        
+        this.timer = 0;     
         if (this.timerFullContainer) this.timerFullContainer.style.width = "100%"; // Reset width on start
     }
     update(deltaTime) {
@@ -126,7 +123,6 @@ export default class TimerTicking extends EventManager {
 
     stopTimer(): void {
         this.isTimerRunningOut = false;
-        console.log('timerstopped');
     }
 
     public handleStoneDrop(event) {
@@ -137,8 +133,6 @@ export default class TimerTicking extends EventManager {
         this.playLevelEndAudioOnce = true;
         this.isStoneDropped = false;
         this.startTimer();
-        console.log('timerstarted');
-
     }
 
     public destroy(): void {
