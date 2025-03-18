@@ -113,7 +113,7 @@ export class LevelEndScene {
         this.audioPlayer.playAudio(AUDIO_LEVEL_LOSE);
       }
       if (this.riveMonster) {
-        this.riveMonster.stop(); //Stops the animations, as we have no direct idle to stop in state machines.
+        this.riveMonster.stop(); //Stops the animations, as we have no direct idle to sad in state machines.
         this.riveMonster.play(RiveMonsterComponent.Animations.SAD);
       }
     } else {
@@ -137,7 +137,10 @@ export class LevelEndScene {
           console.error('Error preloading evolution audio files:', error);
         });
       }
-      if (this.riveMonster) this.riveMonster.play(RiveMonsterComponent.Animations.HAPPY);
+      if (this.riveMonster) {
+        this.riveMonster.stop(); //Stops the animations, as we have no direct idle to happy in state machines.
+        this.riveMonster.play(RiveMonsterComponent.Animations.HAPPY);
+      }
     }
   };
 

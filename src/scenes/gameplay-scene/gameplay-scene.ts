@@ -96,6 +96,7 @@ export class GameplayScene {
   isFeedBackTriggered: boolean;
   public monsterPhaseNumber: 0 | 1 | 2;
   private backgroundGenerator: PhasesBackground;
+  public loadPuzzleDelay: 3000 | 4500;
 
   constructor() {
     const gamePlayData = gameStateService.getGamePlaySceneDetails();
@@ -129,7 +130,7 @@ export class GameplayScene {
         if (isPause) this.pausePopupComponent.open();
       }
     );
-
+    this.loadPuzzleDelay = 4500;
     this.pausePopupComponent.onClose((event) => {
       const { data } = event;
 
@@ -568,7 +569,7 @@ export class GameplayScene {
         return;
       }
 
-      const timeoutId = setTimeout(handleLevelEnd, 4500); // added delay for switching to level end screen
+      const timeoutId = setTimeout(handleLevelEnd, this.loadPuzzleDelay); // added delay for switching to level end screen
       if (this.isFeedBackTriggered) {
         const audioSources = this.audioPlayer?.audioSourcs || [];
         const lastAudio = audioSources[audioSources.length - 1];
@@ -592,7 +593,7 @@ export class GameplayScene {
             this.timerTicking.startTimer(); // Start the timer for the new puzzle
           }
         },
-        timerEnded ? 0 : 4500 // added delay for switching to level end screen
+        timerEnded ? 0 : this.loadPuzzleDelay // added delay for switching to level end screen
       );
     }
   };
@@ -606,6 +607,7 @@ export class GameplayScene {
     this.removeEventListeners();
     this.isGameStarted = false;
     this.time = 0;
+    this.loadPuzzleDelay = 4500;
     this.wordPuzzleLogic.updatePuzzleLevel(loadPuzzleEvent?.detail?.counter);
     this.pickedStone = null;
     document.dispatchEvent(loadPuzzleEvent);
@@ -778,8 +780,14 @@ export class GameplayScene {
     this.logPuzzleEndFirebaseEvent(isCorrect, puzzleType);
     this.dispatchStoneDropEvent(isCorrect);
     setTimeout(() => {
+      this.adjustLoadPuzzleDelay(isCorrect);
       this.loadPuzzle();
     }, isCorrect ? 0 : 2000);
+  }
+
+  private adjustLoadPuzzleDelay(isCorrect) {
+    //Adjust the delay of 4500 (4.5 seconds) to 2500 (2.5 seconds) if the puzzle is incorrect.
+    this.loadPuzzleDelay = isCorrect ? 4500 : 3000;
   }
 
   private handleCorrectStoneDrop = (feedbackIndex: number): void => {
