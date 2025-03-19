@@ -98,6 +98,13 @@ export class GameplayScene {
   private backgroundGenerator: PhasesBackground;
   public loadPuzzleDelay: 3000 | 4500;
 
+  // Define animation delays as an array where index 0 = phase 0, index 1 = phase 1, index 2 = phase 2
+  private animationDelays = [
+    { backToIdle: 350, isChewing: 0, isHappy: 1700, isSpit: 1500, isSad: 3000 }, // Phase 1
+    { backToIdle: 350, isChewing: 0, isHappy: 1700, isSpit: 1000, isSad: 2500 }, // Phase 2
+    { backToIdle: 350, isChewing: 0, isHappy: 1700, isSpit: 100, isSad: 2500 }  // Phase 4
+  ];
+
   constructor() {
     const gamePlayData = gameStateService.getGamePlaySceneDetails();
     this.pausePopupComponent = new PausePopupComponent();
@@ -256,14 +263,17 @@ export class GameplayScene {
     return Math.floor(Math.random() * (definedValuesMaxCount - min + 1)) + min;
   }
 
-  private triggerMonsterAnimation(animationName: string, delay: number = 0) {
-    if (delay > 0) {
-      setTimeout(() => {
-        this.monster.triggerInput(animationName);
-      }, delay);
-    } else {
+
+  private triggerMonsterAnimation(animationName: string) {
+    const delay = this.animationDelays[this.monsterPhaseNumber]?.[animationName] ?? 0;
+
+  if (delay > 0) {
+    setTimeout(() => {
       this.monster.triggerInput(animationName);
-    }
+    }, delay);
+  } else {
+    this.monster.triggerInput(animationName);
+  }
   }
 
   handleMouseUp = (event) => {
@@ -296,7 +306,7 @@ export class GameplayScene {
         this.pickedStone.y = this.pickedStoneObject.origy;
         // Trigger animations
         this.triggerMonsterAnimation('isMouthClosed');
-        this.triggerMonsterAnimation('backToIdle', 350);
+        this.triggerMonsterAnimation('backToIdle');
 
       }
 
@@ -738,7 +748,7 @@ export class GameplayScene {
         return;
       }
       this.triggerMonsterAnimation('isMouthClosed');
-      this.triggerMonsterAnimation('backToIdle', 350);
+      this.triggerMonsterAnimation('backToIdle');
       this.timerTicking.startTimer();
       // // Trigger animations via fire
       // this.triggerMonsterAnimation('isHappy',3000)
@@ -770,11 +780,11 @@ export class GameplayScene {
     }
     if (isCorrect) {
       this.triggerMonsterAnimation('isChewing');
-      this.triggerMonsterAnimation('isHappy', 1700);
+      this.triggerMonsterAnimation('isHappy');
     } else {
       this.triggerMonsterAnimation('isChewing');
-      this.triggerMonsterAnimation('isSpit', 1700);
-      this.triggerMonsterAnimation('isSad', 3200);
+      this.triggerMonsterAnimation('isSpit');
+      this.triggerMonsterAnimation('isSad');
     }
 
     this.logPuzzleEndFirebaseEvent(isCorrect, puzzleType);
