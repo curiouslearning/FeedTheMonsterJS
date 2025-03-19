@@ -76,7 +76,7 @@ export default class TimerTicking extends EventManager {
 
     readyTimer() {
         // make timer look full so as it get start signal..... it will start decreasing
-        this.timer = 0;
+        this.timer = 0;     
         if (this.timerFullContainer) this.timerFullContainer.style.width = "100%"; // Reset width on start
     }
     update(deltaTime) {
@@ -86,6 +86,10 @@ export default class TimerTicking extends EventManager {
             const timerDepletion = Math.max(0, 100 - this.timer);
             this.timerFullContainer.style.width = `${timerDepletion}%`;
 
+            if (timerDepletion < 100 && timerDepletion > 0) {
+                this.applyRotation(true);
+            }
+
             if (timerDepletion < 10 && !this.isMyTimerOver) {
                 this.playLevelEndAudioOnce ? this.audioPlayer.playAudio(AUDIO_TIMEOUT) : null;
                 this.playLevelEndAudioOnce = false;
@@ -93,9 +97,24 @@ export default class TimerTicking extends EventManager {
 
             if (timerDepletion <= 0 && !this.isMyTimerOver) {
                 this.isMyTimerOver = true;
+                this.applyRotation(false); 
                 this.callback(true);
             }
         }
+    }
+
+    public applyRotation(condition: boolean) {
+        setTimeout(() => {
+            const element = document.getElementById("rotating-clock");
+            if (element) {
+                if (condition) {
+                    element.style.transform = "translateX(-50%)";
+                    element.style.animation = "rotateClock 3s linear infinite";
+                } else {
+                    element.style.animation = "none";
+                }
+            }
+        }, 0);
     }
 
     private getTimerFullContainer(): HTMLElement | null {
@@ -108,12 +127,12 @@ export default class TimerTicking extends EventManager {
 
     public handleStoneDrop(event) {
         this.isStoneDropped = true;
+        this.applyRotation(false);
     }
     public handleLoadPuzzle(event) {
         this.playLevelEndAudioOnce = true;
         this.isStoneDropped = false;
         this.startTimer();
-
     }
 
     public destroy(): void {

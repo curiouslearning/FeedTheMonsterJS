@@ -97,7 +97,7 @@ export const CLOUD_7 = "./assets/images/cloud_02.png";
 export const CLOUD_8 = "./assets/images/cloud_03.png";
 
 export const PLAY_BTN_IMG = "./assets/images/Play_button.webp";
-export const PAUSE_BTN_IMG = "./assets/images/pause_v01.webp";
+export const PAUSE_BTN_IMG = "./assets/images/Pause_Button.webp";
 export const MAP_BTN_IMG = "./assets/images/map_btn.webp";
 export const MAP_ICON_IMG = "./assets/images/mapIcon.webp";
 export const MAP_ICON_SPECIAL_IMG =
@@ -144,8 +144,8 @@ export const WINTER_BG_GROUP_IMGS = {
 
 //Rive Animation
 export const MONSTER_PHASES = [
-  './assets/rive/ftm_monster_1_1_v07.riv',
-  './assets/rive/ftm_monster_1_2_v03_updated.riv', //I added the updated as git can't determine which file is the newer one.
+  './assets/rive/ftm_monster_1_1_v07_updated.riv', //I added the updated as git can't determine which file is the newer one.
+  './assets/rive/ftm_monster_1_2_v03.riv', //I removed the 'updated' as git can't determine which file is the newer one.
   './assets/rive/green_egg.riv',
 ];
 export const EVOL_MONSTER = [
