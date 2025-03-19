@@ -300,7 +300,7 @@ export class PromptText extends EventManager {
             const scaledWidth = this.promptImageWidth * this.scale;
             const scaledHeight = this.promptImageHeight * this.scale;
             const offsetX = (this.width - scaledWidth) / 2;
-            const offsetY = (this.height - scaledHeight) / 5;
+            const offsetY = (this.height - scaledHeight) / 4.5;
             this.context.drawImage(
                 this.prompt_image,
                 offsetX,
