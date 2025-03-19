@@ -284,7 +284,7 @@ export class LevelEndScene {
       default:
         console.warn(`Unhandled action: ${action}`);
     }
-
+    // This is to ensure and dispose the buttons, audio and all the properties when leaving the levelend scene
     this.dispose();
   }
 
@@ -406,6 +406,7 @@ export class LevelEndScene {
       this.evolutionAnimation.dispose();
     }
 
+    // this is to ensure that the button elements will clear out the buttons container
     this.buttonsContainer.innerHTML = '';
   };
 }
