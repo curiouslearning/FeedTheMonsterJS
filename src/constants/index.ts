@@ -98,7 +98,7 @@ export const CLOUD_8 = "./assets/images/cloud_03.png";
 
 export const PLAY_BTN_IMG = "./assets/images/Play_button.webp";
 export const PAUSE_BTN_IMG = "./assets/images/Pause_Button.webp";
-export const MAP_BTN_IMG = "./assets/images/map_btn.webp";
+export const MAP_BTN_IMG = "./assets/images/map_btn.svg";
 export const MAP_ICON_IMG = "./assets/images/mapIcon.webp";
 export const MAP_ICON_SPECIAL_IMG =
   "./assets/images/map_icon_monster_level_v01.webp";
@@ -106,7 +106,7 @@ export const MAP_LOCK_IMG = "./assets/images/mapLock.webp";
 export const STAR_IMG = "./assets/images/star.webp";
 export const NEXT_BTN_IMG = "./assets/images/next_btn.webp";
 export const BACK_BTN_IMG = "./assets/images/back_btn.webp";
-export const RETRY_BTN_IMG = "./assets/images/retry_btn.webp";
+export const RETRY_BTN_IMG = "./assets/images/retry_btn.svg";
 export const CANCEL_BTN_IMG = "./assets/images/close_btn.svg";
 export const YES_BTN_IMG = "./assets/images/confirm_btn.svg";
 export const POPUP_BG_IMG = "./assets/images/popup_bg_v01.svg";
