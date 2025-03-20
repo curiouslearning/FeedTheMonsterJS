@@ -108,7 +108,7 @@ export const BACK_BTN_IMG = "./assets/images/back_btn.webp";
 export const RETRY_BTN_IMG = "./assets/images/retry_btn.svg";
 export const CANCEL_BTN_IMG = "./assets/images/close_btn.svg";
 export const YES_BTN_IMG = "./assets/images/confirm_btn.svg";
-export const POPUP_BG_IMG = "./assets/images/popup_bg_v01.webp";
+export const POPUP_BG_IMG = "./assets/images/popup_bg_v01.svg";
 
 //Background Group Images
 // to be removed once background component is fully integrate - GAMEPLAY_BG_GROUP_IMGS, DEFAULT_BG_GROUP_IMGS, AUTUMN_BG_GROUP_IMGS, WINTER_BG_GROUP_IMGS
