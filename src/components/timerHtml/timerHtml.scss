@@ -13,7 +13,7 @@
   }
 
   #rotating-clock {
-    animation: rotateClock 2s linear infinite;
+    transform: translateX(-50%); /* Keeps the clock centered */
     position: absolute;
     width: 55px;
     bottom: -5px;
@@ -50,7 +50,7 @@
   }
 
   to {
-    transform: translateX(-50%) rotate(360deg);
+    transform:translateX(-50%) rotate(360deg);
   }
 }
 

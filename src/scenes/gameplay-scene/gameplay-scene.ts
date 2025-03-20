@@ -96,6 +96,14 @@ export class GameplayScene {
   isFeedBackTriggered: boolean;
   public monsterPhaseNumber: 0 | 1 | 2;
   private backgroundGenerator: PhasesBackground;
+  public loadPuzzleDelay: 3000 | 4500;
+
+  // Define animation delays as an array where index 0 = phase 0, index 1 = phase 1, index 2 = phase 2
+  private animationDelays = [
+    { backToIdle: 350, isChewing: 0, isHappy: 1700, isSpit: 1500, isSad: 3000 }, // Phase 1
+    { backToIdle: 350, isChewing: 0, isHappy: 1700, isSpit: 1000, isSad: 2500 }, // Phase 2
+    { backToIdle: 350, isChewing: 0, isHappy: 1700, isSpit: 100, isSad: 2500 }  // Phase 4
+  ];
 
   constructor() {
     const gamePlayData = gameStateService.getGamePlaySceneDetails();
@@ -129,7 +137,7 @@ export class GameplayScene {
         if (isPause) this.pausePopupComponent.open();
       }
     );
-
+    this.loadPuzzleDelay = 4500;
     this.pausePopupComponent.onClose((event) => {
       const { data } = event;
 
@@ -255,14 +263,17 @@ export class GameplayScene {
     return Math.floor(Math.random() * (definedValuesMaxCount - min + 1)) + min;
   }
 
-  private triggerMonsterAnimation(animationName: string, delay: number = 0) {
-    if (delay > 0) {
-      setTimeout(() => {
-        this.monster.triggerInput(animationName);
-      }, delay);
-    } else {
+
+  private triggerMonsterAnimation(animationName: string) {
+    const delay = this.animationDelays[this.monsterPhaseNumber]?.[animationName] ?? 0;
+
+  if (delay > 0) {
+    setTimeout(() => {
       this.monster.triggerInput(animationName);
-    }
+    }, delay);
+  } else {
+    this.monster.triggerInput(animationName);
+  }
   }
 
   handleMouseUp = (event) => {
@@ -295,7 +306,7 @@ export class GameplayScene {
         this.pickedStone.y = this.pickedStoneObject.origy;
         // Trigger animations
         this.triggerMonsterAnimation('isMouthClosed');
-        this.triggerMonsterAnimation('backToIdle', 350);
+        this.triggerMonsterAnimation('backToIdle');
 
       }
 
@@ -568,7 +579,7 @@ export class GameplayScene {
         return;
       }
 
-      const timeoutId = setTimeout(handleLevelEnd, 4500); // added delay for switching to level end screen
+      const timeoutId = setTimeout(handleLevelEnd, this.loadPuzzleDelay); // added delay for switching to level end screen
       if (this.isFeedBackTriggered) {
         const audioSources = this.audioPlayer?.audioSourcs || [];
         const lastAudio = audioSources[audioSources.length - 1];
@@ -592,7 +603,7 @@ export class GameplayScene {
             this.timerTicking.startTimer(); // Start the timer for the new puzzle
           }
         },
-        timerEnded ? 0 : 4500 // added delay for switching to level end screen
+        timerEnded ? 0 : this.loadPuzzleDelay // added delay for switching to level end screen
       );
     }
   };
@@ -606,6 +617,7 @@ export class GameplayScene {
     this.removeEventListeners();
     this.isGameStarted = false;
     this.time = 0;
+    this.loadPuzzleDelay = 4500;
     this.wordPuzzleLogic.updatePuzzleLevel(loadPuzzleEvent?.detail?.counter);
     this.pickedStone = null;
     document.dispatchEvent(loadPuzzleEvent);
@@ -736,7 +748,7 @@ export class GameplayScene {
         return;
       }
       this.triggerMonsterAnimation('isMouthClosed');
-      this.triggerMonsterAnimation('backToIdle', 350);
+      this.triggerMonsterAnimation('backToIdle');
       this.timerTicking.startTimer();
       // // Trigger animations via fire
       // this.triggerMonsterAnimation('isHappy',3000)
@@ -768,18 +780,24 @@ export class GameplayScene {
     }
     if (isCorrect) {
       this.triggerMonsterAnimation('isChewing');
-      this.triggerMonsterAnimation('isHappy', 1700);
+      this.triggerMonsterAnimation('isHappy');
     } else {
       this.triggerMonsterAnimation('isChewing');
-      this.triggerMonsterAnimation('isSpit', 1700);
-      this.triggerMonsterAnimation('isSad', 3200);
+      this.triggerMonsterAnimation('isSpit');
+      this.triggerMonsterAnimation('isSad');
     }
 
     this.logPuzzleEndFirebaseEvent(isCorrect, puzzleType);
     this.dispatchStoneDropEvent(isCorrect);
     setTimeout(() => {
+      this.adjustLoadPuzzleDelay(isCorrect);
       this.loadPuzzle();
     }, isCorrect ? 0 : 2000);
+  }
+
+  private adjustLoadPuzzleDelay(isCorrect) {
+    //Adjust the delay of 4500 (4.5 seconds) to 2500 (2.5 seconds) if the puzzle is incorrect.
+    this.loadPuzzleDelay = isCorrect ? 4500 : 3000;
   }
 
   private handleCorrectStoneDrop = (feedbackIndex: number): void => {

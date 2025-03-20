@@ -1,4 +1,4 @@
-import {GameplayScene} from './gameplay-scene';
+import { GameplayScene } from './gameplay-scene';
 import gameStateService from '@gameStateService';
 import gameSettingsService from '@gameSettingsService';
 import { SCENE_NAME_GAME_PLAY } from "@constants";
@@ -134,10 +134,12 @@ jest.mock('@gameStateService', () => ({
 describe('GameplayScene with BasePopupComponent', () => {
   let gameplayScene: GameplayScene;
   let mockSwitchSceneToEnd: jest.Mock;
+  let phaseIndex: number;
 
   beforeEach(() => {
     jest.clearAllMocks();
     jest.useFakeTimers();
+    phaseIndex = 0;
 
     // Mock DOM elements, including the expected popup root and version-info-id
     document.body.innerHTML = `
@@ -161,11 +163,11 @@ describe('GameplayScene with BasePopupComponent', () => {
 
     (gameStateService.getGamePlaySceneDetails as jest.Mock).mockReturnValue({
       levelData: {
-        levelMeta: {levelNumber: 1},
+        levelMeta: { levelNumber: 1 },
         puzzles: [{}, {}, {}], // 3 puzzles for testing
       },
       levelNumber: 1,
-      feedBackTexts: {0: 'Great!', 1: 'Fantastic!', 2: 'Amazing!'},
+      feedBackTexts: { 0: 'Great!', 1: 'Fantastic!', 2: 'Amazing!' },
       isGamePaused: false,
       rightToLeft: false,
       jsonVersionNumber: '1.0.0',
@@ -188,6 +190,9 @@ describe('GameplayScene with BasePopupComponent', () => {
 
     // Initialize GameplayScene
     gameplayScene = new GameplayScene();
+    gameplayScene.monster = {
+      triggerInput: jest.fn()
+    } as any;
   });
 
   afterEach(() => {
@@ -213,7 +218,7 @@ describe('GameplayScene with BasePopupComponent', () => {
       gameStateService.EVENTS.SWITCH_SCENE_EVENT,
       expect.any(String)
     );
-  
+
   });
 
   it('should call switchSceneToEnd after 4500ms when timerEnded is false or isFeedBackTriggered is true', () => {
@@ -238,6 +243,41 @@ describe('GameplayScene with BasePopupComponent', () => {
     ); // Called after 4500ms
   });
 
+  function triggerMonsterAnimation(animationName: string, delay: number = 0) {
+    if (delay > 0) {
+      setTimeout(() => {
+        gameplayScene.monster.triggerInput(animationName);
+      }, delay);
+    } else {
+      gameplayScene.monster.triggerInput(animationName);
+    }
+  }
+
+  it('should trigger animations based on phase-specific delays', () => {
+    const animationDelays = [
+      { isChewing: 0, isHappy: 1500, isSpit: 1800, isSad: 3000 },
+      { isChewing: 0, isHappy: 1700, isSpit: 2000, isSad: 3200 },
+      { isChewing: 0, isHappy: 2000, isSpit: 2200, isSad: 3500 }
+    ];
+
+    const currentDelays = animationDelays[phaseIndex];
+    const isCorrect = true;
+
+    if (isCorrect) {
+      triggerMonsterAnimation('isChewing', currentDelays.isChewing);
+      triggerMonsterAnimation('isHappy', currentDelays.isHappy);
+    } else {
+      triggerMonsterAnimation('isChewing', currentDelays.isChewing);
+      triggerMonsterAnimation('isSpit', currentDelays.isSpit);
+      triggerMonsterAnimation('isSad', currentDelays.isSad);
+    }
+
+    jest.runAllTimers();
+
+    expect(gameplayScene.monster.triggerInput).toHaveBeenCalledWith('isChewing');
+    expect(gameplayScene.monster.triggerInput).toHaveBeenCalledWith('isHappy');
+  });
+  
   it('should call switchSceneToEnd after 4500ms when timerEnded is false and isFeedBackTriggered is false', () => {
     // Arrange
     gameplayScene.counter = 2;
