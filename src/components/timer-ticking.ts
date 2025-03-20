@@ -1,7 +1,7 @@
 import { loadImages } from "@common";
 import { EventManager } from "@events";
 import { AudioPlayer } from "@components";
-import { TIMER_EMPTY, ROTATING_CLOCK, TIMER_FULL, AUDIO_TIMEOUT } from "@constants";
+import { TIMER_EMPTY, ROTATING_CLOCK, AUDIO_TIMEOUT } from "@constants";
 import './timerHtml/timerHtml.scss';
 import TimerHTMLComponent from './timerHtml/timerHtml';
 
@@ -16,7 +16,6 @@ export default class TimerTicking extends EventManager {
     public isTimerStarted: boolean;
     public isTimerEnded: boolean;
     public isTimerRunningOut: boolean;
-    public timer_full: HTMLImageElement;
     public pauseButtonClicked: boolean;
     public images: Object;
     public loadedImages: any;
@@ -48,7 +47,6 @@ export default class TimerTicking extends EventManager {
         this.images = {
             timer_empty: TIMER_EMPTY,
             rotating_clock: ROTATING_CLOCK,
-            timer_full: TIMER_FULL
         }
         //create the timer-ticking structure
         this.timerHtmlComponent = new TimerHTMLComponent('timer-ticking');
