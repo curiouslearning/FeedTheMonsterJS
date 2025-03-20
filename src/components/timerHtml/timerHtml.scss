@@ -15,9 +15,9 @@
   #rotating-clock {
     transform: translateX(-50%); /* Keeps the clock centered */
     position: absolute;
-    width: 55px;
-    bottom: -5px;
-    left: 30px;
+    width: 45px;
+    bottom: -2px;
+    left: 28px;
   }
 
   #timer-full-container {
@@ -96,6 +96,10 @@
   #timer-ticking {
     top: 120px;
   }
+  #timer-ticking #timer-full-container .timer-mask{
+    height: 28px;
+    margin: 6px 0px 0px 1px;
+  }
 }
 
 /* For tablets, up to 768px wide */
@@ -117,8 +121,8 @@
   }
 
   #timer-ticking #timer-full-container .timer-mask {
-    height: 37px;
-    margin: 9px 0px 0px 5px;
+    height: 42px;
+    margin: 9px 0px 0px 0px;
   }
 }
 
