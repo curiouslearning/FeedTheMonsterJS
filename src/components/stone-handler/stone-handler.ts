@@ -13,7 +13,6 @@ import {
   AUDIO_PATH_ON_DRAG
 } from '@constants';
 import gameStateService from '@gameStateService';
-import gameSetttingsService from '@gameSettingsService';
 
 export default class StoneHandler extends EventManager {
   private offsetCoordinateValue: number;

@@ -1,9 +1,13 @@
 import { BaseHTML } from '@components/baseHTML/base-html';
 import { RiveMonsterComponent, RiveMonsterComponentProps } from '@components/riveMonster/rive-monster-component';
-import { EVOL_MONSTER, AUDIO_INTRO, AUDIO_MONSTER_EVOLVE } from '@constants';
+import {
+  EVOL_MONSTER,
+  AUDIO_INTRO,
+  AUDIO_MONSTER_EVOLVE,
+  EVOLUTION_AUDIOS
+} from '@constants';
 import gameStateService from '@gameStateService';
 import { AudioPlayer } from '@components/audio-player';
-import { Layout, Fit, Alignment } from '@rive-app/canvas';
 
 export interface EvolutionAnimationProps extends RiveMonsterComponentProps {
   monsterPhaseNumber: number;
@@ -93,12 +97,12 @@ export class EvolutionAnimationComponent extends RiveMonsterComponent {
     }
     this.setCanvasPosition('normal');
   }
-  
+
   // Play audio sequence after evolution animation completes
   private playEvolutionCompletionAudios() {
     // First stop any currently playing audio
     this.audioPlayer.stopAllAudios();
-    
+
     // Preload all audio files to ensure they're ready to play
     Promise.all([
       this.audioPlayer.preloadGameAudio(AUDIO_MONSTER_EVOLVE),
@@ -116,6 +120,9 @@ export class EvolutionAnimationComponent extends RiveMonsterComponent {
   }
 
   public startAnimation() {
+    //Call the logic that will handle the audio during the evolution animation.
+    this.playEvolutionSoundEffects();
+
     // Set gray class 900ms before fade-out
     setTimeout(() => {
       const levelEndBg = document.getElementById('levelend-background');
@@ -130,23 +137,33 @@ export class EvolutionAnimationComponent extends RiveMonsterComponent {
 
       //update the record in game state.
       gameStateService.updateMonsterPhaseState(this.monsterPhaseNumber);
-      
+
       if (this.evolutionProps.onComplete) {
         this.evolutionProps.onComplete();
       }
     }, this.EVOLUTION_ANIMATION_COMPLETE_DELAY);
   }
 
+  private playEvolutionSoundEffects() {
+    // The 'Play' event is triggered because we need to play an audio during the play animation of the Rive entity.
+    this.executeRiveAction('Play', () => {
+      //To do - playFeedbackAudios should be renamed as this was the common method used to play all audios not just feedback audio.
+      setTimeout(() => {
+        this.audioPlayer.playFeedbackAudios(false, EVOLUTION_AUDIOS.EVOL_1[0]);
+      }, 1000);
+    });
+  }
+
   public dispose() {
     if (this.backgroundElement) {
       this.backgroundElement.destroy();
     }
-    
+
     // Stop any playing audio before disposing
     if (this.audioPlayer) {
       this.audioPlayer.stopAllAudios();
     }
-    
+
     super.dispose();
   }
 }
