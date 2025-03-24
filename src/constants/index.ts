@@ -172,7 +172,7 @@ export const SPECIAL_LEVELS = [5, 13, 20, 30, 42];
 
 //Evolving Phases Backgrounds
 export const PHASES_BG ={
-  0: './assets/images/placeholder_background_1.webp',
-  1: './assets/images/placeholder_background_2.webp',
-  2: './assets/images/placeholder_background_3.webp'
+  0: './assets/images/phase_background_1.webp',
+  1: './assets/images/phase_background_2.webp',
+  2: './assets/images/phase_background_3.webp'
 };
