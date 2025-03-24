@@ -404,10 +404,6 @@ export class LevelEndScene {
       this.riveMonster.dispose();
     }
 
-    if(this.evolutionAnimation) {
-      this.evolutionAnimation.dispose();
-    }
-
     // this is to ensure that the button elements will clear out the buttons container
     this.buttonsContainer.innerHTML = '';
   };
