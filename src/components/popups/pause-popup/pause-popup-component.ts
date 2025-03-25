@@ -20,6 +20,7 @@ export class PausePopupComponent extends BasePopupComponent {
   protected audioPlayer = new AudioPlayer();
   private enableTimeoutId?: number; // Timeout ID to avoid memory leaks
   protected override id = 'pause-popup';
+  private isProcessingClick = false; // Flag to track if we're currently processing a click
 
   onInit() {
     const targetId = this.contentContainerId;
@@ -31,9 +32,9 @@ export class PausePopupComponent extends BasePopupComponent {
     }
 
     this.restartLevelButton = new RetryButtonHtml({ targetId });
-   if (this.restartLevelButton) {
-    this.restartLevelButton.onClick(() => this.handleClick('restart-level'));
-  }
+    if (this.restartLevelButton) {
+      this.restartLevelButton.onClick(() => this.handleClick('restart-level'));
+    }
 
     this.confirmPopup = new ConfirmPopupComponent({ hideClose: true });
 
@@ -44,7 +45,15 @@ export class PausePopupComponent extends BasePopupComponent {
   }
 
   handleClick(data: any) {
-    // Disable both buttons to prevent double clicks
+    // If we're already processing a click, ignore this one
+    if (this.isProcessingClick) {
+      return;
+    }
+
+    // Set flag to prevent multiple clicks
+    this.isProcessingClick = true;
+    
+    // Disable all buttons to prevent double clicks
     this.disableButtons();
 
     if (lang === 'english') {
@@ -52,6 +61,8 @@ export class PausePopupComponent extends BasePopupComponent {
         unsub();
         this.handleConfirmClose(confirmData, data);
         this.scheduleEnableButtons(800); // Schedule re-enable after 2 seconds
+        // Reset processing flag when confirmation is closed
+        this.isProcessingClick = false;
       });
 
       this.openConfirm();
@@ -59,6 +70,11 @@ export class PausePopupComponent extends BasePopupComponent {
     } else {
       super.handleClick(data);
       this.scheduleEnableButtons(800); // Schedule re-enable after 2 seconds
+      
+      // Reset processing flag after a delay for non-English users
+      setTimeout(() => {
+        this.isProcessingClick = false;
+      }, 800);
     }
   }
 
@@ -83,6 +99,8 @@ export class PausePopupComponent extends BasePopupComponent {
   disableButtons() {
     this.selectLevelButton?.setDisabled(true);
     this.restartLevelButton?.setDisabled(true);
+    // Also disable the close button if it exists
+    this.closeButton?.setDisabled(true);
   }
 
   /**
@@ -91,6 +109,8 @@ export class PausePopupComponent extends BasePopupComponent {
   enableButtons() {
     this.selectLevelButton?.setDisabled(false);
     this.restartLevelButton?.setDisabled(false);
+    // Also enable the close button if it exists
+    this.closeButton?.setDisabled(false);
   }
 
   /**
