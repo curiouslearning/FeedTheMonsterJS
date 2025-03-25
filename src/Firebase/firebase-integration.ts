@@ -35,7 +35,7 @@ export class FirebaseIntegration extends BaseFirebaseIntegration {
     }
 
     public sendUserClickedOnPlayEvent(): void {
-        this.customEvents('user_clicked', { click: 'Click' });
+        this.customEvents('tapped_start', { click: 'Click' });
     }
 
     public sendDownloadCompletedEvent(data: DowloadPercentCompleted): void {
