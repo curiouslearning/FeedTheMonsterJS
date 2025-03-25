@@ -284,8 +284,10 @@ export class LevelEndScene {
       default:
         console.warn(`Unhandled action: ${action}`);
     }
-    // This is to ensure and dispose the buttons, audio and all the properties when leaving the levelend scene
-    this.dispose();
+    // This is to ensure and dispose the buttons, audio and all the properties when leaving the levelend scene.added delay to ensure all animations are completed
+    setTimeout(() => {
+      this.dispose();
+    }, 2000);
   }
 
   renderButtonsHTML() {
@@ -400,10 +402,6 @@ export class LevelEndScene {
 
     if (this.riveMonster) {
       this.riveMonster.dispose();
-    }
-
-    if(this.evolutionAnimation) {
-      this.evolutionAnimation.dispose();
     }
 
     // this is to ensure that the button elements will clear out the buttons container

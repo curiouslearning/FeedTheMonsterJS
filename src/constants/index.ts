@@ -54,6 +54,11 @@ export const AUDIO_URL_PRELOAD = [
   './assets/audios/monster_discovered_fanfare.mp3',
   './assets/audios/monster_evolve.mp3'
 ];
+// Audios used during the Rive evolution animation.
+// The structure is designed to be easily scalable, allowing for the addition of more audio files as needed.
+export const EVOLUTION_AUDIOS = {
+  EVOL_1: ['/assets/audios/star_whoosh_and_poof.mp3'],
+}
 
 // Evolution audio paths
 export const AUDIO_CHEERING = './assets/audios/Cheering-03.mp3';
@@ -61,7 +66,7 @@ export const AUDIO_MONSTER_DISCOVERED = './assets/audios/monster_discovered_fanf
 export const AUDIO_MONSTER_EVOLVE = './assets/audios/monster_evolve.mp3';
 
 //Image paths
-export const ASSETS_PATH_STONE_PINK_BG = "./assets/images/Pink_Stone.webp"; //Updated stone asset
+export const ASSETS_PATH_STONE_PINK_BG = "./assets/images/Pink_Stone.svg"; //Updated stone asset
 export const ASSETS_PATH_TOTEM = "./assets/images/Totem_v02_v01.webp";
 export const ASSETS_PATH_BG_01 = "./assets/images/bg_v01.webp";
 export const ASSETS_PATH_HILL = "./assets/images/hill.webp";
@@ -79,37 +84,36 @@ export const WINTER_SIGN_1 = "./assets/images/Winter_sign_v01.webp";
 export const WINTER_FENCE_1 = "./assets/images/Winter_fence_v01.webp";
 export const WINTER_PILLAR_1 = "./assets/images/Winter_sign_v01.webp";
 export const LEVEL_SELECTION_BACKGROUND = "./assets/images/map.webp";
-export const PROMPT_TEXT_BG = "./assets/images/Prompt_Text_BG.webp";
+export const PROMPT_TEXT_BG = "./assets/images/Prompt_Text_BG.svg";
 export const PROMPT_PLAY_BUTTON = "./assets/images/promptPlayButton.webp";
-export const LEVEL_INDICATOR = "./assets/images/levels_v01.webp";
-export const BAR_EMPTY = "./assets/images/bar_empty_v01.webp";
-export const BAR_FULL = "./assets/images/bar_full_v01.webp";
+export const LEVEL_INDICATOR = "./assets/images/levels_v01.svg";
+export const BAR_EMPTY = "./assets/images/bar_empty_v01.svg";
+export const BAR_FULL = "./assets/images/bar_full_v01.svg";
 export const TIMER_EMPTY = "./assets/images/timer_emptynew.webp";
-export const ROTATING_CLOCK = "./assets/images/timer_new.webp";
-export const TIMER_FULL = "./assets/images/timer_full.png";
+export const ROTATING_CLOCK = "./assets/images/timer_new.svg";
 export const TUTORIAL_HAND = "./assets/images/tutorial_hand.webp";
 export const WIN_BG = "./assets/images/WIN_screen_bg.webp";
-export const PIN_STAR_1 = "./assets/images/pinStar1.webp";
-export const PIN_STAR_2 = "./assets/images/pinStar2.webp";
-export const PIN_STAR_3 = "./assets/images/pinStar3.webp";
+export const PIN_STAR_1 = "./assets/images/pinStar1.svg";
+export const PIN_STAR_2 = "./assets/images/pinStar2.svg";
+export const PIN_STAR_3 = "./assets/images/pinStar3.svg";
 export const CLOUD_6 = "./assets/images/cloud_01.png";
 export const CLOUD_7 = "./assets/images/cloud_02.png";
 export const CLOUD_8 = "./assets/images/cloud_03.png";
 
-export const PLAY_BTN_IMG = "./assets/images/Play_button.webp";
-export const PAUSE_BTN_IMG = "./assets/images/Pause_Button.webp";
-export const MAP_BTN_IMG = "./assets/images/map_btn.webp";
+export const PLAY_BTN_IMG = "./assets/images/Play_button.svg";
+export const PAUSE_BTN_IMG = "./assets/images/Pause_Button.svg";
+export const MAP_BTN_IMG = "./assets/images/map_btn.svg";
 export const MAP_ICON_IMG = "./assets/images/mapIcon.webp";
 export const MAP_ICON_SPECIAL_IMG =
   "./assets/images/map_icon_monster_level_v01.webp";
 export const MAP_LOCK_IMG = "./assets/images/mapLock.webp";
 export const STAR_IMG = "./assets/images/star.webp";
-export const NEXT_BTN_IMG = "./assets/images/next_btn.webp";
-export const BACK_BTN_IMG = "./assets/images/back_btn.webp";
-export const RETRY_BTN_IMG = "./assets/images/retry_btn.webp";
-export const CANCEL_BTN_IMG = "./assets/images/close_btn.webp";
-export const YES_BTN_IMG = "./assets/images/confirm_btn.webp";
-export const POPUP_BG_IMG = "./assets/images/popup_bg_v01.webp";
+export const NEXT_BTN_IMG = "./assets/images/next_btn.svg";
+export const BACK_BTN_IMG = "./assets/images/back_btn.svg";
+export const RETRY_BTN_IMG = "./assets/images/retry_btn.svg";
+export const CANCEL_BTN_IMG = "./assets/images/close_btn.svg";
+export const YES_BTN_IMG = "./assets/images/confirm_btn.svg";
+export const POPUP_BG_IMG = "./assets/images/popup_bg_v01.svg";
 
 //Background Group Images
 // to be removed once background component is fully integrate - GAMEPLAY_BG_GROUP_IMGS, DEFAULT_BG_GROUP_IMGS, AUTUMN_BG_GROUP_IMGS, WINTER_BG_GROUP_IMGS
@@ -145,7 +149,7 @@ export const WINTER_BG_GROUP_IMGS = {
 //Rive Animation
 export const MONSTER_PHASES = [
   './assets/rive/phase1Monster.riv',
-  './assets/rive/phase2Monster.riv',
+  './assets/rive/phase2Monster_updated.riv', //Updated the Rive file and renamed it for Git to detect changes.
   './assets/rive/phase4Monster.riv',
 ];
 export const EVOL_MONSTER = [
@@ -168,7 +172,7 @@ export const SPECIAL_LEVELS = [5, 13, 20, 30, 42];
 
 //Evolving Phases Backgrounds
 export const PHASES_BG ={
-  0: './assets/images/placeholder_background_1.webp',
-  1: './assets/images/placeholder_background_2.webp',
-  2: './assets/images/placeholder_background_3.webp'
+  0: './assets/images/phase_background_1.webp',
+  1: './assets/images/phase_background_2.webp',
+  2: './assets/images/phase_background_3.webp'
 };

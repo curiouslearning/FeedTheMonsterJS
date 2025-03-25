@@ -1,5 +1,5 @@
 import { BaseHTML, BaseHtmlOptions } from '../baseHTML/base-html';
-import { TIMER_EMPTY, ROTATING_CLOCK, TIMER_FULL } from "@constants";
+import { TIMER_EMPTY, ROTATING_CLOCK } from "@constants";
 import './timerHtml.scss';
 
 export const TIMER_HTML_SELECTORS = {

@@ -1,0 +1,12 @@
+<svg width="1080" height="115" viewBox="0 0 1080 115" fill="none" xmlns="http://www.w3.org/2000/svg">
+<path d="M1080 0H0V115H1080V0Z" fill="#2D84C1"/>
+<g opacity="0.2">
+<path d="M1080 15.3799H150V100.38H1080V15.3799Z" fill="#273857"/>
+<g style="mix-blend-mode:screen" opacity="0.5">
+<path d="M1080 15.3799H150V25.3799H1080V15.3799Z" fill="#273857"/>
+</g>
+<g style="mix-blend-mode:multiply" opacity="0.5">
+<path d="M1080 90.3799H150V100.38H1080V90.3799Z" fill="#273857"/>
+</g>
+</g>
+</svg>
