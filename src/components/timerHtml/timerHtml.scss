@@ -4,11 +4,6 @@
   width: 100%;
   display: flex;
 
-  /* Pause all animations when this class is added */
-  &.paused-animations * {
-    animation-play-state: paused !important;
-  }
-
   #timer-empty {
     position: absolute;
     bottom: 0px;
