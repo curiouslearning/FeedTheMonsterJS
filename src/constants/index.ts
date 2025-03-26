@@ -149,7 +149,7 @@ export const WINTER_BG_GROUP_IMGS = {
 //Rive Animation
 export const MONSTER_PHASES = [
   './assets/rive/phase1Monster.riv',
-  './assets/rive/phase2Monster_updated.riv', //Updated the Rive file and renamed it for Git to detect changes.
+  './assets/rive/phase2Monster.riv', //Removed 'Updated' in the Rive file and renamed it for Git to detect changes.
   './assets/rive/phase4Monster.riv',
 ];
 export const EVOL_MONSTER = [

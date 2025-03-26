@@ -1,16 +1,10 @@
-import { isDocumentVisible } from '@common';
-import { AudioPlayer } from '@components';
-import { MapButton, NextButtonHtml, RetryButtonHtml } from '@components/buttons';
 import { BaseButtonComponent } from '@components/buttons/base-button-component/base-button-component';
 import {
   AUDIO_INTRO,
-  AUDIO_LEVEL_LOSE,
-  AUDIO_LEVEL_WIN,
   SCENE_NAME_GAME_PLAY,
   SCENE_NAME_LEVEL_SELECT,
 } from '@constants';
 import gameStateService from '@gameStateService';
-import gameSettingsService from '@gameSettingsService';
 import { RiveMonsterComponent } from '@components/riveMonster/rive-monster-component';
 import { LevelEndScene } from './levelend-scene';
 
@@ -27,6 +21,7 @@ jest.mock('@components/riveMonster/rive-monster-component', () => {
   const MockRiveMonsterComponent = jest.fn(() => ({
     play: mockPlay,
     dispose: mockDispose,
+    stop: () => {}
   }));
 
   Object.assign(MockRiveMonsterComponent, {

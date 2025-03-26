@@ -1,10 +1,36 @@
 import { StartScene } from './start-scene';
-import { PlayButtonHtml } from '@components/buttons';
+import { PlayButtonHtml,  } from '@components/buttons';
 import { FirebaseIntegration } from "../../Firebase/firebase-integration";
 import { AudioPlayer } from "../../components/audio-player";
 import gameStateService from '@gameStateService';
 import gameSettingsService from '@gameSettingsService';
 import { SCENE_NAME_LEVEL_SELECT } from "@constants";
+import { RiveMonsterComponent } from '@components/riveMonster/rive-monster-component';
+
+jest.mock('@rive-app/canvas', () => ({
+  Rive: jest.fn().mockImplementation(() => ({
+    cleanup: jest.fn(),
+    play: jest.fn(),
+    stop: jest.fn(),
+    stateMachineInputs: jest.fn(),
+    on: jest.fn(),
+  })),
+  Layout: jest.fn(),
+  Fit: {
+    Contain: 'contain',
+    Cover: 'cover',
+  },
+  Alignment: {
+    Center: 'center',
+    Top: 'top',
+  },
+}));
+
+jest.mock('@components/riveMonster/rive-monster-component', () => ({
+  RiveMonsterComponent: jest.fn().mockImplementation(() => ({
+    Rive: jest.fn().mockImplementation(() => ({}))
+  })),
+}));
 
 jest.mock("../../Firebase/firebase-integration", () => ({
   FirebaseIntegration: jest.fn().mockImplementation(() => ({
@@ -32,7 +58,8 @@ jest.mock('@gameSettingsService', () => ({
     publish: jest.fn(),
     EVENTS: {
       GAME_TRAIL_EFFECT_TOGGLE_EVENT: 'GAME_TRAIL_EFFECT_TOGGLE_EVENT',
-    }
+    },
+    getDevicePixelRatioValue: jest.fn()
   }
 }));
 
