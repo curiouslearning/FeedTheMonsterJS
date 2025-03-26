@@ -29,6 +29,7 @@ export default class TimerTicking extends EventManager {
     // Additional properties for HTML manipulation
     public timerFullContainer: HTMLElement | null = null;
     public timerHtmlComponent: TimerHTMLComponent;
+
     constructor(width: number, height: number, callback: Function) {
         super({
             stoneDropCallbackHandler: (event) => this.handleStoneDrop(event),
@@ -102,17 +103,23 @@ export default class TimerTicking extends EventManager {
     }
 
     public applyRotation(condition: boolean) {
-        setTimeout(() => {
-            const element = document.getElementById("rotating-clock");
-            if (element) {
-                if (condition) {
-                    element.style.transform = "translateX(-50%)";
-                    element.style.animation = "rotateClock 3s linear infinite";
-                } else {
-                    element.style.animation = "none";
-                }
+        const element = document.getElementById("rotating-clock");
+        if (!element) return;
+
+        if (condition) {
+            // Resume rotation - use CSS animation-play-state for seamless resumption
+            element.style.animationPlayState = "running";
+            if (!element.style.animation || element.style.animation === "none") {
+                element.style.animation = "rotateClock 3s linear infinite";
             }
-        }, 0);
+        } else {
+            // Pause rotation - use CSS animation-play-state for seamless pausing
+            if (element.style.animation && element.style.animation !== "none") {
+                element.style.animationPlayState = "paused";
+            } else {
+                element.style.animation = "none";
+            }
+        }
     }
 
     private getTimerFullContainer(): HTMLElement | null {
@@ -137,6 +144,4 @@ export default class TimerTicking extends EventManager {
         this.stopTimer();
         this.timerHtmlComponent?.destroy();
     }
-
-
 }
