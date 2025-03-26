@@ -249,9 +249,7 @@ export class GameplayScene {
   resumeGame = () => {
     this.addEventListeners();
     // Resume the clock rotation when game is resumed
-    if (this.timerTicking?.startMyTimer && !this.timerTicking?.isStoneDropped) {
-      this.timerTicking?.applyRotation(true);
-    }
+    this.timerTicking?.applyRotation(this.timerTicking?.startMyTimer && !this.timerTicking?.isStoneDropped);
   };
 
   getRandomFeedBackText(randomIndex: number): string {
