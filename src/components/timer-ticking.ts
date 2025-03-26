@@ -30,9 +30,6 @@ export default class TimerTicking extends EventManager {
     public timerFullContainer: HTMLElement | null = null;
     public timerHtmlComponent: TimerHTMLComponent;
 
-    // Store the rotation state
-    private lastRotationState: string | null = null;
-
     constructor(width: number, height: number, callback: Function) {
         super({
             stoneDropCallbackHandler: (event) => this.handleStoneDrop(event),
@@ -106,51 +103,30 @@ export default class TimerTicking extends EventManager {
     }
 
     public applyRotation(condition: boolean) {
-        setTimeout(() => {
-            const element = document.getElementById("rotating-clock");
-            if (element) {
-                if (condition) {
-                    // If we have a saved rotation state, use it to resume from the same position
-                    if (this.lastRotationState && this.lastRotationState !== 'none') {
-                        // Apply the exact transform from where it stopped
-                        element.style.transform = this.lastRotationState;
-                        // Force a reflow to ensure the transform is applied before animation starts
-                        void element.offsetWidth;
-                        // Start the animation
-                        element.style.animation = "rotateClock 3s linear infinite";
-                    } else {
-                        // Default behavior if no saved state
-                        element.style.transform = "translateX(-50%)";
-                        element.style.animation = "rotateClock 3s linear infinite";
-                    }
-                } else {
-                    // Save the current rotation state before stopping
-                    const computedStyle = window.getComputedStyle(element);
-                    this.lastRotationState = computedStyle.getPropertyValue('transform');
-                    
-                    // Stop the animation but keep the current rotation position
-                    element.style.animation = "none";
-                    
-                    // Force a reflow to ensure the animation stops immediately
-                    void element.offsetWidth;
-                    
-                    // Apply the saved transform to keep the element in its current position
-                    if (this.lastRotationState && this.lastRotationState !== 'none') {
-                        element.style.transform = this.lastRotationState;
-                    }
-                }
+        const element = document.getElementById("rotating-clock");
+        if (!element) return;
+
+        if (condition) {
+            // Resume rotation - use CSS animation-play-state for seamless resumption
+            element.style.animationPlayState = "running";
+            if (!element.style.animation || element.style.animation === "none") {
+                element.style.animation = "rotateClock 3s linear infinite";
             }
-        }, 0);
+        } else {
+            // Pause rotation - use CSS animation-play-state for seamless pausing
+            if (element.style.animation && element.style.animation !== "none") {
+                element.style.animationPlayState = "paused";
+            } else {
+                element.style.animation = "none";
+            }
+        }
     }
 
     /**
      * Stops the clock rotation when the game is paused
      */
     public pauseRotation(): void {
-        const timerContainer = document.getElementById("timer-ticking");
-        if (timerContainer) {
-            timerContainer.classList.add('paused-animations');
-        }
+        this.applyRotation(false);
     }
 
     /**
@@ -158,10 +134,7 @@ export default class TimerTicking extends EventManager {
      */
     public resumeRotation(): void {
         if (this.startMyTimer && !this.isStoneDropped) {
-            const timerContainer = document.getElementById("timer-ticking");
-            if (timerContainer) {
-                timerContainer.classList.remove('paused-animations');
-            }
+            this.applyRotation(true);
         }
     }
 
