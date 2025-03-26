@@ -4,6 +4,10 @@
   width: 100%;
   display: flex;
 
+  /* Pause all animations when this class is added */
+  &.paused-animations * {
+    animation-play-state: paused !important;
+  }
 
   #timer-empty {
     position: absolute;
@@ -37,9 +41,6 @@
       margin: 6px 0px 0px 2px;
     }
   }
-
-
-
 }
 
 

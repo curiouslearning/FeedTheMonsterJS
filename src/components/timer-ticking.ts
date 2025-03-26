@@ -29,6 +29,7 @@ export default class TimerTicking extends EventManager {
     // Additional properties for HTML manipulation
     public timerFullContainer: HTMLElement | null = null;
     public timerHtmlComponent: TimerHTMLComponent;
+
     constructor(width: number, height: number, callback: Function) {
         super({
             stoneDropCallbackHandler: (event) => this.handleStoneDrop(event),
@@ -115,6 +116,28 @@ export default class TimerTicking extends EventManager {
         }, 0);
     }
 
+    /**
+     * Stops the clock rotation when the game is paused
+     */
+    public pauseRotation(): void {
+        // Simply add a CSS class to the parent element that will pause all animations
+        const timerContainer = document.getElementById("timer-ticking");
+        if (timerContainer) {
+            timerContainer.classList.add('paused-animations');
+        }
+    }
+
+    /**
+     * Resumes the clock rotation if the timer is still running
+     */
+    public resumeRotation(): void {
+        // Remove the CSS class to resume all animations
+        const timerContainer = document.getElementById("timer-ticking");
+        if (timerContainer) {
+            timerContainer.classList.remove('paused-animations');
+        }
+    }
+
     private getTimerFullContainer(): HTMLElement | null {
         return document.getElementById("timer-full-container");
     }
@@ -137,6 +160,4 @@ export default class TimerTicking extends EventManager {
         this.stopTimer();
         this.timerHtmlComponent?.destroy();
     }
-
-
 }
