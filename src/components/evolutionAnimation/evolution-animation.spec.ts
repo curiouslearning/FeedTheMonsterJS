@@ -1,5 +1,4 @@
 import { EvolutionAnimationComponent } from './evolution-animation';
-import { BaseHTML } from '@components/baseHTML/base-html';
 import { RiveMonsterComponent } from '@components/riveMonster/rive-monster-component';
 import { EVOL_MONSTER } from '@constants';
 
@@ -37,6 +36,7 @@ jest.mock('@components/riveMonster/rive-monster-component', () => {
       this.dispose = mockDispose;
       this.getCanvas = jest.fn().mockReturnValue(document.createElement('canvas'));
       this.play = jest.fn();
+      this.executeRiveAction = () => {}
     })
   };
 });
