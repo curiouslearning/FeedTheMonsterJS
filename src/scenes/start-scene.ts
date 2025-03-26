@@ -2,6 +2,8 @@ import { Monster, AudioPlayer } from "@components";
 import { PlayButton } from "@buttons";
 import { DataModal } from "@data";
 import {
+  lang,
+  pseudoId,
   StoneConfig,
   toggleDebugMode,
   Utils,
@@ -13,6 +15,7 @@ import {
   PWAInstallStatus,
   DEFAULT_BG_GROUP_IMGS,
 } from "@constants";
+import { TappedStart } from "src/Firebase/firebase-event-interface";
 
 export class StartScene {
   public canvas: HTMLCanvasElement;
@@ -117,7 +120,7 @@ export class StartScene {
       15
     );
     if (!(x < excludeX && y < excludeY)) {
-      FirebaseIntegration.getInstance().sendUserClickedOnPlayEvent();
+      this.logTappedStartFirebaseEvent();
       // @ts-ignore
       fbq("trackCustom", FirebaseUserClicked, {
         event: "click",
@@ -127,7 +130,18 @@ export class StartScene {
       self.switchSceneToLevelSelection("StartScene");
     }
   };
-
+  public logTappedStartFirebaseEvent() {
+    let endTime = Date.now();
+    const tappedStartData: TappedStart = {
+      cr_user_id: pseudoId,
+      ftm_language: lang,
+      profile_number: 0,
+      version_number: document.getElementById("version-info-id").innerHTML,
+      json_version_number: !!this.data.majVersion && !!this.data.minVersion ? this.data.majVersion.toString() + "." + this.data.minVersion.toString() : "",
+    };
+    console.log(">>>>>>>>>>>>>")
+    FirebaseIntegration.getInstance().sendTappedStartEvent(tappedStartData);
+  }
   dispose() {
     this.monster.dispose();
     this.audioPlayer.stopAllAudios();
