@@ -122,22 +122,6 @@ export default class TimerTicking extends EventManager {
         }
     }
 
-    /**
-     * Stops the clock rotation when the game is paused
-     */
-    public pauseRotation(): void {
-        this.applyRotation(false);
-    }
-
-    /**
-     * Resumes the clock rotation if the timer is still running
-     */
-    public resumeRotation(): void {
-        if (this.startMyTimer && !this.isStoneDropped) {
-            this.applyRotation(true);
-        }
-    }
-
     private getTimerFullContainer(): HTMLElement | null {
         return document.getElementById("timer-full-container");
     }
