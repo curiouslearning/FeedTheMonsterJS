@@ -30,6 +30,9 @@ export default class TimerTicking extends EventManager {
     public timerFullContainer: HTMLElement | null = null;
     public timerHtmlComponent: TimerHTMLComponent;
 
+    // Store the rotation state
+    private lastRotationState: string | null = null;
+
     constructor(width: number, height: number, callback: Function) {
         super({
             stoneDropCallbackHandler: (event) => this.handleStoneDrop(event),
@@ -107,10 +110,34 @@ export default class TimerTicking extends EventManager {
             const element = document.getElementById("rotating-clock");
             if (element) {
                 if (condition) {
-                    element.style.transform = "translateX(-50%)";
-                    element.style.animation = "rotateClock 3s linear infinite";
+                    // If we have a saved rotation state, use it to resume from the same position
+                    if (this.lastRotationState && this.lastRotationState !== 'none') {
+                        // Apply the exact transform from where it stopped
+                        element.style.transform = this.lastRotationState;
+                        // Force a reflow to ensure the transform is applied before animation starts
+                        void element.offsetWidth;
+                        // Start the animation
+                        element.style.animation = "rotateClock 3s linear infinite";
+                    } else {
+                        // Default behavior if no saved state
+                        element.style.transform = "translateX(-50%)";
+                        element.style.animation = "rotateClock 3s linear infinite";
+                    }
                 } else {
+                    // Save the current rotation state before stopping
+                    const computedStyle = window.getComputedStyle(element);
+                    this.lastRotationState = computedStyle.getPropertyValue('transform');
+                    
+                    // Stop the animation but keep the current rotation position
                     element.style.animation = "none";
+                    
+                    // Force a reflow to ensure the animation stops immediately
+                    void element.offsetWidth;
+                    
+                    // Apply the saved transform to keep the element in its current position
+                    if (this.lastRotationState && this.lastRotationState !== 'none') {
+                        element.style.transform = this.lastRotationState;
+                    }
                 }
             }
         }, 0);
@@ -120,7 +147,6 @@ export default class TimerTicking extends EventManager {
      * Stops the clock rotation when the game is paused
      */
     public pauseRotation(): void {
-        // Simply add a CSS class to the parent element that will pause all animations
         const timerContainer = document.getElementById("timer-ticking");
         if (timerContainer) {
             timerContainer.classList.add('paused-animations');
@@ -131,10 +157,11 @@ export default class TimerTicking extends EventManager {
      * Resumes the clock rotation if the timer is still running
      */
     public resumeRotation(): void {
-        // Remove the CSS class to resume all animations
-        const timerContainer = document.getElementById("timer-ticking");
-        if (timerContainer) {
-            timerContainer.classList.remove('paused-animations');
+        if (this.startMyTimer && !this.isStoneDropped) {
+            const timerContainer = document.getElementById("timer-ticking");
+            if (timerContainer) {
+                timerContainer.classList.remove('paused-animations');
+            }
         }
     }
 
