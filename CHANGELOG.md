@@ -1,5 +1,34 @@
 
 
+## [1.0.39](https://github.com/curiouslearning/FeedTheMonsterJS/compare/1.0.38...1.0.39) (2025-03-05)
+
+
+### Features
+
+* new build workflow ([83d0ab9](https://github.com/curiouslearning/FeedTheMonsterJS/commit/83d0ab993592d58ae8a1709c0ea4ef392406e2ae))
+
+### Bug Fixes
+
+* added workspaces for ci ([b5e67df](https://github.com/curiouslearning/FeedTheMonsterJS/commit/b5e67df4f97e2510a5aa9e1980fe694166470568))
+* alignment issue ([09a5771](https://github.com/curiouslearning/FeedTheMonsterJS/commit/09a5771188b1b9d9010f2fda85a98ab7f75bece9))
+* bangla matchfirst ([f38768e](https://github.com/curiouslearning/FeedTheMonsterJS/commit/f38768e426e05b019484faa7ab04bdb99298caec))
+* build race condition ([bdcc17e](https://github.com/curiouslearning/FeedTheMonsterJS/commit/bdcc17eb53508c5854f7be13885a32d73d16f425))
+* build script and workbox injection ([c9d6aa3](https://github.com/curiouslearning/FeedTheMonsterJS/commit/c9d6aa37792dfb06818be2daf8a977b97f163897))
+* changes for matchfirst level  ([]) brackets ([701a984](https://github.com/curiouslearning/FeedTheMonsterJS/commit/701a9844e14cd2bf2427dd7370fbf0a92ff94001))
+* cicd, disable builds on circle ci, build needs to be triggered on commit/pr ([294b355](https://github.com/curiouslearning/FeedTheMonsterJS/commit/294b355d0c063288dc37de8a7b55072c55f61e8c))
+* Cr-246 Kannada language build ([#1532](https://github.com/curiouslearning/FeedTheMonsterJS/issues/1532)) ([0832ac1](https://github.com/curiouslearning/FeedTheMonsterJS/commit/0832ac1f247eef6093bf219fc995028b47175c41))
+* CR-249 arabic test build ([c51776a](https://github.com/curiouslearning/FeedTheMonsterJS/commit/c51776a015634d76b10f055f6b07c6beb217c7d4))
+* CR-257 stone text ([b4ceafa](https://github.com/curiouslearning/FeedTheMonsterJS/commit/b4ceafa0365fd4c24c3d0e4a1eb035b99ed849ca))
+* dev local env ([e4571d5](https://github.com/curiouslearning/FeedTheMonsterJS/commit/e4571d54c3998e8a04f6f33a0eb5546adcc20f95))
+* disabled watch on production mode ([20940e1](https://github.com/curiouslearning/FeedTheMonsterJS/commit/20940e116b9075b92155571f3417186496ee2820))
+* farsi json build ([3cb9453](https://github.com/curiouslearning/FeedTheMonsterJS/commit/3cb9453da5fd490987fa7f3864cced53d053a220))
+* kannada feedback audios ([a93e3be](https://github.com/curiouslearning/FeedTheMonsterJS/commit/a93e3bed049e3c16702f49095e3d1b2c1af1b75d))
+* removed build, added ignores and webpack updates ([b08538a](https://github.com/curiouslearning/FeedTheMonsterJS/commit/b08538a3c9f8fa6a51dcceeb61e14861cf5f7598))
+* renamed dev to build ([6acc24c](https://github.com/curiouslearning/FeedTheMonsterJS/commit/6acc24c594efb08d49cd99ab684eb95db8f92634))
+* reverted changes ([e878c2a](https://github.com/curiouslearning/FeedTheMonsterJS/commit/e878c2a804e8cdbe30e4b39bd37559d66c5bfb2d))
+* schema fix ([037f065](https://github.com/curiouslearning/FeedTheMonsterJS/commit/037f0651910befe84752a9a54206049193e54798))
+* Telugu build ([1eecc1d](https://github.com/curiouslearning/FeedTheMonsterJS/commit/1eecc1dd34d223b4533866c65987bdd185975497))
+
 ## [1.0.38](https://github.com/curiouslearning/FeedTheMonsterJS/compare/1.0.37...1.0.38) (2024-12-20)
 
 
