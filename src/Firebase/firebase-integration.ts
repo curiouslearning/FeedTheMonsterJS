@@ -33,10 +33,10 @@ export class FirebaseIntegration extends BaseFirebaseIntegration {
     public sendLevelCompletedEvent(data: LevelCompletedEvent): void {
         this.customEvents("level_completed", data);
     }
+
     public sendDownloadCompletedEvent(data: DowloadPercentCompleted): void {
         this.customEvents('download_completed', data);
-    }
-    public sendDownload25PercentCompletedEvent(data: DowloadPercentCompleted): void {
+    } public sendDownload25PercentCompletedEvent(data: DowloadPercentCompleted): void {
         this.customEvents('download_25', data);
     }
     public sendDownload50PercentCompletedEvent(data: DowloadPercentCompleted): void {
