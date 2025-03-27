@@ -22,16 +22,13 @@ export default class PlayButton {
         this.images = {
             pause_button_image: PLAY_BTN_IMG
         }
-
         loadImages(this.images, (images) => {
             this.loadedImages = Object.assign({}, images);
             this.imagesLoaded = true;
         });
     }
     private async init() {
-
     }
-
     draw() {
         if (this.imagesLoaded) {
             this.context.drawImage(
@@ -43,7 +40,6 @@ export default class PlayButton {
             );
         }
     }
-
     onClick(xClick: number, yClick: number): boolean {
         const distance = Math.sqrt(
             (xClick - this.posX - this.canvas.width / 6) *
