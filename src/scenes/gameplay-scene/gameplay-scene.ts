@@ -248,6 +248,8 @@ export class GameplayScene {
 
   resumeGame = () => {
     this.addEventListeners();
+    // Resume the clock rotation when game is resumed
+    this.timerTicking?.applyRotation(this.timerTicking?.startMyTimer && !this.timerTicking?.isStoneDropped);
   };
 
   getRandomFeedBackText(randomIndex: number): string {
@@ -877,6 +879,8 @@ export class GameplayScene {
   public pauseGamePlay = () => {
     this.removeEventListeners();
     this.audioPlayer.stopAllAudios();
+    // Stop the clock rotation when game is paused
+    this.timerTicking?.applyRotation(false);
   };
 
   handleVisibilityChange = () => {

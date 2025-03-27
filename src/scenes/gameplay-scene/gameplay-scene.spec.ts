@@ -12,6 +12,10 @@ jest.mock('@components', () => {
   (BackgroundHtmlGenerator as any).createBackgroundComponent = jest
     .fn()
     .mockReturnValue('summer');
+  
+  const PhasesBackground = jest.fn().mockImplementation(() => ({
+    generateBackground: jest.fn(),
+  }));
 
   return {
     AudioPlayer: jest.fn().mockImplementation(() => ({
@@ -95,11 +99,12 @@ jest.mock('@components', () => {
       hideText: jest.fn()
     })),
     BackgroundHtmlGenerator,
+    PhasesBackground,
     RiveMonsterComponent: jest.fn().mockImplementation(() => ({
       dispose: jest.fn(),
       play: jest.fn(),
       checkHitboxDistance: jest.fn(),
-      onClick: jest.fn()
+      onClick: jest.fn(),
     }))
   };
 });
@@ -113,7 +118,8 @@ jest.mock('@gameSettingsService', () => ({
     publish: jest.fn(),
     EVENTS: {
       GAME_TRAIL_EFFECT_TOGGLE_EVENT: 'GAME_TRAIL_EFFECT_TOGGLE_EVENT',
-    }
+    },
+    getDevicePixelRatioValue: jest.fn()
   }
 }));
 
@@ -191,7 +197,8 @@ describe('GameplayScene with BasePopupComponent', () => {
     // Initialize GameplayScene
     gameplayScene = new GameplayScene();
     gameplayScene.monster = {
-      triggerInput: jest.fn()
+      triggerInput: jest.fn(),
+      dispose: jest.fn()
     } as any;
   });
 

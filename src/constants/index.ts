@@ -54,6 +54,11 @@ export const AUDIO_URL_PRELOAD = [
   './assets/audios/monster_discovered_fanfare.mp3',
   './assets/audios/monster_evolve.mp3'
 ];
+// Audios used during the Rive evolution animation.
+// The structure is designed to be easily scalable, allowing for the addition of more audio files as needed.
+export const EVOLUTION_AUDIOS = {
+  EVOL_1: ['/assets/audios/star_whoosh_and_poof.mp3'],
+}
 
 // Evolution audio paths
 export const AUDIO_CHEERING = './assets/audios/Cheering-03.mp3';
@@ -104,7 +109,7 @@ export const MAP_ICON_SPECIAL_IMG =
 export const MAP_LOCK_IMG = "./assets/images/mapLock.webp";
 export const STAR_IMG = "./assets/images/star.webp";
 export const NEXT_BTN_IMG = "./assets/images/next_btn.svg";
-export const BACK_BTN_IMG = "./assets/images/back_btn.webp";
+export const BACK_BTN_IMG = "./assets/images/back_btn.svg";
 export const RETRY_BTN_IMG = "./assets/images/retry_btn.svg";
 export const CANCEL_BTN_IMG = "./assets/images/close_btn.svg";
 export const YES_BTN_IMG = "./assets/images/confirm_btn.svg";
@@ -144,7 +149,7 @@ export const WINTER_BG_GROUP_IMGS = {
 //Rive Animation
 export const MONSTER_PHASES = [
   './assets/rive/phase1Monster.riv',
-  './assets/rive/phase2Monster_updated.riv', //Updated the Rive file and renamed it for Git to detect changes.
+  './assets/rive/phase2Monster.riv', //Removed 'Updated' in the Rive file and renamed it for Git to detect changes.
   './assets/rive/phase4Monster.riv',
 ];
 export const EVOL_MONSTER = [
@@ -167,7 +172,7 @@ export const SPECIAL_LEVELS = [5, 13, 20, 30, 42];
 
 //Evolving Phases Backgrounds
 export const PHASES_BG ={
-  0: './assets/images/placeholder_background_1.webp',
-  1: './assets/images/placeholder_background_2.webp',
-  2: './assets/images/placeholder_background_3.webp'
+  0: './assets/images/phase_background_1.webp',
+  1: './assets/images/phase_background_2.webp',
+  2: './assets/images/phase_background_3.webp'
 };

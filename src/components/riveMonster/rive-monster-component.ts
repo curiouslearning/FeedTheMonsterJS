@@ -1,7 +1,6 @@
 import { MONSTER_PHASES } from '@constants';
 import { Rive, Layout, Fit, Alignment } from '@rive-app/canvas';
 import gameSettingsService from '@gameSettingsService';
-
 export interface RiveMonsterComponentProps {
   canvas: HTMLCanvasElement; // Canvas element where the animation will render
   autoplay: boolean;
@@ -15,6 +14,20 @@ export interface RiveMonsterComponentProps {
   isEvolving?: boolean;
 }
 
+// Complete and exhaustive list of all possible Rive Event Types. Ensure this enum stays up-to-date for TypeScript type checking.
+export enum EventType {
+  Load = "load", // When Rive has successfully loaded in the Rive file
+  LoadError = "loaderror", // When Rive cannot load the Rive file
+  Play = "play", // When Rive plays an entity or resumes the render loop
+  Pause = "pause", // When Rive pauses the render loop and playing entity
+  Stop = "stop", // When Rive stops the render loop and playing entity
+  Loop = "loop", // (Singular animations only) When Rive loops an animation 
+  Advance = "advance", // When Rive advances the animation in a frame
+  StateChange = "statechange", // When a Rive state change is detected
+  RiveEvent = "riveevent", // When a Rive Event gets reported
+}
+//Event names to access EventType objects.
+type EventNames = 'Load' | 'LoadError' | 'Play' | 'Pause' | 'Stop' | 'Loop' | 'Advance' | 'StateChange' | 'RiveEvent';
 export class RiveMonsterComponent {
   private props: RiveMonsterComponentProps;
   private riveInstance: Rive;
@@ -128,6 +141,22 @@ export class RiveMonsterComponent {
 
     this.riveInstance = new Rive(riveConfig);
   }
+
+  /**
+   * Used to add additional logic to any events happening in Rive.
+   *
+   * Params:
+   *  eventName = 'Load' | 'LoadError' | 'Play' | 'Pause' | 'Stop' | 'Loop' | 'Advance' | 'StateChange' | 'RiveEvent'
+   *  callback - callback for the method to calls for that event.
+   **/
+  public executeRiveAction(eventName: EventNames , callback) {
+    // Listens for the specified event on the `riveInstance` and triggers the provided callback when the event occurs.
+    // This allows custom logic to be executed in response to Rive events (e.g., Play, Load, etc.).
+    this.riveInstance.on(EventType[eventName], () => {
+      callback();
+    });
+  }
+
   getInputs() {
     // Don't try to get state machine inputs if we're in evolution mode
     if (this.props.isEvolving) {
