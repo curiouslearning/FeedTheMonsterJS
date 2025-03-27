@@ -16,7 +16,6 @@ import {
   DEFAULT_BG_GROUP_IMGS,
 } from "@constants";
 import { TappedStart } from "src/Firebase/firebase-event-interface";
-
 export class StartScene {
   public canvas: HTMLCanvasElement;
   public data: any;
@@ -42,7 +41,6 @@ export class StartScene {
   private toggleBtn: HTMLElement;
   private pwa_install_status: Event;
   private titleTextElement: HTMLElement | null;
-
   constructor(
     canvas: HTMLCanvasElement,
     data: DataModal,
@@ -67,7 +65,6 @@ export class StartScene {
     this.titleTextElement = document.getElementById("title");
     this.generateGameTitle();
   }
-
   private setupBg = async () => {
     this.background = await createBackground(
       this.context,
@@ -77,24 +74,20 @@ export class StartScene {
       defaultBgDrawing
     );
   };
-
   devToggle = () => {
     this.toggleBtn.addEventListener("click", () =>
       toggleDebugMode(this.toggleBtn)
     );
   };
-
   generateGameTitle = () => {
     this.titleTextElement.textContent = this.data.title;
   };
-
   animation = (deltaTime: number) => {
     this.context.clearRect(0, 0, this.width, this.height);
     this.background?.draw();
     this.monster.update(deltaTime);
     this.playButton.draw();
   };
-
   createPlayButton() {
     this.playButton = new PlayButton(
       this.context,
@@ -107,7 +100,6 @@ export class StartScene {
     });
     this.handler.addEventListener("click", this.handleMouseClick, false);
   }
-
   handleMouseClick = (event) => {
     let self = this;
     const selfElement = document.getElementById("canvas") as HTMLCanvasElement;
@@ -130,7 +122,7 @@ export class StartScene {
       self.switchSceneToLevelSelection("StartScene");
     }
   };
-  public logTappedStartFirebaseEvent() {
+  logTappedStartFirebaseEvent() {
     let endTime = Date.now();
     const tappedStartData: TappedStart = {
       cr_user_id: pseudoId,
@@ -139,7 +131,6 @@ export class StartScene {
       version_number: document.getElementById("version-info-id").innerHTML,
       json_version_number: !!this.data.majVersion && !!this.data.minVersion ? this.data.majVersion.toString() + "." + this.data.minVersion.toString() : "",
     };
-    console.log(">>>>>>>>>>>>>")
     FirebaseIntegration.getInstance().sendTappedStartEvent(tappedStartData);
   }
   dispose() {
@@ -152,10 +143,15 @@ export class StartScene {
       false
     );
   }
-
   handlerInstallPrompt = (event) => {
     event.preventDefault();
     this.pwa_install_status = event;
     localStorage.setItem(PWAInstallStatus, "false");
   };
 }
+
+
+
+
+
+

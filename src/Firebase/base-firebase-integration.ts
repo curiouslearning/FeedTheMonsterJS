@@ -2,7 +2,6 @@ import { initializeApp } from "firebase/app";
 import { getAnalytics, logEvent, setUserProperties } from "firebase/analytics";
 import { firebaseConfig } from "./firebase-config";
 import { source, campaign_id } from "@common";
-
 export class BaseFirebaseIntegration {
     firebaseApp: any;
     analytics: any;
@@ -47,5 +46,4 @@ export class BaseFirebaseIntegration {
             console.error("Error while initializing Firebase:", error);
         }
     }
-
 }
