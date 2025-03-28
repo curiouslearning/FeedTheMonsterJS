@@ -120,9 +120,13 @@ export class PromptText extends EventManager {
                 x = x + this.context.measureText(this.targetStones[i]).width + 5;
             }
         } else{
+            // For Word level type with non-Visible prototype, use standard vertical position
+            // This aligns the play button with where the text would normally appear
             this.drawCenteredPlayButton(y, scaledWidth, scaledHeight);
         }}
         else if (this.levelData.levelMeta.levelType == "audioPlayerWord") {
+                    // For audioPlayerWord type, position the play button lower (40% from top)
+                    // This provides better vertical spacing for audio-only prompts
                     this.drawCenteredPlayButton(this.height * 0.4, scaledWidth, scaledHeight);
         }
         else {
@@ -130,6 +134,8 @@ export class PromptText extends EventManager {
             this.context.fillStyle = "black";
             this.context.fillText(this.currentPromptText, x, y);
             }else{
+                // For default level types with non-Visible prototype
+                // Position the play button at the standard text position
                 this.drawCenteredPlayButton(y, scaledWidth, scaledHeight);
             }
         }
@@ -219,9 +225,13 @@ export class PromptText extends EventManager {
                     break;
                 }}
                 else{
+                    // For Word level type with non-Visible prototype in non-RTL languages
+                    // Position the play button at the standard text height (28% from top)
                     this.drawCenteredPlayButton(y, scaledWidth, scaledHeight);
             }}
                 case "SoundWord": {
+                    // For SoundWord level type, position the play button at standard text height
+                    // This is used for sound-based word exercises
                     this.drawCenteredPlayButton(y, scaledWidth, scaledHeight);
                   break;
                 }
@@ -235,6 +245,8 @@ export class PromptText extends EventManager {
                     );
                     break;
                 }else{
+                    // For default level types with non-Visible prototype in non-RTL languages
+                    // Position the play button at the standard text height
                     this.drawCenteredPlayButton(y, scaledWidth, scaledHeight);
                 }}
             }
