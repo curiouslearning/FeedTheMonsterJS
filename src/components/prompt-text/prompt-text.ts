@@ -360,16 +360,20 @@ export class PromptText extends EventManager {
       
       /**
        * Applies responsive sizing to the prompt image based on screen width
+       * This ensures the image displays correctly across different device sizes
        */
       applyPromptImageResponsiveSizing() {
         const screenWidth = window.innerWidth;
         
-        // Only adjust prompt image dimensions for smaller screens
-        // For larger screens, we use the default values set in the constructor
+        // For mobile devices (width <= 480px), we scale down the image
+        // For larger screens, we keep the default values set in the constructor
         if (screenWidth <= 480) {
-          // Small and medium mobile devices
-          this.promptImageWidth = this.width * 0.6;
-          // Use ternary to determine height based on screen size
+          // Apply mobile-specific scaling factors
+          this.promptImageWidth = this.width * 0.6; // 60% of original width for all mobile devices
+          
+          // Height varies based on screen size:
+          // - Very small screens (<=375px): 25% of original height
+          // - Medium-small screens (376-480px): 30% of original height
           this.promptImageHeight = this.height * (screenWidth <= 375 ? 0.25 : 0.30);
         }
       }
