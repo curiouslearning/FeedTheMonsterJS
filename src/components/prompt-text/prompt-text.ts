@@ -104,13 +104,7 @@ export class PromptText extends EventManager {
                 y
             );}
                 else{
-                    this.context.drawImage(
-                        this.promptPlayButton,
-                        this.width / 2.4,
-                        y / 1.15,
-                        scaledWidth / 4,
-                        scaledHeight / 4
-                      );
+                    this.drawCenteredPlayButton(y, scaledWidth, scaledHeight);
                 }
         } else if (this.levelData.levelMeta.levelType == "Word") {
             if (this.levelData.levelMeta.protoType == "Visible") {
@@ -126,37 +120,17 @@ export class PromptText extends EventManager {
                 x = x + this.context.measureText(this.targetStones[i]).width + 5;
             }
         } else{
-            this.context.drawImage(
-                this.promptPlayButton,
-                this.width / 2.4,
-                y / 1.15,
-                scaledWidth / 4,
-                scaledHeight / 4
-              );
+            this.drawCenteredPlayButton(y, scaledWidth, scaledHeight);
         }}
         else if (this.levelData.levelMeta.levelType == "audioPlayerWord") {
-                    const offsetX = (this.width - scaledWidth) *1.25;
-                    const offsetY = (this.height - scaledHeight) *0.33;
-                    this.context.drawImage(
-                        this.promptPlayButton,
-                        offsetX,
-                        offsetY,
-                        scaledWidth/4,
-                        scaledHeight/4
-                    );
+                    this.drawCenteredPlayButton(this.height * 0.4, scaledWidth, scaledHeight);
         }
         else {
             if (this.levelData.levelMeta.protoType == "Visible") {
             this.context.fillStyle = "black";
             this.context.fillText(this.currentPromptText, x, y);
             }else{
-                this.context.drawImage(
-                    this.promptPlayButton,
-                    this.width / 2.4,
-                    y / 1.15,
-                    scaledWidth / 4,
-                    scaledHeight / 4
-                  );
+                this.drawCenteredPlayButton(y, scaledWidth, scaledHeight);
             }
         }
     }
@@ -245,22 +219,10 @@ export class PromptText extends EventManager {
                     break;
                 }}
                 else{
-                    this.context.drawImage(
-                        this.promptPlayButton,
-                        this.width / 2.4,
-                        y / 1.25,
-                        scaledWidth / 4,
-                        scaledHeight / 4
-                      );
+                    this.drawCenteredPlayButton(y, scaledWidth, scaledHeight);
             }}
                 case "SoundWord": {
-                    this.context.drawImage(
-                        this.promptPlayButton,
-                        this.width / 2.4,
-                        y / 1.25,
-                        scaledWidth/4,
-                        scaledHeight/4
-                    );
+                    this.drawCenteredPlayButton(y, scaledWidth, scaledHeight);
                   break;
                 }
                 default: {
@@ -273,13 +235,7 @@ export class PromptText extends EventManager {
                     );
                     break;
                 }else{
-                    this.context.drawImage(
-                        this.promptPlayButton,
-                        this.width / 2.4,
-                        y / 1.25,
-                        scaledWidth / 4,
-                        scaledHeight / 4
-                      );
+                    this.drawCenteredPlayButton(y, scaledWidth, scaledHeight);
                 }}
             }
             currentWordWidth = (this.context.measureText(
@@ -289,6 +245,25 @@ export class PromptText extends EventManager {
             ).width) / 2;
             startPrompttextX += currentWordWidth;
         }
+    }
+    drawCenteredPlayButton(y: number, scaledWidth: number, scaledHeight: number) {
+        // Use a fixed size for the button based on the screen size
+        const buttonSize = Math.min(this.width, this.height) * 0.12;
+        
+        // Use a square dimension to preserve aspect ratio
+        const buttonWidth = buttonSize;
+        const buttonHeight = buttonSize;
+        
+        const centerX = this.width / 2 - buttonWidth / 2;
+        const centerY = y - buttonHeight / 2;
+        
+        this.context.drawImage(
+            this.promptPlayButton,
+            centerX,
+            centerY,
+            buttonWidth,
+            buttonHeight
+        );
     }
     draw(deltaTime: number) {
     this.updateScaling();
@@ -300,7 +275,7 @@ export class PromptText extends EventManager {
             const scaledWidth = this.promptImageWidth * this.scale;
             const scaledHeight = this.promptImageHeight * this.scale;
             const offsetX = (this.width - scaledWidth) / 2;
-            const offsetY = (this.height - scaledHeight) / 5;
+            const offsetY = (this.height - scaledHeight) / 4.2;
             this.context.drawImage(
                 this.prompt_image,
                 offsetX,
@@ -366,8 +341,33 @@ export class PromptText extends EventManager {
         const image2Promise = this.loadImage(this.promptPlayButton, PROMPT_PLAY_BUTTON);
         await Promise.all([image1Promise, image2Promise]);
         this.imagesLoaded = true;
-        // You can do additional actions here after both images are loaded.
+        
+        // Apply responsive sizing after images are loaded
+        this.applyPromptImageResponsiveSizing();
       }
+      
+      /**
+       * Applies responsive sizing to the prompt image based on screen width
+       */
+      applyPromptImageResponsiveSizing() {
+        const screenWidth = window.innerWidth;
+        
+        // Adjust prompt image dimensions for smaller screens
+        if (screenWidth <= 375) {
+          // Small mobile devices
+          this.promptImageWidth = this.width * 0.6;
+          this.promptImageHeight = this.height * 0.25;
+        } else if (screenWidth <= 480) {
+          // Medium mobile devices
+          this.promptImageWidth = this.width * 0.6;
+          this.promptImageHeight = this.height * 0.30;
+        } else {
+          // Default for larger screens
+          this.promptImageWidth = this.width * 0.65;
+          this.promptImageHeight = this.height * 0.3;
+        }
+      }
+      
       loadImage(image: HTMLImageElement, src: string): Promise<void> {
         return new Promise<void>((resolve, reject) => {
           image.onload = () => {
