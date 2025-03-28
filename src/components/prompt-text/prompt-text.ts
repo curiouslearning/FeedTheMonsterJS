@@ -364,7 +364,8 @@ export class PromptText extends EventManager {
       applyPromptImageResponsiveSizing() {
         const screenWidth = window.innerWidth;
         
-        // Adjust prompt image dimensions for smaller screens
+        // Only adjust prompt image dimensions for smaller screens
+        // For larger screens, we use the default values set in the constructor
         if (screenWidth <= 375) {
           // Small mobile devices
           this.promptImageWidth = this.width * 0.6;
@@ -373,11 +374,8 @@ export class PromptText extends EventManager {
           // Medium mobile devices
           this.promptImageWidth = this.width * 0.6;
           this.promptImageHeight = this.height * 0.30;
-        } else {
-          // Default for larger screens
-          this.promptImageWidth = this.width * 0.65;
-          this.promptImageHeight = this.height * 0.3;
         }
+        // For larger screens, we keep the default values set in the constructor
       }
       
       loadImage(image: HTMLImageElement, src: string): Promise<void> {
