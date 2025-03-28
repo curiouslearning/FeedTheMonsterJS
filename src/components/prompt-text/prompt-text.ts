@@ -366,16 +366,12 @@ export class PromptText extends EventManager {
         
         // Only adjust prompt image dimensions for smaller screens
         // For larger screens, we use the default values set in the constructor
-        if (screenWidth <= 375) {
-          // Small mobile devices
+        if (screenWidth <= 480) {
+          // Small and medium mobile devices
           this.promptImageWidth = this.width * 0.6;
-          this.promptImageHeight = this.height * 0.25;
-        } else if (screenWidth <= 480) {
-          // Medium mobile devices
-          this.promptImageWidth = this.width * 0.6;
-          this.promptImageHeight = this.height * 0.30;
+          // Use ternary to determine height based on screen size
+          this.promptImageHeight = this.height * (screenWidth <= 375 ? 0.25 : 0.30);
         }
-        // For larger screens, we keep the default values set in the constructor
       }
       
       loadImage(image: HTMLImageElement, src: string): Promise<void> {
