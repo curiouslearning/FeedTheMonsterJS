@@ -8,6 +8,7 @@ import {
 } from '@constants';
 import gameStateService from '@gameStateService';
 import { AudioPlayer } from '@components/audio-player';
+import { isDocumentVisible } from '@common';
 
 export interface EvolutionAnimationProps extends RiveMonsterComponentProps {
   monsterPhaseNumber: number;
@@ -49,6 +50,7 @@ export class EvolutionAnimationComponent extends RiveMonsterComponent {
     this.monsterPhaseNumber = gameStateService.checkMonsterPhaseUpdation();
     this.audioPlayer = new AudioPlayer();
     this.initialize();
+    this.addEventListener();
     this.startAnimation();
   }
 
@@ -67,6 +69,23 @@ export class EvolutionAnimationComponent extends RiveMonsterComponent {
       true
     );
   }
+
+  /**
+   * Adds event listener to pause audio when tab is not visible
+   */
+  addEventListener() {
+    document.addEventListener('visibilitychange', this.pauseAudios, false);
+  }
+
+  /**
+   * Handler for visibility change events that stops audio playback when tab is hidden
+   */
+  pauseAudios = () => {
+    if (!isDocumentVisible()) {
+      // Pause all audio when tab is not visible
+      this.audioPlayer.stopAllAudios();
+    }
+  };
 
   // Returns the appropriate monster evolution animation source based on the phase
   private static getEvolutionSource(phase: number): string {
@@ -163,6 +182,9 @@ export class EvolutionAnimationComponent extends RiveMonsterComponent {
     if (this.audioPlayer) {
       this.audioPlayer.stopAllAudios();
     }
+
+    // Remove visibility change listener
+    document.removeEventListener('visibilitychange', this.pauseAudios, false);
 
     super.dispose();
   }
