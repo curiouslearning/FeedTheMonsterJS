@@ -183,7 +183,7 @@ export class EvolutionAnimationComponent extends RiveMonsterComponent {
       this.audioPlayer.stopAllAudios();
     }
 
-    // Remove visibility change listener
+    // Remove visibility change listener when dispose
     document.removeEventListener('visibilitychange', this.pauseAudios, false);
 
     super.dispose();
