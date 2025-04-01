@@ -2,8 +2,8 @@
   "short_name": "Feed The Monster",
   "name": "Feed The Monster Progressive Web App",
   "license": "MIT",
-  "learningUnits": "https://example.org/opds.json",
-  "defaultLaunchUri": "https://example.org/",
+  "learningUnits": "https://curiousreader.curiouslearning.org/opds.json",
+  "defaultLaunchUri": "https://curiousreader.curiouslearning.org/",
 
   "android": {
     "packageId": "org.curiouslearning.container",
