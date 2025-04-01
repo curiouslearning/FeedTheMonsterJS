@@ -26,6 +26,22 @@ export class PromptText extends EventManager {
     public scaleFactor:number = 0.00050;
     public promptImageHeight: number = 0;
     public promptPlayButton: HTMLImageElement;
+    // Text positioning variables - calculated once
+    private textVerticalPosition: number = 0;
+    private textHorizontalPosition: number = 0; 
+    private promptBgOffsetX: number = 0;
+    private promptBgOffsetY: number = 0;
+    private promptBgScaledWidth: number = 0;
+    private promptBgScaledHeight: number = 0;
+    
+    // Vertical positioning factors for different device sizes
+    private textVerticalFactorSmallDevice: number = 0.45; 
+    private textVerticalFactorLargeDevice: number = 0.40; 
+    private smallDeviceThreshold: number = 480; 
+    
+    // Horizontal positioning adjustment (positive moves right, negative moves left)
+    private textHorizontalOffset: number = 0; 
+    
     constructor(width: number, height: number, currentPuzzleData: any, levelData: any, rightToLeft) {
         super({
             stoneDropCallbackHandler: (event) => this.handleStoneDrop(event),
@@ -48,8 +64,37 @@ export class PromptText extends EventManager {
         this.time = 0;
         this.promptImageWidth = this.width * 0.65;
         this.promptImageHeight = this.height * 0.3;
+        
+        // Calculate initial text position
+        this.calculateInitialTextPosition();
+        
         document.addEventListener(VISIBILITY_CHANGE, this.handleVisibilityChange, false);
     }
+    
+    /**
+     * Calculates the initial text position when the component is initialized
+     * This ensures the text position is set correctly from the start
+     */
+    calculateInitialTextPosition() {
+        // Set initial background dimensions
+        this.promptBgScaledWidth = this.promptImageWidth * this.scale;
+        this.promptBgScaledHeight = this.promptImageHeight * this.scale;
+        this.promptBgOffsetX = (this.width - this.promptBgScaledWidth) / 2;
+        this.promptBgOffsetY = (this.height - this.promptBgScaledHeight) / 4.2;
+        
+        // Determine which vertical factor to use based on device size
+        const screenWidth = window.innerWidth;
+        const verticalFactor = screenWidth <= this.smallDeviceThreshold ? 
+            this.textVerticalFactorSmallDevice : this.textVerticalFactorLargeDevice;
+        
+        // Position text within the yellow burst area of the prompt background
+        // Using a percentage of the actual height based on device size
+        this.textVerticalPosition = this.promptBgOffsetY + (this.promptBgScaledHeight * verticalFactor);
+        
+        // Calculate horizontal position with offset
+        this.textHorizontalPosition = this.width / 2 + this.textHorizontalOffset;
+    }
+    
     handleMouseDown = (event) => {
         let self = this;
         const selfElement = <HTMLElement>document.getElementById("canvas");
@@ -76,10 +121,16 @@ export class PromptText extends EventManager {
         this.currentPuzzleData = data;
         this.currentPromptText = data.prompt.promptText;
         this.targetStones = this.currentPuzzleData.targetStones;
+        
+        // Recalculate text position when puzzle data changes
+        this.calculateInitialTextPosition();
     }
     drawRTLLang() {
-        var x = this.width / 2;
-        const y = this.height * 0.26;
+        // Always center text horizontally
+        var x = this.textHorizontalPosition;
+        // Use the pre-calculated vertical position
+        const y = this.textVerticalPosition;
+        
         this.context.textAlign = "center";
         var fontSize = this.calculateFont();
         const scaledWidth = this.promptImageWidth;
@@ -125,9 +176,8 @@ export class PromptText extends EventManager {
             this.drawCenteredPlayButton(y, scaledWidth, scaledHeight);
         }}
         else if (this.levelData.levelMeta.levelType == "audioPlayerWord") {
-                    // For audioPlayerWord type, position the play button lower (40% from top)
-                    // This provides better vertical spacing for audio-only prompts
-                    this.drawCenteredPlayButton(this.height * 0.4, scaledWidth, scaledHeight);
+                    // For audioPlayerWord type, position the play button at the vertical center of prompt background
+                    this.drawCenteredPlayButton(y, scaledWidth, scaledHeight);
         }
         else {
             if (this.levelData.levelMeta.protoType == "Visible") {
@@ -142,122 +192,95 @@ export class PromptText extends EventManager {
     }
     drawOthers() {
         const promptTextLetters = this.currentPromptText.split("");
-        const x = this.width / 2;
-        const y = this.height * 0.28;
+        const x = this.textHorizontalPosition;
+        // Use the pre-calculated vertical position
+        const y = this.textVerticalPosition;
+        
         const scaledWidth = this.promptImageWidth;
         const scaledHeight = this.promptImageHeight;
         var fontSize = this.calculateFont();
         this.context.font = `${fontSize}px ${font}, monospace`;
-        let startPrompttextX =
-            this.width / 2 -
-            this.context.measureText(this.currentPromptText).width / 2;
-        let currentWordWidth = 0;
-        var letterHighlight=this.currentPuzzleData.targetStones[0];
-        var leftPromptText = 
-            this.currentPromptText.substring
-            (0,this.currentPromptText.indexOf(letterHighlight));
-        var rightPromptText = 
-            this.currentPromptText.substring
-            (this.currentPromptText.indexOf(letterHighlight)+letterHighlight.length);
-        if (this.levelData.levelMeta.levelType === "LetterInWord" && this.levelData.levelMeta.protoType == "Visible" ) {
-            if (leftPromptText.length>0) {
-                this.context.fillStyle = "black";
-                this.context.fillText(
-                    leftPromptText,
-                    startPrompttextX,
-                    y
-                );         
-                currentWordWidth = (this.context.measureText(
-                    leftPromptText
-                ).width + this.context.measureText(
-                    letterHighlight
-                ).width) / 2;
-                startPrompttextX += currentWordWidth;
-            }
-            if(letterHighlight.length>0){
+        
+        // For LetterInWord level type with visible prototype
+        if (this.levelData.levelMeta.levelType === "LetterInWord" && this.levelData.levelMeta.protoType == "Visible") {
+            // Always use center alignment for consistent positioning
+            this.context.textAlign = "center";
+            
+            var letterHighlight = this.currentPuzzleData.targetStones[0];
+            
+            // Draw the entire word in black first (as background)
+            this.context.fillStyle = "black";
+            this.context.fillText(this.currentPromptText, x, y);
+            
+            // Then overlay the highlighted letter in red
+            // We need to calculate its position within the word
+            var letterIndex = this.currentPromptText.indexOf(letterHighlight);
+            if (letterIndex >= 0) {
+                // Get the width of the text before the highlighted letter
+                const beforeText = this.currentPromptText.substring(0, letterIndex);
+                const beforeWidth = this.context.measureText(beforeText).width;
+                
+                // Get the width of the highlighted letter
+                const letterWidth = this.context.measureText(letterHighlight).width;
+                
+                // Get the width of the entire word
+                const totalWidth = this.context.measureText(this.currentPromptText).width;
+                
+                // Calculate the position to place the highlighted letter
+                // Start from the center position, go left by half the total width,
+                // then go right by the width of the text before the highlighted letter,
+                // plus half the width of the highlighted letter itself
+                const highlightX = x - (totalWidth / 2) + beforeWidth + (letterWidth / 2);
+                
+                // Draw just the highlighted letter in red, positioned precisely
                 this.context.fillStyle = "red";
-                this.context.fillText(
-                    letterHighlight,
-                    startPrompttextX,
-                    y
-                );
-                currentWordWidth = (this.context.measureText(
-                    letterHighlight
-                ).width + this.context.measureText(
-                    rightPromptText
-                ).width) / 2;
-                startPrompttextX += currentWordWidth;
+                this.context.fillText(letterHighlight, highlightX, y);
             }
-            if(rightPromptText.length>0) {
-                this.context.fillStyle = "black";
-                this.context.fillText(
-                    rightPromptText,
-                    startPrompttextX,
-                    y
-                );
+        } 
+        // For Word level type with visible prototype
+        else if (this.levelData.levelMeta.levelType === "Word" && this.levelData.levelMeta.protoType == "Visible") {
+            // Always use center alignment for consistent positioning
+            this.context.textAlign = "center";
+            
+            // For Word level type, handle differently based on whether the target stones match the prompt text length
+            if (this.targetStones.length != this.currentPromptText.length) {
+                // If target stones don't match prompt text length, draw each stone centered
+                for (let i = 0; i < this.targetStones.length; i++) {
+                    if (i < this.targetStones.length) {   
+                        this.context.fillStyle = (this.droppedStoneCount > i || this.droppedStoneCount == undefined) ? "black" : "red";
+                        this.context.fillText(this.targetStones[i], x, y);
+                    }
+                }
+            } else {
+                // If target stones match prompt text length, draw the full text centered
+                // First draw the entire word in the appropriate color (black or red)
+                const isDropped = (this.droppedStones >= promptTextLetters.length || this.droppedStones == undefined);
+                this.context.fillStyle = isDropped ? "black" : "red";
+                this.context.fillText(this.currentPromptText, x, y);
             }
         }
-        for (let i = 0; i < promptTextLetters.length; i++) {
-            switch (this.levelData.levelMeta.levelType) {
-                case "LetterInWord": {
-                    break;
-                }
-                case "Word": {
-                    if (this.levelData.levelMeta.protoType == "Visible") {
-                    if(this.targetStones.length!=this.currentPromptText.length){
-                    if(this.targetStones.length>i){   
-                        this.context.fillStyle = (this.droppedStoneCount>i || this.droppedStoneCount==undefined)?"black":"red";
-                        this.context.fillText(
-                            this.targetStones[i],
-                            startPrompttextX+startPrompttextX/10,
-                            y
-                        );    
-                }
-                break;
-                }else{
-                      this.context.fillStyle = (this.droppedStones > i || this.droppedStones == undefined)?"black":"red";
-                        this.context.fillText(
-                            promptTextLetters[i],
-                            startPrompttextX,
-                            y
-                        );
-                    
-                    break;
-                }}
-                else{
-                    // For Word level type with non-Visible prototype in non-RTL languages
-                    // Position the play button at the standard text height (28% from top)
-                    this.drawCenteredPlayButton(y, scaledWidth, scaledHeight);
-            }}
-                case "SoundWord": {
-                    // For SoundWord level type, position the play button at standard text height
-                    // This is used for sound-based word exercises
-                    this.drawCenteredPlayButton(y, scaledWidth, scaledHeight);
-                  break;
-                }
-                default: {
-                    if (this.levelData.levelMeta.protoType == "Visible") {
-                    this.context.fillStyle = "black";
-                    this.context.fillText(
-                        this.currentPromptText,
-                        this.width/2.1,
-                        y
-                    );
-                    break;
-                }else{
-                    // For default level types with non-Visible prototype in non-RTL languages
-                    // Position the play button at the standard text height
-                    this.drawCenteredPlayButton(y, scaledWidth, scaledHeight);
-                }}
+        // For SoundWord level type
+        else if (this.levelData.levelMeta.levelType === "SoundWord") {
+            // For SoundWord level type, position the play button at the vertical center of prompt background
+            this.drawCenteredPlayButton(y, scaledWidth, scaledHeight);
+        }
+        // For default level types
+        else {
+            // Always use center alignment for consistent positioning
+            this.context.textAlign = "center";
+            
+            if (this.levelData.levelMeta.protoType == "Visible") {
+                this.context.fillStyle = "black";
+                // Draw text centered at the horizontal position
+                this.context.fillText(this.currentPromptText, x, y);
+            } else {
+                // For default level types with non-Visible prototype
+                // Position the play button at the standard text position
+                this.drawCenteredPlayButton(y, scaledWidth, scaledHeight);
             }
-            currentWordWidth = (this.context.measureText(
-                promptTextLetters[i]
-            ).width + this.context.measureText(
-                promptTextLetters[i + 1]
-            ).width) / 2;
-            startPrompttextX += currentWordWidth;
         }
     }
+    
     drawCenteredPlayButton(y: number, scaledWidth: number, scaledHeight: number) {
         // Use a fixed size for the button based on the screen size
         const buttonSize = Math.min(this.width, this.height) * 0.12;
@@ -266,7 +289,7 @@ export class PromptText extends EventManager {
         const buttonWidth = buttonSize;
         const buttonHeight = buttonSize;
         
-        const centerX = this.width / 2 - buttonWidth / 2;
+        const centerX = this.textHorizontalPosition - buttonWidth / 2;
         const centerY = y - buttonHeight / 2;
         
         this.context.drawImage(
@@ -277,24 +300,23 @@ export class PromptText extends EventManager {
             buttonHeight
         );
     }
+    
     draw(deltaTime: number) {
-    this.updateScaling();
-    this.time = (deltaTime<17)?this.time+Math.floor(deltaTime):this.time+16;
-      if (Math.floor(this.time) >= 1910 && Math.floor(this.time) <= 1926) {
-        this.playSound();
-      }
+        this.updateScaling();
+        this.time = (deltaTime<17)?this.time+Math.floor(deltaTime):this.time+16;
+        if (Math.floor(this.time) >= 1910 && Math.floor(this.time) <= 1926) {
+            this.playSound();
+        }
         if (!this.isStoneDropped) {
-            const scaledWidth = this.promptImageWidth * this.scale;
-            const scaledHeight = this.promptImageHeight * this.scale;
-            const offsetX = (this.width - scaledWidth) / 2;
-            const offsetY = (this.height - scaledHeight) / 4.2;
+            // Draw the prompt background
             this.context.drawImage(
                 this.prompt_image,
-                offsetX,
-                offsetY,
-                scaledWidth,
-                scaledHeight
+                this.promptBgOffsetX,
+                this.promptBgOffsetY,
+                this.promptBgScaledWidth,
+                this.promptBgScaledHeight
             );
+            
             this.context.fillStyle = "black";
             this.rightToLeft
                 ? this.drawRTLLang()
@@ -313,6 +335,9 @@ export class PromptText extends EventManager {
         this.audioPlayer.preloadPromptAudio(this.getPromptAudioUrl());
         this.isStoneDropped = false;
         this.time = 0;
+        
+        // Recalculate text position when loading a new puzzle
+        this.calculateInitialTextPosition();
     }
     public dispose() {
         document.removeEventListener(VISIBILITY_CHANGE, this.handleVisibilityChange, false);
@@ -356,23 +381,31 @@ export class PromptText extends EventManager {
         
         // Apply responsive sizing after images are loaded
         this.applyPromptImageResponsiveSizing();
+        
+        // Calculate text position once after images are loaded
+        this.calculateInitialTextPosition();
       }
       
       /**
        * Applies responsive sizing to the prompt image based on screen width
-       * This ensures the image displays correctly across different device sizes
+       * Ensures the image displays correctly across different device sizes
+       * 
+       * - Mobile devices (≤480px): Scale down the image
+       * - Very small screens (≤375px): 25% of original height
+       * - Medium-small screens (376-480px): 30% of original height
+       * - Larger screens: Use default values set in constructor
        */
       applyPromptImageResponsiveSizing() {
         const screenWidth = window.innerWidth;
         
-        // For mobile devices (width <= 480px), we scale down the image
+        // For mobile devices (width ≤ 480px), we scale down the image
         // For larger screens, we keep the default values set in the constructor
         if (screenWidth <= 480) {
           // Apply mobile-specific scaling factors
           this.promptImageWidth = this.width * 0.6; // 60% of original width for all mobile devices
           
           // Height varies based on screen size:
-          // - Very small screens (<=375px): 25% of original height
+          // - Very small screens (≤375px): 25% of original height
           // - Medium-small screens (376-480px): 30% of original height
           this.promptImageHeight = this.height * (screenWidth <= 375 ? 0.25 : 0.30);
         }
