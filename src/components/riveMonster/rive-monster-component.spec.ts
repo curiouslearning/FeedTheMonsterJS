@@ -2,6 +2,20 @@ import { Rive, Layout, Fit, Alignment } from '@rive-app/canvas';
 import { MONSTER_PHASES } from '@constants';
 import { RiveMonsterComponent } from './rive-monster-component';
 
+jest.mock('@gameSettingsService', () => ({
+  __esModule: true,
+  default: {
+    getCanvasSizeValues: jest.fn(),
+    getRiveCanvasValue: jest.fn(),
+    subscribe: jest.fn(),
+    publish: jest.fn(),
+    EVENTS: {
+      GAME_TRAIL_EFFECT_TOGGLE_EVENT: 'GAME_TRAIL_EFFECT_TOGGLE_EVENT',
+    },
+    getDevicePixelRatioValue: () => 2
+  }
+}));
+
 jest.mock('@rive-app/canvas', () => {
   return {
     Rive: jest.fn().mockImplementation(({ onLoad, stateMachines }) => {
@@ -99,6 +113,8 @@ describe('RiveMonsterComponent', () => {
     jest.useRealTimers();
   });
 
+  
+
   it('should initialize RiveMonsterComponent with correct properties', () => {
     expect(component).toBeDefined();
     expect(component['riveInstance']).toBeDefined();
@@ -148,7 +164,7 @@ describe('RiveMonsterComponent', () => {
 
   it('should return true if the click is within the hitbox range', () => {
     // Calculate expected hitbox center and range based on canvas dimensions
-    const scale = 1; // We mocked devicePixelRatio to 1
+    const scale = 2; // We mocked devicePixelRatio to 2
     const monsterCenterX = (canvas.width / scale) / 2; // 400
     const monsterCenterY = (canvas.height / scale) / 2; // 300
     const rangeFactorX = 55;
@@ -300,5 +316,30 @@ describe('RiveMonsterComponent', () => {
     // Verify we have a new instance
     expect(evolutionComponent['riveInstance']).toBeDefined();
     expect(evolutionComponent['riveInstance']).not.toBe(initialInstance);
+  });
+
+  it('should adjust minY based on canvas size and scaling factor', () => {
+    // Initial conditions
+    const mockGameCanvas = document.createElement('canvas');
+    mockGameCanvas.width = 412 ;
+    mockGameCanvas.height = 737;
+
+    const mockRrive = new RiveMonsterComponent({
+      canvas,
+      autoplay: true,
+      gameCanvas: mockGameCanvas,
+      alignment: "bottomCenter",
+      fit: "contain",
+    });
+
+    const scaleFactor = 4;
+    // Trigger the method that sets minY
+    mockRrive['setRiveMinYAdjustment']();
+
+    // Check the result
+    let expectedMinY = mockGameCanvas.height / scaleFactor; // Based on the scaling factor of 4 (since mock scale is 2)
+    console.log('expectedMinY ', expectedMinY)
+    expectedMinY -= mockGameCanvas.height * 0.05
+    expect(mockRrive['minY']).toEqual(expectedMinY);
   });
 });
