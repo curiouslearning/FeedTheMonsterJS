@@ -1,15 +1,26 @@
 {
-    "short_name": "Feed The Monster",
-    "name": "Feed The Monster Progressive Web App",
-    "icons": [
-      {
-        "src": "./assets/images/favicon.png",
-        "sizes": "512x512",
-        "type": "image/png"
-      }
-    ],
-    "start_url": "index.html",
-    "display": "standalone",
-    "orientation": "portrait",
-    "background_color": "#FFFFFF"
-  }
+  "short_name": "Feed The Monster",
+  "name": "Feed The Monster Progressive Web App",
+  "license": "MIT",
+  "learningUnits": "https://example.org/opds.json",
+  "defaultLaunchUri": "https://example.org/",
+
+  "android": {
+    "packageId": "org.curiouslearning.container",
+    "stores": [
+      "https://play.google.com/store/apps/details?id=org.curiouslearning.container",
+      "..."
+    ]
+  },
+  "icons": [
+    {
+      "src": "./assets/images/favicon.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ],
+  "start_url": "index.html",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#FFFFFF"
+}
