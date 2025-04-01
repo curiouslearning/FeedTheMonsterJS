@@ -281,30 +281,6 @@ export class PromptText extends EventManager {
         }
     }
     
-    /**
-     * Calculates the vertical position for prompt text or play button
-     * to ensure it's centered within the prompt background
-     */
-    calculateTextPosition() {
-        // Calculate the vertical center of the prompt background
-        this.promptBgScaledWidth = this.promptImageWidth * this.scale;
-        this.promptBgScaledHeight = this.promptImageHeight * this.scale;
-        this.promptBgOffsetX = (this.width - this.promptBgScaledWidth) / 2;
-        this.promptBgOffsetY = (this.height - this.promptBgScaledHeight) / 4.2;
-        
-        // Determine which vertical factor to use based on device size
-        const screenWidth = window.innerWidth;
-        const verticalFactor = screenWidth <= this.smallDeviceThreshold ? 
-            this.textVerticalFactorSmallDevice : this.textVerticalFactorLargeDevice;
-        
-        // Position text within the yellow burst area of the prompt background
-        // Using a percentage of the actual height based on device size
-        this.textVerticalPosition = this.promptBgOffsetY + (this.promptBgScaledHeight * verticalFactor);
-        
-        // Calculate horizontal position with offset
-        this.textHorizontalPosition = this.width / 2 + this.textHorizontalOffset;
-    }
-    
     drawCenteredPlayButton(y: number, scaledWidth: number, scaledHeight: number) {
         // Use a fixed size for the button based on the screen size
         const buttonSize = Math.min(this.width, this.height) * 0.12;
@@ -325,17 +301,6 @@ export class PromptText extends EventManager {
         );
     }
     
-    /**
-     * Updates the background dimensions based on current scale
-     * without recalculating the text position
-     */
-    updateBackgroundDimensions() {
-        this.promptBgScaledWidth = this.promptImageWidth * this.scale;
-        this.promptBgScaledHeight = this.promptImageHeight * this.scale;
-        this.promptBgOffsetX = (this.width - this.promptBgScaledWidth) / 2;
-        this.promptBgOffsetY = (this.height - this.promptBgScaledHeight) / 4.2;
-    }
-    
     draw(deltaTime: number) {
         this.updateScaling();
         this.time = (deltaTime<17)?this.time+Math.floor(deltaTime):this.time+16;
@@ -343,9 +308,6 @@ export class PromptText extends EventManager {
             this.playSound();
         }
         if (!this.isStoneDropped) {
-            // Only update background dimensions without recalculating text position
-            this.updateBackgroundDimensions();
-            
             // Draw the prompt background
             this.context.drawImage(
                 this.prompt_image,
