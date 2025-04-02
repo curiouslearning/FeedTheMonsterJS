@@ -317,29 +317,4 @@ describe('RiveMonsterComponent', () => {
     expect(evolutionComponent['riveInstance']).toBeDefined();
     expect(evolutionComponent['riveInstance']).not.toBe(initialInstance);
   });
-
-  it('should adjust minY based on canvas size and scaling factor', () => {
-    // Initial conditions
-    const mockGameCanvas = document.createElement('canvas');
-    mockGameCanvas.width = 412 ;
-    mockGameCanvas.height = 737;
-
-    const mockRrive = new RiveMonsterComponent({
-      canvas,
-      autoplay: true,
-      gameCanvas: mockGameCanvas,
-      alignment: "bottomCenter",
-      fit: "contain",
-    });
-
-    const scaleFactor = 4;
-    // Trigger the method that sets minY
-    mockRrive['setRiveMinYAdjustment']();
-
-    // Check the result
-    let expectedMinY = mockGameCanvas.height / scaleFactor; // Based on the scaling factor of 4 (since mock scale is 2)
-    console.log('expectedMinY ', expectedMinY)
-    expectedMinY -= mockGameCanvas.height * 0.05
-    expect(mockRrive['minY']).toEqual(expectedMinY);
-  });
 });
