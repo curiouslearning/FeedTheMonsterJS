@@ -114,13 +114,7 @@ export class EvolutionAnimationComponent extends RiveMonsterComponent {
     if (currentVisibility !== this.lastVisibilityState) {
       this.lastVisibilityState = currentVisibility;
       
-      if (!currentVisibility) {
-        // Pause all audio when tab is not visible
-        this.pauseAudios();
-      } else {
-        // Play intro audio when returning to the tab
-        this.playIntroAudio();
-      }
+      !currentVisibility ? this.pauseAudios() : this.playIntroAudio();
     }
   };
 
