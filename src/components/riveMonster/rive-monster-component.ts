@@ -90,61 +90,21 @@ export class RiveMonsterComponent {
 
     // Default minY adjustment
     let minY;
-    let scalingFactor: any = 2; //Default value is 2 for scaledHeight / scalingFactor.
-
-    const screenRanges = [
-      // width ranges - height ranges - scaling factor value
-      [[390, 430], [896, 932], 3],
-      [[345, 360], [706, 740], 3.5],
-      [[369, 427], [728, 820], 4],
-      [[360, 448], [664, 868 ], 5 ],
-      [[355, 355], [661, 661], 6],
-      [[375, 412], [667, 743 ], 7 ],
-      [[360, 384], [661, 649], 8],
-      [[360, 360], [607, 607], 9],
-      [[360, 393 ], [ 609, 662 ], 10 ],
-      [[540, 1024], [970, 1368], 14 ]
-    ]
-
-    // Loop through each range and check if the width and height match
-    for (const [widthRange, heightRange, scaleFactorValue] of screenRanges) {
-      const minWidth = widthRange[0];
-      const maxWidth = widthRange[1];
-      const minHeight = heightRange[0];
-      const maxHeight = heightRange[1];
-
-      // Check if the device width and height fall within the range
-      if (scaledWidth >= minWidth && scaledWidth <= maxWidth && scaledHeight >= minHeight && scaledHeight <= maxHeight) {
-        scalingFactor =  scaleFactorValue;
-        break;
-      }
+    // Determine minY based on scaled width and height
+    if (scaledWidth >= 500) {
+      minY = scaledHeight / 14; // Adjusted from (height / 4) / 3.5 for clarity
+    } else if (scaledWidth <= 499 && scaledWidth >= 343 && scaledHeight >= 735) {
+      minY = scaledHeight / 2;
+    } else {
+      minY = scaledHeight / 4;
     }
 
-    minY = scaledHeight / scalingFactor; // screen size divided by scale factor to get get the background stump location.
 
     // Dynamic adjustment based on scaledHeight (5% of the height)
     minY -= scaledHeight * 0.05;
 
-    //Larger screens that need static offset adjustments due to Rive's bottomAlign limitations.
-    const specialAdjustments: {[key: string]: number} = {
-      '820x1180': 250,
-      '800x1144': 250,
-      '753x1037': 250,
-      '540x720': 250,
-      '712x970': 250,
-      '768x1024': 330,
-      '980x1351': 330,
-      '1024x1366': 420,
-      '912x1368': 200,
-      '854x1280': 150
-    };
-
-    if (scalingFactor === 14) {
-      minY -= specialAdjustments[`${scaledWidth}x${scaledHeight}`] || 0;
-    }
-
-    // Store the calculated minY - Samsung J7 Duo - 411 x 651 only the device I found that don't need minY for alignment.
-    this.minY = scaledWidth === 411 && scaledHeight === 651 ? 0 : minY;
+    // Store the calculated minY
+    this.minY = minY;
   }
 
   initializeRive() {
