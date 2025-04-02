@@ -10,15 +10,6 @@ const mockStopAllAudios = jest.fn();
 const mockPreloadGameAudio = jest.fn().mockResolvedValue(undefined);
 const mockPlayFeedbackAudios = jest.fn();
 
-// Mock isDocumentVisible function
-jest.mock('@common', () => ({
-  ...jest.requireActual('@common'),
-  isDocumentVisible: jest.fn(),
-  Utils: {
-    getLanguageSpecificFont: jest.fn().mockResolvedValue('font-name')
-  }
-}));
-
 // Mock gameStateService
 jest.mock('@gameStateService', () => ({
   __esModule: true,
@@ -63,6 +54,15 @@ jest.mock('@components/riveMonster/rive-monster-component', () => {
   };
 });
 
+// Mock isDocumentVisible function
+jest.mock('@common', () => ({
+  ...jest.requireActual('@common'),
+  isDocumentVisible: jest.fn(),
+  Utils: {
+    getLanguageSpecificFont: jest.fn().mockResolvedValue('font-name')
+  }
+}));
+
 describe('EvolutionAnimationComponent', () => {
   let evolutionAnimation: EvolutionAnimationComponent;
   let canvas: HTMLCanvasElement;
@@ -92,6 +92,9 @@ describe('EvolutionAnimationComponent', () => {
 
     // Reset all mocks before each test
     jest.clearAllMocks();
+    
+    // Mock isDocumentVisible to return true by default
+    (CommonUtils.isDocumentVisible as jest.Mock).mockReturnValue(true);
   });
 
   afterEach(() => {
@@ -108,6 +111,9 @@ describe('EvolutionAnimationComponent', () => {
     // Restore spies
     addEventListenerSpy.mockRestore();
     removeEventListenerSpy.mockRestore();
+    
+    // Reset mocks
+    jest.clearAllMocks();
   });
 
   it('should initialize with correct evolution source based on phase number', () => {
@@ -159,20 +165,25 @@ describe('EvolutionAnimationComponent', () => {
   });
 
   it('should call onComplete callback after animation completes', () => {
+    // Mock isDocumentVisible to return true for this test
+    (CommonUtils.isDocumentVisible as jest.Mock).mockReturnValue(true);
+    
     const onComplete = jest.fn();
+    
+    // Use fake timers before creating the component
+    jest.useFakeTimers();
+    
     evolutionAnimation = new EvolutionAnimationComponent({
       canvas,
       monsterPhaseNumber: 1,
       autoplay: true,
       onComplete
     });
-
-    // Mock setTimeout
-    jest.useFakeTimers();
-    evolutionAnimation.startAnimation();
-    jest.advanceTimersByTime(7500); // Updated to match component's EVOLUTION_ANIMATION_COMPLETE_DELAY
-
-    // Check if onComplete was called
+    
+    // Fast-forward time to trigger the timeout callback
+    jest.advanceTimersByTime(7500); // Match component's EVOLUTION_ANIMATION_COMPLETE_DELAY
+    
+    // Verify the onComplete callback was called
     expect(onComplete).toHaveBeenCalled();
     
     // Restore real timers
@@ -244,9 +255,6 @@ describe('EvolutionAnimationComponent', () => {
   });
 
   it.skip('should clean up resources including event listeners when disposed', () => {
-    // Create a spy on document.removeEventListener
-    const removeEventListenerSpy = jest.spyOn(document, 'removeEventListener');
-    
     // Create the component
     evolutionAnimation = new EvolutionAnimationComponent({
       canvas,
@@ -254,24 +262,26 @@ describe('EvolutionAnimationComponent', () => {
       autoplay: true
     });
     
-    // Manually set up spies on the component's methods to verify they're called
-    const audioPlayerStopAllAudios = jest.spyOn(evolutionAnimation['audioPlayer'], 'stopAllAudios');
+    // Spy on document.removeEventListener
+    const removeEventListenerSpy = jest.spyOn(document, 'removeEventListener');
+    
+    // Reset the stopAllAudios mock to ensure we only count calls made during dispose
+    mockStopAllAudios.mockClear();
     
     // Dispose the component
     evolutionAnimation.dispose();
     
-    // Verify that audio is stopped when disposed
-    expect(audioPlayerStopAllAudios).toHaveBeenCalled();
+    // Verify that stopAllAudios was called
+    expect(mockStopAllAudios).toHaveBeenCalled();
     
-    // Verify that event listener is removed
+    // Verify that removeEventListener was called with 'visibilitychange'
     expect(removeEventListenerSpy).toHaveBeenCalledWith(
       'visibilitychange',
-      evolutionAnimation['pauseAudios'],
+      evolutionAnimation['boundHandleVisibilityChange'],
       false
     );
     
-    // Clean up
-    audioPlayerStopAllAudios.mockRestore();
+    // Restore the spy
     removeEventListenerSpy.mockRestore();
   });
 

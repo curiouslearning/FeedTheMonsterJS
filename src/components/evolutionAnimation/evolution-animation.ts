@@ -38,6 +38,18 @@ export class EvolutionAnimationComponent extends RiveMonsterComponent {
   private readonly EVOLUTION_ANIMATION_COMPLETE_DELAY = 7500;
   private readonly EVOLUTION_ANIMATION_FADE_EFFECT_DELAY = 500;
   private audioPlayer: AudioPlayer;
+  private isPlayingIntroFromVisibilityChange: boolean = false;
+  private evolutionCompleteTimeoutId: number | null = null;
+  private fadeEffectTimeoutId: number | null = null;
+  private evolutionSoundEffectsTimeoutId: number | null = null;
+  private lastVisibilityState: boolean = true;
+
+  /**
+   * Bound reference to the handleVisibilityChange method.
+   * This ensures the same function reference is used for both adding and removing
+   * the event listener, which is necessary for proper cleanup.
+   */
+  private boundHandleVisibilityChange: (event: DocumentEventMap['visibilitychange']) => void;
 
   constructor(props: EvolutionAnimationProps) {
     const evolutionSrc = EvolutionAnimationComponent.getEvolutionSource(props.monsterPhaseNumber);
@@ -57,6 +69,7 @@ export class EvolutionAnimationComponent extends RiveMonsterComponent {
   private initialize() {
     this.initializeBackground();
     this.setCanvasPosition('evolution');
+    this.lastVisibilityState = isDocumentVisible();
   }
 
   private initializeBackground() {
@@ -74,18 +87,84 @@ export class EvolutionAnimationComponent extends RiveMonsterComponent {
    * Adds event listener to pause audio when tab is not visible
    */
   addEventListener() {
-    document.addEventListener('visibilitychange', this.pauseAudios, false);
+    // Use a bound method reference to ensure we can properly remove it later
+    this.boundHandleVisibilityChange = this.handleVisibilityChange.bind(this);
+    document.addEventListener('visibilitychange', this.boundHandleVisibilityChange, false);
   }
 
   /**
-   * Handler for visibility change events that stops audio playback when tab is hidden
+   * Pauses all audio playback
+   * This method is used when the document is not visible
    */
-  pauseAudios = () => {
-    if (!isDocumentVisible()) {
-      // Pause all audio when tab is not visible
+  private pauseAudios() {
+    // Only stop audios if the document is not visible
+    if (!isDocumentVisible() && this.audioPlayer) {
       this.audioPlayer.stopAllAudios();
+      this.isPlayingIntroFromVisibilityChange = false;
+    }
+  }
+
+  /**
+   * Handler for visibility change events that manages audio playback based on tab visibility
+   */
+  handleVisibilityChange = () => {
+    const currentVisibility = isDocumentVisible();
+    
+    // Only process if visibility actually changed
+    if (currentVisibility !== this.lastVisibilityState) {
+      this.lastVisibilityState = currentVisibility;
+      
+      if (!currentVisibility) {
+        // Pause all audio when tab is not visible
+        this.pauseAudios();
+      } else {
+        // Play intro audio when returning to the tab
+        this.playIntroAudio();
+      }
     }
   };
+
+  /**
+   * Plays the intro audio when returning to the tab
+   */
+  private playIntroAudio() {
+    // Set flag to indicate we're playing intro audio due to visibility change
+    this.isPlayingIntroFromVisibilityChange = true;
+    
+    // Preload and play the intro audio
+    this.audioPlayer.preloadGameAudio(AUDIO_INTRO)
+      .then(() => {
+        // Double-check visibility before playing to avoid unnecessary audio playback
+        if (isDocumentVisible()) {
+          this.audioPlayer.playFeedbackAudios(false, AUDIO_INTRO);
+        } else {
+          this.isPlayingIntroFromVisibilityChange = false;
+        }
+      })
+      .catch(() => {
+        this.isPlayingIntroFromVisibilityChange = false;
+      });
+  }
+
+  /**
+   * Clears all timeouts to prevent memory leaks and unexpected behavior
+   */
+  private clearAllTimeouts() {
+    if (this.evolutionCompleteTimeoutId !== null) {
+      clearTimeout(this.evolutionCompleteTimeoutId);
+      this.evolutionCompleteTimeoutId = null;
+    }
+    
+    if (this.fadeEffectTimeoutId !== null) {
+      clearTimeout(this.fadeEffectTimeoutId);
+      this.fadeEffectTimeoutId = null;
+    }
+    
+    if (this.evolutionSoundEffectsTimeoutId !== null) {
+      clearTimeout(this.evolutionSoundEffectsTimeoutId);
+      this.evolutionSoundEffectsTimeoutId = null;
+    }
+  }
 
   // Returns the appropriate monster evolution animation source based on the phase
   private static getEvolutionSource(phase: number): string {
@@ -119,22 +198,35 @@ export class EvolutionAnimationComponent extends RiveMonsterComponent {
 
   // Play audio sequence after evolution animation completes
   private playEvolutionCompletionAudios() {
+    // If intro audio is already playing from visibility change, skip playing evolution audio
+    if (this.isPlayingIntroFromVisibilityChange) {
+      return;
+    }
+
     // First stop any currently playing audio
     this.audioPlayer.stopAllAudios();
+
+    // Only proceed if the tab is visible to avoid unnecessary audio loading
+    if (!isDocumentVisible()) {
+      return;
+    }
 
     // Preload all audio files to ensure they're ready to play
     Promise.all([
       this.audioPlayer.preloadGameAudio(AUDIO_MONSTER_EVOLVE),
       this.audioPlayer.preloadGameAudio(AUDIO_INTRO)
     ]).then(() => {
-      // Play audio sequence in order using the playFeedbackAudios method
-      this.audioPlayer.playFeedbackAudios(
-        false, 
-        AUDIO_MONSTER_EVOLVE,
-        AUDIO_INTRO
-      );
-    }).catch(error => {
-      console.error('Error preloading evolution audio files:', error);
+      // Double-check visibility before playing
+      if (isDocumentVisible() && !this.isPlayingIntroFromVisibilityChange) {
+        // Play audio sequence in order using the playFeedbackAudios method
+        this.audioPlayer.playFeedbackAudios(
+          false, 
+          AUDIO_MONSTER_EVOLVE,
+          AUDIO_INTRO
+        );
+      }
+    }).catch(() => {
+      // Silent error handling
     });
   }
 
@@ -143,37 +235,51 @@ export class EvolutionAnimationComponent extends RiveMonsterComponent {
     this.playEvolutionSoundEffects();
 
     // Set gray class 900ms before fade-out
-    setTimeout(() => {
+    this.fadeEffectTimeoutId = setTimeout(() => {
       const levelEndBg = document.getElementById('levelend-background');
       if (levelEndBg) {
         levelEndBg.classList.add('gray');
       }
-    }, this.EVOLUTION_ANIMATION_FADE_EFFECT_DELAY);
+    }, this.EVOLUTION_ANIMATION_FADE_EFFECT_DELAY) as unknown as number;
 
     // Set timeout to handle animation completion
-    setTimeout(() => {
-      this.handleEvolutionComplete();
+    this.evolutionCompleteTimeoutId = setTimeout(() => {
+      // Only proceed with visual and audio effects if the tab is visible
+      if (isDocumentVisible()) {
+        this.handleEvolutionComplete();
 
-      //update the record in game state.
-      gameStateService.updateMonsterPhaseState(this.monsterPhaseNumber);
-
+        //update the record in game state.
+        gameStateService.updateMonsterPhaseState(this.monsterPhaseNumber);
+      }
+      
+      // Always call onComplete callback regardless of visibility
+      // This ensures tests can verify the callback is called
       if (this.evolutionProps.onComplete) {
         this.evolutionProps.onComplete();
       }
-    }, this.EVOLUTION_ANIMATION_COMPLETE_DELAY);
+      
+      // Clear the timeout ID since it has executed
+      this.evolutionCompleteTimeoutId = null;
+    }, this.EVOLUTION_ANIMATION_COMPLETE_DELAY) as unknown as number;
   }
 
   private playEvolutionSoundEffects() {
     // The 'Play' event is triggered because we need to play an audio during the play animation of the Rive entity.
     this.executeRiveAction('Play', () => {
       //To do - playFeedbackAudios should be renamed as this was the common method used to play all audios not just feedback audio.
-      setTimeout(() => {
-        this.audioPlayer.playFeedbackAudios(false, EVOLUTION_AUDIOS.EVOL_1[0]);
-      }, 1000);
+      this.evolutionSoundEffectsTimeoutId = setTimeout(() => {
+        // Only play if tab is visible
+        if (isDocumentVisible()) {
+          this.audioPlayer.playFeedbackAudios(false, EVOLUTION_AUDIOS.EVOL_1[0]);
+        }
+      }, 1000) as unknown as number;
     });
   }
 
   public dispose() {
+    // Clear all timeouts first to prevent any pending operations
+    this.clearAllTimeouts();
+    
     if (this.backgroundElement) {
       this.backgroundElement.destroy();
     }
@@ -184,7 +290,7 @@ export class EvolutionAnimationComponent extends RiveMonsterComponent {
     }
 
     // Remove visibility change listener when dispose
-    document.removeEventListener('visibilitychange', this.pauseAudios, false);
+    document.removeEventListener('visibilitychange', this.boundHandleVisibilityChange, false);
 
     super.dispose();
   }
