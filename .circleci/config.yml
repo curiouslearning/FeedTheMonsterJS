@@ -74,7 +74,7 @@ workflows:
             branches:
               only:
                 - test
-      - build-and-deploy-main:
+      - build-and-deploy-prod:
           context:
             - aws-context
           requires:
