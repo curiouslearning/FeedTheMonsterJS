@@ -58,8 +58,6 @@ workflows:
       - build-and-deploy-dev:
           context:
             - aws-context
-          requires:
-            - node/test
           filters:
             branches:
               only:
@@ -68,8 +66,6 @@ workflows:
       - build-and-deploy-test:
           context:
             - aws-context
-          requires:
-            - node/test
           filters:
             branches:
               only:
@@ -77,8 +73,6 @@ workflows:
       - build-and-deploy-prod:
           context:
             - aws-context
-          requires:
-            - node/test
           filters:
             branches:
               only:
