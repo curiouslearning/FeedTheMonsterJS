@@ -133,7 +133,7 @@ describe('PromptText', () => {
       });
     });
     
-    it('should set correct dimensions for small screens (≤375px)', () => {
+    it('should set dimensions based on background config for small screens (≤375px)', () => {
       // Mock small screen width
       Object.defineProperty(window, 'innerWidth', {
         writable: true,
@@ -141,15 +141,23 @@ describe('PromptText', () => {
         value: 375
       });
       
+      // Mock the calculateBackgroundConfig method to return predictable values for small screens
+      jest.spyOn(promptText, 'calculateBackgroundConfig').mockReturnValue({
+        sizeFactor: 0.5,
+        yPosition: 0.18
+      });
+      
       // Call the method
       promptText.applyPromptImageResponsiveSizing();
       
-      // Check if dimensions are set correctly for small screens
-      expect(promptText.promptImageWidth).toBe(mockWidth * 0.6);
-      expect(promptText.promptImageHeight).toBe(mockHeight * 0.25);
+      // For small screens, dimensions should be based on the background config
+      // Using Math.min(width, height) * sizeFactor
+      const expectedSize = Math.min(mockWidth, mockHeight) * 0.5;
+      expect(promptText.promptImageWidth).toBe(expectedSize);
+      expect(promptText.promptImageHeight).toBe(expectedSize);
     });
     
-    it('should set correct dimensions for medium screens (≤480px)', () => {
+    it('should set dimensions based on background config for medium screens (≤480px)', () => {
       // Mock medium screen width
       Object.defineProperty(window, 'innerWidth', {
         writable: true,
@@ -157,19 +165,23 @@ describe('PromptText', () => {
         value: 480
       });
       
+      // Mock the calculateBackgroundConfig method to return predictable values for medium screens
+      jest.spyOn(promptText, 'calculateBackgroundConfig').mockReturnValue({
+        sizeFactor: 0.6,
+        yPosition: 0.15
+      });
+      
       // Call the method
       promptText.applyPromptImageResponsiveSizing();
       
-      // Check if dimensions are set correctly for medium screens
-      expect(promptText.promptImageWidth).toBe(mockWidth * 0.6);
-      expect(promptText.promptImageHeight).toBe(mockHeight * 0.30);
+      // For medium screens, dimensions should be based on the background config
+      // Using Math.min(width, height) * sizeFactor
+      const expectedSize = Math.min(mockWidth, mockHeight) * 0.6;
+      expect(promptText.promptImageWidth).toBe(expectedSize);
+      expect(promptText.promptImageHeight).toBe(expectedSize);
     });
     
-    it('should set correct dimensions for large screens (>480px)', () => {
-      // Save original dimensions
-      const originalWidth = promptText.promptImageWidth;
-      const originalHeight = promptText.promptImageHeight;
-      
+    it('should set dimensions based on background config for large screens (>480px)', () => {
       // Mock large screen width
       Object.defineProperty(window, 'innerWidth', {
         writable: true,
@@ -177,16 +189,20 @@ describe('PromptText', () => {
         value: 1024
       });
       
-      // Reset dimensions to constructor defaults
-      promptText.promptImageWidth = mockWidth * 0.65;
-      promptText.promptImageHeight = mockHeight * 0.3;
+      // Mock the calculateBackgroundConfig method to return predictable values for large screens
+      jest.spyOn(promptText, 'calculateBackgroundConfig').mockReturnValue({
+        sizeFactor: 0.5,
+        yPosition: 0.15
+      });
       
       // Call the method
       promptText.applyPromptImageResponsiveSizing();
       
-      // For large screens, dimensions should remain unchanged from constructor defaults
-      expect(promptText.promptImageWidth).toBe(mockWidth * 0.65);
-      expect(promptText.promptImageHeight).toBe(mockHeight * 0.3);
+      // For large screens, dimensions should be based on the background config
+      // Using Math.min(width, height) * sizeFactor
+      const expectedSize = Math.min(mockWidth, mockHeight) * 0.5;
+      expect(promptText.promptImageWidth).toBe(expectedSize);
+      expect(promptText.promptImageHeight).toBe(expectedSize);
     });
   });
 
