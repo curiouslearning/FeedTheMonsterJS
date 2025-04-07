@@ -54,6 +54,8 @@ workflows:
     jobs:
       - node/test
       - build-and-deploy-dev:
+          context:
+            - aws-context
           requires:
             - node/test
           filters:
@@ -62,6 +64,8 @@ workflows:
                 - develop
                 - FM-461--build--cicd-improvements
       - build-and-deploy-test:
+          context:
+            - aws-context
           requires:
             - node/test
           filters:
@@ -69,6 +73,8 @@ workflows:
               only:
                 - test
       - build-and-deploy-main:
+          context:
+            - aws-context
           requires:
             - node/test
           filters:
