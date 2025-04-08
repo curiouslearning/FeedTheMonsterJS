@@ -1,8 +1,9 @@
 version: 2.1
 
 orbs:
-  aws-cli: circleci/aws-cli@5.2.0
-  aws-s3: circleci/aws-s3@4.1.1
+  # aws-cli: circleci/aws-cli@5.2.0
+  # aws-s3: circleci/aws-s3@4.1.1
+  aws-s3: circleci/aws-s3@3.0
   node: circleci/node@7.0.0
   
 commands:
@@ -16,12 +17,17 @@ commands:
       - run: sudo npm install -g npm@latest
       - node/install-packages
       - run: npm run build
-      - aws-cli/setup:
-          aws_access_key_id: AWS_ACCESS_KEY
-          region: AWS_DEFAULT_REGION
-          aws_secret_access_key: AWS_SECRET_ACCESS_KEY
+      # - aws-cli/setup:
+      #     aws_access_key_id: AWS_ACCESS_KEY
+      #     region: AWS_DEFAULT_REGION
+      #     aws_secret_access_key: AWS_SECRET_ACCESS_KEY
       - aws-s3/sync:
-          arguments: --acl public-read --cache-control "max-age=86400"
+          arguments: |
+            --acl public-read \
+            --cache-control "max-age=86400"
+          aws-access-key-id: AWS_ACCESS_KEY
+          aws-region: AWS_DEFAULT_REGION
+          aws-secret-access-key: AWS_SECRET_ACCESS_KEY
           from: ./build/
           to: << parameters.to >>
 
