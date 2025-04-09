@@ -6,6 +6,8 @@ credentials.json
 convertAudios
 .DS_Store
 /.idea
+build
+/build
 /build/.idea
 */build/.well-known/*
 coverage
