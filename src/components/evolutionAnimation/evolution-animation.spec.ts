@@ -55,13 +55,17 @@ jest.mock('@components/riveMonster/rive-monster-component', () => {
 });
 
 // Mock isDocumentVisible function
-jest.mock('@common', () => ({
-  ...jest.requireActual('@common'),
-  isDocumentVisible: jest.fn(),
-  Utils: {
-    getLanguageSpecificFont: jest.fn().mockResolvedValue('font-name')
-  }
-}));
+jest.mock('@common', () => {
+  const actual = jest.requireActual('@common');
+  return {
+    ...actual,
+    isDocumentVisible: jest.fn(),
+    Utils: {
+      ...actual.Utils,
+      getLanguageSpecificFont: jest.fn().mockResolvedValue('font-name')
+    }
+  };
+});
 
 describe('EvolutionAnimationComponent', () => {
   let evolutionAnimation: EvolutionAnimationComponent;
