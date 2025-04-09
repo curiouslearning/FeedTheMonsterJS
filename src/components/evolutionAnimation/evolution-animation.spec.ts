@@ -258,37 +258,6 @@ describe('EvolutionAnimationComponent', () => {
     );
   });
 
-  it.skip('should clean up resources including event listeners when disposed', () => {
-    // Create the component
-    evolutionAnimation = new EvolutionAnimationComponent({
-      canvas,
-      monsterPhaseNumber: 1,
-      autoplay: true
-    });
-    
-    // Spy on document.removeEventListener
-    const removeEventListenerSpy = jest.spyOn(document, 'removeEventListener');
-    
-    // Reset the stopAllAudios mock to ensure we only count calls made during dispose
-    mockStopAllAudios.mockClear();
-    
-    // Dispose the component
-    evolutionAnimation.dispose();
-    
-    // Verify that stopAllAudios was called
-    expect(mockStopAllAudios).toHaveBeenCalled();
-    
-    // Verify that removeEventListener was called with 'visibilitychange'
-    expect(removeEventListenerSpy).toHaveBeenCalledWith(
-      'visibilitychange',
-      evolutionAnimation['boundHandleVisibilityChange'],
-      false
-    );
-    
-    // Restore the spy
-    removeEventListenerSpy.mockRestore();
-  });
-
   it('should stop all audios when document is not visible', () => {
     evolutionAnimation = new EvolutionAnimationComponent({
       canvas,

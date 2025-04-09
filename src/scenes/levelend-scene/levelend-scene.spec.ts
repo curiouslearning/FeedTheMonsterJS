@@ -45,6 +45,7 @@ jest.mock('@components', () => ({
   })),
 }));
 
+
 jest.mock('@components/buttons/base-button-component/base-button-component');
 
 describe('LevelEndScene', () => {
