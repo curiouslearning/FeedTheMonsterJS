@@ -20,6 +20,7 @@ jest.mock('@rive-app/canvas', () => {
   return {
     Rive: jest.fn().mockImplementation(({ onLoad, stateMachines }) => {
       const instance = {
+        __esModule: true,
         play: jest.fn(),
         stop: jest.fn(),
         stateMachineInputs: jest.fn().mockImplementation((name) => {
