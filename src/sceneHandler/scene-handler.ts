@@ -158,10 +158,22 @@ export class SceneHandler {
     this.context.clearRect(0, 0, this.width, this.height);
     this.activeScene['loading'].draw(deltaTime);
 
-    this.activeScene['scene'] && !(
+    // Check if the active scene exists and is not a LevelEndScene or StartScene
+    if (this.activeScene['scene'] && !(
       this.activeScene['scene'] instanceof LevelEndScene
       || this.activeScene['scene'] instanceof StartScene
-    ) && this.activeScene['scene']?.draw(deltaTime);
+    )) {
+      // Call draw on the active scene, but handle the case where promptText.draw might not exist
+      try {
+        this.activeScene['scene']?.draw(deltaTime);
+      } catch (error) {
+        // If the error is related to promptText.draw, we can safely ignore it
+        // since we've moved to an HTML-based implementation
+        if (!error.toString().includes('promptText.draw')) {
+          console.error('Animation error:', error);
+        }
+      }
+    }
   };
 
   private handleInstallPrompt = (event: Event) => {

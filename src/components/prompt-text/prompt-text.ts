@@ -1,57 +1,62 @@
 import { EventManager } from "@events";
-import { Utils, font, VISIBILITY_CHANGE } from "@common";
+import { Utils, VISIBILITY_CHANGE } from "@common";
 import { AudioPlayer } from "@components";
 import { PROMPT_PLAY_BUTTON, PROMPT_TEXT_BG } from "@constants";
+import { BaseHTML, BaseHtmlOptions } from "../baseHTML/base-html";
+import './prompt-text.scss';
+
+// Default selectors for the prompt text component
+export const DEFAULT_SELECTORS = {
+    root: '#background', // The background element to append the prompt to
+    promptText: '.prompt-text',
+    promptBackground: '.prompt-background',
+    promptPlayButton: '.prompt-play-button'
+};
+
+// HTML template for the prompt text component
+export const PROMPT_TEXT_LAYOUT = (id: string) => {
+    return (`
+        <div id="${id}" class="prompt-container">
+            <div id="prompt-background" class="prompt-background" style="background-image: url(${PROMPT_TEXT_BG})">
+                <div id="prompt-text" class="prompt-text"></div>
+                <div id="prompt-play-button" class="prompt-play-button" style="background-image: url(${PROMPT_PLAY_BUTTON}); pointer-events: auto;"></div>
+            </div>
+        </div>
+    `);
+};
 
 /**
  * Represents a prompt text component.
  */
-export class PromptText extends EventManager {
+export class PromptText extends BaseHTML {
     public width: number;
     public height: number;
     public levelData: any;
     public currentPromptText: string;
     public currentPuzzleData: any;
-    public canavsElement: HTMLCanvasElement;
-    public context: CanvasRenderingContext2D;
-    public prompt_image: HTMLImageElement;
     public targetStones: string[];
     public rightToLeft: boolean;
-    public imagesLoaded: boolean = false;
     public audioPlayer: AudioPlayer;
     public isStoneDropped: boolean = false;
     droppedStones: number = 0;
     private droppedStoneCount = 0;
     public time: number = 0;
-    public promptImageWidth: number = 0;
     public isAppForeground: boolean = true;
     public scale: number = 1;
     public isScalingUp: boolean = true;
     public scaleFactor: number = 0.00050;
-    public promptImageHeight: number = 0;
-    public promptPlayButton: HTMLImageElement;
-
-    /**
-     * Configuration for text vertical positioning based on screen size breakpoints.
-     * Each entry contains a breakpoint width and the corresponding vertical position factor.
-     * The breakpoints should be ordered from smallest to largest.
-     */
-    private textPositionConfig = [
-        { breakpoint: 376, position: 0.30 },  // Small mobile (≤376px)
-        { breakpoint: 480, position: 0.26 },  // Large mobile (377-480px)
-        { breakpoint: 820, position: 0.25 },  // Tablets (481-820px)
-    ];
-
-    /**
-     * Configuration for prompt background sizing and positioning based on screen size.
-     * Each entry contains a breakpoint width, size factor, and vertical position factor.
-     * The breakpoints should be ordered from smallest to largest.
-     */
-    private backgroundConfig = [
-        { breakpoint: 376, sizeFactor: 0.50, yPosition: 0.18 },  // Small mobile (≤376px)
-        { breakpoint: 480, sizeFactor: 0.60, yPosition: 0.15 },  // Large mobile (377-480px)
-        { breakpoint: 820, sizeFactor: 0.50, yPosition: 0.10 },  // Tablets (481-820px)
-    ];
+    public translateY: number = 0;
+    public isTranslatingUp: boolean = true;
+    public translateFactor: number = 0.05;
+    
+    // HTML elements for the prompt
+    public promptContainer: HTMLDivElement;
+    public promptBackground: HTMLDivElement;
+    public promptTextElement: HTMLDivElement;
+    public promptPlayButtonElement: HTMLDivElement;
+    private animationFrameId: number;
+    private eventManager: EventManager;
+    private containerId: string;
 
     /**
      * Initializes a new instance of the PromptText class.
@@ -61,11 +66,29 @@ export class PromptText extends EventManager {
      * @param levelData The level data.
      * @param rightToLeft Whether the text is right-to-left.
      */
-    constructor(width: number, height: number, currentPuzzleData: any, levelData: any, rightToLeft) {
-        super({
+    constructor(
+        width: number, 
+        height: number, 
+        currentPuzzleData: any, 
+        levelData: any, 
+        rightToLeft: boolean,
+        id: string = 'prompt-container',
+        options: BaseHtmlOptions = { selectors: DEFAULT_SELECTORS }
+    ) {
+        super(
+            options,
+            id,
+            PROMPT_TEXT_LAYOUT
+        );
+
+        // Store id for later use
+        this.containerId = id;
+
+        // Create event manager for handling events
+        this.eventManager = new EventManager({
             stoneDropCallbackHandler: (event) => this.handleStoneDrop(event),
             loadPuzzleCallbackHandler: (event) => this.handleLoadPuzzle(event)
-        })
+        });
 
         this.width = width;
         this.height = height;
@@ -74,33 +97,41 @@ export class PromptText extends EventManager {
         this.currentPromptText = currentPuzzleData.prompt.promptText;
         this.currentPuzzleData = currentPuzzleData;
         this.targetStones = this.currentPuzzleData.targetStones;
-        this.canavsElement = document.getElementById("canvas") as HTMLCanvasElement;
-        this.context = this.canavsElement.getContext("2d");
         this.audioPlayer = new AudioPlayer();
         this.audioPlayer.preloadPromptAudio(this.getPromptAudioUrl());
-        this.prompt_image = new Image();
-        this.promptPlayButton = new Image();
-        this.loadImages()
-        this.time = 0;
-        this.promptImageWidth = this.width * 0.65;
-        this.promptImageHeight = this.height * 0.3;
         document.addEventListener(VISIBILITY_CHANGE, this.handleVisibilityChange, false);
+        
+        // Initialize HTML elements
+        this.initializeHtmlElements();
+        
+        // Start animation loop
+        this.startAnimationLoop();
     }
 
     /**
-     * Handles mouse down events.
-     * @param event The event.
+     * Initializes the HTML elements for the prompt text component.
      */
-    handleMouseDown = (event) => {
-        let self = this;
-        const selfElement = <HTMLElement>document.getElementById("canvas");
-        event.preventDefault();
-        var rect = selfElement.getBoundingClientRect();
-        const x = event.clientX - rect.left;
-        const y = event.clientY - rect.top;
-        if (self.onClick(x, y)) {
-            this.playSound();
-        }
+    public initializeHtmlElements() {
+        // Get references to the created elements
+        this.promptContainer = document.getElementById(this.containerId) as HTMLDivElement;
+        this.promptBackground = this.promptContainer.querySelector('#prompt-background') as HTMLDivElement;
+        this.promptTextElement = this.promptContainer.querySelector('#prompt-text') as HTMLDivElement;
+        this.promptPlayButtonElement = this.promptContainer.querySelector('#prompt-play-button') as HTMLDivElement;
+        
+        // Add event listeners to all prompt elements
+        this.promptPlayButtonElement.addEventListener('click', this.playSound);
+        this.promptBackground.addEventListener('click', this.playSound);
+        this.promptTextElement.addEventListener('click', this.playSound);
+        
+        // Make sure all elements are clickable
+        this.promptBackground.style.pointerEvents = 'auto';
+        this.promptTextElement.style.pointerEvents = 'auto';
+        
+        // Set initial font size
+        this.promptTextElement.style.fontSize = `${this.calculateFont()}px`;
+        
+        // Update the text display
+        this.updateTextDisplay();
     }
 
     /**
@@ -116,262 +147,234 @@ export class PromptText extends EventManager {
      */
     playSound = () => {
         if (this.isAppForeground) {
-            this.audioPlayer.playPromptAudio(Utils.getConvertedDevProdURL(this.currentPuzzleData.prompt.promptAudio));
+            console.log('Playing prompt audio:', this.getPromptAudioUrl());
+            this.audioPlayer.playPromptAudio(this.getPromptAudioUrl());
         }
     }
 
     /**
-     * Handles click events.
-     * @param xClick The x-coordinate of the click.
-     * @param yClick The y-coordinate of the click.
-     * @returns Whether the click was handled.
+     * Updates the HTML prompt text for right-to-left languages.
      */
-    onClick(xClick, yClick) {
-        return Math.sqrt(xClick - this.width / 3) < 12 && Math.sqrt(yClick - this.height / 5.5) < 10
-    }
-
-    /**
-     * Sets the current puzzle data.
-     * @param data The new puzzle data.
-     */
-    setCurrrentPuzzleData(data) {
-        this.currentPuzzleData = data;
-        this.currentPromptText = data.prompt.promptText;
-        this.targetStones = this.currentPuzzleData.targetStones;
-    }
-
-    /**
-     * Calculates the vertical position for text based on screen size.
-     * Uses the textPositionConfig to determine the appropriate position factor.
-     * @returns The vertical position as a percentage of screen height.
-     */
-    calculateTextVerticalPosition(): number {
-        const screenWidth = window.innerWidth;
+    updateRTLText() {
+        // Clear previous content
+        this.promptTextElement.innerHTML = '';
         
-        // Find the appropriate config based on screen width
-        for (const config of this.textPositionConfig) {
-            if (screenWidth <= config.breakpoint) {
-                return this.height * config.position;
-            }
-        }
+        // Set RTL direction for the text element while keeping text centered
+        this.promptTextElement.style.direction = 'rtl';
+        this.promptTextElement.setAttribute('dir', 'rtl');
+        this.promptTextElement.style.textAlign = 'center'; // Ensure text is always centered
         
-        // Fallback to the last config (should never reach here due to Infinity breakpoint)
-        return this.height * this.textPositionConfig[this.textPositionConfig.length - 1].position;
-    }
-
-    /**
-     * Calculates the background configuration based on screen size.
-     * @returns The background configuration with size factor and vertical position.
-     */
-    calculateBackgroundConfig(): { sizeFactor: number, yPosition: number } {
-        const screenWidth = window.innerWidth;
-        
-        // Find the appropriate config based on screen width
-        for (const config of this.backgroundConfig) {
-            if (screenWidth <= config.breakpoint) {
-                return { 
-                    sizeFactor: config.sizeFactor,
-                    yPosition: config.yPosition
-                };
-            }
-        }
-        
-        // Fallback to the last config
-        const lastConfig = this.backgroundConfig[this.backgroundConfig.length - 1];
-        return { 
-            sizeFactor: lastConfig.sizeFactor,
-            yPosition: lastConfig.yPosition
-        };
-    }
-
-    /**
-     * Draws the prompt text in right-to-left languages.
-     */
-    drawRTLLang() {
-        var x = this.width / 2;
-        // Get the vertical position based on screen size
-        const y = this.calculateTextVerticalPosition();
-        this.context.textAlign = "center";
-        var fontSize = this.calculateFont();
-        const scaledWidth = this.promptImageWidth;
-        const scaledHeight = this.promptImageHeight;
-        this.context.font = `${fontSize}px ${font}, monospace`;
         if (this.levelData.levelMeta.levelType == "LetterInWord") {
             if (this.levelData.levelMeta.protoType == "Visible") {
-                var letterInWord = this.currentPromptText.replace(
-                    new RegExp(this.currentPuzzleData.targetStones[0], "g"),
-                    ""
-                );
-                this.context.fillStyle = "red";
-                this.context.fillText(
-                    this.targetStones[0],
-                    x + this.context.measureText(letterInWord).width / 2,
-                    y
-                );
-                this.context.fillStyle = "black";
-                this.context.fillText(
-                    letterInWord,
-                    x - this.context.measureText(this.targetStones[0]).width / 2,
-                    y
-                );
+                // For RTL, we need to ensure the text flows right to left
+                const wrapper = document.createElement('span');
+                wrapper.style.direction = 'rtl';
+                wrapper.style.unicodeBidi = 'embed'; // Critical for RTL rendering
+                wrapper.style.textAlign = 'center';
+                wrapper.style.width = '100%';
+                wrapper.style.display = 'inline-block';
+                
+                // In RTL, we need to highlight the target letter
+                const targetLetter = this.targetStones[0];
+                const parts = this.currentPromptText.split(targetLetter);
+                
+                // Add the text with the highlighted letter
+                if (parts.length > 1) {
+                    // Create the text with the highlighted letter
+                    wrapper.innerHTML = parts.join(`<span class="text-red">${targetLetter}</span>`);
+                } else {
+                    // Just show the text as is
+                    wrapper.textContent = this.currentPromptText;
+                }
+                
+                this.promptTextElement.appendChild(wrapper);
+                
+                // Show text element, hide play button
+                this.promptTextElement.style.display = 'block';
+                this.promptPlayButtonElement.style.display = 'none';
             } else {
-                this.drawCenteredPlayButton(y, scaledWidth, scaledHeight);
+                // Show play button instead of text
+                this.updateCenteredPlayButton();
             }
         } else if (this.levelData.levelMeta.levelType == "Word") {
             if (this.levelData.levelMeta.protoType == "Visible") {
-                x = x - this.context.measureText(this.currentPromptText).width * 0.5;
-                for (let i = this.targetStones.length - 1; i >= 0; i--) {
-                    if (this.droppedStones > i || this.droppedStones == undefined) {
-                        this.context.fillStyle = "black";
-                        this.context.fillText(this.targetStones[i], x, y);
-                    } else {
-                        this.context.fillStyle = "red";
-                        this.context.fillText(this.targetStones[i], x, y);
-                    }
-                    x = x + this.context.measureText(this.targetStones[i]).width + 5;
+                // For Word level type in RTL
+                const wrapper = document.createElement('span');
+                wrapper.style.direction = 'rtl';
+                wrapper.style.unicodeBidi = 'embed'; // Critical for RTL rendering
+                wrapper.style.textAlign = 'center';
+                wrapper.style.width = '100%';
+                wrapper.style.display = 'inline-block';
+                
+                let html = '';
+                
+                // For RTL, add the letters in the correct order
+                for (let i = 0; i < this.targetStones.length; i++) {
+                    const letterClass = (this.droppedStones > i || this.droppedStones == undefined) 
+                        ? "text-black" 
+                        : "text-red";
+                    
+                    html += `<span class="${letterClass} letter-spacing">${this.targetStones[i]}</span>`;
                 }
+                
+                wrapper.innerHTML = html;
+                this.promptTextElement.appendChild(wrapper);
+                
+                // Show text element, hide play button
+                this.promptTextElement.style.display = 'block';
+                this.promptPlayButtonElement.style.display = 'none';
             } else {
-                this.drawCenteredPlayButton(y, scaledWidth, scaledHeight);
+                // Show play button instead of text
+                this.updateCenteredPlayButton();
             }
         } else if (this.levelData.levelMeta.levelType == "audioPlayerWord") {
-            this.drawCenteredPlayButton(this.height * 0.4, scaledWidth, scaledHeight);
+            // Show play button for audio word
+            this.updateCenteredPlayButton();
         } else {
             if (this.levelData.levelMeta.protoType == "Visible") {
-                this.context.fillStyle = "black";
-                this.context.fillText(this.currentPromptText, x, y);
+                // Simple text display for RTL
+                const wrapper = document.createElement('span');
+                wrapper.className = 'text-black';
+                wrapper.style.direction = 'rtl';
+                wrapper.style.unicodeBidi = 'embed'; // Critical for RTL rendering
+                wrapper.style.textAlign = 'center';
+                wrapper.style.width = '100%';
+                wrapper.style.display = 'inline-block';
+                wrapper.textContent = this.currentPromptText;
+                
+                this.promptTextElement.appendChild(wrapper);
+                
+                // Show text element, hide play button
+                this.promptTextElement.style.display = 'block';
+                this.promptPlayButtonElement.style.display = 'none';
             } else {
-                this.drawCenteredPlayButton(y, scaledWidth, scaledHeight);
+                // Show play button instead of text
+                this.updateCenteredPlayButton();
             }
         }
     }
 
     /**
-     * Draws the prompt text in other languages.
+     * Updates the HTML prompt text for left-to-right languages.
      */
-    drawOthers() {
-        const promptTextLetters = this.currentPromptText.split("");
-        const x = this.width / 2;
-        // Get the vertical position based on screen size
-        const y = this.calculateTextVerticalPosition();
-        const scaledWidth = this.promptImageWidth;
-        const scaledHeight = this.promptImageHeight;
-        var fontSize = this.calculateFont();
-        this.context.font = `${fontSize}px ${font}, monospace`;
-
-        // Initialize starting position for text rendering
-        let startPrompttextX = this.width / 2 - this.context.measureText(this.currentPromptText).width / 2;
-
+    updateLTRText() {
+        // Clear previous content
+        this.promptTextElement.innerHTML = '';
+        
+        // Set LTR direction for the text element while keeping text centered
+        this.promptTextElement.style.direction = 'ltr';
+        this.promptTextElement.setAttribute('dir', 'ltr');
+        this.promptTextElement.style.textAlign = 'center'; // Ensure text is always centered
+        
         // Handle LetterInWord level type with visible prototype
         if (this.levelData.levelMeta.levelType === "LetterInWord" && this.levelData.levelMeta.protoType == "Visible") {
-            var letterHighlight = this.currentPuzzleData.targetStones[0];
-            var leftPromptText = this.currentPromptText.substring(0, this.currentPromptText.indexOf(letterHighlight));
-            var rightPromptText = this.currentPromptText.substring(this.currentPromptText.indexOf(letterHighlight) + letterHighlight.length);
-
-            // Draw left part of the text in black
-            if (leftPromptText.length > 0) {
-                this.context.fillStyle = "black";
-                this.context.fillText(leftPromptText, startPrompttextX, y);
-
-                // Move position for the highlighted letter
-                let currentWordWidth = (this.context.measureText(leftPromptText).width +
-                    this.context.measureText(letterHighlight).width) / 2;
-                startPrompttextX += currentWordWidth;
+            const wrapper = document.createElement('span');
+            wrapper.style.direction = 'ltr';
+            wrapper.style.textAlign = 'center';
+            wrapper.style.width = '100%';
+            wrapper.style.display = 'inline-block';
+            
+            // In LTR, we need to highlight the target letter
+            const targetLetter = this.targetStones[0];
+            const parts = this.currentPromptText.split(targetLetter);
+            
+            // Add the text with the highlighted letter
+            if (parts.length > 1) {
+                // Create the text with the highlighted letter
+                wrapper.innerHTML = parts.join(`<span class="text-red">${targetLetter}</span>`);
+            } else {
+                // Just show the text as is
+                wrapper.textContent = this.currentPromptText;
             }
-
-            // Draw the highlighted letter in red
-            if (letterHighlight.length > 0) {
-                this.context.fillStyle = "red";
-                this.context.fillText(letterHighlight, startPrompttextX, y);
-
-                // Move position for the right part of the text
-                let currentWordWidth = (this.context.measureText(letterHighlight).width +
-                    this.context.measureText(rightPromptText).width) / 2;
-                startPrompttextX += currentWordWidth;
-            }
-
-            // Draw right part of the text in black
-            if (rightPromptText.length > 0) {
-                this.context.fillStyle = "black";
-                this.context.fillText(rightPromptText, startPrompttextX, y);
-            }
-            return; // Exit early since we've handled this case
+            
+            this.promptTextElement.appendChild(wrapper);
+            
+            // Show text element, hide play button
+            this.promptTextElement.style.display = 'block';
+            this.promptPlayButtonElement.style.display = 'none';
+            return;
         }
 
         // Handle other level types
         switch (this.levelData.levelMeta.levelType) {
             case "Word": {
                 if (this.levelData.levelMeta.protoType == "Visible") {
-                    // Center align text for consistent positioning
-                    this.context.textAlign = "center";
-
+                    // For Word level type in LTR
+                    const wrapper = document.createElement('span');
+                    wrapper.style.direction = 'ltr';
+                    wrapper.style.textAlign = 'center';
+                    wrapper.style.width = '100%';
+                    wrapper.style.display = 'inline-block';
+                    
+                    let html = '';
+                    const promptTextLetters = this.currentPromptText.split("");
+                    
                     if (this.targetStones.length != this.currentPromptText.length) {
                         // For Word level type where target stones don't match prompt text length
-                        // Draw each letter with proper spacing and highlighting
-                        let totalWidth = 0;
-                        const spacing = 0; // No extra spacing between letters
-
                         for (let j = 0; j < this.targetStones.length; j++) {
-                            // Use black for letters that have been dropped, red for those that haven't
-                            this.context.fillStyle = (this.droppedStones > j || this.droppedStones == undefined) ? "black" : "red";
-
-                            // Calculate position for this letter
-                            const letterWidth = this.context.measureText(this.targetStones[j]).width;
-                            const letterX = x - (totalWidth / 2) + (letterWidth / 2);
-
-                            // Draw the letter
-                            this.context.fillText(this.targetStones[j], letterX, y);
-
-                            // Update total width for next letter
-                            totalWidth += letterWidth + spacing;
+                            const letterClass = (this.droppedStones > j || this.droppedStones == undefined) 
+                                ? "text-black" 
+                                : "text-red";
+                            
+                            const spacing = j > 0 ? " letter-spacing" : "";
+                            html += `<span class="${letterClass}${spacing}">${this.targetStones[j]}</span>`;
                         }
                     } else {
                         // For Word level type where target stones match prompt text length
-                        // Draw the whole word with proper coloring based on dropped stones
                         if (this.droppedStones >= promptTextLetters.length) {
                             // All letters dropped - show the whole word in black
-                            this.context.fillStyle = "black";
-                            this.context.fillText(this.currentPromptText, x, y);
+                            html = `<span class="text-black">${this.currentPromptText}</span>`;
                         } else {
                             // Some letters still need to be dropped
-                            // First draw the entire word in red
-                            this.context.fillStyle = "red";
-                            this.context.fillText(this.currentPromptText, x, y);
-
-                            // Then overlay the dropped part in black
-                            if (this.droppedStones > 0) {
-                                const droppedPart = this.currentPromptText.substring(0, this.droppedStones);
-                                const totalWidth = this.context.measureText(this.currentPromptText).width;
-                                const startX = x - (totalWidth / 2);
-
-                                this.context.fillStyle = "black";
-                                this.context.textAlign = "left";
-                                this.context.fillText(droppedPart, startX, y);
+                            const droppedPart = this.currentPromptText.substring(0, this.droppedStones);
+                            const remainingPart = this.currentPromptText.substring(this.droppedStones);
+                            
+                            if (droppedPart) {
+                                html += `<span class="text-black">${droppedPart}</span>`;
+                            }
+                            
+                            if (remainingPart) {
+                                html += `<span class="text-red">${remainingPart}</span>`;
                             }
                         }
                     }
+                    
+                    wrapper.innerHTML = html;
+                    this.promptTextElement.appendChild(wrapper);
+                    
+                    // Show text element, hide play button
+                    this.promptTextElement.style.display = 'block';
+                    this.promptPlayButtonElement.style.display = 'none';
                 } else {
-                    // For Word level type with non-Visible prototype
-                    // Position the play button at the standard text height
-                    this.drawCenteredPlayButton(y, scaledWidth, scaledHeight);
+                    // Show play button instead of text
+                    this.updateCenteredPlayButton();
                 }
                 break;
             }
             case "SoundWord": {
-                // For SoundWord level type, position the play button at standard text height
-                this.drawCenteredPlayButton(y, scaledWidth, scaledHeight);
+                // Show play button for sound word
+                this.updateCenteredPlayButton();
                 break;
             }
             default: {
                 if (this.levelData.levelMeta.protoType == "Visible") {
-                    // For default level types with Visible prototype
-                    // Draw text centered on the screen
-                    this.context.fillStyle = "black";
-                    this.context.textAlign = "center";
-                    this.context.fillText(this.currentPromptText, x, y);
+                    // Simple text display for LTR
+                    const wrapper = document.createElement('span');
+                    wrapper.className = 'text-black';
+                    wrapper.style.direction = 'ltr';
+                    wrapper.style.textAlign = 'center';
+                    wrapper.style.width = '100%';
+                    wrapper.style.display = 'inline-block';
+                    wrapper.textContent = this.currentPromptText;
+                    
+                    this.promptTextElement.appendChild(wrapper);
+                    
+                    // Show text element, hide play button
+                    this.promptTextElement.style.display = 'block';
+                    this.promptPlayButtonElement.style.display = 'none';
                 } else {
-                    // For default level types with non-Visible prototype
-                    // Position the play button at the standard text height
-                    this.drawCenteredPlayButton(y, scaledWidth, scaledHeight);
+                    // Show play button instead of text
+                    this.updateCenteredPlayButton();
                 }
                 break;
             }
@@ -379,68 +382,69 @@ export class PromptText extends EventManager {
     }
 
     /**
-     * Draws the centered play button.
-     * @param y The y-coordinate of the button.
-     * @param scaledWidth The scaled width of the button.
-     * @param scaledHeight The scaled height of the button.
+     * Updates the centered play button position and visibility.
      */
-    drawCenteredPlayButton(y: number, scaledWidth: number, scaledHeight: number) {
-        // Use a fixed size for the button based on the screen size
-        const buttonSize = Math.min(this.width, this.height) * 0.12;
-
-        // Use a square dimension to preserve aspect ratio
-        const buttonWidth = buttonSize;
-        const buttonHeight = buttonSize;
-
-        const centerX = this.width / 2 - buttonWidth / 2;
-        const centerY = y - buttonHeight / 2;
-
-        this.context.drawImage(
-            this.promptPlayButton,
-            centerX,
-            centerY,
-            buttonWidth,
-            buttonHeight
-        );
+    updateCenteredPlayButton() {
+        // Show the button, hide the text
+        this.promptPlayButtonElement.style.display = 'block';
+        this.promptTextElement.style.display = 'none';
+        
+        // Make sure the play button is clickable
+        this.promptPlayButtonElement.style.pointerEvents = 'auto';
     }
 
     /**
-     * Draws the prompt text.
-     * @param deltaTime The delta time.
+     * Updates the text display based on language direction.
      */
-    draw(deltaTime: number) {
-        this.updateScaling();
-        this.time = (deltaTime < 17) ? this.time + Math.floor(deltaTime) : this.time + 16;
-        if (Math.floor(this.time) >= 1910 && Math.floor(this.time) <= 1926) {
-            this.playSound();
+    updateTextDisplay() {
+        // Calculate font size
+        const fontSize = this.calculateFont();
+        this.promptTextElement.style.fontSize = `${fontSize}px`;
+        
+        // Update the text content based on language direction
+        if (this.rightToLeft) {
+            this.updateRTLText();
+        } else {
+            this.updateLTRText();
         }
-        if (!this.isStoneDropped) {
-            // Apply the scaling effect to create the pulse animation
-            const scaledWidth = this.promptImageWidth * this.scale;
-            const scaledHeight = this.promptImageHeight * this.scale;
+    }
+
+    /**
+     * Starts the animation loop for the prompt background.
+     */
+    startAnimationLoop() {
+        let lastTime = 0;
+        
+        const animate = (timestamp) => {
+            if (!lastTime) lastTime = timestamp;
+            const deltaTime = timestamp - lastTime;
+            lastTime = timestamp;
             
-            // Get the background position from the configuration
-            const config = this.calculateBackgroundConfig();
+            this.time += deltaTime;
             
-            // Center the image horizontally and position it according to the configuration
-            const offsetX = (this.width - scaledWidth) / 2;
-            const offsetY = this.height * config.yPosition;
+            // Play sound at specific time
+            if (Math.floor(this.time) >= 1910 && Math.floor(this.time) <= 1926) {
+                this.playSound();
+            }
             
-            // Draw the prompt background with the scaling effect applied
-            // and preserve aspect ratio
-            this.context.drawImage(
-                this.prompt_image,
-                offsetX,
-                offsetY,
-                scaledWidth,
-                scaledHeight
-            );
+            if (!this.isStoneDropped) {
+                // Update scaling
+                this.updateScaling();
+                
+                // Update translation
+                this.updateTranslation();
+                
+                // Apply transformations - preserve translateX(-50%) for horizontal centering
+                // this.promptBackground.style.transform = `translateX(-50%) scale(${this.scale}) translateY(${this.translateY}px)`;
+                
+                // Show the prompt container
+                this.promptContainer.style.display = 'block';
+            }
             
-            // Only draw the text if the stone hasn't been dropped
-            this.rightToLeft
-                ? this.drawRTLLang()
-                : this.drawOthers();
-        }
+            this.animationFrameId = requestAnimationFrame(animate);
+        };
+        
+        this.animationFrameId = requestAnimationFrame(animate);
     }
 
     /**
@@ -449,6 +453,7 @@ export class PromptText extends EventManager {
      */
     public handleStoneDrop(event) {
         this.isStoneDropped = true;
+        this.promptContainer.style.display = 'none';
     }
 
     /**
@@ -457,13 +462,22 @@ export class PromptText extends EventManager {
      */
     public handleLoadPuzzle(event) {
         this.droppedStones = 0;
-        this.droppedStoneCount = 0
-        this.currentPuzzleData = this.levelData.puzzles[event.detail.counter]
+        this.droppedStoneCount = 0;
+        this.currentPuzzleData = this.levelData.puzzles[event.detail.counter];
         this.currentPromptText = this.currentPuzzleData.prompt.promptText;
         this.targetStones = this.currentPuzzleData.targetStones;
         this.audioPlayer.preloadPromptAudio(this.getPromptAudioUrl());
         this.isStoneDropped = false;
         this.time = 0;
+        
+        // Update font size for new text
+        this.promptTextElement.style.fontSize = `${this.calculateFont()}px`;
+        
+        // Update text display
+        this.updateTextDisplay();
+        
+        // Show the prompt container again
+        this.promptContainer.style.display = 'block';
     }
 
     /**
@@ -471,7 +485,15 @@ export class PromptText extends EventManager {
      */
     public dispose() {
         document.removeEventListener(VISIBILITY_CHANGE, this.handleVisibilityChange, false);
-        this.unregisterEventListener();
+        this.eventManager.unregisterEventListener();
+        
+        // Cancel animation frame
+        if (this.animationFrameId) {
+            cancelAnimationFrame(this.animationFrameId);
+        }
+        
+        // Use BaseHTML's destroy method to remove the element
+        super.destroy();
     }
 
     /**
@@ -481,6 +503,11 @@ export class PromptText extends EventManager {
     droppedStoneIndex(index: number) {
         this.droppedStones = index;
         this.droppedStoneCount++;
+        
+        // Update the text display to reflect the dropped stone
+        if (!this.isStoneDropped) {
+            this.updateTextDisplay();
+        }
     }
 
     /**
@@ -488,7 +515,7 @@ export class PromptText extends EventManager {
      * @returns The font size.
      */
     calculateFont(): number {
-        return (this.promptImageWidth / this.currentPromptText.length > 35) ? 35 : this.width * 0.65 / this.currentPromptText.length
+        return (this.width * 0.65 / this.currentPromptText.length > 35) ? 35 : this.width * 0.65 / this.currentPromptText.length;
     }
 
     /**
@@ -510,60 +537,33 @@ export class PromptText extends EventManager {
     }
 
     /**
+     * Updates the vertical translation for floating animation.
+     */
+    updateTranslation() {
+        if (this.isTranslatingUp) {
+            this.translateY -= this.translateFactor;
+            if (this.translateY <= -5) {
+                this.isTranslatingUp = false;
+            }
+        } else {
+            this.translateY += this.translateFactor;
+            if (this.translateY >= 5) {
+                this.translateY = 5;
+                this.isTranslatingUp = true;
+            }
+        }
+    }
+
+    /**
      * Handles visibility change events.
      */
     handleVisibilityChange = () => {
         if (document.visibilityState == "hidden") {
             this.audioPlayer.stopAllAudios();
-            this.isAppForeground = false
+            this.isAppForeground = false;
         }
         if (document.visibilityState == "visible") {
-            this.isAppForeground = true
+            this.isAppForeground = true;
         }
-    }
-
-    /**
-     * Loads the images.
-     */
-    async loadImages() {
-        const image1Promise = this.loadImage(this.prompt_image, PROMPT_TEXT_BG);
-        const image2Promise = this.loadImage(this.promptPlayButton, PROMPT_PLAY_BUTTON);
-        await Promise.all([image1Promise, image2Promise]);
-        this.imagesLoaded = true;
-
-        // Apply responsive sizing after images are loaded
-        this.applyPromptImageResponsiveSizing();
-    }
-
-    /**
-     * Applies responsive sizing to the prompt image based on screen width.
-     * Ensures the image displays correctly across different device sizes
-     * while maintaining proper aspect ratio.
-     */
-    applyPromptImageResponsiveSizing() {
-        const config = this.calculateBackgroundConfig();
-        const baseSize = Math.min(this.width, this.height) * config.sizeFactor;
-        
-        // Set the prompt image dimensions based on the configuration
-        this.promptImageWidth = baseSize;
-        this.promptImageHeight = baseSize; // Maintain aspect ratio
-    }
-
-    /**
-     * Loads an image.
-     * @param image The image.
-     * @param src The source URL.
-     * @returns A promise that resolves when the image is loaded.
-     */
-    loadImage(image: HTMLImageElement, src: string): Promise<void> {
-        return new Promise<void>((resolve, reject) => {
-            image.onload = () => {
-                resolve();
-            };
-            image.src = src;
-            image.onerror = (error) => {
-                reject(error);
-            };
-        });
     }
 }
