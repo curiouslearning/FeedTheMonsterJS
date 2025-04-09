@@ -21,7 +21,7 @@ jest.mock('@components/riveMonster/rive-monster-component', () => {
   const MockRiveMonsterComponent = jest.fn(() => ({
     play: mockPlay,
     dispose: mockDispose,
-    stop: () => {}
+    stop: () => { }
   }));
 
   Object.assign(MockRiveMonsterComponent, {
@@ -41,6 +41,7 @@ jest.mock('@components', () => ({
   AudioPlayer: jest.fn().mockImplementation(() => ({
     playAudio: mockPlayAudio,
     stopAllAudios: mockStopAllAudios,
+    preloadGameAudio: jest.fn().mockResolvedValue(undefined),
   })),
 }));
 
@@ -55,6 +56,7 @@ describe('LevelEndScene', () => {
     // Clear mocks
     mockPlayAudio.mockClear();
     mockStopAllAudios.mockClear();
+    preloadGameAudio: jest.fn().mockResolvedValue(undefined),
 
     // Set up DOM elements
     document.body.innerHTML = `
@@ -68,7 +70,7 @@ describe('LevelEndScene', () => {
 
     // Mock BaseButtonComponent
     mockOnClick = jest.fn();
-    (BaseButtonComponent as unknown as jest.Mock).mockImplementation(function(options) {
+    (BaseButtonComponent as unknown as jest.Mock).mockImplementation(function (options) {
       // Create button element
       const button = document.createElement('button');
       button.id = options.id;
@@ -149,14 +151,14 @@ describe('LevelEndScene', () => {
     });
 
     levelEndScene = new LevelEndScene();
-    
+
     const expectedData = {
       currentLevelData: expect.any(Object),
       selectedLevelNumber: 2,
     };
-    
+
     levelEndScene.buttonCallbackFn('next');
-    
+
     expect(gameStateService.publish).toHaveBeenCalledWith(
       gameStateService.EVENTS.GAMEPLAY_DATA_EVENT,
       expectedData
@@ -173,10 +175,10 @@ describe('LevelEndScene', () => {
     });
 
     levelEndScene = new LevelEndScene();
-    
+
     // Force document to be visible
     Object.defineProperty(document, 'visibilityState', { value: 'visible', writable: true });
-    
+
     levelEndScene.switchToReactionAnimation();
 
     // Verify correct animation was played
@@ -193,10 +195,10 @@ describe('LevelEndScene', () => {
     });
 
     levelEndScene = new LevelEndScene();
-    
+
     // Force document to be visible
     Object.defineProperty(document, 'visibilityState', { value: 'visible', writable: true });
-    
+
     levelEndScene.switchToReactionAnimation();
 
     // Verify correct animation was played
@@ -295,12 +297,12 @@ describe('LevelEndScene', () => {
     it('should call switchToGameplayCB when Retry button is clicked', () => {
       // Render buttons
       levelEndScene.renderButtonsHTML();
-      
+
       // Get retry button and click it
       const retryButton = document.getElementById('levelend-retry-btn');
       expect(retryButton).toBeDefined();
       retryButton?.click();
-      
+
       // Verify the correct events were published
       expect(gameStateService.publish).toHaveBeenCalledWith(
         gameStateService.EVENTS.SWITCH_SCENE_EVENT,
@@ -311,12 +313,12 @@ describe('LevelEndScene', () => {
     it('should call switchToLevelSelectionCB when Map button is clicked', () => {
       // Render buttons
       levelEndScene.renderButtonsHTML();
-      
+
       // Get map button and click it
       const mapButton = document.getElementById('levelend-map-btn');
       expect(mapButton).toBeDefined();
       mapButton?.click();
-      
+
       // Verify the correct events were published
       expect(gameStateService.publish).toHaveBeenCalledWith(
         gameStateService.EVENTS.SWITCH_SCENE_EVENT,
@@ -339,20 +341,20 @@ describe('LevelEndScene', () => {
     it('should clean up all button instances', () => {
       // Create button instances
       levelEndScene.renderButtonsHTML();
-      
+
       // Create spies
       const nextButtonDisposeSpy = jest.spyOn(levelEndScene.nextButtonInstance, 'dispose');
       const retryButtonDisposeSpy = jest.spyOn(levelEndScene.retryButtonInstance, 'dispose');
       const mapButtonDisposeSpy = jest.spyOn(levelEndScene.mapButtonInstance, 'dispose');
-      
+
       // Call dispose
       levelEndScene.dispose();
-      
+
       // Verify all dispose methods were called
       expect(nextButtonDisposeSpy).toHaveBeenCalled();
       expect(retryButtonDisposeSpy).toHaveBeenCalled();
       expect(mapButtonDisposeSpy).toHaveBeenCalled();
-      
+
       // Verify instances were nullified
       expect(levelEndScene.nextButtonInstance).toBeNull();
       expect(levelEndScene.retryButtonInstance).toBeNull();
@@ -361,9 +363,9 @@ describe('LevelEndScene', () => {
 
     it('should remove event listeners and stop audio', () => {
       const removeEventListenerSpy = jest.spyOn(document, 'removeEventListener');
-      
+
       levelEndScene.dispose();
-      
+
       expect(mockStopAllAudios).toHaveBeenCalled();
       expect(removeEventListenerSpy).toHaveBeenCalledWith(
         'visibilitychange',
