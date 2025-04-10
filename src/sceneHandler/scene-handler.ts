@@ -163,16 +163,7 @@ export class SceneHandler {
       this.activeScene['scene'] instanceof LevelEndScene
       || this.activeScene['scene'] instanceof StartScene
     )) {
-      // Call draw on the active scene, but handle the case where promptText.draw might not exist
-      try {
-        this.activeScene['scene']?.draw(deltaTime);
-      } catch (error) {
-        // If the error is related to promptText.draw, we can safely ignore it
-        // since we've moved to an HTML-based implementation
-        if (!error.toString().includes('promptText.draw')) {
-          console.error('Animation error:', error);
-        }
-      }
+      this.activeScene['scene']?.draw(deltaTime);
     }
   };
 
