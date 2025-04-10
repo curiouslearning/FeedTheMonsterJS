@@ -95,6 +95,13 @@
     transform: translateX(-50%);
     cursor: pointer;
     pointer-events: auto; // Make sure the play button is clickable
+    
+    // Prevent highlight on press
+    -webkit-tap-highlight-color: transparent;
+    outline: none;
+    user-select: none;
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
 
     // Small mobile (≤376px)
     @media (max-width: 376px) {
