@@ -1,14 +1,26 @@
 version: 2.1
 
 orbs:
+  # aws-cli: circleci/aws-cli@5.2.0
+  # aws-s3: circleci/aws-s3@4.1.1
   aws-s3: circleci/aws-s3@3.0
-
-jobs:
-  s3-deploy:
-    docker:
-      - image: 'cimg/python:3.6'
+  node: circleci/node@7.0.0
+  
+commands:
+  build-and-deploy:
+    parameters:
+      to:
+        type: string
+        default: 's3://feedthemonster-development'
     steps:
       - checkout
+      - run: sudo npm install -g npm@latest
+      - node/install-packages
+      - run: npm run build
+      # - aws-cli/setup:
+      #     aws_access_key_id: AWS_ACCESS_KEY
+      #     region: AWS_DEFAULT_REGION
+      #     aws_secret_access_key: AWS_SECRET_ACCESS_KEY
       - aws-s3/sync:
           arguments: |
             --acl public-read \
@@ -17,21 +29,28 @@ jobs:
           aws-region: AWS_DEFAULT_REGION
           aws-secret-access-key: AWS_SECRET_ACCESS_KEY
           from: ./build/
-          to: 's3://feedthemonster-development'
-  
-  s3-deploy-prod:
+          to: << parameters.to >>
+
+jobs:
+  build-and-deploy-dev:
     docker:
-      - image: 'cimg/python:3.6'
+      - image: cimg/python:3.13.2-node
     steps:
-      - checkout
-      - aws-s3/sync:
-          arguments: |
-            --acl public-read \
-            --cache-control "max-age=86400"
-          aws-access-key-id: AWS_ACCESS_KEY
-          aws-region: AWS_PROD_REGION
-          aws-secret-access-key: AWS_SECRET_ACCESS_KEY
-          from: ./build/
+      - build-and-deploy:
+          to: 's3://feedthemonster-development'
+
+  build-and-deploy-test:
+    docker:
+      - image: cimg/python:3.13.2-node
+    steps:
+      - build-and-deploy:
+          to: 's3://globallit-aws-s3-static-webapp-test-us-east-2/feed-the-monster'
+  
+  build-and-deploy-prod:
+    docker:
+      - image: cimg/python:3.13.2-node
+    steps:
+      - build-and-deploy:
           to: 's3://feedthemonster-production'
 
 # http://curious-reader-books-production.s3-website.ap-south-1.amazonaws.com/
@@ -39,12 +58,24 @@ jobs:
 workflows:
   s3-deploy-workflow:
     jobs:
-      - s3-deploy:
+      - node/test
+      - build-and-deploy-dev:
+          context:
+            - aws-context
           filters:
             branches:
               only:
                 - develop
-      - s3-deploy-prod:
+      - build-and-deploy-test:
+          context:
+            - aws-context
+          filters:
+            branches:
+              only:
+                - test
+      - build-and-deploy-prod:
+          context:
+            - aws-context
           filters:
             branches:
               only:

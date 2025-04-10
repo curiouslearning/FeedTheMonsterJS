@@ -42,6 +42,7 @@ jest.mock('@components', () => {
     })),
     TimerTicking: jest.fn().mockImplementation(() => ({
       startTimer: jest.fn(),
+      applyRotation: jest.fn(),
       destroy: jest.fn(),
     })),
     StoneHandler: jest.fn().mockImplementation(() => ({

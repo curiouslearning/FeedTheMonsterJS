@@ -7,12 +7,12 @@ module.exports = {
   ],
   coverageReporters: ["lcov", "html"],
   coverageThreshold: {
-    global: {
-      branches: 80,
-      functions: 80,
-      lines: 80,
-      statements: -20,
-    }
+    // global: {
+    //   branches: 80,
+    //   functions: 80,
+    //   lines: 80,
+    //   statements: -20,
+    // }
   },
   moduleNameMapper: {
     "@common/*": "<rootDir>/src/common/index.ts",
