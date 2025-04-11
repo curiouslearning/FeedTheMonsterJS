@@ -13,6 +13,7 @@ import {
   AUDIO_PATH_ON_DRAG
 } from '@constants';
 import gameStateService from '@gameStateService';
+import gameSettingsService from '@gameSettingsService';
 
 export default class StoneHandler extends EventManager {
   private offsetCoordinateValue: number;
@@ -119,13 +120,13 @@ export default class StoneHandler extends EventManager {
     const foilStones = this.getFoilStones();
     // Randomize stone positions
     const positions = this.shuffleArray(this.stonePos);
-    
+    const scale = gameSettingsService.getDevicePixelRatioValue();
     for (let i = 0; i < foilStones.length; i++) {
       // Create new stone with all required parameters
       const stone = new StoneConfig(
         this.context,
-        this.canvas.width,
-        this.canvas.height,
+        this.canvas.width * scale,
+        this.canvas.height * scale,
         foilStones[i],
         positions[i][0],
         positions[i][1],
