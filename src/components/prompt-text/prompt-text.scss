@@ -18,28 +18,28 @@
 
   // Small mobile (≤376px)
   @media (max-width: 376px) {
-    width: 60%;
+    width: 50%;
     height: 30%;
     top: 18%;
   }
 
   // Large mobile (377-480px)
   @media (min-width: 377px) and (max-width: 480px) {
-    width: 60%;
+    width: 50%;
     height: 30%;
     top: 15%;
   }
 
   // Tablets (481-820px)
   @media (min-width: 481px) and (max-width: 820px) {
-    width: 65%;
+    width: 48%;
     height: 30%;
     top: 20%;
   }
 
   // large tablet (>820px)
   @media (min-width: 821px) {
-    width: 50%;
+    width: 48%;
     height: 30%;
     top: 25%;
   }
@@ -62,7 +62,8 @@
 
     // Small mobile (≤376px)
     @media (max-width: 376px) {
-      top: 26%;
+      top: 30%;
+      font-size: 25px;
     }
 
     // Large mobile (377-480px)
@@ -95,7 +96,7 @@
     transform: translateX(-50%);
     cursor: pointer;
     pointer-events: auto; // Make sure the play button is clickable
-    
+
     // Prevent highlight on press
     -webkit-tap-highlight-color: transparent;
     outline: none;
