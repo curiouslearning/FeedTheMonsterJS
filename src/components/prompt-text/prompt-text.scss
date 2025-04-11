@@ -5,10 +5,21 @@
   height: 100%;
   pointer-events: none;
   z-index: 5;
+
+  #prompt-text-button-container {
+    position: relative;
+    height: 74%;
+    width: 100%;
+    left: 0;
+    top: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
 }
 
 .prompt-background {
-  position: absolute;
+  position: relative;
   background-size: contain;
   background-repeat: no-repeat;
   background-position: center;
@@ -19,35 +30,34 @@
   // Small mobile (≤376px)
   @media (max-width: 376px) {
     width: 50%;
-    height: 30%;
+    height: 26%;
     top: 18%;
   }
 
   // Large mobile (377-480px)
   @media (min-width: 377px) and (max-width: 480px) {
     width: 50%;
-    height: 30%;
+    height: 22%;
     top: 15%;
   }
 
   // Tablets (481-820px)
   @media (min-width: 481px) and (max-width: 820px) {
     width: 48%;
-    height: 30%;
+    height: 22%;
     top: 20%;
   }
 
   // large tablet (>820px)
   @media (min-width: 821px) {
     width: 48%;
-    height: 30%;
+    height: 22%;
     top: 25%;
   }
 }
 
 .prompt-background {
   .prompt-text {
-    position: absolute;
     width: 100%;
     text-align: center;
     font-family: 'Quicksand', sans-serif;
@@ -60,40 +70,14 @@
       unicode-bidi: bidi-override;
     }
 
-    // Small mobile (≤376px)
-    @media (max-width: 376px) {
-      top: 30%;
-      font-size: 25px;
-    }
-
-    // Large mobile (377-480px)
-    @media (min-width: 377px) and (max-width: 480px) {
-      top: 32%;
-    }
-
-    // Tablets (481-820px)
-    @media (min-width: 481px) and (max-width: 820px) {
-      top: 35%;
-    }
-
-    // large tablet (>820px)
-    @media (min-width: 821px) {
-      top: 36%;
-    }
-
   }
-}
 
-.prompt-background {
   .prompt-play-button {
-    position: absolute;
     width: 60px;
     height: 60px;
     background-size: contain;
     background-repeat: no-repeat;
     background-position: center;
-    left: 50%;
-    transform: translateX(-50%);
     cursor: pointer;
     pointer-events: auto; // Make sure the play button is clickable
 
@@ -103,26 +87,6 @@
     user-select: none;
     -webkit-touch-callout: none;
     -webkit-user-select: none;
-
-    // Small mobile (≤376px)
-    @media (max-width: 376px) {
-      top: 26%;
-    }
-
-    // Large mobile (377-480px)
-    @media (min-width: 377px) and (max-width: 480px) {
-      top: 32%;
-    }
-
-    // Tablets (481-820px)
-    @media (min-width: 481px) and (max-width: 820px) {
-      top: 35%;
-    }
-
-    // large tablet (>820px)
-    @media (min-width: 821px) {
-      top: 36%;
-    }
   }
 }
 

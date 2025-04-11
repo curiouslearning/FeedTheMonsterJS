@@ -18,8 +18,10 @@ export const PROMPT_TEXT_LAYOUT = (id: string) => {
     return (`
         <div id="${id}" class="prompt-container">
             <div id="prompt-background" class="prompt-background" style="background-image: url(${PROMPT_TEXT_BG})">
-                <div id="prompt-text" class="prompt-text"></div>
-                <div id="prompt-play-button" class="prompt-play-button" style="background-image: url(${PROMPT_PLAY_BUTTON}); pointer-events: auto;"></div>
+                <div id="prompt-text-button-container">
+                    <div id="prompt-text" class="prompt-text"></div>
+                    <div id="prompt-play-button" class="prompt-play-button" style="background-image: url(${PROMPT_PLAY_BUTTON}); pointer-events: auto;"></div>
+                </div>
             </div>
         </div>
     `);
@@ -435,7 +437,7 @@ export class PromptText extends BaseHTML {
                 this.updateTranslation();
                 
                 // Apply transformations - preserve translateX(-50%) for horizontal centering
-                // this.promptBackground.style.transform = `translateX(-50%) scale(${this.scale}) translateY(${this.translateY}px)`;
+                this.promptBackground.style.transform = `translateX(-50%) scale(${this.scale}) translateY(${this.translateY}px)`;
                 
                 // Show the prompt container
                 this.promptContainer.style.display = 'block';
@@ -515,7 +517,7 @@ export class PromptText extends BaseHTML {
      * @returns The font size.
      */
     calculateFont(): number {
-        return (this.width * 0.65 / this.currentPromptText.length > 35) ? 35 : this.width * 0.65 / this.currentPromptText.length;
+        return (this.width * 0.65 / this.currentPromptText.length > 35) ? 25 : this.width * 0.65 / this.currentPromptText.length;
     }
 
     /**
