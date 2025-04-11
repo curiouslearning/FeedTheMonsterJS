@@ -489,9 +489,9 @@ export default class StoneHandler extends EventManager {
     *  this is the default coordinates
     */
     const baseCoordinateFactors = [
-      [6.2, 1.8], //Left stone 2nd - upper
-      [7.5, 1.5], //Left stone in 3rd
-      [setCoordinateFactor(5.8, 6.2), 2.5], //Left stone 1 (first stone on the top left )
+      [5, 1.9], //Left stone 1 - upper
+      [7, 1.5], //Left stone 2
+      [setCoordinateFactor(4.3, 4.5), 1.28], //Left stone 3
       [6.4, 1.1], //Left stone 4 - very bottom
       [setCoordinateFactor(2, 1.3), 1.07], //Middle stone that is located right below the monster.
       [[2.3, 2.1], 1.9], //Right stone 1 - upper
