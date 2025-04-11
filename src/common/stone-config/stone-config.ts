@@ -17,8 +17,6 @@ export class StoneConfig {
     public textFontSize: number;
     public canWidth: number;
     public canHeight: number;
-    public canvasWidth: number;
-    public canvasHeight: number;
     public imageCenterOffsetX: number;
     public imageCenterOffsetY: number;
     public context: CanvasRenderingContext2D;
