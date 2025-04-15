@@ -215,65 +215,10 @@ export default class StoneHandler extends EventManager {
     this.unregisterEventListener();
   }
 
-  public isStoneLetterDropCorrect(
-    droppedStone: string,
-    feedBackIndex: number,
-    isWord: boolean = false
-  ): boolean {
-    /*
-     * To Do: Need to refactor or revome this completely and place something
-     * that is tailored to single letter puzzle since word puzzle no longer uses this.
-     * Will leave this for now to avoid messing witht the single letter puzzle.
-    */
-    const isLetterDropCorrect = isWord
-      ? droppedStone == this.correctTargetStone.substring(0, droppedStone.length)
-      : droppedStone == this.correctTargetStone;
-
-    this.processLetterDropFeedbackAudio(
-      feedBackIndex,
-      isLetterDropCorrect,
-      isWord,
-      droppedStone
-    );
-
-    return isLetterDropCorrect
-  }
-
-  public processLetterDropFeedbackAudio(
-    feedBackIndex: number,
-    isLetterDropCorrect: boolean,
-    isWord: boolean,
-    droppedStone: string,
-  ) {
-    if (isLetterDropCorrect) {
-      const condition = isWord
-        ? droppedStone === this.getCorrectTargetStone() // condition for word puzzle
-        : isLetterDropCorrect // for letter and letter for word puzzle
-
-      if (condition) {
-        this.playCorrectAnswerFeedbackSound(feedBackIndex);
-      } else {
-        this.audioPlayer.playFeedbackAudios(
-          false,
-          AUDIO_PATH_EATS,
-          AUDIO_PATH_CHEERING_FUNC(2),
-        );
-      }
-    } else {
-      this.audioPlayer.playFeedbackAudios(
-        false,
-        AUDIO_PATH_EATS,
-      );
-      setTimeout(() => {
-        this.audioPlayer.playFeedbackAudios(
-          false,
-          AUDIO_PATH_MONSTER_SPIT,
-          Math.round(Math.random()) > 0 ? AUDIO_PATH_MONSTER_DISSAPOINTED : null
-        );
-      }, 1700); //1000 time is tailored to handleStoneDropEnd 1000 delay of isSpit animation.
-    }
-  }
-
+  /**
+   * Gets the correct target stone/word
+   * @returns string - The correct target stone/word
+   */
   public getCorrectTargetStone(): string {
     return this.correctTargetStone;
   }
@@ -327,32 +272,6 @@ export default class StoneHandler extends EventManager {
       feedbackAudios["great"],
       feedbackAudios["amazing"]
     ];
-  }
-
-  /**
-   * Performance optimization: Parallel audio playback
-   * Disposes stones immediately while playing audio in parallel
-   */
-  async playCorrectAnswerFeedbackSound(feedBackIndex: number) {
-    try {
-      // Dispose stones immediately - don't wait for audio
-      this.disposeStones();
-
-      // Play feedback audio in parallel for better performance
-      const randomNumber = Utils.getRandomNumber(1, 3).toString();
-      await Promise.allSettled([
-        this.correctStoneAudio.play(),
-        this.audioPlayer.playFeedbackAudios(
-          false,
-          AUDIO_PATH_EATS,
-          AUDIO_PATH_CHEERING_FUNC(randomNumber),
-          AUDIO_PATH_POINTS_ADD,
-          Utils.getConvertedDevProdURL(this.feedbackAudios[feedBackIndex])
-        )
-      ]);
-    } catch (error) {
-      console.warn('Audio playback failed:', error);
-    }
   }
 
   cleanup() {
@@ -500,7 +419,7 @@ export default class StoneHandler extends EventManager {
       [[setCoordinateFactor(3, 2.4), 2.1], 1.42],  //Right stone 3
     ];
 
-    // Separate coordinate factors for egg monster due to different dimensionse
+    // Separate coordinate factors for egg monster due to different dimensions
     const eggMonsterCoordinateFactors = [
       [6.2, 1.8], //Left stone 2nd - upper
       [7.5, 1.5], //Left stone in 3rd

@@ -1,4 +1,6 @@
-export default class WordPuzzleLogic {
+import BasePuzzleLogic from '../basePuzzleLogic/basePuzzleLogic';
+
+export default class WordPuzzleLogic extends BasePuzzleLogic {
     /**
         puzzleNumber - Puzzle stage level of current (Up to 5 stage levels) game level.
         groupedLetters - String sequence of letters when performing the multi-letter seleciton.
@@ -9,28 +11,6 @@ export default class WordPuzzleLogic {
         hideListObj - Object with key properties of stone letter index.
                     Used to hide stones that is part of the group or stones that was already fed to the monster.
     **/
-    private levelData: {
-        levelNumber: number;
-        levelMeta: {
-            letterGroup: number;
-            levelNumber: number;
-            levelType: string;
-            promptFadeOut: number;
-            protoType: string;
-        };
-        puzzles: [
-            {
-                foilStones: string[];
-                prompt: {
-                    promptAudio: string;
-                    promptText: string;
-                };
-                segmentNumber: number;
-                targetStones: string[];
-            }
-        ];
-    }
-    private puzzleNumber: number;
     private groupedLetters: string;
     private droppedLetters: string;
     private groupedObj: {} | { [key:number]: string };
@@ -38,8 +18,7 @@ export default class WordPuzzleLogic {
     private hideListObj: {} | { [key:number]: string };
 
     constructor(levelData, puzzleNumber) {
-        this.levelData = levelData;
-        this.puzzleNumber = puzzleNumber;
+        super(levelData, puzzleNumber);
         this.groupedLetters = '';
         this.droppedLetters = '';
         this.groupedObj = {};
@@ -47,11 +26,7 @@ export default class WordPuzzleLogic {
         this.hideListObj = {};
     }
 
-    private getTargetWord():string {
-        return this.levelData.puzzles[this.puzzleNumber]?.prompt?.promptText;
-    }
-
-    getValues(): {
+    override getValues(): {
         groupedLetters: string;
         droppedLetters: string;
         groupedObj: { [key:number]: string },
@@ -67,16 +42,12 @@ export default class WordPuzzleLogic {
         }
     }
 
-    checkIsWordPuzzle():boolean {
-        return this.levelData?.levelMeta?.levelType === 'Word';
-    }
-
-    updatePuzzleLevel(puzzleNumber: number):void {
+    override updatePuzzleLevel(puzzleNumber: number):void {
         this.clearAllValues();
-        this.puzzleNumber = puzzleNumber;
+        super.updatePuzzleLevel(puzzleNumber);
     }
 
-    clearPickedUp():void {
+    override clearPickedUp():void {
         this.groupedLetters = '';
         this.groupedObj = {};
         this.hideListObj = { ...this.droppedHistory };
@@ -88,17 +59,16 @@ export default class WordPuzzleLogic {
         this.groupedObj = {};
         this.droppedHistory = {};
         this.hideListObj = {};
-        this.puzzleNumber = 0;
     }
 
-    validateShouldHideLetter(foilStoneIndex):boolean {
+    override validateShouldHideLetter(foilStoneIndex):boolean {
         //If stone key index is listed in hideListObj it should not be drawn.
-        return !this.hideListObj[foilStoneIndex];
+        return this.hideListObj[foilStoneIndex] === undefined;
     }
 
-    handleCheckHoveredStone(foilStoneText:string, foilStoneIndex:number):boolean {
+    override handleCheckHoveredStone(foilStoneText:string, foilStoneIndex:number):boolean {
         const combinedLetters = this.groupedLetters;
-        const targetWord = this.getTargetWord();
+        const targetWord = this.getTargetText();
 
         /* Goes inside here if there are no previous letter(s) were dropped
         and grouping of letters starts in a incorrect letter. */
@@ -118,29 +88,60 @@ export default class WordPuzzleLogic {
     }
 
     validateFedLetters():boolean {
-        const targetWord = this.getTargetWord();
-        return this.droppedLetters === targetWord.substring(0, this.droppedLetters.length);
+        const targetWord = this.getTargetText();
+        return targetWord.startsWith(this.droppedLetters);
     }
 
-    validateWordPuzzle():boolean {
-        const targetWord = this.getTargetWord();
+    override validatePuzzleCompletion():boolean {
+        const targetWord = this.getTargetText();
         return this.droppedLetters === targetWord;
     }
 
-    setGroupToDropped():void {
-        this.droppedLetters = `${this.droppedLetters}${this.groupedLetters}`;
+    override setGroupToDropped():void {
+        // Update dropped letters with the current grouped letters
+        this.droppedLetters += this.groupedLetters;
+        
+        // Update dropped history with the current grouped object
         this.droppedHistory = {
             ...this.droppedHistory,
             ...this.groupedObj
         };
+        
+        // Clear the grouped letters after dropping
+        this.groupedLetters = '';
+        this.groupedObj = {};
     }
 
-    setPickUpLetter(letter: string, arrFoilStoneIndex: number):void {
+    override setPickUpLetter(letter: string, arrFoilStoneIndex: number):void {
         this.hideListObj = {
             ...this.hideListObj,
             ...this.groupedObj
         }; //Hide the previous letters except the new one.
         this.groupedLetters = `${this.groupedLetters}${letter}`;
         this.groupedObj[arrFoilStoneIndex] = letter;
+    }
+
+    /**
+     * Checks if the dropped stone letter is correct
+     * @param droppedStone - The letter or word that was dropped
+     * @param isWord - Whether this is a word puzzle
+     * @returns boolean indicating if the dropped letter/word is correct
+     */
+    override isLetterDropCorrect(droppedStone: string, isWord: boolean = false): boolean {
+        const targetWord = this.getTargetText();
+        if (isWord) {
+            return droppedStone === targetWord.substring(0, droppedStone.length);
+        } else {
+            // For single letter puzzles - not typically used in Word puzzles
+            return targetWord.includes(droppedStone);
+        }
+    }
+
+    /**
+     * Gets the correct target stone/word
+     * @returns string - The correct target stone/word
+     */
+    override getCorrectTargetStone(): string {
+        return this.getTargetText();
     }
 }
