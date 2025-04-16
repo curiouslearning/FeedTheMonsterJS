@@ -756,10 +756,12 @@ export class GameplayScene {
       this.timerTicking.startTimer();
       // // Trigger animations via fire
       // this.triggerMonsterAnimation('isHappy',3000)
+      const { droppedHistory } = this.wordPuzzleLogic.getValues();
+      const droppedStonesCount = Object.keys(droppedHistory).length;
       this.promptText.droppedStoneIndex(
         lang == "arabic"
           ? this.stonesCount
-          : droppedLetters.length
+          : droppedStonesCount
       );
       this.stonesCount++;
     } else {
