@@ -230,7 +230,7 @@ export default class TutorialComponent {
     shouldCreateRipple ? (null) : (this.drawRipple(offsetX + this.width * 0.02, offsetY + this.tutorialImg.height / 2, false))
   }
 
-  sinusoidalInterpolation(time, minScale, maxScale, duration) {
+  sinusoidalInterpolation(time: number, minScale: number, maxScale: number, duration: number) {
     const amplitude = (maxScale - minScale) / 2;
     const frequency = Math.PI / duration;
     return minScale + amplitude * Math.sin(frequency * time);
