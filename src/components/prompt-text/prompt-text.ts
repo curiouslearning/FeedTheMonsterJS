@@ -518,7 +518,6 @@ export class PromptText extends BaseHTML {
      * @param index The index.
      */
     droppedStoneIndex(index: number) {
-        console.log(`Setting droppedStones to ${index}, current value: ${this.droppedStones}`);
         this.droppedStones = index;
         this.droppedStoneCount++;
         
