@@ -13,6 +13,7 @@ import {
   AUDIO_PATH_ON_DRAG
 } from '@constants';
 import gameStateService from '@gameStateService';
+import gameSettingsService from '@gameSettingsService';
 
 export default class StoneHandler extends EventManager {
   private offsetCoordinateValue: number;
@@ -119,13 +120,13 @@ export default class StoneHandler extends EventManager {
     const foilStones = this.getFoilStones();
     // Randomize stone positions
     const positions = this.shuffleArray(this.stonePos);
-    
+    const scale = gameSettingsService.getDevicePixelRatioValue();
     for (let i = 0; i < foilStones.length; i++) {
       // Create new stone with all required parameters
       const stone = new StoneConfig(
         this.context,
-        this.canvas.width,
-        this.canvas.height,
+        this.canvas.width * scale,
+        this.canvas.height * scale,
         foilStones[i],
         positions[i][0],
         positions[i][1],
@@ -499,11 +500,11 @@ export default class StoneHandler extends EventManager {
       [[setCoordinateFactor(3, 2.4), 2.1], 1.42],  //Right stone 3
     ];
 
-    // Separate coordinate factors for egg monster due to different dimensions
+    // Separate coordinate factors for egg monster due to different dimensionse
     const eggMonsterCoordinateFactors = [
-      [5, 1.9], //Left stone 1 - upper
-      [7, 1.5], //Left stone 2
-      [setCoordinateFactor(4.3, 4.5), 2.28], //Left stone 3
+      [6.2, 1.8], //Left stone 2nd - upper
+      [7.5, 1.5], //Left stone in 3rd
+      [setCoordinateFactor(5.8, 6.2), 2.5], //Left stone 1 (first stone on the top left )
       [6.4, 1.1], //Left stone 4 - very bottom
       [setCoordinateFactor(1.2, 1.5), 1], //Middle stone that is located right below the monster.
       [[2.3, 1.9], 1.5], //Right stone 1 - upper
