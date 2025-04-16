@@ -3,17 +3,12 @@ import { EventManager } from "@events";
 import { Tutorial, AudioPlayer, TimerTicking } from "@components"
 import { GameScore } from "@data";
 import {
-  AUDIO_PATH_EATS,
-  AUDIO_PATH_MONSTER_SPIT,
-  AUDIO_PATH_MONSTER_DISSAPOINTED,
-  AUDIO_PATH_POINTS_ADD,
-  AUDIO_PATH_CORRECT_STONE,
-  AUDIO_PATH_CHEERING_FUNC,
   ASSETS_PATH_STONE_PINK_BG,
   AUDIO_PATH_ON_DRAG
 } from '@constants';
 import gameStateService from '@gameStateService';
 import gameSettingsService from '@gameSettingsService';
+import { FeedbackAudioHandler, FeedbackType } from '@gamepuzzles';
 
 export default class StoneHandler extends EventManager {
   private offsetCoordinateValue: number;
@@ -31,12 +26,11 @@ export default class StoneHandler extends EventManager {
   public puzzleStartTime: Date;
   public showTutorial: boolean =
     GameScore.getDatafromStorage().length == undefined ? true : false;
-  public correctStoneAudio: HTMLAudioElement;
   public tutorial: Tutorial;
   correctTargetStone: string;
   stonebg: HTMLImageElement;
   public audioPlayer: AudioPlayer;
-  public feedbackAudios: string[];
+  public feedbackAudioHandler: FeedbackAudioHandler;
   public timerTickingInstance: TimerTicking;
   isGamePaused: boolean = false;
   private unsubscribeEvent: () => void;
@@ -61,9 +55,7 @@ export default class StoneHandler extends EventManager {
     this.levelData = levelData;
     this.setTargetStone(this.puzzleNumber);
     this.stonePos = this.getRandomizedStonePositions(canvas.width, canvas.height)
-    this.correctStoneAudio = new Audio(AUDIO_PATH_CORRECT_STONE);
-    this.correctStoneAudio.loop = false;
-    this.feedbackAudios = this.convertFeedBackAudiosToList(feedbackAudios);
+    this.feedbackAudioHandler = new FeedbackAudioHandler(feedbackAudios);
     this.puzzleStartTime = new Date();
     this.tutorial = new Tutorial(
       context,
@@ -251,26 +243,12 @@ export default class StoneHandler extends EventManager {
         : isLetterDropCorrect // for letter and letter for word puzzle
 
       if (condition) {
-        this.playCorrectAnswerFeedbackSound(feedBackIndex);
+        this.feedbackAudioHandler.playFeedback(FeedbackType.CORRECT_ANSWER, feedBackIndex);
       } else {
-        this.audioPlayer.playFeedbackAudios(
-          false,
-          AUDIO_PATH_EATS,
-          AUDIO_PATH_CHEERING_FUNC(2),
-        );
+        this.feedbackAudioHandler.playFeedback(FeedbackType.PARTIAL_CORRECT, feedBackIndex);
       }
     } else {
-      this.audioPlayer.playFeedbackAudios(
-        false,
-        AUDIO_PATH_EATS,
-      );
-      setTimeout(() => {
-        this.audioPlayer.playFeedbackAudios(
-          false,
-          AUDIO_PATH_MONSTER_SPIT,
-          Math.round(Math.random()) > 0 ? AUDIO_PATH_MONSTER_DISSAPOINTED : null
-        );
-      }, 1700); //1000 time is tailored to handleStoneDropEnd 1000 delay of isSpit animation.
+      this.feedbackAudioHandler.playFeedback(FeedbackType.INCORRECT, feedBackIndex);
     }
   }
 
@@ -318,15 +296,22 @@ export default class StoneHandler extends EventManager {
 
   handleVisibilityChange = () => {
     this.audioPlayer.stopAllAudios();
-    this.correctStoneAudio.pause();
+    this.feedbackAudioHandler.stopAllAudio();
   };
 
-  convertFeedBackAudiosToList(feedbackAudios): string[] {
-    return [
-      feedbackAudios["fantastic"],
-      feedbackAudios["great"],
-      feedbackAudios["amazing"]
-    ];
+  cleanup() {
+    // Clean up audio resources
+    if (this.feedbackAudioHandler) {
+      this.feedbackAudioHandler.dispose();
+    }
+
+    this.disposeStones();
+
+    // Remove event listeners
+    document.removeEventListener(VISIBILITY_CHANGE, this.handleVisibilityChange);
+    if (this.unsubscribeEvent) {
+      this.unsubscribeEvent();
+    }
   }
 
   /**
@@ -339,35 +324,11 @@ export default class StoneHandler extends EventManager {
       this.disposeStones();
 
       // Play feedback audio in parallel for better performance
-      const randomNumber = Utils.getRandomNumber(1, 3).toString();
       await Promise.allSettled([
-        this.correctStoneAudio.play(),
-        this.audioPlayer.playFeedbackAudios(
-          false,
-          AUDIO_PATH_EATS,
-          AUDIO_PATH_CHEERING_FUNC(randomNumber),
-          AUDIO_PATH_POINTS_ADD,
-          Utils.getConvertedDevProdURL(this.feedbackAudios[feedBackIndex])
-        )
+        this.feedbackAudioHandler.playFeedback(FeedbackType.CORRECT_ANSWER, feedBackIndex)
       ]);
     } catch (error) {
       console.warn('Audio playback failed:', error);
-    }
-  }
-
-  cleanup() {
-    // Clean up audio resources
-    if (this.correctStoneAudio) {
-      this.correctStoneAudio.pause();
-      this.correctStoneAudio.src = '';
-    }
-
-    this.disposeStones();
-
-    // Remove event listeners
-    document.removeEventListener(VISIBILITY_CHANGE, this.handleVisibilityChange);
-    if (this.unsubscribeEvent) {
-      this.unsubscribeEvent();
     }
   }
 
