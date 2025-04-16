@@ -58,7 +58,7 @@ export default class TutorialComponent {
     this.innerRadius = this.initialInnerRadius;
   }
 
-  private udpateDrawPosition(deltaTime, height) {
+  private udpdateDrawPosition(deltaTime: number, height: number) {
     const transitionDuration = 2000;
     const bottomPosition = height / 1.9 + (this.tutorialImg.height / 0.8);
     const topPosition = height / 1.9 + (this.tutorialImg.height / 0.8) - this.tutorialImg.height;
@@ -82,7 +82,7 @@ export default class TutorialComponent {
     );
   }
 
-  public drawPointer(offsetX, currentOffsetY) {
+  public drawPointer(offsetX: number, currentOffsetY: number) {
     this.context.drawImage(
       this.tutorialImg,
       offsetX,
@@ -92,9 +92,9 @@ export default class TutorialComponent {
     );
   }
 
-  public clickOnMonsterTutorial(deltaTime, width, height) {
+  public clickOnMonsterTutorial(deltaTime: number, width: number, height: number) {
     if (this.imagesLoaded) {
-      const { currentOffsetY, shouldResetOrRevertPosition } = this.udpateDrawPosition(deltaTime, height)
+      const { currentOffsetY, shouldResetOrRevertPosition } = this.udpdateDrawPosition(deltaTime, height)
       const offsetX = width / 2;
       this.drawPointer(offsetX,currentOffsetY);
 
@@ -134,7 +134,7 @@ export default class TutorialComponent {
   }
 
   public setPlayMonsterClickAnimation(test:boolean) {
-
+    //Will be needed and updated on actual integration.
   }
 
   private animateImage({ startX, startY, endX, endY }): AnimStoneImageTypes {
