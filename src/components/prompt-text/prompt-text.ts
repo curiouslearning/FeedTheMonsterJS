@@ -216,7 +216,7 @@ export class PromptText extends BaseHTML {
                         ? "text-black" 
                         : "text-red";
                     
-                    html += `<span class="${letterClass} letter-spacing">${this.targetStones[i]}</span>`;
+                    html += `<span class="${letterClass}">${this.targetStones[i]}</span>`;
                 }
                 
                 wrapper.innerHTML = html;
