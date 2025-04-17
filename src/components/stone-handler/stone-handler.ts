@@ -10,6 +10,12 @@ import gameStateService from '@gameStateService';
 import gameSettingsService from '@gameSettingsService';
 import { FeedbackAudioHandler, FeedbackType } from '@gamepuzzles';
 
+/**
+ * TODO: In the future, the FeedbackAudioHandler should be moved to the appropriate puzzle logic classes.
+ * StoneHandler should not be responsible for audio feedback. This is a temporary solution until
+ * we have the complete puzzle logic system in place. At that point, this import and the
+ * feedbackAudioHandler property should be removed from StoneHandler.
+ */
 export default class StoneHandler extends EventManager {
   private offsetCoordinateValue: number;
   public context: CanvasRenderingContext2D;
