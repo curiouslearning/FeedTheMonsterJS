@@ -36,7 +36,7 @@ export class PromptText extends BaseHTML {
     public levelData: any;
     public currentPromptText: string;
     public currentPuzzleData: any;
-    public targetStones: string[];
+    public targetStones: (string | { StoneText: string })[];
     public rightToLeft: boolean;
     public audioPlayer: AudioPlayer;
     public isStoneDropped: boolean = false;
@@ -177,13 +177,16 @@ export class PromptText extends BaseHTML {
                 wrapper.style.display = 'inline-block';
                 
                 // In RTL, we need to highlight the target letter
-                const targetLetter = this.targetStones[0];
-                const parts = this.currentPromptText.split(targetLetter);
+                const targetStone = this.targetStones[0];
+                const targetLetterText = typeof targetStone === 'string' 
+                    ? targetStone 
+                    : (targetStone as { StoneText: string }).StoneText;
+                const parts = this.currentPromptText.split(targetLetterText);
                 
                 // Add the text with the highlighted letter
                 if (parts.length > 1) {
                     // Create the text with the highlighted letter
-                    wrapper.innerHTML = parts.join(`<span class="text-red">${targetLetter}</span>`);
+                    wrapper.innerHTML = parts.join(`<span class="text-red">${targetLetterText}</span>`);
                 } else {
                     // Just show the text as is
                     wrapper.textContent = this.currentPromptText;
@@ -210,13 +213,18 @@ export class PromptText extends BaseHTML {
                 
                 let html = '';
                 
-                // For RTL, add the letters in the correct order
+                // For RTL, add the stones in the correct order
                 for (let i = 0; i < this.targetStones.length; i++) {
-                    const letterClass = (this.droppedStones > i || this.droppedStones == undefined) 
+                    // Handle both string and object formats for target stones
+                    const stoneText = typeof this.targetStones[i] === 'string' 
+                        ? this.targetStones[i] 
+                        : (this.targetStones[i] as { StoneText: string }).StoneText;
+                    
+                    const letterClass = (i < this.droppedStones) 
                         ? "text-black" 
                         : "text-red";
                     
-                    html += `<span class="${letterClass}">${this.targetStones[i]}</span>`;
+                    html += `<span class="${letterClass}">${stoneText}</span>`;
                 }
                 
                 wrapper.innerHTML = html;
@@ -277,13 +285,16 @@ export class PromptText extends BaseHTML {
             wrapper.style.display = 'inline-block';
             
             // In LTR, we need to highlight the target letter
-            const targetLetter = this.targetStones[0];
-            const parts = this.currentPromptText.split(targetLetter);
+            const targetStone = this.targetStones[0];
+            const targetLetterText = typeof targetStone === 'string' 
+                ? targetStone 
+                : (targetStone as { StoneText: string }).StoneText;
+            const parts = this.currentPromptText.split(targetLetterText);
             
             // Add the text with the highlighted letter
             if (parts.length > 1) {
                 // Create the text with the highlighted letter
-                wrapper.innerHTML = parts.join(`<span class="text-red">${targetLetter}</span>`);
+                wrapper.innerHTML = parts.join(`<span class="text-red">${targetLetterText}</span>`);
             } else {
                 // Just show the text as is
                 wrapper.textContent = this.currentPromptText;
@@ -309,34 +320,38 @@ export class PromptText extends BaseHTML {
                     wrapper.style.display = 'inline-block';
                     
                     let html = '';
-                    const promptTextLetters = this.currentPromptText.split("");
                     
                     if (this.targetStones.length != this.currentPromptText.length) {
                         // For Word level type where target stones don't match prompt text length
                         for (let j = 0; j < this.targetStones.length; j++) {
-                            const letterClass = (this.droppedStones > j || this.droppedStones == undefined) 
+                            // Handle both string and object formats for target stones
+                            const stoneText = typeof this.targetStones[j] === 'string' 
+                                ? this.targetStones[j] 
+                                : (this.targetStones[j] as { StoneText: string }).StoneText;
+                            
+                            const letterClass = (j < this.droppedStones) 
                                 ? "text-black" 
                                 : "text-red";
                             
                             const spacing = j > 0 ? " letter-spacing" : "";
-                            html += `<span class="${letterClass}${spacing}">${this.targetStones[j]}</span>`;
+                            html += `<span class="${letterClass}${spacing}">${stoneText}</span>`;
                         }
                     } else {
                         // For Word level type where target stones match prompt text length
-                        if (this.droppedStones >= promptTextLetters.length) {
+                        if (this.droppedStones >= this.targetStones.length) {
                             // All letters dropped - show the whole word in black
                             html = `<span class="text-black">${this.currentPromptText}</span>`;
                         } else {
                             // Some letters still need to be dropped
-                            const droppedPart = this.currentPromptText.substring(0, this.droppedStones);
-                            const remainingPart = this.currentPromptText.substring(this.droppedStones);
-                            
-                            if (droppedPart) {
-                                html += `<span class="text-black">${droppedPart}</span>`;
-                            }
-                            
-                            if (remainingPart) {
-                                html += `<span class="text-red">${remainingPart}</span>`;
+                            // Matching the original canvas implementation
+                            for (let i = 0; i < this.targetStones.length; i++) {
+                                // Handle both string and object formats for target stones
+                                const stoneText = typeof this.targetStones[i] === 'string' 
+                                    ? this.targetStones[i] 
+                                    : (this.targetStones[i] as { StoneText: string }).StoneText;
+                                    
+                                const letterClass = i < this.droppedStones ? "text-black" : "text-red";
+                                html += `<span class="${letterClass}">${stoneText}</span>`;
                             }
                         }
                     }
