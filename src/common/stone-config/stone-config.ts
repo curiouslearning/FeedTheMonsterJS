@@ -1,5 +1,6 @@
 import { font } from "@common";
 import { TimerTicking, Tutorial } from "@components";
+import gameSettingsService from '@gameSettingsService';
 
 /**
  * Performance optimized stone configuration class.
@@ -14,8 +15,8 @@ export class StoneConfig {
     public img: CanvasImageSource;
     public imageSize: number;
     public textFontSize: number;
-    public canvasWidth: number;
-    public canvasHeight: number;
+    public canWidth: number;
+    public canHeight: number;
     public imageCenterOffsetX: number;
     public imageCenterOffsetY: number;
     public context: CanvasRenderingContext2D;
@@ -26,14 +27,14 @@ export class StoneConfig {
     // Performance optimization: Use time-based animation for smoother movement
     private animationStartTime: number = 0;
     private animationDuration: number = 1500; // 1.5 second animation
-
-    constructor(context, canvasWidth, canvasHeight, stoneLetter, xPos, yPos, img,timerTickingInstance, tutorialInstance?) {
+    public scale = gameSettingsService.getDevicePixelRatioValue();
+    constructor(context, canvasWidth, canvasHeight, stoneLetter, xPos, yPos, img, timerTickingInstance, tutorialInstance?) {
         this.x = xPos;
         this.y = yPos;
         this.origx = xPos;
         this.origy = yPos;
-        this.canvasWidth = canvasWidth;
-        this.canvasHeight = canvasHeight;
+        this.canWidth = canvasWidth;
+        this.canHeight = canvasHeight;
         this.tutorialInstance = tutorialInstance;
         this.text = stoneLetter;
         this.img = img;
@@ -51,18 +52,20 @@ export class StoneConfig {
     }
 
     calculateImageAndFontSize() {
+        const scaledWidth = Math.round(this.canWidth / this.scale); // (width multiplied by devicePixelRatio) / devicePixelRatio to get the original screen width.
+        const scaledHeight = Math.round(this.canHeight / this.scale);
         if (
             this.context.measureText(this.text).width * 1.4 >
-            this.canvasHeight / 9.5
+            scaledHeight / 9.5
         ) {
             this.imageSize = this.context.measureText(this.text).width * 1.1;
-            this.textFontSize = this.canvasHeight / 25;
-            if (this.text.length >= 3  && this.origx<50 && this.origx< this.canvasWidth/2 ) {
+            this.textFontSize = (scaledHeight / 25);
+            if (this.text.length >= 3 && this.origx < 50 && this.origx < scaledWidth / 2) {
                 this.x = this.origx + 21;
-          }
+            }
         } else {
-            this.imageSize = this.canvasHeight / 9.5;
-            this.textFontSize = this.canvasHeight / 20;
+            this.imageSize = (scaledHeight / 9.5);
+            this.textFontSize = (scaledHeight / 20);
         }
     }
 

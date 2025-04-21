@@ -158,10 +158,13 @@ export class SceneHandler {
     this.context.clearRect(0, 0, this.width, this.height);
     this.activeScene['loading'].draw(deltaTime);
 
-    this.activeScene['scene'] && !(
+    // Check if the active scene exists and is not a LevelEndScene or StartScene
+    if (this.activeScene['scene'] && !(
       this.activeScene['scene'] instanceof LevelEndScene
       || this.activeScene['scene'] instanceof StartScene
-    ) && this.activeScene['scene']?.draw(deltaTime);
+    )) {
+      this.activeScene['scene']?.draw(deltaTime);
+    }
   };
 
   private handleInstallPrompt = (event: Event) => {

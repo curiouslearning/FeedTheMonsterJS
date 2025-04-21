@@ -3,17 +3,19 @@ import { EventManager } from "@events";
 import { Tutorial, AudioPlayer, TimerTicking } from "@components"
 import { GameScore } from "@data";
 import {
-  AUDIO_PATH_EATS,
-  AUDIO_PATH_MONSTER_SPIT,
-  AUDIO_PATH_MONSTER_DISSAPOINTED,
-  AUDIO_PATH_POINTS_ADD,
-  AUDIO_PATH_CORRECT_STONE,
-  AUDIO_PATH_CHEERING_FUNC,
   ASSETS_PATH_STONE_PINK_BG,
   AUDIO_PATH_ON_DRAG
 } from '@constants';
 import gameStateService from '@gameStateService';
+import gameSettingsService from '@gameSettingsService';
+import { FeedbackAudioHandler, FeedbackType } from '@gamepuzzles';
 
+/**
+ * TODO: In the future, the FeedbackAudioHandler should be moved to the appropriate puzzle logic classes.
+ * StoneHandler should not be responsible for audio feedback. This is a temporary solution until
+ * we have the complete puzzle logic system in place. At that point, this import and the
+ * feedbackAudioHandler property should be removed from StoneHandler.
+ */
 export default class StoneHandler extends EventManager {
   private offsetCoordinateValue: number;
   public context: CanvasRenderingContext2D;
@@ -30,12 +32,11 @@ export default class StoneHandler extends EventManager {
   public puzzleStartTime: Date;
   public showTutorial: boolean =
     GameScore.getDatafromStorage().length == undefined ? true : false;
-  public correctStoneAudio: HTMLAudioElement;
   public tutorial: Tutorial;
   correctTargetStone: string;
   stonebg: HTMLImageElement;
   public audioPlayer: AudioPlayer;
-  public feedbackAudios: string[];
+  public feedbackAudioHandler: FeedbackAudioHandler;
   public timerTickingInstance: TimerTicking;
   isGamePaused: boolean = false;
   private unsubscribeEvent: () => void;
@@ -60,9 +61,7 @@ export default class StoneHandler extends EventManager {
     this.levelData = levelData;
     this.setTargetStone(this.puzzleNumber);
     this.stonePos = this.getRandomizedStonePositions(canvas.width, canvas.height)
-    this.correctStoneAudio = new Audio(AUDIO_PATH_CORRECT_STONE);
-    this.correctStoneAudio.loop = false;
-    this.feedbackAudios = this.convertFeedBackAudiosToList(feedbackAudios);
+    this.feedbackAudioHandler = new FeedbackAudioHandler(feedbackAudios);
     this.puzzleStartTime = new Date();
     this.tutorial = new Tutorial(
       context,
@@ -119,13 +118,13 @@ export default class StoneHandler extends EventManager {
     const foilStones = this.getFoilStones();
     // Randomize stone positions
     const positions = this.shuffleArray(this.stonePos);
-    
+    const scale = gameSettingsService.getDevicePixelRatioValue();
     for (let i = 0; i < foilStones.length; i++) {
       // Create new stone with all required parameters
       const stone = new StoneConfig(
         this.context,
-        this.canvas.width,
-        this.canvas.height,
+        this.canvas.width * scale,
+        this.canvas.height * scale,
         foilStones[i],
         positions[i][0],
         positions[i][1],
@@ -250,26 +249,12 @@ export default class StoneHandler extends EventManager {
         : isLetterDropCorrect // for letter and letter for word puzzle
 
       if (condition) {
-        this.playCorrectAnswerFeedbackSound(feedBackIndex);
+        this.feedbackAudioHandler.playFeedback(FeedbackType.CORRECT_ANSWER, feedBackIndex);
       } else {
-        this.audioPlayer.playFeedbackAudios(
-          false,
-          AUDIO_PATH_EATS,
-          AUDIO_PATH_CHEERING_FUNC(2),
-        );
+        this.feedbackAudioHandler.playFeedback(FeedbackType.PARTIAL_CORRECT, feedBackIndex);
       }
     } else {
-      this.audioPlayer.playFeedbackAudios(
-        false,
-        AUDIO_PATH_EATS,
-      );
-      setTimeout(() => {
-        this.audioPlayer.playFeedbackAudios(
-          false,
-          AUDIO_PATH_MONSTER_SPIT,
-          Math.round(Math.random()) > 0 ? AUDIO_PATH_MONSTER_DISSAPOINTED : null
-        );
-      }, 1700); //1000 time is tailored to handleStoneDropEnd 1000 delay of isSpit animation.
+      this.feedbackAudioHandler.playFeedback(FeedbackType.INCORRECT, feedBackIndex);
     }
   }
 
@@ -317,15 +302,22 @@ export default class StoneHandler extends EventManager {
 
   handleVisibilityChange = () => {
     this.audioPlayer.stopAllAudios();
-    this.correctStoneAudio.pause();
+    this.feedbackAudioHandler.stopAllAudio();
   };
 
-  convertFeedBackAudiosToList(feedbackAudios): string[] {
-    return [
-      feedbackAudios["fantastic"],
-      feedbackAudios["great"],
-      feedbackAudios["amazing"]
-    ];
+  cleanup() {
+    // Clean up audio resources
+    if (this.feedbackAudioHandler) {
+      this.feedbackAudioHandler.dispose();
+    }
+
+    this.disposeStones();
+
+    // Remove event listeners
+    document.removeEventListener(VISIBILITY_CHANGE, this.handleVisibilityChange);
+    if (this.unsubscribeEvent) {
+      this.unsubscribeEvent();
+    }
   }
 
   /**
@@ -338,35 +330,11 @@ export default class StoneHandler extends EventManager {
       this.disposeStones();
 
       // Play feedback audio in parallel for better performance
-      const randomNumber = Utils.getRandomNumber(1, 3).toString();
       await Promise.allSettled([
-        this.correctStoneAudio.play(),
-        this.audioPlayer.playFeedbackAudios(
-          false,
-          AUDIO_PATH_EATS,
-          AUDIO_PATH_CHEERING_FUNC(randomNumber),
-          AUDIO_PATH_POINTS_ADD,
-          Utils.getConvertedDevProdURL(this.feedbackAudios[feedBackIndex])
-        )
+        this.feedbackAudioHandler.playFeedback(FeedbackType.CORRECT_ANSWER, feedBackIndex)
       ]);
     } catch (error) {
       console.warn('Audio playback failed:', error);
-    }
-  }
-
-  cleanup() {
-    // Clean up audio resources
-    if (this.correctStoneAudio) {
-      this.correctStoneAudio.pause();
-      this.correctStoneAudio.src = '';
-    }
-
-    this.disposeStones();
-
-    // Remove event listeners
-    document.removeEventListener(VISIBILITY_CHANGE, this.handleVisibilityChange);
-    if (this.unsubscribeEvent) {
-      this.unsubscribeEvent();
     }
   }
 
@@ -499,11 +467,11 @@ export default class StoneHandler extends EventManager {
       [[setCoordinateFactor(3, 2.4), 2.1], 1.42],  //Right stone 3
     ];
 
-    // Separate coordinate factors for egg monster due to different dimensions
+    // Separate coordinate factors for egg monster due to different dimensionse
     const eggMonsterCoordinateFactors = [
-      [5, 1.9], //Left stone 1 - upper
-      [7, 1.5], //Left stone 2
-      [setCoordinateFactor(4.3, 4.5), 2.28], //Left stone 3
+      [6.2, 1.8], //Left stone 2nd - upper
+      [7.5, 1.5], //Left stone in 3rd
+      [setCoordinateFactor(5.8, 6.2), 2.5], //Left stone 1 (first stone on the top left )
       [6.4, 1.1], //Left stone 4 - very bottom
       [setCoordinateFactor(1.2, 1.5), 1], //Middle stone that is located right below the monster.
       [[2.3, 1.9], 1.5], //Right stone 1 - upper

@@ -451,7 +451,9 @@ export class GameplayScene {
       this.tutorial.setPlayMonsterClickAnimation(false);
     }
 
-    if (this.promptText.onClick(x, y)) {
+    // Use the play button in the HTML implementation instead of onClick
+    const promptPlayButton = document.getElementById('prompt-play-button');
+    if (promptPlayButton && promptPlayButton.contains(event.target as Node)) {
       this.promptText.playSound();
     }
   };
@@ -487,7 +489,7 @@ export class GameplayScene {
         this.tutorial.setPlayMonsterClickAnimation(false);
       }
     }
-    this.promptText.draw(deltaTime);
+    // The promptText.draw method has been removed as it's now handled by HTML/CSS
     this.trailParticles?.draw();
     if (this.isPauseButtonClicked && this.isGameStarted) {
       this.handleStoneLetterDrawing(deltaTime);
@@ -754,10 +756,12 @@ export class GameplayScene {
       this.timerTicking.startTimer();
       // // Trigger animations via fire
       // this.triggerMonsterAnimation('isHappy',3000)
+      const { droppedHistory } = this.wordPuzzleLogic.getValues();
+      const droppedStonesCount = Object.keys(droppedHistory).length;
       this.promptText.droppedStoneIndex(
         lang == "arabic"
           ? this.stonesCount
-          : droppedLetters.length
+          : droppedStonesCount
       );
       this.stonesCount++;
     } else {

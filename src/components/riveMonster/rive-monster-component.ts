@@ -85,20 +85,20 @@ export class RiveMonsterComponent {
    */
   private setRiveMinYAdjustment(): void {
     const { width, height } = this.props.canvas
-    const scaledWidth = Math.round(width / this.scale);
-    const scaledHeight = Math.round(height / this.scale);
+    const scaledWidth = Math.round(width / this.scale); // (width multiplied by devicePixelRatio) / devicePixelRatio to get the original screen width.
+    const scaledHeight = Math.round(height / this.scale);  // (height multiplied by devicePixelRatio) / devicePixelRatio to get the original screen height.
 
     // Default minY adjustment
     let minY;
-
     // Determine minY based on scaled width and height
     if (scaledWidth >= 500) {
       minY = scaledHeight / 14; // Adjusted from (height / 4) / 3.5 for clarity
-    } else if (scaledWidth <= 499 && scaledWidth >= 343 && scaledHeight >= 735){
+    } else if (scaledWidth <= 499 && scaledWidth >= 343 && scaledHeight >= 735) {
       minY = scaledHeight / 2;
     } else {
       minY = scaledHeight / 4;
     }
+
 
     // Dynamic adjustment based on scaledHeight (5% of the height)
     minY -= scaledHeight * 0.05;

@@ -2,10 +2,25 @@ import { Rive, Layout, Fit, Alignment } from '@rive-app/canvas';
 import { MONSTER_PHASES } from '@constants';
 import { RiveMonsterComponent } from './rive-monster-component';
 
+jest.mock('@gameSettingsService', () => ({
+  __esModule: true,
+  default: {
+    getCanvasSizeValues: jest.fn(),
+    getRiveCanvasValue: jest.fn(),
+    subscribe: jest.fn(),
+    publish: jest.fn(),
+    EVENTS: {
+      GAME_TRAIL_EFFECT_TOGGLE_EVENT: 'GAME_TRAIL_EFFECT_TOGGLE_EVENT',
+    },
+    getDevicePixelRatioValue: () => 2
+  }
+}));
+
 jest.mock('@rive-app/canvas', () => {
   return {
     Rive: jest.fn().mockImplementation(({ onLoad, stateMachines }) => {
       const instance = {
+        __esModule: true,
         play: jest.fn(),
         stop: jest.fn(),
         stateMachineInputs: jest.fn().mockImplementation((name) => {
@@ -99,6 +114,8 @@ describe('RiveMonsterComponent', () => {
     jest.useRealTimers();
   });
 
+  
+
   it('should initialize RiveMonsterComponent with correct properties', () => {
     expect(component).toBeDefined();
     expect(component['riveInstance']).toBeDefined();
@@ -148,7 +165,7 @@ describe('RiveMonsterComponent', () => {
 
   it('should return true if the click is within the hitbox range', () => {
     // Calculate expected hitbox center and range based on canvas dimensions
-    const scale = 1; // We mocked devicePixelRatio to 1
+    const scale = 2; // We mocked devicePixelRatio to 2
     const monsterCenterX = (canvas.width / scale) / 2; // 400
     const monsterCenterY = (canvas.height / scale) / 2; // 300
     const rangeFactorX = 55;
