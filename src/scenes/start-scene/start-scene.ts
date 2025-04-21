@@ -1,3 +1,4 @@
+
 import { AudioPlayer, BackgroundHtmlGenerator } from "@components";
 import { PlayButtonHtml } from '@components/buttons';
 import { BaseButtonComponent } from '@components/buttons/base-button-component/base-button-component';
@@ -5,12 +6,12 @@ import { BaseHTML } from '@components/baseHTML/base-html';
 import { RiveMonsterComponent } from "@components/riveMonster/rive-monster-component";
 import { DataModal } from "@data";
 import {
-  lang,
-  pseudoId,
   toggleDebugMode,
+  pseudoId,
+  lang
 } from "@common";
 import { FirebaseIntegration } from "../../Firebase/firebase-integration";
-import { TappedStart } from "src/Firebase/firebase-event-interface";
+import { TappedStart } from "../../Firebase/firebase-event-interface";
 import {
   SCENE_NAME_LEVEL_SELECT,
   FirebaseUserClicked,
@@ -187,7 +188,7 @@ export class StartScene {
 
   handleMouseClick = (event) => {
     event.preventDefault();
-    this.logTappedStartFirebaseEvent();
+    FirebaseIntegration.getInstance().sendUserClickedOnPlayEvent();
     // @ts-ignore
     fbq("trackCustom", FirebaseUserClicked, {
       event: "click",
@@ -220,8 +221,7 @@ export class StartScene {
     localStorage.setItem(PWAInstallStatus, "false");
   };
 
-  logTappedStartFirebaseEvent() {
-    let endTime = Date.now();
+  private logTappedStartFirebaseEvent() {
     const tappedStartData: TappedStart = {
       cr_user_id: pseudoId,
       ftm_language: lang,
@@ -229,6 +229,6 @@ export class StartScene {
       version_number: document.getElementById("version-info-id").innerHTML,
       json_version_number: !!this.data.majVersion && !!this.data.minVersion ? this.data.majVersion.toString() + "." + this.data.minVersion.toString() : "",
     };
-    FirebaseIntegration.getInstance().sendTappedStartEvent(tappedStartData);
+    this.firebaseIntegration.sendTappedStartEvent(tappedStartData);
   }
 }
