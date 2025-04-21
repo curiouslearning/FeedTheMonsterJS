@@ -1,10 +1,18 @@
 {
+  // TODO: enable once lint is fixed
+  // "extends": "./node_modules/gts/tsconfig-google.json",
   "compilerOptions": {
+    
     /* Basic Options */
     // "incremental": true,                   /* Enable incremental compilation */
-     "target": "es2022",                          /* Specify ECMAScript target version: 'ES3' (default), 'ES5', 'ES2015', 'ES2016', 'ES2017', 'ES2018', 'ES2019', 'ES2020', or 'ESNEXT'. */
+    "target": "es2022",                          /* Specify ECMAScript target version: 'ES3' (default), 'ES5', 'ES2015', 'ES2016', 'ES2017', 'ES2018', 'ES2019', 'ES2020', or 'ESNEXT'. */
     "module": "es2022",                     /* Specify module code generation: 'none', 'commonjs', 'amd', 'system', 'umd', 'es2015', 'es2020', or 'ESNext'. */
-    // "lib": ["ES2020"],                             /* Specify library files to be included in the compilation. */
+    "esModuleInterop":true,                /* Makes cleaner and more consistent imports across your codebase*/
+    "lib": [
+      "es2022",
+      "dom",
+      "dom.iterable"
+    ],                             /* Specify library files to be included in the compilation. */
     // "allowJs": true,                       /* Allow javascript files to be compiled. */
     // "checkJs": true,                       /* Report errors in .js files. */
     // "jsx": "preserve",                     /* Specify JSX code generation: 'preserve', 'react-native', or 'react'. */
@@ -39,7 +47,7 @@
     // "noFallthroughCasesInSwitch": true,    /* Report errors for fallthrough cases in switch statement. */
 
     /* Module Resolution Options */
-     "moduleResolution": "node",            /* Specify module resolution strategy: 'node' (Node.js) or 'classic' (TypeScript pre-1.6). */
+    "moduleResolution": "bundler",            /* Specify module resolution strategy: 'node' (Node.js) or 'classic' (TypeScript pre-1.6). */
     "baseUrl": "./", // Specifies the root directory of the project
     "paths": {
       "@components/*": ["src/components/*"],
@@ -47,17 +55,21 @@
       "@buttons": ["src/components/buttons"],
       "@popups/*": ["src/components/popups/*"],
       "@common": ["src/common"],
-      "@compositions/*": ["src/compositions/*"],
-      "@compositions": ["src/compositions"],
+      "@compositions/*": ["src/compositions/*"], // to be removed once background component has been fully integrated
+      "@compositions": ["src/compositions"], // to be removed once background component has been fully integrated
       "@constants": ["src/constants"],
       "@data/*": ["src/data/*"],
       "@data": ["src/data"],
-      "@sceneHandler": ["src/sceneHandler"],
+      "@sceneHandler/*": ["src/sceneHandler/*"],
       "@scenes": ["src/scenes"],
-      "@events": ["src/events"],
+      "@events": ["src/events", "src/events/*"],
       "@feedbackText/*": ["src/components/feedback-text/*"],
       "@gamepuzzles/*": ["src/gamepuzzles/*"],
-      "@gamepuzzles": ["src/gamepuzzles"]
+      "@gamepuzzles": ["src/gamepuzzles"],
+      "@gameStateService/*": ["src/gameStateService/*"],
+      "@gameStateService": ["src/gameStateService"],
+      "@gameSettingsService/*": ["src/gameSettingsService/*"],
+      "@gameSettingsService": ["src/gameSettingsService"]
     },
     // "rootDirs": [],                        /* List of root folders whose combined content represents the structure of the project at runtime. */
     // "typeRoots": [],                       /* List of folders to include type definitions from. */

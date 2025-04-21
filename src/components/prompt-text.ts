@@ -186,22 +186,41 @@ export class PromptText extends EventManager {
             this.currentPromptText.substring
             (this.currentPromptText.indexOf(letterHighlight)+letterHighlight.length);
         if (this.levelData.levelMeta.levelType === "LetterInWord" && this.levelData.levelMeta.protoType == "Visible" ) {
-            let totalWidth = 0;  
-            this.context.textAlign = "start";
-            if (leftPromptText.length > 0) {
+            if (leftPromptText.length>0) {
                 this.context.fillStyle = "black";
-                this.context.fillText(leftPromptText, startPrompttextX, y);
-                totalWidth += this.context.measureText(leftPromptText).width;  
+                this.context.fillText(
+                    leftPromptText,
+                    startPrompttextX,
+                    y
+                );         
+                currentWordWidth = (this.context.measureText(
+                    leftPromptText
+                ).width + this.context.measureText(
+                    letterHighlight
+                ).width) / 2;
+                startPrompttextX += currentWordWidth;
             }
-            if (letterHighlight.length > 0) {
+            if(letterHighlight.length>0){
                 this.context.fillStyle = "red";
-                this.context.fillText(letterHighlight, startPrompttextX + totalWidth, y);  
-                totalWidth += this.context.measureText(letterHighlight).width; 
+                this.context.fillText(
+                    letterHighlight,
+                    startPrompttextX,
+                    y
+                );
+                currentWordWidth = (this.context.measureText(
+                    letterHighlight
+                ).width + this.context.measureText(
+                    rightPromptText
+                ).width) / 2;
+                startPrompttextX += currentWordWidth;
             }
-            if (rightPromptText.length > 0) {
+            if(rightPromptText.length>0) {
                 this.context.fillStyle = "black";
-                this.context.fillText(rightPromptText, startPrompttextX + totalWidth, y);  
-                totalWidth += this.context.measureText(rightPromptText).width;  
+                this.context.fillText(
+                    rightPromptText,
+                    startPrompttextX,
+                    y
+                );
             }
         }
         for (let i = 0; i < promptTextLetters.length; i++) {

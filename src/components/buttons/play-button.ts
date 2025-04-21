@@ -1,5 +1,11 @@
 import { PLAY_BTN_IMG } from "@constants";
-import { loadImages } from "@common";
+import { TappedStart } from "../../Firebase/firebase-event-interface";
+import { FirebaseIntegration } from "../../Firebase/firebase-integration";
+import { loadImages, pseudoId, lang } from "@common";
+import { getData } from "@data";
+/*
+  * Note: Deprecated. Use PlayButtonHtml from component buttons instead.
+ */
 export default class PlayButton {
     public posX: number;
     public posY: number;
