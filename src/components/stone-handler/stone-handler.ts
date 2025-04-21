@@ -84,8 +84,8 @@ export default class StoneHandler extends EventManager {
     );
     this.unsubscribeEvent = gameStateService.subscribe(
       gameStateService.EVENTS.GAME_PAUSE_STATUS_EVENT,
-      (isGamePaused:boolean) => {
-        this.isGamePaused  = isGamePaused;
+      (isGamePaused: boolean) => {
+        this.isGamePaused = isGamePaused;
       }
     );
   }
@@ -111,20 +111,23 @@ export default class StoneHandler extends EventManager {
   createStones(img) {
     // Clear existing stones first to prevent memory leaks
     this.disposeStones();
-    
+
     // Create stone pool for reuse
     const stonePool = new Map();
-    
+
     const foilStones = this.getFoilStones();
     // Randomize stone positions
     const positions = this.shuffleArray(this.stonePos);
     const scale = gameSettingsService.getDevicePixelRatioValue();
+    this.canvas.width = this.canvas.clientWidth * scale;
+    this.canvas.height = this.canvas.clientHeight * scale;
+    this.context.scale(scale, scale);
     for (let i = 0; i < foilStones.length; i++) {
       // Create new stone with all required parameters
       const stone = new StoneConfig(
         this.context,
-        this.canvas.width * scale,
-        this.canvas.height * scale,
+        this.canvas.width,
+        this.canvas.height,
         foilStones[i],
         positions[i][0],
         positions[i][1],
@@ -132,10 +135,10 @@ export default class StoneHandler extends EventManager {
         this.timerTickingInstance,
         null // tutorial instance is optional
       );
-      
+
       // Initialize stone
       stone.initialize();
-      
+
       // Store in pool for potential reuse
       stonePool.set(foilStones[i], stone);
       this.foilStones.push(stone);
@@ -152,7 +155,7 @@ export default class StoneHandler extends EventManager {
     // Only check animation completion once per frame
     let isAnimationComplete = true;
     const activeStones = this.foilStones.filter(stone => stone && !stone.isDisposed);
-    
+
     // Draw only active stones
     for (const stone of activeStones) {
       if (stone.frame < 100) {
