@@ -5,12 +5,12 @@ import { BaseHTML } from '@components/baseHTML/base-html';
 import { RiveMonsterComponent } from "@components/riveMonster/rive-monster-component";
 import { DataModal } from "@data";
 import {
-  toggleDebugMode,
+  lang,
   pseudoId,
-  lang
+  toggleDebugMode,
 } from "@common";
 import { FirebaseIntegration } from "../../Firebase/firebase-integration";
-import { TappedStart } from "../../Firebase/firebase-event-interface";
+import { TappedStart } from "src/Firebase/firebase-event-interface";
 import {
   SCENE_NAME_LEVEL_SELECT,
   FirebaseUserClicked,
@@ -187,7 +187,7 @@ export class StartScene {
 
   handleMouseClick = (event) => {
     event.preventDefault();
-    FirebaseIntegration.getInstance().sendUserClickedOnPlayEvent();
+    this.logTappedStartFirebaseEvent();
     // @ts-ignore
     fbq("trackCustom", FirebaseUserClicked, {
       event: "click",
@@ -220,7 +220,8 @@ export class StartScene {
     localStorage.setItem(PWAInstallStatus, "false");
   };
 
-  private logTappedStartFirebaseEvent() {
+  logTappedStartFirebaseEvent() {
+    let endTime = Date.now();
     const tappedStartData: TappedStart = {
       cr_user_id: pseudoId,
       ftm_language: lang,
@@ -228,6 +229,6 @@ export class StartScene {
       version_number: document.getElementById("version-info-id").innerHTML,
       json_version_number: !!this.data.majVersion && !!this.data.minVersion ? this.data.majVersion.toString() + "." + this.data.minVersion.toString() : "",
     };
-    this.firebaseIntegration.sendTappedStartEvent(tappedStartData);
+    FirebaseIntegration.getInstance().sendTappedStartEvent(tappedStartData);
   }
 }
