@@ -12,3 +12,5 @@ build
 */build/.well-known/*
 coverage
 git
+__mocks__
+.vscode
