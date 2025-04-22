@@ -2,7 +2,6 @@ import PauseButton from "./buttons/pause-button/pause-button";
 import { LevelIndicators } from "./level-indicator";
 import { PromptText } from "./prompt-text/prompt-text";
 import StoneHandler from "./stone-handler/stone-handler";
-import { Tutorial } from "./tutorial";
 import { BackgroundHtmlGenerator } from "./background/background";
 import { PhasesBackground } from './background/phases-background';
 import { FeedbackTextEffects } from "./feedback-text";
@@ -16,7 +15,6 @@ export {
   LevelIndicators,
   StoneHandler,
   TimerTicking,
-  Tutorial,
   BackgroundHtmlGenerator,
   PhasesBackground,
   FeedbackTextEffects,

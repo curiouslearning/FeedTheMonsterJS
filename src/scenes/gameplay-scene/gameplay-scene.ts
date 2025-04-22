@@ -4,13 +4,13 @@ import {
   PauseButton,
   LevelIndicators,
   StoneHandler,
-  Tutorial,
   BackgroundHtmlGenerator,
   FeedbackTextEffects,
   AudioPlayer,
   TrailEffect,
   PhasesBackground
 } from "@components";
+import { LetterPuzzleTutorial } from '@tutorials';
 import {
   StoneConfig,
   CLICK,
@@ -56,7 +56,7 @@ export class GameplayScene {
   public timerTicking: TimerTicking;
   public promptText: PromptText;
   public pauseButton: PauseButton;
-  public tutorial: Tutorial;
+  public tutorial: LetterPuzzleTutorial;
   public id: string;
   public context: CanvasRenderingContext2D;
   public levelIndicators: LevelIndicators;
@@ -188,7 +188,7 @@ export class GameplayScene {
       gamePlayData.feedbackAudios,
       this.timerTicking
     );
-    this.tutorial = new Tutorial(this.context, this.width, this.height);
+    this.tutorial = new LetterPuzzleTutorial(this.context, this.width, this.height);
     this.promptText = new PromptText(
       this.width,
       this.height,
@@ -448,7 +448,7 @@ export class GameplayScene {
     if (this.monster.onClick(x, y)) {
       this.isGameStarted = true;
       this.time = 0;
-      this.tutorial.setPlayMonsterClickAnimation(false);
+      this.tutorial.setGameHasStarted();
     }
 
     // Use the play button in the HTML implementation instead of onClick
@@ -486,7 +486,7 @@ export class GameplayScene {
       if (this.time >= 5000) {
         this.isGameStarted = true;
         this.time = 0;
-        this.tutorial.setPlayMonsterClickAnimation(false);
+        this.tutorial.setGameHasStarted();
       }
     }
     // The promptText.draw method has been removed as it's now handled by HTML/CSS
@@ -494,13 +494,13 @@ export class GameplayScene {
     if (this.isPauseButtonClicked && this.isGameStarted) {
       this.handleStoneLetterDrawing(deltaTime);
     }
-    if (!this.isPauseButtonClicked && !this.isGameStarted) {
-      this.counter == 0
-        ? this.tutorial.clickOnMonsterTutorial(deltaTime)
-        : undefined;
-    }
+
     if (!this.isPauseButtonClicked && this.isGameStarted) {
       this.handleStoneLetterDrawing(deltaTime);
+    }
+
+    if (!this.isPauseButtonClicked && this.counter == 0) {
+      this.tutorial.drawLetterPuzzleTutorial(deltaTime);
     }
   }
 
@@ -582,7 +582,7 @@ export class GameplayScene {
         handleLevelEnd();
         return;
       }
-
+      this.tutorial.setGameHasEndedFlag(); // Turn off tutorial
       const timeoutId = setTimeout(handleLevelEnd, this.loadPuzzleDelay); // added delay for switching to level end screen
       if (this.isFeedBackTriggered) {
         const audioSources = this.audioPlayer?.audioSourcs || [];
@@ -659,6 +659,11 @@ export class GameplayScene {
     if (this.trailParticles) {
       this.trailParticles.clearTrailSubscription();
       this.trailParticles = null;
+    }
+
+    if (this.tutorial) {
+      this.tutorial.dispose();
+      this.tutorial = null;
     }
 
     // Clear event listeners
