@@ -109,52 +109,49 @@ describe('StoneHandler - Latest Optimizations', () => {
     );
   });
 
-describe('Stone Position Optimization', () => {
-  let mockImage: HTMLImageElement;
+  describe('Stone Position Optimization', () => {
+    it('should maintain stone count after shuffling', () => {
+      const positions = [[0,0], [1,1], [2,2], [3,3], [4,4]];
+      stoneHandler.stonePos = positions;
+      
+      const foilStones = ['A', 'B', 'C', 'D', 'E'];
+      jest.spyOn(stoneHandler as any, 'getFoilStones').mockReturnValue(foilStones);
+      
+      const mockImage = {
+        onload: null as any,
+        width: 100,
+        height: 100
+      };
 
-  beforeEach(() => {
-    mockImage = {
-      onload: null as any,
-      width: 100,
-      height: 100,
-    } as HTMLImageElement;
+      stoneHandler.createStones(mockImage);
+      mockImage.onload?.(new Event('load'));
+
+      expect(stoneHandler.foilStones.length).toBe(foilStones.length);
+    });
+
+    it('should not duplicate positions after shuffling', () => {
+      const positions = [[0,0], [1,1], [2,2]];
+      stoneHandler.stonePos = positions;
+      
+      jest.spyOn(stoneHandler as any, 'getFoilStones').mockReturnValue(['A', 'B', 'C']);
+      
+      const mockImage = {
+        onload: null as any,
+        width: 100,
+        height: 100
+      };
+
+      stoneHandler.createStones(mockImage);
+      mockImage.onload?.(new Event('load'));
+
+      const usedPositions = new Set();
+      stoneHandler.foilStones.forEach(stone => {
+        const posKey = `${stone.x},${stone.y}`;
+        expect(usedPositions.has(posKey)).toBeFalsy();
+        usedPositions.add(posKey);
+      });
+    });
   });
-
-  it('should maintain the same number of foilStones as foilStone data after shuffling', () => {
-    const positions = [[0, 0], [1, 1], [2, 2], [3, 3], [4, 4]];
-    stoneHandler.stonePos = positions;
-
-    const foilStones = ['A', 'B', 'C', 'D', 'E'];
-    jest.spyOn(stoneHandler as any, 'getFoilStones').mockReturnValue(foilStones);
-
-    stoneHandler.createStones(mockImage);
-    mockImage.onload?.(new Event('load'));
-
-    expect(stoneHandler.foilStones.length).toBe(foilStones.length);
-  });
-
-  it('should assign unique positions to each foil stone after shuffling', () => {
-    const positions = [[0, 0], [1, 1], [2, 2]];
-    stoneHandler.stonePos = positions;
-
-    const foilStones = ['A', 'B', 'C'];
-    jest.spyOn(stoneHandler as any, 'getFoilStones').mockReturnValue(foilStones);
-
-    stoneHandler.createStones(mockImage);
-    mockImage.onload?.(new Event('load'));
-
-    const usedPositions = new Set<string>();
-    for (const stone of stoneHandler.foilStones) {
-      const posKey = `${stone.x},${stone.y}`;
-      expect(usedPositions.has(posKey)).toBe(false);
-      usedPositions.add(posKey);
-    }
-
-    // Confirm total positions match
-    expect(usedPositions.size).toBe(foilStones.length);
-  });
-});
-
 
   describe('Performance Improvements', () => {
     it('should skip disposed stones in draw loop', () => {
