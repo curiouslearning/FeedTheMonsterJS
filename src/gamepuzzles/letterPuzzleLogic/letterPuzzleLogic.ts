@@ -25,16 +25,8 @@ export default class LetterPuzzleLogic extends BasePuzzleLogic {
    * @returns string - The correct target letter
    */
   override getCorrectTargetStone(): string {
-    // For LetterOnly and LetterInWord puzzles, the target is a single letter
-    // In the case of LetterInWord, the prompt text might be a word, but we're
-    // only interested in a single letter at a time
-    if (this.getPuzzleType() === 'LetterOnly') {
-      // For LetterOnly, the target is directly in the targetStones array
-      return this.levelData.puzzles[this.puzzleNumber]?.targetStones[0] || '';
-    } else {
-      // For LetterInWord, we need to extract the current letter from the prompt text
-      return this.getTargetText();
-    }
+    // For both LetterOnly and LetterInWord, the target letter is in targetStones[0]
+    return this.levelData.puzzles[this.puzzleNumber]?.targetStones[0];
   }
 
   /**
