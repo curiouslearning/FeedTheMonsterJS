@@ -62,7 +62,8 @@ var config = {
       '@feedbackText': path.resolve(__dirname, 'src/components/feedback-text/'),
       '@gamepuzzles': path.resolve(__dirname, 'src/gamepuzzles/'),
       '@gameStateService': path.resolve(__dirname, 'src/gameStateService/'),
-      '@gameSettingsService': path.resolve(__dirname, 'src/gameSettingsService/')
+      '@gameSettingsService': path.resolve(__dirname, 'src/gameSettingsService/'),
+      '@tutorials': path.resolve(__dirname, 'src/tutorials/')
     },
     extensions: ['.tsx', '.ts', '.js', '.json', '.css', '.sh', '.babelrc', '.eslintignore', '.gitignore', '.d'],
   },

@@ -1,5 +1,5 @@
 import { font } from "@common";
-import { TimerTicking, Tutorial } from "@components";
+import { TimerTicking } from "@components";
 import gameSettingsService from '@gameSettingsService';
 
 /**
@@ -20,7 +20,6 @@ export class StoneConfig {
     public imageCenterOffsetX: number;
     public imageCenterOffsetY: number;
     public context: CanvasRenderingContext2D;
-    public tutorialInstance: Tutorial;
     public timerTickingInstance: TimerTicking;
     public frame: number = 0;
     public isDisposed: boolean = false;
@@ -28,14 +27,13 @@ export class StoneConfig {
     private animationStartTime: number = 0;
     private animationDuration: number = 1500; // 1.5 second animation
     public scale = gameSettingsService.getDevicePixelRatioValue();
-    constructor(context, canvasWidth, canvasHeight, stoneLetter, xPos, yPos, img, timerTickingInstance, tutorialInstance?) {
+    constructor(context, canvasWidth, canvasHeight, stoneLetter, xPos, yPos, img, timerTickingInstance) {
         this.x = xPos;
         this.y = yPos;
         this.origx = xPos;
         this.origy = yPos;
         this.canWidth = canvasWidth;
         this.canHeight = canvasHeight;
-        this.tutorialInstance = tutorialInstance;
         this.text = stoneLetter;
         this.img = img;
         this.context = context;
@@ -98,7 +96,7 @@ export class StoneConfig {
      * - Uses time-based animation for smooth movement
      * - Only applies effects when necessary
      */
-    draw(deltaTime: number, shouldResize: boolean = false) {
+    draw(shouldResize: boolean = false) {
         if (this.isDisposed || !this.img || !this.context) return;
 
         // Update animation based on actual time elapsed
@@ -132,10 +130,6 @@ export class StoneConfig {
         this.context.font = this.textFontSize + `px ${font}, monospace`;
         this.context.textAlign = "center";
         this.context.fillText(this.text, this.getX(), this.getY());
-
-        if (this.tutorialInstance && this.frame >= 100) {
-            this.tutorialInstance.draw(deltaTime, this.img, this.imageSize);
-        }
     }
 
     /**
@@ -146,7 +140,6 @@ export class StoneConfig {
         this.isDisposed = true;
         this.img = null;
         this.context = null;
-        this.tutorialInstance = null;
         this.timerTickingInstance = null;
         this.frame = 0;
     }
