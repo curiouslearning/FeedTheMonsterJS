@@ -1,6 +1,6 @@
 import { StoneConfig, VISIBILITY_CHANGE, Utils } from '@common'
 import { EventManager } from "@events";
-import { Tutorial, AudioPlayer, TimerTicking } from "@components"
+import { AudioPlayer, TimerTicking } from "@components"
 import { GameScore } from "@data";
 import {
   ASSETS_PATH_STONE_PINK_BG,
@@ -32,7 +32,6 @@ export default class StoneHandler extends EventManager {
   public puzzleStartTime: Date;
   public showTutorial: boolean =
     GameScore.getDatafromStorage().length == undefined ? true : false;
-  public tutorial: Tutorial;
   correctTargetStone: string;
   stonebg: HTMLImageElement;
   public audioPlayer: AudioPlayer;
@@ -63,12 +62,6 @@ export default class StoneHandler extends EventManager {
     this.stonePos = this.getRandomizedStonePositions(canvas.width, canvas.height)
     this.feedbackAudioHandler = new FeedbackAudioHandler(feedbackAudios);
     this.puzzleStartTime = new Date();
-    this.tutorial = new Tutorial(
-      context,
-      canvas.width,
-      canvas.height,
-      puzzleNumber
-    );
     this.stonebg = new Image();
     this.stonebg.src = ASSETS_PATH_STONE_PINK_BG;
     this.audioPlayer = new AudioPlayer();
@@ -132,12 +125,20 @@ export default class StoneHandler extends EventManager {
         positions[i][0],
         positions[i][1],
         img,
-        this.timerTickingInstance,
-        null // tutorial instance is optional
+        this.timerTickingInstance
       );
 
       // Initialize stone
       stone.initialize();
+
+      //Publish stone details, image and level data for stone tutorial only at the first puzzle segment.
+      if (foilStones[i] == this.correctTargetStone && this.currentPuzzleData.segmentNumber === 0) {
+        gameStateService.publish(gameStateService.EVENTS.CORRECT_STONE_POSITION, {
+          stonePosVal: positions[i],
+          img,
+          levelData: this.levelData
+        });
+      }
 
       // Store in pool for potential reuse
       stonePool.set(foilStones[i], stone);
@@ -161,7 +162,7 @@ export default class StoneHandler extends EventManager {
       if (stone.frame < 100) {
         isAnimationComplete = false;
       }
-      stone.draw(deltaTime);
+      stone.draw();
     }
 
     // Update timer only once animation is complete and game is not paused
@@ -178,7 +179,6 @@ export default class StoneHandler extends EventManager {
     for (let i = 0; i < this.foilStones.length; i++) {
       if (shouldHideStoneChecker(i)) {
         this.foilStones[i].draw(
-          deltaTime,
           Object.keys(groupedLetters).length > 1 && groupedLetters[i] !== undefined
         );
       }
@@ -200,7 +200,6 @@ export default class StoneHandler extends EventManager {
   }
   public handleLoadPuzzle(event) {
     this.disposeStones();
-    this.tutorial.setPuzzleNumber(event.detail.counter);
     this.puzzleNumber = event.detail.counter;
     this.setTargetStone(this.puzzleNumber);
     this.createStones(this.stonebg);
