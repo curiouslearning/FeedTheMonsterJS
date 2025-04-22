@@ -75,7 +75,8 @@ describe('StoneHandler - Latest Optimizations', () => {
       save: jest.fn(),
       restore: jest.fn(),
       translate: jest.fn(),
-      rotate: jest.fn()
+      rotate: jest.fn(),
+      scale: jest.fn()
     } as unknown as CanvasRenderingContext2D;
 
     mockCanvas = {
