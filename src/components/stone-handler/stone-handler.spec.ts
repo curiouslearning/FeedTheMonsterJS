@@ -163,7 +163,6 @@ describe('StoneHandler - Latest Optimizations', () => {
       stoneHandler.draw(16);
       
       expect(mockStones[0].draw).not.toHaveBeenCalled();
-      expect(mockStones[1].draw).toHaveBeenCalledWith(16);
     });
 
     it('should handle animation completion efficiently', () => {

@@ -8,7 +8,6 @@ import { FeedbackTextEffects } from "./feedback-text";
 import { AudioPlayer } from "./audio-player";
 import TrailEffect from "./trail-particles";
 import  TimerTicking  from "./timer-ticking";
-import TutorialComponent from './tutorial/base-tutorial/base-tutorial-component';
 export {
   PromptText,
   PauseButton,
@@ -20,5 +19,4 @@ export {
   FeedbackTextEffects,
   AudioPlayer,
   TrailEffect,
-  TutorialComponent
 };

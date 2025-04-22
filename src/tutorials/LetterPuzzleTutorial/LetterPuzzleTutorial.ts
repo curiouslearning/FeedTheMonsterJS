@@ -1,4 +1,4 @@
-import { TutorialComponent } from '@components/index';
+import TutorialComponent from '../base-tutorial/base-tutorial-component';
 import gameStateService from '@gameStateService';
 
 export default class LetterPuzzleTutorial extends TutorialComponent {
@@ -17,15 +17,14 @@ export default class LetterPuzzleTutorial extends TutorialComponent {
       gameStateService.EVENTS.CORRECT_STONE_POSITION,
       (stoneDataImgAndPos: { stonePosVal: number[], img: any, levelData: any }) => {
         const { stonePosVal, img, levelData } = stoneDataImgAndPos;
-        const gameLevel = typeof levelData?.levelNumber === 'string' ? parseInt(levelData?.levelNumber) : levelData?.levelNumber;
+        this.gameLevel = typeof levelData?.levelNumber === 'string' ? parseInt(levelData?.levelNumber) : levelData?.levelNumber;
 
-        if (gameLevel === 0) {
+        if (this.gameLevel === 0) {
           this.stonePosDetailsType = this.updateTargetStonePositions(stonePosVal, this.width, this.height);
           this.stoneImg = img;
           this.animateImagePosVal = this.stonePosDetailsType.animateImagePosVal;
           this.x = this.animateImagePosVal.x;
           this.y = this.animateImagePosVal.y;
-          this.gameLevel = gameLevel;
         }
     });
   }

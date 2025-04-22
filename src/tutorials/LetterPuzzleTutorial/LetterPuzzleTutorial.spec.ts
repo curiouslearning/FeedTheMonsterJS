@@ -1,6 +1,19 @@
 import LetterPuzzleTutorial from './LetterPuzzleTutorial';
 import gameStateService from '@gameStateService';
 
+// Mock TutorialComponent base class
+jest.mock('@components', () => ({
+  TutorialComponent: class {
+    quickStartTutorial = jest.fn();
+    drawPointer = jest.fn();
+    drawRipple = jest.fn();
+    setGameHasStarted = jest.fn();
+    setGameHasEndedFlag = jest.fn();
+    updateTargetStonePositions = jest.fn(() => mockStonePosDetails);
+    animateStoneDrag = jest.fn();
+  }
+}));
+
 // Mock return value for updateTargetStonePositions
 const mockAnimateImagePosVal = {
   x: 10,
@@ -19,13 +32,6 @@ const mockStonePosDetails = {
   endY: 50,
   monsterStoneDifference: 100
 };
-
-// Mock TutorialComponent base class
-jest.mock('@components/index', () => ({
-  TutorialComponent: class {
-    updateTargetStonePositions = jest.fn(() => mockStonePosDetails);
-  }
-}));
 
 // Mock gameStateService
 jest.mock('@gameStateService', () => ({

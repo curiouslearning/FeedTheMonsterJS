@@ -65,19 +65,6 @@ jest.mock('@components', () => {
       pickedStone: null,
       playDragAudioIfNecessary: jest.fn()
     })),
-    Tutorial: jest.fn().mockImplementation(() => ({
-      clickOnMonsterTutorial: jest.fn(),
-      draw: jest.fn(),
-      dispose: jest.fn(),
-      initialize: jest.fn(),
-      width: 800,
-      height: 600,
-      context: {} as CanvasRenderingContext2D,
-      tutorialImg: new Image(),
-      play: jest.fn(),
-      stop: jest.fn(),
-      setPlayMonsterClickAnimation: jest.fn()
-    })),
     PromptText: jest.fn().mockImplementation(() => ({
       draw: jest.fn(),
       onClick: jest.fn(),
