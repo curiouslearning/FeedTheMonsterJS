@@ -15,6 +15,7 @@ export class GameStateService extends PubSub {
         GAMEPLAY_DATA_EVENT: string;
         GAME_PAUSE_STATUS_EVENT: string;
         LEVEL_END_DATA_EVENT: string;
+        CORRECT_STONE_POSITION: string;
     }
     public data: null | DataModal;
     public isGamePaused: boolean;
@@ -70,7 +71,8 @@ export class GameStateService extends PubSub {
             SWITCH_SCENE_EVENT: 'SWITCH_SCENE_EVENT',
             GAMEPLAY_DATA_EVENT: 'GAMEPLAY_DATA_EVENT',
             GAME_PAUSE_STATUS_EVENT: 'GAME_PAUSE_STATUS_EVENT',
-            LEVEL_END_DATA_EVENT: 'LEVEL_END_DATA_EVENT' // To move this event on DOM Event once created.
+            LEVEL_END_DATA_EVENT: 'LEVEL_END_DATA_EVENT', // To move this event on DOM Event once created.
+            CORRECT_STONE_POSITION: 'CORRECT_STONE_POSITION'  //Stone image, position and level data for tutorial.
         };
         this.data = null;
         /* Gameplay States */
