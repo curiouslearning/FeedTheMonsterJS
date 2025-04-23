@@ -22,7 +22,7 @@ jest.mock('@components', () => {
       stopAllAudios: jest.fn(),
       playAudio: jest.fn(),
       playPromptAudio: jest.fn(),
-      playFeedbackAudios: jest.fn(),
+      playAudioQueue: jest.fn(),
       stopFeedbackAudio: jest.fn(),
       audioContext: {} as AudioContext,
       sourceNode: {} as AudioBufferSourceNode,
@@ -327,7 +327,7 @@ describe('GameplayScene with BasePopupComponent', () => {
       expect(gameplayScene.audioPlayer).toBeDefined();
       expect(gameplayScene.audioPlayer.stopAllAudios).toBeDefined();
       expect(gameplayScene.audioPlayer.playPromptAudio).toBeDefined();
-      expect(gameplayScene.audioPlayer.playFeedbackAudios).toBeDefined();
+      expect(gameplayScene.audioPlayer.playAudioQueue).toBeDefined();
     });
 
     it('should properly set up game state subscriptions', () => {

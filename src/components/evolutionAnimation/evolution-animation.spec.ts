@@ -8,7 +8,7 @@ const mockDestroy = jest.fn();
 const mockDispose = jest.fn();
 const mockStopAllAudios = jest.fn();
 const mockPreloadGameAudio = jest.fn().mockResolvedValue(undefined);
-const mockPlayFeedbackAudios = jest.fn();
+const mockPlayAudioQueue = jest.fn();
 
 // Mock gameStateService
 jest.mock('@gameStateService', () => ({
@@ -33,7 +33,7 @@ jest.mock('@components/audio-player', () => ({
   AudioPlayer: jest.fn().mockImplementation(() => ({
     stopAllAudios: mockStopAllAudios,
     preloadGameAudio: mockPreloadGameAudio,
-    playFeedbackAudios: mockPlayFeedbackAudios,
+    playAudioQueue: mockPlayAudioQueue,
     playAudio: jest.fn(),
     playButtonClickSound: jest.fn()
   }))
@@ -236,8 +236,8 @@ describe('EvolutionAnimationComponent', () => {
     // Wait for the Promise.all to resolve
     await Promise.resolve();
     
-    // Check if playFeedbackAudios was called
-    expect(mockPlayFeedbackAudios).toHaveBeenCalled();
+    // Check if playAudioQueue was called
+    expect(mockPlayAudioQueue).toHaveBeenCalled();
     
     // Restore original Promise.all
     Promise.all = originalPromiseAll;
