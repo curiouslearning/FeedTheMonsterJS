@@ -467,7 +467,7 @@ export default class StoneHandler extends EventManager {
       [[setCoordinateFactor(3, 2.4), 2.1], 1.42],  //Right stone 3
     ];
 
-    // Separate coordinate factors for egg monster due to different dimensions
+    // Separate coordinate factors for egg monster due to different dimensionse
     const eggMonsterCoordinateFactors = [
       [6.2, 1.8], //Left stone 2nd - upper
       [7.5, 1.5], //Left stone in 3rd
