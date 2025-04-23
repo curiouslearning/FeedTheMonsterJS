@@ -65,19 +65,6 @@ jest.mock('@components', () => {
       pickedStone: null,
       playDragAudioIfNecessary: jest.fn()
     })),
-    Tutorial: jest.fn().mockImplementation(() => ({
-      clickOnMonsterTutorial: jest.fn(),
-      draw: jest.fn(),
-      dispose: jest.fn(),
-      initialize: jest.fn(),
-      width: 800,
-      height: 600,
-      context: {} as CanvasRenderingContext2D,
-      tutorialImg: new Image(),
-      play: jest.fn(),
-      stop: jest.fn(),
-      setPlayMonsterClickAnimation: jest.fn()
-    })),
     PromptText: jest.fn().mockImplementation(() => ({
       draw: jest.fn(),
       onClick: jest.fn(),
@@ -315,12 +302,6 @@ describe('GameplayScene with BasePopupComponent', () => {
       expect(gameplayScene.stoneHandler).toBeDefined();
       expect(gameplayScene.stoneHandler.context).toBeDefined();
       expect(gameplayScene.stoneHandler.canvas).toBeDefined();
-
-      // Verify Tutorial initialization
-      expect(gameplayScene.tutorial).toBeDefined();
-      expect(gameplayScene.tutorial.context).toBeDefined();
-      expect(gameplayScene.tutorial.width).toBe(800);
-      expect(gameplayScene.tutorial.height).toBe(600);
     });
 
     it('should initialize AudioPlayer independently', () => {
@@ -384,6 +365,9 @@ describe('GameplayScene with BasePopupComponent', () => {
       const mockPausePopup = {
         destroy: jest.fn()
       };
+      const tutorial = {
+        dispose: jest.fn()
+      }
 
       // Replace the actual components with mocks
       gameplayScene.stoneHandler = mockStoneHandler as any;
@@ -394,7 +378,7 @@ describe('GameplayScene with BasePopupComponent', () => {
       gameplayScene.promptText = mockPromptText as any;
       gameplayScene.pauseButton = mockPauseButton as any;
       gameplayScene.pausePopupComponent = mockPausePopup as any;
-
+      gameplayScene.tutorial = tutorial as any;
       // Call dispose
       gameplayScene.dispose();
 
@@ -403,6 +387,7 @@ describe('GameplayScene with BasePopupComponent', () => {
       expect(mockAudioPlayer.stopAllAudios).toHaveBeenCalled();
       expect(mockMonster.dispose).toHaveBeenCalled();
       expect(mockTrailParticles.clearTrailSubscription).toHaveBeenCalled();
+      expect(tutorial.dispose).toHaveBeenCalled();
       expect(mockLevelIndicators.dispose).toHaveBeenCalled();
       expect(mockPromptText.dispose).toHaveBeenCalled();
       expect(mockPauseButton.dispose).toHaveBeenCalled();
