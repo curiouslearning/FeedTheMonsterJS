@@ -144,4 +144,88 @@ export default class WordPuzzleLogic extends BasePuzzleLogic {
     override getCorrectTargetStone(): string {
         return this.getTargetText();
     }
+
+    /**
+     * Handles picking up a stone in a word puzzle (multi-letter/grouping logic).
+     * @param x - X coordinate
+     * @param y - Y coordinate
+     * @param stoneHandler - The stone handler instance
+     * @returns The picked stone object or null
+     */
+    override handlePickStoneUp(x: number, y: number, stoneHandler: any): any {
+        // For word puzzles, use the same logic as before but allow for multi-letter grouping if needed.
+        // This can be extended for advanced word puzzle logic as required.
+        return stoneHandler.handlePickStoneUp(x, y);
+    }
+
+    /**
+     * Handles moving a picked stone in a word puzzle (multi-letter/grouping logic).
+     * @param event - The mouse or touch event
+     * @param pickedStone - The currently picked stone
+     * @param pickedStoneObject - The original picked stone object
+     * @param stoneHandler - The stone handler instance
+     * @param sceneWidth - The width of the scene (for reset logic)
+     * @returns { pickedStone, pickedStoneObject, trailX, trailY }
+     */
+    override handleStoneMove(event: any, pickedStone: any, pickedStoneObject: any, stoneHandler: any, sceneWidth: number) {
+        // Move the stone visually
+        const newStoneCoordinates = stoneHandler.handleMovingStoneLetter(
+            pickedStone,
+            event.clientX,
+            event.clientY
+        );
+        let trailX = newStoneCoordinates.x;
+        let trailY = newStoneCoordinates.y;
+        let newPickedStone = newStoneCoordinates;
+        let newPickedStoneObject = pickedStoneObject;
+
+        // Handle hovering/grouping logic for word puzzles
+        const newStoneLetter = stoneHandler.handleHoveringToAnotherStone(
+            trailX,
+            trailY,
+            (foilStoneText, foilStoneIndex) => {
+                return this.handleCheckHoveredStone(foilStoneText, foilStoneIndex);
+            }
+        );
+
+        if (newStoneLetter) {
+            this.setPickUpLetter(
+                newStoneLetter?.text,
+                newStoneLetter?.foilStoneIndex
+            );
+
+            newPickedStone = stoneHandler.resetStonePosition(
+                sceneWidth,
+                newPickedStone,
+                newPickedStoneObject
+            );
+
+            // After resetting its original position replace it with the new letter.
+            newPickedStoneObject = newStoneLetter;
+            newPickedStone = newStoneLetter;
+        }
+
+        return {
+            pickedStone: newPickedStone,
+            pickedStoneObject: newPickedStoneObject,
+            trailX,
+            trailY
+        };
+    }
+
+    /**
+     * Handles drawing stones for word puzzles (multi-letter/grouping logic).
+     * @param deltaTime - Animation delta time
+     * @param stoneHandler - The stone handler instance
+     */
+    override drawStones(deltaTime: number, stoneHandler: any): void {
+        const { groupedObj } = this.getValues();
+        stoneHandler.drawWordPuzzleLetters(
+            deltaTime,
+            (foilStoneIndex) => {
+                return this.validateShouldHideLetter(foilStoneIndex);
+            },
+            groupedObj
+        );
+    }
 }

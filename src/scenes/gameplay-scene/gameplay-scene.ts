@@ -164,7 +164,6 @@ export class GameplayScene {
           this.resumeGame();
       }
     });
-    //this.setupBg(); //Temporary disabled to try evolution background.
     this.setupMonsterPhaseBg();
   }
 
@@ -299,10 +298,7 @@ export class GameplayScene {
           break;
       }
     } else {
-      /*
-        Note: TO DO: Should use stone-handler.ts method resetStonePosition.
-      */
-
+      // Use stone-handler.ts method resetStonePosition instead of manual reset
       if (
         this.pickedStone &&
         this.pickedStoneObject &&
@@ -310,15 +306,15 @@ export class GameplayScene {
         typeof this.pickedStoneObject.origx === "number" &&
         typeof this.pickedStoneObject.origy === "number"
       ) {
-        //Resets stones to original position after dragging.
-        this.pickedStone.x = this.pickedStoneObject.origx;
-        this.pickedStone.y = this.pickedStoneObject.origy;
+        this.stoneHandler.resetStonePosition(
+          this.width,
+          this.pickedStone,
+          this.pickedStoneObject
+        );
         // Trigger animations
         this.triggerMonsterAnimation('isMouthClosed');
         this.triggerMonsterAnimation('backToIdle');
-
       }
-
     }
     this.pickedStone = null;
     this.puzzleLogic.clearPickedUp();
@@ -338,22 +334,16 @@ export class GameplayScene {
     const x = event.clientX - rect.left;
     const y = event.clientY - rect.top;
 
-    if (!this.puzzleLogic.checkIsWordPuzzle()) {
-      /*To Do: Move all logic relating to stone handling including updating its coordnates to stone-handler.ts
-        Note: Will have to eventually remove this and use the handlePickStoneUp in stone-handler.ts
-        Will leave this for now to avoid affecting Letter Only puzzles with Word play puzzles implementation of multi-letter feature.
-      */
-      for (let sc of this.stoneHandler.foilStones) {
-        const distance = Math.sqrt((x - sc.x) ** 2 + (y - sc.y) ** 2);
-        if (distance <= 40) {
-          this.pickedStoneObject = sc;
-          this.pickedStone = sc;
-          this.stoneHandler.playDragAudioIfNecessary(sc);
-          break;
-        }
+    // Unified: Always delegate to puzzleLogic for stone picking
+    const picked = this.puzzleLogic.handlePickStoneUp(x, y, this.stoneHandler);
+    if (picked) {
+      this.pickedStoneObject = picked;
+      this.pickedStone = picked;
+      this.stoneHandler.playDragAudioIfNecessary(picked);
+      // Restore grouping/merging for word puzzles
+      if (this.puzzleLogic.checkIsWordPuzzle()) {
+        this.puzzleLogic.setPickUpLetter(picked?.text, picked?.foilStoneIndex);
       }
-    } else {
-      this.setPickedUp(x, y);
     }
 
     gameSettingsService.publish(gameSettingsService.EVENTS.GAME_TRAIL_EFFECT_TOGGLE_EVENT, true);
@@ -364,14 +354,16 @@ export class GameplayScene {
       return; // Prevent dragging if the stone is animating
     }
 
-    const stoneLetter = this.stoneHandler.handlePickStoneUp(x, y);
+    // Unified: Always delegate to puzzleLogic for stone picking
+    const stoneLetter = this.puzzleLogic.handlePickStoneUp(x, y, this.stoneHandler);
 
     if (stoneLetter) {
       this.pickedStoneObject = stoneLetter;
       this.pickedStone = stoneLetter;
       this.stoneHandler.playDragAudioIfNecessary(stoneLetter);
 
-      if (this.levelData?.levelMeta?.levelType === 'Word') {
+      // Puzzle-specific logic for word puzzles
+      if (this.puzzleLogic.checkIsWordPuzzle()) {
         this.puzzleLogic.setPickUpLetter(
           stoneLetter?.text,
           stoneLetter?.foilStoneIndex
@@ -389,62 +381,21 @@ export class GameplayScene {
     let trailY = event.clientY
 
     if (this.pickedStone) {
-      if (!this.puzzleLogic.checkIsWordPuzzle()) {
-        /*To Do: Move all logic relating to stone handling including updating its coordnates to stone-handler.ts
-         Note: Will have to eventually remove this and use the handleMovingStoneLetter in stone-handler.ts
-         Will leave this for now to avoid affecting Letter Only puzzles with Word play puzzles implementation of multi-letter feature.
-       */
-        let rect = this.canvas.getBoundingClientRect();
-        const x = event.clientX - rect.left;
-        const y = event.clientY - rect.top;
-        this.pickedStone.x = x;
-        this.pickedStone.y = y;
-        trailX = x;
-        trailY = y;
-      } else {
-        const newStoneCoordinates = this.stoneHandler.handleMovingStoneLetter(
-          this.pickedStone,
-          event.clientX,
-          event.clientY
-        );
-        this.pickedStone = newStoneCoordinates;
-        trailX = newStoneCoordinates.x;
-        trailY = newStoneCoordinates.y;
-
-        if (this.puzzleLogic.checkIsWordPuzzle()) {
-          const newStoneLetter = this.stoneHandler.handleHoveringToAnotherStone(
-            trailX,
-            trailY,
-            (foilStoneText, foilStoneIndex) => {
-              return this.puzzleLogic.handleCheckHoveredStone(foilStoneText, foilStoneIndex);
-            }
-          );
-
-          if (newStoneLetter) {
-            this.puzzleLogic.setPickUpLetter(
-              newStoneLetter?.text,
-              newStoneLetter?.foilStoneIndex
-            );
-
-            this.pickedStone = this.stoneHandler.resetStonePosition(
-              this.width,
-              this.pickedStone,
-              this.pickedStoneObject
-            );
-
-            //After resetting its original position replace it with the new letter.
-            this.pickedStoneObject = newStoneLetter;
-            this.pickedStone = newStoneLetter;
-          }
-        }
-      }
+      const moveResult = this.puzzleLogic.handleStoneMove(
+        event,
+        this.pickedStone,
+        this.pickedStoneObject,
+        this.stoneHandler,
+        this.width
+      );
+      this.pickedStone = moveResult.pickedStone;
+      this.pickedStoneObject = moveResult.pickedStoneObject;
+      trailX = moveResult.trailX;
+      trailY = moveResult.trailY;
       // Trigger open mouth animation
       this.triggerMonsterAnimation('isMouthOpen');
     }
-    this.trailParticles?.addTrailParticlesOnMove(
-      trailX,
-      trailY
-    );
+    this.trailParticles?.addTrailParticlesOnMove(trailX, trailY);
   };
 
   handleMouseClick = (event) => {
@@ -512,18 +463,7 @@ export class GameplayScene {
   }
 
   private handleStoneLetterDrawing(deltaTime) {
-    if (this.puzzleLogic.checkIsWordPuzzle()) {
-      const { groupedObj } = this.puzzleLogic.getValues();
-      this.stoneHandler.drawWordPuzzleLetters(
-        deltaTime,
-        (foilStoneIndex) => {
-          return this.puzzleLogic.validateShouldHideLetter(foilStoneIndex);
-        },
-        groupedObj
-      );
-    } else {
-      this.stoneHandler.draw(deltaTime);
-    }
+    this.puzzleLogic.drawStones(deltaTime, this.stoneHandler);
   }
 
   addEventListeners() {

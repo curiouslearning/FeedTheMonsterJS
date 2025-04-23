@@ -78,4 +78,16 @@ export default class LetterPuzzleLogic extends BasePuzzleLogic {
     super.updatePuzzleLevel(puzzleNumber);
     this.clearCurrentLetter();
   }
+
+  /**
+   * Handles picking up a stone in a letter puzzle.
+   * @param x - X coordinate
+   * @param y - Y coordinate
+   * @param stoneHandler - The stone handler instance
+   * @returns The picked stone object or null
+   */
+  override handlePickStoneUp(x: number, y: number, stoneHandler: any): any {
+    // For letter puzzles, use the default behavior
+    return stoneHandler.handlePickStoneUp(x, y);
+  }
 }

@@ -161,4 +161,50 @@ export default abstract class BasePuzzleLogic {
    * @returns boolean indicating if the puzzle is completed
    */
   abstract validatePuzzleCompletion(): boolean;
+
+  /**
+   * Handles picking up a stone. Should be overridden by subclasses for puzzle-specific logic.
+   * @param x - X coordinate
+   * @param y - Y coordinate
+   * @param stoneHandler - The stone handler instance
+   * @returns The picked stone object or null
+   */
+  handlePickStoneUp(x: number, y: number, stoneHandler: any): any {
+    // Default implementation for non-word puzzles (LetterOnly/LetterInWord)
+    return stoneHandler.handlePickStoneUp(x, y);
+  }
+
+  /**
+   * Handles moving a picked stone. Should be overridden by subclasses for puzzle-specific logic.
+   * @param event - The mouse or touch event
+   * @param pickedStone - The currently picked stone
+   * @param pickedStoneObject - The original picked stone object
+   * @param stoneHandler - The stone handler instance
+   * @param sceneWidth - The width of the scene (for reset logic)
+   * @returns { pickedStone, pickedStoneObject, trailX, trailY }
+   */
+  handleStoneMove(event: any, pickedStone: any, pickedStoneObject: any, stoneHandler: any, sceneWidth: number) {
+    // Default: Letter puzzles - update coordinates directly
+    let rect = stoneHandler.canvas.getBoundingClientRect();
+    const x = event.clientX - rect.left;
+    const y = event.clientY - rect.top;
+    pickedStone.x = x;
+    pickedStone.y = y;
+    return {
+      pickedStone,
+      pickedStoneObject,
+      trailX: x,
+      trailY: y
+    };
+  }
+
+  /**
+   * Handles drawing stones for the puzzle. Override in subclasses for custom drawing logic.
+   * @param deltaTime - Animation delta time
+   * @param stoneHandler - The stone handler instance
+   */
+  drawStones(deltaTime: number, stoneHandler: any): void {
+    // Default: Letter puzzles, just call stoneHandler.draw
+    stoneHandler.draw(deltaTime);
+  }
 }
