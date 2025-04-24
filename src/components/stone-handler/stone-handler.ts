@@ -38,6 +38,8 @@ export default class StoneHandler extends EventManager {
   public feedbackAudioHandler: FeedbackAudioHandler;
   public timerTickingInstance: TimerTicking;
   isGamePaused: boolean = false;
+  public originalWidth: any;
+  public originalHeight:any;
   private unsubscribeEvent: () => void;
 
   constructor(
@@ -56,6 +58,8 @@ export default class StoneHandler extends EventManager {
     this.offsetCoordinateValue = 32; //Default value used to offset stone coordinates.
     this.context = context;
     this.canvas = canvas;
+    this.originalWidth = this.canvas.width;
+    this.originalHeight = this.canvas.height;
     this.puzzleNumber = puzzleNumber;
     this.levelData = levelData;
     this.setTargetStone(this.puzzleNumber);
@@ -115,6 +119,7 @@ export default class StoneHandler extends EventManager {
     this.canvas.width = this.canvas.clientWidth * scale;
     this.canvas.height = this.canvas.clientHeight * scale;
     this.context.scale(scale, scale);
+    
     for (let i = 0; i < foilStones.length; i++) {
       // Create new stone with all required parameters
       const stone = new StoneConfig(
@@ -206,6 +211,8 @@ export default class StoneHandler extends EventManager {
   }
 
   public dispose() {
+    this.canvas.width = this.originalWidth;
+    this.canvas.height = this.originalHeight;
     this.unsubscribeEvent();
     document.removeEventListener(
       VISIBILITY_CHANGE,
