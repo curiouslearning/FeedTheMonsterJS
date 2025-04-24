@@ -57,7 +57,7 @@ export default class FeedbackAudioHandler {
    * Plays audio for a partially correct answer (e.g., correct letter in a word puzzle)
    */
   private playPartialCorrectFeedbackSound(): void {
-    this.audioPlayer.playFeedbackAudios(
+    this.audioPlayer.playAudioQueue(
       false,
       AUDIO_PATH_EATS,
       AUDIO_PATH_CHEERING_FUNC(2)
@@ -68,13 +68,13 @@ export default class FeedbackAudioHandler {
    * Plays audio for an incorrect answer
    */
   private playIncorrectFeedbackSound(): void {
-    this.audioPlayer.playFeedbackAudios(
+    this.audioPlayer.playAudioQueue(
       false,
       AUDIO_PATH_EATS
     );
     
     setTimeout(() => {
-      this.audioPlayer.playFeedbackAudios(
+      this.audioPlayer.playAudioQueue(
         false,
         AUDIO_PATH_MONSTER_SPIT,
         Math.round(Math.random()) > 0 ? AUDIO_PATH_MONSTER_DISSAPOINTED : null
@@ -92,7 +92,7 @@ export default class FeedbackAudioHandler {
       const randomNumber = Utils.getRandomNumber(1, 3).toString();
       await Promise.allSettled([
         this.correctStoneAudio.play(),
-        this.audioPlayer.playFeedbackAudios(
+        this.audioPlayer.playAudioQueue(
           false,
           AUDIO_PATH_EATS,
           AUDIO_PATH_CHEERING_FUNC(randomNumber),
