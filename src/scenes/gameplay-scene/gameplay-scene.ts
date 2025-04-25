@@ -7,8 +7,8 @@ import {
   BackgroundHtmlGenerator,
   FeedbackTextEffects,
   AudioPlayer,
-  TrailEffect,
-  PhasesBackground
+  PhasesBackground,
+  TrailEffectsHandler
 } from "@components";
 import { LetterPuzzleTutorial } from '@tutorials';
 import {
@@ -87,7 +87,7 @@ export class GameplayScene {
   startTime: number;
   puzzleTime: number;
   isDisposing: boolean;
-  trailParticles: any;
+  trailEffectHandler: TrailEffectsHandler;
   wordPuzzleLogic: any;
   public riveMonsterElement: HTMLCanvasElement;
   public gameControl: HTMLCanvasElement;
@@ -97,6 +97,7 @@ export class GameplayScene {
   public monsterPhaseNumber: 0 | 1 | 2;
   private backgroundGenerator: PhasesBackground;
   public loadPuzzleDelay: 3000 | 4500;
+
 
   // Define animation delays as an array where index 0 = phase 0, index 1 = phase 1, index 2 = phase 2
   private animationDelays = [
@@ -173,7 +174,7 @@ export class GameplayScene {
   }
 
   private initializeGameComponents(gamePlayData) {
-    this.trailParticles = new TrailEffect(this.canvas);
+    this.trailEffectHandler = new TrailEffectsHandler(this.canvas)
     this.pauseButton = new PauseButton();
     this.pauseButton.onClick(() => {
       gameStateService.publish(gameStateService.EVENTS.GAME_PAUSE_STATUS_EVENT, true);
@@ -315,10 +316,6 @@ export class GameplayScene {
     }
     this.pickedStone = null;
     this.wordPuzzleLogic.clearPickedUp();
-    gameSettingsService.publish(
-      gameSettingsService.EVENTS.GAME_TRAIL_EFFECT_TOGGLE_EVENT,
-      false
-    );
   };
 
   // Event to identify mouse moved down on the canvas
@@ -348,8 +345,6 @@ export class GameplayScene {
     } else {
       this.setPickedUp(x, y);
     }
-
-    gameSettingsService.publish(gameSettingsService.EVENTS.GAME_TRAIL_EFFECT_TOGGLE_EVENT, true);
   };
 
   setPickedUp(x, y) {
@@ -434,10 +429,6 @@ export class GameplayScene {
       // Trigger open mouth animation
       this.triggerMonsterAnimation('isMouthOpen');
     }
-    this.trailParticles?.addTrailParticlesOnMove(
-      trailX,
-      trailY
-    );
   };
 
   handleMouseClick = (event) => {
@@ -465,19 +456,16 @@ export class GameplayScene {
     }
     const touch = event.touches[0];
     this.handleMouseDown({ clientX: touch.clientX, clientY: touch.clientY });
-    this.trailParticles?.resetParticles();
   };
 
   handleTouchMove = (event) => {
     const touch = event.touches[0];
     this.handleMouseMove({ clientX: touch.clientX, clientY: touch.clientY });
-    this.trailParticles?.addTrailParticlesOnMove(touch.clientX, touch.clientY);
   };
 
   handleTouchEnd = (event) => {
     const touch = event.changedTouches[0];
     this.handleMouseUp({ clientX: touch.clientX, clientY: touch.clientY });
-    this.trailParticles?.resetParticles();
   };
 
   draw(deltaTime: number) {
@@ -490,7 +478,7 @@ export class GameplayScene {
       }
     }
     // The promptText.draw method has been removed as it's now handled by HTML/CSS
-    this.trailParticles?.draw();
+    this.trailEffectHandler?.draw();
     if (this.isPauseButtonClicked && this.isGameStarted) {
       this.handleStoneLetterDrawing(deltaTime);
     }
@@ -656,9 +644,8 @@ export class GameplayScene {
       this.timerTicking = null;
     }
 
-    if (this.trailParticles) {
-      this.trailParticles.clearTrailSubscription();
-      this.trailParticles = null;
+    if (this.trailEffectHandler) {
+      this.trailEffectHandler.dispose();
     }
 
     if (this.tutorial) {

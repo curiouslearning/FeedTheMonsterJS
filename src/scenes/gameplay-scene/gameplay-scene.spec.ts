@@ -30,11 +30,9 @@ jest.mock('@components', () => {
       promptAudioBuffer: null,
       playBackgroundMusic: jest.fn()
     })),
-    TrailEffect: jest.fn().mockImplementation(() => ({
-      addTrailParticlesOnMove: jest.fn(),
-      clearTrailSubscription: jest.fn(),
+    TrailEffectsHandler: jest.fn().mockImplementation(() => ({
+      dispose: jest.fn(),
       draw: jest.fn(),
-      resetParticles: jest.fn()
     })),
     PauseButton: jest.fn().mockImplementation(() => ({
       onClick: jest.fn(),
@@ -350,8 +348,8 @@ describe('GameplayScene with BasePopupComponent', () => {
         checkHitboxDistance: jest.fn(),
         onClick: jest.fn()
       };
-      const mockTrailParticles = {
-        clearTrailSubscription: jest.fn()
+      const mockTrailEffectHandler = {
+        dispose: jest.fn()
       };
       const mockLevelIndicators = {
         dispose: jest.fn()
@@ -373,7 +371,7 @@ describe('GameplayScene with BasePopupComponent', () => {
       gameplayScene.stoneHandler = mockStoneHandler as any;
       gameplayScene.audioPlayer = mockAudioPlayer as any;
       gameplayScene.monster = mockMonster as any;
-      gameplayScene.trailParticles = mockTrailParticles as any;
+      gameplayScene.trailEffectHandler = mockTrailEffectHandler as any;
       gameplayScene.levelIndicators = mockLevelIndicators as any;
       gameplayScene.promptText = mockPromptText as any;
       gameplayScene.pauseButton = mockPauseButton as any;
@@ -386,7 +384,7 @@ describe('GameplayScene with BasePopupComponent', () => {
       expect(mockStoneHandler.dispose).toHaveBeenCalled();
       expect(mockAudioPlayer.stopAllAudios).toHaveBeenCalled();
       expect(mockMonster.dispose).toHaveBeenCalled();
-      expect(mockTrailParticles.clearTrailSubscription).toHaveBeenCalled();
+      expect(mockTrailEffectHandler.dispose).toHaveBeenCalled();
       expect(tutorial.dispose).toHaveBeenCalled();
       expect(mockLevelIndicators.dispose).toHaveBeenCalled();
       expect(mockPromptText.dispose).toHaveBeenCalled();
