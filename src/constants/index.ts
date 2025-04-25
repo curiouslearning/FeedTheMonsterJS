@@ -62,7 +62,7 @@ export const AUDIO_URL_PRELOAD = [
 // Audios used during the Rive evolution animation.
 // The structure is designed to be easily scalable, allowing for the addition of more audio files as needed.
 export const EVOLUTION_AUDIOS = {
-  EVOL_1: ['/assets/audios/star_whoosh_and_poof.mp3'],
+  EVOL_1: ['./assets/audios/star_whoosh_and_poof.mp3'],
 }
 
 // Evolution audio paths
