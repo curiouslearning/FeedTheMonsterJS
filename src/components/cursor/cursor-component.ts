@@ -28,7 +28,7 @@ export default class CursorComponent {
  * Override this method in a subclass to handle the mouse up event.
  * This gets triggered when the MOUSEUP event is fired on `eventHandler`.
  */
-  public handleCursorMouseUp(event) { }
+  public handleCursorMouseUp(event) {}
 
   /**
  * Override this method in a subclass to handle the mouse up event.
@@ -38,34 +38,34 @@ export default class CursorComponent {
   public handleCursorMouseMove(event) {}
 
   /**
- * Override this method in a subclass to handle the mouse up event.
+ * Override this method in a subclass to handle the mouse move event.
  * This gets triggered when the MOUSEDOWN event is fired on `eventHandler`.
  */
   public handleCursorMouseDown(event) {}
 
   /**
-* Override this method in a subclass to handle the mouse up event.
+* Override this method in a subclass to handle the touch start event.
 * This gets triggered when the TOUCHSTART event is fired on `eventHandler`.
 */
   public handleCursorTouchStart(event) {}
 
   /**
-* Override this method in a subclass to handle the mouse up event.
+* Override this method in a subclass to handle the touch move event.
 * This gets triggered when the TOUCHMOVE event is fired on `eventHandler`.
 */
   public handleCursorTouchMove(event) {}
 
   /**
-* Override this method in a subclass to handle the mouse up event.
+* Override this method in a subclass to handle the touch end event.
 * This gets triggered when the TOUCHEND event is fired on `eventHandler`.
 */
   public handleCursorTouchEnd(event) {}
 
   /**
-* Override this method in a subclass to handle the mouse up event.
+* Override this method in a subclass to handle the mouse click event.
 * This gets triggered when the MOUSECLICK event is fired on `eventHandler`.
 */
-  public handleCursorMouseClick(event) { }
+  public handleCursorMouseClick(event) {}
 
   /**
    * When using addEventListeners, you need to manually initialize,
