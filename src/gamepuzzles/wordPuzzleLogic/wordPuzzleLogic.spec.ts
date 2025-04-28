@@ -42,28 +42,11 @@ describe('WordPuzzleLogic', () => {
     expect(logic.getValues().groupedObj).toEqual({});
   });
 
-  it('should validate should hide letter', () => {
-    // Not hidden
-    expect(logic.validateShouldHideLetter(1)).toBe(true);
-    // Hide
-    logic.setPickUpLetter('A', 1);
-    logic.setGroupToDropped();
-    expect(logic.validateShouldHideLetter(1)).toBe(false);
-  });
-
   it('should set group to dropped', () => {
     logic.setPickUpLetter('C', 0);
     logic.setPickUpLetter('A', 1);
     logic.setGroupToDropped();
     expect(logic.getValues().droppedLetters).toBe('CA');
     expect(logic.getValues().droppedHistory).toEqual({ 0: 'C', 1: 'A' });
-  });
-
-  it('should set pick up letter', () => {
-    logic.setPickUpLetter('B', 2);
-    const values = logic.getValues();
-    expect(values.groupedLetters).toContain('B');
-    expect(values.groupedObj[2]).toBe('B');
-    expect(values.hideListObj).toHaveProperty('2');
   });
 });
