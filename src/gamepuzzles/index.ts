@@ -1,9 +1,10 @@
-import WordPuzzleLogic from './wordPuzzleLogic';
+import WordPuzzleLogic from './wordPuzzleLogic/wordPuzzleLogic';
 import FeedbackAudioHandler, { FeedbackType } from './feedbackAudioHandler/feedbackAudioHandler';
-//import here for single letter puzzle or other game puzzle logic.
+import LetterPuzzleLogic from './letterPuzzleLogic/letterPuzzleLogic';
 
 export { 
   WordPuzzleLogic,
   FeedbackAudioHandler,
-  FeedbackType
+  FeedbackType,
+  LetterPuzzleLogic,
 };

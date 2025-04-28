@@ -40,7 +40,7 @@ import {
   PreviousPlayedLevel,
   MONSTER_PHASES
 } from "@constants";
-import { WordPuzzleLogic } from '@gamepuzzles';
+import { LetterPuzzleLogic, WordPuzzleLogic } from '@gamepuzzles';
 import gameStateService from '@gameStateService';
 import gameSettingsService from '@gameSettingsService';
 import { PAUSE_POPUP_EVENT_DATA, PausePopupComponent } from '@components/popups/pause-popup/pause-popup-component';
@@ -88,7 +88,7 @@ export class GameplayScene {
   puzzleTime: number;
   isDisposing: boolean;
   trailEffectHandler: TrailEffectsHandler;
-  wordPuzzleLogic: any;
+  letterPuzzleLogic: LetterPuzzleLogic;
   public riveMonsterElement: HTMLCanvasElement;
   public gameControl: HTMLCanvasElement;
   private unsubscribeEvent: () => void;
@@ -97,7 +97,7 @@ export class GameplayScene {
   public monsterPhaseNumber: 0 | 1 | 2;
   private backgroundGenerator: PhasesBackground;
   public loadPuzzleDelay: 3000 | 4500;
-
+  public wordPuzzleLogic: WordPuzzleLogic;
 
   // Define animation delays as an array where index 0 = phase 0, index 1 = phase 1, index 2 = phase 2
   private animationDelays = [
@@ -111,6 +111,8 @@ export class GameplayScene {
     this.pausePopupComponent = new PausePopupComponent();
     // Assign state properties based on game state
     this.initializeProperties(gamePlayData);
+    // Add puzzle logic instantiation
+    this.wordPuzzleLogic = new WordPuzzleLogic(this.levelData, this.counter);
     // UI element setup
     this.setupUIElements();
     this.isDisposing = false;
@@ -129,7 +131,7 @@ export class GameplayScene {
     this.firebaseIntegration = new FirebaseIntegration();
     this.feedbackTextEffects = new FeedbackTextEffects();
     this.audioPlayer = new AudioPlayer();
-    this.wordPuzzleLogic = new WordPuzzleLogic(this.levelData, this.counter);
+    this.letterPuzzleLogic = new LetterPuzzleLogic(this.feedBackTexts, this.audioPlayer, this.stoneHandler);
     this.unsubscribeEvent = gameStateService.subscribe(
       gameStateService.EVENTS.GAME_PAUSE_STATUS_EVENT,
       (isPause: boolean) => {
@@ -693,27 +695,19 @@ export class GameplayScene {
   }
 
   private checkStoneDropped(stone, feedBackIndex, isWord = false) {
-    // Return the result of the drop handler logic
+    // Only used for word puzzles now
     return this.stoneHandler.isStoneLetterDropCorrect(stone, feedBackIndex, isWord);
   }
 
   public letterPuzzle(droppedStone: string) {
-    if (this.pickedStone && this.pickedStone.frame <= 99) {
-      return; // Prevent dragging if the stone is animating
+    // Delegate to LetterPuzzleLogic
+    this.letterPuzzleLogic.setPickedStone(this.pickedStone);
+    const result = this.letterPuzzleLogic.letterPuzzle(droppedStone);
+    this.isFeedBackTriggered = this.letterPuzzleLogic.isFeedBackTriggered;
+    if (result.isCorrect) {
+      this.handleCorrectStoneDrop(result.feedbackIndex);
     }
-    const feedBackIndex = this.getRandomInt(0, 1);
-    const isCorrect = this.checkStoneDropped(
-      droppedStone,
-      feedBackIndex
-    );
-
-    if (isCorrect) {
-      this.handleCorrectStoneDrop(feedBackIndex);
-    }
-
-    this.isFeedBackTriggered = true;
-
-    this.handleStoneDropEnd(isCorrect);
+    this.handleStoneDropEnd(result.isCorrect);
   }
 
   public wordPuzzle(droppedStoneInstance: StoneConfig) {
