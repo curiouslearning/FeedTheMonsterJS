@@ -26,10 +26,11 @@ describe('LetterPuzzleLogic', () => {
       { x: 100, y: 100, text: 'B', origx: 100, origy: 100 },
     ],
     getCorrectTargetStone: jest.fn(() => 'A'),
+    processLetterDropFeedbackAudio: jest.fn(),
   };
 
   beforeEach(() => {
-    logic = new LetterPuzzleLogic(mockFeedBackTexts, mockAudioPlayer as any, mockStoneHandler as any);
+    logic = new LetterPuzzleLogic(mockFeedBackTexts, mockStoneHandler as any);
     jest.clearAllMocks();
   });
 
@@ -57,22 +58,22 @@ describe('LetterPuzzleLogic', () => {
   });
 
   it('should check stone dropped correctly (correct)', () => {
-    const spy = jest.spyOn(logic as any, 'processLetterDropFeedbackAudio');
-    const result = logic.checkStoneDropped('A', 0);
+    const spy = jest.spyOn(mockStoneHandler, 'processLetterDropFeedbackAudio');
+    const result = logic.checkStoneDropped('A', 'A', 0);
     expect(result).toBe(true);
     expect(spy).toHaveBeenCalledWith(0, true, false, 'A');
   });
 
   it('should check stone dropped correctly (incorrect)', () => {
-    const spy = jest.spyOn(logic as any, 'processLetterDropFeedbackAudio');
-    const result = logic.checkStoneDropped('B', 1);
+    const spy = jest.spyOn(mockStoneHandler, 'processLetterDropFeedbackAudio');
+    const result = logic.checkStoneDropped('B', 'A', 1);
     expect(result).toBe(false);
     expect(spy).toHaveBeenCalledWith(1, false, false, 'B');
   });
 
   it('should handle letterPuzzle (correct)', () => {
     logic.setPickedStone({ frame: 100 } as any);
-    const res = logic.letterPuzzle('A');
+    const res = logic.letterPuzzle('A', 'A', 100);
     expect(res.isCorrect).toBe(true);
     expect(res.feedbackText).toBeDefined();
     expect(logic.isFeedBackTriggered).toBe(true);
@@ -81,61 +82,23 @@ describe('LetterPuzzleLogic', () => {
 
   it('should handle letterPuzzle (incorrect)', () => {
     logic.setPickedStone({ frame: 100 } as any);
-    const res = logic.letterPuzzle('B');
+    const res = logic.letterPuzzle('B', 'A', 100);
     expect(res.isCorrect).toBe(false);
     expect(res.feedbackText).toBeDefined();
     expect(logic.isFeedBackTriggered).toBe(true);
     expect(logic.getScore()).toBe(0);
   });
 
-  it('should block letterPuzzle if pickedStone is animating', () => {
-    logic.setPickedStone({ frame: 50 } as any);
-    const res = logic.letterPuzzle('A');
-    expect(res).toEqual({ isCorrect: false, feedbackIndex: null, feedbackText: null });
+  it('should delegate feedback audio to stoneHandler (correct answer)', () => {
+    const spy = jest.spyOn(mockStoneHandler, 'processLetterDropFeedbackAudio');
+    logic.checkStoneDropped('A', 'A', 0);
+    expect(spy).toHaveBeenCalledWith(0, true, false, 'A');
   });
 
-  it('should handle handlePickStoneUp (found)', () => {
-    const stone = logic.handlePickStoneUp(10, 10);
-    expect(stone).toBeDefined();
-    expect(stone.foilStoneIndex).toBe(0);
-  });
-
-  it('should handle handlePickStoneUp (not found)', () => {
-    const stone = logic.handlePickStoneUp(999, 999);
-    expect(stone).toBeNull();
-  });
-
-  it('should compute cursor distance', () => {
-    const d = logic.computeCursorDistance(0, 0, { x: 3, y: 4 });
-    expect(d).toBe(5);
-  });
-
-  it('should reset stone position (short text, left)', () => {
-    const stone = { text: 'A', x: 0, y: 0 };
-    const stoneObj = { origx: 10, origy: 20 };
-    const result = logic.resetStonePosition(100, stone as any, stoneObj as any);
-    expect(result.x).toBe(35); // 10 + 25
-    expect(result.y).toBe(20);
-  });
-
-  it('should reset stone position (default)', () => {
-    const stone = { text: 'LONGTEXT', x: 0, y: 0 };
-    const stoneObj = { origx: 100, origy: 200 };
-    const result = logic.resetStonePosition(100, stone as any, stoneObj as any);
-    expect(result.x).toBe(100);
-    expect(result.y).toBe(200);
-  });
-
-  it('should processLetterDropFeedbackAudio (correct answer)', () => {
-    const handler = (logic as any).feedbackAudioHandler;
-    logic.processLetterDropFeedbackAudio(0, true, false, 'A');
-    expect(handler.playFeedback).toHaveBeenCalledWith('CORRECT_ANSWER', 0);
-  });
-
-  it('should processLetterDropFeedbackAudio (incorrect)', () => {
-    const handler = (logic as any).feedbackAudioHandler;
-    logic.processLetterDropFeedbackAudio(1, false, false, 'B');
-    expect(handler.playFeedback).toHaveBeenCalledWith('INCORRECT', 1);
+  it('should delegate feedback audio to stoneHandler (incorrect)', () => {
+    const spy = jest.spyOn(mockStoneHandler, 'processLetterDropFeedbackAudio');
+    logic.checkStoneDropped('B', 'A', 1);
+    expect(spy).toHaveBeenCalledWith(1, false, false, 'B');
   });
 
   it('should reset feedback trigger', () => {
@@ -145,7 +108,7 @@ describe('LetterPuzzleLogic', () => {
   });
 
   it('should get score', () => {
-    logic.letterPuzzle('A');
+    logic.letterPuzzle('A', 'A', 100);
     expect(logic.getScore()).toBe(100);
   });
 });

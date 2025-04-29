@@ -131,7 +131,7 @@ export class GameplayScene {
     this.firebaseIntegration = new FirebaseIntegration();
     this.feedbackTextEffects = new FeedbackTextEffects();
     this.audioPlayer = new AudioPlayer();
-    this.letterPuzzleLogic = new LetterPuzzleLogic(this.feedBackTexts, this.audioPlayer, this.stoneHandler);
+    this.letterPuzzleLogic = new LetterPuzzleLogic(this.feedBackTexts, this.stoneHandler);
     this.unsubscribeEvent = gameStateService.subscribe(
       gameStateService.EVENTS.GAME_PAUSE_STATUS_EVENT,
       (isPause: boolean) => {
@@ -287,7 +287,11 @@ export class GameplayScene {
       switch (this.levelData.levelMeta.levelType) {
         case "LetterOnly":
         case "LetterInWord":
-          this.letterPuzzle(text);
+          if (this.pickedStone && this.pickedStone.frame <= 99) {
+            // handle invalid drop or ignore
+          } else {
+            this.letterPuzzle(text, this.stoneHandler.correctTargetStone, this.pickedStone.frame);
+          }
           break;
         case "Word":
         case "SoundWord":
@@ -699,15 +703,16 @@ export class GameplayScene {
     return this.stoneHandler.isStoneLetterDropCorrect(stone, feedBackIndex, isWord);
   }
 
-  public letterPuzzle(droppedStone: string) {
+  public letterPuzzle(droppedStone: string, correctTargetStone: string, frame: number) {
     // Delegate to LetterPuzzleLogic
     this.letterPuzzleLogic.setPickedStone(this.pickedStone);
-    const result = this.letterPuzzleLogic.letterPuzzle(droppedStone);
+    const result = this.letterPuzzleLogic.letterPuzzle(droppedStone, correctTargetStone, frame);
     this.isFeedBackTriggered = this.letterPuzzleLogic.isFeedBackTriggered;
     if (result.isCorrect) {
       this.handleCorrectStoneDrop(result.feedbackIndex);
     }
     this.handleStoneDropEnd(result.isCorrect);
+    return result;
   }
 
   public wordPuzzle(droppedStoneInstance: StoneConfig) {
