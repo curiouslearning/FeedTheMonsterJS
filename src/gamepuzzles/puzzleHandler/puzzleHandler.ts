@@ -22,16 +22,6 @@ export default class PuzzleHandler {
   }
 
   /**
-   * Call this when initializing or changing to a new word puzzle.
-   */
-  setWordPuzzle(levelData, counter) {
-    this.wordPuzzleLogic = new WordPuzzleLogic(levelData, counter);
-  }
-  setLetterPuzzle() {
-    this.letterPuzzleLogic = new LetterPuzzleLogic();
-  }
-
-  /**
    * Handles a stone drop event for any puzzle type.
    * Accepts a context object with all required dependencies and state references.
    * Returns a boolean indicating if the stone was dropped correctly.
@@ -129,13 +119,6 @@ export default class PuzzleHandler {
     return this.wordPuzzleLogic && typeof this.wordPuzzleLogic.checkIsWordPuzzle === 'function'
       ? this.wordPuzzleLogic.checkIsWordPuzzle()
       : false;
-  }
-
-  /**
-   * Returns the droppedLetters from the last word puzzle interaction.
-   */
-  getLastWordPuzzleDroppedLetters() {
-    return this.lastWordPuzzleDroppedLetters;
   }
 
   /**
