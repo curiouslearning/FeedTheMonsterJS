@@ -32,7 +32,7 @@ export default class PuzzleHandler {
     stoneHandler,
     audioPlayer,
     promptText,
-    getRandomInt,
+    feedBackTexts,
     handleCorrectStoneDrop,
     handleStoneDropEnd,
     triggerMonsterAnimation,
@@ -50,7 +50,7 @@ export default class PuzzleHandler {
         return this.letterPuzzleLogic.handleLetterStoneDrop({
           pickedStone,
           stoneHandler,
-          getRandomInt,
+          getRandomInt: (min, max) => this.getRandomInt(min, max, feedBackTexts),
           handleCorrectStoneDrop,
           handleStoneDropEnd,
           isFeedBackTriggeredSetter
@@ -64,7 +64,7 @@ export default class PuzzleHandler {
         audioPlayer.stopFeedbackAudio();
         pickedStone.x = -999;
         pickedStone.y = -999;
-        const feedBackIndex = getRandomInt(0, 1);
+        const feedBackIndex = this.getRandomInt(0, 1, feedBackTexts);
         this.wordPuzzleLogic.setGroupToDropped();
         const { droppedLetters } = this.wordPuzzleLogic.getValues();
         const isCorrect = this.wordPuzzleLogic.validateFedLetters();
@@ -101,6 +101,16 @@ export default class PuzzleHandler {
       default:
         return false;
     }
+  }
+
+  /**
+   * Returns a random integer between min and max (inclusive), based on feedbackTexts.
+   */
+  getRandomInt(min: number, max: number, feedBackTexts: Record<string, string>): number {
+    const feedbackValues = Object.values(feedBackTexts);
+    const definedValuesMaxCount =
+      feedbackValues.filter((value) => value != undefined).length - 1;
+    return Math.floor(Math.random() * (definedValuesMaxCount - min + 1)) + min;
   }
 
   /**
@@ -155,5 +165,20 @@ export default class PuzzleHandler {
     return this.wordPuzzleLogic && typeof this.wordPuzzleLogic.validateShouldHideLetter === 'function'
       ? this.wordPuzzleLogic.validateShouldHideLetter(foilStoneIndex)
       : false;
+  }
+
+  /**
+   * Handles correct stone drop feedback logic.
+   */
+  handleCorrectStoneDrop(feedbackIndex: number, feedbackTextEffects: any, getRandomFeedBackText: (idx: number) => string, addScore: (amount: number) => void) {
+    addScore(100);
+    const feedbackText = getRandomFeedBackText(feedbackIndex);
+    // Show feedback text immediately
+    feedbackTextEffects.wrapText(feedbackText);
+    // Wait for feedback audio to finish
+    const totalAudioDuration = 4500; // Approximate total duration of all feedback audio (eating + cheering + points)
+    setTimeout(() => {
+      feedbackTextEffects.hideText();
+    }, totalAudioDuration);
   }
 }

@@ -271,14 +271,6 @@ export class GameplayScene {
   }
 
 
-  getRandomInt(min: number, max: number): number {
-    const feedbackValues = Object.values(this.feedBackTexts);
-    const definedValuesMaxCount =
-      feedbackValues.filter((value) => value != undefined).length - 1;
-    return Math.floor(Math.random() * (definedValuesMaxCount - min + 1)) + min;
-  }
-
-
   private triggerMonsterAnimation(animationName: string) {
     const delay = this.animationDelays[this.monsterPhaseNumber]?.[animationName] ?? 0;
 
@@ -294,80 +286,6 @@ export class GameplayScene {
 
   handleMouseUp = (event) => {
     if (this.monster.checkHitboxDistance(event) && this.pickedStone) {
-      const { text } = this.pickedStone; // Use destructuring for clarity
-      // switch (this.levelData.levelMeta.levelType) {
-      //   case "LetterOnly":
-      //   case "LetterInWord":
-      //     // this.letterPuzzle(text);
-      //     // break;
-      //     {
-      //       if (this.pickedStone && this.pickedStone.frame <= 99) {
-      //         return; // Prevent dragging if the stone is animating
-      //       }
-      //       const feedBackIndex = this.getRandomInt(0, 1);
-      //       const isCorrect = this.checkStoneDropped(
-      //         text,
-      //         feedBackIndex
-      //       );
-
-      //       if (isCorrect) {
-      //         this.handleCorrectStoneDrop(feedBackIndex);
-      //       }
-
-      //       this.isFeedBackTriggered = true;
-
-      //       this.handleStoneDropEnd(isCorrect);
-      //     }
-      //   case "Word":
-      //   case "SoundWord":
-      //     // this.wordPuzzle(this.pickedStone);
-      //     // break;
-      //     {
-      //       if (this.pickedStone.frame <= 99) {
-      //         return; // Prevent dragging if the stone is animating
-      //       }
-      //       this.audioPlayer.stopFeedbackAudio();
-      //       this.pickedStone.x = -999;
-      //       this.pickedStone.y = -999;
-      //       const feedBackIndex = this.getRandomInt(0, 1);
-      //       this.wordPuzzleLogic.setGroupToDropped();
-      //       const { droppedLetters } = this.wordPuzzleLogic.getValues();
-      //       const isCorrect = this.wordPuzzleLogic.validateFedLetters();
-
-      //       this.stoneHandler.processLetterDropFeedbackAudio(
-      //         feedBackIndex,
-      //         isCorrect,
-      //         true,
-      //         droppedLetters
-      //       );
-
-      //       if (isCorrect) {
-      //         if (this.wordPuzzleLogic.validateWordPuzzle()) {
-      //           this.handleCorrectStoneDrop(feedBackIndex);
-      //           this.handleStoneDropEnd(isCorrect, "Word");
-      //           this.stonesCount = 1;
-      //           return;
-      //         }
-      //         this.triggerMonsterAnimation('isMouthClosed');
-      //         this.triggerMonsterAnimation('backToIdle');
-      //         this.timerTicking.startTimer(); // Start the timer for the new puzzle
-      //         // // Trigger animations via fire
-      //         // this.triggerMonsterAnimation('isHappy',3000)
-      //         const { droppedHistory } = this.wordPuzzleLogic.getValues();
-      //         const droppedStonesCount = Object.keys(droppedHistory).length;
-      //         this.promptText.droppedStoneIndex(
-      //           lang == "arabic"
-      //             ? this.stonesCount
-      //             : droppedStonesCount
-      //         );
-      //         this.stonesCount++;
-      //       } else {
-      //         this.handleStoneDropEnd(isCorrect, "Word");
-      //         this.stonesCount = 1;
-      //       }
-      //     }
-      // }
-      // Use PuzzleHandler for all puzzle types
       const stonesCountRef = { value: this.stonesCount };
       this.puzzleHandler.createPuzzle({
         levelType: this.levelData.levelMeta.levelType,
@@ -375,14 +293,19 @@ export class GameplayScene {
         stoneHandler: this.stoneHandler,
         audioPlayer: this.audioPlayer,
         promptText: this.promptText,
-        getRandomInt: this.getRandomInt.bind(this),
-        handleCorrectStoneDrop: this.handleCorrectStoneDrop.bind(this),
+        handleCorrectStoneDrop: (feedbackIndex) => this.puzzleHandler.handleCorrectStoneDrop(
+          feedbackIndex,
+          this.feedbackTextEffects,
+          (idx) => this.getRandomFeedBackText(idx),
+          () => this.score += 100
+        ),
         handleStoneDropEnd: this.handleStoneDropEnd.bind(this),
         triggerMonsterAnimation: this.triggerMonsterAnimation.bind(this),
         timerTicking: this.timerTicking,
         isFeedBackTriggeredSetter: (v) => { this.isFeedBackTriggered = v; },
         lang,
         stonesCountRef,
+        feedBackTexts: this.feedBackTexts,
         levelData: this.levelData,
         counter: this.counter,
         width: this.width
@@ -391,24 +314,19 @@ export class GameplayScene {
       this.isFeedBackTriggered = true;
       this.pickedStone = null;
     } else {
-      /*
-        Note: TO DO: Should use stone-handler.ts method resetStonePosition.
-      */
-
       if (
         this.pickedStone &&
-        this.pickedStoneObject &&
-        this.pickedStone.text &&
-        typeof this.pickedStoneObject.origx === "number" &&
-        typeof this.pickedStoneObject.origy === "number"
+        this.pickedStoneObject
       ) {
-        //Resets stones to original position after dragging.
-        this.pickedStone.x = this.pickedStoneObject.origx;
-        this.pickedStone.y = this.pickedStoneObject.origy;
+        // Use stoneHandler's resetStonePosition method for consistency
+        this.stoneHandler.resetStonePosition(
+          this.width,
+          this.pickedStone,
+          this.pickedStoneObject
+        );
         // Trigger animations
         this.triggerMonsterAnimation('isMouthClosed');
         this.triggerMonsterAnimation('backToIdle');
-
       }
 
     }
@@ -428,18 +346,12 @@ export class GameplayScene {
     const y = event.clientY - rect.top;
 
     if (!this.puzzleHandler.checkIsWordPuzzle()) {
-      /*To Do: Move all logic relating to stone handling including updating its coordnates to stone-handler.ts
-        Note: Will have to eventually remove this and use the handlePickStoneUp in stone-handler.ts
-        Will leave this for now to avoid affecting Letter Only puzzles with Word play puzzles implementation of multi-letter feature.
-      */
-      for (let sc of this.stoneHandler.foilStones) {
-        const distance = Math.sqrt((x - sc.x) ** 2 + (y - sc.y) ** 2);
-        if (distance <= 40) {
-          this.pickedStoneObject = sc;
-          this.pickedStone = sc;
-          this.stoneHandler.playDragAudioIfNecessary(sc);
-          break;
-        }
+      // Use stoneHandler's handlePickStoneUp for LetterOnly puzzles
+      const picked = this.stoneHandler.handlePickStoneUp(x, y);
+      if (picked) {
+        this.pickedStoneObject = picked;
+        this.pickedStone = picked;
+        this.stoneHandler.playDragAudioIfNecessary(picked);
       }
     } else {
       this.setPickedUp(x, y);
@@ -479,17 +391,14 @@ export class GameplayScene {
 
     if (this.pickedStone) {
       if (!this.puzzleHandler.checkIsWordPuzzle()) {
-        /*To Do: Move all logic relating to stone handling including updating its coordnates to stone-handler.ts
-         Note: Will have to eventually remove this and use the handleMovingStoneLetter in stone-handler.ts
-         Will leave this for now to avoid affecting Letter Only puzzles with Word play puzzles implementation of multi-letter feature.
-       */
-        let rect = this.canvas.getBoundingClientRect();
-        const x = event.clientX - rect.left;
-        const y = event.clientY - rect.top;
-        this.pickedStone.x = x;
-        this.pickedStone.y = y;
-        trailX = x;
-        trailY = y;
+        const newStoneCoordinates = this.stoneHandler.handleMovingStoneLetter(
+          this.pickedStone,
+          event.clientX,
+          event.clientY
+        );
+        this.pickedStone = newStoneCoordinates;
+        trailX = newStoneCoordinates.x;
+        trailY = newStoneCoordinates.y;
       } else {
         const newStoneCoordinates = this.stoneHandler.handleMovingStoneLetter(
           this.pickedStone,
@@ -811,74 +720,6 @@ export class GameplayScene {
     return this.stoneHandler.isStoneLetterDropCorrect(stone, feedBackIndex, isWord);
   }
 
-
-  // public letterPuzzle(droppedStone: string) {
-  //   if (this.pickedStone && this.pickedStone.frame <= 99) {
-  //     return; // Prevent dragging if the stone is animating
-  //   }
-  //   const feedBackIndex = this.getRandomInt(0, 1);
-  //   const isCorrect = this.checkStoneDropped(
-  //     droppedStone,
-  //     feedBackIndex
-  //   );
-
-  //   if (isCorrect) {
-  //     this.handleCorrectStoneDrop(feedBackIndex);
-  //   }
-
-  //   this.isFeedBackTriggered = true;
-
-  //   this.handleStoneDropEnd(isCorrect);
-  // }
-
-
-  // public wordPuzzle(droppedStoneInstance: StoneConfig) {
-
-  //   if (droppedStoneInstance.frame <= 99) {
-  //     return; // Prevent dragging if the stone is animating
-  //   }
-  //   this.audioPlayer.stopFeedbackAudio();
-  //   droppedStoneInstance.x = -999;
-  //   droppedStoneInstance.y = -999;
-  //   const feedBackIndex = this.getRandomInt(0, 1);
-  //   this.wordPuzzleLogic.setGroupToDropped();
-  //   const { droppedLetters } = this.wordPuzzleLogic.getValues();
-  //   const isCorrect = this.wordPuzzleLogic.validateFedLetters();
-
-  //   this.stoneHandler.processLetterDropFeedbackAudio(
-  //     feedBackIndex,
-  //     isCorrect,
-  //     true,
-  //     droppedLetters
-  //   );
-
-  //   if (isCorrect) {
-  //     if (this.wordPuzzleLogic.validateWordPuzzle()) {
-  //       this.handleCorrectStoneDrop(feedBackIndex);
-  //       this.handleStoneDropEnd(isCorrect, "Word");
-  //       this.stonesCount = 1;
-  //       return;
-  //     }
-  //     this.triggerMonsterAnimation('isMouthClosed');
-  //     this.triggerMonsterAnimation('backToIdle');
-  //     this.timerTicking.startTimer(); // Start the timer for the new puzzle
-  //     // // Trigger animations via fire
-  //     // this.triggerMonsterAnimation('isHappy',3000)
-  //     const { droppedHistory } = this.wordPuzzleLogic.getValues();
-  //     const droppedStonesCount = Object.keys(droppedHistory).length;
-  //     this.promptText.droppedStoneIndex(
-  //       lang == "arabic"
-  //         ? this.stonesCount
-  //         : droppedStonesCount
-  //     );
-  //     this.stonesCount++;
-  //   } else {
-  //     this.handleStoneDropEnd(isCorrect, "Word");
-  //     this.stonesCount = 1;
-  //   }
-  // }
-
-
   private handleStoneDropEnd(isCorrect, puzzleType: string | null = null) {
     const triggerInputs = this.monster.getInputs();
     const isHappy = triggerInputs.find(input => input.name === 'isHappy');
@@ -915,21 +756,6 @@ export class GameplayScene {
     //Adjust the delay of 4500 (4.5 seconds) to 2500 (2.5 seconds) if the puzzle is incorrect.
     this.loadPuzzleDelay = isCorrect ? 4500 : 3000;
   }
-
-
-  private handleCorrectStoneDrop = (feedbackIndex: number): void => {
-    this.score += 100;
-    const feedbackText = this.getRandomFeedBackText(feedbackIndex);
-
-    // Show feedback text immediately
-    this.feedbackTextEffects.wrapText(feedbackText);
-
-    // Wait for feedback audio to finish
-    const totalAudioDuration = 4500; // Approximate total duration of all feedback audio (eating + cheering + points)
-    setTimeout(() => {
-      this.feedbackTextEffects.hideText();
-    }, totalAudioDuration);
-  };
 
 
   private dispatchStoneDropEvent(isCorrect: boolean): void {
