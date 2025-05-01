@@ -1,5 +1,6 @@
 import LetterPuzzleLogic from '../letterPuzzleLogic/letterPuzzleLogic';
 import WordPuzzleLogic from '../wordPuzzleLogic/wordPuzzleLogic';
+import { FeedbackTextEffects } from '@components/feedback-text';
 
 /**
  * Context object for creating a puzzle/handling a stone drop.
@@ -23,7 +24,6 @@ interface CreatePuzzleContext {
 }
 
 export default class PuzzleHandler {
-  private lastWordPuzzleDroppedLetters: string | null = null;
   private wordPuzzleLogic: WordPuzzleLogic | null = null;
   private letterPuzzleLogic: LetterPuzzleLogic | null = null;
 
@@ -127,6 +127,15 @@ export default class PuzzleHandler {
   }
 
   /**
+   * Returns a random feedback text from the provided feedbackTexts object.
+   */
+  getRandomFeedBackText(randomIndex: number, feedBackTexts: Record<string, string>): string {
+    const keys = Object.keys(feedBackTexts);
+    const selectedKey = keys[randomIndex];
+    return feedBackTexts[selectedKey] as string;
+  }
+
+  /**
    * Clears picked up state for word puzzles, if active.
    */
   clearPickedUp() {
@@ -196,10 +205,16 @@ export default class PuzzleHandler {
 
   /**
    * Handles correct stone drop feedback logic.
+   * Now receives ctx so feedBackTexts and other context can be accessed directly.
    */
-  handleCorrectStoneDrop(feedbackIndex: number, feedbackTextEffects: any, getRandomFeedBackText: (idx: number) => string, addScore: (amount: number) => void) {
+  handleCorrectStoneDrop(
+    feedbackIndex: number,
+    feedbackTextEffects: FeedbackTextEffects,
+    ctx: CreatePuzzleContext,
+    addScore: (amount: number) => void
+  ) {
     addScore(100);
-    const feedbackText = getRandomFeedBackText(feedbackIndex);
+    const feedbackText = this.getRandomFeedBackText(feedbackIndex, ctx.feedBackTexts);
     // Show feedback text immediately
     feedbackTextEffects.wrapText(feedbackText);
     // Wait for feedback audio to finish

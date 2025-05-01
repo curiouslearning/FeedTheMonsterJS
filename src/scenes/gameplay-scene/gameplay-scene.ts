@@ -40,7 +40,6 @@ import {
   PreviousPlayedLevel,
   MONSTER_PHASES
 } from "@constants";
-import { WordPuzzleLogic } from '@gamepuzzles';
 import gameStateService from '@gameStateService';
 import gameSettingsService from '@gameSettingsService';
 import { PAUSE_POPUP_EVENT_DATA, PausePopupComponent } from '@components/popups/pause-popup/pause-popup-component';
@@ -89,7 +88,6 @@ export class GameplayScene {
   puzzleTime: number;
   isDisposing: boolean;
   trailEffectHandler: TrailEffectsHandler;
-  wordPuzzleLogic: any;
   public riveMonsterElement: HTMLCanvasElement;
   public gameControl: HTMLCanvasElement;
   private unsubscribeEvent: () => void;
@@ -254,12 +252,6 @@ export class GameplayScene {
     this.timerTicking?.applyRotation(this.timerTicking?.startMyTimer && !this.timerTicking?.isStoneDropped);
   };
 
-  getRandomFeedBackText(randomIndex: number): string {
-    const keys = Object.keys(this.feedBackTexts);
-    const selectedKey = keys[randomIndex];
-    return this.feedBackTexts[selectedKey] as string;
-  }
-
   private triggerMonsterAnimation(animationName: string) {
     const delay = this.animationDelays[this.monsterPhaseNumber]?.[animationName] ?? 0;
 
@@ -281,18 +273,13 @@ export class GameplayScene {
     if (this.monster.checkHitboxDistance(event)) {
       // Handle stone drop (success case)
       const stonesCountRef = { value: this.stonesCount };
-      this.puzzleHandler.createPuzzle({
+      const ctx = {
         levelType: this.levelData.levelMeta.levelType,
         pickedStone: this.pickedStone,
         stoneHandler: this.stoneHandler,
         audioPlayer: this.audioPlayer,
         promptText: this.promptText,
-        handleCorrectStoneDrop: (feedbackIndex) => this.puzzleHandler.handleCorrectStoneDrop(
-          feedbackIndex,
-          this.feedbackTextEffects,
-          (idx) => this.getRandomFeedBackText(idx),
-          () => this.score += 100
-        ),
+        handleCorrectStoneDrop: undefined, // will be set below
         handleStoneDropEnd: this.handleStoneDropEnd.bind(this),
         triggerMonsterAnimation: this.triggerMonsterAnimation.bind(this),
         timerTicking: this.timerTicking,
@@ -303,7 +290,17 @@ export class GameplayScene {
         levelData: this.levelData,
         counter: this.counter,
         width: this.width
-      });
+      };
+      ctx.handleCorrectStoneDrop = (feedbackIndex) => {
+        console.log('DEBUG: feedbackTextEffects instance at handleCorrectStoneDrop', this.feedbackTextEffects, typeof this.feedbackTextEffects?.wrapText);
+        this.puzzleHandler.handleCorrectStoneDrop(
+          feedbackIndex,
+          this.feedbackTextEffects,
+          ctx,
+          (amount) => this.score += amount
+        );
+      };
+      this.puzzleHandler.createPuzzle(ctx);
       this.stonesCount = stonesCountRef.value;
       this.isFeedBackTriggered = true;
     } else if (this.pickedStoneObject) {
@@ -672,11 +669,6 @@ export class GameplayScene {
     // Clear game state
     this.pickedStone = null;
     this.pickedStoneObject = null;
-  }
-
-  private checkStoneDropped(stone, feedBackIndex, isWord = false) {
-    // Return the result of the drop handler logic
-    return this.stoneHandler.isStoneLetterDropCorrect(stone, feedBackIndex, isWord);
   }
 
   private handleStoneDropEnd(isCorrect, puzzleType: string | null = null) {
