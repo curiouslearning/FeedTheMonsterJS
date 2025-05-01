@@ -98,8 +98,7 @@ export class GameplayScene {
   public monsterPhaseNumber: 0 | 1 | 2;
   private backgroundGenerator: PhasesBackground;
   public loadPuzzleDelay: 3000 | 4500;
-  private puzzleHandler: any; 
-
+  private puzzleHandler: any;
 
   // Define animation delays as an array where index 0 = phase 0, index 1 = phase 1, index 2 = phase 2
   private animationDelays = [
@@ -108,12 +107,11 @@ export class GameplayScene {
     { backToIdle: 350, isChewing: 0, isHappy: 1700, isSpit: 100, isSad: 2500 }  // Phase 4
   ];
 
-
   constructor() {
     const gamePlayData = gameStateService.getGamePlaySceneDetails();
     this.pausePopupComponent = new PausePopupComponent();
     // Assign state properties based on game state
-    this.initializeProperties(gamePlayData); 
+    this.initializeProperties(gamePlayData);
     // UI element setup
     this.setupUIElements();
     this.isDisposing = false;
@@ -132,7 +130,7 @@ export class GameplayScene {
     this.firebaseIntegration = new FirebaseIntegration();
     this.feedbackTextEffects = new FeedbackTextEffects();
     this.audioPlayer = new AudioPlayer();
-    this.puzzleHandler = new PuzzleHandler(this.levelData, this.counter); 
+    this.puzzleHandler = new PuzzleHandler(this.levelData, this.counter);
     this.unsubscribeEvent = gameStateService.subscribe(
       gameStateService.EVENTS.GAME_PAUSE_STATUS_EVENT,
       (isPause: boolean) => {
@@ -165,7 +163,6 @@ export class GameplayScene {
     this.setupMonsterPhaseBg();
   }
 
-
   private initializeRiveMonster(): RiveMonsterComponent {
     return new RiveMonsterComponent({
       canvas: this.riveMonsterElement,
@@ -176,7 +173,6 @@ export class GameplayScene {
       src: MONSTER_PHASES[this.monsterPhaseNumber],
     });
   }
-
 
   private initializeGameComponents(gamePlayData) {
     this.trailEffectHandler = new TrailEffectsHandler(this.canvas)
@@ -207,7 +203,6 @@ export class GameplayScene {
     this.monster = this.initializeRiveMonster();
   }
 
-
   private setupUIElements() {
     const { canvasElem, canvasWidth, canvasHeight, gameCanvasContext, gameControlElem } = gameSettingsService.getCanvasSizeValues();
     const riveMonsterElement = gameSettingsService.getRiveCanvasValue();
@@ -223,7 +218,6 @@ export class GameplayScene {
     this.context = gameCanvasContext;
   }
 
-
   private initializeProperties(gamePlayData) {
     this.isPauseButtonClicked = gamePlayData?.isGamePaused;
     this.rightToLeft = gamePlayData.rightToLeft;
@@ -234,7 +228,6 @@ export class GameplayScene {
     this.data = gamePlayData.data;
     this.monsterPhaseNumber = gamePlayData.monsterPhaseNumber;
   }
-
 
   setupBg = () => {
     // Determine the background type based on the level number using the static method
@@ -247,7 +240,6 @@ export class GameplayScene {
     backgroundGenerator.generateBackground(selectedBackgroundType);
   };
 
-
   setupMonsterPhaseBg() {
     // Determine the background type based on the monster phase number using the static method
     this.backgroundGenerator = new PhasesBackground();
@@ -256,20 +248,17 @@ export class GameplayScene {
     this.backgroundGenerator.generateBackground(this.monsterPhaseNumber);
   }
 
-
   resumeGame = () => {
     this.addEventListeners();
     // Resume the clock rotation when game is resumed
     this.timerTicking?.applyRotation(this.timerTicking?.startMyTimer && !this.timerTicking?.isStoneDropped);
   };
 
-
   getRandomFeedBackText(randomIndex: number): string {
     const keys = Object.keys(this.feedBackTexts);
     const selectedKey = keys[randomIndex];
     return this.feedBackTexts[selectedKey] as string;
   }
-
 
   private triggerMonsterAnimation(animationName: string) {
     const delay = this.animationDelays[this.monsterPhaseNumber]?.[animationName] ?? 0;
@@ -282,7 +271,6 @@ export class GameplayScene {
       this.monster.triggerInput(animationName);
     }
   }
-
 
   handleMouseUp = (event) => {
     if (!this.pickedStone) {
@@ -333,7 +321,6 @@ export class GameplayScene {
     this.puzzleHandler.clearPickedUp();
   };
 
-
   // Event to identify mouse moved down on the canvas
   handleMouseDown = (event) => {
     if (this.pickedStone && this.pickedStone.frame <= 99) {
@@ -357,7 +344,6 @@ export class GameplayScene {
     }
   };
 
-
   setPickedUp(x, y) {
     if (this.pickedStone && this.pickedStone.frame <= 99) {
       return; // Prevent dragging if the stone is animating
@@ -378,7 +364,6 @@ export class GameplayScene {
       }
     }
   }
-
 
   handleMouseMove = (event) => {
     if (this.pickedStone && this.pickedStone.frame <= 99) {
@@ -428,7 +413,6 @@ export class GameplayScene {
     this.triggerMonsterAnimation('isMouthOpen');
   };
 
-
   handleMouseClick = (event) => {
     let rect = this.canvas.getBoundingClientRect();
     const x = event.clientX - rect.left;
@@ -447,7 +431,6 @@ export class GameplayScene {
     }
   };
 
-
   // Event to identify touch on the canvas
   handleTouchStart = (event) => {
     if (this.pickedStone && this.pickedStone.frame <= 99) {
@@ -457,18 +440,15 @@ export class GameplayScene {
     this.handleMouseDown({ clientX: touch.clientX, clientY: touch.clientY });
   };
 
-
   handleTouchMove = (event) => {
     const touch = event.touches[0];
     this.handleMouseMove({ clientX: touch.clientX, clientY: touch.clientY });
   };
 
-
   handleTouchEnd = (event) => {
     const touch = event.changedTouches[0];
     this.handleMouseUp({ clientX: touch.clientX, clientY: touch.clientY });
   };
-
 
   draw(deltaTime: number) {
     if (!this.isGameStarted && !this.isPauseButtonClicked) {
@@ -494,7 +474,6 @@ export class GameplayScene {
     }
   }
 
-
   private handleStoneLetterDrawing(deltaTime) {
     if (this.puzzleHandler.checkIsWordPuzzle()) {
       this.stoneHandler.drawWordPuzzleLetters(
@@ -508,7 +487,6 @@ export class GameplayScene {
       this.stoneHandler.draw(deltaTime);
     }
   }
-
 
   addEventListeners() {
     this.handler.addEventListener(MOUSEUP, this.handleMouseUp, false);
@@ -526,7 +504,6 @@ export class GameplayScene {
     );
   }
 
-
   removeEventListeners() {
     // Remove event listeners using the defined functions
     this.handler.removeEventListener(CLICK, this.handleMouseClick, false);
@@ -541,7 +518,6 @@ export class GameplayScene {
     this.handler.removeEventListener("touchmove", this.handleTouchMove, false);
     this.handler.removeEventListener("touchend", this.handleTouchEnd, false);
   }
-
 
   loadPuzzle = (isTimerEnded?) => {
     this.removeEventListeners();
@@ -605,7 +581,6 @@ export class GameplayScene {
     }
   };
 
-
   private initNewPuzzle(loadPuzzleEvent) {
     // Dispose old monster first to prevent memory leaks
     if (this.monster) {
@@ -624,7 +599,6 @@ export class GameplayScene {
     this.audioPlayer.stopAllAudios();
     this.startPuzzleTime();
   }
-
 
   public dispose = () => {
     this.isDisposing = true;
@@ -700,7 +674,6 @@ export class GameplayScene {
     this.pickedStoneObject = null;
   }
 
-
   private checkStoneDropped(stone, feedBackIndex, isWord = false) {
     // Return the result of the drop handler logic
     return this.stoneHandler.isStoneLetterDropCorrect(stone, feedBackIndex, isWord);
@@ -737,12 +710,10 @@ export class GameplayScene {
     }, isCorrect ? 0 : 2000);
   }
 
-
   private adjustLoadPuzzleDelay(isCorrect) {
     //Adjust the delay of 4500 (4.5 seconds) to 2500 (2.5 seconds) if the puzzle is incorrect.
     this.loadPuzzleDelay = isCorrect ? 4500 : 3000;
   }
-
 
   private dispatchStoneDropEvent(isCorrect: boolean): void {
     const dropStoneEvent = new CustomEvent(STONEDROP, {
@@ -751,7 +722,6 @@ export class GameplayScene {
 
     document.dispatchEvent(dropStoneEvent);
   }
-
 
   public logPuzzleEndFirebaseEvent(isCorrect: boolean, puzzleType?: string) {
     let endTime = Date.now();
@@ -781,7 +751,6 @@ export class GameplayScene {
     this.firebaseIntegration.sendPuzzleCompletedEvent(puzzleCompletedData);
   }
 
-
   public logLevelEndFirebaseEvent() {
     let endTime = Date.now();
     const levelCompletedData: LevelCompletedEvent = {
@@ -799,7 +768,6 @@ export class GameplayScene {
     this.firebaseIntegration.sendLevelCompletedEvent(levelCompletedData);
   }
 
-
   public startGameTime() {
     this.startTime = Date.now();
   }
@@ -807,14 +775,12 @@ export class GameplayScene {
     this.puzzleTime = Date.now();
   }
 
-
   public pauseGamePlay = () => {
     this.removeEventListeners();
     this.audioPlayer.stopAllAudios();
     // Stop the clock rotation when game is paused
     this.timerTicking?.applyRotation(false);
   };
-
 
   handleVisibilityChange = () => {
     this.audioPlayer.stopAllAudios();
