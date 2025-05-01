@@ -285,7 +285,13 @@ export class GameplayScene {
 
 
   handleMouseUp = (event) => {
-    if (this.monster.checkHitboxDistance(event) && this.pickedStone) {
+    if (!this.pickedStone) {
+      this.puzzleHandler.clearPickedUp();
+      return;
+    }
+
+    if (this.monster.checkHitboxDistance(event)) {
+      // Handle stone drop (success case)
       const stonesCountRef = { value: this.stonesCount };
       this.puzzleHandler.createPuzzle({
         levelType: this.levelData.levelMeta.levelType,
@@ -312,24 +318,17 @@ export class GameplayScene {
       });
       this.stonesCount = stonesCountRef.value;
       this.isFeedBackTriggered = true;
-      this.pickedStone = null;
-    } else {
-      if (
-        this.pickedStone &&
+    } else if (this.pickedStoneObject) {
+      // Handle stone drop (fail/miss case)
+      this.stoneHandler.resetStonePosition(
+        this.width,
+        this.pickedStone,
         this.pickedStoneObject
-      ) {
-        // Use stoneHandler's resetStonePosition method for consistency
-        this.stoneHandler.resetStonePosition(
-          this.width,
-          this.pickedStone,
-          this.pickedStoneObject
-        );
-        // Trigger animations
-        this.triggerMonsterAnimation('isMouthClosed');
-        this.triggerMonsterAnimation('backToIdle');
-      }
-
+      );
+      this.triggerMonsterAnimation('isMouthClosed');
+      this.triggerMonsterAnimation('backToIdle');
     }
+
     this.pickedStone = null;
     this.puzzleHandler.clearPickedUp();
   };
@@ -386,59 +385,47 @@ export class GameplayScene {
       return; // Prevent dragging if the stone is animating
     }
 
-    let trailX = event.clientX;
-    let trailY = event.clientY
+    if (!this.pickedStone) return;
 
-    if (this.pickedStone) {
-      if (!this.puzzleHandler.checkIsWordPuzzle()) {
-        const newStoneCoordinates = this.stoneHandler.handleMovingStoneLetter(
-          this.pickedStone,
-          event.clientX,
-          event.clientY
-        );
-        this.pickedStone = newStoneCoordinates;
-        trailX = newStoneCoordinates.x;
-        trailY = newStoneCoordinates.y;
-      } else {
-        const newStoneCoordinates = this.stoneHandler.handleMovingStoneLetter(
-          this.pickedStone,
-          event.clientX,
-          event.clientY
-        );
-        this.pickedStone = newStoneCoordinates;
-        trailX = newStoneCoordinates.x;
-        trailY = newStoneCoordinates.y;
+    // Move stone regardless of puzzle type
+    let newStoneCoordinates = this.stoneHandler.handleMovingStoneLetter(
+      this.pickedStone,
+      event.clientX,
+      event.clientY
+    );
+    this.pickedStone = newStoneCoordinates;
+    let trailX = newStoneCoordinates.x;
+    let trailY = newStoneCoordinates.y;
 
-        if (this.puzzleHandler.checkIsWordPuzzle()) {
-          const newStoneLetter = this.stoneHandler.handleHoveringToAnotherStone(
-            trailX,
-            trailY,
-            (foilStoneText, foilStoneIndex) => {
-              return this.puzzleHandler.handleCheckHoveredStone(foilStoneText, foilStoneIndex);
-            }
-          );
-
-          if (newStoneLetter) {
-            this.puzzleHandler.setPickUpLetter(
-              newStoneLetter?.text,
-              newStoneLetter?.foilStoneIndex
-            );
-
-            this.pickedStone = this.stoneHandler.resetStonePosition(
-              this.width,
-              this.pickedStone,
-              this.pickedStoneObject
-            );
-
-            //After resetting its original position replace it with the new letter.
-            this.pickedStoneObject = newStoneLetter;
-            this.pickedStone = newStoneLetter;
-          }
+    if (this.puzzleHandler.checkIsWordPuzzle()) {
+      const newStoneLetter = this.stoneHandler.handleHoveringToAnotherStone(
+        trailX,
+        trailY,
+        (foilStoneText, foilStoneIndex) => {
+          return this.puzzleHandler.handleCheckHoveredStone(foilStoneText, foilStoneIndex);
         }
+      );
+
+      if (newStoneLetter) {
+        this.puzzleHandler.setPickUpLetter(
+          newStoneLetter?.text,
+          newStoneLetter?.foilStoneIndex
+        );
+
+        this.pickedStone = this.stoneHandler.resetStonePosition(
+          this.width,
+          this.pickedStone,
+          this.pickedStoneObject
+        );
+
+        // After resetting its original position, replace with the new letter.
+        this.pickedStoneObject = newStoneLetter;
+        this.pickedStone = newStoneLetter;
       }
-      // Trigger open mouth animation
-      this.triggerMonsterAnimation('isMouthOpen');
     }
+
+    // Trigger open mouth animation
+    this.triggerMonsterAnimation('isMouthOpen');
   };
 
 
@@ -485,24 +472,24 @@ export class GameplayScene {
 
   draw(deltaTime: number) {
     if (!this.isGameStarted && !this.isPauseButtonClicked) {
-      this.time = this.time + deltaTime;
+      this.time += deltaTime;
       if (this.time >= 5000) {
         this.isGameStarted = true;
         this.time = 0;
         this.tutorial.setGameHasStarted();
       }
+      // Don't draw game elements until started
+      return;
     }
+
     // The promptText.draw method has been removed as it's now handled by HTML/CSS
     this.trailEffectHandler?.draw();
-    if (this.isPauseButtonClicked && this.isGameStarted) {
+
+    if (this.isGameStarted) {
       this.handleStoneLetterDrawing(deltaTime);
     }
 
-    if (!this.isPauseButtonClicked && this.isGameStarted) {
-      this.handleStoneLetterDrawing(deltaTime);
-    }
-
-    if (!this.isPauseButtonClicked && this.counter == 0) {
+    if (!this.isPauseButtonClicked && this.counter === 0) {
       this.tutorial.drawLetterPuzzleTutorial(deltaTime);
     }
   }
@@ -510,13 +497,12 @@ export class GameplayScene {
 
   private handleStoneLetterDrawing(deltaTime) {
     if (this.puzzleHandler.checkIsWordPuzzle()) {
-      const { groupedObj } = this.puzzleHandler.getWordPuzzleValues();
       this.stoneHandler.drawWordPuzzleLetters(
         deltaTime,
         (foilStoneIndex) => {
           return this.puzzleHandler.validateShouldHideLetter(foilStoneIndex);
         },
-        groupedObj
+        this.puzzleHandler.getWordPuzzleGroupedObj()
       );
     } else {
       this.stoneHandler.draw(deltaTime);
@@ -769,7 +755,7 @@ export class GameplayScene {
 
   public logPuzzleEndFirebaseEvent(isCorrect: boolean, puzzleType?: string) {
     let endTime = Date.now();
-    const { droppedLetters } = this.puzzleHandler.getWordPuzzleValues();
+    const droppedLetters = this.puzzleHandler.getWordPuzzleDroppedLetters();
     const puzzleCompletedData: PuzzleCompletedEvent = {
       cr_user_id: pseudoId,
       ftm_language: lang,

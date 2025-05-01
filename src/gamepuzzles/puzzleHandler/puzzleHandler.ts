@@ -1,6 +1,27 @@
 import LetterPuzzleLogic from '../letterPuzzleLogic/letterPuzzleLogic';
 import WordPuzzleLogic from '../wordPuzzleLogic/wordPuzzleLogic';
 
+/**
+ * Context object for creating a puzzle/handling a stone drop.
+ */
+interface CreatePuzzleContext {
+  levelType: string;
+  pickedStone: any;
+  stoneHandler: any;
+  audioPlayer: any;
+  promptText: any;
+  feedBackTexts: Record<string, string>;
+  handleCorrectStoneDrop: (feedbackIndex: number) => void;
+  handleStoneDropEnd: (isCorrect: boolean, type: string) => void;
+  triggerMonsterAnimation: (name: string) => void;
+  timerTicking: any;
+  isFeedBackTriggeredSetter: (v: boolean) => void;
+  lang: string;
+  stonesCountRef: { value: number };
+  counter?: number;
+  width?: number;
+}
+
 export default class PuzzleHandler {
   private lastWordPuzzleDroppedLetters: string | null = null;
   private wordPuzzleLogic: WordPuzzleLogic | null = null;
@@ -22,84 +43,76 @@ export default class PuzzleHandler {
   }
 
   /**
-   * Handles a stone drop event for any puzzle type.
-   * Accepts a context object with all required dependencies and state references.
-   * Returns a boolean indicating if the stone was dropped correctly.
+   * Main dispatcher for puzzle creation/stone drop.
    */
-  createPuzzle({
-    levelType,
-    pickedStone,
-    stoneHandler,
-    audioPlayer,
-    promptText,
-    feedBackTexts,
-    handleCorrectStoneDrop,
-    handleStoneDropEnd,
-    triggerMonsterAnimation,
-    timerTicking,
-    isFeedBackTriggeredSetter,
-    lang,
-    stonesCountRef,
-  }) {
-    switch (levelType) {
+  createPuzzle(ctx: CreatePuzzleContext): boolean | void {
+    switch (ctx.levelType) {
       case "LetterOnly":
-      case "LetterInWord": {
-        if (!this.letterPuzzleLogic) {
-          this.letterPuzzleLogic = new LetterPuzzleLogic();
-        }
-        return this.letterPuzzleLogic.handleLetterStoneDrop({
-          pickedStone,
-          stoneHandler,
-          getRandomInt: (min, max) => this.getRandomInt(min, max, feedBackTexts),
-          handleCorrectStoneDrop,
-          handleStoneDropEnd,
-          isFeedBackTriggeredSetter
-        });
-      }
+      case "LetterInWord":
+        return this.handleLetterPuzzle(ctx);
       case "Word":
-      case "SoundWord": {
-        if (pickedStone.frame <= 99) {
-          return; // Prevent dragging if the stone is animating
-        }
-        audioPlayer.stopFeedbackAudio();
-        pickedStone.x = -999;
-        pickedStone.y = -999;
-        const feedBackIndex = this.getRandomInt(0, 1, feedBackTexts);
-        this.wordPuzzleLogic.setGroupToDropped();
-        const { droppedLetters } = this.wordPuzzleLogic.getValues();
-        const isCorrect = this.wordPuzzleLogic.validateFedLetters();
-        stoneHandler.processLetterDropFeedbackAudio(
-          feedBackIndex,
-          isCorrect,
-          true,
-          droppedLetters
-        );
-        if (isCorrect) {
-          if (this.wordPuzzleLogic.validateWordPuzzle()) {
-            handleCorrectStoneDrop(feedBackIndex);
-            handleStoneDropEnd(isCorrect, "Word");
-            stonesCountRef.value = 1;
-            return;
-          }
-          triggerMonsterAnimation('isMouthClosed');
-          triggerMonsterAnimation('backToIdle');
-          timerTicking.startTimer();
-          const { droppedHistory } = this.wordPuzzleLogic.getValues();
-          const droppedStonesCount = Object.keys(droppedHistory).length;
-          promptText.droppedStoneIndex(
-            lang == "arabic"
-              ? stonesCountRef.value
-              : droppedStonesCount
-          );
-          stonesCountRef.value++;
-        } else {
-          handleStoneDropEnd(isCorrect, "Word");
-          stonesCountRef.value = 1;
-        }
-        return;
-      }
+      case "SoundWord":
+        return this.handleWordPuzzle(ctx);
       default:
         return false;
+    }
+  }
+
+  /**
+   * Handles Letter puzzle logic.
+   */
+  private handleLetterPuzzle(ctx: CreatePuzzleContext): boolean | void {
+    if (!this.letterPuzzleLogic) {
+      this.letterPuzzleLogic = new LetterPuzzleLogic();
+    }
+    return this.letterPuzzleLogic.handleLetterStoneDrop({
+      pickedStone: ctx.pickedStone,
+      stoneHandler: ctx.stoneHandler,
+      getRandomInt: (min: number, max: number) => this.getRandomInt(min, max, ctx.feedBackTexts),
+      handleCorrectStoneDrop: ctx.handleCorrectStoneDrop,
+      handleStoneDropEnd: ctx.handleStoneDropEnd,
+      isFeedBackTriggeredSetter: ctx.isFeedBackTriggeredSetter,
+    });
+  }
+
+  /**
+   * Handles Word puzzle logic.
+   */
+  private handleWordPuzzle(ctx: CreatePuzzleContext): void {
+    if (ctx.pickedStone.frame <= 99) return;
+    ctx.audioPlayer.stopFeedbackAudio();
+    ctx.pickedStone.x = -999;
+    ctx.pickedStone.y = -999;
+    const feedBackIndex = this.getRandomInt(0, 1, ctx.feedBackTexts);
+    this.wordPuzzleLogic?.setGroupToDropped();
+    const isCorrect = this.wordPuzzleLogic?.validateFedLetters();
+    ctx.stoneHandler.processLetterDropFeedbackAudio(
+      feedBackIndex,
+      isCorrect,
+      true,
+      this.getWordPuzzleDroppedLetters()
+    );
+    if (isCorrect) {
+      if (this.wordPuzzleLogic?.validateWordPuzzle()) {
+        ctx.handleCorrectStoneDrop(feedBackIndex);
+        ctx.handleStoneDropEnd(isCorrect, "Word");
+        ctx.stonesCountRef.value = 1;
+        return;
+      }
+      ctx.triggerMonsterAnimation('isMouthClosed');
+      ctx.triggerMonsterAnimation('backToIdle');
+      ctx.timerTicking.startTimer();
+      const { droppedHistory } = this.wordPuzzleLogic?.getValues() ?? {};
+      const droppedStonesCount = Object.keys(droppedHistory).length;
+      ctx.promptText.droppedStoneIndex(
+        ctx.lang == "arabic"
+          ? ctx.stonesCountRef.value
+          : droppedStonesCount
+      );
+      ctx.stonesCountRef.value++;
+    } else {
+      ctx.handleStoneDropEnd(isCorrect, "Word");
+      ctx.stonesCountRef.value = 1;
     }
   }
 
@@ -138,6 +151,20 @@ export default class PuzzleHandler {
     return this.wordPuzzleLogic && typeof this.wordPuzzleLogic.getValues === 'function'
       ? this.wordPuzzleLogic.getValues()
       : {};
+  }
+
+  /**
+   * Returns the groupedObj from wordPuzzleLogic values, or an empty object if unavailable.
+   */
+  getWordPuzzleGroupedObj() {
+    return this.wordPuzzleLogic?.getValues().groupedObj ?? {};
+  }
+
+  /**
+   * Returns the droppedLetters from wordPuzzleLogic values, or undefined if unavailable.
+   */
+  getWordPuzzleDroppedLetters() {
+    return this.wordPuzzleLogic?.getValues().droppedLetters;
   }
 
   /**
