@@ -122,6 +122,7 @@ export class RiveMonsterComponent {
       }),
       useOffscreenRenderer: true, // Improves performance
       wasmUrl: './assets/rive/rive.wasm', //wasm added 
+      locateFile: (_) => './assets/rive/rive.wasm',
     };
 
     // For evolution animations, we don't use state machines. so were excluding this.
