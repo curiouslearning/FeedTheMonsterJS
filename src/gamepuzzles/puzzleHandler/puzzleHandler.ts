@@ -270,7 +270,9 @@ export default class PuzzleHandler {
     ctx: CreatePuzzleContext,
     addScore: (amount: number) => void
   ): void {
-    // Add score
+    /**
+     The hardcoded value was carried over from the original implementation. The key change is that instead of directly modifying a score property (this.score += 100), we now call an injected function (addScore(100)). This improves separation of concerns - the PuzzleHandler doesn't manage the score directly but delegates that responsibility to the caller. In a future refactoring, this value could be made configurable rather than hardcoded.
+     */
     addScore(100);
     
     // Get feedback text and display it
