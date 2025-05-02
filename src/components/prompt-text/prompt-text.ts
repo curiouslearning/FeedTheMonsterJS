@@ -514,14 +514,14 @@ export class PromptText extends BaseHTML {
     }
 
     /**
-     * Sets the dropped letter index.
+     * Sets the dropped stone index.
      * @param index The index.
      */
-    droppedLetterIndex(index: number) {
+    droppedStoneIndex(index: number) {
         this.droppedStones = index;
         this.droppedStoneCount++;
         
-        // Update the text display to reflect the dropped letter
+        // Update the text display to reflect the dropped stone
         if (!this.isStoneDropped) {
             this.updateTextDisplay();
         }
