@@ -1,14 +1,17 @@
+/**
+ * Handles all logic for Word and SoundWord puzzles.
+ * Maintains state for grouped letters, dropped letters, and various tracking objects.
+ */
 export default class WordPuzzleLogic {
     /**
-        puzzleNumber - Puzzle stage level of current (Up to 5 stage levels) game level.
-        groupedLetters - String sequence of letters when performing the multi-letter seleciton.
-        droppedLetters - String sequence of letters when group of letters was fed to the monster.
-        groupedObj - Object with key properties of stone letter index, used for validating duplicate letters while hovering.
-        droppedHistory - Object with key properties of stone letter index that was fed to the monster.
-                        Used to preserve the list for hiding the stone letters.
-        hideListObj - Object with key properties of stone letter index.
-                    Used to hide stones that is part of the group or stones that was already fed to the monster.
-    **/
+     * State tracking for Word puzzles:
+     * - puzzleNumber: Current puzzle stage level (up to 5 stages per game level)
+     * - groupedLetters: String sequence of letters when performing multi-letter selection
+     * - droppedLetters: String sequence of letters fed to the monster
+     * - groupedObj: Object with stone letter indices for validating duplicate letters while hovering
+     * - droppedHistory: Object with stone letter indices that were fed to the monster
+     * - hideListObj: Object with stone letter indices to hide (part of group or already fed)
+     */
     private levelData: {
         levelNumber: number;
         levelMeta: {
@@ -37,6 +40,12 @@ export default class WordPuzzleLogic {
     private droppedHistory: {} | { [key:number]: string };
     private hideListObj: {} | { [key:number]: string };
 
+    /**
+     * Creates a new WordPuzzleLogic instance
+     * 
+     * @param levelData The level data containing puzzle information
+     * @param puzzleNumber The current puzzle number within the level
+     */
     constructor(levelData, puzzleNumber) {
         this.levelData = levelData;
         this.puzzleNumber = puzzleNumber;
@@ -47,10 +56,16 @@ export default class WordPuzzleLogic {
         this.hideListObj = {};
     }
 
-    private getTargetWord():string {
+    /**
+     * Gets the target word from the current puzzle
+     */
+    private getTargetWord(): string {
         return this.levelData.puzzles[this.puzzleNumber]?.prompt?.promptText;
     }
 
+    /**
+     * Returns all current state values
+     */
     getValues(): {
         groupedLetters: string;
         droppedLetters: string;
@@ -67,22 +82,34 @@ export default class WordPuzzleLogic {
         }
     }
 
-    checkIsWordPuzzle():boolean {
+    /**
+     * Checks if the current puzzle is a Word puzzle
+     */
+    checkIsWordPuzzle(): boolean {
         return this.levelData?.levelMeta?.levelType === 'Word';
     }
 
-    updatePuzzleLevel(puzzleNumber: number):void {
+    /**
+     * Updates the puzzle level and resets all values
+     */
+    updatePuzzleLevel(puzzleNumber: number): void {
         this.clearAllValues();
         this.puzzleNumber = puzzleNumber;
     }
 
-    clearPickedUp():void {
+    /**
+     * Clears the currently picked up letters
+     */
+    clearPickedUp(): void {
         this.groupedLetters = '';
         this.groupedObj = {};
         this.hideListObj = { ...this.droppedHistory };
     }
 
-    private clearAllValues():void {
+    /**
+     * Resets all state values
+     */
+    private clearAllValues(): void {
         this.groupedLetters = '';
         this.droppedLetters = '';
         this.groupedObj = {};
@@ -91,43 +118,66 @@ export default class WordPuzzleLogic {
         this.puzzleNumber = 0;
     }
 
-    validateShouldHideLetter(foilStoneIndex):boolean {
-        //If stone key index is listed in hideListObj it should not be drawn.
+    /**
+     * Determines if a stone should be hidden
+     * 
+     * @param foilStoneIndex The index of the stone to check
+     * @returns false if the stone should be hidden, true otherwise
+     */
+    validateShouldHideLetter(foilStoneIndex: number): boolean {
+        // If stone key index is listed in hideListObj it should not be drawn
         return !this.hideListObj[foilStoneIndex];
     }
 
-    handleCheckHoveredStone(foilStoneText:string, foilStoneIndex:number):boolean {
+    /**
+     * Checks if a hovered stone can be added to the current group
+     * 
+     * @param foilStoneText The text of the hovered stone
+     * @param foilStoneIndex The index of the hovered stone
+     * @returns true if the stone can be added to the current group, false otherwise
+     */
+    handleCheckHoveredStone(foilStoneText: string, foilStoneIndex: number): boolean {
         const combinedLetters = this.groupedLetters;
         const targetWord = this.getTargetWord();
 
-        /* Goes inside here if there are no previous letter(s) were dropped
-        and grouping of letters starts in a incorrect letter. */
-        if ((!this.droppedLetters.length && targetWord[0] !== combinedLetters[0])) {
+        // If no letters were dropped yet and grouping starts with incorrect letter, reject
+        if (!this.droppedLetters.length && targetWord[0] !== combinedLetters[0]) {
             return false;
         }
 
-        /*
-        isLetterAlreadyAdded - If the new stone text is NOT already included
-        isSameLetterUnique -If there is already of the same letter exist in group, validate using uniqe identifier which is the array index key in group object.
-        */
+        // Validation checks:
+        // 1. Is the letter already added to the group?
         const isLetterAlreadyAdded = !combinedLetters.includes(foilStoneText);
+        // 2. If same letter exists in group, is this instance unique by index?
         const isSameLetterUnique = !this.groupedObj[foilStoneIndex];
-        const isMatchTargetWord = targetWord.includes(`${this.droppedLetters}${combinedLetters}${foilStoneText}`);
+        // 3. Does adding this letter still match the target word?
+        const isMatchTargetWord = targetWord.includes(
+            `${this.droppedLetters}${combinedLetters}${foilStoneText}`
+        );
 
         return isMatchTargetWord && (isLetterAlreadyAdded || isSameLetterUnique);
     }
 
-    validateFedLetters():boolean {
+    /**
+     * Validates if the dropped letters match the beginning of the target word
+     */
+    validateFedLetters(): boolean {
         const targetWord = this.getTargetWord();
         return this.droppedLetters === targetWord.substring(0, this.droppedLetters.length);
     }
 
-    validateWordPuzzle():boolean {
+    /**
+     * Validates if the puzzle is complete (all letters dropped correctly)
+     */
+    validateWordPuzzle(): boolean {
         const targetWord = this.getTargetWord();
         return this.droppedLetters === targetWord;
     }
 
-    setGroupToDropped():void {
+    /**
+     * Moves grouped letters to dropped letters
+     */
+    setGroupToDropped(): void {
         this.droppedLetters = `${this.droppedLetters}${this.groupedLetters}`;
         this.droppedHistory = {
             ...this.droppedHistory,
@@ -135,11 +185,20 @@ export default class WordPuzzleLogic {
         };
     }
 
-    setPickUpLetter(letter: string, arrFoilStoneIndex: number):void {
+    /**
+     * Adds a letter to the current group
+     * 
+     * @param letter The letter to add
+     * @param arrFoilStoneIndex The index of the stone
+     */
+    setPickUpLetter(letter: string, arrFoilStoneIndex: number): void {
+        // Hide previous letters except the new one
         this.hideListObj = {
             ...this.hideListObj,
             ...this.groupedObj
-        }; //Hide the previous letters except the new one.
+        };
+        
+        // Add the new letter to the group
         this.groupedLetters = `${this.groupedLetters}${letter}`;
         this.groupedObj[arrFoilStoneIndex] = letter;
     }

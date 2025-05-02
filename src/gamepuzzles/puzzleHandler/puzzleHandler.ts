@@ -23,23 +23,35 @@ interface CreatePuzzleContext {
   width?: number;
 }
 
+/**
+ * PuzzleHandler is responsible for delegating puzzle logic to the appropriate
+ * specialized puzzle logic class based on the level type.
+ */
 export default class PuzzleHandler {
   private wordPuzzleLogic: WordPuzzleLogic | null = null;
   private letterPuzzleLogic: LetterPuzzleLogic | null = null;
 
   constructor(levelData: any, counter: number = 0) {
     this.initialize(levelData, counter);
-    console.log('levelData', levelData)
   }
 
-  initialize(levelData, counter) {
-    // Only initialize for word puzzles, but you can expand as needed
-    if (levelData && levelData.levelMeta && (levelData.levelMeta.levelType === "Word" || levelData.levelMeta.levelType === "SoundWord")) {
+  /**
+   * Initialize the appropriate puzzle logic based on level type.
+   */
+  initialize(levelData: any, counter: number): void {
+    if (!levelData || !levelData.levelMeta) return;
+    
+    const { levelType } = levelData.levelMeta;
+    
+    // Initialize word puzzle logic for Word and SoundWord types
+    if (levelType === "Word" || levelType === "SoundWord") {
       this.wordPuzzleLogic = new WordPuzzleLogic(levelData, counter);
     } else {
       this.wordPuzzleLogic = null;
     }
-    // Optionally: this.letterPuzzleLogic = new LetterPuzzleLogic();
+    
+    // Letter puzzle logic is created on demand in handleLetterPuzzle
+    this.letterPuzzleLogic = null;
   }
 
   /**
@@ -79,36 +91,42 @@ export default class PuzzleHandler {
    * Handles Word puzzle logic.
    */
   private handleWordPuzzle(ctx: CreatePuzzleContext): void {
-    if (ctx.pickedStone.frame <= 99) return;
+    if (!this.wordPuzzleLogic || ctx.pickedStone.frame <= 99) return;
+    
     ctx.audioPlayer.stopFeedbackAudio();
     ctx.pickedStone.x = -999;
     ctx.pickedStone.y = -999;
+    
     const feedBackIndex = this.getRandomInt(0, 1, ctx.feedBackTexts);
-    this.wordPuzzleLogic?.setGroupToDropped();
-    const isCorrect = this.wordPuzzleLogic?.validateFedLetters();
+    this.wordPuzzleLogic.setGroupToDropped();
+    const isCorrect = this.wordPuzzleLogic.validateFedLetters();
+    
     ctx.stoneHandler.processLetterDropFeedbackAudio(
       feedBackIndex,
       isCorrect,
       true,
       this.getWordPuzzleDroppedLetters()
     );
+    
     if (isCorrect) {
-      if (this.wordPuzzleLogic?.validateWordPuzzle()) {
+      if (this.wordPuzzleLogic.validateWordPuzzle()) {
         ctx.handleCorrectStoneDrop(feedBackIndex);
         ctx.handleStoneDropEnd(isCorrect, "Word");
         ctx.stonesCountRef.value = 1;
         return;
       }
+      
       ctx.triggerMonsterAnimation('isMouthClosed');
       ctx.triggerMonsterAnimation('backToIdle');
       ctx.timerTicking.startTimer();
-      const { droppedHistory } = this.wordPuzzleLogic?.getValues() ?? {};
+      
+      const { droppedHistory } = this.wordPuzzleLogic.getValues();
       const droppedStonesCount = Object.keys(droppedHistory).length;
+      
       ctx.promptText.droppedStoneIndex(
-        ctx.lang == "arabic"
-          ? ctx.stonesCountRef.value
-          : droppedStonesCount
+        ctx.lang === "arabic" ? ctx.stonesCountRef.value : droppedStonesCount
       );
+      
       ctx.stonesCountRef.value++;
     } else {
       ctx.handleStoneDropEnd(isCorrect, "Word");
@@ -121,8 +139,7 @@ export default class PuzzleHandler {
    */
   getRandomInt(min: number, max: number, feedBackTexts: Record<string, string>): number {
     const feedbackValues = Object.values(feedBackTexts);
-    const definedValuesMaxCount =
-      feedbackValues.filter((value) => value != undefined).length - 1;
+    const definedValuesMaxCount = feedbackValues.filter(value => value != undefined).length - 1;
     return Math.floor(Math.random() * (definedValuesMaxCount - min + 1)) + min;
   }
 
@@ -132,14 +149,14 @@ export default class PuzzleHandler {
   getRandomFeedBackText(randomIndex: number, feedBackTexts: Record<string, string>): string {
     const keys = Object.keys(feedBackTexts);
     const selectedKey = keys[randomIndex];
-    return feedBackTexts[selectedKey] as string;
+    return feedBackTexts[selectedKey] || '';
   }
 
   /**
    * Clears picked up state for word puzzles, if active.
    */
-  clearPickedUp() {
-    if (this.wordPuzzleLogic && typeof this.wordPuzzleLogic.clearPickedUp === 'function') {
+  clearPickedUp(): void {
+    if (this.wordPuzzleLogic) {
       this.wordPuzzleLogic.clearPickedUp();
     }
   }
@@ -147,49 +164,43 @@ export default class PuzzleHandler {
   /**
    * Checks if the current puzzle is a word puzzle.
    */
-  checkIsWordPuzzle() {
-    return this.wordPuzzleLogic && typeof this.wordPuzzleLogic.checkIsWordPuzzle === 'function'
-      ? this.wordPuzzleLogic.checkIsWordPuzzle()
-      : false;
+  checkIsWordPuzzle(): boolean {
+    return this.wordPuzzleLogic ? this.wordPuzzleLogic.checkIsWordPuzzle() : false;
   }
 
   /**
    * Returns the current values from wordPuzzleLogic, if available.
    */
-  getWordPuzzleValues() {
-    return this.wordPuzzleLogic && typeof this.wordPuzzleLogic.getValues === 'function'
-      ? this.wordPuzzleLogic.getValues()
-      : {};
+  getWordPuzzleValues(): any {
+    return this.wordPuzzleLogic ? this.wordPuzzleLogic.getValues() : {};
   }
 
   /**
    * Returns the groupedObj from wordPuzzleLogic values, or an empty object if unavailable.
    */
-  getWordPuzzleGroupedObj() {
+  getWordPuzzleGroupedObj(): Record<number, string> {
     return this.wordPuzzleLogic?.getValues().groupedObj ?? {};
   }
 
   /**
    * Returns the droppedLetters from wordPuzzleLogic values, or undefined if unavailable.
    */
-  getWordPuzzleDroppedLetters() {
+  getWordPuzzleDroppedLetters(): string | undefined {
     return this.wordPuzzleLogic?.getValues().droppedLetters;
   }
 
   /**
    * Handles checking hovered stone for word puzzles.
    */
-  handleCheckHoveredStone(foilStoneText: string, foilStoneIndex: number) {
-    return this.wordPuzzleLogic && typeof this.wordPuzzleLogic.handleCheckHoveredStone === 'function'
-      ? this.wordPuzzleLogic.handleCheckHoveredStone(foilStoneText, foilStoneIndex)
-      : undefined;
+  handleCheckHoveredStone(foilStoneText: string, foilStoneIndex: number): boolean | undefined {
+    return this.wordPuzzleLogic?.handleCheckHoveredStone(foilStoneText, foilStoneIndex);
   }
 
   /**
    * Sets picked up letter for word puzzles.
    */
-  setPickUpLetter(text: string, foilStoneIndex: number) {
-    if (this.wordPuzzleLogic && typeof this.wordPuzzleLogic.setPickUpLetter === 'function') {
+  setPickUpLetter(text: string, foilStoneIndex: number): void {
+    if (this.wordPuzzleLogic) {
       this.wordPuzzleLogic.setPickUpLetter(text, foilStoneIndex);
     }
   }
@@ -197,28 +208,28 @@ export default class PuzzleHandler {
   /**
    * Validates if a letter should be hidden for word puzzles.
    */
-  validateShouldHideLetter(foilStoneIndex: number) {
-    return this.wordPuzzleLogic && typeof this.wordPuzzleLogic.validateShouldHideLetter === 'function'
-      ? this.wordPuzzleLogic.validateShouldHideLetter(foilStoneIndex)
-      : false;
+  validateShouldHideLetter(foilStoneIndex: number): boolean {
+    return this.wordPuzzleLogic ? this.wordPuzzleLogic.validateShouldHideLetter(foilStoneIndex) : false;
   }
 
   /**
    * Handles correct stone drop feedback logic.
-   * Now receives ctx so feedBackTexts and other context can be accessed directly.
    */
   handleCorrectStoneDrop(
     feedbackIndex: number,
     feedbackTextEffects: FeedbackTextEffects,
     ctx: CreatePuzzleContext,
     addScore: (amount: number) => void
-  ) {
+  ): void {
+    // Add score
     addScore(100);
+    
+    // Get feedback text and display it
     const feedbackText = this.getRandomFeedBackText(feedbackIndex, ctx.feedBackTexts);
-    // Show feedback text immediately
     feedbackTextEffects.wrapText(feedbackText);
-    // Wait for feedback audio to finish
-    const totalAudioDuration = 4500; // Approximate total duration of all feedback audio (eating + cheering + points)
+    
+    // Hide feedback text after audio finishes
+    const totalAudioDuration = 4500; // Approximate duration of feedback audio
     setTimeout(() => {
       feedbackTextEffects.hideText();
     }, totalAudioDuration);

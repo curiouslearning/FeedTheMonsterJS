@@ -6,13 +6,9 @@ export default class LetterPuzzleLogic {
   /**
    * Handles the logic for dropping a letter stone.
    * Returns whether the drop is correct and triggers feedback.
-   * @param pickedStone The picked stone object.
-   * @param stoneHandler The stone handler instance.
-   * @param getRandomInt Function to get a random int for feedback.
-   * @param handleCorrectStoneDrop Callback for correct drop.
-   * @param handleStoneDropEnd Callback for end of drop.
-   * @param isFeedBackTriggeredSetter Callback to set feedback triggered state.
-   * @returns True if correct, false otherwise.
+   * 
+   * @param params Object containing all necessary parameters for handling letter stone drop
+   * @returns True if the stone drop was correct, false otherwise
    */
   handleLetterStoneDrop({
     pickedStone,
@@ -22,19 +18,29 @@ export default class LetterPuzzleLogic {
     handleStoneDropEnd,
     isFeedBackTriggeredSetter
   }) {
-    if (pickedStone && pickedStone.frame <= 99) {
-      return false; // Prevent dragging if the stone is animating
+    // Prevent dragging if the stone is animating
+    if (!pickedStone || pickedStone.frame <= 99) {
+      return false;
     }
+    
+    // Get a random feedback index
     const feedBackIndex = getRandomInt(0, 1);
+    
+    // Check if the stone drop is correct
     const isCorrect = stoneHandler.isStoneLetterDropCorrect(
       pickedStone.text,
       feedBackIndex
     );
+    
+    // Handle correct stone drop if needed
     if (isCorrect) {
       handleCorrectStoneDrop(feedBackIndex);
     }
+    
+    // Set feedback triggered state and handle stone drop end
     isFeedBackTriggeredSetter(true);
     handleStoneDropEnd(isCorrect);
+    
     return isCorrect;
   }
 }
