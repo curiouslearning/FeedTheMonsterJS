@@ -212,7 +212,9 @@ export class GameplayScene {
     this.gameControl.style.zIndex = "5";
 
     this.canvas = canvasElem
-    this.width = canvasWidth;
+    console.log(canvasWidth,"checked width");
+    
+    this.width = canvasWidth > 1024 ? 500 : canvasWidth;
     this.height = canvasHeight;
     this.context = gameCanvasContext;
   }

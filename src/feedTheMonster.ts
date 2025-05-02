@@ -266,7 +266,7 @@ class App {
   }
 
   private setupCanvas() {
-    const gameWidth = window.screen.width > 1024 ? 768 : window.innerWidth;
+    const gameWidth = window.screen.width > 1024 ? 500 : window.innerWidth;
     this.canvas.height = window.innerHeight;
     this.canvas.width = gameWidth;
     this.riveCanvas.height = window.innerHeight;

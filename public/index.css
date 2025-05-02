@@ -889,95 +889,30 @@ img {
 }
 
 @media (min-width: 1080px) {
-  #title {
-    font-size: 6vw;
-    margin-top: 10%;
+  #background{
+    width: 500px !important;
   }
-
-  .summer .ftm-fence {
-    left: -15%;
-    bottom: 18%;
-    transform: rotate(10deg);
-    width: 100%;
+  .game-scene{
+    width: 500px;
+    margin: auto;
   }
-
-  .summer .ftm-totem {
-    position: absolute;
-    bottom: 23%;
-    z-index: 1;
-    right: -10%;
-    max-width: 450px;
-    width: 100%;
+   #title {
+    font-size: 2vw !important;
+    margin-top: 10% !important;
   }
-
-  .autumn-bg .ftm-totem,
-  .winter-bg .ftm-totem {
-    right: -3%;
-    bottom: 20%;
-    width: 50%;
+  .game-scene #play-button{
+    max-width: 125px;
+    max-height: 125px;
+    margin: 30px auto;
   }
-
-  .winter-bg .ftm-fence {
-    width: 60%;
-    left: -15%;
-    bottom: 28%;
-    transform: rotate(-20deg);
+  #loading-screen{
+    width: 500px;
   }
-
-  .autumn-bg .ftm-fence {
-    bottom: 17%;
-    width: 50%;
-    left: -11%;
-    transform: rotate(340deg);
+  #levelEnd{
+    width: 500px;
   }
-
-  .dynamic-button {
-    max-width: 100px;
-    max-height: 100px;
+  .feedback-text{
+    font-size: 3vw;
   }
-
-  .popup #cancel-button {
-    top: 1% !important;
-    left: 10% !important;
-  }
-
-  .stars-container {
-    top: 25%;
-    height: 125px;
-  }
-
-  .star1 {
-    left: 15%;
-    width: 130px;
-    bottom: 0%;
-  }
-
-  .star2 {
-    width: 160px;
-    top: -100%;
-  }
-
-  .star3 {
-    right: 13%;
-    width: 130px;
-    bottom: 0%;
-  }
-
-  .buttons-container {
-    gap: 60px !important;
-  }
-
-  .feedback-text {
-    font-size: 8vw !important;
-  }
-
-  #title {
-    margin-top: 5%;
-    font-size: 7vw;
-  }
-
-  #levelEnd {
-    background-size: 100% 120%;
-  }
-
 }
+
