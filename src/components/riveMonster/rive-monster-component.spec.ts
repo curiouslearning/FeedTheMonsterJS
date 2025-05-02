@@ -136,6 +136,7 @@ describe('RiveMonsterComponent', () => {
       onLoad: expect.any(Function),
       useOffscreenRenderer: true,
       wasmUrl: './assets/rive/rive.wasm', //wasm added 
+      locateFile: (_) => './assets/rive/rive.wasm',
     });
   });
 
