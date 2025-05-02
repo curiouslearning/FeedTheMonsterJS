@@ -134,7 +134,8 @@ describe('RiveMonsterComponent', () => {
       },
       stateMachines: ['State Machine 1'],
       onLoad: expect.any(Function),
-      useOffscreenRenderer: true
+      useOffscreenRenderer: true,
+      wasmUrl: './assets/rive/rive.wasm', //wasm added 
     });
   });
 
