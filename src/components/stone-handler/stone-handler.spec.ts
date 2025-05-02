@@ -36,7 +36,6 @@ describe('StoneHandler - playDragAudioIfNecessary', () => {
       mockCanvas,
       0, // Puzzle number
       mockLevelData, // Pass the mocked levelData
-      mockFeedbackAudios,
       mockTimerTickingInstance
     );
 
@@ -99,7 +98,6 @@ describe('StoneHandler - Latest Optimizations', () => {
       mockCanvas,
       0,
       mockLevelData,
-      [],
       mockTimerTicking
     );
   });
