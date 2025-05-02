@@ -391,12 +391,12 @@ export class GameplayScene {
         trailX,
         trailY,
         (foilStoneText, foilStoneIndex) => {
-          return this.handleCheckHoveredLetter(foilStoneText, foilStoneIndex);
+          return this.puzzleHandler.handleCheckHoveredLetter(foilStoneText, foilStoneIndex);
         }
       );
 
       if (newStoneLetter) {
-        this.setPickUpLetter(
+        this.puzzleHandler.setPickUpLetter(
           newStoneLetter?.text,
           newStoneLetter?.foilStoneIndex
         );
@@ -788,24 +788,10 @@ export class GameplayScene {
   };
 
   /**
-   * Handles checking if a hovered letter can be added to the current word group
-   * UI-specific wrapper around WordPuzzleLogic's handleCheckHoveredLetter
+   * Handles the game pause event.
    */
-  handleCheckHoveredLetter(letterText: string, letterIndex: number): boolean | undefined {
-    if (!this.puzzleHandler.checkIsWordPuzzle()) return false;
-    
-    // Call the WordPuzzleLogic method through PuzzleHandler
-    return this.puzzleHandler.handleCheckHoveredLetter(letterText, letterIndex);
-  }
-  
-  /**
-   * Sets a picked up letter for word puzzles
-   * UI-specific wrapper around WordPuzzleLogic's setPickUpLetter
-   */
-  setPickUpLetter(text: string, letterIndex: number): void {
-    if (!this.puzzleHandler.checkIsWordPuzzle()) return;
-    
-    // Call the WordPuzzleLogic method through PuzzleHandler
-    this.puzzleHandler.setPickUpLetter(text, letterIndex);
-  }
+  handleGamePause = () => {
+    gameStateService.publish(gameStateService.EVENTS.GAME_PAUSE_STATUS_EVENT, true);
+    this.pauseGamePlay();
+  };
 }
