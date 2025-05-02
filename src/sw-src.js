@@ -54,6 +54,7 @@ async function preloadAdditionalAssets() {
     "/assets/rive/phase1Monster.riv",
     "/assets/rive/phase2Monster.riv",
     "/assets/rive/phase4Monster.riv",
+    "/assets/rive/rive.wasm",
   ];
   const cache = await caches.open("dynamic-cache");
 
