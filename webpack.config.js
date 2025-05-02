@@ -86,6 +86,7 @@ var config = {
         { from: "./public/index.css", to: "./" },
         { from: "./public/assets", to: "./assets" },
         { from: "./lang", to: "./lang" },
+        { from: './public/assets/rive.wasm', to: './assets/rive.wasm' },
       ],
     }),
 
