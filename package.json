@@ -30,7 +30,7 @@
     "@curiouslearning/features": "^1.2.5",
     "@octokit/rest": "^20.0.1",
     "@release-it/conventional-changelog": "^8.0.1",
-    "@rive-app/canvas": "^2.25.1",
+    "@rive-app/canvas": "^2.27.1",
     "@sentry/browser": "^7.47.0",
     "@types/firebase": "^3.2.1",
     "@types/workbox-window": "^4.3.4",

@@ -120,7 +120,8 @@ export class RiveMonsterComponent {
         fit: Fit.Contain,
         alignment: Alignment.Center,
       }),
-      useOffscreenRenderer: true, // Improves performance
+      useOffscreenRenderer: true, // Improves performance,
+      wasmUrl: './assets/rive/rive.wasm', //wasm added 
     };
 
     // For evolution animations, we don't use state machines. so were excluding this.
