@@ -299,8 +299,14 @@ export class GameplayScene {
           ctx,
           (amount) => this.score += amount
         );
+        // Hide the picked stone after puzzle logic is handled
+        this.stoneHandler.hideStone(ctx.pickedStone);
       };
       this.puzzleHandler.createPuzzle(ctx);
+      // For Word puzzles, hide the stone immediately after dropping it into the monster
+      if (ctx.levelType === "Word" || ctx.levelType === "SoundWord") {
+        this.stoneHandler.hideStone(ctx.pickedStone);
+      }
       this.stonesCount = stonesCountRef.value;
       this.isFeedBackTriggered = true;
     } else if (this.pickedStoneObject) {

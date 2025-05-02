@@ -225,7 +225,8 @@ export default class StoneHandler extends EventManager {
   public isStoneLetterDropCorrect(
     droppedStone: string,
     feedBackIndex: number,
-    isWord: boolean = false
+    isWord: boolean = false,
+    puzzleHandler?: any
   ): boolean {
     /*
      * To Do: Need to refactor or revome this completely and place something
@@ -236,35 +237,33 @@ export default class StoneHandler extends EventManager {
       ? droppedStone == this.correctTargetStone.substring(0, droppedStone.length)
       : droppedStone == this.correctTargetStone;
 
-    this.processLetterDropFeedbackAudio(
-      feedBackIndex,
-      isLetterDropCorrect,
-      isWord,
-      droppedStone
-    );
+    // Use the PuzzleHandler's processLetterDropFeedbackAudio if provided
+    if (puzzleHandler) {
+      puzzleHandler.processLetterDropFeedbackAudio(
+        this,
+        feedBackIndex,
+        isLetterDropCorrect,
+        isWord,
+        droppedStone
+      );
+    } else {
+      // Fallback to direct audio feedback if puzzleHandler not provided
+      if (isLetterDropCorrect) {
+        const condition = isWord
+          ? droppedStone === this.getCorrectTargetStone() // condition for word puzzle
+          : isLetterDropCorrect // for letter and letter for word puzzle
+  
+        if (condition) {
+          this.feedbackAudioHandler.playFeedback(FeedbackType.CORRECT_ANSWER, feedBackIndex);
+        } else {
+          this.feedbackAudioHandler.playFeedback(FeedbackType.PARTIAL_CORRECT, feedBackIndex);
+        }
+      } else {
+        this.feedbackAudioHandler.playFeedback(FeedbackType.INCORRECT, feedBackIndex);
+      }
+    }
 
     return isLetterDropCorrect
-  }
-
-  public processLetterDropFeedbackAudio(
-    feedBackIndex: number,
-    isLetterDropCorrect: boolean,
-    isWord: boolean,
-    droppedStone: string,
-  ) {
-    if (isLetterDropCorrect) {
-      const condition = isWord
-        ? droppedStone === this.getCorrectTargetStone() // condition for word puzzle
-        : isLetterDropCorrect // for letter and letter for word puzzle
-
-      if (condition) {
-        this.feedbackAudioHandler.playFeedback(FeedbackType.CORRECT_ANSWER, feedBackIndex);
-      } else {
-        this.feedbackAudioHandler.playFeedback(FeedbackType.PARTIAL_CORRECT, feedBackIndex);
-      }
-    } else {
-      this.feedbackAudioHandler.playFeedback(FeedbackType.INCORRECT, feedBackIndex);
-    }
   }
 
   public getCorrectTargetStone(): string {
@@ -432,6 +431,17 @@ export default class StoneHandler extends EventManager {
   playDragAudioIfNecessary(stone: StoneConfig) {
     if (stone.frame > 99) {
       this.audioPlayer.playAudio(AUDIO_PATH_ON_DRAG);
+    }
+  }
+
+  /**
+   * Hides a stone by moving it off-screen
+   * @param stone The stone to hide
+   */
+  hideStone(stone: StoneConfig) {
+    if (stone) {
+      stone.x = -999;
+      stone.y = -999;
     }
   }
 

@@ -1,6 +1,7 @@
 import LetterPuzzleLogic from '../letterPuzzleLogic/letterPuzzleLogic';
 import WordPuzzleLogic from '../wordPuzzleLogic/wordPuzzleLogic';
 import { FeedbackTextEffects } from '@components/feedback-text';
+import { FeedbackAudioHandler, FeedbackType } from '@gamepuzzles';
 
 /**
  * Context object for creating a puzzle/handling a stone drop.
@@ -94,14 +95,14 @@ export default class PuzzleHandler {
     if (!this.wordPuzzleLogic || ctx.pickedStone.frame <= 99) return;
     
     ctx.audioPlayer.stopFeedbackAudio();
-    ctx.pickedStone.x = -999;
-    ctx.pickedStone.y = -999;
+    // Stone hiding is now handled by the GameplayScene
     
     const feedBackIndex = this.getRandomInt(0, 1, ctx.feedBackTexts);
     this.wordPuzzleLogic.setGroupToDropped();
     const isCorrect = this.wordPuzzleLogic.validateFedLetters();
     
-    ctx.stoneHandler.processLetterDropFeedbackAudio(
+    this.processLetterDropFeedbackAudio(
+      ctx.stoneHandler,
       feedBackIndex,
       isCorrect,
       true,
@@ -150,6 +151,31 @@ export default class PuzzleHandler {
     const keys = Object.keys(feedBackTexts);
     const selectedKey = keys[randomIndex];
     return feedBackTexts[selectedKey] || '';
+  }
+
+  /**
+   * Processes audio feedback for letter drops based on correctness
+   */
+  processLetterDropFeedbackAudio(
+    stoneHandler: any,
+    feedBackIndex: number,
+    isLetterDropCorrect: boolean,
+    isWord: boolean,
+    droppedStone: string,
+  ) {
+    if (isLetterDropCorrect) {
+      const condition = isWord
+        ? droppedStone === stoneHandler.getCorrectTargetStone() // condition for word puzzle
+        : isLetterDropCorrect // for letter and letter for word puzzle
+
+      if (condition) {
+        stoneHandler.feedbackAudioHandler.playFeedback(FeedbackType.CORRECT_ANSWER, feedBackIndex);
+      } else {
+        stoneHandler.feedbackAudioHandler.playFeedback(FeedbackType.PARTIAL_CORRECT, feedBackIndex);
+      }
+    } else {
+      stoneHandler.feedbackAudioHandler.playFeedback(FeedbackType.INCORRECT, feedBackIndex);
+    }
   }
 
   /**
