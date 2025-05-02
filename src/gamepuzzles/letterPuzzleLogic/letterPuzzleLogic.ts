@@ -1,46 +1,70 @@
+import { FeedbackType } from '@gamepuzzles';
+
 /**
  * Handles all logic for LetterOnly and LetterInWord puzzles.
- * Stateless: all logic is performed via the main method, no internal state is tracked.
+ * Responsible for puzzle validation and game flow.
  */
 export default class LetterPuzzleLogic {
+  private targetLetter: string | null = null;
+  
   /**
-   * Handles the logic for dropping a letter stone.
+   * Sets the target letter for validation
+   * @param targetLetter The correct target letter
+   */
+  setTargetLetter(targetLetter: string): void {
+    this.targetLetter = targetLetter;
+  }
+  
+  /**
+   * Validates if the dropped letter matches the target letter
+   * @param droppedLetter The letter that was dropped
+   * @returns True if the letter matches the target, false otherwise
+   */
+  validateLetterDrop(droppedLetter: string): boolean {
+    if (!this.targetLetter) return false;
+    return droppedLetter === this.targetLetter;
+  }
+  
+  /**
+   * Handles the logic for a letter puzzle.
    * Returns whether the drop is correct and triggers feedback.
    * 
-   * @param params Object containing all necessary parameters for handling letter stone drop
-   * @returns True if the stone drop was correct, false otherwise
+   * @param params Object containing all necessary parameters for handling letter puzzle
+   * @returns True if the letter drop was correct, false otherwise
    */
-  handleLetterStoneDrop({
-    pickedStone,
-    stoneHandler,
+  handleLetterDrop({
+    droppedText,
     getRandomInt,
-    handleCorrectStoneDrop,
-    handleStoneDropEnd,
-    isFeedBackTriggeredSetter
+    handleCorrectLetterDrop,
+    handleLetterDropEnd,
+    isFeedBackTriggeredSetter,
+    playFeedbackAudio
   }) {
-    // Prevent dragging if the stone is animating
-    if (!pickedStone || pickedStone.frame <= 99) {
-      return false;
-    }
-    
     // Get a random feedback index
     const feedBackIndex = getRandomInt(0, 1);
     
-    // Check if the stone drop is correct
-    const isCorrect = stoneHandler.isStoneLetterDropCorrect(
-      pickedStone.text,
-      feedBackIndex
-    );
+    // Check if the letter drop is correct
+    const isCorrect = this.validateLetterDrop(droppedText);
     
-    // Handle correct stone drop if needed
+    // Play appropriate audio feedback
+    playFeedbackAudio(feedBackIndex, isCorrect, false, droppedText);
+    
+    // Handle correct letter drop if needed
     if (isCorrect) {
-      handleCorrectStoneDrop(feedBackIndex);
+      handleCorrectLetterDrop(feedBackIndex);
     }
     
-    // Set feedback triggered state and handle stone drop end
+    // Set feedback triggered state and handle letter drop end
     isFeedBackTriggeredSetter(true);
-    handleStoneDropEnd(isCorrect);
+    handleLetterDropEnd(isCorrect, "Letter");
     
     return isCorrect;
+  }
+  
+  /**
+   * Resets the internal state of the letter puzzle logic
+   */
+  reset(): void {
+    this.targetLetter = null;
   }
 }

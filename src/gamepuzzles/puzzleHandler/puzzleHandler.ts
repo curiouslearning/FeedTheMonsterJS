@@ -4,22 +4,25 @@ import { FeedbackTextEffects } from '@components/feedback-text';
 import { FeedbackAudioHandler, FeedbackType } from '@gamepuzzles';
 
 /**
- * Context object for creating a puzzle/handling a stone drop.
+ * Context object for creating a puzzle/handling a letter drop.
  */
 interface CreatePuzzleContext {
   levelType: string;
-  pickedStone: any;
-  stoneHandler: any;
+  pickedLetter: {
+    text: string;
+    frame: number;
+  };
+  targetLetterText: string; // Instead of passing the entire letterHandler
   audioPlayer: any;
   promptText: any;
   feedBackTexts: Record<string, string>;
-  handleCorrectStoneDrop: (feedbackIndex: number) => void;
-  handleStoneDropEnd: (isCorrect: boolean, type: string) => void;
+  handleCorrectLetterDrop: (feedbackIndex: number) => void;
+  handleLetterDropEnd: (isCorrect: boolean, type: string) => void;
   triggerMonsterAnimation: (name: string) => void;
   timerTicking: any;
   isFeedBackTriggeredSetter: (v: boolean) => void;
   lang: string;
-  stonesCountRef: { value: number };
+  lettersCountRef: { value: number };
   counter?: number;
   width?: number;
 }
@@ -31,8 +34,14 @@ interface CreatePuzzleContext {
 export default class PuzzleHandler {
   private wordPuzzleLogic: WordPuzzleLogic | null = null;
   private letterPuzzleLogic: LetterPuzzleLogic | null = null;
+  private feedbackAudioHandler: FeedbackAudioHandler;
 
-  constructor(levelData: any, counter: number = 0) {
+  constructor(levelData: any, counter: number = 0, feedbackAudios?: any) {
+    // Initialize feedback audio handler if audio resources are provided
+    if (feedbackAudios) {
+      this.feedbackAudioHandler = new FeedbackAudioHandler(feedbackAudios);
+    }
+    
     this.initialize(levelData, counter);
   }
 
@@ -56,7 +65,7 @@ export default class PuzzleHandler {
   }
 
   /**
-   * Main dispatcher for puzzle creation/stone drop.
+   * Main dispatcher for puzzle creation/letter drop.
    */
   createPuzzle(ctx: CreatePuzzleContext): boolean | void {
     switch (ctx.levelType) {
@@ -77,14 +86,24 @@ export default class PuzzleHandler {
   private handleLetterPuzzle(ctx: CreatePuzzleContext): boolean | void {
     if (!this.letterPuzzleLogic) {
       this.letterPuzzleLogic = new LetterPuzzleLogic();
+      this.letterPuzzleLogic.setTargetLetter(ctx.targetLetterText);
     }
-    return this.letterPuzzleLogic.handleLetterStoneDrop({
-      pickedStone: ctx.pickedStone,
-      stoneHandler: ctx.stoneHandler,
+    
+    return this.letterPuzzleLogic.handleLetterDrop({
+      droppedText: ctx.pickedLetter.text,
       getRandomInt: (min: number, max: number) => this.getRandomInt(min, max, ctx.feedBackTexts),
-      handleCorrectStoneDrop: ctx.handleCorrectStoneDrop,
-      handleStoneDropEnd: ctx.handleStoneDropEnd,
+      handleCorrectLetterDrop: ctx.handleCorrectLetterDrop,
+      handleLetterDropEnd: ctx.handleLetterDropEnd,
       isFeedBackTriggeredSetter: ctx.isFeedBackTriggeredSetter,
+      playFeedbackAudio: (feedBackIndex, isCorrect, isWord, droppedLetter) => {
+        this.processLetterDropFeedbackAudio(
+          ctx.targetLetterText,
+          feedBackIndex,
+          isCorrect,
+          isWord,
+          droppedLetter
+        );
+      }
     });
   }
 
@@ -92,17 +111,17 @@ export default class PuzzleHandler {
    * Handles Word puzzle logic.
    */
   private handleWordPuzzle(ctx: CreatePuzzleContext): void {
-    if (!this.wordPuzzleLogic || ctx.pickedStone.frame <= 99) return;
+    if (!this.wordPuzzleLogic) return;
     
-    ctx.audioPlayer.stopFeedbackAudio();
-    // Stone hiding is now handled by the GameplayScene
+    // Use our own stopFeedbackAudio method instead of ctx.audioPlayer
+    this.stopFeedbackAudio();
     
     const feedBackIndex = this.getRandomInt(0, 1, ctx.feedBackTexts);
     this.wordPuzzleLogic.setGroupToDropped();
     const isCorrect = this.wordPuzzleLogic.validateFedLetters();
     
     this.processLetterDropFeedbackAudio(
-      ctx.stoneHandler,
+      ctx.targetLetterText,
       feedBackIndex,
       isCorrect,
       true,
@@ -111,9 +130,9 @@ export default class PuzzleHandler {
     
     if (isCorrect) {
       if (this.wordPuzzleLogic.validateWordPuzzle()) {
-        ctx.handleCorrectStoneDrop(feedBackIndex);
-        ctx.handleStoneDropEnd(isCorrect, "Word");
-        ctx.stonesCountRef.value = 1;
+        ctx.handleCorrectLetterDrop(feedBackIndex);
+        ctx.handleLetterDropEnd(isCorrect, "Word");
+        ctx.lettersCountRef.value = 1;
         return;
       }
       
@@ -122,16 +141,16 @@ export default class PuzzleHandler {
       ctx.timerTicking.startTimer();
       
       const { droppedHistory } = this.wordPuzzleLogic.getValues();
-      const droppedStonesCount = Object.keys(droppedHistory).length;
+      const droppedLettersCount = Object.keys(droppedHistory).length;
       
-      ctx.promptText.droppedStoneIndex(
-        ctx.lang === "arabic" ? ctx.stonesCountRef.value : droppedStonesCount
+      ctx.promptText.droppedLetterIndex(
+        ctx.lang === "arabic" ? ctx.lettersCountRef.value : droppedLettersCount
       );
       
-      ctx.stonesCountRef.value++;
+      ctx.lettersCountRef.value++;
     } else {
-      ctx.handleStoneDropEnd(isCorrect, "Word");
-      ctx.stonesCountRef.value = 1;
+      ctx.handleLetterDropEnd(isCorrect, "Word");
+      ctx.lettersCountRef.value = 1;
     }
   }
 
@@ -157,24 +176,28 @@ export default class PuzzleHandler {
    * Processes audio feedback for letter drops based on correctness
    */
   processLetterDropFeedbackAudio(
-    stoneHandler: any,
+    targetLetterText: string,
     feedBackIndex: number,
     isLetterDropCorrect: boolean,
     isWord: boolean,
-    droppedStone: string,
+    droppedLetter: string,
   ) {
+    if (!this.feedbackAudioHandler) {
+      return; // No audio handler available
+    }
+    
     if (isLetterDropCorrect) {
       const condition = isWord
-        ? droppedStone === stoneHandler.getCorrectTargetStone() // condition for word puzzle
+        ? droppedLetter === targetLetterText // condition for word puzzle
         : isLetterDropCorrect // for letter and letter for word puzzle
 
       if (condition) {
-        stoneHandler.feedbackAudioHandler.playFeedback(FeedbackType.CORRECT_ANSWER, feedBackIndex);
+        this.feedbackAudioHandler.playFeedback(FeedbackType.CORRECT_ANSWER, feedBackIndex);
       } else {
-        stoneHandler.feedbackAudioHandler.playFeedback(FeedbackType.PARTIAL_CORRECT, feedBackIndex);
+        this.feedbackAudioHandler.playFeedback(FeedbackType.PARTIAL_CORRECT, feedBackIndex);
       }
     } else {
-      stoneHandler.feedbackAudioHandler.playFeedback(FeedbackType.INCORRECT, feedBackIndex);
+      this.feedbackAudioHandler.playFeedback(FeedbackType.INCORRECT, feedBackIndex);
     }
   }
 
@@ -216,32 +239,32 @@ export default class PuzzleHandler {
   }
 
   /**
-   * Handles checking hovered stone for word puzzles.
+   * Handles checking hovered letter for word puzzles.
    */
-  handleCheckHoveredStone(foilStoneText: string, foilStoneIndex: number): boolean | undefined {
-    return this.wordPuzzleLogic?.handleCheckHoveredStone(foilStoneText, foilStoneIndex);
+  handleCheckHoveredLetter(letterText: string, letterIndex: number): boolean | undefined {
+    return this.wordPuzzleLogic?.handleCheckHoveredLetter(letterText, letterIndex);
   }
 
   /**
    * Sets picked up letter for word puzzles.
    */
-  setPickUpLetter(text: string, foilStoneIndex: number): void {
+  setPickUpLetter(text: string, letterIndex: number): void {
     if (this.wordPuzzleLogic) {
-      this.wordPuzzleLogic.setPickUpLetter(text, foilStoneIndex);
+      this.wordPuzzleLogic.setPickUpLetter(text, letterIndex);
     }
   }
 
   /**
    * Validates if a letter should be hidden for word puzzles.
    */
-  validateShouldHideLetter(foilStoneIndex: number): boolean {
-    return this.wordPuzzleLogic ? this.wordPuzzleLogic.validateShouldHideLetter(foilStoneIndex) : false;
+  validateShouldHideLetter(letterIndex: number): boolean {
+    return this.wordPuzzleLogic ? this.wordPuzzleLogic.validateShouldHideLetter(letterIndex) : false;
   }
 
   /**
-   * Handles correct stone drop feedback logic.
+   * Handles correct letter drop feedback logic.
    */
-  handleCorrectStoneDrop(
+  handleCorrectLetterDrop(
     feedbackIndex: number,
     feedbackTextEffects: FeedbackTextEffects,
     ctx: CreatePuzzleContext,
@@ -259,5 +282,23 @@ export default class PuzzleHandler {
     setTimeout(() => {
       feedbackTextEffects.hideText();
     }, totalAudioDuration);
+  }
+
+  /**
+   * Stops all currently playing feedback audio
+   */
+  stopFeedbackAudio(): void {
+    if (this.feedbackAudioHandler) {
+      this.feedbackAudioHandler.stopAllAudio();
+    }
+  }
+
+  /**
+   * Cleans up resources used by the puzzle handler
+   */
+  dispose(): void {
+    if (this.feedbackAudioHandler) {
+      this.feedbackAudioHandler.dispose();
+    }
   }
 }

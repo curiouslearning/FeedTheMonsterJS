@@ -8,13 +8,11 @@ import {
 } from '@constants';
 import gameStateService from '@gameStateService';
 import gameSettingsService from '@gameSettingsService';
-import { FeedbackAudioHandler, FeedbackType } from '@gamepuzzles';
+import { FeedbackType } from '@gamepuzzles';
 
 /**
- * TODO: In the future, the FeedbackAudioHandler should be moved to the appropriate puzzle logic classes.
- * StoneHandler should not be responsible for audio feedback. This is a temporary solution until
- * we have the complete puzzle logic system in place. At that point, this import and the
- * feedbackAudioHandler property should be removed from StoneHandler.
+ * StoneHandler is responsible for creating, drawing, and positioning stones.
+ * It handles the UI aspects of stones but not their game logic.
  */
 export default class StoneHandler extends EventManager {
   private offsetCoordinateValue: number;
@@ -35,7 +33,6 @@ export default class StoneHandler extends EventManager {
   correctTargetStone: string;
   stonebg: HTMLImageElement;
   public audioPlayer: AudioPlayer;
-  public feedbackAudioHandler: FeedbackAudioHandler;
   public timerTickingInstance: TimerTicking;
   isGamePaused: boolean = false;
   public originalWidth: any;
@@ -47,7 +44,6 @@ export default class StoneHandler extends EventManager {
     canvas,
     puzzleNumber: number,
     levelData,
-    feedbackAudios,
     timerTickingInstance: TimerTicking
   ) {
     super({
@@ -64,7 +60,6 @@ export default class StoneHandler extends EventManager {
     this.levelData = levelData;
     this.setTargetStone(this.puzzleNumber);
     this.stonePos = this.getRandomizedStonePositions(canvas.width, canvas.height)
-    this.feedbackAudioHandler = new FeedbackAudioHandler(feedbackAudios);
     this.puzzleStartTime = new Date();
     this.stonebg = new Image();
     this.stonebg.src = ASSETS_PATH_STONE_PINK_BG;
@@ -222,48 +217,15 @@ export default class StoneHandler extends EventManager {
     this.unregisterEventListener();
   }
 
-  public isStoneLetterDropCorrect(
-    droppedStone: string,
-    feedBackIndex: number,
-    isWord: boolean = false,
-    puzzleHandler?: any
-  ): boolean {
-    /*
-     * To Do: Need to refactor or revome this completely and place something
-     * that is tailored to single letter puzzle since word puzzle no longer uses this.
-     * Will leave this for now to avoid messing witht the single letter puzzle.
-    */
-    const isLetterDropCorrect = isWord
-      ? droppedStone == this.correctTargetStone.substring(0, droppedStone.length)
-      : droppedStone == this.correctTargetStone;
+  public cleanup() {
+    // Clean up audio resources
+    this.disposeStones();
 
-    // Use the PuzzleHandler's processLetterDropFeedbackAudio if provided
-    if (puzzleHandler) {
-      puzzleHandler.processLetterDropFeedbackAudio(
-        this,
-        feedBackIndex,
-        isLetterDropCorrect,
-        isWord,
-        droppedStone
-      );
-    } else {
-      // Fallback to direct audio feedback if puzzleHandler not provided
-      if (isLetterDropCorrect) {
-        const condition = isWord
-          ? droppedStone === this.getCorrectTargetStone() // condition for word puzzle
-          : isLetterDropCorrect // for letter and letter for word puzzle
-  
-        if (condition) {
-          this.feedbackAudioHandler.playFeedback(FeedbackType.CORRECT_ANSWER, feedBackIndex);
-        } else {
-          this.feedbackAudioHandler.playFeedback(FeedbackType.PARTIAL_CORRECT, feedBackIndex);
-        }
-      } else {
-        this.feedbackAudioHandler.playFeedback(FeedbackType.INCORRECT, feedBackIndex);
-      }
+    // Remove event listeners
+    document.removeEventListener(VISIBILITY_CHANGE, this.handleVisibilityChange);
+    if (this.unsubscribeEvent) {
+      this.unsubscribeEvent();
     }
-
-    return isLetterDropCorrect
   }
 
   public getCorrectTargetStone(): string {
@@ -310,23 +272,7 @@ export default class StoneHandler extends EventManager {
 
   handleVisibilityChange = () => {
     this.audioPlayer.stopAllAudios();
-    this.feedbackAudioHandler.stopAllAudio();
   };
-
-  cleanup() {
-    // Clean up audio resources
-    if (this.feedbackAudioHandler) {
-      this.feedbackAudioHandler.dispose();
-    }
-
-    this.disposeStones();
-
-    // Remove event listeners
-    document.removeEventListener(VISIBILITY_CHANGE, this.handleVisibilityChange);
-    if (this.unsubscribeEvent) {
-      this.unsubscribeEvent();
-    }
-  }
 
   /**
    * Performance optimization: Parallel audio playback
@@ -336,11 +282,6 @@ export default class StoneHandler extends EventManager {
     try {
       // Dispose stones immediately - don't wait for audio
       this.disposeStones();
-
-      // Play feedback audio in parallel for better performance
-      await Promise.allSettled([
-        this.feedbackAudioHandler.playFeedback(FeedbackType.CORRECT_ANSWER, feedBackIndex)
-      ]);
     } catch (error) {
       console.warn('Audio playback failed:', error);
     }

@@ -128,7 +128,7 @@ export class GameplayScene {
     this.firebaseIntegration = new FirebaseIntegration();
     this.feedbackTextEffects = new FeedbackTextEffects();
     this.audioPlayer = new AudioPlayer();
-    this.puzzleHandler = new PuzzleHandler(this.levelData, this.counter);
+    this.puzzleHandler = new PuzzleHandler(this.levelData, this.counter, gamePlayData.feedbackAudios);
     this.unsubscribeEvent = gameStateService.subscribe(
       gameStateService.EVENTS.GAME_PAUSE_STATUS_EVENT,
       (isPause: boolean) => {
@@ -185,7 +185,6 @@ export class GameplayScene {
       this.canvas,
       this.counter,
       this.levelData,
-      gamePlayData.feedbackAudios,
       this.timerTicking
     );
     this.tutorial = new LetterPuzzleTutorial(this.context, this.width, this.height);
@@ -265,52 +264,54 @@ export class GameplayScene {
   }
 
   handleMouseUp = (event) => {
-    if (!this.pickedStone) {
+    if (!this.pickedStone || this.pickedStone.frame <= 99) {
       this.puzzleHandler.clearPickedUp();
       return;
     }
 
     if (this.monster.checkHitboxDistance(event)) {
-      // Handle stone drop (success case)
-      const stonesCountRef = { value: this.stonesCount };
+      // Handle letter drop (success case)
+      const lettersCountRef = { value: this.stonesCount };
       const ctx = {
         levelType: this.levelData.levelMeta.levelType,
-        pickedStone: this.pickedStone,
-        stoneHandler: this.stoneHandler,
+        pickedLetter: {
+          text: this.pickedStone.text,
+          frame: this.pickedStone.frame
+        },
+        targetLetterText: this.stoneHandler.getCorrectTargetStone(), // Pass only the data needed
         audioPlayer: this.audioPlayer,
         promptText: this.promptText,
-        handleCorrectStoneDrop: undefined, // will be set below
-        handleStoneDropEnd: this.handleStoneDropEnd.bind(this),
+        handleCorrectLetterDrop: undefined, // will be set below
+        handleLetterDropEnd: this.handleStoneDropEnd.bind(this),
         triggerMonsterAnimation: this.triggerMonsterAnimation.bind(this),
         timerTicking: this.timerTicking,
         isFeedBackTriggeredSetter: (v) => { this.isFeedBackTriggered = v; },
         lang,
-        stonesCountRef,
+        lettersCountRef,
         feedBackTexts: this.feedBackTexts,
         levelData: this.levelData,
         counter: this.counter,
         width: this.width
       };
-      ctx.handleCorrectStoneDrop = (feedbackIndex) => {
-        console.log('DEBUG: feedbackTextEffects instance at handleCorrectStoneDrop', this.feedbackTextEffects, typeof this.feedbackTextEffects?.wrapText);
-        this.puzzleHandler.handleCorrectStoneDrop(
+      ctx.handleCorrectLetterDrop = (feedbackIndex) => {
+        this.puzzleHandler.handleCorrectLetterDrop(
           feedbackIndex,
           this.feedbackTextEffects,
           ctx,
           (amount) => this.score += amount
         );
-        // Hide the picked stone after puzzle logic is handled
-        this.stoneHandler.hideStone(ctx.pickedStone);
+        // Hide the picked letter after puzzle logic is handled
+        this.stoneHandler.hideStone(this.pickedStoneObject);
       };
       this.puzzleHandler.createPuzzle(ctx);
-      // For Word puzzles, hide the stone immediately after dropping it into the monster
+      // For Word puzzles, hide the letter immediately after dropping it into the monster
       if (ctx.levelType === "Word" || ctx.levelType === "SoundWord") {
-        this.stoneHandler.hideStone(ctx.pickedStone);
+        this.stoneHandler.hideStone(this.pickedStoneObject);
       }
-      this.stonesCount = stonesCountRef.value;
+      this.stonesCount = lettersCountRef.value;
       this.isFeedBackTriggered = true;
     } else if (this.pickedStoneObject) {
-      // Handle stone drop (fail/miss case)
+      // Handle letter drop (fail/miss case)
       this.stoneHandler.resetStonePosition(
         this.width,
         this.pickedStone,
@@ -327,7 +328,7 @@ export class GameplayScene {
   // Event to identify mouse moved down on the canvas
   handleMouseDown = (event) => {
     if (this.pickedStone && this.pickedStone.frame <= 99) {
-      return; // Prevent dragging if the stone is animating
+      return; // Prevent dragging if the letter is animating
     }
 
     let rect = this.canvas.getBoundingClientRect();
@@ -349,7 +350,7 @@ export class GameplayScene {
 
   setPickedUp(x, y) {
     if (this.pickedStone && this.pickedStone.frame <= 99) {
-      return; // Prevent dragging if the stone is animating
+      return; // Prevent dragging if the letter is animating
     }
 
     const stoneLetter = this.stoneHandler.handlePickStoneUp(x, y);
@@ -370,12 +371,12 @@ export class GameplayScene {
 
   handleMouseMove = (event) => {
     if (this.pickedStone && this.pickedStone.frame <= 99) {
-      return; // Prevent dragging if the stone is animating
+      return; // Prevent dragging if the letter is animating
     }
 
     if (!this.pickedStone) return;
 
-    // Move stone regardless of puzzle type
+    // Move letter regardless of puzzle type
     let newStoneCoordinates = this.stoneHandler.handleMovingStoneLetter(
       this.pickedStone,
       event.clientX,
@@ -390,12 +391,12 @@ export class GameplayScene {
         trailX,
         trailY,
         (foilStoneText, foilStoneIndex) => {
-          return this.puzzleHandler.handleCheckHoveredStone(foilStoneText, foilStoneIndex);
+          return this.handleCheckHoveredLetter(foilStoneText, foilStoneIndex);
         }
       );
 
       if (newStoneLetter) {
-        this.puzzleHandler.setPickUpLetter(
+        this.setPickUpLetter(
           newStoneLetter?.text,
           newStoneLetter?.foilStoneIndex
         );
@@ -437,7 +438,7 @@ export class GameplayScene {
   // Event to identify touch on the canvas
   handleTouchStart = (event) => {
     if (this.pickedStone && this.pickedStone.frame <= 99) {
-      return; // Prevent dragging if the stone is animating
+      return; // Prevent dragging if the letter is animating
     }
     const touch = event.touches[0];
     this.handleMouseDown({ clientX: touch.clientX, clientY: touch.clientY });
@@ -785,4 +786,26 @@ export class GameplayScene {
     gameStateService.publish(gameStateService.EVENTS.GAME_PAUSE_STATUS_EVENT, true);
     this.pauseGamePlay();
   };
+
+  /**
+   * Handles checking if a hovered letter can be added to the current word group
+   * UI-specific wrapper around WordPuzzleLogic's handleCheckHoveredLetter
+   */
+  handleCheckHoveredLetter(letterText: string, letterIndex: number): boolean | undefined {
+    if (!this.puzzleHandler.checkIsWordPuzzle()) return false;
+    
+    // Call the WordPuzzleLogic method through PuzzleHandler
+    return this.puzzleHandler.handleCheckHoveredLetter(letterText, letterIndex);
+  }
+  
+  /**
+   * Sets a picked up letter for word puzzles
+   * UI-specific wrapper around WordPuzzleLogic's setPickUpLetter
+   */
+  setPickUpLetter(text: string, letterIndex: number): void {
+    if (!this.puzzleHandler.checkIsWordPuzzle()) return;
+    
+    // Call the WordPuzzleLogic method through PuzzleHandler
+    this.puzzleHandler.setPickUpLetter(text, letterIndex);
+  }
 }
