@@ -46,7 +46,6 @@ jest.mock('@components', () => {
     StoneHandler: jest.fn().mockImplementation(() => ({
       draw: jest.fn(),
       dispose: jest.fn(),
-      isStoneLetterDropCorrect: jest.fn(),
       resetStonePosition: jest.fn(),
       handlePickStoneUp: jest.fn(),
       handleMovingStoneLetter: jest.fn(),
