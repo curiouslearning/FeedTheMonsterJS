@@ -522,8 +522,8 @@ img {
 }
 
 #phasebg-img {
-    width: 100vw;
-    height: 100vh;
+  width: 100vw;
+  height: 100vh;
 }
 
 /* For small phones, up to 360px wide */
@@ -889,30 +889,61 @@ img {
 }
 
 @media (min-width: 1080px) {
-  #background{
+  #background {
     width: 500px !important;
   }
-  .game-scene{
+
+  .game-scene {
     width: 500px;
     margin: auto;
   }
-   #title {
+
+  #title {
     font-size: 2vw !important;
     margin-top: 10% !important;
   }
-  .game-scene #play-button{
+
+  .game-scene #play-button {
     max-width: 125px;
     max-height: 125px;
-    margin: 30px auto;
+    margin: 30px auto !important;
   }
-  #loading-screen{
-    width: 500px;
-  }
-  #levelEnd{
-    width: 500px;
-  }
-  .feedback-text{
-    font-size: 3vw;
-  }
-}
 
+  #loading-screen {
+    width: 500px;
+  }
+
+  #levelEnd {
+    width: 500px;
+  }
+
+  .feedback-text {
+    font-size: 2.5vw;
+  }
+
+  .popup .popup__content-wrapper {
+    top: 0vw !important;
+    left: 0vw !important;
+    right: 0vw !important;
+    height: 50vw !important;
+    width: 60%;
+    margin: auto;
+  }
+
+  .popup #cancel-button {
+    top: 17vw !important;
+    left: 0vw !important;
+  }
+  .ftm-fence {
+    left: -130px;
+    bottom: 100px;
+  }
+  .ftm-totem{
+    position: absolute;
+    bottom: 15%;
+    width: 60%;
+    z-index: 1;
+    right: -15%;
+    max-width: 300px;
+ }
+}
