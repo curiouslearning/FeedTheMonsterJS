@@ -58,6 +58,7 @@ img {
   transform: translate(-50%, 0%);
 }
 
+#discription-text p,
 #about-company p {
   margin-top: 10%;
   line-height: 1.8;
@@ -74,24 +75,14 @@ img {
   z-index: 4;
   width: 100%;
   height: 100%;
-  image-rendering: crisp-edges;
-  image-rendering: pixelated;
-}
-
-#discription-text p {
-  margin-top: 10%;
-  line-height: 1.8;
-  color: white;
-  text-align: center;
+  image-rendering: auto;
 }
 
 #canvas {
   position: absolute;
-  /* background-color: white; */
   left: 50%;
   top: 0%;
   transform: translate(-50%, 0%);
-  /* aspect-ratio: 2/3; */
   max-height: -webkit-fill-available;
   z-index: 4;
   background-repeat: no-repeat;
@@ -103,7 +94,6 @@ img {
   left: 50%;
   top: 0%;
   transform: translate(-50%, 0%);
-  /* aspect-ratio: 2/3; */
   max-height: -webkit-fill-available;
 }
 
@@ -211,7 +201,6 @@ img {
   cursor: pointer;
   outline: none;
   z-index: 9;
-  /* display: none; */
 }
 
 #toggle-btn.on {
@@ -223,7 +212,7 @@ img {
 }
 
 .feedback-text {
-  font-family: 'AtmaSemiBold', system-ui;
+  font-family: 'Atma-SemiBold', system-ui;
   font-size: 10vw;
   font-weight: 700;
   position: absolute;
@@ -546,10 +535,6 @@ img {
     max-height: 52px;
   }
 
-  .dynamic-button {
-    max-width: 52px;
-    max-height: 52px;
-  }
 
   .me-4 {
     margin-right: 22px !important;
