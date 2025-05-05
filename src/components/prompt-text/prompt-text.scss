@@ -98,3 +98,13 @@
 .text-red {
   color: red;
 }
+
+/* For desktops or larger devices above 1080px */
+@media (min-width: 1080px){
+  .prompt-background{
+    width: 50%;
+    height: 25%;
+    top: 18%;
+  }
+
+}

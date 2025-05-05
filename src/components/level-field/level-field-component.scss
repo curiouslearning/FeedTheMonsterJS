@@ -114,16 +114,17 @@
 /* For desktops or larger devices above 1080px */
 @media (min-width: 1080px) {
   .game-control .level_content-wrapper {
-    max-width: 230px;
+    max-width: 130px;
   }
 
   .game-control .level_content-wrapper .bar-level-wrapper {
-    max-width: 215px;
-    top: 2.3rem;
-    left: 5px
+    max-width: 130px;
+    top: 1.2rem;
+    left: 0px;
   }
-
+  
   .game-control .level_content-wrapper .bar-level-wrapper .bar-level {
-    max-width: 25px;
+    max-width: 15px;
+    margin: 0px 2.2px;
   }
 }
