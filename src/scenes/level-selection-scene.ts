@@ -124,8 +124,6 @@ export class LevelSelectionScreen {
   }
 
   private setupBg = async () => {
-    console.log(this.width);
-    
     this.background = await createBackground(
       this.context,
       this.width,
