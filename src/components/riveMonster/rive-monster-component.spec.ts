@@ -18,6 +18,9 @@ jest.mock('@gameSettingsService', () => ({
 
 jest.mock('@rive-app/canvas', () => {
   return {
+    RuntimeLoader: {
+      setWasmUrl: jest.fn(),
+    },
     Rive: jest.fn().mockImplementation(({ onLoad, stateMachines }) => {
       const instance = {
         __esModule: true,
@@ -134,7 +137,7 @@ describe('RiveMonsterComponent', () => {
       },
       stateMachines: ['State Machine 1'],
       onLoad: expect.any(Function),
-      useOffscreenRenderer: true
+      useOffscreenRenderer: true,
     });
   });
 

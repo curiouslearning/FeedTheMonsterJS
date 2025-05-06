@@ -67,7 +67,7 @@ export class LevelSelectionScreen {
       context
     } = gameSettingsService.getCanvasSizeValues();
     this.canvas = canvasElem;
-    this.width = canvasWidth;
+    this.width =  canvasWidth > 1024 ? 500 : canvasWidth;
     this.height = canvasHeight;
     this.context = context;
 

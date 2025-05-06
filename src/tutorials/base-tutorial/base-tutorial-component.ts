@@ -1,6 +1,5 @@
 import { TUTORIAL_HAND } from "@constants";
-
-export interface AnimStoneImageTypes {
+export interface AnimStoneImagePosValTypes {
   x: number,
   y: number,
   dx: number,
@@ -9,8 +8,8 @@ export interface AnimStoneImageTypes {
   absdy: number,
 }
 
-export interface stonePosDetails {
-  animateImagePosVal: AnimStoneImageTypes,
+export interface StonePosDetailsType {
+  animateImagePosVal: AnimStoneImagePosValTypes,
   startX: number,
   startY: number,
   endX: number,
@@ -24,8 +23,15 @@ export default class TutorialComponent {
   public context: CanvasRenderingContext2D;
   public tutorialImg: any;
   public imagesLoaded: boolean = false;
-
+  public animateImagePosVal: undefined | AnimStoneImagePosValTypes;
+  public stonePosDetailsType: undefined | StonePosDetailsType;
+  public stoneImg: undefined | any;
+  public x: number = 0;
+  public y: number = 0;
   public totalTime: number = 0;
+  public hideQuickStartTutorial: boolean = false; //for hiding the quickStartTutorial.
+  public hasGameEnded: boolean = false;
+  public gameLevel: number = 0;
   private centerX: number = 0;
   private centerY: number = 0;
   private initialOuterRadius: number = 10
@@ -92,13 +98,15 @@ export default class TutorialComponent {
     );
   }
 
-  public clickOnMonsterTutorial(deltaTime: number, width: number, height: number) {
+  public quickStartTutorial(deltaTime: number, width: number, height: number) {
     if (this.imagesLoaded) {
       const { currentOffsetY, shouldResetOrRevertPosition } = this.udpdateDrawPosition(deltaTime, height)
       const offsetX = width / 2;
-      this.drawPointer(offsetX,currentOffsetY);
+      this.drawPointer(offsetX, currentOffsetY);
 
-      const rippleOffSetVal = shouldResetOrRevertPosition ? (this.tutorialImg.height / 1.5) : (this.tutorialImg.height / 1.2) + this.tutorialImg.height;
+      const rippleOffSetVal = shouldResetOrRevertPosition
+        ? (this.tutorialImg.height / 1.5)
+        : (this.tutorialImg.height / 1.2) + this.tutorialImg.height;
       this.drawRipple(offsetX, height / 1.9 + rippleOffSetVal, shouldResetOrRevertPosition);
     }
   }
@@ -133,11 +141,15 @@ export default class TutorialComponent {
     }
   }
 
-  public setPlayMonsterClickAnimation(test:boolean) {
-    //Will be needed and updated on actual integration.
+  public setGameHasStarted() {
+    this.hideQuickStartTutorial = true;
   }
 
-  private animateImage({ startX, startY, endX, endY }): AnimStoneImageTypes {
+  public setGameHasEndedFlag() {
+    this.hasGameEnded = true;
+  }
+
+  private animateImage({ startX, startY, endX, endY }): AnimStoneImagePosValTypes {
     const x = startX;
     const y = startY;
     const dx = (endX - startX) / 5000;
@@ -154,7 +166,7 @@ export default class TutorialComponent {
    * @param width width of screen
    * @param height height of screen
    */
-  public updateTargetStonePositions(targetStonePosition: number[], width: number, height: number): stonePosDetails {
+  public updateTargetStonePositions(targetStonePosition: number[], width: number, height: number): StonePosDetailsType {
     //To Do - This will be the original for now and will need to be updated once we have a clear goal on the rest of the tutorial flow.
     const startX = targetStonePosition[0] - 22;
     const startY = targetStonePosition[1] - 50;
@@ -179,48 +191,49 @@ export default class TutorialComponent {
   }
 
   /**
-   * animateStoneDrag - Will be used to animate the stone drops indicating where it should be drag
+   * animateStoneDrag - Will be used to animate the stone drops indicating where it should be drag.
+   * Note: Currently only supports Letter to Hitbox drop only.
+   * This cannot be used for word letter spelling guide and will require an update to handle that.
    */
-  public animateStoneDrag(deltaTime: number, img: CanvasImageSource, imageSize: number, stonePosDetails: stonePosDetails) {
-    /*
-     NOTE: Drag animation logic is temporarily disabled.
-     This will be properly implemented once the new puzzle tutorial system is finalized,
-     since we currently lack full context on how this animation is expected to behave
-     in the actual tutorial flow. Revisit and refactor this into a reusable form accordingly.
-    */
+  public animateStoneDrag({
+    deltaTime,
+    img,
+    imageSize,
+    monsterStoneDifferenceInPercentage,
+    startX,
+    startY,
+    endX,
+    endY
+  }: {
+    deltaTime: number,
+    img: CanvasImageSource,
+    imageSize: number,
+    monsterStoneDifferenceInPercentage: number,
+    startX: number,
+    startY: number,
+    endX: number,
+    endY: number
+  }) {
 
-    // this.x =
-    //   this.dx >= 0
-    //     ? this.x + this.absdx * deltaTime
-    //     : this.x - this.absdx * deltaTime;
-    // this.y =
-    //   this.dy >= 0
-    //     ? this.y + this.absdy * deltaTime
-    //     : this.y - this.absdy * deltaTime;
-    // const disx = this.x - this.endx + this.absdx;
-    // const disy = this.y - this.endy + this.absdy;
-    // const distance = Math.sqrt(disx * disx + disy * disy);
-    // let monsterStoneDifferenceInPercentage = (100 * distance / this.monsterStoneDifference);
-    // if (monsterStoneDifferenceInPercentage < 15) {
-    //   if (monsterStoneDifferenceInPercentage > 1) {
-    //     this.createHandScaleAnimation(deltaTime, this.endx, this.endy + 30, true)
-    //   } else {
-    //     this.x = this.startx;
-    //     this.y = this.starty;
-    //   }
-    // } else if (monsterStoneDifferenceInPercentage > 80) {
-    //   this.createHandScaleAnimation(deltaTime, this.startx + 15, this.starty + 10, false);
-    // } else {
-    //   let previousAlpha = this.context.globalAlpha;
-    //   this.context.globalAlpha = 0.4;
-    //   this.context.drawImage(img, this.x, this.y + 20, imageSize, imageSize);
-    //   this.context.globalAlpha = previousAlpha;
-    //   // console.log('x ', this.x)
-    //   // console.log('y ', this.y)
-    //   this.context.drawImage(this.tutorialImg, this.x + 15, this.y + 10);//draws the hand stone drag animation!
+    if (monsterStoneDifferenceInPercentage < 15) {
+      if (monsterStoneDifferenceInPercentage > 1) {
+        this.createHandScaleAnimation(deltaTime, endX, endY + 30, true)
+      } else {
+        this.x = startX;
+        this.y = startY;
+      }
+    } else if (monsterStoneDifferenceInPercentage > 80) {
+      this.createHandScaleAnimation(deltaTime, startX + 15, startY + 10, false);
+    } else {
+      const previousAlpha = this.context.globalAlpha;
+      this.context.globalAlpha = 0.4;
+      this.context.drawImage(img, this.x, this.y + 20, imageSize, imageSize);
+      this.context.globalAlpha = previousAlpha;
+      this.context.drawImage(this.tutorialImg, this.x + 15, this.y + 10);//draws the hand stone drag animation!
+    }
   }
 
-  createHandScaleAnimation(deltaTime: number, offsetX: number, offsetY: number, shouldCreateRipple: boolean) {
+  private createHandScaleAnimation(deltaTime: number, offsetX: number, offsetY: number, shouldCreateRipple: boolean) {
     this.totalTime += Math.floor(deltaTime);
     const transitionDuration = 500;
     const scaleFactor = this.sinusoidalInterpolation(this.totalTime, 1, 1.5, transitionDuration);
@@ -230,7 +243,7 @@ export default class TutorialComponent {
     shouldCreateRipple ? (null) : (this.drawRipple(offsetX + this.width * 0.02, offsetY + this.tutorialImg.height / 2, false))
   }
 
-  sinusoidalInterpolation(time: number, minScale: number, maxScale: number, duration: number) {
+  private sinusoidalInterpolation(time: number, minScale: number, maxScale: number, duration: number) {
     const amplitude = (maxScale - minScale) / 2;
     const frequency = Math.PI / duration;
     return minScale + amplitude * Math.sin(frequency * time);

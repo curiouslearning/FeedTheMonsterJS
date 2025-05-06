@@ -1,6 +1,6 @@
 import { StoneConfig, VISIBILITY_CHANGE, Utils } from '@common'
 import { EventManager } from "@events";
-import { Tutorial, AudioPlayer, TimerTicking } from "@components"
+import { AudioPlayer, TimerTicking } from "@components"
 import { GameScore } from "@data";
 import {
   ASSETS_PATH_STONE_PINK_BG,
@@ -8,13 +8,11 @@ import {
 } from '@constants';
 import gameStateService from '@gameStateService';
 import gameSettingsService from '@gameSettingsService';
-import { FeedbackAudioHandler, FeedbackType } from '@gamepuzzles';
+import { FeedbackType } from '@gamepuzzles';
 
 /**
- * TODO: In the future, the FeedbackAudioHandler should be moved to the appropriate puzzle logic classes.
- * StoneHandler should not be responsible for audio feedback. This is a temporary solution until
- * we have the complete puzzle logic system in place. At that point, this import and the
- * feedbackAudioHandler property should be removed from StoneHandler.
+ * StoneHandler is responsible for creating, drawing, and positioning stones.
+ * It handles the UI aspects of stones but not their game logic.
  */
 export default class StoneHandler extends EventManager {
   private offsetCoordinateValue: number;
@@ -32,13 +30,13 @@ export default class StoneHandler extends EventManager {
   public puzzleStartTime: Date;
   public showTutorial: boolean =
     GameScore.getDatafromStorage().length == undefined ? true : false;
-  public tutorial: Tutorial;
   correctTargetStone: string;
   stonebg: HTMLImageElement;
   public audioPlayer: AudioPlayer;
-  public feedbackAudioHandler: FeedbackAudioHandler;
   public timerTickingInstance: TimerTicking;
   isGamePaused: boolean = false;
+  public originalWidth: any;
+  public originalHeight:any;
   private unsubscribeEvent: () => void;
 
   constructor(
@@ -46,7 +44,6 @@ export default class StoneHandler extends EventManager {
     canvas,
     puzzleNumber: number,
     levelData,
-    feedbackAudios,
     timerTickingInstance: TimerTicking
   ) {
     super({
@@ -57,18 +54,13 @@ export default class StoneHandler extends EventManager {
     this.offsetCoordinateValue = 32; //Default value used to offset stone coordinates.
     this.context = context;
     this.canvas = canvas;
+    this.originalWidth = this.canvas.width;
+    this.originalHeight = this.canvas.height;
     this.puzzleNumber = puzzleNumber;
     this.levelData = levelData;
     this.setTargetStone(this.puzzleNumber);
     this.stonePos = this.getRandomizedStonePositions(canvas.width, canvas.height)
-    this.feedbackAudioHandler = new FeedbackAudioHandler(feedbackAudios);
     this.puzzleStartTime = new Date();
-    this.tutorial = new Tutorial(
-      context,
-      canvas.width,
-      canvas.height,
-      puzzleNumber
-    );
     this.stonebg = new Image();
     this.stonebg.src = ASSETS_PATH_STONE_PINK_BG;
     this.audioPlayer = new AudioPlayer();
@@ -84,8 +76,8 @@ export default class StoneHandler extends EventManager {
     );
     this.unsubscribeEvent = gameStateService.subscribe(
       gameStateService.EVENTS.GAME_PAUSE_STATUS_EVENT,
-      (isGamePaused:boolean) => {
-        this.isGamePaused  = isGamePaused;
+      (isGamePaused: boolean) => {
+        this.isGamePaused = isGamePaused;
       }
     );
   }
@@ -111,31 +103,43 @@ export default class StoneHandler extends EventManager {
   createStones(img) {
     // Clear existing stones first to prevent memory leaks
     this.disposeStones();
-    
+
     // Create stone pool for reuse
     const stonePool = new Map();
-    
+
     const foilStones = this.getFoilStones();
     // Randomize stone positions
     const positions = this.shuffleArray(this.stonePos);
     const scale = gameSettingsService.getDevicePixelRatioValue();
+    this.canvas.width = this.canvas.clientWidth * scale;
+    this.canvas.height = this.canvas.clientHeight * scale;
+    this.context.scale(scale, scale);
+    
     for (let i = 0; i < foilStones.length; i++) {
       // Create new stone with all required parameters
       const stone = new StoneConfig(
         this.context,
-        this.canvas.width * scale,
-        this.canvas.height * scale,
+        this.canvas.width,
+        this.canvas.height,
         foilStones[i],
         positions[i][0],
         positions[i][1],
         img,
-        this.timerTickingInstance,
-        null // tutorial instance is optional
+        this.timerTickingInstance
       );
-      
+
       // Initialize stone
       stone.initialize();
-      
+
+      //Publish stone details, image and level data for stone tutorial only at the first puzzle segment.
+      if (foilStones[i] == this.correctTargetStone && this.currentPuzzleData.segmentNumber === 0) {
+        gameStateService.publish(gameStateService.EVENTS.CORRECT_STONE_POSITION, {
+          stonePosVal: positions[i],
+          img,
+          levelData: this.levelData
+        });
+      }
+
       // Store in pool for potential reuse
       stonePool.set(foilStones[i], stone);
       this.foilStones.push(stone);
@@ -152,13 +156,13 @@ export default class StoneHandler extends EventManager {
     // Only check animation completion once per frame
     let isAnimationComplete = true;
     const activeStones = this.foilStones.filter(stone => stone && !stone.isDisposed);
-    
+
     // Draw only active stones
     for (const stone of activeStones) {
       if (stone.frame < 100) {
         isAnimationComplete = false;
       }
-      stone.draw(deltaTime);
+      stone.draw();
     }
 
     // Update timer only once animation is complete and game is not paused
@@ -175,7 +179,6 @@ export default class StoneHandler extends EventManager {
     for (let i = 0; i < this.foilStones.length; i++) {
       if (shouldHideStoneChecker(i)) {
         this.foilStones[i].draw(
-          deltaTime,
           Object.keys(groupedLetters).length > 1 && groupedLetters[i] !== undefined
         );
       }
@@ -197,13 +200,14 @@ export default class StoneHandler extends EventManager {
   }
   public handleLoadPuzzle(event) {
     this.disposeStones();
-    this.tutorial.setPuzzleNumber(event.detail.counter);
     this.puzzleNumber = event.detail.counter;
     this.setTargetStone(this.puzzleNumber);
     this.createStones(this.stonebg);
   }
 
   public dispose() {
+    this.canvas.width = this.originalWidth;
+    this.canvas.height = this.originalHeight;
     this.unsubscribeEvent();
     document.removeEventListener(
       VISIBILITY_CHANGE,
@@ -213,48 +217,14 @@ export default class StoneHandler extends EventManager {
     this.unregisterEventListener();
   }
 
-  public isStoneLetterDropCorrect(
-    droppedStone: string,
-    feedBackIndex: number,
-    isWord: boolean = false
-  ): boolean {
-    /*
-     * To Do: Need to refactor or revome this completely and place something
-     * that is tailored to single letter puzzle since word puzzle no longer uses this.
-     * Will leave this for now to avoid messing witht the single letter puzzle.
-    */
-    const isLetterDropCorrect = isWord
-      ? droppedStone == this.correctTargetStone.substring(0, droppedStone.length)
-      : droppedStone == this.correctTargetStone;
+  public cleanup() {
+    // Clean up audio resources
+    this.disposeStones();
 
-    this.processLetterDropFeedbackAudio(
-      feedBackIndex,
-      isLetterDropCorrect,
-      isWord,
-      droppedStone
-    );
-
-    return isLetterDropCorrect
-  }
-
-  public processLetterDropFeedbackAudio(
-    feedBackIndex: number,
-    isLetterDropCorrect: boolean,
-    isWord: boolean,
-    droppedStone: string,
-  ) {
-    if (isLetterDropCorrect) {
-      const condition = isWord
-        ? droppedStone === this.getCorrectTargetStone() // condition for word puzzle
-        : isLetterDropCorrect // for letter and letter for word puzzle
-
-      if (condition) {
-        this.feedbackAudioHandler.playFeedback(FeedbackType.CORRECT_ANSWER, feedBackIndex);
-      } else {
-        this.feedbackAudioHandler.playFeedback(FeedbackType.PARTIAL_CORRECT, feedBackIndex);
-      }
-    } else {
-      this.feedbackAudioHandler.playFeedback(FeedbackType.INCORRECT, feedBackIndex);
+    // Remove event listeners
+    document.removeEventListener(VISIBILITY_CHANGE, this.handleVisibilityChange);
+    if (this.unsubscribeEvent) {
+      this.unsubscribeEvent();
     }
   }
 
@@ -302,23 +272,7 @@ export default class StoneHandler extends EventManager {
 
   handleVisibilityChange = () => {
     this.audioPlayer.stopAllAudios();
-    this.feedbackAudioHandler.stopAllAudio();
   };
-
-  cleanup() {
-    // Clean up audio resources
-    if (this.feedbackAudioHandler) {
-      this.feedbackAudioHandler.dispose();
-    }
-
-    this.disposeStones();
-
-    // Remove event listeners
-    document.removeEventListener(VISIBILITY_CHANGE, this.handleVisibilityChange);
-    if (this.unsubscribeEvent) {
-      this.unsubscribeEvent();
-    }
-  }
 
   /**
    * Performance optimization: Parallel audio playback
@@ -328,11 +282,6 @@ export default class StoneHandler extends EventManager {
     try {
       // Dispose stones immediately - don't wait for audio
       this.disposeStones();
-
-      // Play feedback audio in parallel for better performance
-      await Promise.allSettled([
-        this.feedbackAudioHandler.playFeedback(FeedbackType.CORRECT_ANSWER, feedBackIndex)
-      ]);
     } catch (error) {
       console.warn('Audio playback failed:', error);
     }
@@ -423,6 +372,17 @@ export default class StoneHandler extends EventManager {
   playDragAudioIfNecessary(stone: StoneConfig) {
     if (stone.frame > 99) {
       this.audioPlayer.playAudio(AUDIO_PATH_ON_DRAG);
+    }
+  }
+
+  /**
+   * Hides a stone by moving it off-screen
+   * @param stone The stone to hide
+   */
+  hideStone(stone: StoneConfig) {
+    if (stone) {
+      stone.x = -999;
+      stone.y = -999;
     }
   }
 
