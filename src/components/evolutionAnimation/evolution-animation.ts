@@ -63,6 +63,10 @@ export class EvolutionAnimationComponent extends RiveMonsterComponent {
     this.audioPlayer = new AudioPlayer();
     this.initialize();
     this.addEventListener();
+    
+    // Preload audio files during initialization to avoid delays later
+    this.preloadAudioFiles();
+    
     this.startAnimation();
   }
 
@@ -119,25 +123,35 @@ export class EvolutionAnimationComponent extends RiveMonsterComponent {
   };
 
   /**
+   * Preloads all audio files needed for the evolution animation
+   * This ensures audio plays without delay when needed
+   */
+  private preloadAudioFiles() {
+    // Preload intro audio and evolution audio during initialization
+    this.audioPlayer.preloadGameAudio(AUDIO_INTRO);
+    this.audioPlayer.preloadGameAudio(AUDIO_MONSTER_EVOLVE);
+    
+    // Preload evolution sound effects
+    if (EVOLUTION_AUDIOS.EVOL_1 && EVOLUTION_AUDIOS.EVOL_1[0]) {
+      this.audioPlayer.preloadGameAudio(EVOLUTION_AUDIOS.EVOL_1[0]);
+    }
+  }
+
+  /**
    * Plays the intro audio when returning to the tab
    */
   private playIntroAudio() {
     // Set flag to indicate we're playing intro audio due to visibility change
     this.isPlayingIntroFromVisibilityChange = true;
     
-    // Preload and play the intro audio
-    this.audioPlayer.preloadGameAudio(AUDIO_INTRO)
-      .then(() => {
-        // Double-check visibility before playing to avoid unnecessary audio playback
-        if (isDocumentVisible()) {
-          this.audioPlayer.playAudioQueue(false, AUDIO_INTRO);
-        } else {
-          this.isPlayingIntroFromVisibilityChange = false;
-        }
-      })
-      .catch(() => {
-        this.isPlayingIntroFromVisibilityChange = false;
-      });
+    // Play both audio files simultaneously if the document is visible
+    if (isDocumentVisible()) {
+      // Play both audio files simultaneously instead of in sequence this is to follow the levelend scene behavior
+      this.audioPlayer.playAudio(AUDIO_MONSTER_EVOLVE);
+      this.audioPlayer.playAudio(AUDIO_INTRO);
+    } else {
+      this.isPlayingIntroFromVisibilityChange = false;
+    }
   }
 
   /**
@@ -205,23 +219,9 @@ export class EvolutionAnimationComponent extends RiveMonsterComponent {
       return;
     }
 
-    // Preload all audio files to ensure they're ready to play
-    Promise.all([
-      this.audioPlayer.preloadGameAudio(AUDIO_MONSTER_EVOLVE),
-      this.audioPlayer.preloadGameAudio(AUDIO_INTRO)
-    ]).then(() => {
-      // Double-check visibility before playing
-      if (isDocumentVisible() && !this.isPlayingIntroFromVisibilityChange) {
-        // Play audio sequence in order using the playAudioQueue method
-        this.audioPlayer.playAudioQueue(
-          false, 
-          AUDIO_MONSTER_EVOLVE,
-          AUDIO_INTRO
-        );
-      }
-    }).catch(() => {
-      // Silent error handling
-    });
+    // Play both audio files simultaneously instead of in sequence
+    this.audioPlayer.playAudio(AUDIO_MONSTER_EVOLVE);
+    this.audioPlayer.playAudio(AUDIO_INTRO);
   }
 
   public startAnimation() {
