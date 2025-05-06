@@ -127,8 +127,8 @@ export class LevelEndScene {
           this.audioPlayer.preloadGameAudio(AUDIO_CHEERING),
           this.audioPlayer.preloadGameAudio(AUDIO_MONSTER_DISCOVERED),
         ]).then(() => {
-          // Play audio sequence in order using the playFeedbackAudios method
-          this.audioPlayer.playFeedbackAudios(
+          // Play audio sequence in order using the playAudioQueue method
+          this.audioPlayer.playAudioQueue(
             false,
             AUDIO_CHEERING,
             AUDIO_MONSTER_DISCOVERED,

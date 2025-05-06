@@ -1,29 +1,11 @@
 import { PubSub } from '../events/pub-sub-events';
 
 export class GameSettingsService extends PubSub{
-  public EVENTS: {
-    GAME_TRAIL_EFFECT_TOGGLE_EVENT: string;
-  };
-  public clickTrailToggle: boolean;
   public devicePixelRatio: number;
 
   constructor() {
     super();
-    this.EVENTS = {
-      GAME_TRAIL_EFFECT_TOGGLE_EVENT: 'GAME_TRAIL_EFFECT_TOGGLE_EVENT',
-    }
-    this.clickTrailToggle = false;
     this.devicePixelRatio = window.devicePixelRatio || 1;
-    this.initListeners();
-  }
-
-  private initListeners() {
-    /* Listeners to update game settings values. */
-    this.subscribe(this.EVENTS.GAME_TRAIL_EFFECT_TOGGLE_EVENT, (data) => { this.updateGameTrailToggle(data); });
-  }
-
-  private updateGameTrailToggle(isTrailEffectOn: boolean) {
-    this.clickTrailToggle = isTrailEffectOn;
   }
 
   /*

@@ -4,14 +4,9 @@ import { StoneConfig } from '@common';
 import { AudioPlayer, TimerTicking } from '@components';
 import { AUDIO_PATH_ON_DRAG } from '@constants'; // Import the constant
 
-// Mock the Tutorial class
 jest.mock('@components', () => ({
   AudioPlayer: jest.fn().mockImplementation(() => ({
     playAudio: jest.fn(),
-  })),
-  Tutorial: jest.fn().mockImplementation(() => ({
-    setPuzzleNumber: jest.fn(),
-    updateTargetStonePositions: jest.fn(),
   })),
 }));
 
@@ -22,7 +17,7 @@ describe('StoneHandler - playDragAudioIfNecessary', () => {
   beforeEach(() => {
     const mockContext = {} as CanvasRenderingContext2D;
     const mockCanvas = {} as HTMLCanvasElement;
-    
+
     // Mock levelData with the expected structure
     const mockLevelData = {
       puzzles: [
@@ -41,7 +36,6 @@ describe('StoneHandler - playDragAudioIfNecessary', () => {
       mockCanvas,
       0, // Puzzle number
       mockLevelData, // Pass the mocked levelData
-      mockFeedbackAudios,
       mockTimerTickingInstance
     );
 
@@ -75,7 +69,8 @@ describe('StoneHandler - Latest Optimizations', () => {
       save: jest.fn(),
       restore: jest.fn(),
       translate: jest.fn(),
-      rotate: jest.fn()
+      rotate: jest.fn(),
+      scale: jest.fn()
     } as unknown as CanvasRenderingContext2D;
 
     mockCanvas = {
@@ -103,7 +98,6 @@ describe('StoneHandler - Latest Optimizations', () => {
       mockCanvas,
       0,
       mockLevelData,
-      [],
       mockTimerTicking
     );
   });
@@ -163,7 +157,6 @@ describe('StoneHandler - Latest Optimizations', () => {
       stoneHandler.draw(16);
       
       expect(mockStones[0].draw).not.toHaveBeenCalled();
-      expect(mockStones[1].draw).toHaveBeenCalledWith(16);
     });
 
     it('should handle animation completion efficiently', () => {

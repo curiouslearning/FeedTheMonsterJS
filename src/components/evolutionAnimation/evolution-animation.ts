@@ -130,7 +130,7 @@ export class EvolutionAnimationComponent extends RiveMonsterComponent {
       .then(() => {
         // Double-check visibility before playing to avoid unnecessary audio playback
         if (isDocumentVisible()) {
-          this.audioPlayer.playFeedbackAudios(false, AUDIO_INTRO);
+          this.audioPlayer.playAudioQueue(false, AUDIO_INTRO);
         } else {
           this.isPlayingIntroFromVisibilityChange = false;
         }
@@ -212,8 +212,8 @@ export class EvolutionAnimationComponent extends RiveMonsterComponent {
     ]).then(() => {
       // Double-check visibility before playing
       if (isDocumentVisible() && !this.isPlayingIntroFromVisibilityChange) {
-        // Play audio sequence in order using the playFeedbackAudios method
-        this.audioPlayer.playFeedbackAudios(
+        // Play audio sequence in order using the playAudioQueue method
+        this.audioPlayer.playAudioQueue(
           false, 
           AUDIO_MONSTER_EVOLVE,
           AUDIO_INTRO
@@ -260,11 +260,10 @@ export class EvolutionAnimationComponent extends RiveMonsterComponent {
   private playEvolutionSoundEffects() {
     // The 'Play' event is triggered because we need to play an audio during the play animation of the Rive entity.
     this.executeRiveAction('Play', () => {
-      //To do - playFeedbackAudios should be renamed as this was the common method used to play all audios not just feedback audio.
       this.evolutionSoundEffectsTimeoutId = setTimeout(() => {
         // Only play if tab is visible
         if (isDocumentVisible()) {
-          this.audioPlayer.playFeedbackAudios(false, EVOLUTION_AUDIOS.EVOL_1[0]);
+          this.audioPlayer.playAudioQueue(false, EVOLUTION_AUDIOS.EVOL_1[0]);
         }
       }, 1000) as unknown as number;
     });

@@ -22,7 +22,7 @@ jest.mock('@components', () => {
       stopAllAudios: jest.fn(),
       playAudio: jest.fn(),
       playPromptAudio: jest.fn(),
-      playFeedbackAudios: jest.fn(),
+      playAudioQueue: jest.fn(),
       stopFeedbackAudio: jest.fn(),
       audioContext: {} as AudioContext,
       sourceNode: {} as AudioBufferSourceNode,
@@ -30,11 +30,9 @@ jest.mock('@components', () => {
       promptAudioBuffer: null,
       playBackgroundMusic: jest.fn()
     })),
-    TrailEffect: jest.fn().mockImplementation(() => ({
-      addTrailParticlesOnMove: jest.fn(),
-      clearTrailSubscription: jest.fn(),
+    TrailEffectsHandler: jest.fn().mockImplementation(() => ({
+      dispose: jest.fn(),
       draw: jest.fn(),
-      resetParticles: jest.fn()
     })),
     PauseButton: jest.fn().mockImplementation(() => ({
       onClick: jest.fn(),
@@ -48,7 +46,6 @@ jest.mock('@components', () => {
     StoneHandler: jest.fn().mockImplementation(() => ({
       draw: jest.fn(),
       dispose: jest.fn(),
-      isStoneLetterDropCorrect: jest.fn(),
       resetStonePosition: jest.fn(),
       handlePickStoneUp: jest.fn(),
       handleMovingStoneLetter: jest.fn(),
@@ -64,19 +61,6 @@ jest.mock('@components', () => {
       stonePos: { x: 0, y: 0 },
       pickedStone: null,
       playDragAudioIfNecessary: jest.fn()
-    })),
-    Tutorial: jest.fn().mockImplementation(() => ({
-      clickOnMonsterTutorial: jest.fn(),
-      draw: jest.fn(),
-      dispose: jest.fn(),
-      initialize: jest.fn(),
-      width: 800,
-      height: 600,
-      context: {} as CanvasRenderingContext2D,
-      tutorialImg: new Image(),
-      play: jest.fn(),
-      stop: jest.fn(),
-      setPlayMonsterClickAnimation: jest.fn()
     })),
     PromptText: jest.fn().mockImplementation(() => ({
       draw: jest.fn(),
@@ -315,19 +299,13 @@ describe('GameplayScene with BasePopupComponent', () => {
       expect(gameplayScene.stoneHandler).toBeDefined();
       expect(gameplayScene.stoneHandler.context).toBeDefined();
       expect(gameplayScene.stoneHandler.canvas).toBeDefined();
-
-      // Verify Tutorial initialization
-      expect(gameplayScene.tutorial).toBeDefined();
-      expect(gameplayScene.tutorial.context).toBeDefined();
-      expect(gameplayScene.tutorial.width).toBe(800);
-      expect(gameplayScene.tutorial.height).toBe(600);
     });
 
     it('should initialize AudioPlayer independently', () => {
       expect(gameplayScene.audioPlayer).toBeDefined();
       expect(gameplayScene.audioPlayer.stopAllAudios).toBeDefined();
       expect(gameplayScene.audioPlayer.playPromptAudio).toBeDefined();
-      expect(gameplayScene.audioPlayer.playFeedbackAudios).toBeDefined();
+      expect(gameplayScene.audioPlayer.playAudioQueue).toBeDefined();
     });
 
     it('should properly set up game state subscriptions', () => {
@@ -369,8 +347,8 @@ describe('GameplayScene with BasePopupComponent', () => {
         checkHitboxDistance: jest.fn(),
         onClick: jest.fn()
       };
-      const mockTrailParticles = {
-        clearTrailSubscription: jest.fn()
+      const mockTrailEffectHandler = {
+        dispose: jest.fn()
       };
       const mockLevelIndicators = {
         dispose: jest.fn()
@@ -384,17 +362,20 @@ describe('GameplayScene with BasePopupComponent', () => {
       const mockPausePopup = {
         destroy: jest.fn()
       };
+      const tutorial = {
+        dispose: jest.fn()
+      }
 
       // Replace the actual components with mocks
       gameplayScene.stoneHandler = mockStoneHandler as any;
       gameplayScene.audioPlayer = mockAudioPlayer as any;
       gameplayScene.monster = mockMonster as any;
-      gameplayScene.trailParticles = mockTrailParticles as any;
+      gameplayScene.trailEffectHandler = mockTrailEffectHandler as any;
       gameplayScene.levelIndicators = mockLevelIndicators as any;
       gameplayScene.promptText = mockPromptText as any;
       gameplayScene.pauseButton = mockPauseButton as any;
       gameplayScene.pausePopupComponent = mockPausePopup as any;
-
+      gameplayScene.tutorial = tutorial as any;
       // Call dispose
       gameplayScene.dispose();
 
@@ -402,7 +383,8 @@ describe('GameplayScene with BasePopupComponent', () => {
       expect(mockStoneHandler.dispose).toHaveBeenCalled();
       expect(mockAudioPlayer.stopAllAudios).toHaveBeenCalled();
       expect(mockMonster.dispose).toHaveBeenCalled();
-      expect(mockTrailParticles.clearTrailSubscription).toHaveBeenCalled();
+      expect(mockTrailEffectHandler.dispose).toHaveBeenCalled();
+      expect(tutorial.dispose).toHaveBeenCalled();
       expect(mockLevelIndicators.dispose).toHaveBeenCalled();
       expect(mockPromptText.dispose).toHaveBeenCalled();
       expect(mockPauseButton.dispose).toHaveBeenCalled();

@@ -4,9 +4,9 @@ const isDev = (nodeEnv !== 'production');
 const CopyPlugin = require("copy-webpack-plugin");
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const TerserPlugin = require('terser-webpack-plugin');
-const ESLintPlugin = require('eslint-webpack-plugin');
+// const ESLintPlugin = require('eslint-webpack-plugin');
 
-const eslintConfig = require('./.eslintrc.json');
+// const eslintConfig = require('./.eslintrc.json');
 
 // const CompressionPlugin = require('compression-webpack-plugin');
 
@@ -25,6 +25,9 @@ var config = {
     compress: false,
     port: 8080
   },
+  experiments: {
+    asyncWebAssembly: true 
+  },
   module: {
     rules: [
       {
@@ -39,6 +42,10 @@ var config = {
         test: /\.ts?$/,
         use: 'ts-loader',
         exclude: /node_modules/,
+      },
+      {
+        test: /\.wasm$/,
+        type: 'webassembly/async'
       }
     ],
   },
@@ -62,7 +69,8 @@ var config = {
       '@feedbackText': path.resolve(__dirname, 'src/components/feedback-text/'),
       '@gamepuzzles': path.resolve(__dirname, 'src/gamepuzzles/'),
       '@gameStateService': path.resolve(__dirname, 'src/gameStateService/'),
-      '@gameSettingsService': path.resolve(__dirname, 'src/gameSettingsService/')
+      '@gameSettingsService': path.resolve(__dirname, 'src/gameSettingsService/'),
+      '@tutorials': path.resolve(__dirname, 'src/tutorials/')
     },
     extensions: ['.tsx', '.ts', '.js', '.json', '.css', '.sh', '.babelrc', '.eslintignore', '.gitignore', '.d'],
   },

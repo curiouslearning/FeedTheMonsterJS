@@ -162,6 +162,8 @@ export const EVOL_MONSTER = [
   './assets/rive/ftm_monster_1_2_evol_v01.riv'
 ];
 
+export const CACHED_RIVE_WASM = './assets/rive/rive.wasm';
+
 export enum MonsterState {
   PHASE = 'phase',
   EVOLUTION = 'evolution',
