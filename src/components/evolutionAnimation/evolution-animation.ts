@@ -144,11 +144,18 @@ export class EvolutionAnimationComponent extends RiveMonsterComponent {
     // Set flag to indicate we're playing intro audio due to visibility change
     this.isPlayingIntroFromVisibilityChange = true;
     
-    // Play both audio files simultaneously if the document is visible
+    // Play both audio files with a 1-second delay between them if the document is visible
     if (isDocumentVisible()) {
-      // Play both audio files simultaneously instead of in sequence this is to follow the levelend scene behavior
+      // Play the first audio immediately
       this.audioPlayer.playAudio(AUDIO_MONSTER_EVOLVE);
-      this.audioPlayer.playAudio(AUDIO_INTRO);
+      
+      // Play the second audio after a 1-second delay
+      setTimeout(() => {
+        // Double-check visibility before playing the delayed audio
+        if (isDocumentVisible()) {
+          this.audioPlayer.playAudio(AUDIO_INTRO);
+        }
+      }, 1000);
     } else {
       this.isPlayingIntroFromVisibilityChange = false;
     }
@@ -206,22 +213,24 @@ export class EvolutionAnimationComponent extends RiveMonsterComponent {
 
   // Play audio sequence after evolution animation completes
   private playEvolutionCompletionAudios() {
-    // If intro audio is already playing from visibility change, skip playing evolution audio
-    if (this.isPlayingIntroFromVisibilityChange) {
-      return;
-    }
-
     // First stop any currently playing audio
     this.audioPlayer.stopAllAudios();
 
-    // Only proceed if the tab is visible to avoid unnecessary audio loading
+    // Only proceed if the tab is visible to avoid unnecessary audio playback
     if (!isDocumentVisible()) {
       return;
     }
 
-    // Play both audio files simultaneously instead of in sequence
+    // Play the first audio immediately
     this.audioPlayer.playAudio(AUDIO_MONSTER_EVOLVE);
-    this.audioPlayer.playAudio(AUDIO_INTRO);
+    
+    // Play the second audio after a 1-second delay
+    setTimeout(() => {
+      // Double-check visibility before playing the delayed audio
+      if (isDocumentVisible()) {
+        this.audioPlayer.playAudio(AUDIO_INTRO);
+      }
+    }, 1000);
   }
 
   public startAnimation() {
