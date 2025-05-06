@@ -130,11 +130,6 @@ export class EvolutionAnimationComponent extends RiveMonsterComponent {
     // Preload intro audio and evolution audio during initialization
     this.audioPlayer.preloadGameAudio(AUDIO_INTRO);
     this.audioPlayer.preloadGameAudio(AUDIO_MONSTER_EVOLVE);
-    
-    // Preload evolution sound effects
-    if (EVOLUTION_AUDIOS.EVOL_1 && EVOLUTION_AUDIOS.EVOL_1[0]) {
-      this.audioPlayer.preloadGameAudio(EVOLUTION_AUDIOS.EVOL_1[0]);
-    }
   }
 
   /**
