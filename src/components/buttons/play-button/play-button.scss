@@ -1,0 +1,24 @@
+.game-scene {
+  #play-button {
+    position: relative;
+    display: block;
+    margin: 0 auto;
+    z-index: 6;
+  }
+}
+
+//xsm
+@media (max-width: 576px) {
+  #play-button {
+    max-width: 115px;
+    max-height: 115px;
+  }
+}
+
+//md
+@media (min-width: 768px) {
+  #play-button {
+    max-width: 200px;
+    max-height: 200px;
+  }
+}

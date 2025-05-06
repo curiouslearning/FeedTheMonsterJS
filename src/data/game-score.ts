@@ -11,34 +11,41 @@ export class GameScore {
       score: score,
       starCount: starsGained,
     };
-    this.setTotalStarCount(starsGained);
-    let allGamelevelInfo: any[] = this.getAllGameLevelInfo();
-    let index = -1;
-    for (let i = 0; i < allGamelevelInfo.length; i++) {
-      if (allGamelevelInfo[i].levelNumber === levelPlayedInfo.levelNumber) {
-        index = i;
-        break;
+    let allGameLevelInfo = this.getAllGameLevelInfo();
+    let index = allGameLevelInfo.findIndex(
+      (level) => level.levelNumber === levelPlayedInfo.levelNumber
+    );
+
+    if (index !== -1) {
+      // Update only if the new score is higher
+      if (levelPlayedInfo.score > allGameLevelInfo[index].score) {
+        allGameLevelInfo[index] = levelPlayedInfo;
       }
-    }
-    if (index !== -1 && levelPlayedInfo.score > allGamelevelInfo[index].score) {
-      allGamelevelInfo[index] = levelPlayedInfo;
     } else {
-      allGamelevelInfo.push(levelPlayedInfo);
+      allGameLevelInfo.push(levelPlayedInfo);
     }
-    localStorage.setItem(this.currentlanguage + "gamePlayedInfo", JSON.stringify(allGamelevelInfo));
+
+    localStorage.setItem(
+      this.currentlanguage + "gamePlayedInfo",
+      JSON.stringify(allGameLevelInfo)
+    );
+
+    // Update total star count dynamically
+    this.updateTotalStarCount();
   }
 
-
-  public static getAllGameLevelInfo(): Map<string, any>[] {
+  public static getAllGameLevelInfo(): any[] {
     const data = localStorage.getItem(this.currentlanguage + "gamePlayedInfo");
-    return data == undefined ? [] : JSON.parse(data) as Map<string, any>[];
+    return data ? JSON.parse(data) : [];
   }
 
-  public static setTotalStarCount(starsGained): void {
-    let starCount = this.getTotalStarCount();
-    let totalStarCount = starCount + starsGained;
-    localStorage.setItem(this.currentlanguage + "totalStarCount",totalStarCount);
-
+  private static updateTotalStarCount(): void {
+    const allGameLevelInfo = this.getAllGameLevelInfo();
+    const totalStarCount = allGameLevelInfo.reduce(
+      (sum, level) => sum + level.starCount,
+      0
+    );
+    localStorage.setItem(this.currentlanguage + "totalStarCount", totalStarCount.toString());
   }
 
   public static getTotalStarCount(): number {
@@ -47,21 +54,21 @@ export class GameScore {
   }
   
   public static calculateStarCount(score: number): number {
-    return score == 200
-      ? 1
-      : score == 300
-      ? 2
-      : score == 400
-      ? 2
-      : score == 500
-      ? 3
-      : 0;
+    switch (score) {
+      case 200:
+        return 1;
+      case 300:
+      case 400:
+        return 2;
+      case 500:
+        return 3;
+      default:
+        return 0;
+    }
   }
 
   public static getDatafromStorage() {
-    const data = Debugger.DebugMode
-      ? JSON.parse(localStorage.getItem(lang + "ProfileDebug") || "{}")
-      : JSON.parse(localStorage.getItem(lang + "Profile") || "{}");
-    return data;
+    const key = Debugger.DebugMode ? "ProfileDebug" : "Profile";
+    return JSON.parse(localStorage.getItem(lang + key) || "{}");
   }
 }

@@ -1,3 +1,4 @@
+// to be removed once all background component has been used
 export {
     BACKGROUND_ASSET_LIST,
     createBackground,
