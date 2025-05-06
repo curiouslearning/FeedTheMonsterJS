@@ -18,6 +18,9 @@ jest.mock('@gameSettingsService', () => ({
 
 jest.mock('@rive-app/canvas', () => {
   return {
+    RuntimeLoader: {
+      setWasmUrl: jest.fn(),
+    },
     Rive: jest.fn().mockImplementation(({ onLoad, stateMachines }) => {
       const instance = {
         __esModule: true,
