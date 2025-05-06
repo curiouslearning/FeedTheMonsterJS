@@ -131,8 +131,8 @@
     height: 60px;
   }
   #timer-ticking #rotating-clock {
-    width: 90px;
-    bottom: -15px;
+    width: 75px;
+    bottom: -8px;
     left: 7%;
 }
 
@@ -141,8 +141,8 @@
   }
 
   #timer-ticking #timer-full-container .timer-mask {
-    height: 36px;
-    margin: 9px 0px 0px 5px;
+    height: 40px;
+    margin: 10px 0px 0px 0;
   }
 }
 
@@ -155,8 +155,8 @@
     height: 70px;
   }
   #timer-ticking #rotating-clock {
-    width: 100px;
-    bottom: -15px;
+    width: 75px;
+    bottom: -8px;
     left: 7%;
 }
 
@@ -173,23 +173,23 @@
 /* For desktops or larger devices above 1080px */
 @media (min-width: 1080px){
   #timer-ticking {
-    top: 15%;
+    top: 13%;
   }
   #timer-ticking #timer-empty{
-    height: 70px;
+    height: 40px;
   }
   #timer-ticking #rotating-clock {
-    width: 100px;
-    bottom: -15px;
+    width: 50px;
+    bottom: -5px;
     left: 7%;
 }
 
   #timer-ticking #timer-full-container {
-    height: 70px;
+    height: 40px;
   }
 
   #timer-ticking #timer-full-container .timer-mask {
-    height: 45px;
-    margin: 10px 0px 0px 5px;
+    height: 30px;
+    margin: 5px 0px 0px 2px
   }
 }
