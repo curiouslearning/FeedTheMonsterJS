@@ -1,6 +1,8 @@
-import { MONSTER_PHASES } from '@constants';
-import { Rive, Layout, Fit, Alignment } from '@rive-app/canvas';
+import { MONSTER_PHASES, CACHED_RIVE_WASM } from '@constants';
+import { Rive, Layout, Fit, Alignment, RuntimeLoader } from '@rive-app/canvas';
 import gameSettingsService from '@gameSettingsService';
+
+RuntimeLoader.setWasmUrl(CACHED_RIVE_WASM);
 export interface RiveMonsterComponentProps {
   canvas: HTMLCanvasElement; // Canvas element where the animation will render
   autoplay: boolean;
@@ -121,7 +123,6 @@ export class RiveMonsterComponent {
         alignment: Alignment.Center,
       }),
       useOffscreenRenderer: true, // Improves performance
-      locateFile: (file) => `/assets/rive/${file}`,
     };
 
     // For evolution animations, we don't use state machines. so were excluding this.
