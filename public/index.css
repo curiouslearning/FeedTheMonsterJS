@@ -58,6 +58,7 @@ img {
   transform: translate(-50%, 0%);
 }
 
+#discription-text p,
 #about-company p {
   margin-top: 10%;
   line-height: 1.8;
@@ -74,24 +75,14 @@ img {
   z-index: 4;
   width: 100%;
   height: 100%;
-  image-rendering: crisp-edges;
-  image-rendering: pixelated;
-}
-
-#discription-text p {
-  margin-top: 10%;
-  line-height: 1.8;
-  color: white;
-  text-align: center;
+  image-rendering: auto;
 }
 
 #canvas {
   position: absolute;
-  /* background-color: white; */
   left: 50%;
   top: 0%;
   transform: translate(-50%, 0%);
-  /* aspect-ratio: 2/3; */
   max-height: -webkit-fill-available;
   z-index: 4;
   background-repeat: no-repeat;
@@ -103,7 +94,6 @@ img {
   left: 50%;
   top: 0%;
   transform: translate(-50%, 0%);
-  /* aspect-ratio: 2/3; */
   max-height: -webkit-fill-available;
 }
 
@@ -211,7 +201,6 @@ img {
   cursor: pointer;
   outline: none;
   z-index: 9;
-  /* display: none; */
 }
 
 #toggle-btn.on {
@@ -223,7 +212,7 @@ img {
 }
 
 .feedback-text {
-  font-family: 'AtmaSemiBold', system-ui;
+  font-family: 'Atma-SemiBold', system-ui;
   font-size: 10vw;
   font-weight: 700;
   position: absolute;
@@ -522,8 +511,8 @@ img {
 }
 
 #phasebg-img {
-    width: 100vw;
-    height: 100vh;
+  width: 100vw;
+  height: 100vh;
 }
 
 /* For small phones, up to 360px wide */
@@ -546,10 +535,6 @@ img {
     max-height: 52px;
   }
 
-  .dynamic-button {
-    max-width: 52px;
-    max-height: 52px;
-  }
 
   .me-4 {
     margin-right: 22px !important;
@@ -889,95 +874,61 @@ img {
 }
 
 @media (min-width: 1080px) {
-  #title {
-    font-size: 6vw;
-    margin-top: 10%;
+  #background {
+    width: 500px !important;
   }
 
-  .summer .ftm-fence {
-    left: -15%;
-    bottom: 18%;
-    transform: rotate(10deg);
-    width: 100%;
-  }
-
-  .summer .ftm-totem {
-    position: absolute;
-    bottom: 23%;
-    z-index: 1;
-    right: -10%;
-    max-width: 450px;
-    width: 100%;
-  }
-
-  .autumn-bg .ftm-totem,
-  .winter-bg .ftm-totem {
-    right: -3%;
-    bottom: 20%;
-    width: 50%;
-  }
-
-  .winter-bg .ftm-fence {
-    width: 60%;
-    left: -15%;
-    bottom: 28%;
-    transform: rotate(-20deg);
-  }
-
-  .autumn-bg .ftm-fence {
-    bottom: 17%;
-    width: 50%;
-    left: -11%;
-    transform: rotate(340deg);
-  }
-
-  .dynamic-button {
-    max-width: 100px;
-    max-height: 100px;
-  }
-
-  .popup #cancel-button {
-    top: 1% !important;
-    left: 10% !important;
-  }
-
-  .stars-container {
-    top: 25%;
-    height: 125px;
-  }
-
-  .star1 {
-    left: 15%;
-    width: 130px;
-    bottom: 0%;
-  }
-
-  .star2 {
-    width: 160px;
-    top: -100%;
-  }
-
-  .star3 {
-    right: 13%;
-    width: 130px;
-    bottom: 0%;
-  }
-
-  .buttons-container {
-    gap: 60px !important;
-  }
-
-  .feedback-text {
-    font-size: 8vw !important;
+  .game-scene {
+    width: 500px;
+    margin: auto;
   }
 
   #title {
-    margin-top: 5%;
-    font-size: 7vw;
+    font-size: 2vw !important;
+    margin-top: 10% !important;
+  }
+
+  .game-scene #play-button {
+    max-width: 125px;
+    max-height: 125px;
+    margin: 30px auto !important;
+  }
+
+  #loading-screen {
+    width: 500px;
   }
 
   #levelEnd {
-    background-size: 100% 120%;
+    width: 500px;
   }
 
+  .feedback-text {
+    font-size: 2.5vw;
+  }
+
+  .popup .popup__content-wrapper {
+    top: 0vw !important;
+    left: 0vw !important;
+    right: 0vw !important;
+    height: 50vw !important;
+    width: 60%;
+    margin: auto;
+  }
+
+  .popup #cancel-button {
+    top: 17vw !important;
+    left: 0vw !important;
+  }
+  .ftm-fence {
+    left: -130px;
+    bottom: 100px;
+  }
+  .ftm-totem{
+    position: absolute;
+    bottom: 15%;
+    width: 60%;
+    z-index: 1;
+    right: -15%;
+    max-width: 300px;
+ }
 }

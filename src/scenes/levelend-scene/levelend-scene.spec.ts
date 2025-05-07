@@ -42,7 +42,7 @@ jest.mock('@components', () => ({
     playAudio: mockPlayAudio,
     stopAllAudios: mockStopAllAudios,
     preloadGameAudio: jest.fn().mockResolvedValue(undefined),
-    playFeedbackAudios: jest.fn().mockResolvedValue(undefined),
+    playAudioQueue: jest.fn().mockResolvedValue(undefined),
   })),
 }));
 

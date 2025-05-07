@@ -1,6 +1,8 @@
-import { MONSTER_PHASES } from '@constants';
-import { Rive, Layout, Fit, Alignment } from '@rive-app/canvas';
+import { MONSTER_PHASES, CACHED_RIVE_WASM } from '@constants';
+import { Rive, Layout, Fit, Alignment, RuntimeLoader } from '@rive-app/canvas';
 import gameSettingsService from '@gameSettingsService';
+
+RuntimeLoader.setWasmUrl(CACHED_RIVE_WASM);
 export interface RiveMonsterComponentProps {
   canvas: HTMLCanvasElement; // Canvas element where the animation will render
   autoplay: boolean;

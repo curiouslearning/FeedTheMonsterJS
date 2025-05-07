@@ -63,6 +63,10 @@ export class EvolutionAnimationComponent extends RiveMonsterComponent {
     this.audioPlayer = new AudioPlayer();
     this.initialize();
     this.addEventListener();
+    
+    // Preload audio files during initialization to avoid delays later
+    this.preloadAudioFiles();
+    
     this.startAnimation();
   }
 
@@ -119,25 +123,37 @@ export class EvolutionAnimationComponent extends RiveMonsterComponent {
   };
 
   /**
+   * Preloads all audio files needed for the evolution animation
+   * This ensures audio plays without delay when needed
+   */
+  private preloadAudioFiles() {
+    // Preload intro audio and evolution audio during initialization
+    this.audioPlayer.preloadGameAudio(AUDIO_INTRO);
+    this.audioPlayer.preloadGameAudio(AUDIO_MONSTER_EVOLVE);
+  }
+
+  /**
    * Plays the intro audio when returning to the tab
    */
   private playIntroAudio() {
     // Set flag to indicate we're playing intro audio due to visibility change
     this.isPlayingIntroFromVisibilityChange = true;
     
-    // Preload and play the intro audio
-    this.audioPlayer.preloadGameAudio(AUDIO_INTRO)
-      .then(() => {
-        // Double-check visibility before playing to avoid unnecessary audio playback
+    // Play both audio files with a 1-second delay between them if the document is visible
+    if (isDocumentVisible()) {
+      // Play the first audio immediately
+      this.audioPlayer.playAudio(AUDIO_MONSTER_EVOLVE);
+      
+      // Play the second audio after a 1-second delay
+      setTimeout(() => {
+        // Double-check visibility before playing the delayed audio
         if (isDocumentVisible()) {
-          this.audioPlayer.playFeedbackAudios(false, AUDIO_INTRO);
-        } else {
-          this.isPlayingIntroFromVisibilityChange = false;
+          this.audioPlayer.playAudio(AUDIO_INTRO);
         }
-      })
-      .catch(() => {
-        this.isPlayingIntroFromVisibilityChange = false;
-      });
+      }, 1000);
+    } else {
+      this.isPlayingIntroFromVisibilityChange = false;
+    }
   }
 
   /**
@@ -192,36 +208,24 @@ export class EvolutionAnimationComponent extends RiveMonsterComponent {
 
   // Play audio sequence after evolution animation completes
   private playEvolutionCompletionAudios() {
-    // If intro audio is already playing from visibility change, skip playing evolution audio
-    if (this.isPlayingIntroFromVisibilityChange) {
-      return;
-    }
-
     // First stop any currently playing audio
     this.audioPlayer.stopAllAudios();
 
-    // Only proceed if the tab is visible to avoid unnecessary audio loading
+    // Only proceed if the tab is visible to avoid unnecessary audio playback
     if (!isDocumentVisible()) {
       return;
     }
 
-    // Preload all audio files to ensure they're ready to play
-    Promise.all([
-      this.audioPlayer.preloadGameAudio(AUDIO_MONSTER_EVOLVE),
-      this.audioPlayer.preloadGameAudio(AUDIO_INTRO)
-    ]).then(() => {
-      // Double-check visibility before playing
-      if (isDocumentVisible() && !this.isPlayingIntroFromVisibilityChange) {
-        // Play audio sequence in order using the playFeedbackAudios method
-        this.audioPlayer.playFeedbackAudios(
-          false, 
-          AUDIO_MONSTER_EVOLVE,
-          AUDIO_INTRO
-        );
+    // Play the first audio immediately
+    this.audioPlayer.playAudio(AUDIO_MONSTER_EVOLVE);
+    
+    // Play the second audio after a 1-second delay
+    setTimeout(() => {
+      // Double-check visibility before playing the delayed audio
+      if (isDocumentVisible()) {
+        this.audioPlayer.playAudio(AUDIO_INTRO);
       }
-    }).catch(() => {
-      // Silent error handling
-    });
+    }, 1000);
   }
 
   public startAnimation() {
@@ -260,11 +264,10 @@ export class EvolutionAnimationComponent extends RiveMonsterComponent {
   private playEvolutionSoundEffects() {
     // The 'Play' event is triggered because we need to play an audio during the play animation of the Rive entity.
     this.executeRiveAction('Play', () => {
-      //To do - playFeedbackAudios should be renamed as this was the common method used to play all audios not just feedback audio.
       this.evolutionSoundEffectsTimeoutId = setTimeout(() => {
         // Only play if tab is visible
         if (isDocumentVisible()) {
-          this.audioPlayer.playFeedbackAudios(false, EVOLUTION_AUDIOS.EVOL_1[0]);
+          this.audioPlayer.playAudioQueue(false, EVOLUTION_AUDIOS.EVOL_1[0]);
         }
       }, 1000) as unknown as number;
     });
