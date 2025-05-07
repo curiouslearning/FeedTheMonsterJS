@@ -211,18 +211,22 @@ describe('EvolutionAnimationComponent', () => {
     expect(canvas.style.zIndex).toBe('4'); // normal position
   });
 
-  it('should call stopAllAudios when playEvolutionCompletionAudios is called', async () => {
+  it('should call stopAllAudios and play audio with delay when playEvolutionCompletionAudios is called', () => {
+    // Mock setTimeout
+    jest.useFakeTimers();
+    
     evolutionAnimation = new EvolutionAnimationComponent({
       canvas,
       monsterPhaseNumber: 1,
       autoplay: true
     });
 
-    // Mock Promise.all to resolve immediately
-    const originalPromiseAll = Promise.all;
-    Promise.all = jest.fn().mockImplementation(() => {
-      return Promise.resolve([]);
-    });
+    // Mock isDocumentVisible to return true for this test
+    jest.spyOn(CommonUtils, 'isDocumentVisible').mockReturnValue(true);
+
+    // Reset mock counters before test
+    const mockPlayAudio = jest.fn();
+    (evolutionAnimation as any).audioPlayer.playAudio = mockPlayAudio;
 
     // Call playEvolutionCompletionAudios directly
     evolutionAnimation['playEvolutionCompletionAudios']();
@@ -230,17 +234,18 @@ describe('EvolutionAnimationComponent', () => {
     // Check if stopAllAudios was called
     expect(mockStopAllAudios).toHaveBeenCalled();
     
-    // Check if preloadGameAudio was called twice (for AUDIO_MONSTER_EVOLVE and AUDIO_INTRO)
-    expect(mockPreloadGameAudio).toHaveBeenCalledTimes(2);
+    // Check if playAudio was called once initially (for AUDIO_MONSTER_EVOLVE)
+    expect(mockPlayAudio).toHaveBeenCalledTimes(1);
     
-    // Wait for the Promise.all to resolve
-    await Promise.resolve();
+    // Fast-forward time by 1 second
+    jest.advanceTimersByTime(1000);
     
-    // Check if playAudioQueue was called
-    expect(mockPlayAudioQueue).toHaveBeenCalled();
+    // Check if playAudio was called again (for AUDIO_INTRO)
+    expect(mockPlayAudio).toHaveBeenCalledTimes(2);
     
-    // Restore original Promise.all
-    Promise.all = originalPromiseAll;
+    // Restore timers and mocks
+    jest.useRealTimers();
+    jest.restoreAllMocks();
   });
 
   it('should add visibility change event listener on initialization', () => {
