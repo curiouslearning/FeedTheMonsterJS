@@ -1,0 +1,24 @@
+$stepAmount: 8;
+$steps: 1, 2, 3, 4, 5;
+
+@each $step in $steps {
+  .m-#{$step} {
+    margin: $step * $stepAmount + px;
+  }
+
+  .ms-#{$step} {
+    margin-left: $step * $stepAmount + px;
+  }
+
+  .me-#{$step} {
+    margin-right: $step * $stepAmount + px;
+  }
+
+  .mt-#{$step} {
+    margin-top: $step * $stepAmount + px;
+  }
+
+  .mb-#{$step} {
+    margin-bottom: $step * $stepAmount + px;
+  }
+}

@@ -14,26 +14,27 @@ import {
   createLevelObject,
   getdefaultCloudBtnsPos,
   loadLevelImages
-} from "@compositions";
+} from "@compositions"; // to be removed once background component has been fully used
 import {
   PreviousPlayedLevel,
   LEVEL_SELECTION_BACKGROUND,
   NEXT_BTN_IMG,
   BACK_BTN_IMG,
   AUDIO_INTRO,
+  SCENE_NAME_GAME_PLAY,
 } from "@constants";
 import { LevelBloonButton } from '@buttons';
+import gameStateService from '@gameStateService';
+import gameSettingsService from '@gameSettingsService';
 
 export class LevelSelectionScreen {
   private canvas: HTMLCanvasElement;
   private data: any;
   public width: number;
   public height: number;
-  private canvasElement: HTMLCanvasElement;
   private context: CanvasRenderingContext2D;
   private levels: any;
   private gameLevelData: any;
-  public callBack: Function;
   private audioPlayer: AudioPlayer;
   private images: object;
   private loadedImages: any;
@@ -56,14 +57,22 @@ export class LevelSelectionScreen {
   private leftBtnX: number;
   private leftBtnY: number;
   private levelButtons: any
+  public riveMonsterElement: HTMLCanvasElement;
 
-  constructor(canvas: HTMLCanvasElement, data: any, callBack: Function) {
-    this.canvas = canvas;
-    this.data = data;
-    this.width = canvas.width;
-    this.height = canvas.height;
+  constructor() {
+    const {
+      canvasElem,
+      canvasWidth,
+      canvasHeight,
+      context
+    } = gameSettingsService.getCanvasSizeValues();
+    this.canvas = canvasElem;
+    this.width =  canvasWidth > 1024 ? 500 : canvasWidth;
+    this.height = canvasHeight;
+    this.context = context;
+
+    this.data = gameStateService.getFTMData();
     let self = this;
-    this.callBack = callBack;
     this.levelsSectionCount =
       self.data.levels.length / 10 > Math.floor(self.data.levels.length / 10)
         ? Math.floor(self.data.levels.length / 10) + 1
@@ -71,8 +80,6 @@ export class LevelSelectionScreen {
     this.levels = [];
     this.firebaseIntegration = new FirebaseIntegration();
     this.init();
-    this.canvasElement = document.getElementById("canvas") as HTMLCanvasElement;
-    this.context = this.canvasElement.getContext("2d");
     this.createLevelButtons();
     this.gameLevelData = GameScore.getAllGameLevelInfo();
     this.audioPlayer = new AudioPlayer();
@@ -129,7 +136,15 @@ export class LevelSelectionScreen {
   private async createLevelButtons() {
     const images = await loadLevelImages();
     const poss = getdefaultCloudBtnsPos(this.canvas);
-    const levelsArr = poss[0].map((coordinates, index) => {
+    const totalLevels = this.data.levels.length;
+    const buttonsPerPage = 10;
+    const remainingButtons = Math.max(0, totalLevels - this.levelSelectionPageIndex);
+    const buttonsToCreate = Math.min(buttonsPerPage, remainingButtons);
+
+    // Only take the positions we need for this page
+    const positions = poss[0].slice(0, buttonsToCreate);
+    
+    const levelsArr = positions.map((coordinates, index) => {
       return createLevelObject(
         coordinates[0],
         coordinates[1],
@@ -137,14 +152,21 @@ export class LevelSelectionScreen {
         images
       );
     });
+
     this.levels = await Promise.all(levelsArr);
     this.levelButtons = this.levels.map(btnCoordinates => {
       return new LevelBloonButton(
         this.canvas,
         this.context,
-        {...btnCoordinates},
-      )
+        {...btnCoordinates}
+      );
     });
+  }
+
+  private async updatePage(newPageIndex: number) {
+    this.levelSelectionPageIndex = newPageIndex;
+    await this.createLevelButtons(); // Recreate buttons for new page
+    this.downButton(this.levelSelectionPageIndex);
   }
 
   private addListeners() {
@@ -199,16 +221,13 @@ export class LevelSelectionScreen {
       /*most significant*/
       if (xDiff > 0) {
         if (this.levelSelectionPageIndex != this.levelsSectionCount * 10 - 10) {
-          this.levelSelectionPageIndex = this.levelSelectionPageIndex + 10;
-          this.downButton(this.levelSelectionPageIndex);
+          this.updatePage(this.levelSelectionPageIndex + 10);
         }
         /* right swipe */
       } else {
         if (this.levelSelectionPageIndex != 0) {
-          this.levelSelectionPageIndex = this.levelSelectionPageIndex - 10;
+          this.updatePage(this.levelSelectionPageIndex - 10);
         }
-        this.downButton(this.levelSelectionPageIndex);
-        /* left swipe */
       }
     }
     /* reset values */
@@ -237,16 +256,15 @@ export class LevelSelectionScreen {
       const pageIndex = this.levelSelectionPageIndex;
       if (isRight && pageIndex != this.levelsSectionCount * 10 - 10) {
         this.audioPlayer.playButtonClickSound();
-        this.levelSelectionPageIndex = pageIndex + 10;
+        this.updatePage(pageIndex + 10);
         this.rightBtnSize = 10.5;
         this.rightBtnY = 1.299;
       } else if (isLeft && pageIndex != 0) {
         this.audioPlayer.playButtonClickSound();
-        this.levelSelectionPageIndex = pageIndex - 10;
+        this.updatePage(pageIndex - 10);
         this.leftBtnSize = 10.3;
         this.leftBtnY = 1.299;
       }
-      this.downButton(this.levelSelectionPageIndex);
     }
 
     for(let btn of this.levelButtons) {
@@ -264,13 +282,26 @@ export class LevelSelectionScreen {
     }
   };
 
+  /**
+   * Checks if a level is considered completed based on star count.
+   * A level is completed when the player has earned 2 or more stars.
+   * Used to determine if the level button should show the pulse effect,
+   * as incomplete levels need to draw player's attention.
+   * @param levelNumber - The level to check completion status for
+   * @param gameLevelData - Array of level data containing star counts
+   * @returns true if level has 2+ stars, false otherwise
+   */
+  private isLevelCompleted(levelNumber: number, gameLevelData: any[]): boolean {
+    const levelInfo = gameLevelData.find(level => level.levelNumber === levelNumber);
+    return (levelInfo?.starCount || 0) >= 2;
+  }
+
   private drawLevel(levelBtn: any, gameLevelData: []) {
     const currentLevelIndex = levelBtn.levelData.index + this.levelSelectionPageIndex;
     const currentLevel = currentLevelIndex - 1;
-
     const nextLevelPlay = this.unlockLevelIndex + 1;
 
-    if (nextLevelPlay === currentLevel) {
+    if (nextLevelPlay === currentLevel && !this.isLevelCompleted(currentLevel, gameLevelData)) {
       levelBtn.applyPulseEffect();
     }
 
@@ -293,7 +324,7 @@ export class LevelSelectionScreen {
         : null;
     }
   }
-  private draw() {
+  private drawLevelSelection() {
     for (let levelBtn of this.levelButtons) {
       this.drawLevel(
         levelBtn,
@@ -362,8 +393,9 @@ export class LevelSelectionScreen {
       },
       selectedLevelNumber: level_number,
     };
+    gameStateService.publish(gameStateService.EVENTS.GAMEPLAY_DATA_EVENT, gamePlayData);
     this.logSelectedLevelEvent();
-    this.callBack(gamePlayData, "LevelSelection");
+    gameStateService.publish(gameStateService.EVENTS.SWITCH_SCENE_EVENT, SCENE_NAME_GAME_PLAY);
   }
   public logSelectedLevelEvent() {
     const selectedLeveltData: SelectedLevel = {
@@ -379,10 +411,10 @@ export class LevelSelectionScreen {
     };
     this.firebaseIntegration.sendSelectedLevelEvent(selectedLeveltData);
   }
-  public drawLevelSelection() {
+  public draw() {
     if (this.imagesLoaded) {
       this.background?.draw();
-      this.draw();
+      this.drawLevelSelection();
       this.downButton(this.levelSelectionPageIndex);
     }
   }

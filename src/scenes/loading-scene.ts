@@ -1,25 +1,27 @@
 import { loadImages } from "@common";
 import { CLOUD_6, CLOUD_7, CLOUD_8 } from "@constants";
+import gameSettingsService from '@gameSettingsService';
+
 export class LoadingScene {
   public canvas: HTMLCanvasElement;
   height: number;
   width: number;
   context: CanvasRenderingContext2D;
+  private shouldShowLoading: boolean;
   images: any;
   loadedImages: any;
   imagesLoaded: boolean;
   cloudXPosition: number = -500;
   stopCloudMoving: boolean = false;
   cloudMovingTimeOut: number = 0;
-  public removeLoading;
-  constructor(width: number, height: number,removeLoading) {
-    this.canvas = document.getElementById("loading") as HTMLCanvasElement;
-    this.canvas.height = height;
-    this.canvas.width = width;
-    this.height = height;
-    this.width = width;
-    this.removeLoading=removeLoading;
-    this.context = this.canvas.getContext("2d");
+
+  constructor() {
+    const { loadingCanvas, loadingContext } = gameSettingsService.getCanvasSizeValues();
+    this.canvas = loadingCanvas;
+    this.height = loadingCanvas.height;
+    this.width = loadingCanvas.width;
+    this.context = loadingContext;
+    this.shouldShowLoading = false;
     this.images = {
       cloud6: CLOUD_6,
       cloud7: CLOUD_7,
@@ -30,12 +32,20 @@ export class LoadingScene {
       this.imagesLoaded = true;
     });
   }
+
+  toggleLoadingScreen(shouldShow) {
+    shouldShow && this.initCloud();
+    this.shouldShowLoading = shouldShow;
+    document.getElementById("loading").style.zIndex = shouldShow ? "10" : "-1";
+  }
+
   draw(deltaTime: number) {
+    if (!this.shouldShowLoading) return;
     this.context.clearRect(0, 0, this.width, this.height);
     this.cloudXPosition += deltaTime * 0.75;
     this.cloudMovingTimeOut += deltaTime;
-    if(this.cloudMovingTimeOut>2983){
-      this.removeLoading();
+    if (this.cloudMovingTimeOut>2983){
+      this.toggleLoadingScreen(false)
     }
     if (this.cloudXPosition >= this.width * 0.5 && !this.stopCloudMoving) {
       this.cloudMovingTimeOut += deltaTime;
@@ -223,7 +233,7 @@ export class LoadingScene {
     }
   }
 
-  public initCloud = ():void => {
+  private initCloud = ():void => {
     this.cloudXPosition = -500;
     this.stopCloudMoving = false;
     this.cloudMovingTimeOut = 0;

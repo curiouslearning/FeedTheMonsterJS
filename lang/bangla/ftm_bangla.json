@@ -82,7 +82,7 @@
               "StoneText": "য়"
             },
             {
-              "StoneText": "অ"
+              "StoneText": "ম"
             }
           ]
         },
@@ -119,10 +119,10 @@
           },
           "foilstones": [
             {
-              "StoneText": "য়"
+              "StoneText": "অ"
             },
             {
-              "StoneText": "অ"
+              "StoneText": "ত"
             },
             {
               "StoneText": "য়"
@@ -223,7 +223,7 @@
           },
           "foilstones": [
             {
-              "StoneText": "র"
+              "StoneText": "য়"
             },
             {
               "StoneText": "অ"
@@ -324,7 +324,7 @@
           },
           "foilstones": [
             {
-              "StoneText": "ক"
+              "StoneText": "অ"
             },
             {
               "StoneText": "ত"
@@ -422,7 +422,7 @@
               "StoneText": "প"
             },
             {
-              "StoneText": "ক"
+              "StoneText": "ট"
             }
           ]
         },
@@ -439,7 +439,7 @@
           },
           "foilstones": [
             {
-              "StoneText": "য়"
+              "StoneText": "ট"
             },
             {
               "StoneText": "ম"
@@ -478,6 +478,12 @@
             "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/bangla/audios/ক.mp3"
           },
           "foilstones": [
+            {
+              "StoneText": "ক"
+            },
+            {
+              "StoneText": "প"
+            },
             {
               "StoneText": "ট"
             },
@@ -540,7 +546,7 @@
               "StoneText": "ত"
             },
             {
-              "StoneText": "ম"
+              "StoneText": "ক"
             },
             {
               "StoneText": "ত"
@@ -610,6 +616,9 @@
             },
             {
               "StoneText": "ম"
+            },
+            {
+              "StoneText": "অ"
             },
             {
               "StoneText": "প"
@@ -1208,7 +1217,7 @@
               "StoneText": "অ"
             },
             {
-              "StoneText": "অ"
+              "StoneText": "ত"
             }
           ]
         },
@@ -1365,7 +1374,7 @@
               "StoneText": "ক্ষ"
             },
             {
-              "StoneText": "অ"
+              "StoneText": "ত"
             }
           ]
         },
@@ -1391,7 +1400,7 @@
               "StoneText": "প"
             },
             {
-              "StoneText": "অ"
+              "StoneText": "প"
             }
           ]
         },
@@ -1417,7 +1426,7 @@
               "StoneText": "ক্ষ"
             },
             {
-              "StoneText": "প"
+              "StoneText": "ম"
             },
             {
               "StoneText": "অ"
@@ -1704,7 +1713,33 @@
           },
           "foilstones": [
             {
+              "StoneText": "ষ"
+            },
+            {
               "StoneText": "প"
+            },
+            {
+              "StoneText": "অ"
+            }
+          ]
+        },
+        {
+          "SegmentNumber": 4,
+          "targetstones": [
+            {
+              "StoneText": "ষ"
+            }
+          ],
+          "prompt": {
+            "PromptText": "ষ",
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/bangla/audios/ষ.mp3"
+          },
+          "foilstones": [
+            {
+              "StoneText": "ঢ়"
+            },
+            {
+              "StoneText": "ঢ়"
             },
             {
               "StoneText": "র"
@@ -2604,7 +2639,7 @@
           },
           "foilstones": [
             {
-              "StoneText": "ট"
+              "StoneText": "র"
             },
             {
               "StoneText": "রা"
@@ -2639,7 +2674,7 @@
               "StoneText": "আ"
             },
             {
-              "StoneText": "ড়"
+              "StoneText": "ক"
             }
           ]
         },
@@ -3506,7 +3541,7 @@
               "StoneText": "ঞ"
             },
             {
-              "StoneText": "জ"
+              "StoneText": "লা"
             },
             {
               "StoneText": "ঞ"
@@ -3850,7 +3885,7 @@
               "StoneText": "ঝ"
             },
             {
-              "StoneText": "ন"
+              "StoneText": "ঞ"
             },
             {
               "StoneText": "ন"
@@ -4351,7 +4386,10 @@
               "StoneText": "ই"
             },
             {
-              "StoneText": "র"
+              "StoneText": "ঠ"
+            },
+            {
+              "StoneText": "ঈ"
             },
             {
               "StoneText": "ই"
@@ -4656,12 +4694,1758 @@
     },
     {
       "LevelMeta": {
-        "LevelNumber": 33,
+        "LevelNumber": 39,
+        "PromptType": "Visible",
+        "LevelType": "LetterOnly",
+        "csvType": "match",
+        "PromptFadeout": 0,
+        "LetterGroup": 10
+      },
+      "Puzzles": [
+        {
+          "SegmentNumber": 0,
+          "targetstones": [
+            {
+              "StoneText": "ব"
+            }
+          ],
+          "prompt": {
+            "PromptText": "ব",
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/bangla/audios/ব.mp3"
+          },
+          "foilstones": [
+            {
+              "StoneText": "জি"
+            },
+            {
+              "StoneText": "রা"
+            },
+            {
+              "StoneText": "ল"
+            },
+            {
+              "StoneText": "শ"
+            },
+            {
+              "StoneText": "জি"
+            },
+            {
+              "StoneText": "ত"
+            },
+            {
+              "StoneText": "ঢ়"
+            },
+            {
+              "StoneText": "ঝি"
+            }
+          ]
+        },
+        {
+          "SegmentNumber": 1,
+          "targetstones": [
+            {
+              "StoneText": "ণ"
+            }
+          ],
+          "prompt": {
+            "PromptText": "ণ",
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/bangla/audios/ণ.mp3"
+          },
+          "foilstones": [
+            {
+              "StoneText": "ঈ"
+            },
+            {
+              "StoneText": "অ"
+            },
+            {
+              "StoneText": "র"
+            },
+            {
+              "StoneText": "ণ"
+            },
+            {
+              "StoneText": "জি"
+            },
+            {
+              "StoneText": "রা"
+            },
+            {
+              "StoneText": "ট"
+            },
+            {
+              "StoneText": "জি"
+            }
+          ]
+        },
+        {
+          "SegmentNumber": 2,
+          "targetstones": [
+            {
+              "StoneText": "র"
+            }
+          ],
+          "prompt": {
+            "PromptText": "র",
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/bangla/audios/র.mp3"
+          },
+          "foilstones": [
+            {
+              "StoneText": "ড়"
+            },
+            {
+              "StoneText": "ষ"
+            },
+            {
+              "StoneText": "জ"
+            },
+            {
+              "StoneText": "ণ"
+            },
+            {
+              "StoneText": "ব"
+            },
+            {
+              "StoneText": "র"
+            },
+            {
+              "StoneText": "চি"
+            },
+            {
+              "StoneText": "র"
+            }
+          ]
+        },
+        {
+          "SegmentNumber": 3,
+          "targetstones": [
+            {
+              "StoneText": "র"
+            }
+          ],
+          "prompt": {
+            "PromptText": "র",
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/bangla/audios/র.mp3"
+          },
+          "foilstones": [
+            {
+              "StoneText": "ই"
+            },
+            {
+              "StoneText": "র"
+            },
+            {
+              "StoneText": "র"
+            },
+            {
+              "StoneText": "নি"
+            },
+            {
+              "StoneText": "ণ"
+            },
+            {
+              "StoneText": "ন"
+            },
+            {
+              "StoneText": "ম"
+            },
+            {
+              "StoneText": "নি"
+            },
+            {
+              "StoneText": "ঈ"
+            }
+          ]
+        },
+        {
+          "SegmentNumber": 4,
+          "targetstones": [
+            {
+              "StoneText": "ঈ"
+            }
+          ],
+          "prompt": {
+            "PromptText": "ঈ",
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/bangla/audios/ঈ.mp3"
+          },
+          "foilstones": [
+            {
+              "StoneText": "ঠ"
+            },
+            {
+              "StoneText": "ন"
+            },
+            {
+              "StoneText": "ণ"
+            },
+            {
+              "StoneText": "জি"
+            },
+            {
+              "StoneText": "প"
+            },
+            {
+              "StoneText": "ঞ"
+            },
+            {
+              "StoneText": "ই"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "LevelMeta": {
+        "LevelNumber": 40,
+        "PromptType": "Hidden",
+        "LevelType": "LetterOnly",
+        "csvType": "matchSound",
+        "PromptFadeout": 0,
+        "LetterGroup": 10
+      },
+      "Puzzles": [
+        {
+          "SegmentNumber": 0,
+          "targetstones": [
+            {
+              "StoneText": "শ"
+            }
+          ],
+          "prompt": {
+            "PromptText": "শ",
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/bangla/audios/শ.mp3"
+          },
+          "foilstones": [
+            {
+              "StoneText": "জ"
+            },
+            {
+              "StoneText": "ঢ়"
+            },
+            {
+              "StoneText": "ম"
+            },
+            {
+              "StoneText": "ই"
+            },
+            {
+              "StoneText": "ড়"
+            },
+            {
+              "StoneText": "চি"
+            },
+            {
+              "StoneText": "শ"
+            },
+            {
+              "StoneText": "ব"
+            }
+          ]
+        },
+        {
+          "SegmentNumber": 1,
+          "targetstones": [
+            {
+              "StoneText": "ব"
+            }
+          ],
+          "prompt": {
+            "PromptText": "ব",
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/bangla/audios/ব.mp3"
+          },
+          "foilstones": [
+            {
+              "StoneText": "লা"
+            },
+            {
+              "StoneText": "শ"
+            },
+            {
+              "StoneText": "জ"
+            },
+            {
+              "StoneText": "ণ"
+            },
+            {
+              "StoneText": "ল"
+            },
+            {
+              "StoneText": "শ"
+            },
+            {
+              "StoneText": "ঈ"
+            },
+            {
+              "StoneText": "ঠ"
+            }
+          ]
+        },
+        {
+          "SegmentNumber": 2,
+          "targetstones": [
+            {
+              "StoneText": "শ"
+            }
+          ],
+          "prompt": {
+            "PromptText": "শ",
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/bangla/audios/শ.mp3"
+          },
+          "foilstones": [
+            {
+              "StoneText": "ষ"
+            },
+            {
+              "StoneText": "ব"
+            },
+            {
+              "StoneText": "জি"
+            },
+            {
+              "StoneText": "র"
+            },
+            {
+              "StoneText": "রা"
+            },
+            {
+              "StoneText": "প"
+            },
+            {
+              "StoneText": "ল"
+            },
+            {
+              "StoneText": "চি"
+            }
+          ]
+        },
+        {
+          "SegmentNumber": 3,
+          "targetstones": [
+            {
+              "StoneText": "র"
+            }
+          ],
+          "prompt": {
+            "PromptText": "র",
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/bangla/audios/র.mp3"
+          },
+          "foilstones": [
+            {
+              "StoneText": "ঙ"
+            },
+            {
+              "StoneText": "জ"
+            },
+            {
+              "StoneText": "ঞ"
+            },
+            {
+              "StoneText": "ঈ"
+            },
+            {
+              "StoneText": "জি"
+            },
+            {
+              "StoneText": "ল"
+            },
+            {
+              "StoneText": "য়"
+            },
+            {
+              "StoneText": "ণ"
+            },
+            {
+              "StoneText": "জ"
+            }
+          ]
+        },
+        {
+          "SegmentNumber": 4,
+          "targetstones": [
+            {
+              "StoneText": "ণ"
+            }
+          ],
+          "prompt": {
+            "PromptText": "ণ",
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/bangla/audios/ণ.mp3"
+          },
+          "foilstones": [
+            {
+              "StoneText": "ব"
+            },
+            {
+              "StoneText": "ণ"
+            },
+            {
+              "StoneText": "ঝি"
+            },
+            {
+              "StoneText": "জ"
+            },
+            {
+              "StoneText": "ঝি"
+            },
+            {
+              "StoneText": "রা"
+            },
+            {
+              "StoneText": "অ"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "LevelMeta": {
+        "LevelNumber": 41,
+        "PromptType": "Visible",
+        "LevelType": "LetterOnly",
+        "csvType": "match",
+        "PromptFadeout": "5",
+        "LetterGroup": 10
+      },
+      "Puzzles": [
+        {
+          "SegmentNumber": 0,
+          "targetstones": [
+            {
+              "StoneText": "শ"
+            }
+          ],
+          "prompt": {
+            "PromptText": "শ",
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/bangla/audios/শ.mp3"
+          },
+          "foilstones": [
+            {
+              "StoneText": "ঝি"
+            },
+            {
+              "StoneText": "রা"
+            },
+            {
+              "StoneText": "ড়"
+            },
+            {
+              "StoneText": "শ"
+            },
+            {
+              "StoneText": "জি"
+            },
+            {
+              "StoneText": "রা"
+            },
+            {
+              "StoneText": "ড়"
+            },
+            {
+              "StoneText": "প"
+            }
+          ]
+        },
+        {
+          "SegmentNumber": 1,
+          "targetstones": [
+            {
+              "StoneText": "ঈ"
+            }
+          ],
+          "prompt": {
+            "PromptText": "ঈ",
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/bangla/audios/ঈ.mp3"
+          },
+          "foilstones": [
+            {
+              "StoneText": "ঞ"
+            },
+            {
+              "StoneText": "ত"
+            },
+            {
+              "StoneText": "ঝ"
+            },
+            {
+              "StoneText": "শ"
+            },
+            {
+              "StoneText": "শ"
+            },
+            {
+              "StoneText": "ষ"
+            },
+            {
+              "StoneText": "ঙ"
+            },
+            {
+              "StoneText": "ল"
+            }
+          ]
+        },
+        {
+          "SegmentNumber": 2,
+          "targetstones": [
+            {
+              "StoneText": "ব"
+            }
+          ],
+          "prompt": {
+            "PromptText": "ব",
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/bangla/audios/ব.mp3"
+          },
+          "foilstones": [
+            {
+              "StoneText": "ঠি"
+            },
+            {
+              "StoneText": "শ"
+            },
+            {
+              "StoneText": "ব"
+            },
+            {
+              "StoneText": "ত"
+            },
+            {
+              "StoneText": "র"
+            },
+            {
+              "StoneText": "ব"
+            },
+            {
+              "StoneText": "চি"
+            },
+            {
+              "StoneText": "শ"
+            }
+          ]
+        },
+        {
+          "SegmentNumber": 3,
+          "targetstones": [
+            {
+              "StoneText": "ণ"
+            }
+          ],
+          "prompt": {
+            "PromptText": "ণ",
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/bangla/audios/ণ.mp3"
+          },
+          "foilstones": [
+            {
+              "StoneText": "র"
+            },
+            {
+              "StoneText": "শ"
+            },
+            {
+              "StoneText": "ত"
+            },
+            {
+              "StoneText": "ঝ"
+            },
+            {
+              "StoneText": "লা"
+            },
+            {
+              "StoneText": "ণ"
+            },
+            {
+              "StoneText": "ট"
+            },
+            {
+              "StoneText": "ড়"
+            },
+            {
+              "StoneText": "ড়"
+            }
+          ]
+        },
+        {
+          "SegmentNumber": 4,
+          "targetstones": [
+            {
+              "StoneText": "ত"
+            }
+          ],
+          "prompt": {
+            "PromptText": "ত",
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/bangla/audios/ত.mp3"
+          },
+          "foilstones": [
+            {
+              "StoneText": "ন"
+            },
+            {
+              "StoneText": "নি"
+            },
+            {
+              "StoneText": "ঝ"
+            },
+            {
+              "StoneText": "ড়"
+            },
+            {
+              "StoneText": "নি"
+            },
+            {
+              "StoneText": "ব"
+            },
+            {
+              "StoneText": "ঞ"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "LevelMeta": {
+        "LevelNumber": 42,
+        "PromptType": "Visible",
+        "LevelType": "LetterOnly",
+        "csvType": "match",
+        "PromptFadeout": 0,
+        "LetterGroup": 11
+      },
+      "Puzzles": [
+        {
+          "SegmentNumber": 0,
+          "targetstones": [
+            {
+              "StoneText": "র"
+            }
+          ],
+          "prompt": {
+            "PromptText": "র",
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/bangla/audios/র.mp3"
+          },
+          "foilstones": [
+            {
+              "StoneText": "প"
+            },
+            {
+              "StoneText": "ট"
+            },
+            {
+              "StoneText": "ঝি"
+            },
+            {
+              "StoneText": "ণ"
+            },
+            {
+              "StoneText": "ত"
+            },
+            {
+              "StoneText": "জ"
+            },
+            {
+              "StoneText": "ঝ"
+            },
+            {
+              "StoneText": "চি"
+            }
+          ]
+        },
+        {
+          "SegmentNumber": 1,
+          "targetstones": [
+            {
+              "StoneText": "ঈ"
+            }
+          ],
+          "prompt": {
+            "PromptText": "ঈ",
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/bangla/audios/ঈ.mp3"
+          },
+          "foilstones": [
+            {
+              "StoneText": "আ"
+            },
+            {
+              "StoneText": "জি"
+            },
+            {
+              "StoneText": "ন"
+            },
+            {
+              "StoneText": "ঈ"
+            },
+            {
+              "StoneText": "র"
+            },
+            {
+              "StoneText": "ত"
+            },
+            {
+              "StoneText": "র"
+            },
+            {
+              "StoneText": "ব"
+            }
+          ]
+        },
+        {
+          "SegmentNumber": 2,
+          "targetstones": [
+            {
+              "StoneText": "ত"
+            }
+          ],
+          "prompt": {
+            "PromptText": "ত",
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/bangla/audios/ত.mp3"
+          },
+          "foilstones": [
+            {
+              "StoneText": "ঞ"
+            },
+            {
+              "StoneText": "ঈ"
+            },
+            {
+              "StoneText": "প"
+            },
+            {
+              "StoneText": "ঞ"
+            },
+            {
+              "StoneText": "ক"
+            },
+            {
+              "StoneText": "নি"
+            },
+            {
+              "StoneText": "রা"
+            },
+            {
+              "StoneText": "ট"
+            }
+          ]
+        },
+        {
+          "SegmentNumber": 3,
+          "targetstones": [
+            {
+              "StoneText": "ব"
+            }
+          ],
+          "prompt": {
+            "PromptText": "ব",
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/bangla/audios/ব.mp3"
+          },
+          "foilstones": [
+            {
+              "StoneText": "ণ"
+            },
+            {
+              "StoneText": "প"
+            },
+            {
+              "StoneText": "ঞ"
+            },
+            {
+              "StoneText": "ব"
+            },
+            {
+              "StoneText": "লা"
+            },
+            {
+              "StoneText": "জ"
+            },
+            {
+              "StoneText": "ণ"
+            }
+          ]
+        },
+        {
+          "SegmentNumber": 4,
+          "targetstones": [
+            {
+              "StoneText": "র"
+            }
+          ],
+          "prompt": {
+            "PromptText": "র",
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/bangla/audios/র.mp3"
+          },
+          "foilstones": [
+            {
+              "StoneText": "প"
+            },
+            {
+              "StoneText": "জি"
+            },
+            {
+              "StoneText": "ব"
+            },
+            {
+              "StoneText": "ঠি"
+            },
+            {
+              "StoneText": "র"
+            },
+            {
+              "StoneText": "ঠ"
+            },
+            {
+              "StoneText": "ল"
+            },
+            {
+              "StoneText": "র"
+            },
+            {
+              "StoneText": "ঢ়"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "LevelMeta": {
+        "LevelNumber": 43,
+        "PromptType": "Hidden",
+        "LevelType": "LetterOnly",
+        "csvType": "matchSound",
+        "PromptFadeout": 0,
+        "LetterGroup": 11
+      },
+      "Puzzles": [
+        {
+          "SegmentNumber": 0,
+          "targetstones": [
+            {
+              "StoneText": "শ"
+            }
+          ],
+          "prompt": {
+            "PromptText": "শ",
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/bangla/audios/শ.mp3"
+          },
+          "foilstones": [
+            {
+              "StoneText": "চ"
+            },
+            {
+              "StoneText": "ঝ"
+            },
+            {
+              "StoneText": "ঈ"
+            },
+            {
+              "StoneText": "চ"
+            },
+            {
+              "StoneText": "ন"
+            },
+            {
+              "StoneText": "ত"
+            },
+            {
+              "StoneText": "ব"
+            },
+            {
+              "StoneText": "অ"
+            }
+          ]
+        },
+        {
+          "SegmentNumber": 1,
+          "targetstones": [
+            {
+              "StoneText": "শ"
+            }
+          ],
+          "prompt": {
+            "PromptText": "শ",
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/bangla/audios/শ.mp3"
+          },
+          "foilstones": [
+            {
+              "StoneText": "শ"
+            },
+            {
+              "StoneText": "র"
+            },
+            {
+              "StoneText": "ম"
+            },
+            {
+              "StoneText": "ষ"
+            },
+            {
+              "StoneText": "ষ"
+            },
+            {
+              "StoneText": "ঝ"
+            },
+            {
+              "StoneText": "ন"
+            },
+            {
+              "StoneText": "ণ"
+            }
+          ]
+        },
+        {
+          "SegmentNumber": 2,
+          "targetstones": [
+            {
+              "StoneText": "র"
+            }
+          ],
+          "prompt": {
+            "PromptText": "র",
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/bangla/audios/র.mp3"
+          },
+          "foilstones": [
+            {
+              "StoneText": "অ"
+            },
+            {
+              "StoneText": "চ"
+            },
+            {
+              "StoneText": "র"
+            },
+            {
+              "StoneText": "শ"
+            },
+            {
+              "StoneText": "ন"
+            },
+            {
+              "StoneText": "র"
+            },
+            {
+              "StoneText": "আ"
+            },
+            {
+              "StoneText": "ঝ"
+            }
+          ]
+        },
+        {
+          "SegmentNumber": 3,
+          "targetstones": [
+            {
+              "StoneText": "ণ"
+            }
+          ],
+          "prompt": {
+            "PromptText": "ণ",
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/bangla/audios/ণ.mp3"
+          },
+          "foilstones": [
+            {
+              "StoneText": "ড়"
+            },
+            {
+              "StoneText": "ঝ"
+            },
+            {
+              "StoneText": "ণ"
+            },
+            {
+              "StoneText": "ষ"
+            },
+            {
+              "StoneText": "ঞ"
+            },
+            {
+              "StoneText": "শ"
+            },
+            {
+              "StoneText": "ঝি"
+            }
+          ]
+        },
+        {
+          "SegmentNumber": 4,
+          "targetstones": [
+            {
+              "StoneText": "শ"
+            }
+          ],
+          "prompt": {
+            "PromptText": "শ",
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/bangla/audios/শ.mp3"
+          },
+          "foilstones": [
+            {
+              "StoneText": "শ"
+            },
+            {
+              "StoneText": "ষ"
+            },
+            {
+              "StoneText": "শ"
+            },
+            {
+              "StoneText": "অ"
+            },
+            {
+              "StoneText": "চি"
+            },
+            {
+              "StoneText": "ঢ়"
+            },
+            {
+              "StoneText": "র"
+            },
+            {
+              "StoneText": "নি"
+            },
+            {
+              "StoneText": "ব"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "LevelMeta": {
+        "LevelNumber": 44,
         "PromptType": "Visible",
         "LevelType": "LetterInWord",
         "csvType": "matchfirst",
         "PromptFadeout": 0,
-        "LetterGroup": 9
+        "LetterGroup": 11
+      },
+      "Puzzles": [
+        {
+          "SegmentNumber": 0,
+          "targetstones": [
+            {
+              "StoneText": "তী"
+            }
+          ],
+          "prompt": {
+            "PromptText": "তীর",
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/bangla/audios/তী.mp3"
+          },
+          "foilstones": [
+            {
+              "StoneText": "ঠি"
+            },
+            {
+              "StoneText": "শী"
+            },
+            {
+              "StoneText": "তী"
+            },
+            {
+              "StoneText": "ক"
+            },
+            {
+              "StoneText": "আ"
+            },
+            {
+              "StoneText": "শী"
+            },
+            {
+              "StoneText": "তী"
+            },
+            {
+              "StoneText": "ঢ়"
+            }
+          ]
+        },
+        {
+          "SegmentNumber": 1,
+          "targetstones": [
+            {
+              "StoneText": "শী"
+            }
+          ],
+          "prompt": {
+            "PromptText": "শীত",
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/bangla/audios/শী.mp3"
+          },
+          "foilstones": [
+            {
+              "StoneText": "তী"
+            },
+            {
+              "StoneText": "ঝি"
+            },
+            {
+              "StoneText": "ঙ"
+            },
+            {
+              "StoneText": "নি"
+            },
+            {
+              "StoneText": "ষ"
+            },
+            {
+              "StoneText": "চি"
+            },
+            {
+              "StoneText": "রা"
+            },
+            {
+              "StoneText": "শী"
+            }
+          ]
+        },
+        {
+          "SegmentNumber": 2,
+          "targetstones": [
+            {
+              "StoneText": "তী"
+            }
+          ],
+          "prompt": {
+            "PromptText": "তীর",
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/bangla/audios/তী.mp3"
+          },
+          "foilstones": [
+            {
+              "StoneText": "তী"
+            },
+            {
+              "StoneText": "ক"
+            },
+            {
+              "StoneText": "জ"
+            },
+            {
+              "StoneText": "ড়"
+            },
+            {
+              "StoneText": "চ"
+            },
+            {
+              "StoneText": "শী"
+            },
+            {
+              "StoneText": "লা"
+            }
+          ]
+        },
+        {
+          "SegmentNumber": 3,
+          "targetstones": [
+            {
+              "StoneText": "শী"
+            }
+          ],
+          "prompt": {
+            "PromptText": "শীত",
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/bangla/audios/শী.mp3"
+          },
+          "foilstones": [
+            {
+              "StoneText": "শী"
+            },
+            {
+              "StoneText": "তী"
+            },
+            {
+              "StoneText": "তী"
+            },
+            {
+              "StoneText": "তী"
+            },
+            {
+              "StoneText": "শী"
+            },
+            {
+              "StoneText": "রা"
+            },
+            {
+              "StoneText": "ল"
+            },
+            {
+              "StoneText": "চি"
+            },
+            {
+              "StoneText": "র"
+            }
+          ]
+        },
+        {
+          "SegmentNumber": 4,
+          "targetstones": [
+            {
+              "StoneText": "শী"
+            }
+          ],
+          "prompt": {
+            "PromptText": "শীত",
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/bangla/audios/শী.mp3"
+          },
+          "foilstones": [
+            {
+              "StoneText": "তী"
+            },
+            {
+              "StoneText": "ষ"
+            },
+            {
+              "StoneText": "ক"
+            },
+            {
+              "StoneText": "ঝি"
+            },
+            {
+              "StoneText": "চি"
+            },
+            {
+              "StoneText": "য়"
+            },
+            {
+              "StoneText": "শী"
+            },
+            {
+              "StoneText": "ঠ"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "LevelMeta": {
+        "LevelNumber": 45,
+        "PromptType": "Visible",
+        "LevelType": "LetterInWord",
+        "csvType": "matchfirst",
+        "PromptFadeout": 0,
+        "LetterGroup": 11
+      },
+      "Puzzles": [
+        {
+          "SegmentNumber": 0,
+          "targetstones": [
+            {
+              "StoneText": "বা"
+            }
+          ],
+          "prompt": {
+            "PromptText": "বাণী",
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/bangla/audios/বা.mp3"
+          },
+          "foilstones": [
+            {
+              "StoneText": "বী"
+            },
+            {
+              "StoneText": "আ"
+            },
+            {
+              "StoneText": "বী"
+            },
+            {
+              "StoneText": "শ"
+            },
+            {
+              "StoneText": "ণ"
+            },
+            {
+              "StoneText": "জ"
+            },
+            {
+              "StoneText": "অ"
+            },
+            {
+              "StoneText": "জ"
+            }
+          ]
+        },
+        {
+          "SegmentNumber": 1,
+          "targetstones": [
+            {
+              "StoneText": "বী"
+            }
+          ],
+          "prompt": {
+            "PromptText": "বীণ",
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/bangla/audios/বী.mp3"
+          },
+          "foilstones": [
+            {
+              "StoneText": "ঞ"
+            },
+            {
+              "StoneText": "বা"
+            },
+            {
+              "StoneText": "বী"
+            },
+            {
+              "StoneText": "বী"
+            },
+            {
+              "StoneText": "বী"
+            },
+            {
+              "StoneText": "জি"
+            },
+            {
+              "StoneText": "ঠ"
+            },
+            {
+              "StoneText": "জি"
+            }
+          ]
+        },
+        {
+          "SegmentNumber": 2,
+          "targetstones": [
+            {
+              "StoneText": "শী"
+            }
+          ],
+          "prompt": {
+            "PromptText": "শীত",
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/bangla/audios/শী.mp3"
+          },
+          "foilstones": [
+            {
+              "StoneText": "চ"
+            },
+            {
+              "StoneText": "শ"
+            },
+            {
+              "StoneText": "ঠি"
+            },
+            {
+              "StoneText": "বী"
+            },
+            {
+              "StoneText": "লা"
+            },
+            {
+              "StoneText": "জি"
+            },
+            {
+              "StoneText": "ই"
+            },
+            {
+              "StoneText": "ই"
+            }
+          ]
+        },
+        {
+          "SegmentNumber": 3,
+          "targetstones": [
+            {
+              "StoneText": "বী"
+            }
+          ],
+          "prompt": {
+            "PromptText": "বীর",
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/bangla/audios/বী.mp3"
+          },
+          "foilstones": [
+            {
+              "StoneText": "ঈ"
+            },
+            {
+              "StoneText": "জি"
+            },
+            {
+              "StoneText": "ঠ"
+            },
+            {
+              "StoneText": "তী"
+            },
+            {
+              "StoneText": "বী"
+            },
+            {
+              "StoneText": "বী"
+            },
+            {
+              "StoneText": "জি"
+            }
+          ]
+        },
+        {
+          "SegmentNumber": 4,
+          "targetstones": [
+            {
+              "StoneText": "বী"
+            }
+          ],
+          "prompt": {
+            "PromptText": "বীর",
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/bangla/audios/বী.mp3"
+          },
+          "foilstones": [
+            {
+              "StoneText": "ক"
+            },
+            {
+              "StoneText": "ক"
+            },
+            {
+              "StoneText": "তী"
+            },
+            {
+              "StoneText": "নি"
+            },
+            {
+              "StoneText": "রা"
+            },
+            {
+              "StoneText": "বী"
+            },
+            {
+              "StoneText": "ম"
+            },
+            {
+              "StoneText": "য়"
+            },
+            {
+              "StoneText": "ট"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "LevelMeta": {
+        "LevelNumber": 46,
+        "PromptType": "Visible",
+        "LevelType": "LetterInWord",
+        "csvType": "matchfirst",
+        "PromptFadeout": "4",
+        "LetterGroup": 11
+      },
+      "Puzzles": [
+        {
+          "SegmentNumber": 0,
+          "targetstones": [
+            {
+              "StoneText": "বী"
+            }
+          ],
+          "prompt": {
+            "PromptText": "বীণ",
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/bangla/audios/বী.mp3"
+          },
+          "foilstones": [
+            {
+              "StoneText": "য়"
+            },
+            {
+              "StoneText": "বী"
+            },
+            {
+              "StoneText": "শ"
+            },
+            {
+              "StoneText": "শী"
+            },
+            {
+              "StoneText": "শ"
+            },
+            {
+              "StoneText": "শী"
+            },
+            {
+              "StoneText": "শী"
+            },
+            {
+              "StoneText": "ক"
+            }
+          ]
+        },
+        {
+          "SegmentNumber": 1,
+          "targetstones": [
+            {
+              "StoneText": "শী"
+            }
+          ],
+          "prompt": {
+            "PromptText": "শীত",
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/bangla/audios/শী.mp3"
+          },
+          "foilstones": [
+            {
+              "StoneText": "ঠি"
+            },
+            {
+              "StoneText": "ষ"
+            },
+            {
+              "StoneText": "শী"
+            },
+            {
+              "StoneText": "বী"
+            },
+            {
+              "StoneText": "ম"
+            },
+            {
+              "StoneText": "বী"
+            },
+            {
+              "StoneText": "বা"
+            },
+            {
+              "StoneText": "ণ"
+            }
+          ]
+        },
+        {
+          "SegmentNumber": 2,
+          "targetstones": [
+            {
+              "StoneText": "বী"
+            }
+          ],
+          "prompt": {
+            "PromptText": "বীণ",
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/bangla/audios/বী.mp3"
+          },
+          "foilstones": [
+            {
+              "StoneText": "য়"
+            },
+            {
+              "StoneText": "বী"
+            },
+            {
+              "StoneText": "ঝি"
+            },
+            {
+              "StoneText": "নি"
+            },
+            {
+              "StoneText": "ক"
+            },
+            {
+              "StoneText": "শী"
+            },
+            {
+              "StoneText": "ঠি"
+            },
+            {
+              "StoneText": "র"
+            }
+          ]
+        },
+        {
+          "SegmentNumber": 3,
+          "targetstones": [
+            {
+              "StoneText": "শী"
+            }
+          ],
+          "prompt": {
+            "PromptText": "শীত",
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/bangla/audios/শী.mp3"
+          },
+          "foilstones": [
+            {
+              "StoneText": "চ"
+            },
+            {
+              "StoneText": "ঙ"
+            },
+            {
+              "StoneText": "ষ"
+            },
+            {
+              "StoneText": "প"
+            },
+            {
+              "StoneText": "ব"
+            },
+            {
+              "StoneText": "শী"
+            },
+            {
+              "StoneText": "য়"
+            }
+          ]
+        },
+        {
+          "SegmentNumber": 4,
+          "targetstones": [
+            {
+              "StoneText": "বী"
+            }
+          ],
+          "prompt": {
+            "PromptText": "বীণ",
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/bangla/audios/বী.mp3"
+          },
+          "foilstones": [
+            {
+              "StoneText": "ই"
+            },
+            {
+              "StoneText": "চি"
+            },
+            {
+              "StoneText": "র"
+            },
+            {
+              "StoneText": "জ"
+            },
+            {
+              "StoneText": "চি"
+            },
+            {
+              "StoneText": "নি"
+            },
+            {
+              "StoneText": "ঠি"
+            },
+            {
+              "StoneText": "অ"
+            },
+            {
+              "StoneText": "রা"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "LevelMeta": {
+        "LevelNumber": 47,
+        "PromptType": "Visible",
+        "LevelType": "LetterInWord",
+        "csvType": "matchfirst",
+        "PromptFadeout": 0,
+        "LetterGroup": 12
+      },
+      "Puzzles": [
+        {
+          "SegmentNumber": 0,
+          "targetstones": [
+            {
+              "StoneText": "শী"
+            }
+          ],
+          "prompt": {
+            "PromptText": "শীত",
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/bangla/audios/শী.mp3"
+          },
+          "foilstones": [
+            {
+              "StoneText": "শ"
+            },
+            {
+              "StoneText": "আ"
+            },
+            {
+              "StoneText": "আ"
+            }
+          ]
+        },
+        {
+          "SegmentNumber": 1,
+          "targetstones": [
+            {
+              "StoneText": "তী"
+            }
+          ],
+          "prompt": {
+            "PromptText": "তীর",
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/bangla/audios/তী.mp3"
+          },
+          "foilstones": [
+            {
+              "StoneText": "ড়"
+            },
+            {
+              "StoneText": "প"
+            },
+            {
+              "StoneText": "রা"
+            }
+          ]
+        },
+        {
+          "SegmentNumber": 2,
+          "targetstones": [
+            {
+              "StoneText": "বী"
+            }
+          ],
+          "prompt": {
+            "PromptText": "বীণ",
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/bangla/audios/বী.mp3"
+          },
+          "foilstones": [
+            {
+              "StoneText": "ই"
+            },
+            {
+              "StoneText": "ঠি"
+            },
+            {
+              "StoneText": "জ"
+            }
+          ]
+        },
+        {
+          "SegmentNumber": 3,
+          "targetstones": [
+            {
+              "StoneText": "বী"
+            }
+          ],
+          "prompt": {
+            "PromptText": "বীণ",
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/bangla/audios/বী.mp3"
+          },
+          "foilstones": [
+            {
+              "StoneText": "ণ"
+            },
+            {
+              "StoneText": "বা"
+            },
+            {
+              "StoneText": "শী"
+            },
+            {
+              "StoneText": "তী"
+            }
+          ]
+        },
+        {
+          "SegmentNumber": 4,
+          "targetstones": [
+            {
+              "StoneText": "শী"
+            }
+          ],
+          "prompt": {
+            "PromptText": "শীত",
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/bangla/audios/শী.mp3"
+          },
+          "foilstones": [
+            {
+              "StoneText": "ড়"
+            },
+            {
+              "StoneText": "শী"
+            },
+            {
+              "StoneText": "শী"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "LevelMeta": {
+        "LevelNumber": 48,
+        "PromptType": "Visible",
+        "LevelType": "LetterInWord",
+        "csvType": "matchfirst",
+        "PromptFadeout": 0,
+        "LetterGroup": 12
       },
       "Puzzles": [
         {
@@ -4683,7 +6467,7 @@
               "StoneText": "ঝি"
             },
             {
-              "StoneText": "অ"
+              "StoneText": "নি"
             },
             {
               "StoneText": "ঝি"
@@ -4822,7 +6606,7 @@
     },
     {
       "LevelMeta": {
-        "LevelNumber": 34,
+        "LevelNumber": 49,
         "PromptType": "Visible",
         "LevelType": "LetterInWord",
         "csvType": "matchfirst",
@@ -4993,7 +6777,7 @@
         "LevelType": "Word",
         "csvType": "spell",
         "PromptFadeout": 0,
-        "LetterGroup": 9
+        "LetterGroup": 13
       },
       "Puzzles": [
         {
@@ -5030,7 +6814,7 @@
               "StoneText": "চি"
             },
             {
-              "StoneText": "ত"
+              "StoneText": "ঢ়"
             },
             {
               "StoneText": "জ"
@@ -5415,7 +7199,7 @@
         "LevelType": "Word",
         "csvType": "spellSound",
         "PromptFadeout": 0,
-        "LetterGroup": 9
+        "LetterGroup": 13
       },
       "Puzzles": [
         {
@@ -5443,7 +7227,7 @@
               "StoneText": "জ"
             },
             {
-              "StoneText": "ন"
+              "StoneText": "ড"
             },
             {
               "StoneText": "ঢ়"
@@ -5777,7 +7561,7 @@
               "StoneText": "ত"
             },
             {
-              "StoneText": "ই"
+              "StoneText": "ম"
             },
             {
               "StoneText": "অ"
@@ -5788,12 +7572,12 @@
           "SegmentNumber": 4,
           "targetstones": [
             {
-              "StoneText": "শ"
+              "StoneText": "ড"
             }
           ],
           "prompt": {
-            "PromptText": "শ",
-            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/bangla/audios/শ.mp3"
+            "PromptText": "ড",
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/bangla/audios/ড.mp3"
           },
           "foilstones": [
             {
@@ -5812,7 +7596,7 @@
               "StoneText": "নি"
             },
             {
-              "StoneText": "ঢ়"
+              "StoneText": "বী"
             },
             {
               "StoneText": "ড়"
@@ -5829,12 +7613,12 @@
     },
     {
       "LevelMeta": {
-        "LevelNumber": 39,
-        "PromptType": "Visible",
+        "LevelNumber": 53,
+        "PromptType": "Hidden",
         "LevelType": "LetterOnly",
-        "csvType": "match",
+        "csvType": "matchSound",
         "PromptFadeout": 0,
-        "LetterGroup": 10
+        "LetterGroup": 13
       },
       "Puzzles": [
         {
@@ -6005,7 +7789,7 @@
           },
           "foilstones": [
             {
-              "StoneText": "চ"
+              "StoneText": "ণ"
             },
             {
               "StoneText": "ঝ"
@@ -6020,7 +7804,7 @@
               "StoneText": "র"
             },
             {
-              "StoneText": "প"
+              "StoneText": "আ"
             },
             {
               "StoneText": "ঈ"
@@ -8497,13 +10281,13 @@
               "StoneText": "ড়"
             },
             {
-              "StoneText": "দ"
+              "StoneText": "ট"
             },
             {
               "StoneText": "রা"
             },
             {
-              "StoneText": "ঝ"
+              "StoneText": "ঝি"
             },
             {
               "StoneText": "ব"
@@ -9197,7 +10981,10 @@
               "StoneText": "উ"
             },
             {
-              "StoneText": "ণ"
+              "StoneText": "ঠ"
+            },
+            {
+              "StoneText": "ড়"
             },
             {
               "StoneText": "র"
@@ -10242,13 +12029,13 @@
           },
           "foilstones": [
             {
-              "StoneText": "মু"
+              "StoneText": "ম"
             },
             {
               "StoneText": "র"
             },
             {
-              "StoneText": "মু"
+              "StoneText": "য়"
             },
             {
               "StoneText": "মু"
@@ -10430,7 +12217,7 @@
               "StoneText": "অ"
             },
             {
-              "StoneText": "দু"
+              "StoneText": "আ"
             },
             {
               "StoneText": "দু"
@@ -10503,6 +12290,9 @@
           },
           "foilstones": [
             {
+              "StoneText": "ম"
+            },
+            {
               "StoneText": "শু"
             },
             {
@@ -10544,7 +12334,13 @@
               "StoneText": "ই"
             },
             {
-              "StoneText": "রু"
+              "StoneText": "র"
+            },
+            {
+              "StoneText": "ড"
+            },
+            {
+              "StoneText": "ণ"
             },
             {
               "StoneText": "ধু"
@@ -10761,7 +12557,7 @@
               "StoneText": "য়"
             },
             {
-              "StoneText": "রু"
+              "StoneText": "ড়"
             },
             {
               "StoneText": "ট"
@@ -10951,12 +12747,12 @@
           "SegmentNumber": 3,
           "targetstones": [
             {
-              "StoneText": "ক"
+              "StoneText": "প"
             }
           ],
           "prompt": {
-            "PromptText": "ক",
-            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/bangla/audios/ক.mp3"
+            "PromptText": "প",
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/bangla/audios/প.mp3"
           },
           "foilstones": [
             {
@@ -11127,7 +12923,7 @@
               "StoneText": "ড়"
             },
             {
-              "StoneText": "ক"
+              "StoneText": "ল"
             },
             {
               "StoneText": "প"
@@ -12813,7 +14609,13 @@
               "StoneText": "ঈ"
             },
             {
-              "StoneText": "ঙ"
+              "StoneText": "জি"
+            },
+            {
+              "StoneText": "ঊ"
+            },
+            {
+              "StoneText": "ই"
             }
           ]
         }
@@ -12851,7 +14653,7 @@
               "StoneText": "ঠি"
             },
             {
-              "StoneText": "ঊ"
+              "StoneText": "ক"
             },
             {
               "StoneText": "শু"
@@ -13030,7 +14832,7 @@
               "StoneText": "বা"
             },
             {
-              "StoneText": "র"
+              "StoneText": "আ"
             }
           ]
         }
@@ -13147,7 +14949,7 @@
               "StoneText": "ড"
             },
             {
-              "StoneText": "ভূ"
+              "StoneText": "শু"
             },
             {
               "StoneText": "দূ"
@@ -13238,7 +15040,7 @@
               "StoneText": "ত"
             },
             {
-              "StoneText": "ষ"
+              "StoneText": "দূ"
             },
             {
               "StoneText": "নি"
