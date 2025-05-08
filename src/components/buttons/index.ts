@@ -1,21 +1,19 @@
-import CloseButton from "./close-button";
-import CancelButton from "./cancel-button";
-import NextButton from "./next-button";
-import NoButton from "./no-button";
-import PauseButton from "./pause-button";
-import RetryButton from "./retry-button";
-import YesButton from "./yes-button";
-import PlayButton from "./play-button";
+import MapButton from './map-button/map-button';
+import CancelButtonHtml from './cancel-button/cancel-button';
+import NextButtonHtml from './next-button/next-button';
+import PauseButton from './pause-button/pause-button';
+import RetryButtonHtml from './retry-button/retry-button-html';
+import YesButtonHtml from './yes-button/yes-button'; 
 import LevelBloonButton from './level-button';
+import PlayButtonHtml from './play-button/play-button';
 
 export {
-  CloseButton,
-  CancelButton,
-  NextButton,
-  NoButton,
+  MapButton,
+  CancelButtonHtml,
+  NextButtonHtml,
   PauseButton,
-  RetryButton,
-  YesButton,
-  PlayButton,
-  LevelBloonButton
+  RetryButtonHtml,
+  YesButtonHtml,
+  LevelBloonButton,
+  PlayButtonHtml
 };

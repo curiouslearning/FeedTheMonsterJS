@@ -1,0 +1,110 @@
+// Prompt text component styles
+.prompt-container {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 5;
+
+  #prompt-text-button-container {
+    position: relative;
+    height: 74%;
+    width: 100%;
+    left: 0;
+    top: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+}
+
+.prompt-background {
+  position: relative;
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center;
+  transition: transform 0.05s ease;
+  left: 50%;
+  transform: translateX(-50%);
+
+  // Small mobile (≤376px)
+  @media (max-width: 376px) {
+    width: 50%;
+    height: 26%;
+    top: 18%;
+  }
+
+  // Large mobile (377-480px)
+  @media (min-width: 377px) and (max-width: 480px) {
+    width: 50%;
+    height: 22%;
+    top: 15%;
+  }
+
+  // Tablets (481-820px)
+  @media (min-width: 481px) and (max-width: 820px) {
+    width: 48%;
+    height: 22%;
+    top: 20%;
+  }
+
+  // large tablet (>820px)
+  @media (min-width: 821px) {
+    width: 48%;
+    height: 22%;
+    top: 25%;
+  }
+}
+
+.prompt-background {
+  .prompt-text {
+    width: 100%;
+    text-align: center;
+    font-family: 'Quicksand', sans-serif;
+    font-weight: bold;
+    color: #000;
+    z-index: 2;
+
+    // Support for RTL languages
+    &[dir="rtl"] {
+      unicode-bidi: bidi-override;
+    }
+
+  }
+
+  .prompt-play-button {
+    width: 60px;
+    height: 60px;
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center;
+    cursor: pointer;
+    pointer-events: auto; // Make sure the play button is clickable
+
+    // Prevent highlight on press
+    -webkit-tap-highlight-color: transparent;
+    outline: none;
+    user-select: none;
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+  }
+}
+
+// Text color classes
+.text-black {
+  color: black;
+}
+
+.text-red {
+  color: red;
+}
+
+/* For desktops or larger devices above 1080px */
+@media (min-width: 1080px){
+  .prompt-background{
+    width: 50%;
+    height: 25%;
+    top: 18%;
+  }
+
+}

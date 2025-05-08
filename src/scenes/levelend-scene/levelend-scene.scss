@@ -1,0 +1,28 @@
+.buttons-container {
+  position: absolute;
+  width: 100%;
+  bottom: 65px;
+  display: flex;
+  gap: 40px;
+  justify-content: center;
+}
+
+#levelend-background {
+  background: #2424246b;
+  height: 100%;
+  z-index: 12;
+  position: relative;
+  transition: all 2.5s ease;
+  opacity: 1;
+
+  &.gray {
+    background: #242424;
+    opacity: 1;
+  }
+
+  &.fade-out {
+    opacity: 0;
+    z-index: 0;
+    background: transparent;
+  }
+}
