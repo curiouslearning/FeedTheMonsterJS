@@ -7,9 +7,9 @@ export class BaseFirebaseIntegration {
     analytics: any;
     constructor() {
         this.initializeFirebase();
-        console.log(" source : ", source, " and  campaign_id: ", campaign_id);
-        if (source != null || campaign_id != null)
-            this.setUserProperty(source, campaign_id);
+        // console.log(" source : ",source ," and  campaign_id: ",campaign_id);
+        if(source!=null || campaign_id!=null)
+        this.setUserProperty(source ,campaign_id);
     }
     protected customEvents(eventName: string, event: object): void {
         try {

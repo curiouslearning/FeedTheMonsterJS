@@ -1,9 +1,12 @@
 import { loadImages } from "@common";
 import { EventManager } from "@events";
 import { AudioPlayer } from "@components";
-import { TIMER_EMPTY, ROTATING_CLOCK, TIMER_FULL, AUDIO_TIMEOUT } from "@constants";
+import { TIMER_EMPTY, ROTATING_CLOCK, AUDIO_TIMEOUT } from "@constants";
+import './timerHtml/timerHtml.scss';
+import TimerHTMLComponent from './timerHtml/timerHtml';
 
-export class TimerTicking extends EventManager {
+
+export default class TimerTicking extends EventManager {
     public width: number;
     public height: number;
     public timerWidth: number;
@@ -13,9 +16,6 @@ export class TimerTicking extends EventManager {
     public isTimerStarted: boolean;
     public isTimerEnded: boolean;
     public isTimerRunningOut: boolean;
-    public canavsElement: HTMLCanvasElement;
-    public context: CanvasRenderingContext2D;
-    public timer_full: HTMLImageElement;
     public pauseButtonClicked: boolean;
     public images: Object;
     public loadedImages: any;
@@ -26,6 +26,9 @@ export class TimerTicking extends EventManager {
     public isStoneDropped: boolean = false;
     public audioPlayer: AudioPlayer;
     public playLevelEndAudioOnce: boolean = true;
+    // Additional properties for HTML manipulation
+    public timerFullContainer: HTMLElement | null = null;
+    public timerHtmlComponent: TimerHTMLComponent;
 
     constructor(width: number, height: number, callback: Function) {
         super({
@@ -35,11 +38,7 @@ export class TimerTicking extends EventManager {
         this.width = width;
         this.height = height;
         this.widthToClear = this.width / 3.4;
-        this.timerHeight = 112;
-        this.timerWidth = 888;
         this.callback = callback;
-        this.canavsElement = document.getElementById("canvas") as HTMLCanvasElement;
-        this.context = this.canavsElement.getContext("2d");
         this.timer = 0;
         this.isTimerStarted = false;
         this.isTimerEnded = false;
@@ -49,13 +48,22 @@ export class TimerTicking extends EventManager {
         this.images = {
             timer_empty: TIMER_EMPTY,
             rotating_clock: ROTATING_CLOCK,
-            timer_full: TIMER_FULL
         }
-
+        //create the timer-ticking structure
+        this.timerHtmlComponent = new TimerHTMLComponent('timer-ticking');
+        // Reference the container element for the "full timer" image
+        // Verify and cache the DOM element after rendering
+        setTimeout(() => {
+            this.timerFullContainer = document.getElementById("timer-full-container");
+            if (this.timerFullContainer) this.timerFullContainer.style.width = "100%";
+        }, 0);
         loadImages(this.images, (images) => {
             this.loadedImages = Object.assign({}, images);
             this.imagesLoaded = true;
         });
+
+        // Cache the reference after rendering
+        this.timerFullContainer = this.getTimerFullContainer();
     }
 
     startTimer() {
@@ -67,64 +75,73 @@ export class TimerTicking extends EventManager {
 
     readyTimer() {
         // make timer look full so as it get start signal..... it will start decreasing
-        this.timer = 0;
+        this.timer = 0;     
+        if (this.timerFullContainer) this.timerFullContainer.style.width = "100%"; // Reset width on start
     }
     update(deltaTime) {
         if (this.startMyTimer && !this.isStoneDropped) {
             this.timer += deltaTime * 0.008;
-        }
-        if (Math.floor(this.width * 0.87 - (this.width * 0.87 * this.timer * 0.01)) == 40 && !this.isMyTimerOver) {
-            this.playLevelEndAudioOnce?this.audioPlayer.playAudio(AUDIO_TIMEOUT):null;
-            this.playLevelEndAudioOnce = false;
-        }
-        if ((this.width * 0.87 - (this.width * 0.87 * this.timer * 0.01)) < 0 && !this.isMyTimerOver) {
-            this.isMyTimerOver = true;
-            this.callback(true);
+            // Calculate the new width percentage for the timer
+            const timerDepletion = Math.max(0, 100 - this.timer);
+            this.timerFullContainer.style.width = `${timerDepletion}%`;
+
+            if (timerDepletion < 100 && timerDepletion > 0) {
+                this.applyRotation(true);
+            }
+
+            if (timerDepletion < 10 && !this.isMyTimerOver) {
+                this.playLevelEndAudioOnce ? this.audioPlayer.playAudio(AUDIO_TIMEOUT) : null;
+                this.playLevelEndAudioOnce = false;
+            }
+
+            if (timerDepletion <= 0 && !this.isMyTimerOver) {
+                this.isMyTimerOver = true;
+                this.applyRotation(false); 
+                this.callback(true);
+            }
         }
     }
 
-    draw() {
-        if (this.imagesLoaded) {
-            this.context.drawImage(
-                this.loadedImages.timer_empty,
-                0,
-                this.height * 0.1,
-                this.width,
-                this.height * 0.05
-            );
-            this.context.drawImage(
-                this.loadedImages.rotating_clock,
-                0,
-                this.height * 0.09,
-                this.width * 0.14,
-                this.height * 0.065
-            );
-            this.context.drawImage(
-                this.loadedImages.timer_full,
-                0,
-                0,
-                this.timerWidth - (this.timerWidth * this.timer * 0.01),
-                this.timerHeight,
-                this.width * 0.14,
-                this.height * 0.099,
-                this.width * 0.87 - (this.width * 0.87 * this.timer * 0.01),
-                this.height * 0.05
-            );
+    public applyRotation(condition: boolean) {
+        const element = document.getElementById("rotating-clock");
+        if (!element) return;
+
+        if (condition) {
+            // Resume rotation - use CSS animation-play-state for seamless resumption
+            element.style.animationPlayState = "running";
+            if (!element.style.animation || element.style.animation === "none") {
+                element.style.animation = "rotateClock 3s linear infinite";
+            }
+        } else {
+            // Pause rotation - use CSS animation-play-state for seamless pausing
+            if (element.style.animation && element.style.animation !== "none") {
+                element.style.animationPlayState = "paused";
+            } else {
+                element.style.animation = "none";
+            }
         }
+    }
+
+    private getTimerFullContainer(): HTMLElement | null {
+        return document.getElementById("timer-full-container");
+    }
+
+    stopTimer(): void {
+        this.isTimerRunningOut = false;
     }
 
     public handleStoneDrop(event) {
         this.isStoneDropped = true;
+        this.applyRotation(false);
     }
     public handleLoadPuzzle(event) {
         this.playLevelEndAudioOnce = true;
         this.isStoneDropped = false;
         this.startTimer();
-
     }
 
-    public dispose() {
-        this.unregisterEventListener();
+    public destroy(): void {
+        this.stopTimer();
+        this.timerHtmlComponent?.destroy();
     }
-
 }

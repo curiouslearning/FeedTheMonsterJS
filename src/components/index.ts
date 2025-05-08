@@ -1,25 +1,25 @@
-import PauseButton from "./buttons/pause-button";
+import PauseButton from "./buttons/pause-button/pause-button";
 import { LevelIndicators } from "./level-indicator";
-import { PromptText } from "./prompt-text";
-import StoneHandler from "./stone-handler";
-import { Tutorial } from "./tutorial";
-import { Monster } from "./monster";
-import { TimerTicking } from "./timer-ticking";
-import { Background } from "./background";
+import { PromptText } from "./prompt-text/prompt-text";
+import StoneHandler from "./stone-handler/stone-handler";
+import { BackgroundHtmlGenerator } from "./background/background";
+import { PhasesBackground } from './background/phases-background';
 import { FeedbackTextEffects } from "./feedback-text";
 import { AudioPlayer } from "./audio-player";
-import TrailEffect from "./trail-particles";
+import  TimerTicking  from "./timer-ticking";
+import CursorComponent from './cursor/cursor-component';
+import TrailEffectsHandler from './trail-effects';
 
 export {
-  Monster,
-  TimerTicking,
   PromptText,
   PauseButton,
   LevelIndicators,
   StoneHandler,
-  Tutorial,
-  Background,
+  TimerTicking,
+  BackgroundHtmlGenerator,
+  PhasesBackground,
   FeedbackTextEffects,
   AudioPlayer,
-  TrailEffect,
+  CursorComponent,
+  TrailEffectsHandler
 };

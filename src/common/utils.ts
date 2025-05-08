@@ -31,7 +31,6 @@ export class Utils {
       }
     }
 
-    console.log(`Font not found for language: ${language}`);
     return "NotoSans-Regular";
   }
 

@@ -5,6 +5,12 @@ token.json
 credentials.json
 convertAudios
 .DS_Store
-.idea
+/.idea
+build
+/build
+/build/.idea
 */build/.well-known/*
 coverage
+git
+__mocks__
+.vscode
