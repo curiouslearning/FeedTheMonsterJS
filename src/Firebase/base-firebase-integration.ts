@@ -1,8 +1,7 @@
 import { initializeApp } from "firebase/app";
-import { getAnalytics, logEvent ,setUserProperties} from "firebase/analytics";
+import { getAnalytics, logEvent, setUserProperties } from "firebase/analytics";
 import { firebaseConfig } from "./firebase-config";
 import { source, campaign_id } from "@common";
-
 export class BaseFirebaseIntegration {
     firebaseApp: any;
     analytics: any;
@@ -33,7 +32,7 @@ export class BaseFirebaseIntegration {
             setUserProperties(this.analytics, {
                 source: source,
                 campaign_id: campaignId
-            }, { global:true });
+            }, { global: true });
             console.log("User properties set: ", { source, campaignId });
         } catch (error) {
             console.error("Error while setting user properties:", error);
@@ -47,5 +46,4 @@ export class BaseFirebaseIntegration {
             console.error("Error while initializing Firebase:", error);
         }
     }
-
 }
