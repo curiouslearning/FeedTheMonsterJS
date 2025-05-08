@@ -1,4 +1,19 @@
 
+
+## [1.0.41](https://github.com/curiouslearning/FeedTheMonsterJS/compare/1.0.39...1.0.41) (2025-05-08)
+
+
+### Bug Fixes
+
+* bangla ([0f1649f](https://github.com/curiouslearning/FeedTheMonsterJS/commit/0f1649f9abd7af977a4ce95fc12b4730f916b047))
+* bangla build folder ([d451862](https://github.com/curiouslearning/FeedTheMonsterJS/commit/d451862a513f3f14507384272ae5f3c495be02f1))
+* farsi build folder ([8d9c66f](https://github.com/curiouslearning/FeedTheMonsterJS/commit/8d9c66fc61f6f74393abf87303add425117ca7da))
+* farsi rebuild ([b0df37a](https://github.com/curiouslearning/FeedTheMonsterJS/commit/b0df37ae7d98485db7c338f2a55518a229b29b39))
+* farsi updated ([6e66a63](https://github.com/curiouslearning/FeedTheMonsterJS/commit/6e66a63ce9028cb4484a79a8ae4a4b5cbc4a148d))
+* Hotfix Disabled the Dev button on production ([#1671](https://github.com/curiouslearning/FeedTheMonsterJS/issues/1671)) ([cb8a2cc](https://github.com/curiouslearning/FeedTheMonsterJS/commit/cb8a2cc7d421ffeb73de12f955005e4563f11ff7)), closes [#1445](https://github.com/curiouslearning/FeedTheMonsterJS/issues/1445) [#1435](https://github.com/curiouslearning/FeedTheMonsterJS/issues/1435) [#1370](https://github.com/curiouslearning/FeedTheMonsterJS/issues/1370) [#1374](https://github.com/curiouslearning/FeedTheMonsterJS/issues/1374) [#1372](https://github.com/curiouslearning/FeedTheMonsterJS/issues/1372)
+* tamil build ([3ee5423](https://github.com/curiouslearning/FeedTheMonsterJS/commit/3ee54238e7f8c521c4c91a8f0ca7c4525240d94e))
+* version-update ([45c137d](https://github.com/curiouslearning/FeedTheMonsterJS/commit/45c137d416ecb3466cb3f1102733b6b03391985e))
+
 ## [1.0.39](https://github.com/curiouslearning/FeedTheMonsterJS/compare/1.0.38...1.0.39) (2025-03-05)
 
 
