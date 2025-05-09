@@ -17,6 +17,11 @@ export const PhraseAudio = "phrase_audio";
 export const LevelEndAudio = "level_end_audio";
 export const UrlSubstring = "/feedthemonster";
 export const DevelopmentServer = "https://feedthemonsterdev.curiouscontent.org";
+export const TestServer = "https://globallit-aws-s3-static-webapp-test-us-east-2.s3.us-west-2.amazonaws.com/feed-the-monster";
+export const StartScene1 = "StartScene1";
+export const LevelSelection1 = "LevelSelection1";
+export const GameScene1 = "GameScene1";
+export const EndScene1 = "EndScene1";
 export const FONT_BASE_PATH = './assets/fonts/';
 
 //Audio paths
@@ -57,7 +62,7 @@ export const AUDIO_URL_PRELOAD = [
 // Audios used during the Rive evolution animation.
 // The structure is designed to be easily scalable, allowing for the addition of more audio files as needed.
 export const EVOLUTION_AUDIOS = {
-  EVOL_1: ['/assets/audios/star_whoosh_and_poof.mp3'],
+  EVOL_1: ['./assets/audios/star_whoosh_and_poof.mp3'],
 }
 
 // Evolution audio paths
