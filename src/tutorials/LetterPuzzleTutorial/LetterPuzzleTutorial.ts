@@ -29,11 +29,17 @@ export default class LetterPuzzleTutorial extends TutorialComponent {
       });
   }
 
+  public showQuirkStartTutorial(deltaTime: number) {
+    if (!this.hasGameStarted && this.gameLevel === 0) {
+      //Show quick tip by pressing the center/near monster.
+      this.quickStartTutorial(deltaTime, this.width, this.height);
+    }
+  }
+
   public drawLetterPuzzleTutorial(deltaTime: number) {
-    if (this.gameLevel === 0) {
-      !this.hideQuickStartTutorial
-        ? this.quickStartTutorial(deltaTime, this.width, this.height)
-        : !this.hasGameEnded && this.dragStoneLetterGuide(deltaTime)
+    if (this.gameLevel === 0 && this.hasGameStarted && !this.hasGameEnded) {
+      //starts letter puzzle tutorial quick guide.
+      this.showQuickStartTutorial && this.dragStoneLetterGuide(deltaTime);
     }
   }
 
