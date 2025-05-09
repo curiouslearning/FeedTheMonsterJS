@@ -160,6 +160,9 @@
               "StoneText": "অ"
             },
             {
+              "StoneText": "অ"
+            },
+            {
               "StoneText": "ত"
             }
           ]
@@ -363,6 +366,9 @@
             "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/bangla/audios/প.mp3"
           },
           "foilstones": [
+            {
+              "StoneText": "ক"
+            },
             {
               "StoneText": "ক"
             },
@@ -624,7 +630,10 @@
               "StoneText": "প"
             },
             {
-              "StoneText": "ম"
+              "StoneText": "প"
+            },
+            {
+              "StoneText": "ক"
             }
           ]
         }
@@ -1528,6 +1537,15 @@
               "StoneText": "ক্ষ"
             },
             {
+              "StoneText": "ত"
+            },
+            {
+              "StoneText": "অ"
+            },
+            {
+              "StoneText": "ক্ষ"
+            },
+            {
               "StoneText": "ক্ষ"
             }
           ]
@@ -1803,6 +1821,9 @@
               "StoneText": "ষ"
             },
             {
+              "StoneText": "র"
+            },
+            {
               "StoneText": "ল"
             },
             {
@@ -1973,7 +1994,10 @@
               "StoneText": "ল"
             },
             {
-              "StoneText": "ল"
+              "StoneText": "প"
+            },
+            {
+              "StoneText": "র"
             }
           ]
         },
@@ -2170,12 +2194,12 @@
             }
           ],
           "prompt": {
-            "PromptText": "র",
-            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/bangla/audios/র.mp3"
+            "PromptText": "ঠ",
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/bangla/audios/ঠ.mp3"
           },
           "foilstones": [
             {
-              "StoneText": "ষ"
+              "StoneText": "য়"
             },
             {
               "StoneText": "প"
@@ -2187,7 +2211,7 @@
               "StoneText": "ট"
             },
             {
-              "StoneText": "ষ"
+              "StoneText": "লা"
             }
           ]
         },
@@ -3917,7 +3941,7 @@
               "StoneText": "ঞ"
             },
             {
-              "StoneText": "ক"
+              "StoneText": "ষ"
             },
             {
               "StoneText": "ষ"
@@ -3978,7 +4002,7 @@
               "StoneText": "ন"
             },
             {
-              "StoneText": "আ"
+              "StoneText": "লা"
             },
             {
               "StoneText": "ঝ"
@@ -4057,7 +4081,7 @@
               "StoneText": "রা"
             },
             {
-              "StoneText": "র"
+              "StoneText": "রা"
             },
             {
               "StoneText": "ল"
@@ -4156,9 +4180,21 @@
               "StoneText": "র"
             }
           ]
-        },
+        }
+      ]
+    },
+    {
+      "LevelMeta": {
+        "LevelNumber": 30,
+        "PromptType": "Hidden",
+        "LevelType": "LetterOnly",
+        "csvType": "matchSound",
+        "PromptFadeout": 0,
+        "LetterGroup": 8
+      },
+      "Puzzles": [
         {
-          "SegmentNumber": 4,
+          "SegmentNumber": 0,
           "targetstones": [
             {
               "StoneText": "জ"
@@ -4381,6 +4417,15 @@
           "foilstones": [
             {
               "StoneText": "অ"
+            },
+            {
+              "StoneText": "ই"
+            },
+            {
+              "StoneText": "ঠ"
+            },
+            {
+              "StoneText": "ঈ"
             },
             {
               "StoneText": "ই"
@@ -4642,7 +4687,16 @@
           },
           "foilstones": [
             {
-              "StoneText": "ষ"
+              "StoneText": "ব"
+            },
+            {
+              "StoneText": "ঙ"
+            },
+            {
+              "StoneText": "চি"
+            },
+            {
+              "StoneText": "ড"
             },
             {
               "StoneText": "জি"
@@ -4694,12 +4748,12 @@
     },
     {
       "LevelMeta": {
-        "LevelNumber": 39,
+        "LevelNumber": 54,
         "PromptType": "Visible",
         "LevelType": "LetterOnly",
         "csvType": "match",
         "PromptFadeout": 0,
-        "LetterGroup": 10
+        "LetterGroup": 14
       },
       "Puzzles": [
         {
@@ -4759,7 +4813,7 @@
               "StoneText": "অ"
             },
             {
-              "StoneText": "র"
+              "StoneText": "রা"
             },
             {
               "StoneText": "ণ"
@@ -4771,7 +4825,19 @@
               "StoneText": "রা"
             },
             {
-              "StoneText": "ট"
+              "StoneText": "ড়"
+            },
+            {
+              "StoneText": "শ"
+            },
+            {
+              "StoneText": "তী"
+            },
+            {
+              "StoneText": "ড"
+            },
+            {
+              "StoneText": "ড়"
             },
             {
               "StoneText": "জি"
@@ -5072,7 +5138,7 @@
           },
           "foilstones": [
             {
-              "StoneText": "ব"
+              "StoneText": "তী"
             },
             {
               "StoneText": "ণ"
@@ -5207,7 +5273,7 @@
               "StoneText": "ত"
             },
             {
-              "StoneText": "র"
+              "StoneText": "ঝি"
             },
             {
               "StoneText": "ব"
@@ -12073,10 +12139,10 @@
               "StoneText": "দ"
             },
             {
-              "StoneText": "ডু"
+              "StoneText": "ব"
             },
             {
-              "StoneText": "উ"
+              "StoneText": "ধু"
             },
             {
               "StoneText": "শ"
@@ -12220,10 +12286,10 @@
               "StoneText": "আ"
             },
             {
-              "StoneText": "দু"
+              "StoneText": "তী"
             },
             {
-              "StoneText": "ঠ"
+              "StoneText": "বা"
             },
             {
               "StoneText": "ল"
@@ -12261,7 +12327,10 @@
               "StoneText": "উ"
             },
             {
-              "StoneText": "রু"
+              "StoneText": "ব"
+            },
+            {
+              "StoneText": "ক"
             },
             {
               "StoneText": "য়"
@@ -12522,7 +12591,7 @@
               "StoneText": "উ"
             },
             {
-              "StoneText": "শু"
+              "StoneText": "আ"
             },
             {
               "StoneText": "উ"
@@ -13169,7 +13238,7 @@
               "StoneText": "আ"
             },
             {
-              "StoneText": "ত"
+              "StoneText": "ম"
             },
             {
               "StoneText": "জ"
@@ -13693,7 +13762,7 @@
               "StoneText": "ঠ"
             },
             {
-              "StoneText": "ক"
+              "StoneText": "ঠ"
             },
             {
               "StoneText": "ঈ"
@@ -14908,7 +14977,7 @@
               "StoneText": "রূ"
             },
             {
-              "StoneText": "দূ"
+              "StoneText": "ঝ"
             },
             {
               "StoneText": "পূ"
@@ -14996,7 +15065,7 @@
               "StoneText": "দূ"
             },
             {
-              "StoneText": "ত"
+              "StoneText": "শ"
             },
             {
               "StoneText": "উ"
@@ -15005,7 +15074,7 @@
               "StoneText": "দু"
             },
             {
-              "StoneText": "ত"
+              "StoneText": "শী"
             },
             {
               "StoneText": "রু"
