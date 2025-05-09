@@ -64,7 +64,6 @@ export class GameplayScene {
   public pickedStone: StoneConfig;
   public puzzleStartTime: number;
   pausePopupComponent: PausePopupComponent
-  public showTutorial: boolean;
   public feedBackTexts: any;
   public isPuzzleCompleted: boolean;
   public rightToLeft: boolean;
@@ -269,6 +268,7 @@ export class GameplayScene {
     }
 
     if (this.monster.checkHitboxDistance(event)) {
+      this.tutorial.hideTutorial();
       // Handle letter drop (success case)
       const lettersCountRef = { value: this.stonesCount };
       const ctx = {
@@ -309,6 +309,7 @@ export class GameplayScene {
       }
       this.stonesCount = lettersCountRef.value;
       this.isFeedBackTriggered = true;
+      this.trailEffectHandler.setGameHasStarted(false);
     } else if (this.pickedStoneObject) {
       // Handle letter drop (fail/miss case)
       this.stoneHandler.resetStonePosition(
@@ -422,9 +423,7 @@ export class GameplayScene {
     const y = event.clientY - rect.top;
 
     if (this.monster.onClick(x, y)) {
-      this.isGameStarted = true;
-      this.time = 0;
-      this.tutorial.setGameHasStarted();
+      this.setGameToStart();
     }
 
     // Use the play button in the HTML implementation instead of onClick
@@ -453,19 +452,24 @@ export class GameplayScene {
     this.handleMouseUp({ clientX: touch.clientX, clientY: touch.clientY });
   };
 
+  private setGameToStart() {
+    this.isGameStarted = true;
+    this.time = 0;
+    this.tutorial.showTutorial(true);
+    this.trailEffectHandler.setGameHasStarted(true);
+  }
+
   draw(deltaTime: number) {
     if (!this.isGameStarted && !this.isPauseButtonClicked) {
+      this.tutorial.showQuirkStartTutorial(deltaTime);
       this.time += deltaTime;
       if (this.time >= 5000) {
-        this.isGameStarted = true;
-        this.time = 0;
-        this.tutorial.setGameHasStarted();
+        this.setGameToStart();
       }
       // Don't draw game elements until started
       return;
     }
 
-    // The promptText.draw method has been removed as it's now handled by HTML/CSS
     this.trailEffectHandler?.draw();
 
     if (this.isGameStarted) {
