@@ -284,21 +284,43 @@ export class PromptText extends BaseHTML {
             wrapper.style.width = '100%';
             wrapper.style.display = 'inline-block';
             
-            // In LTR, we need to highlight the target letter
+            // Get the target letter
             const targetStone = this.targetStones[0];
             const targetLetterText = typeof targetStone === 'string' 
                 ? targetStone 
                 : (targetStone as { StoneText: string }).StoneText;
-            const parts = this.currentPromptText.split(targetLetterText);
             
-            // Add the text with the highlighted letter
-            if (parts.length > 1) {
-                // Create the text with the highlighted letter
-                wrapper.innerHTML = parts.join(`<span class="text-red">${targetLetterText}</span>`);
-            } else {
-                // Just show the text as is
-                wrapper.textContent = this.currentPromptText;
+            // Create HTML with only the specific target letter highlighted
+            let html = '';
+            const promptChars = this.currentPromptText.split('');
+            
+            // Find the first occurrence of the target letter that hasn't been dropped yet
+            // This ensures we only highlight the current target letter, not all instances
+            let targetIndex = -1;
+            for (let i = 0; i < this.currentPromptText.length; i++) {
+                // For multi-character targets (like digraphs "ts"), check if the substring matches
+                const substringToCheck = this.currentPromptText.substring(i, i + targetLetterText.length);
+                if (substringToCheck === targetLetterText && i >= this.droppedStones) {
+                    targetIndex = i;
+                    break;
+                }
             }
+            
+            // Build the HTML with the correct highlighting
+            for (let i = 0; i < this.currentPromptText.length; i++) {
+                // Check if this position is the start of the target letter
+                if (i === targetIndex) {
+                    // Add the highlighted target letter (which might be multiple characters)
+                    html += `<span class="text-red">${targetLetterText}</span>`;
+                    // Skip the rest of the characters in the target letter
+                    i += targetLetterText.length - 1;
+                } else {
+                    // Regular character, not highlighted
+                    html += this.currentPromptText[i];
+                }
+            }
+            
+            wrapper.innerHTML = html;
             
             this.promptTextElement.appendChild(wrapper);
             
