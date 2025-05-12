@@ -26,6 +26,7 @@ import {
   Debugger,
   lang,
   pseudoId,
+  Utils,
 } from "@common";
 import { GameScore, DataModal } from "@data";
 import {
@@ -208,7 +209,7 @@ export class GameplayScene {
     this.gameControl = gameControlElem;
     this.gameControl.style.zIndex = "5";
     this.canvas = canvasElem;
-    this.width = canvasWidth > 1024 ? 500 : canvasWidth;
+    this.width = Utils.getResponsiveCanvasWidth();
     this.height = canvasHeight;
     this.context = gameCanvasContext;
   }
