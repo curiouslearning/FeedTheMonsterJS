@@ -284,7 +284,7 @@ export class PromptText extends BaseHTML {
             wrapper.style.width = '100%';
             wrapper.style.display = 'inline-block';
             
-            // Get the target letter
+            // In LTR, we need to highlight the target letter
             const targetStone = this.targetStones[0];
             const targetLetterText = typeof targetStone === 'string' 
                 ? targetStone 
