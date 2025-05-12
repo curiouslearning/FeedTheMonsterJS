@@ -22,6 +22,15 @@ export class Utils {
     } return url;
   }
 
+  public static getResponsiveCanvasWidth(): number {
+    const width = window.innerWidth;
+    const height = window.innerHeight;
+
+    return (width > 1080 && height < 650)
+      ? 380
+      : (width > 1080 ? 500 : width);
+  }
+
   public static getLanguageSpecificFont(language: string): string {
     const lowerCaseLanguage = language.toLowerCase();
 

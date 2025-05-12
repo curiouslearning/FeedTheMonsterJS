@@ -299,14 +299,7 @@ class App {
   }
 
   private setupCanvas() {
-    let gameWidth: number;
-    if (window.innerWidth > 1080 && window.innerHeight < 650) {
-      gameWidth = 380; // Wide and short screen
-    } else if (window.innerWidth > 1080) {
-      gameWidth = 500; // Wide and tall screen
-    } else {
-      gameWidth = window.innerWidth; // Smaller screens (mobile, tablet)
-    }
+    let gameWidth: number = Utils.getResponsiveCanvasWidth();
     this.canvas.height = window.innerHeight;
     this.canvas.width = gameWidth;
     this.riveCanvas.height = window.innerHeight;
