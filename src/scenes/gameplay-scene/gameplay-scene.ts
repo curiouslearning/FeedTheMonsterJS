@@ -208,7 +208,16 @@ export class GameplayScene {
     this.gameControl = gameControlElem;
     this.gameControl.style.zIndex = "5";
     this.canvas = canvasElem;
-    this.width = canvasWidth > 1024 ? 500 : canvasWidth;
+    if (canvasWidth > 1080 && canvasHeight < 650) {
+      // Case 1: Width above 1080px AND height below 650px
+      this.width = 380;
+    } else if (canvasWidth > 1080) {
+      // Case 2: Width above 1080px (but height is 650 or more)
+      this.width = 500;
+    } else {
+      // Default for smaller screens
+      this.width = canvasWidth;
+    }
     this.height = canvasHeight;
     this.context = gameCanvasContext;
   }

@@ -919,16 +919,93 @@ img {
     top: 17vw !important;
     left: 0vw !important;
   }
+
   .ftm-fence {
     left: -130px;
     bottom: 100px;
   }
-  .ftm-totem{
+
+  .ftm-totem {
     position: absolute;
     bottom: 15%;
     width: 60%;
     z-index: 1;
     right: -15%;
     max-width: 300px;
- }
+  }
+
+  #rivecanvas {
+    top: 2% !important;
+  }
+}
+
+/* For ultrawide monitors or desktop screens that are not very tall  */
+@media screen and (min-width: 1080px) and (max-height: 650px) {
+  #background {
+    width: 380px !important;
+  }
+
+  .game-scene {
+    width: 380px;
+    margin: auto;
+  }
+
+  .game-scene #play-button {
+    max-width: 80px;
+    max-height: 80px;
+    margin: 30px auto !important;
+  }
+
+  .ftm-fence {
+    left: -110px;
+    bottom: 80px;
+  }
+
+  .ftm-totem {
+    position: absolute;
+    bottom: 18%;
+    width: 55%;
+    z-index: 1;
+    right: -15%;
+    max-width: 230px;
+  }
+
+  #loading-screen {
+    width: 380px;
+  }
+
+  #levelEnd {
+    width: 380px;
+  }
+
+  .popup .popup__content-wrapper {
+    height: 48vw !important;
+    width: 80%;
+  }
+
+  .popup #cancel-button {
+    top: 12vw !important;
+    left: 5px !important;
+  }
+
+  .dynamic-button {
+    max-width: 50px;
+    max-height: 50px;
+  }
+
+  #rivecanvas {
+    top: -10% !important;
+  }
+
+  .star1 {
+    width: 65px;
+  }
+
+  .star2 {
+    width: 70px;
+  }
+
+  .star3 {
+    width: 65px;
+  }
 }
