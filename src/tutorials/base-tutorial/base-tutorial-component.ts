@@ -29,7 +29,8 @@ export default class TutorialComponent {
   public x: number = 0;
   public y: number = 0;
   public totalTime: number = 0;
-  public hideQuickStartTutorial: boolean = false; //for hiding the quickStartTutorial.
+  public showQuickStartTutorial: boolean = false;
+  public hasGameStarted = false;
   public hasGameEnded: boolean = false;
   public gameLevel: number = 0;
   private centerX: number = 0;
@@ -48,7 +49,8 @@ export default class TutorialComponent {
     this.tutorialImg.onload = () => {
       this.imagesLoaded = true;
     };
-
+    this.showQuickStartTutorial = false;
+    this.hasGameStarted = false;
     this.initializedRippleValues();
 
   }
@@ -141,8 +143,13 @@ export default class TutorialComponent {
     }
   }
 
-  public setGameHasStarted() {
-    this.hideQuickStartTutorial = true;
+  public showTutorial(isGameStarted: boolean) {
+    this.hasGameStarted = isGameStarted;
+    this.showQuickStartTutorial = true;
+  }
+
+  public hideTutorial() {
+    this.showQuickStartTutorial = false;
   }
 
   public setGameHasEndedFlag() {
