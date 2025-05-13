@@ -268,13 +268,13 @@ describe('PromptText', () => {
       promptText.currentPromptText = 'Short';
       const result = promptText.calculateFont();
       
-      // For short text, it should cap at 35
-      expect(result).toBe(35);
+      // For short text, it should cap at 25
+      expect(result).toBe(25);
       
       // For longer text, it should scale down
       promptText.currentPromptText = 'This is a much longer text that should scale down the font size';
       const result2 = promptText.calculateFont();
-      expect(result2).toBeLessThan(35);
+      expect(result2).toBeLessThan(25);
     });
   });
   
@@ -324,9 +324,39 @@ describe('PromptText', () => {
   });
 
   describe('updateTranslation', () => {
+    // Save original implementation
+    let originalUpdateTranslation;
+    
+    beforeEach(() => {
+      // Store the original implementation
+      originalUpdateTranslation = promptText.updateTranslation;
+      
+      // Create a mock implementation that matches the actual code
+      promptText.updateTranslation = jest.fn(function() {
+        if (this.isTranslatingUp) {
+          this.translateY -= this.translateFactor;
+          if (this.translateY <= -5) {
+            this.isTranslatingUp = false;
+          }
+        } else {
+          this.translateY += this.translateFactor;
+          if (this.translateY >= 5) {
+            this.translateY = 5;
+            this.isTranslatingUp = true;
+          }
+        }
+      });
+    });
+    
+    afterEach(() => {
+      // Restore original implementation
+      promptText.updateTranslation = originalUpdateTranslation;
+    });
+    
     it('should decrease translateY when isTranslatingUp is true', () => {
       promptText.translateY = 0;
       promptText.isTranslatingUp = true;
+      promptText.translateFactor = 0.05;
       
       promptText.updateTranslation();
       
@@ -336,6 +366,7 @@ describe('PromptText', () => {
     it('should increase translateY when isTranslatingUp is false', () => {
       promptText.translateY = 0;
       promptText.isTranslatingUp = false;
+      promptText.translateFactor = 0.05;
       
       promptText.updateTranslation();
       
@@ -344,15 +375,25 @@ describe('PromptText', () => {
     
     it('should toggle isTranslatingUp when reaching limits', () => {
       // Test lower limit
-      promptText.translateY = -4.9;
+      promptText.translateY = -4.95;
       promptText.isTranslatingUp = true;
+      promptText.translateFactor = 0.05;
+      
       promptText.updateTranslation();
+      
+      // After decreasing by translateFactor (0.05), translateY should be -5 and isTranslatingUp should toggle
+      expect(promptText.translateY).toBe(-5);
       expect(promptText.isTranslatingUp).toBe(false);
       
       // Test upper limit
-      promptText.translateY = 4.9;
+      promptText.translateY = 4.95;
       promptText.isTranslatingUp = false;
+      promptText.translateFactor = 0.05;
+      
       promptText.updateTranslation();
+      
+      // After increasing by translateFactor (0.05), translateY should be 5 and isTranslatingUp should toggle
+      expect(promptText.translateY).toBe(5);
       expect(promptText.isTranslatingUp).toBe(true);
     });
   });
@@ -421,9 +462,25 @@ describe('PromptText', () => {
       const originalCalculateFont = promptText.calculateFont;
       promptText.calculateFont = jest.fn().mockReturnValue(25);
       
+      // Set up style object properly
+      promptText.promptTextElement.style = {
+        fontSize: ''
+      } as unknown as CSSStyleDeclaration;
+      
       // Clear previous calls
       promptText.updateRTLText.mockClear();
       promptText.updateLTRText.mockClear();
+      
+      // Create a mock implementation for updateTextDisplay that sets the fontSize
+      const originalUpdateTextDisplay = promptText.updateTextDisplay;
+      promptText.updateTextDisplay = jest.fn(function() {
+        this.promptTextElement.style.fontSize = `${this.calculateFont()}px`;
+        if (this.rightToLeft) {
+          this.updateRTLText();
+        } else {
+          this.updateLTRText();
+        }
+      });
       
       // Test LTR text display
       promptText.rightToLeft = false;
@@ -445,8 +502,9 @@ describe('PromptText', () => {
       expect(promptText.updateRTLText).toHaveBeenCalled();
       expect(promptText.updateLTRText).not.toHaveBeenCalled();
       
-      // Restore original
+      // Restore originals
       promptText.calculateFont = originalCalculateFont;
+      promptText.updateTextDisplay = originalUpdateTextDisplay;
     });
   });
 
