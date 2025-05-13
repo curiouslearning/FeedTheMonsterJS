@@ -290,37 +290,32 @@ export class PromptText extends BaseHTML {
                 ? targetStone 
                 : (targetStone as { StoneText: string }).StoneText;
             
-            // Create HTML with only the specific target letter highlighted
-            let html = '';
-            const promptChars = this.currentPromptText.split('');
+            // Create formatted text with only the specific target letter highlighted
+            let formattedPromptText = '';
+            let foundTarget = false;
+            let i = 0;
             
-            // Find the first occurrence of the target letter that hasn't been dropped yet
-            // This ensures we only highlight the current target letter, not all instances
-            let targetIndex = -1;
-            for (let i = 0; i < this.currentPromptText.length; i++) {
-                // For multi-character targets (like digraphs "ts"), check if the substring matches
-                const substringToCheck = this.currentPromptText.substring(i, i + targetLetterText.length);
-                if (substringToCheck === targetLetterText && i >= this.droppedStones) {
-                    targetIndex = i;
-                    break;
+            // Single loop to build formatted text and highlight the target letter
+            while (i < this.currentPromptText.length) {
+                // If we haven't found the target yet and we're past the dropped stones,
+                // check if this position starts with the target letter
+                if (!foundTarget && i >= this.droppedStones) {
+                    const substringToCheck = this.currentPromptText.substring(i, i + targetLetterText.length);
+                    if (substringToCheck === targetLetterText) {
+                        // Found the target - highlight it
+                        formattedPromptText += `<span class="text-red">${targetLetterText}</span>`;
+                        i += targetLetterText.length; // Move past the target letter
+                        foundTarget = true; // Mark that we found the target (only highlight first occurrence)
+                        continue; // Skip to next iteration
+                    }
                 }
+                
+                // Regular character, not highlighted
+                formattedPromptText += this.currentPromptText[i];
+                i++;
             }
             
-            // Build the HTML with the correct highlighting
-            for (let i = 0; i < this.currentPromptText.length; i++) {
-                // Check if this position is the start of the target letter
-                if (i === targetIndex) {
-                    // Add the highlighted target letter (which might be multiple characters)
-                    html += `<span class="text-red">${targetLetterText}</span>`;
-                    // Skip the rest of the characters in the target letter
-                    i += targetLetterText.length - 1;
-                } else {
-                    // Regular character, not highlighted
-                    html += this.currentPromptText[i];
-                }
-            }
-            
-            wrapper.innerHTML = html;
+            wrapper.innerHTML = formattedPromptText;
             
             this.promptTextElement.appendChild(wrapper);
             
