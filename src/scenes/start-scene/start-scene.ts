@@ -186,6 +186,7 @@ export class StartScene {
   }
 
   handleMouseClick = (event) => {
+    console.log('test log - start scene area handleMouseClick clicked SCENE_NAME_LEVEL_SELECT')
     event.preventDefault();
     FirebaseIntegration.getInstance().sendUserClickedOnPlayEvent();
     // @ts-ignore
@@ -198,10 +199,12 @@ export class StartScene {
   };
 
   dispose() {
+    console.log('start scene dispose')
     this.audioPlayer.stopAllAudios();
     this.handler.removeEventListener("click", this.handleMouseClick, false);
     this.playButton.dispose();
     this.playButton.destroy();
+    this.playButton = null;
     this.onClickArea.destroy();
     this.titleElement.destroy();
     window.removeEventListener(
