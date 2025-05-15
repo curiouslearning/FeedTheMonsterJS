@@ -65,6 +65,7 @@ export class GameStateService extends PubSub {
     public currentMonsterPhase: number;
 
     constructor() {
+        console.log('gamestate constructor')
         super();
         this.EVENTS = {
             START_GAME: 'START_GAME',
