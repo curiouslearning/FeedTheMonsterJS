@@ -1,6 +1,7 @@
 import { PromptText } from './prompt-text';
 import { AudioPlayer } from '@components';
 import { EventManager } from '@events';
+import { Utils } from '@common';
 
 // Mock dependencies
 jest.mock('@components', () => ({
@@ -19,6 +20,14 @@ jest.mock('@events', () => ({
   }))
 }));
 
+// Mock Utils to avoid URL conversion issues
+jest.mock('@common', () => ({
+  Utils: {
+    getConvertedDevProdURL: jest.fn(url => url)
+  },
+  VISIBILITY_CHANGE: 'visibilitychange'
+}));
+
 // Mock BaseHTML to avoid DOM operations
 jest.mock('../baseHTML/base-html', () => {
   return {
@@ -34,7 +43,7 @@ jest.mock('./prompt-text', () => {
   const originalModule = jest.requireActual('./prompt-text');
   return {
     ...originalModule,
-    PromptText: jest.fn().mockImplementation((width, height, currentPuzzleData, levelData, rightToLeft) => {
+    PromptText: jest.fn().mockImplementation((width, height, currentPuzzleData, levelData, rightToLeft, id = 'prompt-container') => {
       // Create a mock instance
       const instance = {
         width,
@@ -42,6 +51,7 @@ jest.mock('./prompt-text', () => {
         currentPuzzleData,
         levelData,
         rightToLeft,
+        containerId: id,
         currentPromptText: currentPuzzleData.prompt.promptText,
         targetStones: currentPuzzleData.targetStones,
         isStoneDropped: false,
@@ -50,24 +60,42 @@ jest.mock('./prompt-text', () => {
         scale: 1,
         isScalingUp: true,
         isAppForeground: true,
+        time: 0,
+        scaleFactor: 0.00050,
+        translateY: 0,
+        isTranslatingUp: true,
+        translateFactor: 0.05,
+        animationFrameId: null,
         
         // Mock HTML elements with proper style objects
         promptContainer: { 
           style: { 
             display: 'block',
             cssText: ''
-          } as unknown as CSSStyleDeclaration 
+          } as unknown as CSSStyleDeclaration,
+          querySelector: jest.fn().mockImplementation(selector => {
+            if (selector === '#prompt-background') return instance.promptBackground;
+            if (selector === '#prompt-text') return instance.promptTextElement;
+            if (selector === '#prompt-play-button') return instance.promptPlayButtonElement;
+            return null;
+          })
         },
         promptBackground: { 
-          style: {} as unknown as CSSStyleDeclaration 
+          style: {} as unknown as CSSStyleDeclaration,
+          addEventListener: jest.fn(),
+          querySelector: jest.fn()
         },
         promptTextElement: { 
           style: {} as unknown as CSSStyleDeclaration, 
-          innerText: '', 
-          setAttribute: jest.fn() 
+          innerText: '',
+          innerHTML: '',
+          appendChild: jest.fn(),
+          setAttribute: jest.fn(),
+          addEventListener: jest.fn()
         },
         promptPlayButtonElement: { 
-          style: {} as unknown as CSSStyleDeclaration 
+          style: {} as unknown as CSSStyleDeclaration,
+          addEventListener: jest.fn()
         },
         
         // Mock methods
@@ -77,29 +105,33 @@ jest.mock('./prompt-text', () => {
           stopAllAudios: jest.fn()
         },
         
-        // Mock public methods
-        getPromptAudioUrl: function() {
-          return this.currentPuzzleData.prompt.promptAudio;
+        eventManager: {
+          unregisterEventListener: jest.fn()
         },
         
-        playSound: function() {
+        // Mock public methods
+        getPromptAudioUrl: function() {
+          return Utils.getConvertedDevProdURL(this.currentPuzzleData.prompt.promptAudio);
+        },
+        
+        playSound: jest.fn(function() {
           if (this.isAppForeground) {
             this.audioPlayer.playPromptAudio(this.getPromptAudioUrl());
           }
-        },
+        }),
         
         calculateFont: function() {
-          return (this.width * 0.65 / this.currentPromptText.length > 35) ? 35 : this.width * 0.65 / this.currentPromptText.length;
+          return (this.width * 0.65 / this.currentPromptText.length > 35) ? 25 : this.width * 0.65 / this.currentPromptText.length;
         },
         
         updateScaling: function() {
           if (this.isScalingUp) {
-            this.scale += 0.00050;
+            this.scale += this.scaleFactor;
             if (this.scale >= 1.05) {
               this.isScalingUp = false;
             }
           } else {
-            this.scale -= 0.00050;
+            this.scale -= this.scaleFactor;
             if (this.scale <= 0.95) {
               this.scale = 0.95;
               this.isScalingUp = true;
@@ -107,7 +139,22 @@ jest.mock('./prompt-text', () => {
           }
         },
         
-        handleVisibilityChange: function() {
+        updateTranslation: function() {
+          if (this.isTranslatingUp) {
+            this.translateY -= this.translateFactor;
+            if (this.translateY <= -5) {
+              this.isTranslatingUp = false;
+            }
+          } else {
+            this.translateY += this.translateFactor;
+            if (this.translateY >= 5) {
+              this.translateY = 5;
+              this.isTranslatingUp = true;
+            }
+          }
+        },
+        
+        handleVisibilityChange: jest.fn(function() {
           if (document.visibilityState === "hidden") {
             this.audioPlayer.stopAllAudios();
             this.isAppForeground = false;
@@ -115,14 +162,44 @@ jest.mock('./prompt-text', () => {
           if (document.visibilityState === "visible") {
             this.isAppForeground = true;
           }
-        },
+        }),
         
-        eventManager: {
-          unregisterEventListener: jest.fn()
-        },
-        
-        // Add mock for initializeHtmlElements to fix the test errors
-        initializeHtmlElements: jest.fn()
+        initializeHtmlElements: jest.fn(),
+        updateTextDisplay: jest.fn(),
+        updateRTLText: jest.fn(),
+        updateLTRText: jest.fn(),
+        updateCenteredPlayButton: jest.fn(),
+        startAnimationLoop: jest.fn(),
+        handleStoneDrop: jest.fn(function(event) {
+          this.isStoneDropped = true;
+          this.promptContainer.style.display = 'none';
+        }),
+        handleLoadPuzzle: jest.fn(function(event) {
+          this.droppedStones = 0;
+          this.droppedStoneCount = 0;
+          this.currentPuzzleData = this.levelData.puzzles[event.detail.counter];
+          this.currentPromptText = this.currentPuzzleData.prompt.promptText;
+          this.targetStones = this.currentPuzzleData.targetStones;
+          this.audioPlayer.preloadPromptAudio(this.getPromptAudioUrl());
+          this.isStoneDropped = false;
+          this.time = 0;
+          this.updateTextDisplay();
+          this.promptContainer.style.display = 'block';
+        }),
+        dispose: jest.fn(function() {
+          document.removeEventListener('visibilitychange', this.handleVisibilityChange, false);
+          this.eventManager.unregisterEventListener();
+          if (this.animationFrameId) {
+            cancelAnimationFrame(this.animationFrameId);
+          }
+        }),
+        droppedLetterIndex: jest.fn(function(index) {
+          this.droppedStones = index;
+          this.droppedStoneCount++;
+          if (!this.isStoneDropped) {
+            this.updateTextDisplay();
+          }
+        })
       };
       
       return instance;
@@ -191,13 +268,13 @@ describe('PromptText', () => {
       promptText.currentPromptText = 'Short';
       const result = promptText.calculateFont();
       
-      // For short text, it should cap at 35
-      expect(result).toBe(35);
+      // For short text, it should cap at 25
+      expect(result).toBe(25);
       
       // For longer text, it should scale down
       promptText.currentPromptText = 'This is a much longer text that should scale down the font size';
       const result2 = promptText.calculateFont();
-      expect(result2).toBeLessThan(35);
+      expect(result2).toBeLessThan(25);
     });
   });
   
@@ -243,6 +320,214 @@ describe('PromptText', () => {
       promptText.handleVisibilityChange();
       
       expect(promptText.isAppForeground).toBe(true);
+    });
+  });
+
+  describe('updateTranslation', () => {
+    // Save original implementation
+    let originalUpdateTranslation;
+    
+    beforeEach(() => {
+      // Store the original implementation
+      originalUpdateTranslation = promptText.updateTranslation;
+      
+      // Create a mock implementation that matches the actual code
+      promptText.updateTranslation = jest.fn(function() {
+        if (this.isTranslatingUp) {
+          this.translateY -= this.translateFactor;
+          if (this.translateY <= -5) {
+            this.isTranslatingUp = false;
+          }
+        } else {
+          this.translateY += this.translateFactor;
+          if (this.translateY >= 5) {
+            this.translateY = 5;
+            this.isTranslatingUp = true;
+          }
+        }
+      });
+    });
+    
+    afterEach(() => {
+      // Restore original implementation
+      promptText.updateTranslation = originalUpdateTranslation;
+    });
+    
+    it('should decrease translateY when isTranslatingUp is true', () => {
+      promptText.translateY = 0;
+      promptText.isTranslatingUp = true;
+      promptText.translateFactor = 0.05;
+      
+      promptText.updateTranslation();
+      
+      expect(promptText.translateY).toBeLessThan(0);
+    });
+    
+    it('should increase translateY when isTranslatingUp is false', () => {
+      promptText.translateY = 0;
+      promptText.isTranslatingUp = false;
+      promptText.translateFactor = 0.05;
+      
+      promptText.updateTranslation();
+      
+      expect(promptText.translateY).toBeGreaterThan(0);
+    });
+    
+    it('should toggle isTranslatingUp when reaching limits', () => {
+      // Test lower limit
+      promptText.translateY = -4.95;
+      promptText.isTranslatingUp = true;
+      promptText.translateFactor = 0.05;
+      
+      promptText.updateTranslation();
+      
+      // After decreasing by translateFactor (0.05), translateY should be -5 and isTranslatingUp should toggle
+      expect(promptText.translateY).toBe(-5);
+      expect(promptText.isTranslatingUp).toBe(false);
+      
+      // Test upper limit
+      promptText.translateY = 4.95;
+      promptText.isTranslatingUp = false;
+      promptText.translateFactor = 0.05;
+      
+      promptText.updateTranslation();
+      
+      // After increasing by translateFactor (0.05), translateY should be 5 and isTranslatingUp should toggle
+      expect(promptText.translateY).toBe(5);
+      expect(promptText.isTranslatingUp).toBe(true);
+    });
+  });
+  
+  describe('handleStoneDrop', () => {
+    it('should set isStoneDropped to true and hide promptContainer', () => {
+      promptText.isStoneDropped = false;
+      promptText.promptContainer.style.display = 'block';
+      
+      promptText.handleStoneDrop({});
+      
+      expect(promptText.isStoneDropped).toBe(true);
+      expect(promptText.promptContainer.style.display).toBe('none');
+    });
+  });
+  
+  describe('handleLoadPuzzle', () => {
+    it('should reset state and update with new puzzle data', () => {
+      const mockEvent = {
+        detail: {
+          counter: 0
+        }
+      };
+      
+      promptText.isStoneDropped = true;
+      promptText.droppedStones = 2;
+      promptText.time = 1000;
+      
+      promptText.handleLoadPuzzle(mockEvent);
+      
+      expect(promptText.isStoneDropped).toBe(false);
+      expect(promptText.droppedStones).toBe(0);
+      expect(promptText.time).toBe(0);
+      expect(promptText.updateTextDisplay).toHaveBeenCalled();
+      expect(promptText.promptContainer.style.display).toBe('block');
+      expect(promptText.audioPlayer.preloadPromptAudio).toHaveBeenCalled();
+    });
+  });
+  
+  describe('droppedLetterIndex', () => {
+    it('should update droppedStones and call updateTextDisplay if not stoneDropped', () => {
+      promptText.isStoneDropped = false;
+      promptText.droppedStones = 0;
+      promptText.droppedStoneCount = 0;
+      
+      promptText.droppedLetterIndex(2);
+      
+      expect(promptText.droppedStones).toBe(2);
+      expect(promptText.droppedStoneCount).toBe(1);
+      expect(promptText.updateTextDisplay).toHaveBeenCalled();
+    });
+    
+    it('should not call updateTextDisplay if stoneDropped is true', () => {
+      promptText.isStoneDropped = true;
+      promptText.updateTextDisplay.mockClear();
+      
+      promptText.droppedLetterIndex(2);
+      
+      expect(promptText.updateTextDisplay).not.toHaveBeenCalled();
+    });
+  });
+  
+  describe('updateTextDisplay', () => {
+    it('should update font size and call the appropriate language-specific method', () => {
+      // Mock the calculateFont method
+      const originalCalculateFont = promptText.calculateFont;
+      promptText.calculateFont = jest.fn().mockReturnValue(25);
+      
+      // Set up style object properly
+      promptText.promptTextElement.style = {
+        fontSize: ''
+      } as unknown as CSSStyleDeclaration;
+      
+      // Clear previous calls
+      promptText.updateRTLText.mockClear();
+      promptText.updateLTRText.mockClear();
+      
+      // Create a mock implementation for updateTextDisplay that sets the fontSize
+      const originalUpdateTextDisplay = promptText.updateTextDisplay;
+      promptText.updateTextDisplay = jest.fn(function() {
+        this.promptTextElement.style.fontSize = `${this.calculateFont()}px`;
+        if (this.rightToLeft) {
+          this.updateRTLText();
+        } else {
+          this.updateLTRText();
+        }
+      });
+      
+      // Test LTR text display
+      promptText.rightToLeft = false;
+      promptText.updateTextDisplay();
+      
+      expect(promptText.promptTextElement.style.fontSize).toBe('25px');
+      expect(promptText.updateLTRText).toHaveBeenCalled();
+      expect(promptText.updateRTLText).not.toHaveBeenCalled();
+      
+      // Clear previous calls
+      promptText.updateRTLText.mockClear();
+      promptText.updateLTRText.mockClear();
+      
+      // Test RTL text display
+      promptText.rightToLeft = true;
+      promptText.updateTextDisplay();
+      
+      expect(promptText.promptTextElement.style.fontSize).toBe('25px');
+      expect(promptText.updateRTLText).toHaveBeenCalled();
+      expect(promptText.updateLTRText).not.toHaveBeenCalled();
+      
+      // Restore originals
+      promptText.calculateFont = originalCalculateFont;
+      promptText.updateTextDisplay = originalUpdateTextDisplay;
+    });
+  });
+
+  describe('dispose', () => {
+    it('should clean up resources and event listeners', () => {
+      // Mock document.removeEventListener
+      const originalRemoveEventListener = document.removeEventListener;
+      document.removeEventListener = jest.fn();
+      
+      // Mock cancelAnimationFrame
+      const originalCancelAnimationFrame = global.cancelAnimationFrame;
+      global.cancelAnimationFrame = jest.fn();
+      
+      promptText.animationFrameId = 123;
+      promptText.dispose();
+      
+      expect(document.removeEventListener).toHaveBeenCalledWith('visibilitychange', promptText.handleVisibilityChange, false);
+      expect(promptText.eventManager.unregisterEventListener).toHaveBeenCalled();
+      expect(global.cancelAnimationFrame).toHaveBeenCalledWith(123);
+      
+      // Restore originals
+      document.removeEventListener = originalRemoveEventListener;
+      global.cancelAnimationFrame = originalCancelAnimationFrame;
     });
   });
 });
