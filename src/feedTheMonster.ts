@@ -52,7 +52,6 @@ class App {
   private logged75: boolean = false;
 
   constructor(lang: string) {
-    console.log('test log - feedTheMonster constructor called')
     this.lang = lang;
     this.currentProgress = 10; // Initialize progress to 0
     
@@ -80,7 +79,6 @@ class App {
   }
 
   private async init() {
-    console.log('test log - init method called')
     const font = await Utils.getLanguageSpecificFont(this.lang);
     await this.loadAndCacheFont(font, `./assets/fonts/${font}.ttf`);
     await this.loadTitleFeedbackCustomFont();
@@ -95,7 +93,6 @@ class App {
     this.globalInitialization(data);
     this.logSessionStartFirebaseEvent();
     window.addEventListener("resize", () => {
-      console.log('test log - windows resize called')
       this.handleResize(this.dataModal);
     });
 
@@ -445,7 +442,6 @@ class App {
   hideLoadingScreen() {
     try {
       localStorage.setItem("version" + this.lang, this.getJsonVersionNumber());
-      console.log('test log hideLoadingScreen handleResize called')
       this.handleResize(this.dataModal);
     } catch (error) {
       console.error("Error hiding loading screen:", error);

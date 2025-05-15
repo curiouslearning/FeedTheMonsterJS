@@ -39,7 +39,6 @@ export class SceneHandler {
   private currentScene: null | string;
 
   constructor(data: DataModal) {
-    console.log('scene handler constructor')
     gameStateService.setDefaultGameStateValues(data);
     this.activeScene = {};
     this.setupUIElements();
