@@ -54,7 +54,6 @@ class App {
   constructor(lang: string) {
     this.lang = lang;
     this.currentProgress = 10; // Initialize progress to 0
-    
     this.background = document.getElementById("background") as HTMLElement;
     this.channel = new BroadcastChannel("my-channel");
     this.progressBar = document.getElementById("progress-bar") as HTMLElement;
@@ -442,6 +441,7 @@ class App {
   hideLoadingScreen() {
     try {
       localStorage.setItem("version" + this.lang, this.getJsonVersionNumber());
+      console.log('test log hideLoadingScreen handleResize called')
       this.handleResize(this.dataModal);
     } catch (error) {
       console.error("Error hiding loading screen:", error);
