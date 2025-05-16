@@ -334,13 +334,21 @@ class App {
   }
 
   private updateVersionInfoElement(dataModal: DataModal): void {
-    if (this.is_cached.has(this.lang) && (Debugger.TestLink || Debugger.DevelopmentLink)) {
+    const isDevOrTestEnv = this.is_cached.has(this.lang) && (Debugger.TestLink || Debugger.DevelopmentLink);
+    
+    // Update version info when in development/test environment
+    if (isDevOrTestEnv) {
       if (dataModal.majVersion && dataModal.minVersion) {
         this.versionInfoElement.innerHTML += `/j.v${dataModal.majVersion}.${dataModal.minVersion}`;
       } else if (dataModal.version) {
         this.versionInfoElement.innerHTML += `/j.v${dataModal.version}`;
       }
-      document.getElementById("toggle-btn").style.display = "block";
+    }
+    
+    // Set toggle button visibility - only show in development/test environment
+    const toggleBtn = document.getElementById("toggle-btn");
+    if (toggleBtn) {
+      toggleBtn.style.display = isDevOrTestEnv ? "block" : "none";
     }
   }
 
