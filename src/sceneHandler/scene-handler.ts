@@ -36,6 +36,7 @@ export class SceneHandler {
   private lastTime: number = 0;
   private toggleBtn: HTMLElement;
   private unsubscribeEvent: () => void;
+  private currentScene: null | string;
 
   constructor(data: DataModal) {
     gameStateService.setDefaultGameStateValues(data);
@@ -44,9 +45,15 @@ export class SceneHandler {
     window.addEventListener("beforeinstallprompt", this.handleInstallPrompt);
     this.initDefaultScenes();
     this.startAnimationLoop();
+    this.currentScene = null;
     this.unsubscribeEvent = gameStateService.subscribe(
       gameStateService.EVENTS.SWITCH_SCENE_EVENT,
-      (sceneName: string) => { this.handleSwitchScene(sceneName); }
+      (sceneName: string) => {
+        if (!this.currentScene || this.currentScene !== sceneName) {
+          this.currentScene = sceneName;
+          this.handleSwitchScene(sceneName);
+        }
+         }
     );
   }
 
@@ -106,8 +113,25 @@ export class SceneHandler {
     });
   }
 
-  private gotoScene(sceneName: string) {
+  /*
+   * Clean up scene-handler instances and active scene.
+   */
+  public dispose() {
+    this.cleanupScene();
+    this.unsubscribeEvent && this.unsubscribeEvent();
+    window.removeEventListener(
+      "beforeinstallprompt",
+      this.handleInstallPrompt,
+      false
+    );
+  }
+
+  private cleanupScene() {
     this.activeScene['scene'] && this.activeScene['scene']?.dispose();
+  }
+
+  private gotoScene(sceneName: string) {
+    this.cleanupScene();
     this.activeScene['scene'] = this.getScene(sceneName);
   }
 

@@ -54,8 +54,6 @@ class App {
   constructor(lang: string) {
     this.lang = lang;
     this.currentProgress = 10; // Initialize progress to 0
-    this.canvas = document.getElementById("canvas") as HTMLCanvasElement;
-    this.riveCanvas = document.getElementById("rivecanvas") as HTMLCanvasElement;
     this.background = document.getElementById("background") as HTMLElement;
     this.channel = new BroadcastChannel("my-channel");
     this.progressBar = document.getElementById("progress-bar") as HTMLElement;
@@ -77,7 +75,6 @@ class App {
     this.channel.addEventListener("message", this.handleServiceWorkerMessage);
     window.addEventListener("beforeunload", this.handleBeforeUnload);
     document.addEventListener(VISIBILITY_CHANGE, this.handleVisibilityChange);
-    window.addEventListener("resize", this.handleResize.bind(this));
   }
 
   private async init() {
@@ -94,7 +91,7 @@ class App {
     this.dataModal = this.createDataModal(data);
     this.globalInitialization(data);
     this.logSessionStartFirebaseEvent();
-    window.addEventListener("resize", async () => {
+    window.addEventListener("resize", () => {
       this.handleResize(this.dataModal);
     });
 
@@ -299,6 +296,8 @@ class App {
   }
 
   private setupCanvas() {
+    this.canvas = document.getElementById("canvas") as HTMLCanvasElement;
+    this.riveCanvas = document.getElementById("rivecanvas") as HTMLCanvasElement;
     let gameWidth: number = Utils.getResponsiveCanvasWidth();
     this.canvas.height = window.innerHeight;
     this.canvas.width = gameWidth;
@@ -346,6 +345,9 @@ class App {
   }
 
   private reinitializeSceneHandler(dataModal: DataModal): void {
+    if (this.sceneHandler) {
+      this.sceneHandler.dispose();
+    }
     delete this.sceneHandler;
     this.sceneHandler = new SceneHandler(dataModal);
     this.passingDataToContainer();

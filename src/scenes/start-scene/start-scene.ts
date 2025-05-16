@@ -202,6 +202,7 @@ export class StartScene {
     this.handler.removeEventListener("click", this.handleMouseClick, false);
     this.playButton.dispose();
     this.playButton.destroy();
+    this.playButton = null;
     this.onClickArea.destroy();
     this.titleElement.destroy();
     window.removeEventListener(
