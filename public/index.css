@@ -933,10 +933,6 @@ img {
     right: -15%;
     max-width: 300px;
   }
-
-  #rivecanvas {
-    top: 2% !important;
-  }
 }
 
 /* For ultrawide monitors or desktop screens that are not very tall  */
@@ -993,10 +989,6 @@ img {
     max-height: 50px;
   }
 
-  #rivecanvas {
-    top: -10% !important;
-  }
-
   .star1 {
     width: 65px;
   }
@@ -1009,3 +1001,21 @@ img {
     width: 65px;
   }
 }
+
+
+/*css to debug the hitbox overlay (do not delete)*/
+/* #overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 5;
+  pointer-events: none;
+}
+
+.rect {
+  position: absolute;
+  border: 2px solid red;
+  background-color: rgba(255, 0, 0, 0.2);
+} */

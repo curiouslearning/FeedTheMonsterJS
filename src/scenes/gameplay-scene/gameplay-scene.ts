@@ -157,6 +157,7 @@ export class GameplayScene {
           this.resumeGame();
       }
     });
+    this.insertSvgBelowRive();
     //this.setupBg(); //Temporary disabled to try evolution background.
     this.setupMonsterPhaseBg();
   }
@@ -223,6 +224,44 @@ export class GameplayScene {
     this.feedBackTexts = gamePlayData.feedBackTexts;
     this.data = gamePlayData.data;
     this.monsterPhaseNumber = gamePlayData.monsterPhaseNumber;
+  }
+
+  private insertSvgBelowRive() {
+    const canvas = this.riveMonsterElement;
+    const svgUrl = './assets/images/tree-log.svg';
+
+    const parent = canvas.parentElement;
+    if (!parent) return;
+
+    // Create the SVG <img>
+    const svgImg = document.createElement('img');
+    svgImg.src = svgUrl;
+    svgImg.style.width = '72%';
+    svgImg.alt = 'TreeLog';
+    svgImg.style.position = 'absolute';
+    svgImg.style.left = '0%';
+    svgImg.style.right = '0%';
+    svgImg.style.pointerEvents = 'none';
+    svgImg.style.zIndex = '3';
+    svgImg.style.margin = 'auto';
+    svgImg.style.left = '50%';
+
+    const w = window.innerWidth;
+    const h = window.innerHeight;
+    let bottom;
+    if (w > 500 && h < 768) bottom = '10%';
+    else if ((w < 380 && h > 850) || (w >= 700 && w < 768)) bottom = '15%';
+    else if (w < 340 && h > 650) bottom = '20%';
+    else if (w >= 768) bottom = '0%';
+    else {
+      bottom = '5%';
+    }
+    svgImg.style.bottom = bottom;
+    svgImg.style.transform = 'translateX(-50%)'; // Center horizontally
+    svgImg.style.top = `${this.monster.getMonsterTopCordinate()}px`; // Adjust as needed
+
+    // Append the SVG below the canvas
+    parent.appendChild(svgImg);
   }
 
   setupBg = () => {
