@@ -52,8 +52,6 @@ export class RiveMonsterComponent {
     this.props = props;
     this.scale = gameSettingsService.getDevicePixelRatioValue();
     // add extra space above the monster in the Rive file this ensures proper animation, it will causes the monster to be placed at the bottom of the screen
-    this.initializeHitbox();
-    this.setRiveMinYAdjustment();
     this.initializeRive();
   }
 
@@ -72,31 +70,34 @@ export class RiveMonsterComponent {
   };
 
   private initializeHitbox() {
+    // Calculate logical canvas dimensions based on scale (DPR compensation)
     const logicalCanvasWidth = this.props.canvas.width / this.scale;
     const logicalCanvasHeight = this.props.canvas.height / this.scale;
 
     let monsterBottomY: number;
     let monsterHeight: number;
-
+    // Define monster's visual bounds based on device type
     if (window.innerWidth > 700) {
-      // For tablets and desktops
+      // On tablets/desktops: place monster lower and make it taller
       monsterBottomY = logicalCanvasHeight * 0.90;
       monsterHeight = logicalCanvasHeight * 0.40;
     } else {
-      // For mobile devices
+      // On mobile: place monster slightly higher and make it shorter
       monsterBottomY = logicalCanvasHeight * 0.85;
       monsterHeight = logicalCanvasHeight * 0.30;
     }
-
+    // Compute the monster's top Y-coordinate
     const monsterTopY = monsterBottomY - monsterHeight;
 
+    // Add vertical padding to the hitbox to avoid edge sensitivity
     const hitboxPaddingY = monsterHeight * 0.1; // 10% padding top & bottom
 
+    // Define horizontal hitbox (centered horizontally, covering 30% of canvas width)
     this.hitboxRangeX = {
       from: (logicalCanvasWidth * 0.5) - (logicalCanvasWidth * 0.3) / 2,
       to: (logicalCanvasWidth * 0.5) + (logicalCanvasWidth * 0.3) / 2,
     };
-
+    // Define vertical hitbox within the monster's bounds, excluding padding
     this.hitboxRangeY = {
       from: monsterTopY + hitboxPaddingY,
       to: monsterBottomY - hitboxPaddingY,
@@ -164,6 +165,8 @@ export class RiveMonsterComponent {
       riveConfig['stateMachines'] = [this.stateMachineName];
       riveConfig['onLoad'] = () => {
         this.handleLoad();
+        this.setRiveMinYAdjustment();
+        this.initializeHitbox();
       };
 
       riveConfig['layout'] = new Layout({
@@ -289,36 +292,6 @@ The extra space above the monster in the Rive file ensures proper animation, but
   stopRiveMonster() {
     this.riveInstance?.stop();
   }
-
-  public changePhase(phase: number) {
-    if (phase >= 0 && phase < MONSTER_PHASES.length) {
-      this.phaseIndex = phase;
-
-      if (this.riveInstance) {
-        this.cleanupRiveInstance();
-      }
-      this.riveInstance = new Rive({
-        src: MONSTER_PHASES[this.phaseIndex],
-        canvas: this.props.canvas,
-        autoplay: this.props.autoplay,
-        stateMachines: [this.stateMachineName],
-        layout: new Layout({
-          fit: Fit.Contain,
-          alignment: Alignment.Center,
-        }),
-        onLoad: () => {
-          this.handleLoad();
-          //Recalculate layout and hitbox after phase change
-          this.setRiveMinYAdjustment();
-          this.initializeHitbox();
-        },
-        useOffscreenRenderer: true,
-      });
-    } else {
-      console.warn(`Invalid phase index: ${phase}`);
-    }
-  }
-
   private cleanupRiveInstance() {
     this.riveInstance?.cleanup();
     this.riveInstance = null;
