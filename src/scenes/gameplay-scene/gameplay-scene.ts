@@ -10,7 +10,7 @@ import {
   PhasesBackground,
   TrailEffectsHandler
 } from "@components";
-import { LetterPuzzleTutorial } from '@tutorials';
+import TutorialHandler from '@tutorials';
 import {
   StoneConfig,
   CLICK,
@@ -58,7 +58,7 @@ export class GameplayScene {
   public timerTicking: TimerTicking;
   public promptText: PromptText;
   public pauseButton: PauseButton;
-  public tutorial: LetterPuzzleTutorial;
+  public tutorial: TutorialHandler;
   public id: string;
   public context: CanvasRenderingContext2D;
   public levelIndicators: LevelIndicators;
@@ -188,7 +188,12 @@ export class GameplayScene {
       this.levelData,
       this.timerTicking
     );
-    this.tutorial = new LetterPuzzleTutorial(this.context, this.width, this.height);
+    this.tutorial = new TutorialHandler({
+      context: this.context,
+      width: this.width,
+      height: this.height,
+      puzzleLevel: this.counter
+    });
     this.promptText = new PromptText(
       this.width,
       this.height,
@@ -457,14 +462,13 @@ export class GameplayScene {
   private setGameToStart() {
     this.isGameStarted = true;
     this.time = 0;
-    this.tutorial.showTutorial(true);
     this.trailEffectHandler.setGameHasStarted(true);
   }
 
   draw(deltaTime: number) {
     if (!this.isGameStarted && !this.isPauseButtonClicked) {
-      this.tutorial.showQuirkStartTutorial(deltaTime);
       this.time += deltaTime;
+      this.tutorial.drawQuickStart(deltaTime, this.isGameStarted);
       if (this.time >= 5000) {
         this.setGameToStart();
       }
@@ -478,9 +482,7 @@ export class GameplayScene {
       this.handleStoneLetterDrawing(deltaTime);
     }
 
-    if (!this.isPauseButtonClicked && this.counter === 0) {
-      this.tutorial.drawLetterPuzzleTutorial(deltaTime);
-    }
+    this.tutorial.draw(deltaTime, this.isGameStarted);
   }
 
   private handleStoneLetterDrawing(deltaTime) {
@@ -560,7 +562,7 @@ export class GameplayScene {
         handleLevelEnd();
         return;
       }
-      this.tutorial.setGameHasEndedFlag(); // Turn off tutorial
+      this.tutorial.hideTutorial(); // Turn off tutorial
       const timeoutId = setTimeout(handleLevelEnd, this.loadPuzzleDelay); // added delay for switching to level end screen
       if (this.isFeedBackTriggered) {
         const audioSources = this.audioPlayer?.audioSourcs || [];

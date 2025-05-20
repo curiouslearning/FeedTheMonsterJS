@@ -118,7 +118,8 @@ jest.mock('@gameStateService', () => ({
       GAME_PAUSE_STATUS_EVENT: 'GAME_PAUSE_STATUS_EVENT',
       GAMEPLAY_DATA_EVENT: 'GAMEPLAY_DATA_EVENT',
       SWITCH_SCENE_EVENT: 'SWITCH_SCENE_EVENT',
-    }
+    },
+    getGameTypeList: jest.fn()
   }
 }));
 
@@ -321,7 +322,7 @@ describe('GameplayScene with BasePopupComponent', () => {
       // Mock the event subscription
       const pauseStatusCallback = (gameStateService.subscribe as jest.Mock).mock.calls.find(
         call => call[0] === gameStateService.EVENTS.GAME_PAUSE_STATUS_EVENT
-      )[1];
+      )?.[1];
 
       // Simulate game pause
       pauseStatusCallback(true);

@@ -29,10 +29,6 @@ export default class TutorialComponent {
   public x: number = 0;
   public y: number = 0;
   public totalTime: number = 0;
-  public showQuickStartTutorial: boolean = false;
-  public hasGameStarted = false;
-  public hasGameEnded: boolean = false;
-  public gameLevel: number = 0;
   private centerX: number = 0;
   private centerY: number = 0;
   private initialOuterRadius: number = 10
@@ -49,8 +45,6 @@ export default class TutorialComponent {
     this.tutorialImg.onload = () => {
       this.imagesLoaded = true;
     };
-    this.showQuickStartTutorial = false;
-    this.hasGameStarted = false;
     this.initializedRippleValues();
 
   }
@@ -66,7 +60,7 @@ export default class TutorialComponent {
     this.innerRadius = this.initialInnerRadius;
   }
 
-  private udpdateDrawPosition(deltaTime: number, height: number) {
+  public udpdateDrawPosition(deltaTime: number, height: number) {
     const transitionDuration = 2000;
     const bottomPosition = height / 1.9 + (this.tutorialImg.height / 0.8);
     const topPosition = height / 1.9 + (this.tutorialImg.height / 0.8) - this.tutorialImg.height;
@@ -100,19 +94,6 @@ export default class TutorialComponent {
     );
   }
 
-  public quickStartTutorial(deltaTime: number, width: number, height: number) {
-    if (this.imagesLoaded) {
-      const { currentOffsetY, shouldResetOrRevertPosition } = this.udpdateDrawPosition(deltaTime, height)
-      const offsetX = width / 2;
-      this.drawPointer(offsetX, currentOffsetY);
-
-      const rippleOffSetVal = shouldResetOrRevertPosition
-        ? (this.tutorialImg.height / 1.5)
-        : (this.tutorialImg.height / 1.2) + this.tutorialImg.height;
-      this.drawRipple(offsetX, height / 1.9 + rippleOffSetVal, shouldResetOrRevertPosition);
-    }
-  }
-
   public drawRipple(x: number, y: number, restart?: boolean): void {
     if (restart) {
       this.outerRadius = 0;
@@ -141,19 +122,6 @@ export default class TutorialComponent {
       this.outerRadius = this.initialOuterRadius;
       this.innerRadius = this.initialInnerRadius;
     }
-  }
-
-  public showTutorial(isGameStarted: boolean) {
-    this.hasGameStarted = isGameStarted;
-    this.showQuickStartTutorial = true;
-  }
-
-  public hideTutorial() {
-    this.showQuickStartTutorial = false;
-  }
-
-  public setGameHasEndedFlag() {
-    this.hasGameEnded = true;
   }
 
   private animateImage({ startX, startY, endX, endY }): AnimStoneImagePosValTypes {

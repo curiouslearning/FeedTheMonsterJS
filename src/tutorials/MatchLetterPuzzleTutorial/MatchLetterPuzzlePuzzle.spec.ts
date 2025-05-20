@@ -1,4 +1,4 @@
-import LetterPuzzleTutorial from './LetterPuzzleTutorial';
+import MatchLetterPuzzleTutorial from './MatchLetterPuzzleTutorial';
 import gameStateService from '@gameStateService';
 import TutorialComponent from '../base-tutorial/base-tutorial-component';
 
@@ -28,7 +28,7 @@ const mockStonePosDetails = {
   monsterStoneDifference: 100
 };
 
-describe('LetterPuzzleTutorial', () => {
+describe('MatchLetterPuzzleTutorial', () => {
   let mockContext;
 
   beforeEach(() => {
@@ -51,7 +51,13 @@ describe('LetterPuzzleTutorial', () => {
     const width = 800;
     const height = 600;
 
-    const tutorial = new LetterPuzzleTutorial(mockContext, width, height);
+    const tutorial = new MatchLetterPuzzleTutorial({
+      context: mockContext,
+      width,
+      height,
+      stoneImg: null,
+      stonePosVal: []
+    });
 
     expect(gameStateService.subscribe).toHaveBeenCalledTimes(1);
     const [event, callback] = (gameStateService.subscribe as jest.Mock).mock.calls[0];
@@ -68,7 +74,6 @@ describe('LetterPuzzleTutorial', () => {
     expect(tutorial.stoneImg).toEqual(mockData.img);
     expect(tutorial.x).toBe(mockAnimateImagePosVal.x);
     expect(tutorial.y).toBe(mockAnimateImagePosVal.y);
-    expect(tutorial.gameLevel).toBe(0);
     expect(tutorial.stonePosDetailsType).toEqual(mockStonePosDetails);
   });
 });

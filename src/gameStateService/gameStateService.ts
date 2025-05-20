@@ -51,6 +51,12 @@ export class GameStateService extends PubSub {
     public majVersion: number;
     public minVersion: number;
     public monsterPhaseNumber: number;
+    public gameTypesFirstInstanceList: {} | {
+        LetterInWord: number;
+        LetterOnly: number;
+        SoundLetterOnly: number;
+        Word: number;
+    };
     public feedbackAudios: null | {
         amazing: string,
         fantastic: string,
@@ -118,6 +124,39 @@ export class GameStateService extends PubSub {
         this.majVersion = data.majVersion;
         this.minVersion = data.minVersion;
         this.monsterPhaseNumber = this.checkMonsterPhaseUpdation();
+        this.gameTypesFirstInstanceList = this.getFirstInstanceOfEachGameTypes(data);
+    }
+
+    private getFirstInstanceOfEachGameTypes(data: DataModal) {
+        if (data.levels) {
+            //Determine the first time game types will appear.
+            const levelList: any = data.levels;
+            const gameTypes = {};
+            let levelType = null;
+            let levelNumber = null;
+            let protoType = null; //If prototype is Visible it means its not an audio puzzle.
+
+            //Iterate and find the first instance of each game type puzzles.
+            levelList.forEach((levelData, index) => {
+                levelType = levelData?.levelMeta?.levelType;
+                levelNumber = levelData?.levelMeta?.levelNumber;
+                protoType = levelData?.levelMeta?.protoType;
+
+                if (protoType === 'Visible' && !gameTypes.hasOwnProperty(levelType)) {
+                    gameTypes[levelType] = levelNumber;
+                } else if (protoType === 'Hidden' && !gameTypes.hasOwnProperty(`Sound${levelType}`)) {
+                    gameTypes[`Sound${levelType}`] = levelNumber;
+                }
+            });
+
+            //Return determined game times and what level it will first appear.
+            return gameTypes;
+        }
+         return {}
+    }
+
+    public getGameTypeList() {
+        return this.gameTypesFirstInstanceList;
     }
 
     getGamePlaySceneDetails() {
