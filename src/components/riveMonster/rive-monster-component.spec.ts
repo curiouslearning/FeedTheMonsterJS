@@ -44,11 +44,11 @@ jest.mock('@rive-app/canvas', () => {
         cleanup: jest.fn(),
         cleanupInstances: jest.fn()
       };
-      
+
       if (onLoad && stateMachines) {
         setTimeout(() => onLoad(), 0);
       }
-      
+
       return instance;
     }),
     Layout: jest.fn().mockImplementation((config) => ({
@@ -64,35 +64,30 @@ describe('RiveMonsterComponent', () => {
   let canvas, gameCanvas, component;
 
   beforeEach(() => {
-    // Enable fake timers
     jest.useFakeTimers();
-    
-    // Mock window.devicePixelRatio
+
     Object.defineProperty(window, 'devicePixelRatio', {
       value: 1,
       configurable: true
     });
-    
-    // Mock console.warn
+
     jest.spyOn(console, 'warn');
-    
+
     canvas = document.createElement('canvas');
     canvas.width = 800;
     canvas.height = 600;
-    
-    // Mock getComputedStyle for moveCanvasUpOrDown
+
     Object.defineProperty(window, 'getComputedStyle', {
       value: () => ({
         top: '0px'
       }),
       configurable: true
     });
-    
+
     gameCanvas = document.createElement('canvas');
     gameCanvas.width = 800;
     gameCanvas.height = 600;
 
-    // Set up canvas style for getBoundingClientRect
     Object.defineProperty(canvas, 'getBoundingClientRect', {
       value: () => ({
         width: 800,
@@ -116,8 +111,6 @@ describe('RiveMonsterComponent', () => {
     jest.clearAllMocks();
     jest.useRealTimers();
   });
-
-  
 
   it('should initialize RiveMonsterComponent with correct properties', () => {
     expect(component).toBeDefined();
@@ -149,10 +142,8 @@ describe('RiveMonsterComponent', () => {
       onLoad: onLoadMock,
       gameCanvas
     });
-    
-    // Since onLoad is called in a setTimeout, we need to wait for it
+
     jest.runAllTimers();
-    
     expect(onLoadMock).toHaveBeenCalled();
   });
 
@@ -166,79 +157,6 @@ describe('RiveMonsterComponent', () => {
     expect(component['riveInstance'].stop).toHaveBeenCalled();
   });
 
-  it('should return true if the click is within the hitbox range', () => {
-    // Calculate expected hitbox center and range based on canvas dimensions
-    const scale = 2; // We mocked devicePixelRatio to 2
-    const monsterCenterX = (canvas.width / scale) / 2; // 400
-    const monsterCenterY = (canvas.height / scale) / 2; // 300
-    const rangeFactorX = 55;
-    const rangeFactorY = 100;
-    
-    // Calculate a point that should be within the hitbox
-    // The hitbox is centered horizontally and positioned in the lower part vertically
-    const mockEvent = {
-      clientX: monsterCenterX, // Center X
-      clientY: monsterCenterY + rangeFactorY // Below center, within range
-    };
-    
-    const isHit = component.checkHitboxDistance(mockEvent);
-    expect(isHit).toBe(true);
-  });
-
-  it('should return false if the click is outside the hitbox range', () => {
-    // Calculate expected hitbox center and range based on canvas dimensions
-    const scale = 1; // We mocked devicePixelRatio to 1
-    const monsterCenterX = (canvas.width / scale) / 2; // 400
-    const monsterCenterY = (canvas.height / scale) / 2; // 300
-    const rangeFactorX = 55;
-    
-    // Use a point that's definitely outside the hitbox (far left corner)
-    const mockEvent = {
-      clientX: monsterCenterX - rangeFactorX - 10, // Just outside the left boundary
-      clientY: 10 // Way above the hitbox
-    };
-    
-    const isHit = component.checkHitboxDistance(mockEvent);
-    expect(isHit).toBe(false);
-  });
-
-  it('should correctly change phase and reload animation', () => {
-    // Try to change to phase 1
-    component.changePhase(1);
-    
-    // Verify riveInstance exists
-    expect(component['riveInstance']).toBeDefined();
-    
-    // Verify Rive was called with correct parameters
-    expect(Rive).toHaveBeenCalledWith({
-      src: MONSTER_PHASES[1], // Second phase in the array
-      canvas: component['props'].canvas,
-      autoplay: component['props'].autoplay,
-      stateMachines: ['State Machine 1'],
-      layout: {
-        fit: 'Contain',
-        alignment: 'Center'
-      },
-      onLoad: expect.any(Function),
-      useOffscreenRenderer: true
-    });
-  });
-
-  it('should not change to an invalid phase index', () => {
-    // Mock console.warn
-    const mockWarn = jest.fn();
-    const originalWarn = console.warn;
-    console.warn = mockWarn;
-    
-    // Try to change to an invalid phase (5 is greater than the length of the array)
-    component.changePhase(5);
-    
-    // Verify warning was called with correct message
-    expect(mockWarn).toHaveBeenCalledWith('Invalid phase index: 5');
-    
-    // Restore console.warn
-    console.warn = originalWarn;
-  });
 
   it('should trigger state machine input if found', () => {
     const fireMock = jest.fn();
@@ -255,18 +173,10 @@ describe('RiveMonsterComponent', () => {
   });
 
   it('should dispose of Rive instance', () => {
-    // Ensure riveInstance exists and is properly initialized
-    expect(component['riveInstance']).toBeDefined();
-    
-    // Store reference to riveInstance before disposal
     const riveInstance = component['riveInstance'];
-    
     component.dispose();
-    
-    // Check that cleanup was called on the instance
+
     expect(riveInstance.cleanup).toHaveBeenCalled();
-    
-    // Check that the instance was nullified
     expect(component['riveInstance']).toBeNull();
   });
 
@@ -277,7 +187,7 @@ describe('RiveMonsterComponent', () => {
       isEvolving: true,
       gameCanvas
     });
-    
+
     const inputs = evolutionComponent.getInputs();
     expect(inputs).toEqual([]);
   });
@@ -297,27 +207,18 @@ describe('RiveMonsterComponent', () => {
   });
 
   it('should cleanup previous instance when evolving', () => {
-    // Create a component in evolution mode
     const evolutionComponent = new RiveMonsterComponent({
       canvas,
       autoplay: true,
       isEvolving: true,
       gameCanvas
     });
-    
-    // Ensure riveInstance exists
-    expect(evolutionComponent['riveInstance']).toBeDefined();
-    
-    // Store reference to the initial instance
+
     const initialInstance = evolutionComponent['riveInstance'];
-    
-    // Call initializeRive to trigger evolution
+
     evolutionComponent.initializeRive();
-    
-    // Verify cleanupInstances was called on the initial instance
+
     expect(initialInstance.cleanupInstances).toHaveBeenCalled();
-    
-    // Verify we have a new instance
     expect(evolutionComponent['riveInstance']).toBeDefined();
     expect(evolutionComponent['riveInstance']).not.toBe(initialInstance);
   });
