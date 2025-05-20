@@ -158,6 +158,7 @@ export class GameplayScene {
           this.resumeGame();
       }
     });
+    this.insertSvgBelowRive();
     //this.setupBg(); //Temporary disabled to try evolution background.
     this.setupMonsterPhaseBg();
   }
@@ -229,6 +230,68 @@ export class GameplayScene {
     this.feedBackTexts = gamePlayData.feedBackTexts;
     this.data = gamePlayData.data;
     this.monsterPhaseNumber = gamePlayData.monsterPhaseNumber;
+  }
+
+  private insertSvgBelowRive() {
+    const canvas = this.riveMonsterElement;
+    const svgUrl = './assets/images/tree-log.svg';
+    const uniqueId = 'tree-log-svg';
+
+    const parent = canvas?.parentElement;
+    if (!parent) return;
+
+    // Check if SVG already exists
+    const existingSvg = parent.querySelector(`#${uniqueId}`);
+    if (existingSvg) return;
+
+    // Creating the SVG <img> element
+    const svgImg = document.createElement('img');
+    svgImg.id = uniqueId;
+    svgImg.src = svgUrl;
+    svgImg.alt = 'TreeLog';
+    svgImg.style.cssText = `
+    width: 72%;
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    pointer-events: none;
+    z-index: 3;
+    margin: auto;
+  `;
+
+    // Determine vertical positioning
+    const w = window.innerWidth;
+    const h = window.innerHeight;
+    let bottom: string;
+
+    // Set the bottom position of the SVG based on screen size breakpoints
+    if (w > 500 && h < 768) {
+      // Likely landscape phones or small tablets — slightly elevated position
+      bottom = '10%';
+    } else if ((w < 380 && h > 850) || (w >= 700 && w < 768)) {
+      // Very tall phones (e.g., 18:9 ratio) or small tablets in portrait — more elevation
+      bottom = '15%';
+    } else if (w < 340 && h > 650) {
+      // Very narrow and tall devices — further elevate to keep visible
+      bottom = '20%';
+    } else if (w >= 768) {
+      // Tablets and above — align flush to the bottom
+      bottom = '0%';
+    } else {
+      // Default case for average mobile screens
+      bottom = '5%';
+    }
+
+    svgImg.style.bottom = bottom;
+
+    // Use monster Y position to adjust top if needed
+    const monsterTop = this.monster.getMonsterTopCordinate();
+    if (monsterTop !== undefined && !isNaN(monsterTop)) {
+      svgImg.style.top = `${monsterTop}px`;
+    }
+
+    // Append to parent
+    parent.appendChild(svgImg);
   }
 
   setupBg = () => {
