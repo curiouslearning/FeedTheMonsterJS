@@ -11,6 +11,7 @@ import {
   SCENE_NAME_START,
   SCENE_NAME_LEVEL_SELECT,
   SCENE_NAME_GAME_PLAY,
+  SCENE_NAME_GAME_PLAY_REPLAY,
   SCENE_NAME_LEVEL_END,
   PWAInstallStatus,
   PreviousPlayedLevel,
@@ -53,7 +54,7 @@ export class SceneHandler {
           this.currentScene = sceneName;
           this.handleSwitchScene(sceneName);
         }
-         }
+      }
     );
   }
 
@@ -143,6 +144,7 @@ export class SceneHandler {
       case SCENE_NAME_LEVEL_SELECT:
         return new LevelSelectionScreen();
       case SCENE_NAME_GAME_PLAY:
+      case SCENE_NAME_GAME_PLAY_REPLAY:
         return new GameplayScene();
       case SCENE_NAME_LEVEL_END:
         return new LevelEndScene();

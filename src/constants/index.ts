@@ -172,6 +172,7 @@ export enum MonsterState {
 export const SCENE_NAME_START = "StartScene";
 export const SCENE_NAME_LEVEL_SELECT = "LevelSelection";
 export const SCENE_NAME_GAME_PLAY = "GamePlay";
+export const SCENE_NAME_GAME_PLAY_REPLAY = "GamePlay_Replay";
 export const SCENE_NAME_LEVEL_END = "LevelEnd";
 
 //Levels

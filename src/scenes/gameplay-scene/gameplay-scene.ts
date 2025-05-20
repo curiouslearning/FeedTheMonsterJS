@@ -37,6 +37,7 @@ import { FirebaseIntegration } from "../../Firebase/firebase-integration";
 import {
   SCENE_NAME_LEVEL_SELECT,
   SCENE_NAME_GAME_PLAY,
+  SCENE_NAME_GAME_PLAY_REPLAY,
   SCENE_NAME_LEVEL_END,
   PreviousPlayedLevel,
   MONSTER_PHASES
@@ -147,7 +148,7 @@ export class GameplayScene {
             currentLevelData: this.levelData,
             selectedLevelNumber: this.levelNumber,
           });
-          gameStateService.publish(gameStateService.EVENTS.SWITCH_SCENE_EVENT, SCENE_NAME_GAME_PLAY);
+          gameStateService.publish(gameStateService.EVENTS.SWITCH_SCENE_EVENT, SCENE_NAME_GAME_PLAY_REPLAY);
           break;
         case PAUSE_POPUP_EVENT_DATA.SELECT_LEVEL:
           gameStateService.publish(gameStateService.EVENTS.GAME_PAUSE_STATUS_EVENT, false);
