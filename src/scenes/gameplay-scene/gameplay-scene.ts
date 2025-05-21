@@ -108,7 +108,6 @@ export class GameplayScene {
 
   constructor() {
     const gamePlayData = gameStateService.getGamePlaySceneDetails();
-    console.log({ gamePlayData })
     this.pausePopupComponent = new PausePopupComponent();
     // Assign state properties based on game state
     this.initializeProperties(gamePlayData);
@@ -601,6 +600,7 @@ export class GameplayScene {
     this.stonesCount = 1;
     const timerEnded = Boolean(isTimerEnded);
     if (timerEnded) {
+      this.tutorial.hideTutorial();
       this.logPuzzleEndFirebaseEvent(false);
     }
     this.counter += 1; //increment Puzzle
