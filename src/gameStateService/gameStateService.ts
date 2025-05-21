@@ -151,7 +151,7 @@ export class GameStateService extends PubSub {
                 }
             });
 
-            //Return determined game times and what level it will first appear.
+            //Return determined game types and what level it will first appear.
             return gameTypes;
         }
          return {}
