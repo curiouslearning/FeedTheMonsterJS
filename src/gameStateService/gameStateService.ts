@@ -51,6 +51,12 @@ export class GameStateService extends PubSub {
     public majVersion: number;
     public minVersion: number;
     public monsterPhaseNumber: number;
+    public gameTypesFirstInstanceList: {} | {
+        LetterInWord: number;
+        LetterOnly: number;
+        SoundLetterOnly: number;
+        Word: number;
+    };
     public feedbackAudios: null | {
         amazing: string,
         fantastic: string,
@@ -63,6 +69,7 @@ export class GameStateService extends PubSub {
     };
     public isLastLevel: boolean;
     public currentMonsterPhase: number;
+    public tutorialOn: boolean = false;
 
     constructor() {
         super();
@@ -86,6 +93,7 @@ export class GameStateService extends PubSub {
         this.initListeners();
         this.levelEndData = null;
         this.isLastLevel = false;
+        this.tutorialOn = false;
     }
 
     private initListeners() {
@@ -118,6 +126,38 @@ export class GameStateService extends PubSub {
         this.majVersion = data.majVersion;
         this.minVersion = data.minVersion;
         this.monsterPhaseNumber = this.checkMonsterPhaseUpdation();
+        this.gameTypesFirstInstanceList = this.getFirstInstanceOfEachGameTypes(data);
+    }
+
+    private getFirstInstanceOfEachGameTypes(data: DataModal) {
+        if (data.levels) {
+            //Determine the first time game types will appear.
+            const levelList: any = data.levels;
+            const gameTypes = {};
+
+            //Iterate and find the first instance of each game type puzzles.
+            levelList.forEach((levelData, index) => {
+                const { levelType, levelNumber, protoType } = levelData?.levelMeta;
+                //If prototype is Visible it means its not an audio puzzle.
+                if (protoType === 'Visible' && !gameTypes.hasOwnProperty(levelType)) {
+                    gameTypes[levelType] = levelNumber;
+                } else if (protoType === 'Hidden' && !gameTypes.hasOwnProperty(`Sound${levelType}`)) {
+                    gameTypes[`Sound${levelType}`] = levelNumber;
+                }
+            });
+
+            //Return determined game types and what level it will first appear.
+            return gameTypes;
+        }
+         return {}
+    }
+
+    public getGameTypeList() {
+        return this.gameTypesFirstInstanceList;
+    }
+
+    private checkForTutorialFlag() {
+        //If the level number is found on game types List, tutorial should be present on this game level.
     }
 
     getGamePlaySceneDetails() {
@@ -125,9 +165,21 @@ export class GameStateService extends PubSub {
             ? this.majVersion.toString() + "." + this.minVersion.toString()
             : "";
 
+        let shouldHaveTutorial = false;
+        const selectedLevelNumber:string | number = this.gamePlayData.selectedLevelNumber;
+        const levelNumber = typeof selectedLevelNumber === 'string' ? parseInt(selectedLevelNumber) : selectedLevelNumber;
+        //Very small array to iterate.
+        Object.values(this.gameTypesFirstInstanceList).forEach((listedLevelNumber) => {
+            if (listedLevelNumber === levelNumber ) {
+                shouldHaveTutorial = true;
+                return; //stop the loop;
+            }
+        });
+
+
         return {
             levelData: { ...this.gamePlayData.currentLevelData },
-            levelNumber: this.gamePlayData.selectedLevelNumber,
+            levelNumber,
             feedBackTexts: { ...this.feedbackTexts },
             rightToLeft: this?.rightToLeft,
             jsonVersionNumber: versionNumber,
@@ -135,7 +187,8 @@ export class GameStateService extends PubSub {
             isGamePaused: this.isGamePaused,
             data: this.data,
             isLastLevel: this.isLastLevel,
-            monsterPhaseNumber: this.monsterPhaseNumber
+            monsterPhaseNumber: this.monsterPhaseNumber,
+            tutorialOn: shouldHaveTutorial
         };
     }
 
