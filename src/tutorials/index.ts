@@ -138,6 +138,7 @@ export default class TutorialHandler {
       this.activeTutorial = null;
       this.unsubscribeStoneCreationEvent();
       this.unsubscribePauseEvent();
+      this.hasEstablishedSubscriptions = false;
     }
   }
 }

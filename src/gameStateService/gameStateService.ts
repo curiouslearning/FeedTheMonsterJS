@@ -134,16 +134,11 @@ export class GameStateService extends PubSub {
             //Determine the first time game types will appear.
             const levelList: any = data.levels;
             const gameTypes = {};
-            let levelType = null;
-            let levelNumber = null;
-            let protoType = null; //If prototype is Visible it means its not an audio puzzle.
 
             //Iterate and find the first instance of each game type puzzles.
             levelList.forEach((levelData, index) => {
-                levelType = levelData?.levelMeta?.levelType;
-                levelNumber = levelData?.levelMeta?.levelNumber;
-                protoType = levelData?.levelMeta?.protoType;
-
+                const { levelType, levelNumber, protoType } = levelData?.levelMeta;
+                //If prototype is Visible it means its not an audio puzzle.
                 if (protoType === 'Visible' && !gameTypes.hasOwnProperty(levelType)) {
                     gameTypes[levelType] = levelNumber;
                 } else if (protoType === 'Hidden' && !gameTypes.hasOwnProperty(`Sound${levelType}`)) {
