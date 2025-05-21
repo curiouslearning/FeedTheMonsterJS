@@ -5,7 +5,13 @@ export default class MatchLetterPuzzleTutorial extends TutorialComponent {
   private animationStartTime: number = 0;
   public frame: number = 0;
 
-  constructor({ context, width, height, stoneImg, stonePosVal }) {
+  constructor({ context, width, height, stoneImg, stonePosVal }: {
+    context: CanvasRenderingContext2D;
+    width: number;
+    height: number;
+    stoneImg: any,
+    stonePosVal: number[],
+  }) {
     super(context);
     this.width = width;
     this.height = height;
