@@ -108,6 +108,7 @@ export class GameplayScene {
 
   constructor() {
     const gamePlayData = gameStateService.getGamePlaySceneDetails();
+    console.log({ gamePlayData })
     this.pausePopupComponent = new PausePopupComponent();
     // Assign state properties based on game state
     this.initializeProperties(gamePlayData);
@@ -193,7 +194,8 @@ export class GameplayScene {
       context: this.context,
       width: this.width,
       height: this.height,
-      puzzleLevel: this.counter
+      puzzleLevel: this.counter,
+      shouldHaveTutorial: gamePlayData?.tutorialOn
     });
     this.promptText = new PromptText(
       this.width,

@@ -26,12 +26,13 @@ describe('TutorialHandler', () => {
     jest.clearAllMocks();
   });
 
-  it('should initialize and subscribe to events if puzzleLevel is 0', () => {
+  it('should initialize and subscribe to events if puzzleLevel is 0 and shouldHaveTutorial is true', () => {
     const handler = new TutorialHandler({
       context: mockContext,
       width: 800,
       height: 600,
-      puzzleLevel: 0
+      puzzleLevel: 0,
+      shouldHaveTutorial: true // <-- Important
     });
 
     expect(gameStateService.subscribe).toHaveBeenCalledTimes(2);

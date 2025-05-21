@@ -111,6 +111,7 @@ jest.mock('@gameSettingsService', () => ({
 jest.mock('@gameStateService', () => ({
   __esModule: true,
   default: {
+    isGamePaused: false,
     getGamePlaySceneDetails: jest.fn(),
     subscribe: jest.fn(),
     publish: jest.fn(),
@@ -164,7 +165,8 @@ describe('GameplayScene with BasePopupComponent', () => {
       rightToLeft: false,
       jsonVersionNumber: '1.0.0',
       data: {},
-      feedbackAudios: {}
+      feedbackAudios: {},
+      tutorialOn: false
     });
 
     (gameSettingsService.getCanvasSizeValues as jest.Mock).mockReturnValue({
@@ -319,10 +321,16 @@ describe('GameplayScene with BasePopupComponent', () => {
 
   describe('Game State Management', () => {
     it('should handle pause state correctly', () => {
-      // Mock the event subscription
-      const pauseStatusCallback = (gameStateService.subscribe as jest.Mock).mock.calls.find(
-        call => call[0] === gameStateService.EVENTS.GAME_PAUSE_STATUS_EVENT
-      )?.[1];
+      const pauseStatusCallback = jest.fn(); // mock callback
+      // Simulate subscription
+      (gameStateService.subscribe as jest.Mock).mockImplementation((event, cb) => {
+        if (event === gameStateService.EVENTS.GAME_PAUSE_STATUS_EVENT) {
+          pauseStatusCallback.mockImplementation(cb);
+        }
+      });
+
+      // Re-initialize the scene to register subscriptions
+      gameplayScene = new GameplayScene();
 
       // Simulate game pause
       pauseStatusCallback(true);

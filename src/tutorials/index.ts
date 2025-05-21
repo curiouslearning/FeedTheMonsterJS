@@ -7,6 +7,7 @@ type TutorialInitParams = {
   width: number;
   height: number;
   puzzleLevel ?: number;
+  shouldHaveTutorial?: boolean;
 };
 export default class TutorialHandler {
   private width: number;
@@ -27,16 +28,22 @@ export default class TutorialHandler {
   private unsubscribeStoneCreationEvent: () => void; //Listener for stone creation in stone handler.
   private unsubscribePauseEvent: () => void; //Listener for game pause event.
 
-  constructor({ context, width, height, puzzleLevel }: TutorialInitParams) {
+  constructor({ context, width, height, puzzleLevel, shouldHaveTutorial }: TutorialInitParams) {
+    this.quickTutorial = null;
     this.activeTutorial = null;
     this.puzzleLevel = puzzleLevel;
-    this.gameTypesList = gameStateService.getGameTypeList();
-    this.initializeSubscriptions({ context, width, height });
+    this.initializeSubscriptionsAndValues({ shouldHaveTutorial, context, width, height });
   }
 
-  private initializeSubscriptions({ context, width, height }: TutorialInitParams) {
-    if (this.puzzleLevel === 0 && !this.hasEstablishedSubscriptions) {
+  private initializeSubscriptionsAndValues({ shouldHaveTutorial, context, width, height }: TutorialInitParams) {
+    //Create and initialize values only if tutorial should be created.
+    if (
+      shouldHaveTutorial &&
+      this.puzzleLevel === 0 &&
+      !this.hasEstablishedSubscriptions
+    ) {
       this.hasEstablishedSubscriptions = true;
+      this.gameTypesList = gameStateService.getGameTypeList();
       this.initializeTutorialValues({ context, width, height });
 
       this.unsubscribeStoneCreationEvent = gameStateService.subscribe(
@@ -104,11 +111,12 @@ export default class TutorialHandler {
     if (this.activeTutorial) {
       this.puzzleLevel++;
       this.activeTutorial = null;
+      this.quickTutorial = null;
     }
   }
 
   drawQuickStart(deltaTime: number, hasGameStarted: boolean) {
-    if (!hasGameStarted) {
+    if (!hasGameStarted && this.quickTutorial) {
       //Show quick tip by pressing the center/near monster.
       this.quickTutorial.quickStartTutorial(deltaTime, this.width, this.height);
     }

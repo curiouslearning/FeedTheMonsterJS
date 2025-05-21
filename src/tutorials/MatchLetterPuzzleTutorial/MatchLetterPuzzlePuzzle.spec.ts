@@ -1,14 +1,5 @@
 import MatchLetterPuzzleTutorial from './MatchLetterPuzzleTutorial';
-import gameStateService from '@gameStateService';
 import TutorialComponent from '../base-tutorial/base-tutorial-component';
-
-// Mocks
-jest.mock('@gameStateService', () => ({
-  EVENTS: {
-    CORRECT_STONE_POSITION: 'CORRECT_STONE_POSITION'
-  },
-  subscribe: jest.fn()
-}));
 
 const mockAnimateImagePosVal = {
   x: 10,
@@ -33,13 +24,12 @@ describe('MatchLetterPuzzleTutorial', () => {
 
   beforeEach(() => {
     mockContext = {};
-    (gameStateService.subscribe as jest.Mock).mockClear();
 
-    // Force mock of the base method
+    // Mock base method used in constructor
     jest.spyOn(TutorialComponent.prototype, 'updateTargetStonePositions')
       .mockReturnValue(mockStonePosDetails);
 
-    // Prevent animation logic from progressing
+    // Control animation time for consistent testing
     jest.spyOn(performance, 'now').mockReturnValue(0);
   });
 
@@ -47,33 +37,25 @@ describe('MatchLetterPuzzleTutorial', () => {
     jest.restoreAllMocks();
   });
 
-  it('should subscribe to the correct event and update properties when level is 0', () => {
+  it('should initialize tutorial properties correctly from constructor input', () => {
     const width = 800;
     const height = 600;
+    const stoneImg = { src: 'fakeImage' };
+    const stonePosVal = [1, 2, 3];
 
     const tutorial = new MatchLetterPuzzleTutorial({
       context: mockContext,
       width,
       height,
-      stoneImg: null,
-      stonePosVal: []
+      stoneImg,
+      stonePosVal
     });
 
-    expect(gameStateService.subscribe).toHaveBeenCalledTimes(1);
-    const [event, callback] = (gameStateService.subscribe as jest.Mock).mock.calls[0];
-    expect(event).toBe(gameStateService.EVENTS.CORRECT_STONE_POSITION);
-
-    const mockData = {
-      stonePosVal: [1, 2, 3],
-      img: { src: 'fakeImage' },
-      levelData: { levelNumber: '0' }
-    };
-
-    callback(mockData);
-
-    expect(tutorial.stoneImg).toEqual(mockData.img);
+    expect(tutorial.width).toBe(width);
+    expect(tutorial.height).toBe(height);
+    expect(tutorial.stoneImg).toBe(stoneImg);
+    expect(tutorial.stonePosDetailsType).toEqual(mockStonePosDetails);
     expect(tutorial.x).toBe(mockAnimateImagePosVal.x);
     expect(tutorial.y).toBe(mockAnimateImagePosVal.y);
-    expect(tutorial.stonePosDetailsType).toEqual(mockStonePosDetails);
   });
 });
