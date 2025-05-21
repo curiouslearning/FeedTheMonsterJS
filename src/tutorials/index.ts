@@ -86,7 +86,7 @@ export default class TutorialHandler {
   private createTutorialInstance({ gameLevel, stonePosVal, img, gameTypeName }: {
     gameLevel: number,
     stonePosVal: number[],
-    img: any,
+    img: CanvasImageSource,
     gameTypeName: string,
   }) {
     if (this.gameTypesList[gameTypeName] === gameLevel) {
