@@ -264,9 +264,9 @@ export class GameplayScene {
     const w = window.innerWidth;
     const h = window.innerHeight;
     let bottom: string;
-
+    
     // Set the bottom position of the SVG based on screen size breakpoints
-    if (w > 500 && h < 768) {
+    if ((w > 500 && h < 768) || (w < 500 && h > 900)) {
       // Likely landscape phones or small tablets — slightly elevated position
       bottom = '10%';
     } else if ((w < 380 && h > 850) || (w >= 700 && w < 768)) {
@@ -275,7 +275,7 @@ export class GameplayScene {
     } else if (w < 340 && h > 650) {
       // Very narrow and tall devices — further elevate to keep visible
       bottom = '20%';
-    } else if (w >= 768) {
+    } else if ((w >= 768)) {
       // Tablets and above — align flush to the bottom
       bottom = '0%';
     } else {

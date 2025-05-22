@@ -52,6 +52,8 @@ export class RiveMonsterComponent {
     this.props = props;
     this.scale = gameSettingsService.getDevicePixelRatioValue();
     // add extra space above the monster in the Rive file this ensures proper animation, it will causes the monster to be placed at the bottom of the screen
+    this.setRiveMinYAdjustment();
+    this.initializeHitbox();
     this.initializeRive();
   }
 
@@ -74,20 +76,45 @@ export class RiveMonsterComponent {
     const logicalCanvasWidth = this.props.canvas.width / this.scale;
     const logicalCanvasHeight = this.props.canvas.height / this.scale;
 
+    const aspectRatio = window.innerWidth / window.innerHeight;
+
+    // Assume logicalCanvasHeight is already adjusted for DPR
     let monsterBottomY: number;
     let monsterHeight: number;
-    // Define monster's visual bounds based on device type
-    if (window.innerWidth > 700) {
-      // On tablets/desktops: place monster lower and make it taller
+    // Adjust monster's position and size based on aspect ratio
+    if (aspectRatio < 0.4) {
+      // Extremely tall screens (e.g., ultra-narrow phones or split-screen)
+      monsterBottomY = logicalCanvasHeight * 0.78;
+      monsterHeight = logicalCanvasHeight * 0.28;
+    }
+    else if (aspectRatio < 0.5) {
+      // Tall screens (e.g., older iPhones in zoomed mode)
+      monsterBottomY = logicalCanvasHeight * 0.82;
+      monsterHeight = logicalCanvasHeight * 0.30;
+    }
+    else if (aspectRatio < 0.6) {
+      // Tall screens (narrow phones)
+      monsterBottomY = logicalCanvasHeight * 0.83;
+      monsterHeight = logicalCanvasHeight * 0.33;
+    } else if (aspectRatio < 0.7) {
+      // Typical phones (iPhone 13, Android phones)
+      monsterBottomY = logicalCanvasHeight * 0.84;
+      monsterHeight = logicalCanvasHeight * 0.36;
+    } else if (aspectRatio < 1.3) {
+      // Tablets (iPads)
+      monsterBottomY = logicalCanvasHeight * 0.88;
+      monsterHeight = logicalCanvasHeight * 0.38;
+    } else {
+      // Desktops or landscape tablets
       monsterBottomY = logicalCanvasHeight * 0.90;
       monsterHeight = logicalCanvasHeight * 0.40;
-    } else {
-      // On mobile: place monster slightly higher and make it shorter
-      monsterBottomY = logicalCanvasHeight * 0.85;
-      monsterHeight = logicalCanvasHeight * 0.30;
     }
     // Compute the monster's top Y-coordinate
     const monsterTopY = monsterBottomY - monsterHeight;
+
+    // Apply an offset to move hitbox up/down relative to the monster
+    const hitboxOffsetPercent = 0.05; // Example: shift hitbox slightly upwards (5% of monster height)
+    const hitboxOffsetY = monsterHeight * hitboxOffsetPercent
 
     // Add vertical padding to the hitbox to avoid edge sensitivity
     const hitboxPaddingY = monsterHeight * 0.1; // 10% padding top & bottom
@@ -99,8 +126,8 @@ export class RiveMonsterComponent {
     };
     // Define vertical hitbox within the monster's bounds, excluding padding
     this.hitboxRangeY = {
-      from: monsterTopY + hitboxPaddingY,
-      to: monsterBottomY - hitboxPaddingY,
+      from: monsterTopY + hitboxPaddingY + hitboxOffsetY,
+      to: monsterBottomY - hitboxPaddingY + hitboxOffsetY,
     };
   }
 
@@ -165,8 +192,6 @@ export class RiveMonsterComponent {
       riveConfig['stateMachines'] = [this.stateMachineName];
       riveConfig['onLoad'] = () => {
         this.handleLoad();
-        this.setRiveMinYAdjustment();
-        this.initializeHitbox();
       };
 
       riveConfig['layout'] = new Layout({
