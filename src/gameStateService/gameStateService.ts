@@ -1,5 +1,6 @@
 import { PubSub } from '../events/pub-sub-events';
 import { DataModal, GameScore } from "@data";
+import { getGameTypeName } from '@common';
 
 /*
  * GameStateService.ts
@@ -52,7 +53,10 @@ export class GameStateService extends PubSub {
     public minVersion: number;
     public monsterPhaseNumber: number;
     public gameTypesFirstInstanceList: {} | {
-        LetterInWord: number;
+        LetterInWord: {
+            levelNumber: number,
+            isCleared: boolean
+        };
         LetterOnly: number;
         SoundLetterOnly: number;
         Word: number;
@@ -134,16 +138,19 @@ export class GameStateService extends PubSub {
             //Determine the first time game types will appear.
             const levelList: any = data.levels;
             const gameTypes = {};
-
+            let objectKeyName = null;
             //Iterate and find the first instance of each game type puzzles.
             levelList.forEach((levelData, index) => {
                 const { levelType, levelNumber, protoType } = levelData?.levelMeta;
                 //If prototype is Visible it means its not an audio puzzle.
-                if (protoType === 'Visible' && !gameTypes.hasOwnProperty(levelType)) {
-                    gameTypes[levelType] = levelNumber;
-                } else if (protoType === 'Hidden' && !gameTypes.hasOwnProperty(`Sound${levelType}`)) {
-                    gameTypes[`Sound${levelType}`] = levelNumber;
-                }
+                objectKeyName = getGameTypeName(protoType, levelType);
+
+                if (!gameTypes.hasOwnProperty(objectKeyName)) {
+                    gameTypes[objectKeyName] = {
+                        levelNumber, //Game level number on when it will first appear.
+                        isCleared: this.checkClearedLevels(levelNumber) //Flag if that tutorial has been cleared.
+                    };
+                };
             });
 
             //Return determined game types and what level it will first appear.
@@ -152,12 +159,39 @@ export class GameStateService extends PubSub {
          return {}
     }
 
-    public getGameTypeList() {
-        return this.gameTypesFirstInstanceList;
+    private checkClearedLevels(levelNumber: number) {
+       const clearedLevels = GameScore.getAllGameLevelInfo();
+       let hasCleardLevel = false;
+
+       /*We don't need the whole object in Cleard level data, we just need to check if the
+        levelNumber is in the list as it means it that level has been cleared.
+       */
+       clearedLevels.every((cleardLevels: {
+           levelName: string,
+           levelNumber: number,
+           score: number,
+           starCount: number
+       }) => {
+        if (cleardLevels.levelNumber === levelNumber) {
+            hasCleardLevel = true;
+            return false; //Return false to break every loop.
+        }
+       });
+
+        return hasCleardLevel;
     }
 
-    private checkForTutorialFlag() {
-        //If the level number is found on game types List, tutorial should be present on this game level.
+    /*
+     * Flag that the current tutorial has been cleared.
+    */
+    public setClearedTutorial(gameTypeName: string) {
+        if(this.gameTypesFirstInstanceList[gameTypeName]) {
+            this.gameTypesFirstInstanceList[gameTypeName].isCleared = true;
+        }
+    }
+
+    public getGameTypeList() {
+        return this.gameTypesFirstInstanceList;
     }
 
     getGamePlaySceneDetails() {
@@ -169,13 +203,12 @@ export class GameStateService extends PubSub {
         const selectedLevelNumber:string | number = this.gamePlayData.selectedLevelNumber;
         const levelNumber = typeof selectedLevelNumber === 'string' ? parseInt(selectedLevelNumber) : selectedLevelNumber;
         //Very small array to iterate.
-        Object.values(this.gameTypesFirstInstanceList).forEach((listedLevelNumber) => {
-            if (listedLevelNumber === levelNumber ) {
+        Object.values(this.gameTypesFirstInstanceList).every((listedLevelNumber: { levelNumber: number, isCleared: boolean}) => {
+            if (listedLevelNumber?.levelNumber === levelNumber) {
                 shouldHaveTutorial = true;
-                return; //stop the loop;
+                return false; //Return false to break every loop.
             }
         });
-
 
         return {
             levelData: { ...this.gamePlayData.currentLevelData },
