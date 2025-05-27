@@ -1,6 +1,7 @@
 import { Rive, Layout, Fit, Alignment } from '@rive-app/canvas';
 import { MONSTER_PHASES } from '@constants';
 import { RiveMonsterComponent } from './rive-monster-component';
+import gameStateService from '@gameStateService';
 
 jest.mock('@gameSettingsService', () => ({
   __esModule: true,
@@ -59,6 +60,13 @@ jest.mock('@rive-app/canvas', () => {
     Alignment: { Center: 'Center' }
   };
 });
+
+jest.mock('@gameStateService', () => ({
+  __esModule: true,
+  default: {
+    saveHitBoxRanges: jest.fn()
+  }
+}));
 
 describe('RiveMonsterComponent', () => {
   let canvas, gameCanvas, component;

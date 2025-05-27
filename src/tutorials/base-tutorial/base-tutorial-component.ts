@@ -1,4 +1,5 @@
 import { TUTORIAL_HAND } from "@constants";
+import gameStateService from '@gameStateService';
 export interface AnimStoneImagePosValTypes {
   x: number,
   y: number,
@@ -135,18 +136,44 @@ export default class TutorialComponent {
     return { x, y, dx, dy, absdx, absdy };
   }
 
+  private getHitboxPosition() {
+    const hitboxRanges: {
+      hitboxRangeX: {
+        from: number,
+        to: number
+      },
+      hitboxRangeY: {
+        from: number,
+        to: number
+      }
+  } = gameStateService.getHitBoxRanges();
+    const getRangeCenter = (hitBoxFromPos: number, hitBoxToPos: number) => {
+      return (hitBoxFromPos + hitBoxToPos) / 2;
+    }
+
+    return {
+      endX: getRangeCenter(
+        hitboxRanges.hitboxRangeX.from,
+        hitboxRanges.hitboxRangeX.to
+      ),
+      endY: getRangeCenter(
+        hitboxRanges.hitboxRangeY.from,
+        hitboxRanges.hitboxRangeY.to
+      )
+    }
+  }
+
   /**
    * Method name is same similar to original from tutorial.ts
    * @param targetStonePosition array [x and y ] position of the stone we want to animate in tutorial.
-   * @param width width of screen
-   * @param height height of screen
    */
-  public updateTargetStonePositions(targetStonePosition: number[], width: number, height: number): StonePosDetailsType {
+  public updateTargetStonePositions(targetStonePosition: number[]): StonePosDetailsType {
     //To Do - This will be the original for now and will need to be updated once we have a clear goal on the rest of the tutorial flow.
     const startX = targetStonePosition[0] - 22;
     const startY = targetStonePosition[1] - 50;
-    const endX = width / 2;
-    const endY = height / 2;
+    const { endX, endY } = this.getHitboxPosition();
+
+    //Monster Stone Difference is the target where the stone will be dropped for the tutorial.
     const monsterStoneDifference = Math.sqrt((startX - endX) * (startX - endX) + (startY - endY) * (startY - endY));
     const animateImagePosVal = this.animateImage({
       startX,

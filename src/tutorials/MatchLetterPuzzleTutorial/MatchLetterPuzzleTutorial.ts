@@ -17,7 +17,7 @@ export default class MatchLetterPuzzleTutorial extends TutorialComponent {
     this.height = height;
     this.frame = 0;
     this.animationStartTime = 0;
-    this.stonePosDetailsType = this.updateTargetStonePositions(stonePosVal, this.width, this.height);
+    this.stonePosDetailsType = this.updateTargetStonePositions(stonePosVal);
     this.stoneImg = stoneImg
     this.animateImagePosVal = this.stonePosDetailsType.animateImagePosVal;
     this.x = this.animateImagePosVal.x;

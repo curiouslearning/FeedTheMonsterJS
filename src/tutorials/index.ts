@@ -1,6 +1,7 @@
 import QuickStartTutorial from './QuickStartTutorial/QuickStartTutorial';
 import MatchLetterPuzzleTutorial from './MatchLetterPuzzleTutorial/MatchLetterPuzzleTutorial';
 import gameStateService from '@gameStateService';
+import { getGameTypeName } from '@common';
 
 type TutorialInitParams = {
   context: CanvasRenderingContext2D;
@@ -24,9 +25,11 @@ export default class TutorialHandler {
     SoundLetterOnly: number;
     Word: number;
   };
+  private gameTypeName: string;
   private hasEstablishedSubscriptions: boolean = false; //Flag if there are subscription to events established.
   private unsubscribeStoneCreationEvent: () => void; //Listener for stone creation in stone handler.
   private unsubscribePauseEvent: () => void; //Listener for game pause event.
+  private unsubscribeLevelEndData: () => void; //Listener to check if the game is about to switch to level-end.
 
   constructor({ context, width, height, puzzleLevel, shouldHaveTutorial }: TutorialInitParams) {
     this.quickTutorial = null;
@@ -60,9 +63,13 @@ export default class TutorialHandler {
             const gameLevel = typeof levelNumber === 'string'
               ? parseInt(levelNumber)
               : levelNumber;
-            const gameTypeName = protoType === 'Hidden' ? `Sound${levelType}` : levelType
-
-            this.activeTutorial = this.createTutorialInstance({ gameLevel, stonePosVal, img, gameTypeName });
+            this.gameTypeName = getGameTypeName(protoType, levelType);
+            this.activeTutorial = this.createTutorialInstance({
+              gameLevel,
+              stonePosVal,
+              img,
+              gameTypeName: this.gameTypeName
+            });
           }
         }
       );
@@ -73,6 +80,12 @@ export default class TutorialHandler {
           this.isGameOnPause = isPause;
         }
       );
+
+      this.unsubscribeLevelEndData = gameStateService.subscribe(
+        gameStateService.EVENTS.LEVEL_END_DATA_EVENT, (data) => {
+          //Marked the tutorial as cleared so it won't show up again after clearing it.
+          gameStateService.setClearedTutorial(this.gameTypeName);
+        });
     }
   }
 
@@ -80,7 +93,6 @@ export default class TutorialHandler {
     this.width = width;
     this.height = height;
     this.context = context;
-    this.quickTutorial = new QuickStartTutorial({ context: this.context });
   }
 
   private createTutorialInstance({ gameLevel, stonePosVal, img, gameTypeName }: {
@@ -89,17 +101,22 @@ export default class TutorialHandler {
     img: CanvasImageSource,
     gameTypeName: string,
   }) {
-    if (this.gameTypesList[gameTypeName] === gameLevel) {
-      return new MatchLetterPuzzleTutorial({
-        context: this.context,
-        width: this.width,
-        height: this.height,
-        stoneImg: img,
-        stonePosVal
-      });
-    }
+    if (!this.gameTypesList[gameTypeName]?.isCleared) {
+      //Create quick start tutorial.
+      this.quickTutorial = new QuickStartTutorial({ context: this.context });
 
-    //Add more if conditions here for new tutorial instances.
+      if (this.gameTypesList[gameTypeName]?.levelNumber === gameLevel) {
+        return new MatchLetterPuzzleTutorial({
+          context: this.context,
+          width: this.width,
+          height: this.height,
+          stoneImg: img,
+          stonePosVal
+        });
+      }
+
+      //Add more if conditions here for new tutorial instances.
+    }
 
     return null;
   }
@@ -138,6 +155,7 @@ export default class TutorialHandler {
       this.activeTutorial = null;
       this.unsubscribeStoneCreationEvent();
       this.unsubscribePauseEvent();
+      this.unsubscribeLevelEndData();
       this.hasEstablishedSubscriptions = false;
     }
   }
