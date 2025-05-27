@@ -2,6 +2,17 @@ import { PubSub } from '../events/pub-sub-events';
 import { DataModal, GameScore } from "@data";
 import { getGameTypeName } from '@common';
 
+export interface hitboxRangeType {
+    hitboxRangeX: {
+        from: number,
+        to: number
+    },
+    hitboxRangeY: {
+        from: number,
+        to: number
+    }
+}
+
 /*
  * GameStateService.ts
  * The GameStateService class is reponsible to managing the current state of the game (ts).
@@ -74,6 +85,7 @@ export class GameStateService extends PubSub {
     public isLastLevel: boolean;
     public currentMonsterPhase: number;
     public tutorialOn: boolean = false;
+    public hitboxRanges: null | hitboxRangeType;
 
     constructor() {
         super();
@@ -259,5 +271,13 @@ export class GameStateService extends PubSub {
 
     public updateMonsterPhaseState(newMonsterPhaseNum: number) {
         this.monsterPhaseNumber = newMonsterPhaseNum;
+    }
+
+    public saveHitBoxRanges(hitboxRangeXandY: hitboxRangeType) {
+        this.hitboxRanges = hitboxRangeXandY;
+    }
+
+    public getHitBoxRanges() {
+        return this.hitboxRanges;
     }
 };
