@@ -35,7 +35,7 @@ describe('TutorialHandler', () => {
       shouldHaveTutorial: true // <-- Important
     });
 
-    expect(gameStateService.subscribe).toHaveBeenCalledTimes(2);
+    expect(gameStateService.subscribe).toHaveBeenCalledTimes(3);
     expect(gameStateService.getGameTypeList).toHaveBeenCalled();
   });
 

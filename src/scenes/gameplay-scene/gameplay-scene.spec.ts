@@ -120,7 +120,8 @@ jest.mock('@gameStateService', () => ({
       GAMEPLAY_DATA_EVENT: 'GAMEPLAY_DATA_EVENT',
       SWITCH_SCENE_EVENT: 'SWITCH_SCENE_EVENT',
     },
-    getGameTypeList: jest.fn()
+    getGameTypeList: jest.fn(),
+    saveHitBoxRanges: jest.fn()
   }
 }));
 

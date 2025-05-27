@@ -1,6 +1,7 @@
 import { MONSTER_PHASES, CACHED_RIVE_WASM } from '@constants';
 import { Rive, Layout, Fit, Alignment, RuntimeLoader } from '@rive-app/canvas';
 import gameSettingsService from '@gameSettingsService';
+import gameStateService from '@gameStateService';
 
 RuntimeLoader.setWasmUrl(CACHED_RIVE_WASM);
 export interface RiveMonsterComponentProps {
@@ -107,6 +108,8 @@ export class RiveMonsterComponent {
       from: monsterTopY + hitboxPaddingY + hitboxOffsetY,
       to: monsterBottomY - hitboxPaddingY + hitboxOffsetY,
     };
+
+    gameStateService.saveHitBoxRanges({ hitboxRangeX: this.hitboxRangeX, hitboxRangeY: this.hitboxRangeY });
   }
 
   // do not delete to check hitbox overlay
