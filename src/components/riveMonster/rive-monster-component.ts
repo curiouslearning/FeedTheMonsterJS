@@ -149,7 +149,7 @@ export class RiveMonsterComponent {
       riveConfig.stateMachines = [this.stateMachineName];
       riveConfig.onLoad = () => this.handleLoad();
 
-      // You can tweak these if you want a tighter layout box around the monster
+      // We can increase or decrease the percent at which the min Y need to be set (0.25 = 25%)
       const minY = canvasHeight * 0.25;
       const maxY = canvasHeight;
 
