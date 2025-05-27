@@ -185,8 +185,8 @@ export class PromptText extends BaseHTML {
                 
                 // Add the text with the highlighted letter
                 if (parts.length > 1) {
-                    // Create the text with the highlighted letter
-                    wrapper.innerHTML = parts.join(`<span class="text-red">${targetLetterText}</span>`);
+                    // Create the text with the highlighted letter with pulsating effect for LetterInWord
+                    wrapper.innerHTML = parts.join(`<span class="text-red-pulse-letter">${targetLetterText}</span>`);
                 } else {
                     // Just show the text as is
                     wrapper.textContent = this.currentPromptText;
@@ -283,6 +283,7 @@ export class PromptText extends BaseHTML {
             wrapper.style.textAlign = 'center';
             wrapper.style.width = '100%';
             wrapper.style.display = 'inline-block';
+            wrapper.style.letterSpacing = '4px'; // Reduced spacing for better alignment
             
             // Get the target letter
             const targetStone = this.targetStones[0];
@@ -302,8 +303,8 @@ export class PromptText extends BaseHTML {
                 if (!foundTarget && i >= this.droppedStones) {
                     const substringToCheck = this.currentPromptText.substring(i, i + targetLetterText.length);
                     if (substringToCheck === targetLetterText) {
-                        // Found the target - highlight it
-                        formattedPromptText += `<span class="text-red">${targetLetterText}</span>`;
+                        // Found the target - highlight it with pulsating effect for LetterInWord
+                        formattedPromptText += `<span class="text-red-pulse-letter">${targetLetterText}</span>`;
                         i += targetLetterText.length; // Move past the target letter
                         foundTarget = true; // Mark that we found the target (only highlight first occurrence)
                         continue; // Skip to next iteration
