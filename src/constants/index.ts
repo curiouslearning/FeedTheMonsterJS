@@ -153,10 +153,13 @@ export const WINTER_BG_GROUP_IMGS = {
 
 //Rive Animation
 export const MONSTER_PHASES = [
-  './assets/rive/phase1Monster.riv',
-  './assets/rive/phase2Monster.riv', //Removed 'Updated' in the Rive file and renamed it for Git to detect changes.
-  './assets/rive/phase4Monster.riv',
+  './assets/rive/eggmonsterclone.riv',
+  './assets/rive/hatchedmonsterclone.riv',
+  './assets/rive/adultmonsterclone.riv',
 ];
+
+//Start screen Monster
+export const ADULT_PHASE = './assets/rive/phase4Monster.riv';
 export const EVOL_MONSTER = [
   './assets/rive/evolve.riv', // add new files when other evolution files are ready
   './assets/rive/ftm_monster_1_2_evol_v01.riv'
