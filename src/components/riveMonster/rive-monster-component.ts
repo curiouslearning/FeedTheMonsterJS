@@ -111,17 +111,27 @@ export class RiveMonsterComponent {
     gameStateService.saveHitBoxRanges({ hitboxRangeX: this.hitboxRangeX, hitboxRangeY: this.hitboxRangeY });
   }
 
-  // do not delete to check hitbox overlay
-  // public createHitboxOverlay() {
-  //   const rect = document.createElement('div');
-  //   rect.className = 'rect';
-  //   rect.style.left = `${this.hitboxRangeX.from}px`;
-  //   rect.style.top = `${this.hitboxRangeY.from}px`;
-  //   rect.style.width = `${this.hitboxRangeX.to - this.hitboxRangeX.from}px`;
-  //   rect.style.height = `${this.hitboxRangeY.to - this.hitboxRangeY.from}px`;
+  /**
+   * Call this in a draw method in gameplay-scene. FOR TESTING ONLY.
+   * @param context 
+   */
+  public createHitboxOverlayForTesting(context: CanvasRenderingContext2D) {
+    // Calculate width and height
+    const width = this.hitboxRangeX.to - this.hitboxRangeX.from;
+    const height = this.hitboxRangeY.to - this.hitboxRangeY.from;
+
+    // Draw the rectangle
+    context.fillStyle = 'rgba(0, 128, 255, 0.5)';
+    context.fillRect(this.hitboxRangeX.from, this.hitboxRangeY.from, width, height);
+
+    // Optional: Draw border
+    context.strokeStyle = '#000';
+    context.lineWidth = 2;
+    context.strokeRect(this.hitboxRangeX.from, this.hitboxRangeY.from, width, height);
+
 
   //   document.getElementById('overlay').appendChild(rect);
-  // }
+  }
 
   public initializeRive() {
     const { canvas, isEvolving, src, autoplay } = this.props;
