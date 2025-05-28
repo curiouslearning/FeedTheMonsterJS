@@ -159,7 +159,7 @@ export const MONSTER_PHASES = [
 ];
 
 //Start screen Monster
-export const ADULT_PHASE = './assets/rive/phase4Monster.riv';
+export const STARTSCREEN_MONSTER = './assets/rive/phase4Monster.riv';
 export const EVOL_MONSTER = [
   './assets/rive/evolve.riv', // add new files when other evolution files are ready
   './assets/rive/ftm_monster_1_2_evol_v01.riv'

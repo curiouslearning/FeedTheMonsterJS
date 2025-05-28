@@ -78,7 +78,6 @@ export class RiveMonsterComponent {
     const logicalCanvasHeight = canvas.height / this.scale;
 
     const aspectRatio = window.innerWidth / window.innerHeight;
-    console.log('Aspect Ratio:', aspectRatio);
 
     const breakpoints = [
       { max: 0.4, bottomY: 0.78, height: 0.28 },
@@ -210,21 +209,6 @@ export class RiveMonsterComponent {
       callback();
     });
   }
-
-  // public getMonsterTopCordinate() {
-  //   if (!this.hitboxRangeX || !this.hitboxRangeY) {
-  //     console.warn("Hitbox range not available!");
-  //     return null;
-  //   }
-
-  //   const scaledY = this.hitboxRangeY.from;
-  //   const scaledHeight = this.hitboxRangeY.to - this.hitboxRangeY.from;
-  //   const bottomYCenter = scaledY + scaledHeight;
-  //   console.log(bottomYCenter);
-
-  //   return bottomYCenter;
-  // }
-
 
   getInputs() {
     // Don't try to get state machine inputs if we're in evolution mode

@@ -15,7 +15,7 @@ import {
   SCENE_NAME_LEVEL_SELECT,
   FirebaseUserClicked,
   PWAInstallStatus,
-  ADULT_PHASE
+  STARTSCREEN_MONSTER
 } from "@constants";
 import gameStateService from '@gameStateService';
 import gameSettingsService from '@gameSettingsService';
@@ -60,7 +60,7 @@ export class StartScene {
       alignment: "bottomCenter",
       width: this.riveMonsterElement.width, // Example width and height, adjust as needed
       height: this.riveMonsterElement.height,
-      src: ADULT_PHASE,
+      src: STARTSCREEN_MONSTER,
       onLoad: () => {
         //Sets if Rive file flag has been loaded to true and trigger to remove the initial loading.
         this.hasRiveLoaded = true;
