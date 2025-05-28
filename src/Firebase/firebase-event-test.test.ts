@@ -3,20 +3,17 @@ describe('Firebase Event Logging - Download_Completed', () => {
     let logDownloadPercentageComplete: (percentage: number, timeDiff: number) => void;
   
     beforeEach(() => {
-      // Mock Firebase Integration
       mockFirebaseIntegration = {
         sendDownloadCompletedEvent: jest.fn(),
       };
   
-      // Fake DOM and context
       const versionInfoElement = { innerHTML: '2.0.1' };
       const getJsonVersionNumber = () => 3.14;
   
-      // Global vars
       (global as any).pseudoId = 'test-user-1';
       (global as any).lang = 'hi';
   
-      // Simulate method in real class
+     
       logDownloadPercentageComplete = (percentage: number, timeDiff: number) => {
         if (percentage !== 100) return;
   
@@ -57,13 +54,13 @@ describe('Firebase Event Logging - Download_Completed', () => {
       
         const [eventData] = mockFirebaseIntegration.sendDownloadCompletedEvent.mock.calls[0];
       
-        expect(typeof eventData.cr_user_id).toBe('object'); // updated
+        expect(typeof eventData.cr_user_id).toBe('object');  
         expect(typeof eventData.ftm_language).toBe('string');
         expect(typeof eventData.version_number).toBe('string');
         expect(typeof eventData.json_version_number).toBe('number');
         expect(typeof eventData.ms_since_session_start).toBe('number');
       
-        // optional: validate language is in allowed list
+         
         const allowedLangs = ["english"];
         expect(allowedLangs).toContain(eventData.ftm_language);
       });
@@ -78,18 +75,18 @@ describe('Firebase Event Logging - Download_Completed', () => {
         sendTappedStartEvent: jest.fn(),
       };
   
-      // Mock DOM element
+       
       const versionInfoElement = { innerHTML: '1.2.3' };
       document.getElementById = jest.fn().mockReturnValue(versionInfoElement);
   
-      // Mock global values
+       
       (global as any).pseudoId = 'user-123';
       (global as any).lang = 'hi';
   
       const majVersion = 1;
       const minVersion = 5;
   
-      // Simulate the actual logging method
+  
       logTappedStartEvent = () => {
         const tappedStartData = {
           cr_user_id: null,
@@ -137,11 +134,11 @@ describe('Firebase Event Logging - Download_Completed', () => {
         sendSelectedLevelEvent: jest.fn(),
       };
   
-      // Mock DOM
+      
       const versionInfoElement = { innerHTML: '3.0.0' };
       document.getElementById = jest.fn().mockReturnValue(versionInfoElement);
   
-      // Global values
+   
       (global as any).pseudoId = 'user-456';
       (global as any).lang = 'sw';
   
@@ -149,7 +146,7 @@ describe('Firebase Event Logging - Download_Completed', () => {
       const minVersion = 3;
       const levelNumber = 5;
   
-      // Simulate logging method
+       
       logSelectedLevelEvent = () => {
         const selectedLevelData = {
           cr_user_id: null,
@@ -185,7 +182,7 @@ describe('Firebase Event Logging - Download_Completed', () => {
       expect(typeof eventData.cr_user_id).toBe('object');
       expect(typeof eventData.ftm_language).toBe('string');
       expect(typeof eventData.version_number).toBe('string');
-      expect(typeof eventData.json_version_number).toBe('string'); // string in this case
+      expect(typeof eventData.json_version_number).toBe('string'); 
       expect(typeof eventData.level_selected).toBe('number');
       expect(typeof eventData.profile_number).toBe('number');
   
@@ -201,16 +198,15 @@ describe('Firebase Event Logging - Download_Completed', () => {
       mockFirebaseIntegration = {
         sendPuzzleCompletedEvent: jest.fn(),
       };
-  
-      // Global mocks
+
       (global as any).pseudoId = 'puzzle-user';
       (global as any).lang = 'en';
   
-      // Fake DOM
+
       const versionInfoElement = { innerHTML: '1.2.3' };
       document.getElementById = jest.fn().mockReturnValue(versionInfoElement);
   
-      // Fake class-level values
+     
       const jsonVersionNumber = 4.56;
       const levelNumber = 7;
       const puzzleNumber = 2;
@@ -220,7 +216,7 @@ describe('Firebase Event Logging - Download_Completed', () => {
       const correctTarget = 'CAT';
       const foilStones = ['BAT', 'RAT'];
   
-      // Simulate method
+
       logPuzzleEndFirebaseEvent = (isCorrect: boolean, puzzleType?: string) => {
         const endTime = Date.now();
   
@@ -286,21 +282,19 @@ describe('Firebase Event Logging - Download_Completed', () => {
         sendLevelCompletedEvent: jest.fn(),
       };
   
-      // Globals
+
       (global as any).pseudoId = 'level-user';
       (global as any).lang = 'en';
   
-      // Mock DOM element
       const versionInfoElement = { innerHTML: '3.4.5' };
       document.getElementById = jest.fn().mockReturnValue(versionInfoElement);
   
-      // Fake class members
       const jsonVersionNumber = 5.67;
-      const startTime = Date.now() - 7000; // started 7 seconds ago
-      const score = 350; // example score
+      const startTime = Date.now() - 7000; 
+      const score = 350; 
       const levelNumber = 9;
   
-      // Mock GameScore helper
+       
       const GameScore = {
         calculateStarCount: (score: number) => Math.floor(score / 100),
       };
@@ -342,10 +336,10 @@ describe('Firebase Event Logging - Download_Completed', () => {
     });
   
     it('should log failure if stars < 3', () => {
-      // Override score to less than 300 for failure
-      const score = 250; // 2 stars
+      
+      const score = 250;  
   
-      // Override function to use this score
+      
       const GameScore = {
         calculateStarCount: (score: number) => Math.floor(score / 100),
       };
@@ -385,11 +379,10 @@ describe('Firebase Event Logging - Download_Completed', () => {
   
       (global as any).pseudoId = 'session-user';
       (global as any).lang = 'en';
-  
-      // Mock DOM element
+
       const versionInfoElement = { innerHTML: '1.2.3' };
   
-      // Mock localStorage
+
       const localStorageMock = (() => {
         let store: Record<string, string> = {};
         return {
@@ -400,7 +393,7 @@ describe('Firebase Event Logging - Download_Completed', () => {
       })();
       Object.defineProperty(global, 'localStorage', { value: localStorageMock });
   
-      // Set a lastSessionEndTime to 2 days ago (in ms)
+
       const twoDaysAgoMs = Date.now() - 2 * 24 * 60 * 60 * 1000;
       localStorage.setItem('lastSessionEndTime', twoDaysAgoMs.toString());
   
@@ -446,7 +439,7 @@ describe('Firebase Event Logging - Download_Completed', () => {
   
       const allowedLangs = [ "english"];
       expect(allowedLangs).toContain(eventData.ftm_language);
-      expect(eventData.days_since_last).toBeGreaterThanOrEqual(2); // roughly 2 days since last
+      expect(eventData.days_since_last).toBeGreaterThanOrEqual(2); 
     });
   
     it('should handle missing lastSessionEndTime gracefully', () => {
@@ -470,10 +463,10 @@ describe('Firebase Event Logging - Download_Completed', () => {
       (global as any).pseudoId = 'session-user-end';
       (global as any).lang = 'en';
   
-      // Mock DOM element
+   
       const versionInfoElement = { innerHTML: '1.2.3' };
   
-      // Mock localStorage
+   
       const localStorageMock = (() => {
         let store: Record<string, string> = {};
         return {
@@ -487,7 +480,7 @@ describe('Firebase Event Logging - Download_Completed', () => {
       const majVersion = 1;
       const minVersion = 5;
   
-      // Simulate startSessionTime as 10 seconds ago
+     
       const startSessionTime = Date.now() - 10000;
   
       logSessionEndFirebaseEvent = () => {
@@ -519,7 +512,7 @@ describe('Firebase Event Logging - Download_Completed', () => {
   
       const allowedLangs = [ "english"];
       expect(allowedLangs).toContain(eventData.ftm_language);
-      expect(eventData.duration).toBeGreaterThan(9); // roughly 10 seconds duration
+      expect(eventData.duration).toBeGreaterThan(9); 
     });
   
     it('should set lastSessionEndTime in localStorage', () => {
