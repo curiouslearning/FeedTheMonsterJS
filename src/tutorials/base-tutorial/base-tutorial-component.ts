@@ -175,7 +175,7 @@ export default class TutorialComponent {
 
     //Monster Stone Difference is the target where the stone will be dropped for the tutorial.
     const monsterStoneDifference = Math.sqrt((startX - endX) * (startX - endX) + (startY - endY) * (startY - endY));
-    console.log({ monsterStoneDifference })
+
     const animateImagePosVal = this.animateImage({
       startX,
       startY,
@@ -220,7 +220,7 @@ export default class TutorialComponent {
 
     if (monsterStoneDifferenceInPercentage < 15) {
       if (monsterStoneDifferenceInPercentage > 1) {
-        this.context.drawImage(img, endX, endY, imageSize, imageSize);
+        this.context.drawImage(img, endX - 20, endY - 20, imageSize, imageSize);
         this.createHandScaleAnimation(deltaTime, endX, endY, true)
       } else {
         this.x = startX;
