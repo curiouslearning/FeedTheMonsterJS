@@ -73,59 +73,36 @@ export class RiveMonsterComponent {
   };
 
   private initializeHitbox() {
-    // Calculate logical canvas dimensions based on scale (DPR compensation)
-    const logicalCanvasWidth = this.props.canvas.width / this.scale;
-    const logicalCanvasHeight = this.props.canvas.height / this.scale;
+    const { canvas } = this.props;
+    const logicalCanvasWidth = canvas.width / this.scale;
+    const logicalCanvasHeight = canvas.height / this.scale;
 
     const aspectRatio = window.innerWidth / window.innerHeight;
 
-    // Assume logicalCanvasHeight is already adjusted for DPR
-    let monsterBottomY: number;
-    let monsterHeight: number;
-    // Adjust monster's position and size based on aspect ratio
-    if (aspectRatio < 0.4) {
-      // Extremely tall screens (e.g., ultra-narrow phones or split-screen)
-      monsterBottomY = logicalCanvasHeight * 0.78;
-      monsterHeight = logicalCanvasHeight * 0.28;
-    }
-    else if (aspectRatio < 0.5) {
-      // Tall screens (e.g., older iPhones in zoomed mode)
-      monsterBottomY = logicalCanvasHeight * 0.82;
-      monsterHeight = logicalCanvasHeight * 0.30;
-    }
-    else if (aspectRatio < 0.6) {
-      // Tall screens (narrow phones)
-      monsterBottomY = logicalCanvasHeight * 0.83;
-      monsterHeight = logicalCanvasHeight * 0.33;
-    } else if (aspectRatio < 0.7) {
-      // Typical phones (iPhone 13, Android phones)
-      monsterBottomY = logicalCanvasHeight * 0.84;
-      monsterHeight = logicalCanvasHeight * 0.36;
-    } else if (aspectRatio < 1.3) {
-      // Tablets (iPads)
-      monsterBottomY = logicalCanvasHeight * 0.88;
-      monsterHeight = logicalCanvasHeight * 0.38;
-    } else {
-      // Desktops or landscape tablets
-      monsterBottomY = logicalCanvasHeight * 0.90;
-      monsterHeight = logicalCanvasHeight * 0.40;
-    }
-    // Compute the monster's top Y-coordinate
+    const breakpoints = [
+      { max: 0.4, bottomY: 0.78, height: 0.28 },
+      { max: 0.5, bottomY: 0.82, height: 0.32 },
+      { max: 0.6, bottomY: 0.85, height: 0.35 },
+      { max: 0.7, bottomY: 0.84, height: 0.36 },
+      { max: 0.8, bottomY: 0.88, height: 0.38 },
+    ];
+
+    const defaultValues = { bottomY: 0.90, height: 0.40 };
+
+    const { bottomY, height } = breakpoints.find(b => aspectRatio < b.max) || defaultValues;
+
+    const monsterBottomY = logicalCanvasHeight * bottomY;
+    const monsterHeight = logicalCanvasHeight * height;
     const monsterTopY = monsterBottomY - monsterHeight;
 
-    // Apply an offset to move hitbox up/down relative to the monster
-    const hitboxOffsetPercent = 0.05; // Example: shift hitbox slightly upwards (5% of monster height)
-    const hitboxOffsetY = monsterHeight * hitboxOffsetPercent
+    const hitboxOffsetY = monsterHeight * 0.05;
+    const hitboxPaddingY = monsterHeight * 0.1;
 
-    // Add vertical padding to the hitbox to avoid edge sensitivity
-    const hitboxPaddingY = monsterHeight * 0.1; // 10% padding top & bottom
-
-    // Define horizontal hitbox (centered horizontally, covering 30% of canvas width)
     this.hitboxRangeX = {
-      from: (logicalCanvasWidth * 0.5) - (logicalCanvasWidth * 0.3) / 2,
-      to: (logicalCanvasWidth * 0.5) + (logicalCanvasWidth * 0.3) / 2,
+      from: logicalCanvasWidth * 0.35,
+      to: logicalCanvasWidth * 0.65,
     };
-    // Define vertical hitbox within the monster's bounds, excluding padding
+
     this.hitboxRangeY = {
       from: monsterTopY + hitboxPaddingY + hitboxOffsetY,
       to: monsterBottomY - hitboxPaddingY + hitboxOffsetY,
@@ -145,6 +122,50 @@ export class RiveMonsterComponent {
 
   //   document.getElementById('overlay').appendChild(rect);
   // }
+
+  public initializeRive() {
+    const { canvas, isEvolving, src, autoplay } = this.props;
+
+    if (isEvolving && this.riveInstance) {
+      this.riveInstance.cleanupInstances();
+    }
+
+    const canvasWidth = canvas.width;
+    const canvasHeight = canvas.height;
+
+    const riveConfig: any = {
+      src: src || MONSTER_PHASES[this.phaseIndex],
+      canvas,
+      autoplay,
+      useOffscreenRenderer: true,
+      layout: new Layout({
+        fit: Fit.Contain,
+        alignment: Alignment.Center,
+      }),
+    };
+
+    if (!isEvolving) {
+      riveConfig.stateMachines = [this.stateMachineName];
+      riveConfig.onLoad = () => this.handleLoad();
+
+      // We can increase or decrease the percent at which the min Y need to be set (0.25 = 25%)
+      const minY = canvasHeight * 0.25;
+      const maxY = canvasHeight;
+
+      riveConfig.layout = new Layout({
+        fit: Fit.Contain,
+        alignment: Alignment.Center,
+        minX: 0,
+        minY,
+        maxX: canvasWidth,
+        maxY,
+      });
+    }
+
+    this.evolutionOffSet(!isEvolving ? 0 : 50);
+
+    this.riveInstance = new Rive(riveConfig);
+  }
 
   /**
    * This method adjusts the alignment of the Rive animation to the evolution
@@ -174,44 +195,6 @@ export class RiveMonsterComponent {
     this.minY = minY;
   }
 
-  initializeRive() {
-    if (this.props.isEvolving && this.riveInstance) {
-      this.riveInstance.cleanupInstances();
-    }
-
-    const riveConfig: any = {
-      src: this.props.src || MONSTER_PHASES[this.phaseIndex],
-      canvas: this.props.canvas,
-      autoplay: this.props.autoplay,
-      layout: new Layout({
-        fit: Fit.Contain,
-        alignment: Alignment.Center,
-      }),
-      useOffscreenRenderer: true, // Improves performance
-    };
-
-    // For evolution animations, we don't use state machines. so were excluding this.
-    if (!this.props.isEvolving) {
-      riveConfig['stateMachines'] = [this.stateMachineName];
-      riveConfig['onLoad'] = () => {
-        this.handleLoad();
-      };
-
-      riveConfig['layout'] = new Layout({
-        fit: Fit.Contain,
-        alignment: Alignment.Center,
-        minX: 0,
-        minY: this.minY,
-        maxX: this.props.canvas.width,
-        maxY: this.props.canvas.height,
-      });
-    }
-
-    this.evolutionOffSet(!this.props.isEvolving ? 0 : 50);
-
-    this.riveInstance = new Rive(riveConfig);
-  }
-
   /**
    * Used to add additional logic to any events happening in Rive.
    *
@@ -226,20 +209,6 @@ export class RiveMonsterComponent {
       callback();
     });
   }
-
-  public getMonsterTopCordinate() {
-    if (!this.hitboxRangeX || !this.hitboxRangeY) {
-      console.warn("Hitbox range not available!");
-      return null;
-    }
-
-    const scaledY = this.hitboxRangeY.from;
-    const scaledHeight = this.hitboxRangeY.to - this.hitboxRangeY.from;
-    const bottomYCenter = scaledY + scaledHeight;
-
-    return bottomYCenter;
-  }
-
 
   getInputs() {
     // Don't try to get state machine inputs if we're in evolution mode
