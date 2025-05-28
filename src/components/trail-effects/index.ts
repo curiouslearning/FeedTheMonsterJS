@@ -5,17 +5,25 @@ export default class TrailEffectsHandler extends CursorComponent {
   trailParticles: TrailEffect;
   public canvas: HTMLCanvasElement;
   public clickTrailToggle: boolean;
+  private hasGameStarted = false;
 
   constructor(canvas: HTMLCanvasElement) {
     super(canvas);
     this.canvas = canvas;
     this.clickTrailToggle = false;
+    this.hasGameStarted = false;
     this.addEventListeners();
     this.trailParticles = new TrailEffect(canvas);
   }
 
+  setGameHasStarted(isGameStarted: boolean) {
+    this.hasGameStarted = isGameStarted;
+  }
+
   public draw() {
-    this.trailParticles?.draw()
+    if (this.hasGameStarted && this.clickTrailToggle) {
+      this.trailParticles?.draw();
+    }
   }
 
   public handleCursorMouseUp(event) {
@@ -23,10 +31,12 @@ export default class TrailEffectsHandler extends CursorComponent {
   }
 
   public handleCursorMouseMove(event) {
-    const rect = this.canvas.getBoundingClientRect();
-    const x = event.clientX - rect.left;
-    const y = event.clientY - rect.top;
-    this.clickTrailToggle && this.trailParticles?.addTrailParticlesOnMove(x, y);
+    if (this.hasGameStarted && this.clickTrailToggle) {
+      const rect = this.canvas.getBoundingClientRect();
+      const x = event.clientX - rect.left;
+      const y = event.clientY - rect.top;
+      this.trailParticles?.addTrailParticlesOnMove(x, y);
+    }
   }
 
   public handleCursorMouseDown(event) {
@@ -39,9 +49,11 @@ export default class TrailEffectsHandler extends CursorComponent {
   }
 
   public handleCursorTouchMove(event) {
-    const touch = event.touches[0];
-    this.handleCursorMouseMove(event);  //Same logic with gameplay-scene on calling this event method.
-    this.clickTrailToggle && this.trailParticles?.addTrailParticlesOnMove(touch.clientX, touch.clientY);
+    if (this.hasGameStarted && this.clickTrailToggle) {
+      const touch = event.touches[0];
+      this.handleCursorMouseMove(event);  //Same logic with gameplay-scene on calling this event method.
+      this.trailParticles?.addTrailParticlesOnMove(touch.clientX, touch.clientY);
+    }
   }
 
   public handleCursorTouchEnd(event) {
@@ -55,6 +67,7 @@ export default class TrailEffectsHandler extends CursorComponent {
 
   public dispose() {
     this.removeEventListeners();
+    this.hasGameStarted = false;
   }
 
 }
