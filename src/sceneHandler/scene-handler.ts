@@ -50,7 +50,11 @@ export class SceneHandler {
     this.unsubscribeEvent = gameStateService.subscribe(
       gameStateService.EVENTS.SWITCH_SCENE_EVENT,
       (sceneName: string) => {
-        if (!this.currentScene || this.currentScene !== sceneName) {
+        if (
+          !this.currentScene ||
+          this.currentScene !== sceneName || //Prevents the double instance of the same scene (fix from FM-532 issue).
+          sceneName === SCENE_NAME_GAME_PLAY_REPLAY //If the scene AGAIN is reply, always allow it as Reply is manual and user triggered.
+        ) {
           this.currentScene = sceneName;
           this.handleSwitchScene(sceneName);
         }
