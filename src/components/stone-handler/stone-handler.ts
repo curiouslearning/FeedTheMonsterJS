@@ -131,13 +131,55 @@ export default class StoneHandler extends EventManager {
       // Initialize stone
       stone.initialize();
 
+      // Debug logs for word puzzle tutorial trigger investigation
+      console.log('[StoneHandler][Debug] segmentNumber:', this.currentPuzzleData.segmentNumber);
+      const isWordPuzzle = this.levelData?.levelMeta?.levelType === 'Word';
+      console.log('[StoneHandler][Debug] isWordPuzzle:', isWordPuzzle);
+      console.log('[StoneHandler][Debug] targetStones:', this.targetStones, 'foilStones:', foilStones);
+
       //Publish stone details, image and level data for stone tutorial only at the first puzzle segment.
-      if (foilStones[i] == this.correctTargetStone && this.currentPuzzleData.segmentNumber === 0) {
-        gameStateService.publish(gameStateService.EVENTS.CORRECT_STONE_POSITION, {
-          stonePosVal: positions[i],
-          img,
-          levelData: this.levelData
-        });
+      if (this.currentPuzzleData.segmentNumber === 0) {
+        // For word puzzles, we need to collect all target stone positions
+        const isWordPuzzle = this.levelData?.levelMeta?.levelType === 'Word';
+        
+        if (isWordPuzzle) {
+          // For word puzzles, collect all target stone positions
+          console.log('[StoneHandler][Debug] i:', i, 'foilStones[i]:', foilStones[i], 'in targetStones:', this.targetStones.includes(foilStones[i]));
+          if (this.targetStones.includes(foilStones[i])) {
+            // If this is the first target stone, initialize the array and publish
+            if (i === 0) {
+              const targetStonePositions = [];
+              
+              // Find positions for all target stones
+              for (let j = 0; j < foilStones.length; j++) {
+                if (this.targetStones.includes(foilStones[j])) {
+                  targetStonePositions.push(positions[j]);
+                }
+              }
+              
+              // Publish all target stone positions for word puzzles (delayed to ensure tutorial subscription)
+              setTimeout(() => {
+                console.log('[StoneHandler] Publishing CORRECT_STONE_POSITION (delayed)', {
+                  stonePosVal: targetStonePositions,
+                  img,
+                  levelData: this.levelData
+                });
+                gameStateService.publish(gameStateService.EVENTS.CORRECT_STONE_POSITION, {
+                  stonePosVal: targetStonePositions,
+                  img,
+                  levelData: this.levelData
+                });
+              }, 200);
+            }
+          }
+        } else if (foilStones[i] == this.correctTargetStone) {
+          // For letter puzzles, just publish the single stone position
+          gameStateService.publish(gameStateService.EVENTS.CORRECT_STONE_POSITION, {
+            stonePosVal: positions[i],
+            img,
+            levelData: this.levelData
+          });
+        }
       }
 
       // Store in pool for potential reuse

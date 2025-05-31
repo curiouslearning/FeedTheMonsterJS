@@ -211,16 +211,26 @@ export class GameStateService extends PubSub {
             ? this.majVersion.toString() + "." + this.minVersion.toString()
             : "";
 
-        let shouldHaveTutorial = false;
-        const selectedLevelNumber:string | number = this.gamePlayData.selectedLevelNumber;
+        const selectedLevelNumber: string | number = this.gamePlayData.selectedLevelNumber;
         const levelNumber = typeof selectedLevelNumber === 'string' ? parseInt(selectedLevelNumber) : selectedLevelNumber;
-        //Very small array to iterate.
-        Object.values(this.gameTypesFirstInstanceList).every((listedLevelNumber: { levelNumber: number, isCleared: boolean}) => {
-            if (listedLevelNumber?.levelNumber === levelNumber) {
-                shouldHaveTutorial = true;
-                return false; //Return false to break every loop.
-            }
-        });
+        let shouldHaveTutorial = false;
+        
+        // Check if this is a word puzzle level
+        const isWordPuzzle = this.gamePlayData?.currentLevelData?.levelMeta?.levelType === 'Word';
+        
+        if (isWordPuzzle) {
+            // Always show tutorial for word puzzles
+            shouldHaveTutorial = true;
+        } else {
+            // For other levels, check if it's in the first instance list
+            Object.values(this.gameTypesFirstInstanceList).every((listedLevelNumber: { levelNumber: number, isCleared: boolean}) => {
+                if (listedLevelNumber?.levelNumber === levelNumber) {
+                    shouldHaveTutorial = true;
+                    return false; // Return false to break every loop
+                }
+                return true;
+            });
+        }
 
         return {
             levelData: { ...this.gamePlayData.currentLevelData },

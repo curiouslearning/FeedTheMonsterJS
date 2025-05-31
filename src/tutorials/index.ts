@@ -1,5 +1,6 @@
 import QuickStartTutorial from './QuickStartTutorial/QuickStartTutorial';
 import MatchLetterPuzzleTutorial from './MatchLetterPuzzleTutorial/MatchLetterPuzzleTutorial';
+import WordPuzzleTutorial from './WordPuzzleTutorial/WordPuzzleTutorial';
 import gameStateService from '@gameStateService';
 import { getGameTypeName } from '@common';
 
@@ -15,7 +16,7 @@ export default class TutorialHandler {
   private height: number;
   private context: CanvasRenderingContext2D;
   private puzzleLevel: number;
-  private activeTutorial: null | MatchLetterPuzzleTutorial;
+  private activeTutorial: null | MatchLetterPuzzleTutorial | WordPuzzleTutorial;
   private quickTutorial: null | QuickStartTutorial;
   private hasGameEnded: boolean = false;
   private isGameOnPause: boolean = false;
@@ -32,6 +33,8 @@ export default class TutorialHandler {
   private unsubscribeLevelEndData: () => void; //Listener to check if the game is about to switch to level-end.
 
   constructor({ context, width, height, puzzleLevel, shouldHaveTutorial }: TutorialInitParams) {
+    console.log('[TutorialHandler] Creating new instance with:', { puzzleLevel, shouldHaveTutorial });
+    console.trace('[TutorialHandler] Stack trace for instantiation:');
     this.quickTutorial = null;
     this.activeTutorial = null;
     this.puzzleLevel = puzzleLevel;
@@ -40,9 +43,14 @@ export default class TutorialHandler {
 
   private initializeSubscriptionsAndValues({ shouldHaveTutorial, context, width, height }: TutorialInitParams) {
     //Create and initialize values only if tutorial should be created.
+    console.log('[TutorialHandler] Initializing with:', { 
+      shouldHaveTutorial, 
+      puzzleLevel: this.puzzleLevel,
+      hasEstablishedSubscriptions: this.hasEstablishedSubscriptions,
+      gameTypesList: this.gameTypesList
+    });
     if (
       shouldHaveTutorial &&
-      this.puzzleLevel === 0 &&
       !this.hasEstablishedSubscriptions
     ) {
       this.hasEstablishedSubscriptions = true;
@@ -52,7 +60,8 @@ export default class TutorialHandler {
       this.unsubscribeStoneCreationEvent = gameStateService.subscribe(
         gameStateService.EVENTS.CORRECT_STONE_POSITION,
         (stoneDataImgAndPos: { stonePosVal: number[], img: any, levelData: any }) => {
-          if (this.puzzleLevel === 0) {
+          console.log('[TutorialHandler] Received event:', { stoneDataImgAndPos, currentPuzzleLevel: this.puzzleLevel });
+          if (true) { // Always process the event to debug
             /*
             * stoneDataImgAndPos contains the stone details from stone handler.
             * It has the correct stone coordinates needed for the tutorial of dragging stones.
@@ -64,6 +73,10 @@ export default class TutorialHandler {
               ? parseInt(levelNumber)
               : levelNumber;
             this.gameTypeName = getGameTypeName(protoType, levelType);
+            console.log('[TutorialHandler] stoneDataImgAndPos', {
+              gameLevel, stonePosVal, img, gameTypeName: this.gameTypeName,
+              gameTypeEntry: this.gameTypesList[this.gameTypeName]
+            });
             this.activeTutorial = this.createTutorialInstance({
               gameLevel,
               stonePosVal,
@@ -97,22 +110,41 @@ export default class TutorialHandler {
 
   private createTutorialInstance({ gameLevel, stonePosVal, img, gameTypeName }: {
     gameLevel: number,
-    stonePosVal: number[],
+    stonePosVal: number[] | number[][],
     img: CanvasImageSource,
     gameTypeName: string,
   }) {
+    console.log('[TutorialHandler] createTutorialInstance called', {
+      gameLevel, stonePosVal, img, gameTypeName,
+      gameTypeEntry: this.gameTypesList[gameTypeName]
+    });
     if (!this.gameTypesList[gameTypeName]?.isCleared) {
       //Create quick start tutorial.
       this.quickTutorial = new QuickStartTutorial({ context: this.context });
 
       if (this.gameTypesList[gameTypeName]?.levelNumber === gameLevel) {
-        return new MatchLetterPuzzleTutorial({
-          context: this.context,
-          width: this.width,
-          height: this.height,
-          stoneImg: img,
-          stonePosVal
-        });
+        // For letter puzzles (single stone)
+        if (gameTypeName === 'LetterOnly' || gameTypeName === 'LetterInWord' || gameTypeName === 'SoundLetterOnly') {
+          return new MatchLetterPuzzleTutorial({
+            context: this.context,
+            width: this.width,
+            height: this.height,
+            stoneImg: img,
+            stonePosVal: stonePosVal as number[]
+          });
+        }
+        
+        // For word puzzles (multiple stones in sequence)
+        if (gameTypeName === 'Word') {
+          console.log('[TutorialHandler] Creating WordPuzzleTutorial', { stonePosVal });
+          return new WordPuzzleTutorial({
+            context: this.context,
+            width: this.width,
+            height: this.height,
+            stoneImg: img,
+            stonePositions: stonePosVal as number[][]
+          });
+        }
       }
 
       //Add more if conditions here for new tutorial instances.
@@ -142,6 +174,7 @@ export default class TutorialHandler {
   draw(deltaTime: number, hasGameStarted: boolean) {
     //Draw only if there is an active tutorial instance.
     if (this.activeTutorial && !this.isGameOnPause && hasGameStarted) {
+      console.log('[TutorialHandler] Drawing active tutorial:', this.activeTutorial.constructor.name);
       !this.hasGameEnded && this.activeTutorial?.drawTutorial(deltaTime);
     }
   }
