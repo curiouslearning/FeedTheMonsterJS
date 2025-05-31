@@ -59,29 +59,33 @@ export default class TutorialHandler {
 
       this.unsubscribeStoneCreationEvent = gameStateService.subscribe(
         gameStateService.EVENTS.CORRECT_STONE_POSITION,
-        (stoneDataImgAndPos: { stonePosVal: number[], img: any, levelData: any }) => {
-          console.log('[TutorialHandler] Received event:', { stoneDataImgAndPos, currentPuzzleLevel: this.puzzleLevel });
-          if (true) { // Always process the event to debug
-            /*
-            * stoneDataImgAndPos contains the stone details from stone handler.
-            * It has the correct stone coordinates needed for the tutorial of dragging stones.
-            */
-            const { stonePosVal, img, levelData } = stoneDataImgAndPos;
-            const { protoType, levelType } = levelData?.levelMeta;
-            const levelNumber = levelData?.levelNumber;
-            const gameLevel = typeof levelNumber === 'string'
-              ? parseInt(levelNumber)
-              : levelNumber;
-            this.gameTypeName = getGameTypeName(protoType, levelType);
-            console.log('[TutorialHandler] stoneDataImgAndPos', {
-              gameLevel, stonePosVal, img, gameTypeName: this.gameTypeName,
-              gameTypeEntry: this.gameTypesList[this.gameTypeName]
-            });
+        (eventData: { 
+          stonePosVal: number[] | number[][], 
+          img: any, 
+          levelData: any, 
+          targetStones?: string[] 
+        }) => {
+          console.log('[TutorialHandler] Received event:', { 
+            stonePosVal: eventData.stonePosVal, 
+            currentPuzzleLevel: this.puzzleLevel,
+            hasTargetStones: !!eventData.targetStones,
+            targetStones: eventData.targetStones
+          });
+          
+          // Only process if we have valid data
+          if (eventData.stonePosVal && eventData.img && eventData.levelData) {
+            const gameTypeName = getGameTypeName(
+              eventData.levelData.levelMeta.protoType, 
+              eventData.levelData.levelMeta.levelType
+            );
+            this.gameTypeName = gameTypeName; // Store for later use
+            
             this.activeTutorial = this.createTutorialInstance({
-              gameLevel,
-              stonePosVal,
-              img,
-              gameTypeName: this.gameTypeName
+              gameLevel: eventData.levelData.levelNumber,
+              stonePosVal: eventData.stonePosVal,
+              img: eventData.img,
+              gameTypeName,
+              targetStones: eventData.targetStones || []
             });
           }
         }
@@ -108,16 +112,13 @@ export default class TutorialHandler {
     this.context = context;
   }
 
-  private createTutorialInstance({ gameLevel, stonePosVal, img, gameTypeName }: {
+  private createTutorialInstance({ gameLevel, stonePosVal, img, gameTypeName, targetStones = [] }: {
     gameLevel: number,
     stonePosVal: number[] | number[][],
     img: CanvasImageSource,
     gameTypeName: string,
+    targetStones?: string[]
   }) {
-    console.log('[TutorialHandler] createTutorialInstance called', {
-      gameLevel, stonePosVal, img, gameTypeName,
-      gameTypeEntry: this.gameTypesList[gameTypeName]
-    });
     if (!this.gameTypesList[gameTypeName]?.isCleared) {
       //Create quick start tutorial.
       this.quickTutorial = new QuickStartTutorial({ context: this.context });
@@ -137,12 +138,20 @@ export default class TutorialHandler {
         // For word puzzles (multiple stones in sequence)
         if (gameTypeName === 'Word') {
           console.log('[TutorialHandler] Creating WordPuzzleTutorial', { stonePosVal });
+          console.log('[TutorialHandler] Creating WordPuzzleTutorial', { 
+            stonePosVal, 
+            targetStones,
+            gameTypeName,
+            gameLevel
+          });
+          
           return new WordPuzzleTutorial({
             context: this.context,
             width: this.width,
             height: this.height,
             stoneImg: img,
-            stonePositions: stonePosVal as number[][]
+            stonePositions: stonePosVal as number[][],
+            targetStones: Array.isArray(targetStones) ? targetStones : []
           });
         }
       }

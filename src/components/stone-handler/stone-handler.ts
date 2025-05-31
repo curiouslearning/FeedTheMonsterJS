@@ -143,34 +143,53 @@ export default class StoneHandler extends EventManager {
         const isWordPuzzle = this.levelData?.levelMeta?.levelType === 'Word';
         
         if (isWordPuzzle) {
-          // For word puzzles, collect all target stone positions
+          // For word puzzles, collect all target stone positions in the correct order
           console.log('[StoneHandler][Debug] i:', i, 'foilStones[i]:', foilStones[i], 'in targetStones:', this.targetStones.includes(foilStones[i]));
-          if (this.targetStones.includes(foilStones[i])) {
-            // If this is the first target stone, initialize the array and publish
-            if (i === 0) {
-              const targetStonePositions = [];
-              
-              // Find positions for all target stones
-              for (let j = 0; j < foilStones.length; j++) {
-                if (this.targetStones.includes(foilStones[j])) {
-                  targetStonePositions.push(positions[j]);
-                }
+          
+          // Only process this once after all stones are created
+          if (i === foilStones.length - 1) {
+            const targetStonePositions = [];
+            
+            // Find positions for all target stones in the order they appear in targetStones
+            for (let targetChar of this.targetStones) {
+              const targetIndex = foilStones.indexOf(targetChar);
+              if (targetIndex !== -1) {
+                targetStonePositions.push(positions[targetIndex]);
               }
-              
-              // Publish all target stone positions for word puzzles (delayed to ensure tutorial subscription)
-              setTimeout(() => {
-                console.log('[StoneHandler] Publishing CORRECT_STONE_POSITION (delayed)', {
-                  stonePosVal: targetStonePositions,
-                  img,
-                  levelData: this.levelData
-                });
-                gameStateService.publish(gameStateService.EVENTS.CORRECT_STONE_POSITION, {
-                  stonePosVal: targetStonePositions,
-                  img,
-                  levelData: this.levelData
-                });
-              }, 200);
             }
+            
+            console.log('[StoneHandler] Collected target stone positions in order:', {
+              targetStones: this.targetStones,
+              foilStones: foilStones,
+              positions: positions,
+              targetStonePositions: targetStonePositions
+            });
+            
+            // Publish all target stone positions for word puzzles (delayed to ensure tutorial subscription)
+            setTimeout(() => {
+              console.log('[StoneHandler] Publishing CORRECT_STONE_POSITION (delayed)', {
+                stonePosVal: targetStonePositions,
+                img,
+                levelData: this.levelData
+              });
+              // Publish the event with both positions and target stones in order
+              const eventData = {
+                stonePosVal: targetStonePositions,
+                img,
+                levelData: this.levelData,
+                targetStones: [...this.targetStones] // Make a copy to ensure we don't modify the original
+              };
+              
+              console.log('[StoneHandler] Publishing CORRECT_STONE_POSITION with target order:', {
+                targetStones: this.targetStones,
+                stonePosVal: targetStonePositions
+              });
+              
+              gameStateService.publish(
+                gameStateService.EVENTS.CORRECT_STONE_POSITION, 
+                eventData
+              );
+            }, 200);
           }
         } else if (foilStones[i] == this.correctTargetStone) {
           // For letter puzzles, just publish the single stone position
