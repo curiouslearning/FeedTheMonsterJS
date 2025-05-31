@@ -1,8 +1,7 @@
-import { TUTORIAL_HAND } from '@constants';
 import TutorialComponent from '../base-tutorial/base-tutorial-component';
 
 export default class WordPuzzleTutorial extends TutorialComponent {
-  private animationDuration: number = 1500; // 1.5 second animation
+  private animationDuration: number = 1200; // 1.5 second animation
   private animationStartTime: number = 0;
   public frame: number = 0;
   private stonePositions: number[][];
@@ -28,31 +27,45 @@ export default class WordPuzzleTutorial extends TutorialComponent {
     this.animationStartTime = 0;
     this.stoneImg = stoneImg;
     
-    // Wait for the tutorial hand image to load
-    this.tutorialImg.onload = () => {
-      console.log('[WordPuzzleTutorial] Tutorial hand image loaded');
-      this.imagesLoaded = true;
+    // Store the target stones order
+    this.targetStones = targetStones;
+    
+    if (stonePositions && stonePositions.length > 0) {
+      // Use the original order of positions as provided (matching targetStones order)
+      this.stonePositions = [...stonePositions];
+      console.log('[WordPuzzleTutorial] Using stone positions in target order:', {
+        targetStones: this.targetStones,
+        stonePositions: this.stonePositions
+      });
       
-      // Store the target stones order
-      this.targetStones = targetStones;
-      
-      if (stonePositions && stonePositions.length > 0) {
-        // Use the original order of positions as provided (matching targetStones order)
-        this.stonePositions = [...stonePositions];
-        console.log('[WordPuzzleTutorial] Using stone positions in target order:', {
-          targetStones: this.targetStones,
-          stonePositions: this.stonePositions
-        });
-        
-        // Initialize with the first stone position
+      // Initialize with the first stone position once the image is loaded
+      if (this.imagesLoaded) {
         this.initializeStoneAnimation(0);
       } else {
-        console.error('[WordPuzzleTutorial] No stone positions provided');
+        this.tutorialImg.onload = () => {
+          this.imagesLoaded = true;
+          this.initializeStoneAnimation(0);
+        };
       }
-    };
-    
-    // Set image source after setting up the onload handler
-    this.tutorialImg.src = TUTORIAL_HAND;
+    } else {
+      console.error('[WordPuzzleTutorial] No stone positions provided');
+    }
+  }
+  
+  private initializeWithStonePositions(stonePositions: number[][]) {
+    if (stonePositions && stonePositions.length > 0) {
+      // Use the original order of positions as provided (matching targetStones order)
+      this.stonePositions = [...stonePositions];
+      console.log('[WordPuzzleTutorial] Using stone positions in target order:', {
+        targetStones: this.targetStones,
+        stonePositions: this.stonePositions
+      });
+      
+      // Initialize with the first stone position
+      this.initializeStoneAnimation(0);
+    } else {
+      console.error('[WordPuzzleTutorial] No stone positions provided');
+    }
   }
 
   public drawTutorial(deltaTime: number) {
@@ -61,24 +74,12 @@ export default class WordPuzzleTutorial extends TutorialComponent {
       console.log('[WordPuzzleTutorial] Waiting for tutorial image to load...');
       return;
     }
-
-    // Make sure we have valid stone positions and details
-    if (!this.stonePosDetailsType || !this.stonePositions || this.stonePositions.length === 0) {
-      console.error('[WordPuzzleTutorial] Missing required animation data:', {
-        hasStonePosDetails: !!this.stonePosDetailsType,
-        hasStonePositions: !!this.stonePositions,
-        stonePositionsLength: this.stonePositions?.length
-      });
-      return;
-    }
     
-    console.log('[WordPuzzleTutorial] Drawing tutorial for stone', {
-      currentIndex: this.currentStoneIndex,
-      totalStones: this.stonePositions.length,
-      frame: this.frame,
-      isAnimatingNextStone: this.isAnimatingNextStone,
-      stonePos: this.stonePositions[this.currentStoneIndex]
-    });
+    // Initialize animation start time if not set
+    if (this.animationStartTime === 0) {
+      this.animationStartTime = performance.now();
+      console.log('[WordPuzzleTutorial] Starting animation');
+    }
     
     // Update animation based on actual time elapsed
     if (this.frame < 100) {

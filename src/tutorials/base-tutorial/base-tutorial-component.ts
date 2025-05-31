@@ -47,7 +47,6 @@ export default class TutorialComponent {
       this.imagesLoaded = true;
     };
     this.initializedRippleValues();
-
   }
 
   private initializedRippleValues() {

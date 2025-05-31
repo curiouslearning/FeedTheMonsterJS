@@ -165,13 +165,20 @@ export default class StoneHandler extends EventManager {
               targetStonePositions: targetStonePositions
             });
             
-            // Publish all target stone positions for word puzzles (delayed to ensure tutorial subscription)
+            // Publish all target stone positions for word puzzles after stones finish animating
+            // Stone animations take 100 frames at ~60fps = ~1.67 seconds
+            // Adding an extra 300ms buffer to ensure all animations are complete
+            const STONE_ANIMATION_DURATION = 2000; // 2 seconds total (1.67s animation + buffer)
+            
+            console.log(`[StoneHandler] Waiting ${STONE_ANIMATION_DURATION}ms for stone animations to complete before starting tutorial...`);
+            
             setTimeout(() => {
-              console.log('[StoneHandler] Publishing CORRECT_STONE_POSITION (delayed)', {
+              console.log('[StoneHandler] Publishing CORRECT_STONE_POSITION (after animation)', {
                 stonePosVal: targetStonePositions,
-                img,
-                levelData: this.levelData
+                levelNumber: this.levelData?.levelNumber,
+                levelType: this.levelData?.levelMeta?.levelType
               });
+              
               // Publish the event with both positions and target stones in order
               const eventData = {
                 stonePosVal: targetStonePositions,
@@ -182,14 +189,15 @@ export default class StoneHandler extends EventManager {
               
               console.log('[StoneHandler] Publishing CORRECT_STONE_POSITION with target order:', {
                 targetStones: this.targetStones,
-                stonePosVal: targetStonePositions
+                stonePosVal: targetStonePositions,
+                currentTime: Date.now()
               });
               
               gameStateService.publish(
                 gameStateService.EVENTS.CORRECT_STONE_POSITION, 
                 eventData
               );
-            }, 200);
+            }, STONE_ANIMATION_DURATION);
           }
         } else if (foilStones[i] == this.correctTargetStone) {
           // For letter puzzles, just publish the single stone position
