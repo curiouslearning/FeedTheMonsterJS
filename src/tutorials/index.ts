@@ -33,8 +33,6 @@ export default class TutorialHandler {
   private unsubscribeLevelEndData: () => void; //Listener to check if the game is about to switch to level-end.
 
   constructor({ context, width, height, puzzleLevel, shouldHaveTutorial }: TutorialInitParams) {
-    console.log('[TutorialHandler] Creating new instance with:', { puzzleLevel, shouldHaveTutorial });
-    console.trace('[TutorialHandler] Stack trace for instantiation:');
     this.quickTutorial = null;
     this.activeTutorial = null;
     this.puzzleLevel = puzzleLevel;
@@ -43,12 +41,6 @@ export default class TutorialHandler {
 
   private initializeSubscriptionsAndValues({ shouldHaveTutorial, context, width, height }: TutorialInitParams) {
     //Create and initialize values only if tutorial should be created.
-    console.log('[TutorialHandler] Initializing with:', { 
-      shouldHaveTutorial, 
-      puzzleLevel: this.puzzleLevel,
-      hasEstablishedSubscriptions: this.hasEstablishedSubscriptions,
-      gameTypesList: this.gameTypesList
-    });
     if (
       shouldHaveTutorial &&
       !this.hasEstablishedSubscriptions
@@ -65,13 +57,6 @@ export default class TutorialHandler {
           levelData: any, 
           targetStones?: string[] 
         }) => {
-          console.log('[TutorialHandler] Received event:', { 
-            stonePosVal: eventData.stonePosVal, 
-            currentPuzzleLevel: this.puzzleLevel,
-            hasTargetStones: !!eventData.targetStones,
-            targetStones: eventData.targetStones
-          });
-          
           // Only process if we have valid data
           if (eventData.stonePosVal && eventData.img && eventData.levelData) {
             const gameTypeName = getGameTypeName(
@@ -80,13 +65,19 @@ export default class TutorialHandler {
             );
             this.gameTypeName = gameTypeName; // Store for later use
             
-            this.activeTutorial = this.createTutorialInstance({
-              gameLevel: eventData.levelData.levelNumber,
-              stonePosVal: eventData.stonePosVal,
-              img: eventData.img,
-              gameTypeName,
-              targetStones: eventData.targetStones || []
-            });
+            // Only create tutorial for the first occurrence of each game type
+            const gameLevel = eventData.levelData.levelNumber;
+            const isFirstOccurrence = this.gameTypesList[gameTypeName]?.levelNumber === gameLevel;
+            
+            if (isFirstOccurrence && !this.gameTypesList[gameTypeName]?.isCleared) {
+              this.activeTutorial = this.createTutorialInstance({
+                gameLevel,
+                stonePosVal: eventData.stonePosVal,
+                img: eventData.img,
+                gameTypeName,
+                targetStones: eventData.targetStones || []
+              });
+            }
           }
         }
       );
@@ -136,15 +127,9 @@ export default class TutorialHandler {
         }
         
         // For word puzzles (multiple stones in sequence)
-        if (gameTypeName === 'Word') {
-          console.log('[TutorialHandler] Creating WordPuzzleTutorial', { stonePosVal });
-          console.log('[TutorialHandler] Creating WordPuzzleTutorial', { 
-            stonePosVal, 
-            targetStones,
-            gameTypeName,
-            gameLevel
-          });
-          
+        // Only show tutorial for the first word puzzle level
+        const isFirstWordPuzzle = this.gameTypesList[gameTypeName]?.levelNumber === gameLevel;
+        if (gameTypeName === 'Word' && isFirstWordPuzzle) {
           return new WordPuzzleTutorial({
             context: this.context,
             width: this.width,
@@ -183,7 +168,6 @@ export default class TutorialHandler {
   draw(deltaTime: number, hasGameStarted: boolean) {
     //Draw only if there is an active tutorial instance.
     if (this.activeTutorial && !this.isGameOnPause && hasGameStarted) {
-      console.log('[TutorialHandler] Drawing active tutorial:', this.activeTutorial.constructor.name);
       !this.hasGameEnded && this.activeTutorial?.drawTutorial(deltaTime);
     }
   }

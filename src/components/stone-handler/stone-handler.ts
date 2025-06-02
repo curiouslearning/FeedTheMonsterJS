@@ -132,10 +132,7 @@ export default class StoneHandler extends EventManager {
       stone.initialize();
 
       // Debug logs for word puzzle tutorial trigger investigation
-      console.log('[StoneHandler][Debug] segmentNumber:', this.currentPuzzleData.segmentNumber);
       const isWordPuzzle = this.levelData?.levelMeta?.levelType === 'Word';
-      console.log('[StoneHandler][Debug] isWordPuzzle:', isWordPuzzle);
-      console.log('[StoneHandler][Debug] targetStones:', this.targetStones, 'foilStones:', foilStones);
 
       //Publish stone details, image and level data for stone tutorial only at the first puzzle segment.
       if (this.currentPuzzleData.segmentNumber === 0) {
@@ -144,7 +141,6 @@ export default class StoneHandler extends EventManager {
         
         if (isWordPuzzle) {
           // For word puzzles, collect all target stone positions in the correct order
-          console.log('[StoneHandler][Debug] i:', i, 'foilStones[i]:', foilStones[i], 'in targetStones:', this.targetStones.includes(foilStones[i]));
           
           // Only process this once after all stones are created
           if (i === foilStones.length - 1) {
@@ -158,46 +154,24 @@ export default class StoneHandler extends EventManager {
               }
             }
             
-            console.log('[StoneHandler] Collected target stone positions in order:', {
-              targetStones: this.targetStones,
-              foilStones: foilStones,
-              positions: positions,
-              targetStonePositions: targetStonePositions
-            });
             
             // Publish all target stone positions for word puzzles after stones finish animating
             // Stone animations take 100 frames at ~60fps = ~1.67 seconds
-            // Adding an extra 300ms buffer to ensure all animations are complete
-            const STONE_ANIMATION_DURATION = 2000; // 2 seconds total (1.67s animation + buffer)
+            const STONE_ANIMATION_DURATION = 1000; // 1 second total for stone animations
             
-            console.log(`[StoneHandler] Waiting ${STONE_ANIMATION_DURATION}ms for stone animations to complete before starting tutorial...`);
+            // Publish the event with both positions and target stones in order immediately
+            // This ensures the tutorial system gets the stone positions right away
+            const eventData = {
+              stonePosVal: targetStonePositions,
+              img,
+              levelData: this.levelData,
+              targetStones: [...this.targetStones] // Make a copy to ensure we don't modify the original
+            };
             
-            setTimeout(() => {
-              console.log('[StoneHandler] Publishing CORRECT_STONE_POSITION (after animation)', {
-                stonePosVal: targetStonePositions,
-                levelNumber: this.levelData?.levelNumber,
-                levelType: this.levelData?.levelMeta?.levelType
-              });
-              
-              // Publish the event with both positions and target stones in order
-              const eventData = {
-                stonePosVal: targetStonePositions,
-                img,
-                levelData: this.levelData,
-                targetStones: [...this.targetStones] // Make a copy to ensure we don't modify the original
-              };
-              
-              console.log('[StoneHandler] Publishing CORRECT_STONE_POSITION with target order:', {
-                targetStones: this.targetStones,
-                stonePosVal: targetStonePositions,
-                currentTime: Date.now()
-              });
-              
-              gameStateService.publish(
-                gameStateService.EVENTS.CORRECT_STONE_POSITION, 
-                eventData
-              );
-            }, STONE_ANIMATION_DURATION);
+            gameStateService.publish(
+              gameStateService.EVENTS.CORRECT_STONE_POSITION, 
+              eventData
+            );
           }
         } else if (foilStones[i] == this.correctTargetStone) {
           // For letter puzzles, just publish the single stone position

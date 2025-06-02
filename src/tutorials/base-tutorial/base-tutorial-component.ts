@@ -193,11 +193,71 @@ export default class TutorialComponent {
   }
 
   /**
-   * animateStoneDrag - Will be used to animate the stone drops indicating where it should be drag.
-   * Note: Currently only supports Letter to Hitbox drop only.
-   * This cannot be used for word letter spelling guide and will require an update to handle that.
+   * animateStoneDrag - Will be used to animate the stone drops indicating where it should be dragged.
+   * Supports both Letter to Hitbox and Word Puzzle animations.
+   * For Word Puzzles, it animates each stone in sequence to demonstrate spelling words.
    */
   public animateStoneDrag({
+    deltaTime,
+    img,
+    imageSize,
+    monsterStoneDifferenceInPercentage,
+    startX,
+    startY,
+    endX,
+    endY,
+    isWordPuzzle = false
+  }: {
+    deltaTime: number,
+    img: CanvasImageSource,
+    imageSize: number,
+    monsterStoneDifferenceInPercentage: number,
+    startX: number,
+    startY: number,
+    endX: number,
+    endY: number,
+    isWordPuzzle?: boolean
+  }) {
+    // For word puzzles, we want a smoother, more guided animation
+    if (isWordPuzzle) {
+      this.animateWordPuzzleStoneDrag({
+        deltaTime,
+        img,
+        imageSize,
+        monsterStoneDifferenceInPercentage,
+        startX,
+        startY,
+        endX,
+        endY
+      });
+      return;
+    }
+    
+    // Standard letter-to-hitbox animation
+    if (monsterStoneDifferenceInPercentage < 15) {
+      if (monsterStoneDifferenceInPercentage > 1) {
+        this.context.drawImage(img, endX - 20, endY - 20, imageSize, imageSize);
+        this.createHandScaleAnimation(deltaTime, endX, endY, true);
+      } else {
+        this.x = startX;
+        this.y = startY;
+      }
+    } else if (monsterStoneDifferenceInPercentage > 80) {
+      this.createHandScaleAnimation(deltaTime, startX + 15, startY + 10, false);
+    } else {
+      const previousAlpha = this.context.globalAlpha;
+      this.context.globalAlpha = 0.4;
+      this.context.drawImage(img, this.x, this.y + 20, imageSize, imageSize);
+      this.context.globalAlpha = previousAlpha;
+      this.context.drawImage(this.tutorialImg, this.x + 15, this.y + 10); // Draws the hand stone drag animation
+    }
+  }
+  
+  /**
+   * Specialized animation for word puzzle tutorials
+   * Provides a more guided animation path with visual cues for multi-letter words
+   */
+  private animateWordPuzzleStoneDrag({
     deltaTime,
     img,
     imageSize,
@@ -216,24 +276,45 @@ export default class TutorialComponent {
     endX: number,
     endY: number
   }) {
-
-    if (monsterStoneDifferenceInPercentage < 15) {
+    // Draw the stone at current position with slightly higher opacity for word puzzles
+    const previousAlpha = this.context.globalAlpha;
+    
+    // Near the start position
+    if (monsterStoneDifferenceInPercentage > 80) {
+      this.context.globalAlpha = 0.8;
+      this.context.drawImage(img, this.x, this.y, imageSize, imageSize);
+      this.createHandScaleAnimation(deltaTime, startX + 15, startY + 10, false);
+    }
+    // Near the end position
+    else if (monsterStoneDifferenceInPercentage < 15) {
       if (monsterStoneDifferenceInPercentage > 1) {
-        this.context.drawImage(img, endX - 20, endY - 20, imageSize, imageSize);
-        this.createHandScaleAnimation(deltaTime, endX, endY, true)
+        this.context.globalAlpha = 0.9;
+        // Draw at the CURRENT position instead of a fixed position
+        // This ensures continuous movement all the way to the end
+        this.context.drawImage(img, this.x, this.y, imageSize, imageSize);
+        
+        // Move the hand with the stone
+        this.createHandScaleAnimation(deltaTime, this.x + 15, this.y + 10, true);
+        
+        // Add a subtle highlight effect at the destination
+        this.context.beginPath();
+        this.context.arc(endX, endY, imageSize/2, 0, Math.PI * 2);
+        this.context.fillStyle = 'rgba(255, 255, 255, 0.2)';
+        this.context.fill();
       } else {
         this.x = startX;
         this.y = startY;
       }
-    } else if (monsterStoneDifferenceInPercentage > 80) {
-      this.createHandScaleAnimation(deltaTime, startX + 15, startY + 10, false);
-    } else {
-      const previousAlpha = this.context.globalAlpha;
-      this.context.globalAlpha = 0.4;
-      this.context.drawImage(img, this.x, this.y + 20, imageSize, imageSize);
-      this.context.globalAlpha = previousAlpha;
-      this.context.drawImage(this.tutorialImg, this.x + 15, this.y + 10);//draws the hand stone drag animation!
     }
+    // In transit
+    else {
+      this.context.globalAlpha = 0.7;
+      this.context.drawImage(img, this.x, this.y, imageSize, imageSize);
+      this.context.globalAlpha = previousAlpha;
+      this.context.drawImage(this.tutorialImg, this.x + 15, this.y + 10);
+    }
+    
+    this.context.globalAlpha = previousAlpha;
   }
 
   private createHandScaleAnimation(deltaTime: number, offsetX: number, offsetY: number, shouldCreateRipple: boolean) {
