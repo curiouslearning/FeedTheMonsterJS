@@ -8,7 +8,7 @@ export var source = urlParams.get("source") == null ? null : urlParams.get("sour
 export var campaign_id = urlParams.get("campaign_id") == null ? null : urlParams.get("campaign_id");
 
 export var lang =
-  urlParams.get("cr_lang") == null ? "english" : urlParams.get("cr_lang");
+  urlParams.get("cr_lang") == null ? "mixe" : urlParams.get("cr_lang");
 
 export const font = Utils.getLanguageSpecificFont(lang);
 export const Debugger = {
