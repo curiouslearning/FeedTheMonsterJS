@@ -39,7 +39,6 @@ export default class WordPuzzleTutorial extends TutorialComponent {
     // Store stone positions and initialize animation
     if (stonePositions?.length > 0) {
       this.stonePositions = [...stonePositions];
-      console.log('[WordPuzzleTutorial] Constructor called, using simple timer approach');
       
       // Initialize the tutorial - stones will be positioned after the animation delay
       this.isInitialized = true;
@@ -70,7 +69,6 @@ export default class WordPuzzleTutorial extends TutorialComponent {
       // Track time since animation frame reached 100%
       if (!this.animationStartDelay) {
         this.animationStartDelay = performance.now();
-        console.log('[WordPuzzleTutorial] Starting delay before animation');
       }
       
       // Add a 500ms delay before actually starting the drag animation
@@ -114,7 +112,6 @@ export default class WordPuzzleTutorial extends TutorialComponent {
       // Check if stone has reached the monster (near the end position)
       if (monsterStoneDifferenceInPercentage < 15 && !this.animationCompleted) {
         this.animationCompleted = true;
-        console.log('[WordPuzzleTutorial] Stone reached destination, animation complete');
       }
     }
 
@@ -163,13 +160,11 @@ export default class WordPuzzleTutorial extends TutorialComponent {
         this.x = this.animateImagePosVal.x;
         this.y = this.animateImagePosVal.y;
 
-        // Log for debugging
-        console.log(`[WordPuzzleTutorial] Initializing stone ${stoneIndex} animation from (${this.x}, ${this.y}) to (${this.stonePosDetailsType.endX}, ${this.stonePosDetailsType.endY})`);
       } else {
-        console.error('[WordPuzzleTutorial] Failed to update stone position details');
+        // Position details failed to update
       }
     } catch (error) {
-      console.error('[WordPuzzleTutorial] Error initializing stone animation:', error);
+      // Handle animation initialization error
     }
   }
 
@@ -177,9 +172,6 @@ export default class WordPuzzleTutorial extends TutorialComponent {
    * Clean up resources when the tutorial is no longer needed
    */
   public dispose(): void {
-    // Log disposal for debugging
-    console.log('[WordPuzzleTutorial] Tutorial disposed, all resources cleaned up');
-
     // Reset state
     this.isInitialized = false;
     this.animationCompleted = false;
