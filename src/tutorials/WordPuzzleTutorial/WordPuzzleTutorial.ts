@@ -1,23 +1,18 @@
 import TutorialComponent from '../base-tutorial/base-tutorial-component';
-import gameStateService from '@gameStateService';
 
 export default class WordPuzzleTutorial extends TutorialComponent {
   // Animation timing properties
   private animationStartTime = 0;
   private animationStartDelay = 0; // Track when animation frame reaches 100%
   public frame = 0;
-  private animationDuration = 1000; // 1 second animation (reduced from 1.2s)
-  private initialDelay = 200; // 0.2 second initial delay (reduced from 0.5s)
-  private stoneAnimationDelay = 100; // 0.1 second delay between stone animations (reduced from 0.3s)
+  private animationDuration = 1000; // 1 second animation
   private isAnimatingNextStone = false;
   private stonePositions: number[][] = [];
   private currentStoneIndex = 0;
   // stoneImg is declared in the base class
   private imageSize: number;
   private isInitialized = false;
-  private initializationTimer: number | null = null;
   private animationCompleted = false; // Track if current stone animation is complete
-  private stonesReady = false; // Track if stones are in their final positions
 
   constructor({
     context,
@@ -41,21 +36,14 @@ export default class WordPuzzleTutorial extends TutorialComponent {
     this.stoneImg = stoneImg;
     this.imageSize = height / 9.5;
 
-    // Store stone positions and set up a simple delay
+    // Store stone positions and initialize animation
     if (stonePositions?.length > 0) {
       this.stonePositions = [...stonePositions];
       console.log('[WordPuzzleTutorial] Constructor called, using simple timer approach');
-
-      // Use a simple timer approach like MatchLetterPuzzleTutorial
-      // This gives stones time to be positioned before starting the tutorial
-      const initialDelay = 4500; // 4.5 second delay to ensure stones are positioned
-
-      console.log('[WordPuzzleTutorial] Setting up timer for', initialDelay, 'ms');
-
-      this.stonesReady = true;
+      
+      // Initialize the tutorial - stones will be positioned after the animation delay
       this.isInitialized = true;
       this.initializeStoneAnimation(0);
-
     } else {
       this.stonePositions = [];
       this.isInitialized = true;
@@ -189,25 +177,16 @@ export default class WordPuzzleTutorial extends TutorialComponent {
    * Clean up resources when the tutorial is no longer needed
    */
   public dispose(): void {
-    // Clear any pending timers
-    if (this.initializationTimer !== null) {
-      window.clearTimeout(this.initializationTimer);
-      this.initializationTimer = null;
-    }
-
-    // Clear any other setTimeout timers that might be active
-    // This is important to prevent any delayed animations from starting after disposal
-
     // Log disposal for debugging
     console.log('[WordPuzzleTutorial] Tutorial disposed, all resources cleaned up');
 
     // Reset state
     this.isInitialized = false;
-    this.stonesReady = false; // Reset to initial state
     this.animationCompleted = false;
     this.isAnimatingNextStone = false;
     this.frame = 0;
     this.animationStartTime = 0;
+    this.animationStartDelay = 0;
     this.currentStoneIndex = 0;
   }
 }
