@@ -153,10 +153,13 @@ export const WINTER_BG_GROUP_IMGS = {
 
 //Rive Animation
 export const MONSTER_PHASES = [
-  './assets/rive/phase1Monster.riv',
-  './assets/rive/phase2Monster.riv', //Removed 'Updated' in the Rive file and renamed it for Git to detect changes.
-  './assets/rive/phase4Monster.riv',
+  './assets/rive/eggmonsterclone.riv',
+  './assets/rive/hatchedmonsterclone.riv',
+  './assets/rive/adultmonsterclone.riv',
 ];
+
+//Start screen Monster
+export const STARTSCREEN_MONSTER = './assets/rive/phase4Monster.riv';
 export const EVOL_MONSTER = [
   './assets/rive/evolve.riv', // add new files when other evolution files are ready
   './assets/rive/ftm_monster_1_2_evol_v01.riv'
@@ -172,6 +175,7 @@ export enum MonsterState {
 export const SCENE_NAME_START = "StartScene";
 export const SCENE_NAME_LEVEL_SELECT = "LevelSelection";
 export const SCENE_NAME_GAME_PLAY = "GamePlay";
+export const SCENE_NAME_GAME_PLAY_REPLAY = "GamePlay_Replay";
 export const SCENE_NAME_LEVEL_END = "LevelEnd";
 
 //Levels
@@ -179,7 +183,7 @@ export const SPECIAL_LEVELS = [5, 13, 20, 30, 42];
 
 //Evolving Phases Backgrounds
 export const PHASES_BG ={
-  0: './assets/images/phase_background_1.webp',
-  1: './assets/images/phase_background_2.webp',
-  2: './assets/images/phase_background_3.webp'
+  0: './assets/images/phaseBackground_1.webp',
+  1: './assets/images/phaseBackground_2.webp',
+  2: './assets/images/phaseBackground_3.webp'
 };

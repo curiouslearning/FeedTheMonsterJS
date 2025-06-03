@@ -10,7 +10,7 @@ import {
   PhasesBackground,
   TrailEffectsHandler
 } from "@components";
-import { LetterPuzzleTutorial } from '@tutorials';
+import TutorialHandler from '@tutorials';
 import {
   StoneConfig,
   CLICK,
@@ -26,6 +26,7 @@ import {
   Debugger,
   lang,
   pseudoId,
+  Utils,
 } from "@common";
 import { GameScore, DataModal } from "@data";
 import {
@@ -36,6 +37,7 @@ import { FirebaseIntegration } from "../../Firebase/firebase-integration";
 import {
   SCENE_NAME_LEVEL_SELECT,
   SCENE_NAME_GAME_PLAY,
+  SCENE_NAME_GAME_PLAY_REPLAY,
   SCENE_NAME_LEVEL_END,
   PreviousPlayedLevel,
   MONSTER_PHASES
@@ -56,7 +58,7 @@ export class GameplayScene {
   public timerTicking: TimerTicking;
   public promptText: PromptText;
   public pauseButton: PauseButton;
-  public tutorial: LetterPuzzleTutorial;
+  public tutorial: TutorialHandler;
   public id: string;
   public context: CanvasRenderingContext2D;
   public levelIndicators: LevelIndicators;
@@ -64,7 +66,6 @@ export class GameplayScene {
   public pickedStone: StoneConfig;
   public puzzleStartTime: number;
   pausePopupComponent: PausePopupComponent
-  public showTutorial: boolean;
   public feedBackTexts: any;
   public isPuzzleCompleted: boolean;
   public rightToLeft: boolean;
@@ -147,7 +148,7 @@ export class GameplayScene {
             currentLevelData: this.levelData,
             selectedLevelNumber: this.levelNumber,
           });
-          gameStateService.publish(gameStateService.EVENTS.SWITCH_SCENE_EVENT, SCENE_NAME_GAME_PLAY);
+          gameStateService.publish(gameStateService.EVENTS.SWITCH_SCENE_EVENT, SCENE_NAME_GAME_PLAY_REPLAY);
           break;
         case PAUSE_POPUP_EVENT_DATA.SELECT_LEVEL:
           gameStateService.publish(gameStateService.EVENTS.GAME_PAUSE_STATUS_EVENT, false);
@@ -187,7 +188,13 @@ export class GameplayScene {
       this.levelData,
       this.timerTicking
     );
-    this.tutorial = new LetterPuzzleTutorial(this.context, this.width, this.height);
+    this.tutorial = new TutorialHandler({
+      context: this.context,
+      width: this.width,
+      height: this.height,
+      puzzleLevel: this.counter,
+      shouldHaveTutorial: gamePlayData?.tutorialOn
+    });
     this.promptText = new PromptText(
       this.width,
       this.height,
@@ -209,7 +216,7 @@ export class GameplayScene {
     this.gameControl = gameControlElem;
     this.gameControl.style.zIndex = "5";
     this.canvas = canvasElem;
-    this.width = canvasWidth > 1024 ? 500 : canvasWidth;
+    this.width = Utils.getResponsiveCanvasWidth();
     this.height = canvasHeight;
     this.context = gameCanvasContext;
   }
@@ -269,6 +276,7 @@ export class GameplayScene {
     }
 
     if (this.monster.checkHitboxDistance(event)) {
+      this.tutorial.hideTutorial();
       // Handle letter drop (success case)
       const lettersCountRef = { value: this.stonesCount };
       const ctx = {
@@ -309,6 +317,7 @@ export class GameplayScene {
       }
       this.stonesCount = lettersCountRef.value;
       this.isFeedBackTriggered = true;
+      this.trailEffectHandler.setGameHasStarted(false);
     } else if (this.pickedStoneObject) {
       // Handle letter drop (fail/miss case)
       this.stoneHandler.resetStonePosition(
@@ -422,9 +431,7 @@ export class GameplayScene {
     const y = event.clientY - rect.top;
 
     if (this.monster.onClick(x, y)) {
-      this.isGameStarted = true;
-      this.time = 0;
-      this.tutorial.setGameHasStarted();
+      this.setGameToStart();
     }
 
     // Use the play button in the HTML implementation instead of onClick
@@ -453,28 +460,30 @@ export class GameplayScene {
     this.handleMouseUp({ clientX: touch.clientX, clientY: touch.clientY });
   };
 
+  private setGameToStart() {
+    this.isGameStarted = true;
+    this.time = 0;
+    this.trailEffectHandler.setGameHasStarted(true);
+  }
+
   draw(deltaTime: number) {
     if (!this.isGameStarted && !this.isPauseButtonClicked) {
       this.time += deltaTime;
+      this.tutorial.drawQuickStart(deltaTime, this.isGameStarted);
       if (this.time >= 5000) {
-        this.isGameStarted = true;
-        this.time = 0;
-        this.tutorial.setGameHasStarted();
+        this.setGameToStart();
       }
       // Don't draw game elements until started
       return;
     }
 
-    // The promptText.draw method has been removed as it's now handled by HTML/CSS
     this.trailEffectHandler?.draw();
 
     if (this.isGameStarted) {
       this.handleStoneLetterDrawing(deltaTime);
     }
 
-    if (!this.isPauseButtonClicked && this.counter === 0) {
-      this.tutorial.drawLetterPuzzleTutorial(deltaTime);
-    }
+    this.tutorial.draw(deltaTime, this.isGameStarted);
   }
 
   private handleStoneLetterDrawing(deltaTime) {
@@ -528,6 +537,7 @@ export class GameplayScene {
     this.stonesCount = 1;
     const timerEnded = Boolean(isTimerEnded);
     if (timerEnded) {
+      this.tutorial.hideTutorial();
       this.logPuzzleEndFirebaseEvent(false);
     }
     this.counter += 1; //increment Puzzle
@@ -554,7 +564,7 @@ export class GameplayScene {
         handleLevelEnd();
         return;
       }
-      this.tutorial.setGameHasEndedFlag(); // Turn off tutorial
+      this.tutorial.hideTutorial(); // Turn off tutorial
       const timeoutId = setTimeout(handleLevelEnd, this.loadPuzzleDelay); // added delay for switching to level end screen
       if (this.isFeedBackTriggered) {
         const audioSources = this.audioPlayer?.audioSourcs || [];
