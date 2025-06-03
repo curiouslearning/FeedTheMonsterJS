@@ -104,7 +104,6 @@ export default class TutorialHandler {
     if (!this.gameTypesList[gameTypeName]?.isCleared) {
       //Create quick start tutorial.
       this.quickTutorial = new QuickStartTutorial({ context: this.context });
-      console.log(this.gameTypesList[gameTypeName], this.gameTypesList[gameTypeName]?.levelNumber);
 
       if (this.gameTypesList[gameTypeName]?.levelNumber === gameLevel) {
         return new MatchLetterPuzzleTutorial({
@@ -145,10 +144,6 @@ export default class TutorialHandler {
     if (this.activeTutorial && !this.isGameOnPause && hasGameStarted) {
       !this.hasGameEnded && this.activeTutorial?.drawTutorial(deltaTime);
     }
-  }
-
-  public isTutorialComplete(): boolean {
-    return this.activeTutorial?.isTutorialComplete?.() ?? false;
   }
 
   dispose() {
