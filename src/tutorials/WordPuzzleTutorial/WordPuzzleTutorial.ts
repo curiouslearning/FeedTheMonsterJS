@@ -20,7 +20,6 @@ export default class WordPuzzleTutorial extends TutorialComponent {
     height,
     stoneImg,
     stonePositions,
-    targetStones = []
   }: {
     context: CanvasRenderingContext2D;
     width: number;

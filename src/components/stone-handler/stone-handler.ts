@@ -131,9 +131,6 @@ export default class StoneHandler extends EventManager {
       // Initialize stone
       stone.initialize();
 
-      // Debug logs for word puzzle tutorial trigger investigation
-      const isWordPuzzle = this.levelData?.levelMeta?.levelType === 'Word';
-
       // Publish stone details for tutorials only at the first puzzle segment
       if (this.currentPuzzleData.segmentNumber === 0) {
         const isWordPuzzle = this.levelData?.levelMeta?.levelType === 'Word';
