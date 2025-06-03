@@ -7,7 +7,7 @@ type TutorialInitParams = {
   context: CanvasRenderingContext2D;
   width: number;
   height: number;
-  puzzleLevel ?: number;
+  puzzleLevel?: number;
   shouldHaveTutorial?: boolean;
 };
 export default class TutorialHandler {
