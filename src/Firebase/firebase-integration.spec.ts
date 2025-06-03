@@ -4,9 +4,9 @@ jest.mock('firebase/analytics', () => ({
   setUserProperties: jest.fn(),
 }));
 
-import { FirebaseIntegration } from '../../src/Firebase/firebase-integration';
+import { FirebaseIntegration } from './firebase-integration';
 import { logEvent, getAnalytics } from 'firebase/analytics';
-import { BaseFirebaseIntegration } from "../../src/Firebase/base-firebase-integration";
+import { BaseFirebaseIntegration } from "./base-firebase-integration";
 
 
 describe('Firebase Event Logging - Download_Completed', () => {
