@@ -68,7 +68,7 @@ export default class TimerTicking extends EventManager {
 
     startTimer() {
         // it will start timer immediatly
-        this.readyTimer();
+        // this.readyTimer();
         this.startMyTimer = true;
         this.isMyTimerOver = false
     }

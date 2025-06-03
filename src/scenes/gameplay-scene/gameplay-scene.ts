@@ -99,6 +99,10 @@ export class GameplayScene {
   public loadPuzzleDelay: 3000 | 4500;
   private puzzleHandler: any;
 
+  hasUserDragged: boolean = false;
+
+  isTutorialOver: boolean = false;
+
   // Define animation delays as an array where index 0 = phase 0, index 1 = phase 1, index 2 = phase 2
   private animationDelays = [
     { backToIdle: 350, isChewing: 0, isHappy: 1700, isSpit: 1500, isSad: 3000 }, // Phase 1
@@ -338,6 +342,7 @@ export class GameplayScene {
     if (this.pickedStone && this.pickedStone.frame <= 99) {
       return; // Prevent dragging if the letter is animating
     }
+    console.log('drag event');
 
     let rect = this.canvas.getBoundingClientRect();
     const x = event.clientX - rect.left;
@@ -467,23 +472,34 @@ export class GameplayScene {
   }
 
   draw(deltaTime: number) {
+    // If game hasn't started and it's not paused
     if (!this.isGameStarted && !this.isPauseButtonClicked) {
+      // Increment time using deltaTime to keep it consistent across devices
       this.time += deltaTime;
+
+      // Draw the quick-start tutorial animation
       this.tutorial.drawQuickStart(deltaTime, this.isGameStarted);
-      if (this.time >= 5000) {
+
+      if (this.tutorial.isTutorialComplete()) {
+        this.isTutorialOver = true;
+      }
+
+
+      // Start the game after a configured delay (default 5 seconds)
+      if ((this.isTutorialOver || this.hasUserDragged) && this.time >= 5000) {
         this.setGameToStart();
       }
       // Don't draw game elements until started
       return;
     }
-
+    // Trail effects drawing 
     this.trailEffectHandler?.draw();
-
+    // Main game logic only starts after isGameStarted = true
     if (this.isGameStarted) {
       this.handleStoneLetterDrawing(deltaTime);
     }
-
-    this.tutorial.draw(deltaTime, this.isGameStarted);
+    // Continue drawing tutorial layer if needed during gameplay
+    // this.tutorial.draw(deltaTime, this.isGameStarted);
   }
 
   private handleStoneLetterDrawing(deltaTime) {

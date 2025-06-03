@@ -4,7 +4,8 @@ export default class MatchLetterPuzzleTutorial extends TutorialComponent {
   private animationDuration: number = 1500; // 1.5 second animation
   private animationStartTime: number = 0;
   public frame: number = 0;
-
+  private totalElapsedTime: number = 0;
+  private tutorialDuration: number = 5000; // 5 seconds total for tutorial
   constructor({ context, width, height, stoneImg, stonePosVal }: {
     context: CanvasRenderingContext2D;
     width: number;
@@ -25,6 +26,8 @@ export default class MatchLetterPuzzleTutorial extends TutorialComponent {
   }
 
   public drawTutorial(deltaTime: number) {
+    // Track total elapsed tutorial time
+    this.totalElapsedTime += deltaTime;
     // Update animation based on actual time elapsed
     if (this.frame < 100) {
       if (this.animationStartTime === 0) {
@@ -58,5 +61,9 @@ export default class MatchLetterPuzzleTutorial extends TutorialComponent {
         startX, startY, endX, endY
       });
     }
+  }
+
+  public isTutorialComplete(): boolean {
+    return this.totalElapsedTime >= this.tutorialDuration;
   }
 }
