@@ -51,9 +51,9 @@ async function preloadAdditionalAssets() {
   const assetsToCache = [
     "/assets/rive/evolve.riv",
     "/assets/rive/ftm_monster_1_2_evol_v01.riv",
-    "/assets/rive/phase1Monster.riv",
-    "/assets/rive/phase2Monster.riv",
-    "/assets/rive/phase4Monster.riv",
+    "/assets/rive/eggmonsterclone.riv",
+    "/assets/rive/hatchedmonsterclone.riv",
+    "/assets/rive/adultmonsterclone.riv",
     "/assets/rive/rive.wasm",
   ];
   const cache = await caches.open("dynamic-cache");
