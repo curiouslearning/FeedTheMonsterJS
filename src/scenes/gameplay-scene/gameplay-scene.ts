@@ -467,22 +467,27 @@ export class GameplayScene {
   }
 
   draw(deltaTime: number) {
+    // If game hasn't started and it's not paused
     if (!this.isGameStarted && !this.isPauseButtonClicked) {
+      // Increment time using deltaTime to keep it consistent across devices
       this.time += deltaTime;
+
+      // Draw the quick-start tutorial animation
       this.tutorial.drawQuickStart(deltaTime, this.isGameStarted);
+      // Start the game after a configured delay (default 5 seconds)
       if (this.time >= 5000) {
         this.setGameToStart();
       }
       // Don't draw game elements until started
       return;
     }
-
+    // Trail effects drawing 
     this.trailEffectHandler?.draw();
-
+    // Main game logic only starts after isGameStarted = true
     if (this.isGameStarted) {
       this.handleStoneLetterDrawing(deltaTime);
     }
-
+    // Continue drawing tutorial layer if needed during gameplay
     this.tutorial.draw(deltaTime, this.isGameStarted);
   }
 
