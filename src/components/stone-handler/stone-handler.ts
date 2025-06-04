@@ -140,9 +140,21 @@ export default class StoneHandler extends EventManager {
           if (i === foilStones.length - 1) {
             const targetStonePositions = [];
             
+            // Create a map to track which indices have been used
+            const usedIndices = new Set();
+            
             // Collect positions for all target stones in order
             for (let targetChar of this.targetStones) {
-              const targetIndex = foilStones.indexOf(targetChar);
+              // Find the next unused occurrence of this character
+              let targetIndex = -1;
+              for (let j = 0; j < foilStones.length; j++) {
+                if (foilStones[j] === targetChar && !usedIndices.has(j)) {
+                  targetIndex = j;
+                  usedIndices.add(j); // Mark this index as used
+                  break;
+                }
+              }
+              
               if (targetIndex !== -1) {
                 targetStonePositions.push(positions[targetIndex]);
               }
