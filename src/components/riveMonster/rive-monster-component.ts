@@ -130,7 +130,7 @@ export class RiveMonsterComponent {
     context.strokeRect(this.hitboxRangeX.from, this.hitboxRangeY.from, width, height);
 
 
-  //   document.getElementById('overlay').appendChild(rect);
+    //   document.getElementById('overlay').appendChild(rect);
   }
 
   public initializeRive() {
@@ -142,6 +142,9 @@ export class RiveMonsterComponent {
 
     const canvasWidth = canvas.width;
     const canvasHeight = canvas.height;
+    // We can increase or decrease the percent at which the min Y need to be set (0.25 = 25%)
+    const minY = canvasHeight * 0.25;
+    const maxY = canvasHeight;
 
     const riveConfig: any = {
       src: src || MONSTER_PHASES[this.phaseIndex],
@@ -151,28 +154,17 @@ export class RiveMonsterComponent {
       layout: new Layout({
         fit: Fit.Contain,
         alignment: Alignment.Center,
+        minX: 0,
+        minY,
+        maxX: canvasWidth,
+        maxY,
       }),
     };
 
     if (!isEvolving) {
       riveConfig.stateMachines = [this.stateMachineName];
       riveConfig.onLoad = () => this.handleLoad();
-
-      // We can increase or decrease the percent at which the min Y need to be set (0.25 = 25%)
-      const minY = canvasHeight * 0.25;
-      const maxY = canvasHeight;
-
-      riveConfig.layout = new Layout({
-        fit: Fit.Contain,
-        alignment: Alignment.Center,
-        minX: 0,
-        minY,
-        maxX: canvasWidth,
-        maxY,
-      });
     }
-
-    this.evolutionOffSet(!isEvolving ? 0 : 50);
 
     this.riveInstance = new Rive(riveConfig);
   }
