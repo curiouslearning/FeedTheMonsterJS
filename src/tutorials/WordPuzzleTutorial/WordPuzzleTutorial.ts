@@ -5,7 +5,7 @@ export default class WordPuzzleTutorial extends TutorialComponent {
   private animationStartTime = 0;
   private animationStartDelay = 0; // Track when animation frame reaches 100%
   public frame = 0;
-  private animationDuration = 1000; // 1 second animation
+  private animationDuration = 700; // 700ms animation (faster than original 1000ms)
   private isAnimatingNextStone = false;
   private stonePositions: number[][] = [];
   private currentStoneIndex = 0;
@@ -70,7 +70,7 @@ export default class WordPuzzleTutorial extends TutorialComponent {
         this.animationStartDelay = performance.now();
       }
       
-      // Add a 500ms delay before actually starting the drag animation
+      // Add a 500 delay before actually starting the drag animation (reduced from 500ms)
       const delayElapsed = performance.now() - this.animationStartDelay;
       if (delayElapsed < 500) {
         return; // Wait until delay is complete before starting animation
@@ -80,7 +80,7 @@ export default class WordPuzzleTutorial extends TutorialComponent {
       const { startX, startY, endX, endY, monsterStoneDifference } = this.stonePosDetailsType;
 
       // Use similar position update logic as MatchLetterPuzzleTutorial but with speed boost
-      const speedMultiplier = 1.2; // Make animation 1.2x faster
+      const speedMultiplier = 1.8; // Make animation 1.8x faster (increased from 1.2x)
       
       this.x = dx >= 0
         ? this.x + absdx * deltaTime * speedMultiplier
@@ -125,7 +125,7 @@ export default class WordPuzzleTutorial extends TutorialComponent {
         this.initializeStoneAnimation(nextIndex);
         this.isAnimatingNextStone = false;
         this.animationCompleted = false; // Reset for next stone
-      }, 100); // Minimal delay to make the tutorial extremely responsive
+      }, 50); // Minimal delay to make the tutorial extremely responsive (reduced from 100ms)
     }
   }
 
