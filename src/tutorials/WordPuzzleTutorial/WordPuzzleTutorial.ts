@@ -130,7 +130,7 @@ export default class WordPuzzleTutorial extends TutorialComponent {
   }
 
 
-  private initializeStoneAnimation(stoneIndex: number): void {
+  public initializeStoneAnimation(stoneIndex: number): void {
     if (!this.isInitialized || !this.stonePositions?.length || stoneIndex < 0 || stoneIndex >= this.stonePositions.length) {
       return;
     }
