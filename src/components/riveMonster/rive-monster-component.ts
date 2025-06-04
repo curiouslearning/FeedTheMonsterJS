@@ -128,9 +128,6 @@ export class RiveMonsterComponent {
     context.strokeStyle = '#000';
     context.lineWidth = 2;
     context.strokeRect(this.hitboxRangeX.from, this.hitboxRangeY.from, width, height);
-
-
-    //   document.getElementById('overlay').appendChild(rect);
   }
 
   public initializeRive() {
