@@ -49,8 +49,8 @@ self.registration.addEventListener("updatefound", function (e) {
 // Preload additional assets
 async function preloadAdditionalAssets() {
   const assetsToCache = [
-    "/assets/rive/evolve.riv",
-    "/assets/rive/ftm_monster_1_2_evol_v01.riv",
+    "/assets/rive/ftm_monster_evolve1-2.riv",
+    "/assets/rive/ftm_monster_evolve2-4.riv",
     "/assets/rive/eggmonsterclone.riv",
     "/assets/rive/hatchedmonsterclone.riv",
     "/assets/rive/adultmonsterclone.riv",
