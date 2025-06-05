@@ -126,9 +126,6 @@ export default class StoneHandler extends EventManager {
         }
 
         // For word puzzles, publish all stone information at the end of stone creation
-        console.log('positions', positions)
-        console.log('[...this.targetStones]', [...this.targetStones])
-        console.log('[...foilStones]', [...foilStones])
         if (isWordPuzzle) {
           gameStateService.publish(
             gameStateService.EVENTS.CORRECT_STONE_POSITION, 
