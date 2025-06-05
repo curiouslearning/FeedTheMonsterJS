@@ -1,10 +1,8 @@
 import { StoneConfig } from './stone-config';
-import { TimerTicking } from '@components';
 
 describe('StoneConfig', () => {
   let stoneConfig: StoneConfig;
   let mockContext: CanvasRenderingContext2D;
-  let mockTimerTicking: TimerTicking;
   let mockImage: HTMLImageElement;
   let now: number;
 
@@ -30,10 +28,6 @@ describe('StoneConfig', () => {
       }
     } as unknown as CanvasRenderingContext2D;
 
-    mockTimerTicking = {
-      update: jest.fn()
-    } as unknown as TimerTicking;
-
     mockImage = new Image();
     Object.defineProperties(mockImage, {
       width: { value: 100 },
@@ -50,8 +44,7 @@ describe('StoneConfig', () => {
       'A',
       100,
       100,
-      mockImage,
-      mockTimerTicking
+      mockImage
     );
   });
 
@@ -76,8 +69,7 @@ describe('StoneConfig', () => {
         'A',
         targetX,
         100,
-        mockImage,
-        mockTimerTicking
+        mockImage
       );
 
       // Initialize animation
@@ -110,8 +102,7 @@ describe('StoneConfig', () => {
         'A',
         100,
         targetY,
-        mockImage,
-        mockTimerTicking
+        mockImage
       );
 
       // Initialize animation

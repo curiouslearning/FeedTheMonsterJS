@@ -2,6 +2,8 @@ import { GameplayScene } from './gameplay-scene';
 import gameStateService from '@gameStateService';
 import gameSettingsService from '@gameSettingsService';
 import { SCENE_NAME_GAME_PLAY } from "@constants";
+import { TimerTicking } from '@components';
+import { update } from 'lodash-es';
 
 // Mocking dependencies
 jest.mock('@components', () => {
@@ -42,6 +44,7 @@ jest.mock('@components', () => {
       startTimer: jest.fn(),
       applyRotation: jest.fn(),
       destroy: jest.fn(),
+      update: jest.fn()
     })),
     StoneHandler: jest.fn().mockImplementation(() => ({
       draw: jest.fn(),
@@ -53,7 +56,6 @@ jest.mock('@components', () => {
       getFoilStones: jest.fn().mockReturnValue(['FoilStone1', 'FoilStone2']),
       stones: [],
       foilStones: [],
-      isGamePaused: false,
       context: {} as CanvasRenderingContext2D,
       canvas: document.createElement('canvas'),
       currentPuzzleData: {},
@@ -90,7 +92,7 @@ jest.mock('@components', () => {
       play: jest.fn(),
       checkHitboxDistance: jest.fn(),
       onClick: jest.fn(),
-    }))
+    })),
   };
 });
 
@@ -121,7 +123,7 @@ jest.mock('@gameStateService', () => ({
       SWITCH_SCENE_EVENT: 'SWITCH_SCENE_EVENT',
     },
     getGameTypeList: jest.fn(),
-    saveHitBoxRanges: jest.fn()
+    saveHitBoxRanges: jest.fn(),
   }
 }));
 
@@ -167,7 +169,8 @@ describe('GameplayScene with BasePopupComponent', () => {
       jsonVersionNumber: '1.0.0',
       data: {},
       feedbackAudios: {},
-      tutorialOn: false
+      tutorialOn: false,
+      isTutorialCleared: false
     });
 
     (gameSettingsService.getCanvasSizeValues as jest.Mock).mockReturnValue({
@@ -449,6 +452,29 @@ describe('GameplayScene with BasePopupComponent', () => {
         gameStateService.EVENTS.SWITCH_SCENE_EVENT,
         expect.any(String)
       );
+    });
+  });
+
+  describe('Timer Update ', () => {
+    it('should call timerTicking.update when stones are loaded and game is not paused', () => {
+      const mockStone = {
+        frame: 100,
+        draw: jest.fn(), // Accepts context
+        isDisposed: false
+      };
+
+      (gameplayScene as any).stoneHandler = {
+        stonesHasLoaded: true,
+        stones: [mockStone],
+        draw: jest.fn(), // stubbed to avoid internal errors
+      };
+
+      (gameplayScene as any).isPauseButtonClicked = false;
+      (gameplayScene as any).isGameStarted = true;
+
+      gameplayScene.draw(16);
+
+      expect(gameplayScene.timerTicking.update).toHaveBeenCalledWith(16);
     });
   });
 });

@@ -68,9 +68,18 @@ export class GameStateService extends PubSub {
             levelNumber: number,
             isCleared: boolean
         };
-        LetterOnly: number;
-        SoundLetterOnly: number;
-        Word: number;
+        LetterOnly: {
+            levelNumber: number,
+            isCleared: boolean
+        };
+        SoundLetterOnly: {
+            levelNumber: number,
+            isCleared: boolean
+        };
+        Word: {
+            levelNumber: number,
+            isCleared: boolean
+        };
     };
     public feedbackAudios: null | {
         amazing: string,
@@ -212,11 +221,13 @@ export class GameStateService extends PubSub {
             : "";
 
         let shouldHaveTutorial = false;
+        let isTutorialCleared : boolean = false;
         const selectedLevelNumber:string | number = this.gamePlayData.selectedLevelNumber;
         const levelNumber = typeof selectedLevelNumber === 'string' ? parseInt(selectedLevelNumber) : selectedLevelNumber;
         //Very small array to iterate.
         Object.values(this.gameTypesFirstInstanceList).every((listedLevelNumber: { levelNumber: number, isCleared: boolean}) => {
             if (listedLevelNumber?.levelNumber === levelNumber) {
+                isTutorialCleared = listedLevelNumber?.isCleared;
                 shouldHaveTutorial = true;
                 return false; //Return false to break every loop.
             }
@@ -233,7 +244,8 @@ export class GameStateService extends PubSub {
             data: this.data,
             isLastLevel: this.isLastLevel,
             monsterPhaseNumber: this.monsterPhaseNumber,
-            tutorialOn: shouldHaveTutorial
+            tutorialOn: shouldHaveTutorial,
+            isTutorialCleared
         };
     }
 
