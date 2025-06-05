@@ -132,9 +132,7 @@ export default class StoneHandler extends EventManager {
             {
               stonePosVal: positions,         // All stone positions
               img,                           // Stone image
-              levelData: this.levelData,      // Level data
-              targetStones: [...this.targetStones], // Target letter stones in order
-              foilStones: [...foilStones]    // All foil letter stones (including target letters)
+              levelData: this.levelData       // Level data
             }
           );
         } 

@@ -136,19 +136,19 @@ describe('WordPuzzleTutorial', () => {
       // First draw call
       tutorial.drawTutorial(0.016);
       
-      // Manually set the animation state to trigger animateStoneDrag
+      // Manually set the animation state to trigger animateWordPuzzleStoneDrag
       (tutorial as any).frame = 100;
       (tutorial as any).animationStartDelay = performance.now() - 600; // More than 500ms delay
       
-      // Set up the mock for animateStoneDrag
-      const animateStoneDragMock = jest.fn();
-      (tutorial as any).animateStoneDrag = animateStoneDragMock;
+      // Set up the mock for animateWordPuzzleStoneDrag
+      const animateWordPuzzleStoneDragMock = jest.fn();
+      (tutorial as any).animateWordPuzzleStoneDrag = animateWordPuzzleStoneDragMock;
       
-      // This call should trigger animateStoneDrag
+      // This call should trigger animateWordPuzzleStoneDrag
       tutorial.drawTutorial(0.016);
       
-      // Verify animateStoneDrag was called
-      expect(animateStoneDragMock).toHaveBeenCalled();
+      // Verify animateWordPuzzleStoneDrag was called
+      expect(animateWordPuzzleStoneDragMock).toHaveBeenCalled();
     });
   });
   

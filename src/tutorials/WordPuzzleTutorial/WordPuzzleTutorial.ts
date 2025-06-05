@@ -13,6 +13,7 @@ export default class WordPuzzleTutorial extends TutorialComponent {
   private imageSize: number;
   private isInitialized = false;
   private animationCompleted = false; // Track if current stone animation is complete
+  private levelData: any; // Store level data for accessing prompt text
 
   constructor({
     context,
@@ -20,16 +21,14 @@ export default class WordPuzzleTutorial extends TutorialComponent {
     height,
     stoneImg,
     stonePositions,
-    targetStones = [],
-    foilStones = []
+    levelData = null
   }: {
     context: CanvasRenderingContext2D;
     width: number;
     height: number;
     stoneImg: CanvasImageSource;
     stonePositions: number[][];
-    targetStones?: string[];
-    foilStones?: string[];
+    levelData?: any;
   }) {
     super(context);
 
@@ -37,18 +36,37 @@ export default class WordPuzzleTutorial extends TutorialComponent {
     this.height = height;
     this.stoneImg = stoneImg;
     this.imageSize = height / 9.5;
+    this.levelData = levelData;
 
-    // If we have both foil stones and target stones, calculate the correct positions
-    if (foilStones.length > 0 && targetStones.length > 0 && stonePositions?.length > 0) {
-      // Find the correct positions for target stones, handling duplicates
-      const targetStonePositions = this.findTargetStonePositions(targetStones, foilStones, stonePositions);
-      this.stonePositions = targetStonePositions;
-    }
-    // Otherwise use the provided positions directly
-    else if (stonePositions?.length > 0) {
-      this.stonePositions = [...stonePositions];
+    // Get target stones and foil stones from level data
+    if (this.levelData && stonePositions?.length > 0) {
+      const currentPuzzleData = this.levelData.puzzles[0]; // Tutorial is always for first puzzle
+      const targetStones = currentPuzzleData.targetStones || [];
+      
+      // Get foil stones from the puzzle data
+      let foilStones = [];
+      if (currentPuzzleData.foilStones) {
+        // Clone the foil stones array to avoid modifying the original
+        foilStones = [...currentPuzzleData.foilStones];
+        
+        // Add target stones to foil stones (as done in StoneHandler.getFoilStones)
+        targetStones.forEach(stone => {
+          foilStones.push(stone);
+        });
+      }
+      
+      // If we have both foil stones and target stones, calculate the correct positions
+      if (foilStones.length > 0 && targetStones.length > 0) {
+        // Find the correct positions for target stones, handling duplicates
+        const targetStonePositions = this.findTargetStonePositions(targetStones, foilStones, stonePositions);
+        this.stonePositions = targetStonePositions;
+      }
+      // Otherwise use the provided positions directly
+      else {
+        this.stonePositions = [...stonePositions];
+      }
     } else {
-      this.stonePositions = [];
+      this.stonePositions = stonePositions?.length > 0 ? [...stonePositions] : [];
     }
     
     // Initialize the tutorial if we have positions
@@ -107,8 +125,9 @@ export default class WordPuzzleTutorial extends TutorialComponent {
       const distance = Math.sqrt(disx * disx + disy * disy);
       const monsterStoneDifferenceInPercentage = (100 * distance / monsterStoneDifference);
       
-      // Draw the stone drag animation with word puzzle specific enhancements
-      this.animateStoneDrag({
+      // Directly call the specialized word puzzle animation method
+      // This reduces conditional complexity in the base class
+      this.animateWordPuzzleStoneDrag({
         deltaTime,
         img: this.stoneImg,
         imageSize: this.imageSize,
@@ -116,8 +135,7 @@ export default class WordPuzzleTutorial extends TutorialComponent {
         startX,
         startY,
         endX,
-        endY,
-        isWordPuzzle: true // Enable word puzzle specific animation
+        endY
       });
       
       // Check if stone has reached the monster (near the end position)

@@ -257,7 +257,7 @@ export default class TutorialComponent {
    * Specialized animation for word puzzle tutorials
    * Provides a more guided animation path with visual cues for multi-letter words
    */
-  private animateWordPuzzleStoneDrag({
+  protected animateWordPuzzleStoneDrag({
     deltaTime,
     img,
     imageSize,
@@ -317,7 +317,7 @@ export default class TutorialComponent {
     this.context.globalAlpha = previousAlpha;
   }
 
-  private createHandScaleAnimation(deltaTime: number, offsetX: number, offsetY: number, shouldCreateRipple: boolean) {
+  protected createHandScaleAnimation(deltaTime: number, offsetX: number, offsetY: number, shouldCreateRipple: boolean) {
     this.totalTime += Math.floor(deltaTime);
     const transitionDuration = 500;
     const scaleFactor = this.sinusoidalInterpolation(this.totalTime, 1, 1.5, transitionDuration);
