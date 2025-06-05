@@ -137,6 +137,7 @@ export default class StoneHandler extends EventManager {
         
         if (isWordPuzzle) {
           // Only process this once after all stones are created
+          // We need this to get the correct stone position for word. so we will know what their exact coordinates
           if (i === foilStones.length - 1) {
             const targetStonePositions = [];
             
