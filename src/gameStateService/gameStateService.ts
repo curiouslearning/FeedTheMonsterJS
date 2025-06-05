@@ -68,9 +68,18 @@ export class GameStateService extends PubSub {
             levelNumber: number,
             isCleared: boolean
         };
-        LetterOnly: number;
-        SoundLetterOnly: number;
-        Word: number;
+        LetterOnly: {
+            levelNumber: number,
+            isCleared: boolean
+        };
+        SoundLetterOnly: {
+            levelNumber: number,
+            isCleared: boolean
+        };
+        Word: {
+            levelNumber: number,
+            isCleared: boolean
+        };
     };
     public feedbackAudios: null | {
         amazing: string,
@@ -168,27 +177,27 @@ export class GameStateService extends PubSub {
             //Return determined game types and what level it will first appear.
             return gameTypes;
         }
-        return {}
+         return {}
     }
 
     private checkClearedLevels(levelNumber: number) {
-        const clearedLevels = GameScore.getAllGameLevelInfo();
-        let hasCleardLevel = false;
+       const clearedLevels = GameScore.getAllGameLevelInfo();
+       let hasCleardLevel = false;
 
-        /*We don't need the whole object in Cleard level data, we just need to check if the
-         levelNumber is in the list as it means it that level has been cleared.
-        */
-        clearedLevels.every((cleardLevels: {
-            levelName: string,
-            levelNumber: number,
-            score: number,
-            starCount: number
-        }) => {
-            if (cleardLevels.levelNumber === levelNumber) {
-                hasCleardLevel = true;
-                return false; //Return false to break every loop.
-            }
-        });
+       /*We don't need the whole object in Cleard level data, we just need to check if the
+        levelNumber is in the list as it means it that level has been cleared.
+       */
+       clearedLevels.every((cleardLevels: {
+           levelName: string,
+           levelNumber: number,
+           score: number,
+           starCount: number
+       }) => {
+        if (cleardLevels.levelNumber === levelNumber) {
+            hasCleardLevel = true;
+            return false; //Return false to break every loop.
+        }
+       });
 
         return hasCleardLevel;
     }
@@ -208,24 +217,21 @@ export class GameStateService extends PubSub {
 
     getGamePlaySceneDetails() {
         const versionNumber = !!this.majVersion && !!this.minVersion
-            ? `${this.majVersion}.${this.minVersion}`
+            ? this.majVersion.toString() + "." + this.minVersion.toString()
             : "";
 
-        // Parse level number if it's a string
-        const selectedLevelNumber = this.gamePlayData.selectedLevelNumber;
-        const levelNumber = typeof selectedLevelNumber === 'string' ? parseInt(selectedLevelNumber) : selectedLevelNumber;
-        
-        // Check if this level should show a tutorial
         let shouldHaveTutorial = false;
-        const gameTypeValues = Object.values(this.gameTypesFirstInstanceList) as Array<{ levelNumber: number, isCleared: boolean }>;
-        
-        // Check if current level matches any first-instance level
-        gameTypeValues.some(listedLevel => {
-            if (Number(listedLevel.levelNumber) === Number(levelNumber)) {
+        let isTutorialCleared : boolean = false;
+        const selectedLevelNumber:string | number = this.gamePlayData.selectedLevelNumber;
+        const levelNumber = typeof selectedLevelNumber === 'string' ? parseInt(selectedLevelNumber) : selectedLevelNumber;
+        //Very small array to iterate.
+        // Using some() instead of every() because we want to find a match and stop
+        Object.values(this.gameTypesFirstInstanceList).some((listedLevelNumber: { levelNumber: number, isCleared: boolean}) => {
+            if (listedLevelNumber?.levelNumber === levelNumber) {
+                isTutorialCleared = listedLevelNumber?.isCleared;
                 shouldHaveTutorial = true;
-                return true; // Stop searching once we find a match
+                return false; //Return false to break every loop.
             }
-            return false;
         });
 
         return {
@@ -239,12 +245,13 @@ export class GameStateService extends PubSub {
             data: this.data,
             isLastLevel: this.isLastLevel,
             monsterPhaseNumber: this.monsterPhaseNumber,
-            tutorialOn: shouldHaveTutorial
+            tutorialOn: shouldHaveTutorial,
+            isTutorialCleared
         };
     }
 
-    levelEndSceneData({ levelEndData, data }) {
-        this.levelEndData = { ...levelEndData };
+    levelEndSceneData({levelEndData, data}) {
+        this.levelEndData = {...levelEndData};
         this.data = data;
         this.isLastLevel = levelEndData.currentLevel === data.levels[data.levels.length - 1].levelMeta.levelNumber;
     }
@@ -266,12 +273,12 @@ export class GameStateService extends PubSub {
     public checkMonsterPhaseUpdation(): number {
         const totalStarCount = this.getTotalStars();
         switch (true) {
-            case totalStarCount >= 38:
-                return 2; // Phase 4
-            case totalStarCount >= 8:
-                return 1; // Phase 2
-            default:
-                return 0; // Phase 1 (default)
+          case totalStarCount >= 38:
+            return 2; // Phase 4
+          case totalStarCount >= 8:
+            return 1; // Phase 2
+          default:
+            return 0; // Phase 1 (default)
         }
     }
 

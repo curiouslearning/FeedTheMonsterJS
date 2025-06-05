@@ -190,29 +190,21 @@ export default class WordPuzzleTutorial extends TutorialComponent {
    * @returns Array of positions for target stones in order
    */
   private findTargetStonePositions(targetStones: string[], foilStones: string[], positions: number[][]): number[][] {
-    const targetStonePositions: number[][] = [];
-    
-    // Create a map to track which indices have been used
     const usedIndices = new Set<number>();
     
-    // Collect positions for all target stones in order
-    for (let targetChar of targetStones) {
-      // Find the next unused occurrence of this character
-      let targetIndex = -1;
-      for (let j = 0; j < foilStones.length; j++) {
-        if (foilStones[j] === targetChar && !usedIndices.has(j)) {
-          targetIndex = j;
-          usedIndices.add(j); // Mark this index as used
-          break;
-        }
-      }
+    return targetStones.map(targetChar => {
+      // Find the index of the first unused occurrence of this character
+      const targetIndex = foilStones.findIndex((stone, index) => 
+        stone === targetChar && !usedIndices.has(index)
+      );
       
       if (targetIndex !== -1) {
-        targetStonePositions.push(positions[targetIndex]);
+        usedIndices.add(targetIndex); // Mark this index as used
+        return positions[targetIndex];
       }
-    }
-    
-    return targetStonePositions;
+      
+      return null; // Handle case where character isn't found (shouldn't happen)
+    }).filter(position => position !== null); // Filter out any nulls
   }
 
   public dispose(): void {

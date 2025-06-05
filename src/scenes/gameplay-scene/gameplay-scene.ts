@@ -98,6 +98,7 @@ export class GameplayScene {
   private backgroundGenerator: PhasesBackground;
   public loadPuzzleDelay: 3000 | 4500;
   private puzzleHandler: any;
+  private shouldShowTutorialAnimation: boolean;
 
   // Define animation delays as an array where index 0 = phase 0, index 1 = phase 1, index 2 = phase 2
   private animationDelays = [
@@ -185,8 +186,7 @@ export class GameplayScene {
       this.context,
       this.canvas,
       this.counter,
-      this.levelData,
-      this.timerTicking
+      this.levelData
     );
     this.tutorial = new TutorialHandler({
       context: this.context,
@@ -230,6 +230,8 @@ export class GameplayScene {
     this.feedBackTexts = gamePlayData.feedBackTexts;
     this.data = gamePlayData.data;
     this.monsterPhaseNumber = gamePlayData.monsterPhaseNumber;
+    //For shouldShowTutorialAnimation- If the game level should have tutorial AND level is not yet cleared, timer should be delayed.
+    this.shouldShowTutorialAnimation = gamePlayData.tutorialOn && !gamePlayData.isTutorialCleared;
   }
 
   setupBg = () => {
@@ -421,6 +423,8 @@ export class GameplayScene {
       }
     }
 
+    this.shouldShowTutorialAnimation = false; //Drag action will start the timer and disable the tutorial.
+
     // Trigger open mouth animation
     this.triggerMonsterAnimation('isMouthOpen');
   };
@@ -485,23 +489,35 @@ export class GameplayScene {
     this.trailEffectHandler?.draw();
     // Main game logic only starts after isGameStarted = true
     if (this.isGameStarted) {
-      this.handleStoneLetterDrawing(deltaTime);
+      this.handleStoneLetterDrawing();
+      this.handleTimerUpdate(deltaTime);
     }
     // Continue drawing tutorial layer if needed during gameplay
     this.tutorial.draw(deltaTime, this.isGameStarted);
   }
 
-  private handleStoneLetterDrawing(deltaTime) {
+  private handleStoneLetterDrawing() {
     if (this.puzzleHandler.checkIsWordPuzzle()) {
       this.stoneHandler.drawWordPuzzleLetters(
-        deltaTime,
         (foilStoneIndex) => {
           return this.puzzleHandler.validateShouldHideLetter(foilStoneIndex);
         },
         this.puzzleHandler.getWordPuzzleGroupedObj()
       );
     } else {
-      this.stoneHandler.draw(deltaTime);
+      this.stoneHandler.draw();
+    }
+  }
+
+  private handleTimerUpdate(deltaTime: number) {
+    // Update timer only once animation is complete and game is not paused.
+    if (this.stoneHandler.stonesHasLoaded && !this.isPauseButtonClicked) {
+      if (this.shouldShowTutorialAnimation) {
+        // FM-544 add or modify code logic here to controlling the timer when tutorial is animating.
+        this.timerTicking.update(deltaTime);
+      } else {
+        this.timerTicking.update(deltaTime);
+      }
     }
   }
 
@@ -547,7 +563,7 @@ export class GameplayScene {
     }
     this.counter += 1; //increment Puzzle
     this.isGameStarted = false;
-
+    this.shouldShowTutorialAnimation = false; //Tutorial is no longer active, timer should work normally.
     if (this.counter === this.levelData.puzzles.length) {
       const handleLevelEnd = () => {
         this.levelIndicators.setIndicators(this.counter);
