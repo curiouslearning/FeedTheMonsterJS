@@ -899,20 +899,17 @@
           "SegmentNumber": 0,
           "targetstones": [
             {
-              "StoneText": "l"
+              "StoneText": "c"
             },
             {
-              "StoneText": "o"
+              "StoneText": "a"
             },
             {
-              "StoneText": "o"
-            },
-            {
-              "StoneText": "k"
+              "StoneText": "t"
             }
           ],
           "prompt": {
-            "PromptText": "look",
+            "PromptText": "cat",
             "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/english/audios/cat.mp3"
           },
           "foilstones": [
@@ -920,16 +917,7 @@
               "StoneText": "t"
             },
             {
-              "StoneText": "o"
-            },
-            {
-              "StoneText": "l"
-            },
-            {
-              "StoneText": "o"
-            },
-            {
-              "StoneText": "k"
+              "StoneText": "m"
             },
             {
               "StoneText": "n"
