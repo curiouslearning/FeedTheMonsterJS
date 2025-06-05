@@ -116,26 +116,19 @@ export default class StoneHandler extends EventManager {
       //Publish stone details, image and level data for stone tutorial only at the first puzzle segment.
       if (this.currentPuzzleData.segmentNumber === 0) {
         const isWordPuzzle = this.levelData?.levelMeta?.levelType === 'Word';
-        // For letter puzzles, publish the single stone position
-        if (foilStones[i] == this.correctTargetStone) {
-          gameStateService.publish(gameStateService.EVENTS.CORRECT_STONE_POSITION, {
-            stonePosVal: positions[i],
-            img,
-            levelData: this.levelData
-          });
-        }
-
-        // For word puzzles, publish all stone information at the end of stone creation
-        if (isWordPuzzle) {
+        
+        // For letter puzzles, only publish when the correct target stone is found
+        // For word puzzles, publish all stone positions at once
+        if (isWordPuzzle || foilStones[i] == this.correctTargetStone) {
           gameStateService.publish(
             gameStateService.EVENTS.CORRECT_STONE_POSITION, 
             {
-              stonePosVal: positions,         // All stone positions
-              img,                           // Stone image
-              levelData: this.levelData       // Level data
+              stonePosVal: isWordPuzzle ? positions : positions[i], // All positions for word puzzles, single position for letter puzzles
+              img,                                                // Stone image
+              levelData: this.levelData                           // Level data
             }
           );
-        } 
+        }
       }
 
       this.foilStones.push(stone);
