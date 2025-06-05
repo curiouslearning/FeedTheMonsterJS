@@ -131,54 +131,13 @@ export default class StoneHandler extends EventManager {
       // Initialize stone
       stone.initialize();
 
-      // Publish stone details for tutorials only at the first puzzle segment
-      if (this.currentPuzzleData.segmentNumber === 0) {
-        const isWordPuzzle = this.levelData?.levelMeta?.levelType === 'Word';
-        
-        if (isWordPuzzle) {
-          // Only process this once after all stones are created
-          // We need this to get the correct stone position for word. so we will know what their exact coordinates
-          if (i === foilStones.length - 1) {
-            const targetStonePositions = [];
-            
-            // Create a map to track which indices have been used
-            const usedIndices = new Set();
-            
-            // Collect positions for all target stones in order
-            for (let targetChar of this.targetStones) {
-              // Find the next unused occurrence of this character
-              let targetIndex = -1;
-              for (let j = 0; j < foilStones.length; j++) {
-                if (foilStones[j] === targetChar && !usedIndices.has(j)) {
-                  targetIndex = j;
-                  usedIndices.add(j); // Mark this index as used
-                  break;
-                }
-              }
-              
-              if (targetIndex !== -1) {
-                targetStonePositions.push(positions[targetIndex]);
-              }
-            }
-            
-            gameStateService.publish(
-              gameStateService.EVENTS.CORRECT_STONE_POSITION, 
-              {
-                stonePosVal: targetStonePositions,
-                img,
-                levelData: this.levelData,
-                targetStones: [...this.targetStones]
-              }
-            );
-          }
-        } else if (foilStones[i] == this.correctTargetStone) {
-          // For letter puzzles, publish the single stone position
-          gameStateService.publish(gameStateService.EVENTS.CORRECT_STONE_POSITION, {
-            stonePosVal: positions[i],
-            img,
-            levelData: this.levelData
-          });
-        }
+      //Publish stone details, image and level data for stone tutorial only at the first puzzle segment.
+      if (foilStones[i] == this.correctTargetStone && this.currentPuzzleData.segmentNumber === 0) {
+        gameStateService.publish(gameStateService.EVENTS.CORRECT_STONE_POSITION, {
+          stonePosVal: positions[i],
+          img,
+          levelData: this.levelData
+        });
       }
 
       // Store in pool for potential reuse

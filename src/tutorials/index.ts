@@ -55,7 +55,8 @@ export default class TutorialHandler {
           stonePosVal: number[] | number[][], 
           img: any, 
           levelData: any, 
-          targetStones?: string[] 
+          targetStones?: string[],
+          foilStones?: string[] 
         }) => {
           // Only process if we have valid data
           if (eventData.stonePosVal && eventData.img && eventData.levelData) {
@@ -75,7 +76,8 @@ export default class TutorialHandler {
                 stonePosVal: eventData.stonePosVal,
                 img: eventData.img,
                 gameTypeName,
-                targetStones: eventData.targetStones || []
+                targetStones: eventData.targetStones || [],
+                foilStones: eventData.foilStones || []
               });
             }
           }
@@ -103,12 +105,13 @@ export default class TutorialHandler {
     this.context = context;
   }
 
-  private createTutorialInstance({ gameLevel, stonePosVal, img, gameTypeName, targetStones = [] }: {
+  private createTutorialInstance({ gameLevel, stonePosVal, img, gameTypeName, targetStones = [], foilStones = [] }: {
     gameLevel: number,
     stonePosVal: number[] | number[][],
     img: CanvasImageSource,
     gameTypeName: string,
-    targetStones?: string[]
+    targetStones?: string[],
+    foilStones?: string[]
   }) {
     if (!this.gameTypesList[gameTypeName]?.isCleared) {
       //Create quick start tutorial.
@@ -136,7 +139,8 @@ export default class TutorialHandler {
             height: this.height,
             stoneImg: img,
             stonePositions: stonePosVal as number[][],
-            targetStones: Array.isArray(targetStones) ? targetStones : []
+            targetStones: Array.isArray(targetStones) ? targetStones : [],
+            foilStones: Array.isArray(foilStones) ? foilStones : []
           });
         }
       }

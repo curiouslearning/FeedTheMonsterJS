@@ -20,6 +20,8 @@ export default class WordPuzzleTutorial extends TutorialComponent {
     height,
     stoneImg,
     stonePositions,
+    targetStones = [],
+    foilStones = []
   }: {
     context: CanvasRenderingContext2D;
     width: number;
@@ -27,6 +29,7 @@ export default class WordPuzzleTutorial extends TutorialComponent {
     stoneImg: CanvasImageSource;
     stonePositions: number[][];
     targetStones?: string[];
+    foilStones?: string[];
   }) {
     super(context);
 
@@ -35,15 +38,24 @@ export default class WordPuzzleTutorial extends TutorialComponent {
     this.stoneImg = stoneImg;
     this.imageSize = height / 9.5;
 
-    // Store stone positions and initialize animation
-    if (stonePositions?.length > 0) {
+    // If we have both foil stones and target stones, calculate the correct positions
+    if (foilStones.length > 0 && targetStones.length > 0 && stonePositions?.length > 0) {
+      // Find the correct positions for target stones, handling duplicates
+      const targetStonePositions = this.findTargetStonePositions(targetStones, foilStones, stonePositions);
+      this.stonePositions = targetStonePositions;
+    }
+    // Otherwise use the provided positions directly
+    else if (stonePositions?.length > 0) {
       this.stonePositions = [...stonePositions];
-      
-      // Initialize the tutorial - stones will be positioned after the animation delay
+    } else {
+      this.stonePositions = [];
+    }
+    
+    // Initialize the tutorial if we have positions
+    if (this.stonePositions.length > 0) {
       this.isInitialized = true;
       this.initializeStoneAnimation(0);
     } else {
-      this.stonePositions = [];
       this.isInitialized = true;
     }
   }
@@ -170,6 +182,39 @@ export default class WordPuzzleTutorial extends TutorialComponent {
   /**
    * Clean up resources when the tutorial is no longer needed
    */
+  /**
+   * Find the correct positions for target stones, handling duplicate letters
+   * @param targetStones Array of target stone characters
+   * @param foilStones Array of all stone characters including targets
+   * @param positions Array of positions for all stones
+   * @returns Array of positions for target stones in order
+   */
+  private findTargetStonePositions(targetStones: string[], foilStones: string[], positions: number[][]): number[][] {
+    const targetStonePositions: number[][] = [];
+    
+    // Create a map to track which indices have been used
+    const usedIndices = new Set<number>();
+    
+    // Collect positions for all target stones in order
+    for (let targetChar of targetStones) {
+      // Find the next unused occurrence of this character
+      let targetIndex = -1;
+      for (let j = 0; j < foilStones.length; j++) {
+        if (foilStones[j] === targetChar && !usedIndices.has(j)) {
+          targetIndex = j;
+          usedIndices.add(j); // Mark this index as used
+          break;
+        }
+      }
+      
+      if (targetIndex !== -1) {
+        targetStonePositions.push(positions[targetIndex]);
+      }
+    }
+    
+    return targetStonePositions;
+  }
+
   public dispose(): void {
     // Reset state
     this.isInitialized = false;
