@@ -126,6 +126,9 @@ export default class StoneHandler extends EventManager {
         }
 
         // For word puzzles, publish all stone information at the end of stone creation
+        console.log('positions', positions)
+        console.log('[...this.targetStones]', [...this.targetStones])
+        console.log('[...foilStones]', [...foilStones])
         if (isWordPuzzle) {
           gameStateService.publish(
             gameStateService.EVENTS.CORRECT_STONE_POSITION, 
@@ -133,8 +136,8 @@ export default class StoneHandler extends EventManager {
               stonePosVal: positions,         // All stone positions
               img,                           // Stone image
               levelData: this.levelData,      // Level data
-              targetStones: [...this.targetStones], // Target stones in order
-              foilStones: [...foilStones]    // All foil stones (including targets)
+              targetStones: [...this.targetStones], // Target letter stones in order
+              foilStones: [...foilStones]    // All foil letter stones (including target letters)
             }
           );
         } 
