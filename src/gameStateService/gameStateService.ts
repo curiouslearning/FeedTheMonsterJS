@@ -225,13 +225,12 @@ export class GameStateService extends PubSub {
         const selectedLevelNumber:string | number = this.gamePlayData.selectedLevelNumber;
         const levelNumber = typeof selectedLevelNumber === 'string' ? parseInt(selectedLevelNumber) : selectedLevelNumber;
         //Very small array to iterate.
-        Object.values(this.gameTypesFirstInstanceList).every((listedLevelNumber: { levelNumber: number, isCleared: boolean}) => {
+        Object.values(this.gameTypesFirstInstanceList).forEach((listedLevelNumber: { levelNumber: number, isCleared: boolean}) => {
             if (listedLevelNumber?.levelNumber === levelNumber) {
                 isTutorialCleared = listedLevelNumber?.isCleared;
                 shouldHaveTutorial = true;
-                return false; // Return false to break the every() loop
+                return false; //Return false to break every loop.
             }
-            return true; // Continue checking if no match found
         });
 
         return {
