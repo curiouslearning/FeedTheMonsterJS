@@ -47,7 +47,6 @@ export default class TutorialComponent {
       this.imagesLoaded = true;
     };
     this.initializedRippleValues();
-
   }
 
   private initializedRippleValues() {
@@ -236,8 +235,74 @@ export default class TutorialComponent {
       this.context.drawImage(this.tutorialImg, this.x + 15, this.y + 10);//draws the hand stone drag animation!
     }
   }
+  
+  /**
+   * Specialized animation for word puzzle tutorials
+   * Provides a more guided animation path with visual cues for multi-letter words
+   * Note: This animation is designed specifically for sequential word spelling tutorials,
+   * not for letter grouping
+   */
+  protected animateWordPuzzleStoneDrag({
+    deltaTime,
+    img,
+    imageSize,
+    monsterStoneDifferenceInPercentage,
+    startX,
+    startY,
+    endX,
+    endY
+  }: {
+    deltaTime: number,
+    img: CanvasImageSource,
+    imageSize: number,
+    monsterStoneDifferenceInPercentage: number,
+    startX: number,
+    startY: number,
+    endX: number,
+    endY: number
+  }) {
+    // Draw the stone at current position with slightly higher opacity for word puzzles
+    const previousAlpha = this.context.globalAlpha;
+    
+    // Near the start position
+    if (monsterStoneDifferenceInPercentage > 80) {
+      this.context.globalAlpha = 0.8;
+      this.context.drawImage(img, this.x, this.y, imageSize, imageSize);
+      this.createHandScaleAnimation(deltaTime, startX + 15, startY + 10, false);
+    }
+    // Near the end position
+    else if (monsterStoneDifferenceInPercentage < 15) {
+      if (monsterStoneDifferenceInPercentage > 1) {
+        this.context.globalAlpha = 0.9;
+        // Draw at the CURRENT position instead of a fixed position
+        // This ensures continuous movement all the way to the end
+        this.context.drawImage(img, this.x, this.y, imageSize, imageSize);
+        
+        // Move the hand with the stone
+        this.createHandScaleAnimation(deltaTime, this.x + 15, this.y + 10, true);
+        
+        // Add a subtle highlight effect at the destination
+        this.context.beginPath();
+        this.context.arc(endX, endY, imageSize/2, 0, Math.PI * 2);
+        this.context.fillStyle = 'rgba(255, 255, 255, 0.2)';
+        this.context.fill();
+      } else {
+        this.x = startX;
+        this.y = startY;
+      }
+    }
+    // In transit
+    else {
+      this.context.globalAlpha = 0.7;
+      this.context.drawImage(img, this.x, this.y, imageSize, imageSize);
+      this.context.globalAlpha = previousAlpha;
+      this.context.drawImage(this.tutorialImg, this.x + 15, this.y + 10);
+    }
+    
+    this.context.globalAlpha = previousAlpha;
+  }
 
-  private createHandScaleAnimation(deltaTime: number, offsetX: number, offsetY: number, shouldCreateRipple: boolean) {
+  protected createHandScaleAnimation(deltaTime: number, offsetX: number, offsetY: number, shouldCreateRipple: boolean) {
     this.totalTime += Math.floor(deltaTime);
     const transitionDuration = 500;
     const scaleFactor = this.sinusoidalInterpolation(this.totalTime, 1, 1.5, transitionDuration);
