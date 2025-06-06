@@ -84,13 +84,11 @@ export default class WordPuzzleTutorial extends TutorialComponent {
     }
 
     // Update animation based on actual time elapsed
-    if (this.frame < 100) {
-      if (this.animationStartTime === 0) {
-        this.animationStartTime = performance.now();
-      }
-      const elapsed = performance.now() - this.animationStartTime;
-      this.frame = Math.min(100, (elapsed / this.animationDuration) * 100);
+    if (this.animationStartTime === 0) {
+      this.animationStartTime = performance.now();
     }
+    const elapsed = performance.now() - this.animationStartTime;
+    this.frame = Math.min(100, (elapsed / this.animationDuration) * 100);
 
     // Only start stone drag animation after initial animation frame reaches 100
     // This matches the approach used in MatchLetterPuzzleTutorial
