@@ -193,9 +193,9 @@ export default class TutorialComponent {
   }
 
   /**
-   * animateStoneDrag - Will be used to animate the stone drops indicating where it should be dragged.
-   * Supports both Letter to Hitbox and Word Puzzle animations.
-   * For Word Puzzles, it animates each stone in sequence to demonstrate spelling words.
+   * animateStoneDrag - Will be used to animate the stone drops indicating where it should be drag.
+   * Note: Currently only supports Letter to Hitbox drop only.
+   * This cannot be used for word letter spelling guide and will require an update to handle that.
    */
   public animateStoneDrag({
     deltaTime,
@@ -205,8 +205,7 @@ export default class TutorialComponent {
     startX,
     startY,
     endX,
-    endY,
-    isWordPuzzle = false
+    endY
   }: {
     deltaTime: number,
     img: CanvasImageSource,
@@ -215,29 +214,13 @@ export default class TutorialComponent {
     startX: number,
     startY: number,
     endX: number,
-    endY: number,
-    isWordPuzzle?: boolean
+    endY: number
   }) {
-    // For word puzzles, we want a smoother, more guided animation
-    if (isWordPuzzle) {
-      this.animateWordPuzzleStoneDrag({
-        deltaTime,
-        img,
-        imageSize,
-        monsterStoneDifferenceInPercentage,
-        startX,
-        startY,
-        endX,
-        endY
-      });
-      return;
-    }
-    
-    // Standard letter-to-hitbox animation
+
     if (monsterStoneDifferenceInPercentage < 15) {
       if (monsterStoneDifferenceInPercentage > 1) {
         this.context.drawImage(img, endX - 20, endY - 20, imageSize, imageSize);
-        this.createHandScaleAnimation(deltaTime, endX, endY, true);
+        this.createHandScaleAnimation(deltaTime, endX, endY, true)
       } else {
         this.x = startX;
         this.y = startY;
@@ -249,7 +232,7 @@ export default class TutorialComponent {
       this.context.globalAlpha = 0.4;
       this.context.drawImage(img, this.x, this.y + 20, imageSize, imageSize);
       this.context.globalAlpha = previousAlpha;
-      this.context.drawImage(this.tutorialImg, this.x + 15, this.y + 10); // Draws the hand stone drag animation
+      this.context.drawImage(this.tutorialImg, this.x + 15, this.y + 10);//draws the hand stone drag animation!
     }
   }
   
