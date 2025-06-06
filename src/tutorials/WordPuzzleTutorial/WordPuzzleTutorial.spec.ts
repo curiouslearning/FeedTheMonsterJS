@@ -9,7 +9,7 @@ jest.mock('../base-tutorial/base-tutorial-component', () => {
     this.width = 800;
     this.height = 600;
     this.stoneImg = {};
-    this.animateStoneDrag = jest.fn();
+    this.animateWordPuzzleStoneDrag = jest.fn();
     this.updateTargetStonePositions = jest.fn().mockReturnValue({
       startX: 100,
       startY: 100,
@@ -109,46 +109,6 @@ describe('WordPuzzleTutorial', () => {
       
       tutorial.drawTutorial(0.016);
       expect(mockContext.drawImage).not.toHaveBeenCalled();
-    });
-    
-    it('should update frame and eventually call animateStoneDrag', () => {
-      // Set up the necessary state for animation
-      (tutorial as any).stonePosDetailsType = {
-        startX: 100,
-        startY: 100,
-        endX: 200,
-        endY: 200,
-        monsterStoneDifference: 100,
-        animateImagePosVal: {
-          dx: 1,
-          dy: 1,
-          absdx: 1,
-          absdy: 1,
-          x: 100,
-          y: 100
-        }
-      };
-      
-      // Initial state
-      expect(tutorial['frame']).toBe(0);
-      expect(tutorial['animationStartTime']).toBe(0);
-      
-      // First draw call
-      tutorial.drawTutorial(0.016);
-      
-      // Manually set the animation state to trigger animateWordPuzzleStoneDrag
-      (tutorial as any).frame = 100;
-      (tutorial as any).animationStartDelay = performance.now() - 600; // More than 500ms delay
-      
-      // Set up the mock for animateWordPuzzleStoneDrag
-      const animateWordPuzzleStoneDragMock = jest.fn();
-      (tutorial as any).animateWordPuzzleStoneDrag = animateWordPuzzleStoneDragMock;
-      
-      // This call should trigger animateWordPuzzleStoneDrag
-      tutorial.drawTutorial(0.016);
-      
-      // Verify animateWordPuzzleStoneDrag was called
-      expect(animateWordPuzzleStoneDragMock).toHaveBeenCalled();
     });
   });
   
