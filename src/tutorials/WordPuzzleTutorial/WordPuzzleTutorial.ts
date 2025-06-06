@@ -92,7 +92,7 @@ export default class WordPuzzleTutorial extends TutorialComponent {
 
     // Only start stone drag animation after initial animation frame reaches 100
     // This matches the approach used in MatchLetterPuzzleTutorial
-    if (this.stonePosDetailsType && this.frame >= 100) {
+    if (this.stonePosDetailsType) {
       // Track time since animation frame reached 100%
       if (!this.animationStartDelay) {
         this.animationStartDelay = performance.now();

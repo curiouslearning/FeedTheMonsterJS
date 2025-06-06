@@ -239,6 +239,8 @@ export default class TutorialComponent {
   /**
    * Specialized animation for word puzzle tutorials
    * Provides a more guided animation path with visual cues for multi-letter words
+   * Note: This animation is designed specifically for sequential word spelling tutorials,
+   * not for letter grouping
    */
   protected animateWordPuzzleStoneDrag({
     deltaTime,
