@@ -113,8 +113,11 @@ export default class StoneHandler extends EventManager {
       // Initialize stone
       stone.initialize();
 
-      //Publish stone details, image and level data for stone tutorial only at the first puzzle segment.
+      // Publish stone details, image and level data for stone tutorial only at the first puzzle segment.
       if (this.currentPuzzleData.segmentNumber === 0) {
+        const isWordPuzzle = this.levelData?.levelMeta?.levelType === 'Word';
+        
+        // For letter puzzles, only publish when the correct target stone is found
         if (foilStones[i] == this.correctTargetStone) {
           gameStateService.publish(gameStateService.EVENTS.CORRECT_STONE_POSITION, {
             stonePosVal: positions[i],
@@ -122,8 +125,19 @@ export default class StoneHandler extends EventManager {
             levelData: this.levelData
           });
         }
-
-        //Add IF Condition here for publishing CORRECT_STONE_POSITION for word puzzle.
+        
+        // For word puzzles, we only need to publish once with all positions
+        // This is done after all stones are created
+        if (isWordPuzzle && i === foilStones.length - 1) {
+          gameStateService.publish(
+            gameStateService.EVENTS.CORRECT_STONE_POSITION, 
+            {
+              stonePosVal: positions,       // All stone positions
+              img,                          // Stone image
+              levelData: this.levelData     // Level data
+            }
+          );
+        }
       }
 
       this.foilStones.push(stone);
@@ -156,6 +170,8 @@ export default class StoneHandler extends EventManager {
         );
       }
     }
+
+    !this.stonesHasLoaded && this.areStonesReadyForPlay();
   }
 
   private areStonesReadyForPlay() {
