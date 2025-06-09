@@ -8,7 +8,8 @@ import {
   isDocumentVisible,
   toggleDebugMode,
   hideElement,
-  getGameTypeName
+  getGameTypeName,
+  isGameTypeAudio
 } from "./utils";
 import { Debugger, lang, font, pseudoId, Window, source, campaign_id } from "./global-variables";
 import {
@@ -51,5 +52,6 @@ export {
   isDocumentVisible,
   toggleDebugMode,
   hideElement,
-  getGameTypeName
+  getGameTypeName,
+  isGameTypeAudio
 };
