@@ -81,6 +81,7 @@
     cursor: pointer;
     pointer-events: auto; // Make sure the play button is clickable
     position: absolute;
+    top: 10px;
     // Prevent highlight on press
     -webkit-tap-highlight-color: transparent;
     outline: none;
