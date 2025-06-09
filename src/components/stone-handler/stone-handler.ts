@@ -170,6 +170,8 @@ export default class StoneHandler extends EventManager {
         );
       }
     }
+
+    !this.stonesHasLoaded && this.areStonesReadyForPlay();
   }
 
   private areStonesReadyForPlay() {
