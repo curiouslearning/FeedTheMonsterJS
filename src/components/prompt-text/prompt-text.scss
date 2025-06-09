@@ -138,8 +138,8 @@
 .text-red-pulse-letter {
   color: red;
   display: inline-block;
-  -webkit-animation: text-pulse 1.2s ease-in-out infinite both;
-  animation: text-pulse 1.2s ease-in-out infinite both;
+  -webkit-animation: text-pulse 2s ease-in-out infinite both;
+  animation: text-pulse 2s ease-in-out infinite both;
   font-weight: bold;
   transform-origin: center;
   position: relative; /* Enable positioning */
