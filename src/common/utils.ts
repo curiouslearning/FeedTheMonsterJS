@@ -195,5 +195,9 @@ export const hideElement = (isHide: boolean = false, element: HTMLElement) => {
 
 export const getGameTypeName = (protoType: string, levelType: string) => {
   //If prototype is Visible it means its not an audio puzzle.
-  return protoType === 'Visible' ? levelType : `Sound${levelType}`;
+  return !isGameTypeAudio(protoType) ? levelType : `Sound${levelType}`;
+}
+
+export const isGameTypeAudio = (protoType: string) => {
+  return protoType !== 'Visible';
 }

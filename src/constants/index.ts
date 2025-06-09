@@ -91,6 +91,7 @@ export const WINTER_PILLAR_1 = "./assets/images/Winter_sign_v01.webp";
 export const LEVEL_SELECTION_BACKGROUND = "./assets/images/map.webp";
 export const PROMPT_TEXT_BG = "./assets/images/Prompt_Text_BG.svg";
 export const PROMPT_PLAY_BUTTON = "./assets/images/promptPlayButton.webp";
+export const AUDIO_PLAY_BUTTON = "./assets/images/audio_icon.png"; //New audio button for audio puzzles.
 export const LEVEL_INDICATOR = "./assets/images/levels_v01.svg";
 export const BAR_EMPTY = "./assets/images/bar_empty_v01.svg";
 export const BAR_FULL = "./assets/images/bar_full_v01.svg";

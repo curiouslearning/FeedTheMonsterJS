@@ -1,7 +1,7 @@
 import { EventManager } from "@events";
-import { Utils, VISIBILITY_CHANGE } from "@common";
+import { Utils, VISIBILITY_CHANGE, isGameTypeAudio } from "@common";
 import { AudioPlayer } from "@components";
-import { PROMPT_PLAY_BUTTON, PROMPT_TEXT_BG } from "@constants";
+import { PROMPT_TEXT_BG, AUDIO_PLAY_BUTTON } from "@constants";
 import { BaseHTML, BaseHtmlOptions } from "../baseHTML/base-html";
 import './prompt-text.scss';
 
@@ -14,13 +14,22 @@ export const DEFAULT_SELECTORS = {
 };
 
 // HTML template for the prompt text component
-export const PROMPT_TEXT_LAYOUT = (id: string) => {
+export const PROMPT_TEXT_LAYOUT = (id: string, levelData: any) => {
+    /*
+        Note: hidePromptBG is a dirty fix to easily implement the new AUDIO_PLAY_BUTTON.
+        AUDIO_PLAY_BUTTON is a new asset that is similar to start-scene play button.
+        So rendering this asset requires removing the prompt background entirely.
+        However due to how coupled and tied the logic in this class. It is not easy to
+        handle the AUDIO_PLAY_BUTTON only without breaking the tightly connected logic.
+    */
+    const hidePromptBG = isGameTypeAudio(levelData.levelMeta.protoType);
+
     return (`
         <div id="${id}" class="prompt-container">
-            <div id="prompt-background" class="prompt-background" style="background-image: url(${PROMPT_TEXT_BG})">
+            <div id="prompt-background" class="prompt-background" style="background-image: url(${hidePromptBG ? null :PROMPT_TEXT_BG})">
                 <div id="prompt-text-button-container">
                     <div id="prompt-text" class="prompt-text"></div>
-                    <div id="prompt-play-button" class="prompt-play-button" style="background-image: url(${PROMPT_PLAY_BUTTON}); pointer-events: auto;"></div>
+                    <div id="prompt-play-button" class="prompt-play-button" style="background-image: url(${AUDIO_PLAY_BUTTON}); pointer-events: auto;"></div>
                 </div>
             </div>
         </div>
@@ -80,7 +89,7 @@ export class PromptText extends BaseHTML {
         super(
             options,
             id,
-            PROMPT_TEXT_LAYOUT
+            (id: string) => PROMPT_TEXT_LAYOUT(id, levelData)
         );
 
         // Store id for later use
@@ -461,8 +470,8 @@ export class PromptText extends BaseHTML {
             if (Math.floor(this.time) >= 1910 && Math.floor(this.time) <= 1926) {
                 this.playSound();
             }
-            
-            if (!this.isStoneDropped) {
+            //Note: !isGameTypeAudio(this.levelData.levelMeta.protoType) is needed to make sure the audio play button won't pulsate.
+            if (!this.isStoneDropped && !isGameTypeAudio(this.levelData.levelMeta.protoType)) {
                 // Update scaling
                 this.updateScaling();
                 
