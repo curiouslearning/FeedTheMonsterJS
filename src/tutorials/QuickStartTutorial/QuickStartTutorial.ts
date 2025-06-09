@@ -10,8 +10,6 @@ export default class QuickStartTutorial extends TutorialComponent {
 
   public quickStartTutorial(deltaTime: number, width: number, height: number) {
     this.elapsedTime += deltaTime;
-    console.log(this.elapsedTime);
-    
     if (this.elapsedTime >= this.tutorialDuration) {
       this.isFinished = true;
       return;

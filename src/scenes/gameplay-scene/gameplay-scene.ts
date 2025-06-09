@@ -136,8 +136,6 @@ export class GameplayScene {
       gameStateService.EVENTS.GAME_PAUSE_STATUS_EVENT,
       (isPause: boolean) => {
         this.isPauseButtonClicked = isPause;
-        console.log(this.isPauseButtonClicked);
-
         if (isPause) this.pausePopupComponent.open();
       }
     );
@@ -478,13 +476,14 @@ export class GameplayScene {
       if (this.shouldShowTutorialAnimation) {
         // Draw the quick-start tutorial animation
         this.tutorial.drawQuickStart(deltaTime, this.isGameStarted);
-        // Start the game after the tutorial finishes
+        // Start the game after a configured delay (default 5 seconds)
         if (this.tutorial.isQuickStartFinished()) {
           this.setGameToStart();
         }
         return; // Wait until tutorial ends
       } else {
         // No tutorial: immediately start the game on new puzzle
+        this.time += deltaTime;
         if (this.time >= 5000) {
           this.setGameToStart();
         }
@@ -497,7 +496,7 @@ export class GameplayScene {
       this.handleStoneLetterDrawing();
       this.handleTimerUpdate(deltaTime);
     }
-    // Continue drawing tutorial layer if needed during gameplay
+
     this.tutorial.draw(deltaTime, this.isGameStarted);
   }
 
@@ -517,24 +516,16 @@ export class GameplayScene {
   private handleTimerUpdate(deltaTime: number) {
     // Update timer only once animation is complete and game is not paused.
     if (this.stoneHandler.stonesHasLoaded && !this.isPauseButtonClicked) {
-      console.log(this.tutorialElapsedTime);
-
       if (this.shouldShowTutorialAnimation) {
-        // FM-544: Control the timer when tutorial is animating.
-        if (this.tutorialElapsedTime < this.tutorialHoldDuration) {
-          this.tutorialElapsedTime += deltaTime;
-        }
-
+        // FM-544 add or modify code logic here to controlling the timer when tutorial is animating.
+        this.tutorialElapsedTime += deltaTime;
         if (this.tutorialElapsedTime >= this.tutorialHoldDuration) {
           // After 12s, start timer updates
           this.timerTicking.update(deltaTime);
-          // Reset elapsed time to 0 to avoid unnecessary accumulation
-          this.tutorialElapsedTime = 0;
-          // Optionally stop showing tutorial animation
-          this.shouldShowTutorialAnimation = false;
         }
       } else {
         this.timerTicking.update(deltaTime);
+
       }
     }
   }
@@ -639,6 +630,7 @@ export class GameplayScene {
     if (this.monster) {
       this.monster.dispose();
     }
+    this.stoneHandler.stonesHasLoaded = false;
     this.monster = this.initializeRiveMonster();
     this.removeEventListeners();
     this.isGameStarted = false;
