@@ -139,6 +139,10 @@ export default class TutorialHandler {
     }
   }
 
+  public isQuickStartFinished(): boolean {
+    return this.quickTutorial?.isFinished ?? false;
+  }
+
   draw(deltaTime: number, hasGameStarted: boolean) {
     //Draw only if there is an active tutorial instance.
     if (this.activeTutorial && !this.isGameOnPause && hasGameStarted) {

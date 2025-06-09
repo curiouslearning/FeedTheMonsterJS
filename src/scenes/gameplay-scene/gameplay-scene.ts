@@ -99,7 +99,8 @@ export class GameplayScene {
   public loadPuzzleDelay: 3000 | 4500;
   private puzzleHandler: any;
   private shouldShowTutorialAnimation: boolean;
-
+  private tutorialElapsedTime: number = 0;
+  private readonly tutorialHoldDuration: number = 12000; // 12 seconds
   // Define animation delays as an array where index 0 = phase 0, index 1 = phase 1, index 2 = phase 2
   private animationDelays = [
     { backToIdle: 350, isChewing: 0, isHappy: 1700, isSpit: 1500, isSad: 3000 }, // Phase 1
@@ -135,6 +136,7 @@ export class GameplayScene {
       gameStateService.EVENTS.GAME_PAUSE_STATUS_EVENT,
       (isPause: boolean) => {
         this.isPauseButtonClicked = isPause;
+        console.log(this.isPauseButtonClicked);
 
         if (isPause) this.pausePopupComponent.open();
       }
@@ -473,17 +475,20 @@ export class GameplayScene {
   draw(deltaTime: number) {
     // If game hasn't started and it's not paused
     if (!this.isGameStarted && !this.isPauseButtonClicked) {
-      // Increment time using deltaTime to keep it consistent across devices
-      this.time += deltaTime;
-
-      // Draw the quick-start tutorial animation
-      this.tutorial.drawQuickStart(deltaTime, this.isGameStarted);
-      // Start the game after a configured delay (default 5 seconds)
-      if (this.time >= 5000) {
-        this.setGameToStart();
+      if (this.shouldShowTutorialAnimation) {
+        // Draw the quick-start tutorial animation
+        this.tutorial.drawQuickStart(deltaTime, this.isGameStarted);
+        // Start the game after the tutorial finishes
+        if (this.tutorial.isQuickStartFinished()) {
+          this.setGameToStart();
+        }
+        return; // Wait until tutorial ends
+      } else {
+        // No tutorial: immediately start the game on new puzzle
+        if (this.time >= 5000) {
+          this.setGameToStart();
+        }
       }
-      // Don't draw game elements until started
-      return;
     }
     // Trail effects drawing 
     this.trailEffectHandler?.draw();
@@ -512,9 +517,22 @@ export class GameplayScene {
   private handleTimerUpdate(deltaTime: number) {
     // Update timer only once animation is complete and game is not paused.
     if (this.stoneHandler.stonesHasLoaded && !this.isPauseButtonClicked) {
+      console.log(this.tutorialElapsedTime);
+
       if (this.shouldShowTutorialAnimation) {
-        // FM-544 add or modify code logic here to controlling the timer when tutorial is animating.
-        this.timerTicking.update(deltaTime);
+        // FM-544: Control the timer when tutorial is animating.
+        if (this.tutorialElapsedTime < this.tutorialHoldDuration) {
+          this.tutorialElapsedTime += deltaTime;
+        }
+
+        if (this.tutorialElapsedTime >= this.tutorialHoldDuration) {
+          // After 12s, start timer updates
+          this.timerTicking.update(deltaTime);
+          // Reset elapsed time to 0 to avoid unnecessary accumulation
+          this.tutorialElapsedTime = 0;
+          // Optionally stop showing tutorial animation
+          this.shouldShowTutorialAnimation = false;
+        }
       } else {
         this.timerTicking.update(deltaTime);
       }
@@ -564,6 +582,7 @@ export class GameplayScene {
     this.counter += 1; //increment Puzzle
     this.isGameStarted = false;
     this.shouldShowTutorialAnimation = false; //Tutorial is no longer active, timer should work normally.
+    this.tutorialElapsedTime = 0;
     if (this.counter === this.levelData.puzzles.length) {
       const handleLevelEnd = () => {
         this.levelIndicators.setIndicators(this.counter);
