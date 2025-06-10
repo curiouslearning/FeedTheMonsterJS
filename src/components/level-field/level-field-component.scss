@@ -128,3 +128,21 @@
     margin: 0px 2.2px;
   }
 }
+
+/* For ultrawide monitors or desktop screens that are not very tall  */
+@media screen and (min-width: 1080px) and (max-height: 650px) {
+.game-control .level_content-wrapper {
+    max-width: 100px;
+  }
+
+  .game-control .level_content-wrapper .bar-level-wrapper {
+    max-width: 100px;
+    top: 0.9rem;
+    left: 0px;
+  }
+  
+  .game-control .level_content-wrapper .bar-level-wrapper .bar-level {
+    max-width: 12px;
+    margin: 0px 2.2px;
+  }
+}

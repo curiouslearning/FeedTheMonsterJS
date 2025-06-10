@@ -8,6 +8,7 @@ import {
   isDocumentVisible,
   toggleDebugMode,
   hideElement,
+  getGameTypeName
 } from "./utils";
 import { Debugger, lang, font, pseudoId, Window, source, campaign_id } from "./global-variables";
 import {
@@ -49,5 +50,6 @@ export {
   isClickInsideButton,
   isDocumentVisible,
   toggleDebugMode,
-  hideElement
+  hideElement,
+  getGameTypeName
 };

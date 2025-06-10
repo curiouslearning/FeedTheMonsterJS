@@ -22,6 +22,15 @@ export class Utils {
     } return url;
   }
 
+  public static getResponsiveCanvasWidth(): number {
+    const width = window.innerWidth;
+    const height = window.innerHeight;
+
+    return (width > 1080 && height < 650)
+      ? 380
+      : (width > 1080 ? 500 : width);
+  }
+
   public static getLanguageSpecificFont(language: string): string {
     const lowerCaseLanguage = language.toLowerCase();
 
@@ -183,3 +192,8 @@ export const hideElement = (isHide: boolean = false, element: HTMLElement) => {
     element.classList.add("show");
   }
 };
+
+export const getGameTypeName = (protoType: string, levelType: string) => {
+  //If prototype is Visible it means its not an audio puzzle.
+  return protoType === 'Visible' ? levelType : `Sound${levelType}`;
+}

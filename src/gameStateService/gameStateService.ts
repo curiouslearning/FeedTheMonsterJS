@@ -1,5 +1,17 @@
 import { PubSub } from '../events/pub-sub-events';
 import { DataModal, GameScore } from "@data";
+import { getGameTypeName } from '@common';
+
+export interface hitboxRangeType {
+    hitboxRangeX: {
+        from: number,
+        to: number
+    },
+    hitboxRangeY: {
+        from: number,
+        to: number
+    }
+}
 
 /*
  * GameStateService.ts
@@ -51,6 +63,15 @@ export class GameStateService extends PubSub {
     public majVersion: number;
     public minVersion: number;
     public monsterPhaseNumber: number;
+    public gameTypesFirstInstanceList: {} | {
+        LetterInWord: {
+            levelNumber: number,
+            isCleared: boolean
+        };
+        LetterOnly: number;
+        SoundLetterOnly: number;
+        Word: number;
+    };
     public feedbackAudios: null | {
         amazing: string,
         fantastic: string,
@@ -63,6 +84,8 @@ export class GameStateService extends PubSub {
     };
     public isLastLevel: boolean;
     public currentMonsterPhase: number;
+    public tutorialOn: boolean = false;
+    public hitboxRanges: null | hitboxRangeType;
 
     constructor() {
         super();
@@ -86,6 +109,7 @@ export class GameStateService extends PubSub {
         this.initListeners();
         this.levelEndData = null;
         this.isLastLevel = false;
+        this.tutorialOn = false;
     }
 
     private initListeners() {
@@ -118,6 +142,68 @@ export class GameStateService extends PubSub {
         this.majVersion = data.majVersion;
         this.minVersion = data.minVersion;
         this.monsterPhaseNumber = this.checkMonsterPhaseUpdation();
+        this.gameTypesFirstInstanceList = this.getFirstInstanceOfEachGameTypes(data);
+    }
+
+    private getFirstInstanceOfEachGameTypes(data: DataModal) {
+        if (data.levels) {
+            //Determine the first time game types will appear.
+            const levelList: any = data.levels;
+            const gameTypes = {};
+            let objectKeyName = null;
+            //Iterate and find the first instance of each game type puzzles.
+            levelList.forEach((levelData, index) => {
+                const { levelType, levelNumber, protoType } = levelData?.levelMeta;
+                //If prototype is Visible it means its not an audio puzzle.
+                objectKeyName = getGameTypeName(protoType, levelType);
+
+                if (!gameTypes.hasOwnProperty(objectKeyName)) {
+                    gameTypes[objectKeyName] = {
+                        levelNumber, //Game level number on when it will first appear.
+                        isCleared: this.checkClearedLevels(levelNumber) //Flag if that tutorial has been cleared.
+                    };
+                };
+            });
+
+            //Return determined game types and what level it will first appear.
+            return gameTypes;
+        }
+         return {}
+    }
+
+    private checkClearedLevels(levelNumber: number) {
+       const clearedLevels = GameScore.getAllGameLevelInfo();
+       let hasCleardLevel = false;
+
+       /*We don't need the whole object in Cleard level data, we just need to check if the
+        levelNumber is in the list as it means it that level has been cleared.
+       */
+       clearedLevels.every((cleardLevels: {
+           levelName: string,
+           levelNumber: number,
+           score: number,
+           starCount: number
+       }) => {
+        if (cleardLevels.levelNumber === levelNumber) {
+            hasCleardLevel = true;
+            return false; //Return false to break every loop.
+        }
+       });
+
+        return hasCleardLevel;
+    }
+
+    /*
+     * Flag that the current tutorial has been cleared.
+    */
+    public setClearedTutorial(gameTypeName: string) {
+        if(this.gameTypesFirstInstanceList[gameTypeName]) {
+            this.gameTypesFirstInstanceList[gameTypeName].isCleared = true;
+        }
+    }
+
+    public getGameTypeList() {
+        return this.gameTypesFirstInstanceList;
     }
 
     getGamePlaySceneDetails() {
@@ -125,9 +211,20 @@ export class GameStateService extends PubSub {
             ? this.majVersion.toString() + "." + this.minVersion.toString()
             : "";
 
+        let shouldHaveTutorial = false;
+        const selectedLevelNumber:string | number = this.gamePlayData.selectedLevelNumber;
+        const levelNumber = typeof selectedLevelNumber === 'string' ? parseInt(selectedLevelNumber) : selectedLevelNumber;
+        //Very small array to iterate.
+        Object.values(this.gameTypesFirstInstanceList).every((listedLevelNumber: { levelNumber: number, isCleared: boolean}) => {
+            if (listedLevelNumber?.levelNumber === levelNumber) {
+                shouldHaveTutorial = true;
+                return false; //Return false to break every loop.
+            }
+        });
+
         return {
             levelData: { ...this.gamePlayData.currentLevelData },
-            levelNumber: this.gamePlayData.selectedLevelNumber,
+            levelNumber,
             feedBackTexts: { ...this.feedbackTexts },
             rightToLeft: this?.rightToLeft,
             jsonVersionNumber: versionNumber,
@@ -135,7 +232,8 @@ export class GameStateService extends PubSub {
             isGamePaused: this.isGamePaused,
             data: this.data,
             isLastLevel: this.isLastLevel,
-            monsterPhaseNumber: this.monsterPhaseNumber
+            monsterPhaseNumber: this.monsterPhaseNumber,
+            tutorialOn: shouldHaveTutorial
         };
     }
 
@@ -173,5 +271,13 @@ export class GameStateService extends PubSub {
 
     public updateMonsterPhaseState(newMonsterPhaseNum: number) {
         this.monsterPhaseNumber = newMonsterPhaseNum;
+    }
+
+    public saveHitBoxRanges(hitboxRangeXandY: hitboxRangeType) {
+        this.hitboxRanges = hitboxRangeXandY;
+    }
+
+    public getHitBoxRanges() {
+        return this.hitboxRanges;
     }
 };
