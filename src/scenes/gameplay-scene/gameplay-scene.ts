@@ -99,7 +99,6 @@ export class GameplayScene {
   public loadPuzzleDelay: 3000 | 4500;
   private puzzleHandler: any;
   private shouldShowTutorialAnimation: boolean;
-
   // Define animation delays as an array where index 0 = phase 0, index 1 = phase 1, index 2 = phase 2
   private animationDelays = [
     { backToIdle: 350, isChewing: 0, isHappy: 1700, isSpit: 1500, isSad: 3000 }, // Phase 1
@@ -135,7 +134,6 @@ export class GameplayScene {
       gameStateService.EVENTS.GAME_PAUSE_STATUS_EVENT,
       (isPause: boolean) => {
         this.isPauseButtonClicked = isPause;
-
         if (isPause) this.pausePopupComponent.open();
       }
     );
@@ -473,17 +471,21 @@ export class GameplayScene {
   draw(deltaTime: number) {
     // If game hasn't started and it's not paused
     if (!this.isGameStarted && !this.isPauseButtonClicked) {
-      // Increment time using deltaTime to keep it consistent across devices
-      this.time += deltaTime;
-
-      // Draw the quick-start tutorial animation
-      this.tutorial.drawQuickStart(deltaTime, this.isGameStarted);
-      // Start the game after a configured delay (default 5 seconds)
-      if (this.time >= 5000) {
-        this.setGameToStart();
+      if (this.shouldShowTutorialAnimation) {
+        // Draw the quick-start tutorial animation
+        this.tutorial.drawQuickStart(deltaTime, this.isGameStarted);
+        // Start the game after a configured delay (default 5 seconds)
+        if (this.tutorial.isQuickStartFinished()) {
+          this.setGameToStart();
+        }
+        return; // Wait until tutorial ends
+      } else {
+        // No tutorial: immediately start the game on new puzzle
+        this.time += deltaTime;
+        if (this.time >= 5000) {
+          this.setGameToStart();
+        }
       }
-      // Don't draw game elements until started
-      return;
     }
     // Trail effects drawing 
     this.trailEffectHandler?.draw();
@@ -492,7 +494,7 @@ export class GameplayScene {
       this.handleStoneLetterDrawing();
       this.handleTimerUpdate(deltaTime);
     }
-    // Continue drawing tutorial layer if needed during gameplay
+
     this.tutorial.draw(deltaTime, this.isGameStarted);
   }
 
@@ -514,9 +516,14 @@ export class GameplayScene {
     if (this.stoneHandler.stonesHasLoaded && !this.isPauseButtonClicked) {
       if (this.shouldShowTutorialAnimation) {
         // FM-544 add or modify code logic here to controlling the timer when tutorial is animating.
-        this.timerTicking.update(deltaTime);
+        const isTimerAllowed = this.tutorial.updateTutorialTimer(deltaTime);
+        if (isTimerAllowed) {
+          // After 12s, start timer updates
+          this.timerTicking.update(deltaTime);
+        }
       } else {
         this.timerTicking.update(deltaTime);
+
       }
     }
   }
@@ -564,6 +571,7 @@ export class GameplayScene {
     this.counter += 1; //increment Puzzle
     this.isGameStarted = false;
     this.shouldShowTutorialAnimation = false; //Tutorial is no longer active, timer should work normally.
+    this.tutorial.resetTutorialTimer();
     if (this.counter === this.levelData.puzzles.length) {
       const handleLevelEnd = () => {
         this.levelIndicators.setIndicators(this.counter);
@@ -620,6 +628,7 @@ export class GameplayScene {
     if (this.monster) {
       this.monster.dispose();
     }
+    this.stoneHandler.stonesHasLoaded = false;
     this.monster = this.initializeRiveMonster();
     this.removeEventListeners();
     this.isGameStarted = false;
