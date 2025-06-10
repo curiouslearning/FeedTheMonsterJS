@@ -4,6 +4,8 @@ export default class WordPuzzleTutorial extends TutorialComponent {
   // Animation timing properties
   private animationStartTime = 0;
   private animationStartDelay = 0; // Track when animation frame reaches 100%
+  private initialDelay = 800; // 800ms initial delay before starting any animation
+  private initialDelayElapsed = false;
   public frame = 0;
   private animationDuration = 700; // 700ms animation (faster than original 1000ms)
   private isAnimatingNextStone = false;
@@ -83,10 +85,20 @@ export default class WordPuzzleTutorial extends TutorialComponent {
       return; // Don't draw anything until initialization is complete
     }
 
-    // Update animation based on actual time elapsed
-    if (this.animationStartTime === 0) {
-      this.animationStartTime = performance.now();
+    // Apply initial delay before starting any animation
+    if (!this.initialDelayElapsed) {
+      if (this.animationStartTime === 0) {
+        this.animationStartTime = performance.now();
+      }
+      const initialElapsed = performance.now() - this.animationStartTime;
+      if (initialElapsed < this.initialDelay) {
+        return; // Wait until initial delay is complete
+      }
+      this.initialDelayElapsed = true;
+      this.animationStartTime = performance.now(); // Reset animation start time after delay
     }
+
+    // Update animation based on actual time elapsed
     const elapsed = performance.now() - this.animationStartTime;
     this.frame = Math.min(100, (elapsed / this.animationDuration) * 100);
 
@@ -171,6 +183,7 @@ export default class WordPuzzleTutorial extends TutorialComponent {
     this.animationStartDelay = 0; // Reset the animation start delay
     this.currentStoneIndex = stoneIndex;
     this.animationCompleted = false;
+    this.initialDelayElapsed = stoneIndex > 0; // Only apply initial delay for the first stone
 
     try {
       // Clear any previous drawing artifacts
@@ -232,5 +245,6 @@ export default class WordPuzzleTutorial extends TutorialComponent {
     this.animationStartTime = 0;
     this.animationStartDelay = 0;
     this.currentStoneIndex = 0;
+    this.initialDelayElapsed = false;
   }
 }

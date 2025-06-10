@@ -1,5 +1,6 @@
 import QuickStartTutorial from './QuickStartTutorial/QuickStartTutorial';
 import MatchLetterPuzzleTutorial from './MatchLetterPuzzleTutorial/MatchLetterPuzzleTutorial';
+import WordPuzzleTutorial from './WordPuzzleTutorial/WordPuzzleTutorial';
 import gameStateService from '@gameStateService';
 import { getGameTypeName } from '@common';
 
@@ -15,7 +16,7 @@ export default class TutorialHandler {
   private height: number;
   private context: CanvasRenderingContext2D;
   private puzzleLevel: number;
-  private activeTutorial: null | MatchLetterPuzzleTutorial;
+  private activeTutorial: null | MatchLetterPuzzleTutorial | WordPuzzleTutorial;
   private quickTutorial: null | QuickStartTutorial;
   private hasGameEnded: boolean = false;
   private isGameOnPause: boolean = false;
@@ -52,24 +53,29 @@ export default class TutorialHandler {
 
       this.unsubscribeStoneCreationEvent = gameStateService.subscribe(
         gameStateService.EVENTS.CORRECT_STONE_POSITION,
-        (stoneDataImgAndPos: { stonePosVal: number[], img: any, levelData: any }) => {
-          if (this.puzzleLevel === 0) {
-            /*
-            * stoneDataImgAndPos contains the stone details from stone handler.
-            * It has the correct stone coordinates needed for the tutorial of dragging stones.
-            */
-            const { stonePosVal, img, levelData } = stoneDataImgAndPos;
-            const { protoType, levelType } = levelData?.levelMeta;
-            const levelNumber = levelData?.levelNumber;
-            const gameLevel = typeof levelNumber === 'string'
-              ? parseInt(levelNumber)
-              : levelNumber;
-            this.gameTypeName = getGameTypeName(protoType, levelType);
+        (eventData: { 
+          stonePosVal: number[] | number[][], 
+          img: any, 
+          levelData: any
+        }) => {
+          // Get game type from level data
+          const gameTypeName = getGameTypeName(
+            eventData.levelData.levelMeta.protoType, 
+            eventData.levelData.levelMeta.levelType
+          );
+          this.gameTypeName = gameTypeName; // Store for later use
+
+          // Get the game level
+          const gameLevel = eventData.levelData.levelNumber;
+
+          // Only create tutorial if the game type hasn't been cleared yet
+          if (!this.gameTypesList[gameTypeName]?.isCleared) {
             this.activeTutorial = this.createTutorialInstance({
               gameLevel,
-              stonePosVal,
-              img,
-              gameTypeName: this.gameTypeName
+              stonePosVal: eventData.stonePosVal,
+              img: eventData.img,
+              gameTypeName,
+              levelData: eventData.levelData
             });
           }
         }
@@ -108,29 +114,43 @@ export default class TutorialHandler {
     this.tutorialElapsedTime = 0;
   }
 
-  private createTutorialInstance({ gameLevel, stonePosVal, img, gameTypeName }: {
+  private createTutorialInstance({ gameLevel, stonePosVal, img, gameTypeName, levelData = null }: {
     gameLevel: number,
-    stonePosVal: number[],
+    stonePosVal: number[] | number[][],
     img: CanvasImageSource,
     gameTypeName: string,
+    levelData?: any
   }) {
-    if (!this.gameTypesList[gameTypeName]?.isCleared) {
-      //Create quick start tutorial.
-      this.quickTutorial = new QuickStartTutorial({ context: this.context });
-
-      if (this.gameTypesList[gameTypeName]?.levelNumber === gameLevel) {
+    // Create quick start tutorial
+    this.quickTutorial = new QuickStartTutorial({ context: this.context });
+    // Only create tutorial if this is the correct level for this game type
+    if (this.gameTypesList[gameTypeName]?.levelNumber === gameLevel) {
+      // For letter puzzles (single stone)
+      if (gameTypeName === 'LetterOnly' || gameTypeName === 'LetterInWord' || gameTypeName === 'SoundLetterOnly') {
         return new MatchLetterPuzzleTutorial({
           context: this.context,
           width: this.width,
           height: this.height,
           stoneImg: img,
-          stonePosVal
+          stonePosVal: stonePosVal as number[]
+        });
+      }
+
+      // For word puzzles (multiple stones in sequence)
+      if (gameTypeName === 'Word') {
+        return new WordPuzzleTutorial({
+          context: this.context,
+          width: this.width,
+          height: this.height,
+          stoneImg: img,
+          stonePositions: stonePosVal as number[][],
+          levelData: levelData
         });
       }
 
       //Add more if conditions here for new tutorial instances.
     }
-
+    
     return null;
   }
 
