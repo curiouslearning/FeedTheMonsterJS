@@ -71,7 +71,7 @@ export class LevelEndScene {
       canvas: this.canvasElement,
       autoplay: true,
       fit: "contain",
-      alignment: "topCenter",
+      alignment: "bottomCenter",
       src: MONSTER_PHASES[oldMonsterPhaseNumber], //use old asset before evolution.
     });
   }
