@@ -30,7 +30,8 @@ export default class TutorialHandler {
   private unsubscribeStoneCreationEvent: () => void; //Listener for stone creation in stone handler.
   private unsubscribePauseEvent: () => void; //Listener for game pause event.
   private unsubscribeLevelEndData: () => void; //Listener to check if the game is about to switch to level-end.
-
+  private tutorialElapsedTime: number = 0;
+  private readonly tutorialHoldDuration: number = 12000; // 12 seconds
   constructor({ context, width, height, puzzleLevel, shouldHaveTutorial }: TutorialInitParams) {
     this.quickTutorial = null;
     this.activeTutorial = null;
@@ -93,6 +94,18 @@ export default class TutorialHandler {
     this.width = width;
     this.height = height;
     this.context = context;
+  }
+
+  public updateTutorialTimer(deltaTime: number): boolean {
+    if (this.quickTutorial && !this.isGameOnPause) {
+      this.tutorialElapsedTime += deltaTime;
+      return this.tutorialElapsedTime >= this.tutorialHoldDuration;
+    }
+    return true; // No tutorial active, allow timer update
+  }
+
+  public resetTutorialTimer(): void {
+    this.tutorialElapsedTime = 0;
   }
 
   private createTutorialInstance({ gameLevel, stonePosVal, img, gameTypeName }: {

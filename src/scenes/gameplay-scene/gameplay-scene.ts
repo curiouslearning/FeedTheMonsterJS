@@ -99,8 +99,6 @@ export class GameplayScene {
   public loadPuzzleDelay: 3000 | 4500;
   private puzzleHandler: any;
   private shouldShowTutorialAnimation: boolean;
-  private tutorialElapsedTime: number = 0;
-  private readonly tutorialHoldDuration: number = 12000; // 12 seconds
   // Define animation delays as an array where index 0 = phase 0, index 1 = phase 1, index 2 = phase 2
   private animationDelays = [
     { backToIdle: 350, isChewing: 0, isHappy: 1700, isSpit: 1500, isSad: 3000 }, // Phase 1
@@ -518,8 +516,8 @@ export class GameplayScene {
     if (this.stoneHandler.stonesHasLoaded && !this.isPauseButtonClicked) {
       if (this.shouldShowTutorialAnimation) {
         // FM-544 add or modify code logic here to controlling the timer when tutorial is animating.
-        this.tutorialElapsedTime += deltaTime;
-        if (this.tutorialElapsedTime >= this.tutorialHoldDuration) {
+        const isTimerAllowed = this.tutorial.updateTutorialTimer(deltaTime);
+        if (isTimerAllowed) {
           // After 12s, start timer updates
           this.timerTicking.update(deltaTime);
         }
@@ -573,7 +571,7 @@ export class GameplayScene {
     this.counter += 1; //increment Puzzle
     this.isGameStarted = false;
     this.shouldShowTutorialAnimation = false; //Tutorial is no longer active, timer should work normally.
-    this.tutorialElapsedTime = 0;
+    this.tutorial.resetTutorialTimer();
     if (this.counter === this.levelData.puzzles.length) {
       const handleLevelEnd = () => {
         this.levelIndicators.setIndicators(this.counter);
