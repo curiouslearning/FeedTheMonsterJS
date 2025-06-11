@@ -211,22 +211,6 @@ export class GameplayScene {
           this.quickStartTutorialReady = true;
       }
     );
-    // this.promptText = new PromptText(
-    //   this.width,
-    //   this.height,
-    //   this.levelData.puzzles[this.counter],
-    //   this.levelData,
-    //   this.rightToLeft,
-    //   'prompt-container',
-    //   { selectors: DEFAULT_SELECTORS },
-    //   () => {
-    //     // This callback runs when hand pointer is clicked
-    //     this.quickStartTutorialReady = true;
-    //     // Optionally hide the hand pointer immediately
-    //     const handPointer = document.getElementById('hand-pointer');
-    //     if (handPointer) handPointer.style.display = 'none';
-    //   }
-    // );
     this.levelIndicators = new LevelIndicators();
     this.levelIndicators.setIndicators(this.counter);
     this.monster = this.initializeRiveMonster();
