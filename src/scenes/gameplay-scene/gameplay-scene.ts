@@ -47,6 +47,7 @@ import gameSettingsService from '@gameSettingsService';
 import { PAUSE_POPUP_EVENT_DATA, PausePopupComponent } from '@components/popups/pause-popup/pause-popup-component';
 import { RiveMonsterComponent } from '@components/riveMonster/rive-monster-component';
 import PuzzleHandler from "@gamepuzzles/puzzleHandler/puzzleHandler";
+import { DEFAULT_SELECTORS } from '@components/prompt-text/prompt-text';
 
 export class GameplayScene {
   public width: number;
@@ -99,6 +100,10 @@ export class GameplayScene {
   public loadPuzzleDelay: 3000 | 4500;
   private puzzleHandler: any;
   private shouldShowTutorialAnimation: boolean;
+  // Timer-based flag to control when the quick start tutorial animation can begin
+  private quickStartTutorialReady: boolean = false;
+  // Stores the timeout ID for the tutorial delay, so it can be cleared on puzzle change/dispose
+  private quickStartTutorialTimerId: ReturnType<typeof setTimeout> | null = null;
   // Define animation delays as an array where index 0 = phase 0, index 1 = phase 1, index 2 = phase 2
   private animationDelays = [
     { backToIdle: 350, isChewing: 0, isHappy: 1700, isSpit: 1500, isSad: 3000 }, // Phase 1
@@ -198,11 +203,35 @@ export class GameplayScene {
       this.height,
       this.levelData.puzzles[this.counter],
       this.levelData,
-      this.rightToLeft
+      this.rightToLeft,
+      'prompt-container',  // id parameter (string)
+      { selectors: DEFAULT_SELECTORS },  // options parameter
+      () => {  // Now this is the 8th parameter - the onClickCallback
+          this.shouldShowTutorialAnimation = true;
+          this.quickStartTutorialReady = true;
+      }
     );
+    // this.promptText = new PromptText(
+    //   this.width,
+    //   this.height,
+    //   this.levelData.puzzles[this.counter],
+    //   this.levelData,
+    //   this.rightToLeft,
+    //   'prompt-container',
+    //   { selectors: DEFAULT_SELECTORS },
+    //   () => {
+    //     // This callback runs when hand pointer is clicked
+    //     this.quickStartTutorialReady = true;
+    //     // Optionally hide the hand pointer immediately
+    //     const handPointer = document.getElementById('hand-pointer');
+    //     if (handPointer) handPointer.style.display = 'none';
+    //   }
+    // );
     this.levelIndicators = new LevelIndicators();
     this.levelIndicators.setIndicators(this.counter);
     this.monster = this.initializeRiveMonster();
+    // Start the 6-second tutorial delay timer when the prompt is shown for the first puzzle
+    this.resetQuickStartTutorialDelay();
   }
 
   private setupUIElements() {
@@ -471,14 +500,19 @@ export class GameplayScene {
   draw(deltaTime: number) {
     // If game hasn't started and it's not paused
     if (!this.isGameStarted && !this.isPauseButtonClicked) {
-      if (this.shouldShowTutorialAnimation) {
-        // Draw the quick-start tutorial animation
+      // Gate the tutorial animation behind both the tutorial flag and the timer-based flag
+      if (this.shouldShowTutorialAnimation && this.quickStartTutorialReady) {
+        // Draw the quick-start tutorial animation only after delay
         this.tutorial.drawQuickStart(deltaTime, this.isGameStarted);
-        // Start the game after a configured delay (default 5 seconds)
+        // Start the game after the tutorial finishes
         if (this.tutorial.isQuickStartFinished()) {
           this.setGameToStart();
         }
         return; // Wait until tutorial ends
+      } else if (this.shouldShowTutorialAnimation && !this.quickStartTutorialReady) {
+        // Wait for the delay to expire before starting tutorial animation
+        // Optionally, could show a loading indicator or do nothing
+        return;
       } else {
         // No tutorial: immediately start the game on new puzzle
         this.time += deltaTime;
@@ -572,6 +606,8 @@ export class GameplayScene {
     this.isGameStarted = false;
     this.shouldShowTutorialAnimation = false; //Tutorial is no longer active, timer should work normally.
     this.tutorial.resetTutorialTimer();
+    // Reset the 6-second tutorial delay timer each time a new puzzle is loaded
+    this.resetQuickStartTutorialDelay();
     if (this.counter === this.levelData.puzzles.length) {
       const handleLevelEnd = () => {
         this.levelIndicators.setIndicators(this.counter);
@@ -643,8 +679,33 @@ export class GameplayScene {
     this.startPuzzleTime();
   }
 
+  /**
+   * Starts or resets the 6-second timer that gates the quick start tutorial animation.
+   * This should be called whenever the prompt is shown or a new puzzle is loaded.
+   */
+  private resetQuickStartTutorialDelay() {
+    // Always clear any previous timer to avoid overlap
+    if (this.quickStartTutorialTimerId !== null) {
+      clearTimeout(this.quickStartTutorialTimerId);
+      this.quickStartTutorialTimerId = null;
+    }
+    this.quickStartTutorialReady = false;
+    // Only start the timer if the tutorial should be shown
+    if (this.shouldShowTutorialAnimation) {
+      this.quickStartTutorialTimerId = setTimeout(() => {
+        this.quickStartTutorialReady = true;
+      }, 6000); // 6 seconds
+    }
+  }
+
   public dispose = () => {
     this.isDisposing = true;
+
+    // Cleanup tutorial timer
+    if (this.quickStartTutorialTimerId !== null) {
+      clearTimeout(this.quickStartTutorialTimerId);
+      this.quickStartTutorialTimerId = null;
+    }
 
     // Cleanup audio
     if (this.audioPlayer) {

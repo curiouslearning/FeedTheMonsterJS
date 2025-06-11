@@ -1,6 +1,7 @@
 import QuickStartTutorial from './QuickStartTutorial/QuickStartTutorial';
 import MatchLetterPuzzleTutorial from './MatchLetterPuzzleTutorial/MatchLetterPuzzleTutorial';
 import WordPuzzleTutorial from './WordPuzzleTutorial/WordPuzzleTutorial';
+import AudioPuzzleTutorial from './AudioPuzzleTutorial/AudioPuzzleTutorial';
 import gameStateService from '@gameStateService';
 import { getGameTypeName } from '@common';
 
@@ -16,7 +17,7 @@ export default class TutorialHandler {
   private height: number;
   private context: CanvasRenderingContext2D;
   private puzzleLevel: number;
-  private activeTutorial: null | MatchLetterPuzzleTutorial | WordPuzzleTutorial;
+  private activeTutorial: null | MatchLetterPuzzleTutorial | WordPuzzleTutorial | AudioPuzzleTutorial;
   private quickTutorial: null | QuickStartTutorial;
   private hasGameEnded: boolean = false;
   private isGameOnPause: boolean = false;
@@ -126,8 +127,19 @@ export default class TutorialHandler {
     // Only create tutorial if this is the correct level for this game type
     if (this.gameTypesList[gameTypeName]?.levelNumber === gameLevel) {
       // For letter puzzles (single stone)
-      if (gameTypeName === 'LetterOnly' || gameTypeName === 'LetterInWord' || gameTypeName === 'SoundLetterOnly') {
+      if (gameTypeName === 'LetterOnly' || gameTypeName === 'LetterInWord') {
         return new MatchLetterPuzzleTutorial({
+          context: this.context,
+          width: this.width,
+          height: this.height,
+          stoneImg: img,
+          stonePosVal: stonePosVal as number[]
+        });
+      }
+
+      // for audio puzzles tutorial
+      if (gameTypeName === 'SoundLetterOnly') {
+        return new AudioPuzzleTutorial({
           context: this.context,
           width: this.width,
           height: this.height,
@@ -167,6 +179,10 @@ export default class TutorialHandler {
 
   drawQuickStart(deltaTime: number, hasGameStarted: boolean) {
     if (!hasGameStarted && this.quickTutorial) {
+      const handPointer = document.getElementById('hand-pointer');
+      if (handPointer) {
+        handPointer.style.display = 'none';
+      }
       //Show quick tip by pressing the center/near monster.
       this.quickTutorial.quickStartTutorial(deltaTime, this.width, this.height);
     }

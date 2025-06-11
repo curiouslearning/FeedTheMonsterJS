@@ -1,9 +1,10 @@
 import { EventManager } from "@events";
-import { Utils, VISIBILITY_CHANGE, isGameTypeAudio } from "@common";
+import { Utils, VISIBILITY_CHANGE, getGameTypeName, isGameTypeAudio } from "@common";
 import { AudioPlayer } from "@components";
-import { PROMPT_TEXT_BG, AUDIO_PLAY_BUTTON } from "@constants";
+import { PROMPT_TEXT_BG, AUDIO_PLAY_BUTTON, TUTORIAL_HAND } from "@constants";
 import { BaseHTML, BaseHtmlOptions } from "../baseHTML/base-html";
 import './prompt-text.scss';
+import gameStateService from '@gameStateService';
 
 // Default selectors for the prompt text component
 export const DEFAULT_SELECTORS = {
@@ -23,10 +24,18 @@ export const PROMPT_TEXT_LAYOUT = (id: string, levelData: any) => {
         handle the AUDIO_PLAY_BUTTON only without breaking the tightly connected logic.
     */
     const hidePromptBG = isGameTypeAudio(levelData.levelMeta.protoType);
+    const gameTypesList = gameStateService.getGameTypeList();
+    const gameTypeName = getGameTypeName(
+        levelData.levelMeta.protoType,
+        levelData.levelMeta.levelType
+    );
 
     return (`
         <div id="${id}" class="prompt-container">
-            <div id="prompt-background" class="prompt-background" style="background-image: url(${hidePromptBG ? null :PROMPT_TEXT_BG})">
+            ${(gameTypeName === "SoundLetterOnly" && !gameTypesList[gameTypeName]?.isCleared && gameTypesList[gameTypeName]?.levelNumber === levelData.levelMeta.levelNumber)
+            ? `<img src="${TUTORIAL_HAND}" id="hand-pointer" class="hand-pointer">`
+            : ""}
+            <div id="prompt-background" class="prompt-background" style="background-image: url(${hidePromptBG ? null : PROMPT_TEXT_BG})">
                 <div id="prompt-text-button-container">
                     <div id="prompt-text" class="prompt-text"></div>
                     <div id="prompt-play-button" class="prompt-play-button" style="background-image: url(${AUDIO_PLAY_BUTTON}); pointer-events: auto;"></div>
@@ -59,7 +68,7 @@ export class PromptText extends BaseHTML {
     public translateY: number = 0;
     public isTranslatingUp: boolean = true;
     public translateFactor: number = 0.05;
-    
+
     // HTML elements for the prompt
     public promptContainer: HTMLDivElement;
     public promptBackground: HTMLDivElement;
@@ -68,6 +77,7 @@ export class PromptText extends BaseHTML {
     private animationFrameId: number;
     private eventManager: EventManager;
     private containerId: string;
+    private onClickCallback?: () => void;
 
     /**
      * Initializes a new instance of the PromptText class.
@@ -78,13 +88,14 @@ export class PromptText extends BaseHTML {
      * @param rightToLeft Whether the text is right-to-left.
      */
     constructor(
-        width: number, 
-        height: number, 
-        currentPuzzleData: any, 
-        levelData: any, 
+        width: number,
+        height: number,
+        currentPuzzleData: any,
+        levelData: any,
         rightToLeft: boolean,
         id: string = 'prompt-container',
-        options: BaseHtmlOptions = { selectors: DEFAULT_SELECTORS }
+        options: BaseHtmlOptions = { selectors: DEFAULT_SELECTORS },
+        onClickCallback?: () => void
     ) {
         super(
             options,
@@ -111,12 +122,13 @@ export class PromptText extends BaseHTML {
         this.audioPlayer = new AudioPlayer();
         this.audioPlayer.preloadPromptAudio(this.getPromptAudioUrl());
         document.addEventListener(VISIBILITY_CHANGE, this.handleVisibilityChange, false);
-        
+
         // Initialize HTML elements
         this.initializeHtmlElements();
-        
+
         // Start animation loop
         this.startAnimationLoop();
+        this.onClickCallback = onClickCallback;
     }
 
     /**
@@ -128,19 +140,28 @@ export class PromptText extends BaseHTML {
         this.promptBackground = this.promptContainer.querySelector('#prompt-background') as HTMLDivElement;
         this.promptTextElement = this.promptContainer.querySelector('#prompt-text') as HTMLDivElement;
         this.promptPlayButtonElement = this.promptContainer.querySelector('#prompt-play-button') as HTMLDivElement;
+
+        // Update event listeners to include the callback
+        const handleClick = (e: Event) => {
+            this.playSound();
+            if (this.onClickCallback) {
+                this.onClickCallback();
+            }
+            e.stopPropagation();
+        };
         
         // Add event listeners to all prompt elements
-        this.promptPlayButtonElement.addEventListener('click', this.playSound);
-        this.promptBackground.addEventListener('click', this.playSound);
-        this.promptTextElement.addEventListener('click', this.playSound);
-        
+        this.promptPlayButtonElement.addEventListener('click', handleClick);
+        this.promptBackground.addEventListener('click', handleClick);
+        this.promptTextElement.addEventListener('click', handleClick);
+
         // Make sure all elements are clickable
         this.promptBackground.style.pointerEvents = 'auto';
         this.promptTextElement.style.pointerEvents = 'auto';
-        
+
         // Set initial font size
         this.promptTextElement.style.fontSize = `${this.calculateFont()}px`;
-        
+
         // Update the text display
         this.updateTextDisplay();
     }
@@ -157,6 +178,7 @@ export class PromptText extends BaseHTML {
      * Plays the sound.
      */
     playSound = () => {
+        console.log('playSound')
         if (this.isAppForeground) {
             console.log('Playing prompt audio:', this.getPromptAudioUrl());
             this.audioPlayer.playPromptAudio(this.getPromptAudioUrl());
@@ -169,12 +191,12 @@ export class PromptText extends BaseHTML {
     updateRTLText() {
         // Clear previous content
         this.promptTextElement.innerHTML = '';
-        
+
         // Set RTL direction for the text element while keeping text centered
         this.promptTextElement.style.direction = 'rtl';
         this.promptTextElement.setAttribute('dir', 'rtl');
         this.promptTextElement.style.textAlign = 'center'; // Ensure text is always centered
-        
+
         if (this.levelData.levelMeta.levelType == "LetterInWord") {
             if (this.levelData.levelMeta.protoType == "Visible") {
                 // For RTL, we need to ensure the text flows right to left
@@ -184,14 +206,14 @@ export class PromptText extends BaseHTML {
                 wrapper.style.textAlign = 'center';
                 wrapper.style.width = '100%';
                 wrapper.style.display = 'inline-block';
-                
+
                 // In RTL, we need to highlight the target letter
                 const targetStone = this.targetStones[0];
-                const targetLetterText = typeof targetStone === 'string' 
-                    ? targetStone 
+                const targetLetterText = typeof targetStone === 'string'
+                    ? targetStone
                     : (targetStone as { StoneText: string }).StoneText;
                 const parts = this.currentPromptText.split(targetLetterText);
-                
+
                 // Add the text with the highlighted letter
                 if (parts.length > 1) {
                     // Create the text with the highlighted letter with pulsating effect for LetterInWord
@@ -200,9 +222,9 @@ export class PromptText extends BaseHTML {
                     // Just show the text as is
                     wrapper.textContent = this.currentPromptText;
                 }
-                
+
                 this.promptTextElement.appendChild(wrapper);
-                
+
                 // Show text element, hide play button
                 this.promptTextElement.style.display = 'block';
                 this.promptPlayButtonElement.style.display = 'none';
@@ -219,26 +241,26 @@ export class PromptText extends BaseHTML {
                 wrapper.style.textAlign = 'center';
                 wrapper.style.width = '100%';
                 wrapper.style.display = 'inline-block';
-                
+
                 let html = '';
-                
+
                 // For RTL, add the stones in the correct order
                 for (let i = 0; i < this.targetStones.length; i++) {
                     // Handle both string and object formats for target stones
-                    const stoneText = typeof this.targetStones[i] === 'string' 
-                        ? this.targetStones[i] 
+                    const stoneText = typeof this.targetStones[i] === 'string'
+                        ? this.targetStones[i]
                         : (this.targetStones[i] as { StoneText: string }).StoneText;
-                    
-                    const letterClass = (i < this.droppedStones) 
-                        ? "text-black" 
+
+                    const letterClass = (i < this.droppedStones)
+                        ? "text-black"
                         : "text-red";
-                    
+
                     html += `<span class="${letterClass}">${stoneText}</span>`;
                 }
-                
+
                 wrapper.innerHTML = html;
                 this.promptTextElement.appendChild(wrapper);
-                
+
                 // Show text element, hide play button
                 this.promptTextElement.style.display = 'block';
                 this.promptPlayButtonElement.style.display = 'none';
@@ -260,9 +282,9 @@ export class PromptText extends BaseHTML {
                 wrapper.style.width = '100%';
                 wrapper.style.display = 'inline-block';
                 wrapper.textContent = this.currentPromptText;
-                
+
                 this.promptTextElement.appendChild(wrapper);
-                
+
                 // Show text element, hide play button
                 this.promptTextElement.style.display = 'block';
                 this.promptPlayButtonElement.style.display = 'none';
@@ -279,12 +301,12 @@ export class PromptText extends BaseHTML {
     updateLTRText() {
         // Clear previous content
         this.promptTextElement.innerHTML = '';
-        
+
         // Set LTR direction for the text element while keeping text centered
         this.promptTextElement.style.direction = 'ltr';
         this.promptTextElement.setAttribute('dir', 'ltr');
         this.promptTextElement.style.textAlign = 'center'; // Ensure text is always centered
-        
+
         // Handle LetterInWord level type with visible prototype
         if (this.levelData.levelMeta.levelType === "LetterInWord" && this.levelData.levelMeta.protoType == "Visible") {
             const wrapper = document.createElement('span');
@@ -293,18 +315,18 @@ export class PromptText extends BaseHTML {
             wrapper.style.width = '100%';
             wrapper.style.display = 'inline-block';
             wrapper.style.letterSpacing = '4px'; // Reduced spacing for better alignment
-            
+
             // Get the target letter
             const targetStone = this.targetStones[0];
-            const targetLetterText = typeof targetStone === 'string' 
-                ? targetStone 
+            const targetLetterText = typeof targetStone === 'string'
+                ? targetStone
                 : (targetStone as { StoneText: string }).StoneText;
-            
+
             // Create formatted text with only the specific target letter highlighted
             let formattedPromptText = '';
             let foundTarget = false;
             let i = 0;
-            
+
             // Single loop to build formatted text and highlight the target letter
             while (i < this.currentPromptText.length) {
                 // If we haven't found the target yet and we're past the dropped stones,
@@ -319,16 +341,16 @@ export class PromptText extends BaseHTML {
                         continue; // Skip to next iteration
                     }
                 }
-                
+
                 // Regular character, not highlighted
                 formattedPromptText += this.currentPromptText[i];
                 i++;
             }
-            
+
             wrapper.innerHTML = formattedPromptText;
-            
+
             this.promptTextElement.appendChild(wrapper);
-            
+
             // Show text element, hide play button
             this.promptTextElement.style.display = 'block';
             this.promptPlayButtonElement.style.display = 'none';
@@ -345,21 +367,21 @@ export class PromptText extends BaseHTML {
                     wrapper.style.textAlign = 'center';
                     wrapper.style.width = '100%';
                     wrapper.style.display = 'inline-block';
-                    
+
                     let html = '';
-                    
+
                     if (this.targetStones.length != this.currentPromptText.length) {
                         // For Word level type where target stones don't match prompt text length
                         for (let j = 0; j < this.targetStones.length; j++) {
                             // Handle both string and object formats for target stones
-                            const stoneText = typeof this.targetStones[j] === 'string' 
-                                ? this.targetStones[j] 
+                            const stoneText = typeof this.targetStones[j] === 'string'
+                                ? this.targetStones[j]
                                 : (this.targetStones[j] as { StoneText: string }).StoneText;
-                            
-                            const letterClass = (j < this.droppedStones) 
-                                ? "text-black" 
+
+                            const letterClass = (j < this.droppedStones)
+                                ? "text-black"
                                 : "text-red";
-                            
+
                             const spacing = j > 0 ? " letter-spacing" : "";
                             html += `<span class="${letterClass}${spacing}">${stoneText}</span>`;
                         }
@@ -373,19 +395,19 @@ export class PromptText extends BaseHTML {
                             // Matching the original canvas implementation
                             for (let i = 0; i < this.targetStones.length; i++) {
                                 // Handle both string and object formats for target stones
-                                const stoneText = typeof this.targetStones[i] === 'string' 
-                                    ? this.targetStones[i] 
+                                const stoneText = typeof this.targetStones[i] === 'string'
+                                    ? this.targetStones[i]
                                     : (this.targetStones[i] as { StoneText: string }).StoneText;
-                                    
+
                                 const letterClass = i < this.droppedStones ? "text-black" : "text-red";
                                 html += `<span class="${letterClass}">${stoneText}</span>`;
                             }
                         }
                     }
-                    
+
                     wrapper.innerHTML = html;
                     this.promptTextElement.appendChild(wrapper);
-                    
+
                     // Show text element, hide play button
                     this.promptTextElement.style.display = 'block';
                     this.promptPlayButtonElement.style.display = 'none';
@@ -410,9 +432,9 @@ export class PromptText extends BaseHTML {
                     wrapper.style.width = '100%';
                     wrapper.style.display = 'inline-block';
                     wrapper.textContent = this.currentPromptText;
-                    
+
                     this.promptTextElement.appendChild(wrapper);
-                    
+
                     // Show text element, hide play button
                     this.promptTextElement.style.display = 'block';
                     this.promptPlayButtonElement.style.display = 'none';
@@ -432,7 +454,7 @@ export class PromptText extends BaseHTML {
         // Show the button, hide the text
         this.promptPlayButtonElement.style.display = 'block';
         this.promptTextElement.style.display = 'none';
-        
+
         // Make sure the play button is clickable
         this.promptPlayButtonElement.style.pointerEvents = 'auto';
     }
@@ -444,7 +466,7 @@ export class PromptText extends BaseHTML {
         // Calculate font size
         const fontSize = this.calculateFont();
         this.promptTextElement.style.fontSize = `${fontSize}px`;
-        
+
         // Update the text content based on language direction
         if (this.rightToLeft) {
             this.updateRTLText();
@@ -458,14 +480,14 @@ export class PromptText extends BaseHTML {
      */
     startAnimationLoop() {
         let lastTime = 0;
-        
+
         const animate = (timestamp) => {
             if (!lastTime) lastTime = timestamp;
             const deltaTime = timestamp - lastTime;
             lastTime = timestamp;
-            
+
             this.time += deltaTime;
-            
+
             // Play sound at specific time
             if (Math.floor(this.time) >= 1910 && Math.floor(this.time) <= 1926) {
                 this.playSound();
@@ -474,20 +496,20 @@ export class PromptText extends BaseHTML {
             if (!this.isStoneDropped && !isGameTypeAudio(this.levelData.levelMeta.protoType)) {
                 // Update scaling
                 this.updateScaling();
-                
+
                 // Update translation
                 this.updateTranslation();
-                
+
                 // Apply transformations - preserve translateX(-50%) for horizontal centering
                 this.promptBackground.style.transform = `translateX(-50%) scale(${this.scale}) translateY(${this.translateY}px)`;
-                
+
                 // Show the prompt container
                 this.promptContainer.style.display = 'block';
             }
-            
+
             this.animationFrameId = requestAnimationFrame(animate);
         };
-        
+
         this.animationFrameId = requestAnimationFrame(animate);
     }
 
@@ -513,13 +535,13 @@ export class PromptText extends BaseHTML {
         this.audioPlayer.preloadPromptAudio(this.getPromptAudioUrl());
         this.isStoneDropped = false;
         this.time = 0;
-        
+
         // Update font size for new text
         this.promptTextElement.style.fontSize = `${this.calculateFont()}px`;
-        
+
         // Update text display
         this.updateTextDisplay();
-        
+
         // Show the prompt container again
         this.promptContainer.style.display = 'block';
     }
@@ -530,12 +552,12 @@ export class PromptText extends BaseHTML {
     public dispose() {
         document.removeEventListener(VISIBILITY_CHANGE, this.handleVisibilityChange, false);
         this.eventManager.unregisterEventListener();
-        
+
         // Cancel animation frame
         if (this.animationFrameId) {
             cancelAnimationFrame(this.animationFrameId);
         }
-        
+
         // Use BaseHTML's destroy method to remove the element
         super.destroy();
     }
@@ -547,7 +569,7 @@ export class PromptText extends BaseHTML {
     droppedLetterIndex(index: number) {
         this.droppedStones = index;
         this.droppedStoneCount++;
-        
+
         // Update the text display to reflect the dropped letter
         if (!this.isStoneDropped) {
             this.updateTextDisplay();
