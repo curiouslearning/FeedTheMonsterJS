@@ -115,34 +115,34 @@
 @-webkit-keyframes text-pulse {
   0% {
     -webkit-transform: scale(1);
-    transform: scale(1);
+            transform: scale(1);
     -webkit-transform-origin: center center;
-    transform-origin: center center;
+            transform-origin: center center;
   }
   50% {
     -webkit-transform: scale(1.4);
-    transform: scale(1.4);
+            transform: scale(1.4);
   }
   100% {
     -webkit-transform: scale(1);
-    transform: scale(1);
+            transform: scale(1);
   }
 }
 
 @keyframes text-pulse {
   0% {
     -webkit-transform: scale(1);
-    transform: scale(1);
+            transform: scale(1);
     -webkit-transform-origin: center center;
-    transform-origin: center center;
+            transform-origin: center center;
   }
   50% {
     -webkit-transform: scale(1.4);
-    transform: scale(1.4);
+            transform: scale(1.4);
   }
   100% {
     -webkit-transform: scale(1);
-    transform: scale(1);
+            transform: scale(1);
   }
 }
 
