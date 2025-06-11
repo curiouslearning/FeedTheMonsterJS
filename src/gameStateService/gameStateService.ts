@@ -183,7 +183,6 @@ export class GameStateService extends PubSub {
     private checkClearedLevels(levelNumber: number) {
        const clearedLevels = GameScore.getAllGameLevelInfo();
        let hasCleardLevel = false;
-
        /*We don't need the whole object in Cleard level data, we just need to check if the
         levelNumber is in the list as it means it that level has been cleared.
        */
@@ -197,6 +196,8 @@ export class GameStateService extends PubSub {
             hasCleardLevel = true;
             return false; //Return false to break every loop.
         }
+           // Return true or else, `every()` will stop.
+        return true;
        });
 
         return hasCleardLevel;
