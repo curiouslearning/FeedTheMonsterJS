@@ -178,7 +178,6 @@ export class PromptText extends BaseHTML {
      * Plays the sound.
      */
     playSound = () => {
-        console.log('playSound')
         if (this.isAppForeground) {
             console.log('Playing prompt audio:', this.getPromptAudioUrl());
             this.audioPlayer.playPromptAudio(this.getPromptAudioUrl());
