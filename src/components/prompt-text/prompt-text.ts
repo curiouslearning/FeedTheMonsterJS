@@ -489,7 +489,7 @@ export class PromptText extends BaseHTML {
             this.time += deltaTime;
 
             // Play sound at specific time
-            if (Math.floor(this.time) >= 1910 && Math.floor(this.time) <= 1926) {
+            if (Math.floor(this.time) >= 3000 && Math.floor(this.time) <= 3016) {
                 this.playSound();
             }
             //Note: !isGameTypeAudio(this.levelData.levelMeta.protoType) is needed to make sure the audio play button won't pulsate.
