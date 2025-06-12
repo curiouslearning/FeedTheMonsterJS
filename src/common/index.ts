@@ -9,7 +9,8 @@ import {
   toggleDebugMode,
   hideElement,
   getGameTypeName,
-  isGameTypeAudio
+  isGameTypeAudio,
+  getPromptTextContext
 } from "./utils";
 import { Debugger, lang, font, pseudoId, Window, source, campaign_id } from "./global-variables";
 import {
@@ -53,5 +54,6 @@ export {
   toggleDebugMode,
   hideElement,
   getGameTypeName,
-  isGameTypeAudio
+  isGameTypeAudio,
+  getPromptTextContext
 };

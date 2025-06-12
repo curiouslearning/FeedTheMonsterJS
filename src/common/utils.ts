@@ -1,4 +1,5 @@
 import { Debugger } from "@common";
+import gameStateService from '@gameStateService';
 import { TestServer } from "@constants";
 import { languageFontMapping } from "@data/i18-font-mapping";
 export class Utils {
@@ -200,4 +201,15 @@ export const getGameTypeName = (protoType: string, levelType: string) => {
 
 export const isGameTypeAudio = (protoType: string) => {
   return protoType !== 'Visible';
+}
+
+/**
+ * Utility to compute common prompt text context values for both layout and runtime logic.
+ */
+export function getPromptTextContext(levelData: any) {
+    const isMatchSound = isGameTypeAudio(levelData?.levelMeta?.protoType);
+    const gameTypesList = gameStateService.getGameTypeList();
+    const gameTypeName = getGameTypeName(levelData?.levelMeta?.protoType, levelData?.levelMeta?.levelType);
+    const gameType = gameTypesList?.[gameTypeName];
+    return { isMatchSound, gameTypesList, gameTypeName, gameType };
 }

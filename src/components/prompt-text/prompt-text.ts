@@ -1,10 +1,9 @@
 import { EventManager } from "@events";
-import { Utils, VISIBILITY_CHANGE, getGameTypeName, isGameTypeAudio } from "@common";
+import { Utils, VISIBILITY_CHANGE, isGameTypeAudio, getPromptTextContext } from "@common";
 import { AudioPlayer } from "@components";
 import { PROMPT_TEXT_BG, AUDIO_PLAY_BUTTON, TUTORIAL_HAND } from "@constants";
 import { BaseHTML, BaseHtmlOptions } from "../baseHTML/base-html";
 import './prompt-text.scss';
-import gameStateService from '@gameStateService';
 
 // Default selectors for the prompt text component
 export const DEFAULT_SELECTORS = {
@@ -23,12 +22,8 @@ export const PROMPT_TEXT_LAYOUT = (id: string, levelData: any) => {
         However due to how coupled and tied the logic in this class. It is not easy to
         handle the AUDIO_PLAY_BUTTON only without breaking the tightly connected logic.
     */
-    const hidePromptBG = isGameTypeAudio(levelData.levelMeta.protoType);
-    const gameTypesList = gameStateService.getGameTypeList();
-    const gameTypeName = getGameTypeName(
-        levelData.levelMeta.protoType,
-        levelData.levelMeta.levelType
-    );
+    // Use shared helper for prompt context
+    const { isMatchSound: hidePromptBG, gameTypesList, gameTypeName } = getPromptTextContext(levelData);
 
     return (`
         <div id="${id}" class="prompt-container">
@@ -487,8 +482,15 @@ export class PromptText extends BaseHTML {
 
             this.time += deltaTime;
 
-            // Play sound at specific time
-            if (Math.floor(this.time) >= 3000 && Math.floor(this.time) <= 3016) {
+            // Optimized: Use shared helper for prompt context
+            const { isMatchSound, gameTypesList, gameTypeName, gameType } = getPromptTextContext(this.levelData);
+            const isValidGameType = gameType && !gameType.isCleared && gameType.levelNumber === this.levelData.levelMeta.levelNumber;
+            let triggerStart = 1910, triggerEnd = 1926;
+            if (isMatchSound && isValidGameType) {
+                triggerStart = 3000;
+                triggerEnd = 3016;
+            }
+            if (Math.floor(this.time) >= triggerStart && Math.floor(this.time) <= triggerEnd) {
                 this.playSound();
             }
             //Note: !isGameTypeAudio(this.levelData.levelMeta.protoType) is needed to make sure the audio play button won't pulsate.
