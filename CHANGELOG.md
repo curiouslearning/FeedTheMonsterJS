@@ -2,6 +2,23 @@
 
 ## [1.0.43](https://github.com/curiouslearning/FeedTheMonsterJS/compare/1.0.42...1.0.43) (2025-06-10)
 
+### Features
+
+* feat: FM-545 Adding the tree log to the rive file for fixing alignment issues. & FM-487 updated with hitbox logic to place new rive animation #1697
+* feat: Updated logic values on drawing stone drag on tutorial (FM-510) #1698 
+* chore: QA unit test for FTM firebase custom event logging for Event Logs! #1699
+* chore: Pre-test(develop) to test code merge with latest bug fixes and improvements from v1.0.41 #1702
+* chore: Develop (Pre-test) to test environment #1707
+* chore: (Test Env)Prod deploy to Production code merge #1714
+
+
+### Bug Fixes
+* fix: Allowed retry scene name to be re-instance (FM-554). #1700
+* fix: Updated SW file with latest rive file #1704
+* fix: updated sw file and code improvement #1705
+* fix: FM-553 Wooden log with the rive animation will appear above the blue background in the level-end screen. #1706
+
+
 ## [1.0.42](https://github.com/curiouslearning/FeedTheMonsterJS/compare/1.0.41...1.0.42) (2025-05-31)
 
 
