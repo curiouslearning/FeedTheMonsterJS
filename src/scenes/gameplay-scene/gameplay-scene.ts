@@ -27,6 +27,7 @@ import {
   lang,
   pseudoId,
   Utils,
+  getGameTypeName,
 } from "@common";
 import { GameScore, DataModal } from "@data";
 import {
@@ -214,8 +215,12 @@ export class GameplayScene {
     this.levelIndicators = new LevelIndicators();
     this.levelIndicators.setIndicators(this.counter);
     this.monster = this.initializeRiveMonster();
-    // Start the 6-second tutorial delay timer when the prompt is shown for the first puzzle
-    this.resetQuickStartTutorialDelay();
+
+    if(this.tutorial.showHandPointerInAudioPuzzle(gamePlayData.levelData)) {
+      this.resetQuickStartTutorialDelay();
+    } else {
+      this.quickStartTutorialReady = true;
+    }
   }
 
   private setupUIElements() {

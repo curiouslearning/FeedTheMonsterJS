@@ -3,7 +3,7 @@ import MatchLetterPuzzleTutorial from './MatchLetterPuzzleTutorial/MatchLetterPu
 import WordPuzzleTutorial from './WordPuzzleTutorial/WordPuzzleTutorial';
 import AudioPuzzleTutorial from './AudioPuzzleTutorial/AudioPuzzleTutorial';
 import gameStateService from '@gameStateService';
-import { getGameTypeName } from '@common';
+import { getGameTypeName, isGameTypeAudio } from '@common';
 
 type TutorialInitParams = {
   context: CanvasRenderingContext2D;
@@ -21,6 +21,7 @@ export default class TutorialHandler {
   private quickTutorial: null | QuickStartTutorial;
   private hasGameEnded: boolean = false;
   private isGameOnPause: boolean = false;
+  public instantDropStone: boolean = false;
   public gameTypesList: {} | {
     LetterInWord: number;
     LetterOnly: number;
@@ -54,14 +55,14 @@ export default class TutorialHandler {
 
       this.unsubscribeStoneCreationEvent = gameStateService.subscribe(
         gameStateService.EVENTS.CORRECT_STONE_POSITION,
-        (eventData: { 
-          stonePosVal: number[] | number[][], 
-          img: any, 
+        (eventData: {
+          stonePosVal: number[] | number[][],
+          img: any,
           levelData: any
         }) => {
           // Get game type from level data
           const gameTypeName = getGameTypeName(
-            eventData.levelData.levelMeta.protoType, 
+            eventData.levelData.levelMeta.protoType,
             eventData.levelData.levelMeta.levelType
           );
           this.gameTypeName = gameTypeName; // Store for later use
@@ -162,7 +163,7 @@ export default class TutorialHandler {
 
       //Add more if conditions here for new tutorial instances.
     }
-    
+
     return null;
   }
 
@@ -183,12 +184,14 @@ export default class TutorialHandler {
       if (handPointer) {
         handPointer.style.display = 'none';
       }
-      //Show quick tip by pressing the center/near monster.
-      this.quickTutorial.quickStartTutorial(deltaTime, this.width, this.height);
+      if (!this.instantDropStone)
+        //Show quick tip by pressing the center/near monster.
+        this.quickTutorial.quickStartTutorial(deltaTime, this.width, this.height);
     }
   }
 
   public isQuickStartFinished(): boolean {
+    if (this.instantDropStone) return true;
     return this.quickTutorial?.isFinished ?? false;
   }
 
@@ -211,5 +214,14 @@ export default class TutorialHandler {
       this.unsubscribeLevelEndData();
       this.hasEstablishedSubscriptions = false;
     }
+  }
+
+  showHandPointerInAudioPuzzle(levelData: any) {
+    const meta = levelData?.levelMeta;
+    if (!meta) return false;
+    
+    const gameType = this.gameTypesList[getGameTypeName(meta.protoType, meta.levelType)];
+    return this.instantDropStone = !!(gameType && isGameTypeAudio(meta.protoType) && 
+                                   !gameType.isCleared && gameType.levelNumber === meta.levelNumber);
   }
 }

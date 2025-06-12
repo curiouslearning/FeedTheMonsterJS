@@ -32,7 +32,7 @@ export const PROMPT_TEXT_LAYOUT = (id: string, levelData: any) => {
 
     return (`
         <div id="${id}" class="prompt-container">
-            ${(gameTypeName === "SoundLetterOnly" && !gameTypesList[gameTypeName]?.isCleared && gameTypesList[gameTypeName]?.levelNumber === levelData.levelMeta.levelNumber)
+            ${(hidePromptBG && !gameTypesList[gameTypeName]?.isCleared && gameTypesList[gameTypeName]?.levelNumber === levelData.levelMeta.levelNumber)
             ? `<img src="${TUTORIAL_HAND}" id="hand-pointer" class="hand-pointer">`
             : ""}
             <div id="prompt-background" class="prompt-background" style="background-image: url(${hidePromptBG ? null : PROMPT_TEXT_BG})">
