@@ -236,5 +236,5 @@ export default class TutorialHandler {
         !gameType.isCleared &&
         gameType.levelNumber === meta.levelNumber
     );
-}
+  }
 }
