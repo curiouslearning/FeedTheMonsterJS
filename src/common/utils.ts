@@ -206,9 +206,8 @@ export const isGameTypeAudio = (protoType: string) => {
 /**
  * Utility to compute common prompt text context values for both layout and runtime logic.
  */
-export function getPromptTextContext(levelData: any) {
+export function getPromptTextContext(levelData: any, gameTypesList: any) {
     const isMatchSound = isGameTypeAudio(levelData?.levelMeta?.protoType);
-    const gameTypesList = gameStateService.getGameTypeList();
     const gameTypeName = getGameTypeName(levelData?.levelMeta?.protoType, levelData?.levelMeta?.levelType);
     const gameType = gameTypesList?.[gameTypeName];
     return { isMatchSound, gameTypesList, gameTypeName, gameType };

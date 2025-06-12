@@ -4,6 +4,7 @@ import { AudioPlayer } from "@components";
 import { PROMPT_TEXT_BG, AUDIO_PLAY_BUTTON, TUTORIAL_HAND } from "@constants";
 import { BaseHTML, BaseHtmlOptions } from "../baseHTML/base-html";
 import './prompt-text.scss';
+import gameStateService from '@gameStateService';
 
 // Default selectors for the prompt text component
 export const DEFAULT_SELECTORS = {
@@ -23,7 +24,8 @@ export const PROMPT_TEXT_LAYOUT = (id: string, levelData: any) => {
         handle the AUDIO_PLAY_BUTTON only without breaking the tightly connected logic.
     */
     // Use shared helper for prompt context
-    const { isMatchSound: hidePromptBG, gameTypesList, gameTypeName } = getPromptTextContext(levelData);
+    const gameTypesList = gameStateService.getGameTypeList();
+    const { isMatchSound: hidePromptBG, gameTypeName } = getPromptTextContext(levelData, gameTypesList);
 
     return (`
         <div id="${id}" class="prompt-container">
@@ -483,7 +485,8 @@ export class PromptText extends BaseHTML {
             this.time += deltaTime;
 
             // Optimized: Use shared helper for prompt context
-            const { isMatchSound, gameTypesList, gameTypeName, gameType } = getPromptTextContext(this.levelData);
+            const gameTypesList = gameStateService.getGameTypeList();
+            const { isMatchSound, gameTypeName, gameType } = getPromptTextContext(this.levelData, gameTypesList);
             const isValidGameType = gameType && !gameType.isCleared && gameType.levelNumber === this.levelData.levelMeta.levelNumber;
             let triggerStart = 1910, triggerEnd = 1926;
             if (isMatchSound && isValidGameType) {
