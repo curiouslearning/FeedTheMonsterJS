@@ -199,6 +199,19 @@ export class GameplayScene {
       puzzleLevel: this.counter,
       shouldHaveTutorial: gamePlayData?.tutorialOn
     });
+    let onClickCallback;
+    /**
+     * Assign the onClickCallback ONLY for audio puzzle levels where the tutorial hand pointer should be shown.
+     * This callback is passed to the PromptText component and is triggered when the prompt is clicked.
+     * When invoked, it starts the tutorial hand animation and marks the quick start tutorial as ready.
+     * For non-audio puzzles or levels without the hand pointer tutorial, no callback is assigned.
+     */
+    if (this.tutorial.showHandPointerInAudioPuzzle(gamePlayData.levelData)) {
+      onClickCallback = () => {
+        this.shouldShowTutorialAnimation = true;
+        this.quickStartTutorialReady = true;
+      };
+    }
     this.promptText = new PromptText(
       this.width,
       this.height,
@@ -207,10 +220,7 @@ export class GameplayScene {
       this.rightToLeft,
       'prompt-container',  // id parameter (string)
       { selectors: DEFAULT_SELECTORS },  // options parameter
-      () => {  // Now this is the 8th parameter - the onClickCallback
-          this.shouldShowTutorialAnimation = true;
-          this.quickStartTutorialReady = true;
-      }
+      onClickCallback
     );
     this.levelIndicators = new LevelIndicators();
     this.levelIndicators.setIndicators(this.counter);

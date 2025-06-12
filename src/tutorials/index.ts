@@ -218,10 +218,23 @@ export default class TutorialHandler {
 
   showHandPointerInAudioPuzzle(levelData: any) {
     const meta = levelData?.levelMeta;
-    if (!meta) return false;
-    
-    const gameType = this.gameTypesList[getGameTypeName(meta.protoType, meta.levelType)];
-    return this.instantDropStone = !!(gameType && isGameTypeAudio(meta.protoType) && 
-                                   !gameType.isCleared && gameType.levelNumber === meta.levelNumber);
-  }
+    const gameTypesList = this.gameTypesList;
+    const key = meta && getGameTypeName(meta.protoType, meta.levelType);
+
+    if (
+        !meta ||
+        !gameTypesList ||
+        key !== 'SoundLetterOnly'
+    ) {
+        return false;
+    }
+
+    const gameType = gameTypesList[key];
+    if (!gameType) return false;
+
+    return this.instantDropStone = !!(
+        !gameType.isCleared &&
+        gameType.levelNumber === meta.levelNumber
+    );
+}
 }
