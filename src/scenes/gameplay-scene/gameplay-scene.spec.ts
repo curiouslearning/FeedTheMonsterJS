@@ -347,6 +347,13 @@ describe('GameplayScene with BasePopupComponent', () => {
       triggerInput: jest.fn(),
       dispose: jest.fn()
     } as any;
+    // Patch tutorial mock to prevent TypeError in tests
+    gameplayScene.tutorial = {
+      ...gameplayScene.tutorial,
+      resetQuickStartTutorialDelay: jest.fn(),
+      showHandPointerInAudioPuzzle: jest.fn().mockReturnValue(false),
+      // Add any other required methods here
+    } as any as any;
   });
 
   afterEach(() => {
@@ -543,7 +550,11 @@ describe('GameplayScene with BasePopupComponent', () => {
       gameplayScene.promptText = mockPromptText as any;
       gameplayScene.pauseButton = mockPauseButton as any;
       gameplayScene.pausePopupComponent = mockPausePopup as any;
-      gameplayScene.tutorial = tutorial as any;
+      gameplayScene.tutorial = {
+        ...tutorial,
+        resetQuickStartTutorialDelay: jest.fn(),
+        showHandPointerInAudioPuzzle: jest.fn().mockReturnValue(false),
+      } as any as any;
       // Call dispose
       gameplayScene.dispose();
 
