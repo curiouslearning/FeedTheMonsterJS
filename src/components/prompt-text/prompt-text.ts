@@ -1,7 +1,8 @@
 import { EventManager } from "@events";
-import { Utils, VISIBILITY_CHANGE, isGameTypeAudio, getPromptTextContext } from "@common";
+import { Utils, VISIBILITY_CHANGE, isGameTypeAudio } from "@common";
 import { AudioPlayer } from "@components";
-import { PROMPT_TEXT_BG, AUDIO_PLAY_BUTTON, TUTORIAL_HAND } from "@constants";
+import { PROMPT_TEXT_BG, AUDIO_PLAY_BUTTON } from "@constants";
+import TutorialHandler from "@tutorials";
 import { BaseHTML, BaseHtmlOptions } from "../baseHTML/base-html";
 import './prompt-text.scss';
 import gameStateService from '@gameStateService';
@@ -20,18 +21,15 @@ export const PROMPT_TEXT_LAYOUT = (id: string, levelData: any) => {
         Note: hidePromptBG is a dirty fix to easily implement the new AUDIO_PLAY_BUTTON.
         AUDIO_PLAY_BUTTON is a new asset that is similar to start-scene play button.
         So rendering this asset requires removing the prompt background entirely.
-        However due to how coupled and tied the logic in this class. It is not easy to
-        handle the AUDIO_PLAY_BUTTON only without breaking the tightly connected logic.
+        However due to how coupled and tied the logic in this class, it is not easy to handle the AUDIO_PLAY_BUTTON only without breaking the tightly connected logic.
     */
     // Use shared helper for prompt context
     const gameTypesList = gameStateService.getGameTypeList();
-    const { isMatchSound: hidePromptBG, gameTypeName } = getPromptTextContext(levelData, gameTypesList);
+    const { isMatchSound: hidePromptBG } = TutorialHandler.getPromptTextContext(levelData, gameTypesList);
 
+    // Restore original logic, but remove hand-pointer <img>
     return (`
         <div id="${id}" class="prompt-container">
-            ${(hidePromptBG && !gameTypesList[gameTypeName]?.isCleared && gameTypesList[gameTypeName]?.levelNumber === levelData.levelMeta.levelNumber)
-            ? `<img src="${TUTORIAL_HAND}" id="hand-pointer" class="hand-pointer">`
-            : ""}
             <div id="prompt-background" class="prompt-background" style="background-image: url(${hidePromptBG ? null : PROMPT_TEXT_BG})">
                 <div id="prompt-text-button-container">
                     <div id="prompt-text" class="prompt-text"></div>
@@ -44,8 +42,10 @@ export const PROMPT_TEXT_LAYOUT = (id: string, levelData: any) => {
 
 /**
  * Represents a prompt text component.
+ * Integrates with TutorialHandler to show/remove the hand-pointer as needed.
  */
 export class PromptText extends BaseHTML {
+    private tutorialHandler: TutorialHandler | null = null; // Store a reference to TutorialHandler
     public width: number;
     public height: number;
     public levelData: any;
@@ -117,7 +117,7 @@ export class PromptText extends BaseHTML {
         this.currentPuzzleData = currentPuzzleData;
         this.targetStones = this.currentPuzzleData.targetStones;
         this.audioPlayer = new AudioPlayer();
-        this.audioPlayer.preloadPromptAudio(this.getPromptAudioUrl());
+        this.audioPlayer.preloadPromptAudio(Utils.getPromptAudioUrl(this.currentPuzzleData));
         document.addEventListener(VISIBILITY_CHANGE, this.handleVisibilityChange, false);
 
         // Initialize HTML elements
@@ -126,6 +126,26 @@ export class PromptText extends BaseHTML {
         // Start animation loop
         this.startAnimationLoop();
         this.onClickCallback = onClickCallback;
+
+        // Inject hand-pointer if this is a match sound tutorial
+        const gameTypesList = gameStateService.getGameTypeList();
+        const { isMatchSound, gameTypeName } = TutorialHandler.getPromptTextContext(levelData, gameTypesList);
+
+        this.tutorialHandler = new TutorialHandler({
+            context: null as any, // Not needed for pointer injection
+            width: this.width,
+            height: this.height,
+            puzzleLevel: 0,
+            shouldHaveTutorial: true
+        });
+
+        if (
+            isMatchSound &&
+            !gameTypesList[gameTypeName]?.isCleared &&
+            gameTypesList[gameTypeName]?.levelNumber === levelData.levelMeta.levelNumber
+        ) {
+            this.tutorialHandler.injectHandPointer();
+        }
     }
 
     /**
@@ -140,7 +160,7 @@ export class PromptText extends BaseHTML {
 
         // Update event listeners to include the callback
         const handleClick = (e: Event) => {
-            this.playSound();
+            Utils.playPromptSound(this.audioPlayer, this.currentPuzzleData, this.isAppForeground);
             if (this.onClickCallback) {
                 this.onClickCallback();
             }
@@ -484,16 +504,11 @@ export class PromptText extends BaseHTML {
 
             this.time += deltaTime;
 
-            // Optimized: Use shared helper for prompt context
-            const gameTypesList = gameStateService.getGameTypeList();
-            const { isMatchSound, gameTypeName, gameType } = getPromptTextContext(this.levelData, gameTypesList);
-            const isValidGameType = gameType && !gameType.isCleared && gameType.levelNumber === this.levelData.levelMeta.levelNumber;
-            let triggerStart = 1910, triggerEnd = 1926;
-            if (isMatchSound && isValidGameType) {
-                triggerStart = 3000;
-                triggerEnd = 3016;
-            }
-            if (Math.floor(this.time) >= triggerStart && Math.floor(this.time) <= triggerEnd) {
+            if (
+                this.tutorialHandler &&
+                typeof this.tutorialHandler.shouldPlayTutorialPromptAudio === 'function' &&
+                this.tutorialHandler.shouldPlayTutorialPromptAudio(this)
+            ) {
                 this.playSound();
             }
             //Note: !isGameTypeAudio(this.levelData.levelMeta.protoType) is needed to make sure the audio play button won't pulsate.
@@ -536,7 +551,7 @@ export class PromptText extends BaseHTML {
         this.currentPuzzleData = this.levelData.puzzles[event.detail.counter];
         this.currentPromptText = this.currentPuzzleData.prompt.promptText;
         this.targetStones = this.currentPuzzleData.targetStones;
-        this.audioPlayer.preloadPromptAudio(this.getPromptAudioUrl());
+        this.audioPlayer.preloadPromptAudio(Utils.getPromptAudioUrl(this.currentPuzzleData));
         this.isStoneDropped = false;
         this.time = 0;
 
@@ -556,6 +571,12 @@ export class PromptText extends BaseHTML {
     public dispose() {
         document.removeEventListener(VISIBILITY_CHANGE, this.handleVisibilityChange, false);
         this.eventManager.unregisterEventListener();
+
+        // Remove the hand-pointer if injected
+        if (this.tutorialHandler) {
+            this.tutorialHandler.removeHandPointer();
+            this.tutorialHandler = null;
+        }
 
         // Cancel animation frame
         if (this.animationFrameId) {

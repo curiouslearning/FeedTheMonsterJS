@@ -10,7 +10,6 @@ import {
   hideElement,
   getGameTypeName,
   isGameTypeAudio,
-  getPromptTextContext
 } from "./utils";
 import { Debugger, lang, font, pseudoId, Window, source, campaign_id } from "./global-variables";
 import {
@@ -55,5 +54,4 @@ export {
   hideElement,
   getGameTypeName,
   isGameTypeAudio,
-  getPromptTextContext
 };

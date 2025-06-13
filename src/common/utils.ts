@@ -1,8 +1,31 @@
 import { Debugger } from "@common";
-import gameStateService from '@gameStateService';
 import { TestServer } from "@constants";
 import { languageFontMapping } from "@data/i18-font-mapping";
+import gameStateService from "@gameStateService";
+
+/**
+ * Returns the correct prompt audio URL for the given puzzle data.
+ * Handles dev/prod URL conversion.
+ */
+
 export class Utils {
+    /**
+     * Returns the correct prompt audio URL for the given puzzle data.
+     * Handles dev/prod URL conversion.
+     */
+    public static getPromptAudioUrl(currentPuzzleData: any): string {
+        return Utils.getConvertedDevProdURL(currentPuzzleData.prompt.promptAudio);
+    }
+
+    /**
+     * Plays the prompt audio using the provided AudioPlayer instance, if app is in foreground.
+     */
+    public static playPromptSound(audioPlayer: any, currentPuzzleData: any, isAppForeground: boolean) {
+        if (isAppForeground) {
+            audioPlayer.playPromptAudio(Utils.getPromptAudioUrl(currentPuzzleData));
+        }
+    }
+
   public static UrlSubstring: string = "/feedthemonster";
   public static subdomain: string = "https://feedthemonster.curiouscontent.org";
 
@@ -201,14 +224,4 @@ export const getGameTypeName = (protoType: string, levelType: string) => {
 
 export const isGameTypeAudio = (protoType: string) => {
   return protoType !== 'Visible';
-}
-
-/**
- * Utility to compute common prompt text context values for both layout and runtime logic.
- */
-export function getPromptTextContext(levelData: any, gameTypesList: any) {
-    const isMatchSound = isGameTypeAudio(levelData?.levelMeta?.protoType);
-    const gameTypeName = getGameTypeName(levelData?.levelMeta?.protoType, levelData?.levelMeta?.levelType);
-    const gameType = gameTypesList?.[gameTypeName];
-    return { isMatchSound, gameTypesList, gameTypeName, gameType };
 }

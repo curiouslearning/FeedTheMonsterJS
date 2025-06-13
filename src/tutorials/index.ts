@@ -3,7 +3,8 @@ import MatchLetterPuzzleTutorial from './MatchLetterPuzzleTutorial/MatchLetterPu
 import WordPuzzleTutorial from './WordPuzzleTutorial/WordPuzzleTutorial';
 import AudioPuzzleTutorial from './AudioPuzzleTutorial/AudioPuzzleTutorial';
 import gameStateService from '@gameStateService';
-import { getGameTypeName, isGameTypeAudio } from '@common';
+import { getGameTypeName, isGameTypeAudio, Utils } from '@common';
+import { TUTORIAL_HAND } from '@constants';
 
 type TutorialInitParams = {
   context: CanvasRenderingContext2D;
@@ -13,6 +14,9 @@ type TutorialInitParams = {
   shouldHaveTutorial?: boolean;
 };
 export default class TutorialHandler {
+  private quickStartTutorialTimerId: ReturnType<typeof setTimeout> | null = null;
+  public quickStartTutorialReady: boolean = false;
+  public shouldShowTutorialAnimation: boolean = false; // Set externally as needed
   private width: number;
   private height: number;
   private context: CanvasRenderingContext2D;
@@ -202,6 +206,21 @@ export default class TutorialHandler {
     }
   }
 
+  public shouldPlayTutorialPromptAudio(promptTextInstance: any): boolean {
+    if (!promptTextInstance || !promptTextInstance.levelData || !promptTextInstance.currentPuzzleData) return false;
+    const gameTypesList = gameStateService.getGameTypeList();
+    const { isMatchSound, gameTypeName, gameType } = TutorialHandler.getPromptTextContext(promptTextInstance.levelData, gameTypesList);
+    const isValidGameType = gameType && !gameType.isCleared && gameType.levelNumber === promptTextInstance.levelData.levelMeta.levelNumber;
+    let triggerStart = 1910, triggerEnd = 1926;
+    if (isMatchSound && isValidGameType) {
+        triggerStart = 3000;
+        triggerEnd = 3016;
+    }
+
+    console.log(triggerStart, triggerEnd)
+    return Math.floor(promptTextInstance.time) >= triggerStart && Math.floor(promptTextInstance.time) <= triggerEnd;
+  }
+
   dispose() {
     //Clear canvas tutorials and reset values;
     if (this.hasEstablishedSubscriptions) {
@@ -236,5 +255,69 @@ export default class TutorialHandler {
         !gameType.isCleared &&
         gameType.levelNumber === meta.levelNumber
     );
+  }
+
+  
+  /**
+   * Starts or resets the 6-second timer that gates the quick start tutorial animation.
+   * This should be called whenever the prompt is shown or a new puzzle is loaded.
+   */
+  public resetQuickStartTutorialDelay() {
+    // Always clear any previous timer to avoid overlap
+    if (this.quickStartTutorialTimerId !== null) {
+      clearTimeout(this.quickStartTutorialTimerId);
+      this.quickStartTutorialTimerId = null;
+    }
+    this.quickStartTutorialReady = false;
+    // Only start the timer if the tutorial should be shown
+    if (this.shouldShowTutorialAnimation) {
+      this.quickStartTutorialTimerId = setTimeout(() => {
+        this.quickStartTutorialReady = true;
+      }, 6000); // 6 seconds
+    }
+  }
+
+  /**
+   * Injects the hand-pointer image into the DOM for tutorial guidance.
+   * @param targetSelector Optional CSS selector for the container to inject into. Defaults to 'body'.
+   */
+  /**
+   * Injects the hand-pointer image into the DOM for tutorial guidance.
+   * By default, injects into the element with id 'prompt-container'.
+   * @param targetSelector Optional CSS selector for the container to inject into. Defaults to '#prompt-container'.
+   */
+  public injectHandPointer(targetSelector?: string) {
+    // Remove any existing hand-pointer first to avoid duplicates
+    this.removeHandPointer();
+    const pointer = document.createElement('img');
+    pointer.src = TUTORIAL_HAND;
+    pointer.id = 'hand-pointer';
+    pointer.className = 'hand-pointer';
+    pointer.alt = 'Tutorial hand pointer';
+    // Optionally, you can add ARIA attributes or tabIndex for accessibility
+    const target = document.querySelector(targetSelector || '#prompt-container');
+    if (target) {
+      target.appendChild(pointer);
+    }
+  }
+
+  /**
+   * Removes the hand-pointer image from the DOM if present.
+   */
+  public removeHandPointer() {
+    const pointer = document.getElementById('hand-pointer');
+    if (pointer && pointer.parentNode) {
+      pointer.parentNode.removeChild(pointer);
+    }
+  }
+
+  /**
+   * compute common prompt text context values for both layout and runtime logic.
+   */
+  public static getPromptTextContext(levelData: any, gameTypesList: any) {
+    const isMatchSound = isGameTypeAudio(levelData?.levelMeta?.protoType);
+    const gameTypeName = getGameTypeName(levelData?.levelMeta?.protoType, levelData?.levelMeta?.levelType);
+    const gameType = gameTypesList?.[gameTypeName];
+    return { isMatchSound, gameTypesList, gameTypeName, gameType };
   }
 }
