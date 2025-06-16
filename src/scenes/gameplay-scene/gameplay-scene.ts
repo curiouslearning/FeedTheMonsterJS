@@ -679,11 +679,6 @@ export class GameplayScene {
   public dispose = () => {
     this.isDisposing = true;
 
-    // Cleanup tutorial timer
-    if (this.tutorial) {
-      this.tutorial.dispose();
-    }
-
     // Cleanup audio
     if (this.audioPlayer) {
       this.audioPlayer.stopAllAudios();

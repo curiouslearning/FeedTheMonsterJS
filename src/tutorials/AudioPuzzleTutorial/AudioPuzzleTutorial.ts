@@ -4,24 +4,28 @@ export default class AudioPuzzleTutorial extends TutorialComponent {
   private animationDuration: number = 1500; // 1.5 second animation
   private animationStartTime: number = 0;
   public frame: number = 0;
+  public stonePosVal: number[];
 
-  constructor({ context, width, height, stoneImg, stonePosVal }: {
+  constructor(options: {
     context: CanvasRenderingContext2D;
     width: number;
     height: number;
     stoneImg: any,
     stonePosVal: number[],
   }) {
-    super(context);
-    this.width = width;
-    this.height = height;
+    super(options.context);
+    this.width = options.width;
+    this.height = options.height;
+    this.stoneImg = options.stoneImg;
+    this.stonePosVal = options.stonePosVal;
     this.frame = 0;
     this.animationStartTime = 0;
-    this.stonePosDetailsType = this.updateTargetStonePositions(stonePosVal);
-    this.stoneImg = stoneImg
+    this.stonePosDetailsType = this.updateTargetStonePositions(this.stonePosVal);
     this.animateImagePosVal = this.stonePosDetailsType.animateImagePosVal;
     this.x = this.animateImagePosVal.x;
     this.y = this.animateImagePosVal.y;
+    // Always inject hand pointer on creation
+    this.injectHandPointer();
   }
 
   public drawTutorial(deltaTime: number) {

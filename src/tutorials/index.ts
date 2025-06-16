@@ -4,7 +4,6 @@ import WordPuzzleTutorial from './WordPuzzleTutorial/WordPuzzleTutorial';
 import AudioPuzzleTutorial from './AudioPuzzleTutorial/AudioPuzzleTutorial';
 import gameStateService from '@gameStateService';
 import { getGameTypeName, isGameTypeAudio, Utils } from '@common';
-import { TUTORIAL_HAND } from '@constants';
 
 type TutorialInitParams = {
   context: CanvasRenderingContext2D;
@@ -144,15 +143,13 @@ export default class TutorialHandler {
 
       // for audio puzzles tutorial
       if (gameTypeName === 'SoundLetterOnly') {
-        const audioTutorial = new AudioPuzzleTutorial({
+        return new AudioPuzzleTutorial({
           context: this.context,
           width: this.width,
           height: this.height,
           stoneImg: img,
           stonePosVal: stonePosVal as number[]
         });
-        audioTutorial.injectHandPointer();
-        return audioTutorial;
       }
 
       // For word puzzles (multiple stones in sequence)
