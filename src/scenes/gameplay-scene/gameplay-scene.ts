@@ -100,11 +100,6 @@ export class GameplayScene {
   private backgroundGenerator: PhasesBackground;
   public loadPuzzleDelay: 3000 | 4500;
   private puzzleHandler: any;
-  private shouldShowTutorialAnimation: boolean;
-  // Timer-based flag to control when the quick start tutorial animation can begin
-  private quickStartTutorialReady: boolean = false;
-  // Stores the timeout ID for the tutorial delay, so it can be cleared on puzzle change/dispose
-  private quickStartTutorialTimerId: ReturnType<typeof setTimeout> | null = null;
   // Define animation delays as an array where index 0 = phase 0, index 1 = phase 1, index 2 = phase 2
   private animationDelays = [
     { backToIdle: 350, isChewing: 0, isHappy: 1700, isSpit: 1500, isSad: 3000 }, // Phase 1
