@@ -209,6 +209,7 @@ img {
 
 #toggle-btn.off {
   background-color: #bbb;
+  display: none;
 }
 
 .feedback-text {

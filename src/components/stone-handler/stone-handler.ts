@@ -97,7 +97,6 @@ export default class StoneHandler extends EventManager {
     this.canvas.width = this.canvas.clientWidth * scale;
     this.canvas.height = this.canvas.clientHeight * scale;
     this.context.scale(scale, scale);
-
     for (let i = 0; i < foilStones.length; i++) {
       // Create new stone with all required parameters
       const stone = new StoneConfig(
