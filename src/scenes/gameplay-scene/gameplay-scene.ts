@@ -27,6 +27,7 @@ import {
   lang,
   pseudoId,
   Utils,
+  getGameTypeName,
 } from "@common";
 import { GameScore, DataModal } from "@data";
 import {
@@ -47,6 +48,7 @@ import gameSettingsService from '@gameSettingsService';
 import { PAUSE_POPUP_EVENT_DATA, PausePopupComponent } from '@components/popups/pause-popup/pause-popup-component';
 import { RiveMonsterComponent } from '@components/riveMonster/rive-monster-component';
 import PuzzleHandler from "@gamepuzzles/puzzleHandler/puzzleHandler";
+import { DEFAULT_SELECTORS } from '@components/prompt-text/prompt-text';
 
 export class GameplayScene {
   public width: number;
@@ -98,7 +100,6 @@ export class GameplayScene {
   private backgroundGenerator: PhasesBackground;
   public loadPuzzleDelay: 3000 | 4500;
   private puzzleHandler: any;
-  private shouldShowTutorialAnimation: boolean;
   // Define animation delays as an array where index 0 = phase 0, index 1 = phase 1, index 2 = phase 2
   private animationDelays = [
     { backToIdle: 350, isChewing: 0, isHappy: 1700, isSpit: 1500, isSad: 3000 }, // Phase 1
@@ -193,16 +194,43 @@ export class GameplayScene {
       puzzleLevel: this.counter,
       shouldHaveTutorial: gamePlayData?.tutorialOn
     });
+
+    let onClickCallback;
+    /**
+     * Assign the onClickCallback ONLY for audio puzzle levels where the tutorial hand pointer should be shown.
+     * This callback is passed to the PromptText component and is triggered when the prompt is clicked.
+     * When invoked, it starts the tutorial hand animation and marks the quick start tutorial as ready.
+     * For non-audio puzzles or levels without the hand pointer tutorial, no callback is assigned.
+     */
+    if (this.tutorial.showHandPointerInAudioPuzzle(gamePlayData.levelData)) {
+      onClickCallback = () => {
+        this.tutorial.shouldShowTutorialAnimation = true;
+        this.tutorial.quickStartTutorialReady = true;
+      };
+    }
     this.promptText = new PromptText(
       this.width,
       this.height,
       this.levelData.puzzles[this.counter],
       this.levelData,
-      this.rightToLeft
+      this.rightToLeft,
+      'prompt-container',  // id parameter (string)
+      { selectors: DEFAULT_SELECTORS },  // options parameter
+      onClickCallback,
+      this.tutorial.shouldPlayTutorialPromptAudio
     );
     this.levelIndicators = new LevelIndicators();
     this.levelIndicators.setIndicators(this.counter);
     this.monster = this.initializeRiveMonster();
+
+    //For shouldShowTutorialAnimation- If the game level should have tutorial AND level is not yet cleared, timer should be delayed.
+    this.tutorial.shouldShowTutorialAnimation = gamePlayData.tutorialOn && !gamePlayData.isTutorialCleared;
+    
+    if(this.tutorial.showHandPointerInAudioPuzzle(gamePlayData.levelData)) {
+      this.tutorial.resetQuickStartTutorialDelay();
+    } else {
+      this.tutorial.quickStartTutorialReady = true;
+    }
   }
 
   private setupUIElements() {
@@ -228,8 +256,6 @@ export class GameplayScene {
     this.feedBackTexts = gamePlayData.feedBackTexts;
     this.data = gamePlayData.data;
     this.monsterPhaseNumber = gamePlayData.monsterPhaseNumber;
-    //For shouldShowTutorialAnimation- If the game level should have tutorial AND level is not yet cleared, timer should be delayed.
-    this.shouldShowTutorialAnimation = gamePlayData.tutorialOn && !gamePlayData.isTutorialCleared;
   }
 
   setupBg = () => {
@@ -421,7 +447,7 @@ export class GameplayScene {
       }
     }
 
-    this.shouldShowTutorialAnimation = false; //Drag action will start the timer and disable the tutorial.
+    this.tutorial.shouldShowTutorialAnimation = false; //Drag action will start the timer and disable the tutorial.
 
     // Trigger open mouth animation
     this.triggerMonsterAnimation('isMouthOpen');
@@ -471,14 +497,19 @@ export class GameplayScene {
   draw(deltaTime: number) {
     // If game hasn't started and it's not paused
     if (!this.isGameStarted && !this.isPauseButtonClicked) {
-      if (this.shouldShowTutorialAnimation) {
-        // Draw the quick-start tutorial animation
+      // Gate the tutorial animation behind both the tutorial flag and the timer-based flag
+      if (this.tutorial.shouldShowTutorialAnimation && this.tutorial.quickStartTutorialReady) {
+        // Draw the quick-start tutorial animation only after delay
         this.tutorial.drawQuickStart(deltaTime, this.isGameStarted);
-        // Start the game after a configured delay (default 5 seconds)
+        // Start the game after the tutorial finishes
         if (this.tutorial.isQuickStartFinished()) {
           this.setGameToStart();
         }
         return; // Wait until tutorial ends
+      } else if (this.tutorial.shouldShowTutorialAnimation && !this.tutorial.quickStartTutorialReady) {
+        // Wait for the delay to expire before starting tutorial animation
+        // Optionally, could show a loading indicator or do nothing
+        return;
       } else {
         // No tutorial: immediately start the game on new puzzle
         this.time += deltaTime;
@@ -514,7 +545,7 @@ export class GameplayScene {
   private handleTimerUpdate(deltaTime: number) {
     // Update timer only once animation is complete and game is not paused.
     if (this.stoneHandler.stonesHasLoaded && !this.isPauseButtonClicked) {
-      if (this.shouldShowTutorialAnimation) {
+      if (this.tutorial.shouldShowTutorialAnimation) {
         // FM-544 add or modify code logic here to controlling the timer when tutorial is animating.
         const isTimerAllowed = this.tutorial.updateTutorialTimer(deltaTime);
         if (isTimerAllowed) {
@@ -570,8 +601,9 @@ export class GameplayScene {
     }
     this.counter += 1; //increment Puzzle
     this.isGameStarted = false;
-    this.shouldShowTutorialAnimation = false; //Tutorial is no longer active, timer should work normally.
     this.tutorial.resetTutorialTimer();
+    // Reset the 6-second tutorial delay timer each time a new puzzle is loaded
+    this.tutorial.resetQuickStartTutorialDelay();
     if (this.counter === this.levelData.puzzles.length) {
       const handleLevelEnd = () => {
         this.levelIndicators.setIndicators(this.counter);
@@ -641,6 +673,7 @@ export class GameplayScene {
     this.addEventListeners();
     this.audioPlayer.stopAllAudios();
     this.startPuzzleTime();
+    this.tutorial.resetQuickStartTutorialDelay();
   }
 
   public dispose = () => {

@@ -40,6 +40,8 @@ export const PROMPT_TEXT_LAYOUT = (id: string, levelData: any) => {
  * Represents a prompt text component.
  */
 export class PromptText extends BaseHTML {
+    // ...
+    public shouldPlayTutorialPromptAudio?: (instance: PromptText) => boolean; // Optional callback for tutorial prompt audio
     public width: number;
     public height: number;
     public levelData: any;
@@ -68,6 +70,7 @@ export class PromptText extends BaseHTML {
     private animationFrameId: number;
     private eventManager: EventManager;
     private containerId: string;
+    private onClickCallback?: () => void;
 
     /**
      * Initializes a new instance of the PromptText class.
@@ -84,7 +87,9 @@ export class PromptText extends BaseHTML {
         levelData: any, 
         rightToLeft: boolean,
         id: string = 'prompt-container',
-        options: BaseHtmlOptions = { selectors: DEFAULT_SELECTORS }
+        options: BaseHtmlOptions = { selectors: DEFAULT_SELECTORS },
+        onClickCallback?: () => void,
+        shouldPlayTutorialPromptAudio?: (instance: PromptText) => boolean
     ) {
         super(
             options,
@@ -109,7 +114,7 @@ export class PromptText extends BaseHTML {
         this.currentPuzzleData = currentPuzzleData;
         this.targetStones = this.currentPuzzleData.targetStones;
         this.audioPlayer = new AudioPlayer();
-        this.audioPlayer.preloadPromptAudio(this.getPromptAudioUrl());
+        this.audioPlayer.preloadPromptAudio(Utils.getPromptAudioUrl(this.currentPuzzleData));
         document.addEventListener(VISIBILITY_CHANGE, this.handleVisibilityChange, false);
         
         // Initialize HTML elements
@@ -117,6 +122,8 @@ export class PromptText extends BaseHTML {
         
         // Start animation loop
         this.startAnimationLoop();
+        this.onClickCallback = onClickCallback;
+        this.shouldPlayTutorialPromptAudio = shouldPlayTutorialPromptAudio;
     }
 
     /**
@@ -129,10 +136,20 @@ export class PromptText extends BaseHTML {
         this.promptTextElement = this.promptContainer.querySelector('#prompt-text') as HTMLDivElement;
         this.promptPlayButtonElement = this.promptContainer.querySelector('#prompt-play-button') as HTMLDivElement;
         
+        // Update event listeners to include the callback
+        const handleClick = (e: Event) => {
+            Utils.playPromptSound(this.audioPlayer, this.currentPuzzleData, this.isAppForeground);
+            if (this.onClickCallback) {
+                this.onClickCallback();
+            }
+            e.stopPropagation();
+        };
+
+
         // Add event listeners to all prompt elements
-        this.promptPlayButtonElement.addEventListener('click', this.playSound);
-        this.promptBackground.addEventListener('click', this.playSound);
-        this.promptTextElement.addEventListener('click', this.playSound);
+        this.promptPlayButtonElement.addEventListener('click', handleClick);
+        this.promptBackground.addEventListener('click', handleClick);
+        this.promptTextElement.addEventListener('click', handleClick);
         
         // Make sure all elements are clickable
         this.promptBackground.style.pointerEvents = 'auto';
@@ -467,7 +484,10 @@ export class PromptText extends BaseHTML {
             this.time += deltaTime;
             
             // Play sound at specific time
-            if (Math.floor(this.time) >= 1910 && Math.floor(this.time) <= 1926) {
+            if (
+                this.shouldPlayTutorialPromptAudio &&
+                this.shouldPlayTutorialPromptAudio(this)
+            ) {
                 this.playSound();
             }
             //Note: !isGameTypeAudio(this.levelData.levelMeta.protoType) is needed to make sure the audio play button won't pulsate.
@@ -510,7 +530,7 @@ export class PromptText extends BaseHTML {
         this.currentPuzzleData = this.levelData.puzzles[event.detail.counter];
         this.currentPromptText = this.currentPuzzleData.prompt.promptText;
         this.targetStones = this.currentPuzzleData.targetStones;
-        this.audioPlayer.preloadPromptAudio(this.getPromptAudioUrl());
+        this.audioPlayer.preloadPromptAudio(Utils.getPromptAudioUrl(this.currentPuzzleData));
         this.isStoneDropped = false;
         this.time = 0;
         

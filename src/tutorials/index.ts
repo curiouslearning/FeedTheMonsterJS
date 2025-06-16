@@ -1,8 +1,9 @@
 import QuickStartTutorial from './QuickStartTutorial/QuickStartTutorial';
 import MatchLetterPuzzleTutorial from './MatchLetterPuzzleTutorial/MatchLetterPuzzleTutorial';
 import WordPuzzleTutorial from './WordPuzzleTutorial/WordPuzzleTutorial';
+import AudioPuzzleTutorial from './AudioPuzzleTutorial/AudioPuzzleTutorial';
 import gameStateService from '@gameStateService';
-import { getGameTypeName } from '@common';
+import { getGameTypeName, isGameTypeAudio, Utils } from '@common';
 
 type TutorialInitParams = {
   context: CanvasRenderingContext2D;
@@ -12,14 +13,18 @@ type TutorialInitParams = {
   shouldHaveTutorial?: boolean;
 };
 export default class TutorialHandler {
+  private quickStartTutorialTimerId: ReturnType<typeof setTimeout> | null = null;
+  public quickStartTutorialReady: boolean = false;
+  public shouldShowTutorialAnimation: boolean = false; // Set externally as needed
   private width: number;
   private height: number;
   private context: CanvasRenderingContext2D;
   private puzzleLevel: number;
-  private activeTutorial: null | MatchLetterPuzzleTutorial | WordPuzzleTutorial;
+  private activeTutorial: null | MatchLetterPuzzleTutorial | WordPuzzleTutorial | AudioPuzzleTutorial;
   private quickTutorial: null | QuickStartTutorial;
   private hasGameEnded: boolean = false;
   private isGameOnPause: boolean = false;
+  public instantDropStone: boolean = false;
   public gameTypesList: {} | {
     LetterInWord: number;
     LetterOnly: number;
@@ -53,14 +58,14 @@ export default class TutorialHandler {
 
       this.unsubscribeStoneCreationEvent = gameStateService.subscribe(
         gameStateService.EVENTS.CORRECT_STONE_POSITION,
-        (eventData: { 
-          stonePosVal: number[] | number[][], 
-          img: any, 
+        (eventData: {
+          stonePosVal: number[] | number[][],
+          img: any,
           levelData: any
         }) => {
           // Get game type from level data
           const gameTypeName = getGameTypeName(
-            eventData.levelData.levelMeta.protoType, 
+            eventData.levelData.levelMeta.protoType,
             eventData.levelData.levelMeta.levelType
           );
           this.gameTypeName = gameTypeName; // Store for later use
@@ -126,8 +131,19 @@ export default class TutorialHandler {
     // Only create tutorial if this is the correct level for this game type
     if (this.gameTypesList[gameTypeName]?.levelNumber === gameLevel) {
       // For letter puzzles (single stone)
-      if (gameTypeName === 'LetterOnly' || gameTypeName === 'LetterInWord' || gameTypeName === 'SoundLetterOnly') {
+      if (gameTypeName === 'LetterOnly' || gameTypeName === 'LetterInWord') {
         return new MatchLetterPuzzleTutorial({
+          context: this.context,
+          width: this.width,
+          height: this.height,
+          stoneImg: img,
+          stonePosVal: stonePosVal as number[]
+        });
+      }
+
+      // for audio puzzles tutorial
+      if (gameTypeName === 'SoundLetterOnly') {
+        return new AudioPuzzleTutorial({
           context: this.context,
           width: this.width,
           height: this.height,
@@ -150,7 +166,7 @@ export default class TutorialHandler {
 
       //Add more if conditions here for new tutorial instances.
     }
-    
+
     return null;
   }
 
@@ -167,12 +183,18 @@ export default class TutorialHandler {
 
   drawQuickStart(deltaTime: number, hasGameStarted: boolean) {
     if (!hasGameStarted && this.quickTutorial) {
-      //Show quick tip by pressing the center/near monster.
-      this.quickTutorial.quickStartTutorial(deltaTime, this.width, this.height);
+      const handPointer = document.getElementById('hand-pointer');
+      if (handPointer) {
+        handPointer.style.display = 'none';
+      }
+      if (!this.instantDropStone)
+        //Show quick tip by pressing the center/near monster.
+        this.quickTutorial.quickStartTutorial(deltaTime, this.width, this.height);
     }
   }
 
   public isQuickStartFinished(): boolean {
+    if (this.instantDropStone) return true;
     return this.quickTutorial?.isFinished ?? false;
   }
 
@@ -183,9 +205,24 @@ export default class TutorialHandler {
     }
   }
 
+  public shouldPlayTutorialPromptAudio(promptTextInstance: any): boolean {
+    if (!promptTextInstance || !promptTextInstance.levelData || !promptTextInstance.currentPuzzleData) return false;
+    const gameTypesList = gameStateService.getGameTypeList();
+    const { isMatchSound, gameTypeName, gameType } = TutorialHandler.getPromptTextContext(promptTextInstance.levelData, gameTypesList);
+    const isValidGameType = gameType && !gameType.isCleared && gameType.levelNumber === promptTextInstance.levelData.levelMeta.levelNumber;
+    let triggerStart = 1910, triggerEnd = 1926;
+    if (isMatchSound && isValidGameType) {
+        triggerStart = 3000;
+        triggerEnd = 3016;
+    }
+
+    return Math.floor(promptTextInstance.time) >= triggerStart && Math.floor(promptTextInstance.time) <= triggerEnd;
+  }
+
   dispose() {
     //Clear canvas tutorials and reset values;
     if (this.hasEstablishedSubscriptions) {
+      this.activeTutorial?.dispose();
       this.isGameOnPause = false;
       this.hasGameEnded = false;
       this.quickTutorial = null;
@@ -195,5 +232,57 @@ export default class TutorialHandler {
       this.unsubscribeLevelEndData();
       this.hasEstablishedSubscriptions = false;
     }
+  }
+
+  showHandPointerInAudioPuzzle(levelData: any) {
+    const meta = levelData?.levelMeta;
+    const gameTypesList = this.gameTypesList;
+    const key = meta && getGameTypeName(meta.protoType, meta.levelType);
+
+    if (
+        !meta ||
+        !gameTypesList ||
+        key !== 'SoundLetterOnly'
+    ) {
+        return false;
+    }
+
+    const gameType = gameTypesList[key];
+    if (!gameType) return false;
+
+    return this.instantDropStone = !!(
+        !gameType.isCleared &&
+        gameType.levelNumber === meta.levelNumber
+    );
+  }
+
+  
+  /**
+   * Starts or resets the 6-second timer that gates the quick start tutorial animation.
+   * This should be called whenever the prompt is shown or a new puzzle is loaded.
+   */
+  public resetQuickStartTutorialDelay() {
+    // Always clear any previous timer to avoid overlap
+    if (this.quickStartTutorialTimerId !== null) {
+      clearTimeout(this.quickStartTutorialTimerId);
+      this.quickStartTutorialTimerId = null;
+    }
+    this.quickStartTutorialReady = false;
+    // Only start the timer if the tutorial should be shown
+    if (this.shouldShowTutorialAnimation) {
+      this.quickStartTutorialTimerId = setTimeout(() => {
+        this.quickStartTutorialReady = true;
+      }, 6000); // 6 seconds
+    }
+  }
+
+  /**
+   * compute common prompt text context values for both layout and runtime logic.
+   */
+  public static getPromptTextContext(levelData: any, gameTypesList: any) {
+    const isMatchSound = isGameTypeAudio(levelData?.levelMeta?.protoType);
+    const gameTypeName = getGameTypeName(levelData?.levelMeta?.protoType, levelData?.levelMeta?.levelType);
+    const gameType = gameTypesList?.[gameTypeName];
+    return { isMatchSound, gameTypesList, gameTypeName, gameType };
   }
 }

@@ -1,3 +1,147 @@
+// --- IMPORTANT: All mocks must be defined BEFORE imports to ensure proper isolation ---
+// Mock Rive (prevents any real Rive/WebGL code from running in Jest)
+jest.mock('@rive-app/canvas', () => ({
+  __esModule: true,
+  default: jest.fn(),
+  Rive: jest.fn().mockImplementation(() => ({
+    on: jest.fn(),
+    play: jest.fn(),
+    pause: jest.fn(),
+    stop: jest.fn(),
+    // Add more methods if needed
+  })),
+  RuntimeLoader: {
+    setWasmUrl: jest.fn(),
+    getInstance: jest.fn(() => Promise.resolve({})),
+    loadRuntime: jest.fn(),
+    awaitInstance: jest.fn(() => Promise.resolve({})),
+  },
+  Fit: { Contain: 'Contain', Cover: 'Cover' }, // Add other values if needed
+  Alignment: { Center: 'Center' }, // Add other values if needed
+  Layout: jest.fn().mockImplementation(() => ({})),
+}));
+
+// Mock TutorialHandler (default export) and getGameTypeName for @tutorials
+jest.mock('@tutorials', () => {
+  const actual = jest.requireActual('@tutorials');
+  return {
+    ...actual,
+    __esModule: true,
+    default: jest.fn().mockImplementation(() => ({
+      dispose: jest.fn(),
+      showHandPointerInAudioPuzzle: jest.fn(() => false), // Can adjust return value per test
+      hideTutorial: jest.fn(),
+      resetTutorialTimer: jest.fn(),
+      draw: jest.fn(),
+      // Add any other methods/properties your tests might access
+    })),
+    getGameTypeName: jest.fn(() => 'Soundundefined'),
+  };
+});
+
+// Mock all @components, including RiveMonsterComponent
+jest.mock('@components', () => {
+  const BackgroundHtmlGenerator = jest.fn().mockImplementation(() => ({
+    generateBackground: jest.fn(),
+  }));
+  (BackgroundHtmlGenerator as any).createBackgroundComponent = jest
+    .fn()
+    .mockReturnValue('summer');
+  const PhasesBackground = jest.fn().mockImplementation(() => ({
+    generateBackground: jest.fn(),
+  }));
+  return {
+    AudioPlayer: jest.fn().mockImplementation(() => ({
+      stopAllAudios: jest.fn(),
+      playAudio: jest.fn(),
+      playPromptAudio: jest.fn(),
+      playAudioQueue: jest.fn(),
+      stopFeedbackAudio: jest.fn(),
+      audioContext: {} as AudioContext,
+      sourceNode: {} as AudioBufferSourceNode,
+      audioQueue: [],
+      promptAudioBuffer: null,
+      playBackgroundMusic: jest.fn()
+    })),
+    TrailEffectsHandler: jest.fn().mockImplementation(() => ({
+      dispose: jest.fn(),
+      draw: jest.fn(),
+    })),
+    PauseButton: jest.fn().mockImplementation(() => ({
+      onClick: jest.fn(),
+      dispose: jest.fn(),
+    })),
+    TimerTicking: jest.fn().mockImplementation(() => ({
+      startTimer: jest.fn(),
+      applyRotation: jest.fn(),
+      destroy: jest.fn(),
+      update: jest.fn()
+    })),
+    StoneHandler: jest.fn().mockImplementation(() => ({
+      draw: jest.fn(),
+      dispose: jest.fn(),
+      resetStonePosition: jest.fn(),
+      handlePickStoneUp: jest.fn(),
+      handleMovingStoneLetter: jest.fn(),
+      getCorrectTargetStone: jest.fn().mockReturnValue('MockedTargetStone'),
+      getFoilStones: jest.fn().mockReturnValue(['FoilStone1', 'FoilStone2']),
+      stones: [],
+      foilStones: [],
+      context: {} as CanvasRenderingContext2D,
+      canvas: document.createElement('canvas'),
+      currentPuzzleData: {},
+      targetStones: [],
+      stonePos: { x: 0, y: 0 },
+      pickedStone: null,
+      playDragAudioIfNecessary: jest.fn()
+    })),
+    PromptText: jest.fn().mockImplementation(() => ({
+      draw: jest.fn(),
+      onClick: jest.fn(),
+      playSound: jest.fn(),
+      dispose: jest.fn(),
+    })),
+    LevelIndicators: jest.fn().mockImplementation(() => ({
+      setIndicators: jest.fn(),
+      dispose: jest.fn(),
+    })),
+    Monster: jest.fn().mockImplementation(() => ({
+      changeToIdleAnimation: jest.fn(),
+      dispose: jest.fn(),
+      onClick: jest.fn(),
+      play: jest.fn(),
+      checkHitboxDistance: jest.fn()
+    })),
+    FeedbackTextEffects: jest.fn().mockImplementation(() => ({
+      wrapText: jest.fn(),
+      hideText: jest.fn()
+    })),
+    BackgroundHtmlGenerator,
+    PhasesBackground,
+    RiveMonsterComponent: jest.fn().mockImplementation(() => ({
+      dispose: jest.fn(),
+      play: jest.fn(),
+      checkHitboxDistance: jest.fn(),
+      onClick: jest.fn(),
+    })),
+  };
+});
+
+// --- JSDOM Canvas Mock: Prevent Not Implemented Error ---
+Object.defineProperty(HTMLCanvasElement.prototype, 'getContext', {
+  value: jest.fn(() => ({
+    fillRect: jest.fn(),
+    clearRect: jest.fn(),
+    drawImage: jest.fn(),
+    getImageData: jest.fn(),
+    putImageData: jest.fn(),
+    createImageData: jest.fn(),
+    setTransform: jest.fn(),
+    drawFocusIfNeeded: jest.fn(),
+    // ...add more if needed
+  })),
+});
+
 import { GameplayScene } from './gameplay-scene';
 import gameStateService from '@gameStateService';
 import gameSettingsService from '@gameSettingsService';
@@ -19,6 +163,7 @@ jest.mock('@components', () => {
     generateBackground: jest.fn(),
   }));
 
+  // --- Ensure RiveMonsterComponent is always mocked to prevent Rive/WebGL code ---
   return {
     AudioPlayer: jest.fn().mockImplementation(() => ({
       stopAllAudios: jest.fn(),
@@ -186,12 +331,29 @@ describe('GameplayScene with BasePopupComponent', () => {
 
     mockSwitchSceneToEnd = jest.fn();
 
+    // Patch required gameTypesList for TutorialHandler.showHandPointerInAudioPuzzle
+    (GameplayScene.prototype as any).gameTypesList = {
+      Soundundefined: {
+        isCleared: false,
+        levelNumber: 1,
+      },
+      // Add more types as needed for your tests
+    };
+    // Note: If your code uses getGameTypeName, ensure your test data or mocks always return 'Soundundefined'.
+
     // Initialize GameplayScene
     gameplayScene = new GameplayScene();
     gameplayScene.monster = {
       triggerInput: jest.fn(),
       dispose: jest.fn()
     } as any;
+    // Patch tutorial mock to prevent TypeError in tests
+    gameplayScene.tutorial = {
+      ...gameplayScene.tutorial,
+      resetQuickStartTutorialDelay: jest.fn(),
+      showHandPointerInAudioPuzzle: jest.fn().mockReturnValue(false),
+      // Add any other required methods here
+    } as any as any;
   });
 
   afterEach(() => {
@@ -388,7 +550,11 @@ describe('GameplayScene with BasePopupComponent', () => {
       gameplayScene.promptText = mockPromptText as any;
       gameplayScene.pauseButton = mockPauseButton as any;
       gameplayScene.pausePopupComponent = mockPausePopup as any;
-      gameplayScene.tutorial = tutorial as any;
+      gameplayScene.tutorial = {
+        ...tutorial,
+        resetQuickStartTutorialDelay: jest.fn(),
+        showHandPointerInAudioPuzzle: jest.fn().mockReturnValue(false),
+      } as any as any;
       // Call dispose
       gameplayScene.dispose();
 
