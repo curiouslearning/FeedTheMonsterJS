@@ -146,10 +146,10 @@ export class PromptText extends BaseHTML {
         };
 
 
-        // Add event listeners to all prompt elements	        // Add event listeners to all prompt elements
-        this.promptPlayButtonElement.addEventListener('click', this.playSound);	        this.promptPlayButtonElement.addEventListener('click', handleClick);
-        this.promptBackground.addEventListener('click', this.playSound);	        this.promptBackground.addEventListener('click', handleClick);
-        this.promptTextElement.addEventListener('click', this.playSound);	        this.promptTextElement.addEventListener('click', handleClick);
+        // Add event listeners to all prompt elements
+        this.promptPlayButtonElement.addEventListener('click', handleClick);
+        this.promptBackground.addEventListener('click', handleClick);
+        this.promptTextElement.addEventListener('click', handleClick);
         
         // Make sure all elements are clickable
         this.promptBackground.style.pointerEvents = 'auto';
