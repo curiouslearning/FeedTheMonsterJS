@@ -1,7 +1,6 @@
 import { Debugger } from "@common";
 import { TestServer } from "@constants";
 import { languageFontMapping } from "@data/i18-font-mapping";
-import gameStateService from "@gameStateService";
 
 /**
  * Returns the correct prompt audio URL for the given puzzle data.
