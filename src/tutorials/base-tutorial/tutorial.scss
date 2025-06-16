@@ -1,0 +1,27 @@
+#hand-pointer {
+  position: absolute;
+  left: 55%;
+  margin-top: -20px;
+  /* Center horizontally, adjust as needed */
+  transform: translateX(-55%);
+  /* The animation below mimics the up-and-down motion */
+  animation: hand-bounce 2s linear infinite;
+  z-index: 1;
+}
+
+@keyframes hand-bounce {
+  0% {
+    top: 100px;
+    /* topPosition */
+  }
+
+  50% {
+    top: 150px;
+    /* bottomPosition */
+  }
+
+  100% {
+    top: 100px;
+    /* topPosition */
+  }
+}

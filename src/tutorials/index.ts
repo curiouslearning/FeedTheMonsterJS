@@ -144,13 +144,15 @@ export default class TutorialHandler {
 
       // for audio puzzles tutorial
       if (gameTypeName === 'SoundLetterOnly') {
-        return new AudioPuzzleTutorial({
+        const audioTutorial = new AudioPuzzleTutorial({
           context: this.context,
           width: this.width,
           height: this.height,
           stoneImg: img,
           stonePosVal: stonePosVal as number[]
         });
+        audioTutorial.injectHandPointer();
+        return audioTutorial;
       }
 
       // For word puzzles (multiple stones in sequence)
@@ -217,13 +219,13 @@ export default class TutorialHandler {
         triggerEnd = 3016;
     }
 
-    console.log(triggerStart, triggerEnd)
     return Math.floor(promptTextInstance.time) >= triggerStart && Math.floor(promptTextInstance.time) <= triggerEnd;
   }
 
   dispose() {
     //Clear canvas tutorials and reset values;
     if (this.hasEstablishedSubscriptions) {
+      this.activeTutorial?.dispose();
       this.isGameOnPause = false;
       this.hasGameEnded = false;
       this.quickTutorial = null;
@@ -274,40 +276,6 @@ export default class TutorialHandler {
       this.quickStartTutorialTimerId = setTimeout(() => {
         this.quickStartTutorialReady = true;
       }, 6000); // 6 seconds
-    }
-  }
-
-  /**
-   * Injects the hand-pointer image into the DOM for tutorial guidance.
-   * @param targetSelector Optional CSS selector for the container to inject into. Defaults to 'body'.
-   */
-  /**
-   * Injects the hand-pointer image into the DOM for tutorial guidance.
-   * By default, injects into the element with id 'prompt-container'.
-   * @param targetSelector Optional CSS selector for the container to inject into. Defaults to '#prompt-container'.
-   */
-  public injectHandPointer(targetSelector?: string) {
-    // Remove any existing hand-pointer first to avoid duplicates
-    this.removeHandPointer();
-    const pointer = document.createElement('img');
-    pointer.src = TUTORIAL_HAND;
-    pointer.id = 'hand-pointer';
-    pointer.className = 'hand-pointer';
-    pointer.alt = 'Tutorial hand pointer';
-    // Optionally, you can add ARIA attributes or tabIndex for accessibility
-    const target = document.querySelector(targetSelector || '#prompt-container');
-    if (target) {
-      target.appendChild(pointer);
-    }
-  }
-
-  /**
-   * Removes the hand-pointer image from the DOM if present.
-   */
-  public removeHandPointer() {
-    const pointer = document.getElementById('hand-pointer');
-    if (pointer && pointer.parentNode) {
-      pointer.parentNode.removeChild(pointer);
     }
   }
 

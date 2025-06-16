@@ -16,17 +16,6 @@
     justify-content: center;
     align-items: center;
   }
-
-  #hand-pointer {
-    position: absolute;
-    left: 55%;
-    margin-top: -20px;
-    /* Center horizontally, adjust as needed */
-    transform: translateX(-55%);
-    /* The animation below mimics the up-and-down motion */
-    animation: hand-bounce 2s linear infinite;
-    z-index: 1;
-  }
 }
 
 .prompt-background {
@@ -167,28 +156,11 @@
 }
 
 /* For desktops or larger devices above 1080px */
-@media (min-width: 1080px) {
-  .prompt-background {
+@media (min-width: 1080px){
+  .prompt-background{
     width: 50%;
     height: 25%;
     top: 18%;
   }
 
-}
-
-@keyframes hand-bounce {
-  0% {
-    top: 100px;
-    /* topPosition */
-  }
-
-  50% {
-    top: 150px;
-    /* bottomPosition */
-  }
-
-  100% {
-    top: 100px;
-    /* topPosition */
-  }
 }

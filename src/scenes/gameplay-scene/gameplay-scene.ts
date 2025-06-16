@@ -199,6 +199,7 @@ export class GameplayScene {
       puzzleLevel: this.counter,
       shouldHaveTutorial: gamePlayData?.tutorialOn
     });
+
     let onClickCallback;
     /**
      * Assign the onClickCallback ONLY for audio puzzle levels where the tutorial hand pointer should be shown.
@@ -220,7 +221,8 @@ export class GameplayScene {
       this.rightToLeft,
       'prompt-container',  // id parameter (string)
       { selectors: DEFAULT_SELECTORS },  // options parameter
-      onClickCallback
+      onClickCallback,
+      this.tutorial.shouldPlayTutorialPromptAudio
     );
     this.levelIndicators = new LevelIndicators();
     this.levelIndicators.setIndicators(this.counter);

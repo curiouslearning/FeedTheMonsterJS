@@ -1,5 +1,6 @@
 import { TUTORIAL_HAND } from "@constants";
 import gameStateService from '@gameStateService';
+import './tutorial.scss';
 export interface AnimStoneImagePosValTypes {
   x: number,
   y: number,
@@ -318,4 +319,42 @@ export default class TutorialComponent {
     return minScale + amplitude * Math.sin(frequency * time);
   }
 
+  /**
+   * Injects the hand-pointer image into the DOM for tutorial guidance.
+   * By default, injects into the element with id 'prompt-container'.
+   * @param targetSelector Optional CSS selector for the container to inject into. Defaults to '#prompt-container'.
+   */
+  public injectHandPointer(targetSelector?: string) {
+    // Remove any existing hand-pointer first to avoid duplicates
+    this.removeHandPointer();
+    const pointer = document.createElement('img');
+    pointer.src = TUTORIAL_HAND;
+    pointer.id = 'hand-pointer';
+    pointer.className = 'hand-pointer';
+    pointer.alt = 'Tutorial hand pointer';
+    // Optionally, you can add ARIA attributes or tabIndex for accessibility
+    const target = document.querySelector(targetSelector || '#prompt-container');
+    if (target) {
+      target.appendChild(pointer);
+    }
+  }
+
+  /**
+   * Removes the hand-pointer image from the DOM if present.
+   */
+  public removeHandPointer() {
+    const pointer = document.getElementById('hand-pointer');
+    if (pointer && pointer.parentNode) {
+      pointer.parentNode.removeChild(pointer);
+    }
+  }
+
+  /**
+   * Default dispose method for all tutorials. Subclasses can override for custom cleanup.
+   */
+  public dispose() {
+    this.removeHandPointer();
+
+    // add more if needed
+  }
 }
