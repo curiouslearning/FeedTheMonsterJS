@@ -604,7 +604,6 @@ export class GameplayScene {
     }
     this.counter += 1; //increment Puzzle
     this.isGameStarted = false;
-    this.tutorial.shouldShowTutorialAnimation = false; //Tutorial is no longer active, timer should work normally.
     this.tutorial.resetTutorialTimer();
     // Reset the 6-second tutorial delay timer each time a new puzzle is loaded
     this.tutorial.resetQuickStartTutorialDelay();
