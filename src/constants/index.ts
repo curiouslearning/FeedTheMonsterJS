@@ -17,6 +17,11 @@ export const PhraseAudio = "phrase_audio";
 export const LevelEndAudio = "level_end_audio";
 export const UrlSubstring = "/feedthemonster";
 export const DevelopmentServer = "https://feedthemonsterdev.curiouscontent.org";
+export const TestServer = "https://globallit-aws-s3-static-webapp-test-us-east-2.s3.us-west-2.amazonaws.com/feed-the-monster";
+export const StartScene1 = "StartScene1";
+export const LevelSelection1 = "LevelSelection1";
+export const GameScene1 = "GameScene1";
+export const EndScene1 = "EndScene1";
 export const FONT_BASE_PATH = './assets/fonts/';
 
 //Audio paths
@@ -57,7 +62,7 @@ export const AUDIO_URL_PRELOAD = [
 // Audios used during the Rive evolution animation.
 // The structure is designed to be easily scalable, allowing for the addition of more audio files as needed.
 export const EVOLUTION_AUDIOS = {
-  EVOL_1: ['/assets/audios/star_whoosh_and_poof.mp3'],
+  EVOL_1: ['./assets/audios/star_whoosh_and_poof.mp3'],
 }
 
 // Evolution audio paths
@@ -86,6 +91,7 @@ export const WINTER_PILLAR_1 = "./assets/images/Winter_sign_v01.webp";
 export const LEVEL_SELECTION_BACKGROUND = "./assets/images/map.webp";
 export const PROMPT_TEXT_BG = "./assets/images/Prompt_Text_BG.svg";
 export const PROMPT_PLAY_BUTTON = "./assets/images/promptPlayButton.webp";
+export const AUDIO_PLAY_BUTTON = "./assets/images/audio_icon.png"; //New audio button for audio puzzles.
 export const LEVEL_INDICATOR = "./assets/images/levels_v01.svg";
 export const BAR_EMPTY = "./assets/images/bar_empty_v01.svg";
 export const BAR_FULL = "./assets/images/bar_full_v01.svg";
@@ -148,13 +154,17 @@ export const WINTER_BG_GROUP_IMGS = {
 
 //Rive Animation
 export const MONSTER_PHASES = [
-  './assets/rive/phase1Monster.riv',
-  './assets/rive/phase2Monster.riv', //Removed 'Updated' in the Rive file and renamed it for Git to detect changes.
-  './assets/rive/phase4Monster.riv',
+  './assets/rive/eggmonster.riv',
+  './assets/rive/hatchedmonster.riv',
+  './assets/rive/youngmonster.riv',
+  './assets/rive/adultmonster.riv',
 ];
+
+//Start screen Monster
+export const STARTSCREEN_MONSTER = './assets/rive/phase4Monster.riv';
 export const EVOL_MONSTER = [
-  './assets/rive/evolve.riv', // add new files when other evolution files are ready
-  './assets/rive/ftm_monster_1_2_evol_v01.riv'
+  './assets/rive/ftm_monster_evolve1-2.riv', // add new files when other evolution files are ready
+  './assets/rive/ftm_monster_evolve2-4.riv'
 ];
 
 export const CACHED_RIVE_WASM = './assets/rive/rive.wasm';
@@ -167,6 +177,7 @@ export enum MonsterState {
 export const SCENE_NAME_START = "StartScene";
 export const SCENE_NAME_LEVEL_SELECT = "LevelSelection";
 export const SCENE_NAME_GAME_PLAY = "GamePlay";
+export const SCENE_NAME_GAME_PLAY_REPLAY = "GamePlay_Replay";
 export const SCENE_NAME_LEVEL_END = "LevelEnd";
 
 //Levels
@@ -174,7 +185,8 @@ export const SPECIAL_LEVELS = [5, 13, 20, 30, 42];
 
 //Evolving Phases Backgrounds
 export const PHASES_BG ={
-  0: './assets/images/phase_background_1.webp',
-  1: './assets/images/phase_background_2.webp',
-  2: './assets/images/phase_background_3.webp'
+  0: './assets/images/phaseBackground_1.webp',
+  1: './assets/images/phaseBackground_2.webp',
+  2: './assets/images/phaseBackground_3.webp',
+  3: './assets/images/phaseBackground_4.webp',
 };

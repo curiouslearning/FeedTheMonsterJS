@@ -26,3 +26,15 @@
     background: transparent;
   }
 }
+
+/* For ultrawide monitors or desktop screens that are not very tall  */
+@media screen and (min-width: 1080px) and (max-height: 650px) {
+  .buttons-container {
+    bottom: 50px;
+  }
+
+  .stars-container {
+    top: 80px;
+    height: 110px;
+  }
+}

@@ -73,14 +73,15 @@
   }
 
   .prompt-play-button {
-    width: 60px;
-    height: 60px;
+    width: 120px;
+    height: 120px;
     background-size: contain;
     background-repeat: no-repeat;
     background-position: center;
     cursor: pointer;
     pointer-events: auto; // Make sure the play button is clickable
-
+    position: absolute;
+    top: 10px;
     // Prevent highlight on press
     -webkit-tap-highlight-color: transparent;
     outline: none;
@@ -97,6 +98,61 @@
 
 .text-red {
   color: red;
+}
+
+/* Pulsing animation for highlighted text - growing larger */
+@-webkit-keyframes text-pulse {
+  0% {
+    -webkit-transform: scale(1);
+            transform: scale(1);
+    -webkit-transform-origin: center center;
+            transform-origin: center center;
+  }
+  50% {
+    -webkit-transform: scale(1.4);
+            transform: scale(1.4);
+  }
+  100% {
+    -webkit-transform: scale(1);
+            transform: scale(1);
+  }
+}
+
+@keyframes text-pulse {
+  0% {
+    -webkit-transform: scale(1);
+            transform: scale(1);
+    -webkit-transform-origin: center center;
+            transform-origin: center center;
+  }
+  50% {
+    -webkit-transform: scale(1.4);
+            transform: scale(1.4);
+  }
+  100% {
+    -webkit-transform: scale(1);
+            transform: scale(1);
+  }
+}
+
+/* Apply pulsing effect to red text in LetterInWord puzzles */
+.text-red-pulse-letter {
+  color: red;
+  display: inline-block;
+  -webkit-animation: text-pulse 2s ease-in-out infinite both;
+  animation: text-pulse 2s ease-in-out infinite both;
+  font-weight: bold;
+  transform-origin: center;
+  position: relative; /* Enable positioning */
+  z-index: 5; /* Ensure the text appears above other elements when scaling */
+  padding: 0 2px; /* Add padding for spacing when the text grows */
+}
+
+/* Regular red text without animation for Word puzzles */
+.text-red-pulse {
+  color: red;
+  display: inline-block;
+  font-weight: bold;
 }
 
 /* For desktops or larger devices above 1080px */

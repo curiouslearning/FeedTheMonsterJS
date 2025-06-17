@@ -193,3 +193,27 @@
     margin: 5px 0px 0px 2px
   }
 }
+
+/* For ultrawide monitors or desktop screens that are not very tall  */
+@media screen and (min-width: 1080px) and (max-height: 650px) {
+ #timer-ticking {
+    top: 15%;
+  }
+  #timer-ticking #timer-empty{
+    height: 30px;
+  }
+  #timer-ticking #rotating-clock {
+    width: 40px;
+    bottom: -5px;
+    left: 7%;
+}
+
+  #timer-ticking #timer-full-container {
+    height: 30px;
+  }
+
+  #timer-ticking #timer-full-container .timer-mask {
+    height: 22px;
+    margin: 4px 0px 0px 1px;
+  }
+}

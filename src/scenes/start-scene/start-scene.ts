@@ -1,3 +1,4 @@
+
 import { AudioPlayer, BackgroundHtmlGenerator } from "@components";
 import { PlayButtonHtml } from '@components/buttons';
 import { BaseButtonComponent } from '@components/buttons/base-button-component/base-button-component';
@@ -15,7 +16,7 @@ import {
   SCENE_NAME_LEVEL_SELECT,
   FirebaseUserClicked,
   PWAInstallStatus,
-  MONSTER_PHASES
+  STARTSCREEN_MONSTER
 } from "@constants";
 import gameStateService from '@gameStateService';
 import gameSettingsService from '@gameSettingsService';
@@ -60,7 +61,7 @@ export class StartScene {
       alignment: "bottomCenter",
       width: this.riveMonsterElement.width, // Example width and height, adjust as needed
       height: this.riveMonsterElement.height,
-      src: MONSTER_PHASES[2],
+      src: STARTSCREEN_MONSTER,
       onLoad: () => {
         //Sets if Rive file flag has been loaded to true and trigger to remove the initial loading.
         this.hasRiveLoaded = true;
@@ -202,6 +203,7 @@ export class StartScene {
     this.handler.removeEventListener("click", this.handleMouseClick, false);
     this.playButton.dispose();
     this.playButton.destroy();
+    this.playButton = null;
     this.onClickArea.destroy();
     this.titleElement.destroy();
     window.removeEventListener(

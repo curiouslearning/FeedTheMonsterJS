@@ -16,7 +16,6 @@ import { AudioPlayer } from "@components";
 import {
   SessionStart,
   SessionEnd,
-  DownloadCompleted,
 } from "./Firebase/firebase-event-interface";
 import { URL } from "@data";
 import './styles/main.scss';
@@ -45,15 +44,16 @@ class App {
   private startSessionTime: number;
   private titleTextElement: HTMLElement | null;
   private feedBackTextElement: HTMLElement | null;
-  public currentProgress:any;
+  public currentProgress: any;
   public background: HTMLElement | null;
   firebaseIntegration: FirebaseIntegration;
+  private logged25: boolean = false;
+  private logged50: boolean = false;
+  private logged75: boolean = false;
 
   constructor(lang: string) {
     this.lang = lang;
     this.currentProgress = 10; // Initialize progress to 0
-    this.canvas = document.getElementById("canvas") as HTMLCanvasElement;
-    this.riveCanvas = document.getElementById("rivecanvas") as HTMLCanvasElement;
     this.background = document.getElementById("background") as HTMLElement;
     this.channel = new BroadcastChannel("my-channel");
     this.progressBar = document.getElementById("progress-bar") as HTMLElement;
@@ -75,7 +75,6 @@ class App {
     this.channel.addEventListener("message", this.handleServiceWorkerMessage);
     window.addEventListener("beforeunload", this.handleBeforeUnload);
     document.addEventListener(VISIBILITY_CHANGE, this.handleVisibilityChange);
-    window.addEventListener("resize", this.handleResize.bind(this));
   }
 
   private async init() {
@@ -92,7 +91,7 @@ class App {
     this.dataModal = this.createDataModal(data);
     this.globalInitialization(data);
     this.logSessionStartFirebaseEvent();
-    window.addEventListener("resize", async () => {
+    window.addEventListener("resize", () => {
       this.handleResize(this.dataModal);
     });
 
@@ -121,7 +120,38 @@ class App {
       }
     });
   }
+  private logDownloadPercentageComplete(percentage: number, timeDifferenceFromSessonStart: number) {
+    const downloadCompleteData = {
+      cr_user_id: pseudoId,
+      ftm_language: lang,
+      profile_number: 0,
+      version_number: this.versionInfoElement.innerHTML,
+      json_version_number: this.getJsonVersionNumber(),
+      ms_since_session_start: timeDifferenceFromSessonStart,
+    };
 
+    switch (percentage) {
+      case 25:
+        this.firebaseIntegration.sendDownload25PercentCompletedEvent(downloadCompleteData);
+        break;
+      case 50:
+        this.firebaseIntegration.sendDownload50PercentCompletedEvent(downloadCompleteData);
+        break;
+      case 75:
+        this.firebaseIntegration.sendDownload75PercentCompletedEvent(downloadCompleteData);
+        break;
+      case 100:
+        this.firebaseIntegration.sendDownloadCompletedEvent(downloadCompleteData);
+        break;
+      default:
+        console.warn(`Unsupported progress percentage: ${percentage}`);
+    }
+    if ((percentage === 25 && this.logged25) ||
+      (percentage === 50 && this.logged50) ||
+      (percentage === 75 && this.logged75)) {
+      return;
+    }; // Event already logged, no need to send again }
+  }
   private logSessionStartFirebaseEvent() {
     let lastSessionEndTime = localStorage.getItem("lastSessionEndTime");
     let lastTime = 0;
@@ -266,7 +296,9 @@ class App {
   }
 
   private setupCanvas() {
-    const gameWidth = window.screen.width > 1024 ? 500 : window.innerWidth;
+    this.canvas = document.getElementById("canvas") as HTMLCanvasElement;
+    this.riveCanvas = document.getElementById("rivecanvas") as HTMLCanvasElement;
+    let gameWidth: number = Utils.getResponsiveCanvasWidth();
     this.canvas.height = window.innerHeight;
     this.canvas.width = gameWidth;
     this.riveCanvas.height = window.innerHeight;
@@ -302,17 +334,28 @@ class App {
   }
 
   private updateVersionInfoElement(dataModal: DataModal): void {
-    if (this.is_cached.has(this.lang) && Debugger.DevelopmentLink) {
+    const isDevOrTestEnv = this.is_cached.has(this.lang) && (Debugger.TestLink || Debugger.DevelopmentLink || Debugger.DebugMode);
+    
+    // Update version info when in development/test environment
+    if (isDevOrTestEnv) {
       if (dataModal.majVersion && dataModal.minVersion) {
         this.versionInfoElement.innerHTML += `/j.v${dataModal.majVersion}.${dataModal.minVersion}`;
       } else if (dataModal.version) {
         this.versionInfoElement.innerHTML += `/j.v${dataModal.version}`;
       }
-      document.getElementById("toggle-btn").style.display = "block";
+    }
+    
+    // Set toggle button visibility - show in development/test environment or when debug mode is enabled
+    const toggleBtn = document.getElementById("toggle-btn");
+    if (toggleBtn) {
+      toggleBtn.style.display = (isDevOrTestEnv) ? "block" : "none";
     }
   }
 
   private reinitializeSceneHandler(dataModal: DataModal): void {
+    if (this.sceneHandler) {
+      this.sceneHandler.dispose();
+    }
     delete this.sceneHandler;
     this.sceneHandler = new SceneHandler(dataModal);
     this.passingDataToContainer();
@@ -344,26 +387,35 @@ class App {
     }
   }
 
-  private handleLoadingMessage = (data: {
-    data: number;
-    version: string;
-  }): void => {
+  private handleLoadingMessage = (data: { data: number; version: string }): void => {
     if (this.progressBarContainer && this.progressBar) {
       this.showProgressBar();
-
+      let ms_since_session_start = Date.now() - this.startSessionTime
       const progressValue = Math.min(100, Math.max(0, data.data)); // Ensure progress is between 0 and 100
-
       // Only update if new progress is greater than the current progress
       if (progressValue > this.currentProgress) {
         this.currentProgress = progressValue;
         this.progressBar.style.width = `${this.currentProgress}%`;
-      }
+        // Log events only once when progress crosses thresholds
+        if (this.currentProgress >= 25 && !this.logged25) {
+          this.logDownloadPercentageComplete(25, ms_since_session_start);
+          this.logged25 = true;
+        }
+        if (this.currentProgress >= 50 && !this.logged50) {
+          this.logDownloadPercentageComplete(50, ms_since_session_start);
+          this.logged50 = true;
+        }
+        if (this.currentProgress >= 75 && !this.logged75) {
+          this.logDownloadPercentageComplete(75, ms_since_session_start);
+          this.logged75 = true;
+        }
 
-      // Check if download completed
-      if (this.isDownloadCompleted(this.currentProgress)) {
-        this.cacheLanguage();
-        this.sendCompletionEvent();
-        this.hideLoadingScreen();
+        // Check if download completed
+        if (this.isDownloadCompleted(this.currentProgress)) {
+          this.cacheLanguage();
+          this.logDownloadPercentageComplete(100, ms_since_session_start);
+          this.hideLoadingScreen();
+        }
       }
     }
   };
@@ -386,17 +438,6 @@ class App {
     } catch (error) {
       console.error("Error caching language:", error);
     }
-  }
-  // Handles Event sending.
-  sendCompletionEvent() {
-    const downloadCompleted: DownloadCompleted = {
-      cr_user_id: pseudoId,
-      ftm_language: lang,
-      profile_number: 0,
-      version_number: this.versionInfoElement.innerHTML,
-      json_version_number: this.getJsonVersionNumber(),
-    };
-    this.firebaseIntegration.sendDownloadCompletedEvent(downloadCompleted);
   }
 
   getJsonVersionNumber() {

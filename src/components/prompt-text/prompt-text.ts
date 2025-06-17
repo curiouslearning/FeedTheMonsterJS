@@ -1,7 +1,7 @@
 import { EventManager } from "@events";
-import { Utils, VISIBILITY_CHANGE } from "@common";
+import { Utils, VISIBILITY_CHANGE, isGameTypeAudio } from "@common";
 import { AudioPlayer } from "@components";
-import { PROMPT_PLAY_BUTTON, PROMPT_TEXT_BG } from "@constants";
+import { PROMPT_TEXT_BG, AUDIO_PLAY_BUTTON } from "@constants";
 import { BaseHTML, BaseHtmlOptions } from "../baseHTML/base-html";
 import './prompt-text.scss';
 
@@ -14,13 +14,22 @@ export const DEFAULT_SELECTORS = {
 };
 
 // HTML template for the prompt text component
-export const PROMPT_TEXT_LAYOUT = (id: string) => {
+export const PROMPT_TEXT_LAYOUT = (id: string, levelData: any) => {
+    /*
+        Note: hidePromptBG is a dirty fix to easily implement the new AUDIO_PLAY_BUTTON.
+        AUDIO_PLAY_BUTTON is a new asset that is similar to start-scene play button.
+        So rendering this asset requires removing the prompt background entirely.
+        However due to how coupled and tied the logic in this class. It is not easy to
+        handle the AUDIO_PLAY_BUTTON only without breaking the tightly connected logic.
+    */
+    const hidePromptBG = isGameTypeAudio(levelData.levelMeta.protoType);
+
     return (`
         <div id="${id}" class="prompt-container">
-            <div id="prompt-background" class="prompt-background" style="background-image: url(${PROMPT_TEXT_BG})">
+            <div id="prompt-background" class="prompt-background" style="background-image: url(${hidePromptBG ? null :PROMPT_TEXT_BG})">
                 <div id="prompt-text-button-container">
                     <div id="prompt-text" class="prompt-text"></div>
-                    <div id="prompt-play-button" class="prompt-play-button" style="background-image: url(${PROMPT_PLAY_BUTTON}); pointer-events: auto;"></div>
+                    <div id="prompt-play-button" class="prompt-play-button" style="background-image: url(${AUDIO_PLAY_BUTTON}); pointer-events: auto;"></div>
                 </div>
             </div>
         </div>
@@ -31,6 +40,8 @@ export const PROMPT_TEXT_LAYOUT = (id: string) => {
  * Represents a prompt text component.
  */
 export class PromptText extends BaseHTML {
+    // ...
+    public shouldPlayTutorialPromptAudio?: (instance: PromptText) => boolean; // Optional callback for tutorial prompt audio
     public width: number;
     public height: number;
     public levelData: any;
@@ -59,6 +70,7 @@ export class PromptText extends BaseHTML {
     private animationFrameId: number;
     private eventManager: EventManager;
     private containerId: string;
+    private onClickCallback?: () => void;
 
     /**
      * Initializes a new instance of the PromptText class.
@@ -75,12 +87,14 @@ export class PromptText extends BaseHTML {
         levelData: any, 
         rightToLeft: boolean,
         id: string = 'prompt-container',
-        options: BaseHtmlOptions = { selectors: DEFAULT_SELECTORS }
+        options: BaseHtmlOptions = { selectors: DEFAULT_SELECTORS },
+        onClickCallback?: () => void,
+        shouldPlayTutorialPromptAudio?: (instance: PromptText) => boolean
     ) {
         super(
             options,
             id,
-            PROMPT_TEXT_LAYOUT
+            (id: string) => PROMPT_TEXT_LAYOUT(id, levelData)
         );
 
         // Store id for later use
@@ -100,7 +114,7 @@ export class PromptText extends BaseHTML {
         this.currentPuzzleData = currentPuzzleData;
         this.targetStones = this.currentPuzzleData.targetStones;
         this.audioPlayer = new AudioPlayer();
-        this.audioPlayer.preloadPromptAudio(this.getPromptAudioUrl());
+        this.audioPlayer.preloadPromptAudio(Utils.getPromptAudioUrl(this.currentPuzzleData));
         document.addEventListener(VISIBILITY_CHANGE, this.handleVisibilityChange, false);
         
         // Initialize HTML elements
@@ -108,6 +122,8 @@ export class PromptText extends BaseHTML {
         
         // Start animation loop
         this.startAnimationLoop();
+        this.onClickCallback = onClickCallback;
+        this.shouldPlayTutorialPromptAudio = shouldPlayTutorialPromptAudio;
     }
 
     /**
@@ -120,10 +136,20 @@ export class PromptText extends BaseHTML {
         this.promptTextElement = this.promptContainer.querySelector('#prompt-text') as HTMLDivElement;
         this.promptPlayButtonElement = this.promptContainer.querySelector('#prompt-play-button') as HTMLDivElement;
         
+        // Update event listeners to include the callback
+        const handleClick = (e: Event) => {
+            Utils.playPromptSound(this.audioPlayer, this.currentPuzzleData, this.isAppForeground);
+            if (this.onClickCallback) {
+                this.onClickCallback();
+            }
+            e.stopPropagation();
+        };
+
+
         // Add event listeners to all prompt elements
-        this.promptPlayButtonElement.addEventListener('click', this.playSound);
-        this.promptBackground.addEventListener('click', this.playSound);
-        this.promptTextElement.addEventListener('click', this.playSound);
+        this.promptPlayButtonElement.addEventListener('click', handleClick);
+        this.promptBackground.addEventListener('click', handleClick);
+        this.promptTextElement.addEventListener('click', handleClick);
         
         // Make sure all elements are clickable
         this.promptBackground.style.pointerEvents = 'auto';
@@ -185,8 +211,8 @@ export class PromptText extends BaseHTML {
                 
                 // Add the text with the highlighted letter
                 if (parts.length > 1) {
-                    // Create the text with the highlighted letter
-                    wrapper.innerHTML = parts.join(`<span class="text-red">${targetLetterText}</span>`);
+                    // Create the text with the highlighted letter with pulsating effect for LetterInWord
+                    wrapper.innerHTML = parts.join(`<span class="text-red-pulse-letter">${targetLetterText}</span>`);
                 } else {
                     // Just show the text as is
                     wrapper.textContent = this.currentPromptText;
@@ -283,22 +309,40 @@ export class PromptText extends BaseHTML {
             wrapper.style.textAlign = 'center';
             wrapper.style.width = '100%';
             wrapper.style.display = 'inline-block';
+            wrapper.style.letterSpacing = '4px'; // Reduced spacing for better alignment
             
-            // In LTR, we need to highlight the target letter
+            // Get the target letter
             const targetStone = this.targetStones[0];
             const targetLetterText = typeof targetStone === 'string' 
                 ? targetStone 
                 : (targetStone as { StoneText: string }).StoneText;
-            const parts = this.currentPromptText.split(targetLetterText);
             
-            // Add the text with the highlighted letter
-            if (parts.length > 1) {
-                // Create the text with the highlighted letter
-                wrapper.innerHTML = parts.join(`<span class="text-red">${targetLetterText}</span>`);
-            } else {
-                // Just show the text as is
-                wrapper.textContent = this.currentPromptText;
+            // Create formatted text with only the specific target letter highlighted
+            let formattedPromptText = '';
+            let foundTarget = false;
+            let i = 0;
+            
+            // Single loop to build formatted text and highlight the target letter
+            while (i < this.currentPromptText.length) {
+                // If we haven't found the target yet and we're past the dropped stones,
+                // check if this position starts with the target letter
+                if (!foundTarget && i >= this.droppedStones) {
+                    const substringToCheck = this.currentPromptText.substring(i, i + targetLetterText.length);
+                    if (substringToCheck === targetLetterText) {
+                        // Found the target - highlight it with pulsating effect for LetterInWord
+                        formattedPromptText += `<span class="text-red-pulse-letter">${targetLetterText}</span>`;
+                        i += targetLetterText.length; // Move past the target letter
+                        foundTarget = true; // Mark that we found the target (only highlight first occurrence)
+                        continue; // Skip to next iteration
+                    }
+                }
+                
+                // Regular character, not highlighted
+                formattedPromptText += this.currentPromptText[i];
+                i++;
             }
+            
+            wrapper.innerHTML = formattedPromptText;
             
             this.promptTextElement.appendChild(wrapper);
             
@@ -440,11 +484,14 @@ export class PromptText extends BaseHTML {
             this.time += deltaTime;
             
             // Play sound at specific time
-            if (Math.floor(this.time) >= 1910 && Math.floor(this.time) <= 1926) {
+            if (
+                this.shouldPlayTutorialPromptAudio &&
+                this.shouldPlayTutorialPromptAudio(this)
+            ) {
                 this.playSound();
             }
-            
-            if (!this.isStoneDropped) {
+            //Note: !isGameTypeAudio(this.levelData.levelMeta.protoType) is needed to make sure the audio play button won't pulsate.
+            if (!this.isStoneDropped && !isGameTypeAudio(this.levelData.levelMeta.protoType)) {
                 // Update scaling
                 this.updateScaling();
                 
@@ -483,7 +530,7 @@ export class PromptText extends BaseHTML {
         this.currentPuzzleData = this.levelData.puzzles[event.detail.counter];
         this.currentPromptText = this.currentPuzzleData.prompt.promptText;
         this.targetStones = this.currentPuzzleData.targetStones;
-        this.audioPlayer.preloadPromptAudio(this.getPromptAudioUrl());
+        this.audioPlayer.preloadPromptAudio(Utils.getPromptAudioUrl(this.currentPuzzleData));
         this.isStoneDropped = false;
         this.time = 0;
         

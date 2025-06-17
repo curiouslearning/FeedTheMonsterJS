@@ -1,17 +1,51 @@
 import { Debugger } from "@common";
+import { TestServer } from "@constants";
 import { languageFontMapping } from "@data/i18-font-mapping";
 export class Utils {
+  /**
+   * Returns the correct prompt audio URL for the given puzzle data.
+   * Handles dev/prod URL conversion.
+   */
+  public static getPromptAudioUrl(currentPuzzleData: any): string {
+      return Utils.getConvertedDevProdURL(currentPuzzleData.prompt.promptAudio);
+  }
+
+  /**
+   * Plays the prompt audio using the provided AudioPlayer instance, if app is in foreground.
+   */
+  public static playPromptSound(audioPlayer: any, currentPuzzleData: any, isAppForeground: boolean) {
+      if (isAppForeground) {
+          audioPlayer.playPromptAudio(Utils.getPromptAudioUrl(currentPuzzleData));
+      }
+  }
+
   public static UrlSubstring: string = "/feedthemonster";
+  public static subdomain: string = "https://feedthemonster.curiouscontent.org";
+
+  /*
+   * TODO: - update level gen script so that it uses relative urls
+   *       - update ftm build to generate necessary environment-based base-url
+   *       - update circle ci so that it builds using the correct environment variables
+   */
 
   public static getConvertedDevProdURL(url: string): string {
-    return Debugger.DevelopmentLink
-      ? url.slice(
-          0,
-          url.indexOf(this.UrlSubstring) + this.UrlSubstring.length
-        ) +
-          "dev" +
-          url.slice(url.indexOf(this.UrlSubstring) + this.UrlSubstring.length)
-      : url;
+    if (Debugger.DevelopmentLink) {
+      return url.slice(
+        0,
+        url.indexOf(this.UrlSubstring) + this.UrlSubstring.length
+      ) + "dev" + url.slice(url.indexOf(this.UrlSubstring) + this.UrlSubstring.length);
+    } else if (Debugger.TestLink) {
+      return url.replace(this.subdomain, TestServer);
+    } return url;
+  }
+
+  public static getResponsiveCanvasWidth(): number {
+    const width = window.innerWidth;
+    const height = window.innerHeight;
+
+    return (width > 1080 && height < 650)
+      ? 380
+      : (width > 1080 ? 500 : width);
   }
 
   public static getLanguageSpecificFont(language: string): string {
@@ -143,7 +177,7 @@ export function isClickInsideButton(
     // Check for circular button
     const distance = Math.sqrt(
       (xClick - (buttonX + buttonWidth / 2)) ** 2 +
-        (yClick - (buttonY + buttonHeight / 2)) ** 2
+      (yClick - (buttonY + buttonHeight / 2)) ** 2
     );
     return distance < buttonWidth / 2;
   } else {
@@ -175,3 +209,12 @@ export const hideElement = (isHide: boolean = false, element: HTMLElement) => {
     element.classList.add("show");
   }
 };
+
+export const getGameTypeName = (protoType: string, levelType: string) => {
+  //If prototype is Visible it means its not an audio puzzle.
+  return !isGameTypeAudio(protoType) ? levelType : `Sound${levelType}`;
+}
+
+export const isGameTypeAudio = (protoType: string) => {
+  return protoType !== 'Visible';
+}

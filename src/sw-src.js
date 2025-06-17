@@ -49,11 +49,12 @@ self.registration.addEventListener("updatefound", function (e) {
 // Preload additional assets
 async function preloadAdditionalAssets() {
   const assetsToCache = [
-    "/assets/rive/evolve.riv",
-    "/assets/rive/ftm_monster_1_2_evol_v01.riv",
-    "/assets/rive/phase1Monster.riv",
-    "/assets/rive/phase2Monster.riv",
-    "/assets/rive/phase4Monster.riv",
+    "/assets/rive/ftm_monster_evolve1-2.riv",
+    "/assets/rive/ftm_monster_evolve2-4.riv",
+    "/assets/rive/eggmonster.riv",
+    "/assets/rive/hatchedmonster.riv",
+    "/assets/rive/youngmonster.riv",
+    "/assets/rive/adultmonster.riv",
     "/assets/rive/rive.wasm",
   ];
   const cache = await caches.open("dynamic-cache");
@@ -97,6 +98,8 @@ async function getCacheName(language) {
 
 async function getALLAudioUrls(cacheName, language) {
   let audioList = new Set(); // Use Set to filter duplicates
+  let testURL = "https://globallit-aws-s3-static-webapp-test-us-east-2.s3.us-west-2.amazonaws.com/feed-the-monster";
+  // let testURL = "http://127.0.0.1:5500";
   audioList.add(`/lang/${language}/ftm_${language}.json`);
   fetch(`./lang/${language}/ftm_${language}.json`, {
     method: "GET",
@@ -110,13 +113,19 @@ async function getALLAudioUrls(cacheName, language) {
       for (const level of data.Levels) {
         for (const puzzle of level.Puzzles) {
           let file = puzzle.prompt.PromptAudio;
+
           audioList.add(
             self.location.href.includes("https://feedthemonsterdev.curiouscontent.org")
               ? file.slice(0, file.indexOf("/feedthemonster") + "/feedthemonster".length) +
-                "dev" + file.slice(file.indexOf("/feedthemonster") + "/feedthemonster".length)
-              : file
+              "dev" + file.slice(file.indexOf("/feedthemonster") + "/feedthemonster".length)
+              : self.location.href.includes(testURL)
+                ? file.replace("https://feedthemonster.curiouscontent.org", testURL)
+                : file
           );
         }
+      }
+      if (self.location.href.includes(testURL)) {
+        audioList.add(`${testURL}/lang/${language}/ftm_${language}.json`);
       }
       cacheAudiosFiles(Array.from(audioList), language); // Convert Set back to array
     })
@@ -212,17 +221,24 @@ async function cacheCommonAssets(language) {
 }
 
 async function cacheFeedBackAudio(feedBackAudios, language) {
+  let testURL = "globallit-aws-s3-static-webapp-test-us-east-2.s3.us-west-2.amazonaws.com";
+  // let testURL = "127.0.0.1:5500"
   const audioUrls = [...new Set(feedBackAudios.map(audio => {
-    return self.location.href.includes("https://feedthemonsterdev.curiouscontent.org")
-      ? audio.replace("/feedthemonster", "/feedthemonsterdev")
-      : audio;
+    if (self.location.href.includes("feedthemonsterdev")) {
+      return audio.replace("/feedthemonster", "/feedthemonsterdev");
+    } else if (self.location.href.includes(testURL)) {
+      return audio.replace("https://feedthemonster.curiouscontent.org", "https://globallit-aws-s3-static-webapp-test-us-east-2.s3.us-west-2.amazonaws.com/feed-the-monster");
+      // return audio.replace("https://feedthemonster.curiouscontent.org", "http://127.0.0.1:5500"); 
+    } else {
+      return audio;
+    }
   }))];
 
   const timeoutMultiplier = 0.6; // Adjust multiplier based on device performance
   const timeoutValue = 3000; // Adjust timeout value as needed (in milliseconds)
 
   try {
-    const cacheName =  language;
+    const cacheName = language;
     const cache = await caches.open(cacheName);
 
     await Promise.all(audioUrls.map(async (url) => {
@@ -256,7 +272,11 @@ self.addEventListener("fetch", function (event) {
       if (response) {
         return response;
       }
-      return fetch(event.request);
+
+      return fetch(event.request).catch(function () {
+        // If the fetch fails (like when offline), return a fallback response
+        return new Response('Network unavailable in sw', { status: 503 });
+      });;
     })
   );
 });

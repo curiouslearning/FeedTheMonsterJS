@@ -1,5 +1,4 @@
 import { font } from "@common";
-import { TimerTicking } from "@components";
 import gameSettingsService from '@gameSettingsService';
 
 /**
@@ -20,14 +19,13 @@ export class StoneConfig {
     public imageCenterOffsetX: number;
     public imageCenterOffsetY: number;
     public context: CanvasRenderingContext2D;
-    public timerTickingInstance: TimerTicking;
     public frame: number = 0;
     public isDisposed: boolean = false;
     // Performance optimization: Use time-based animation for smoother movement
     private animationStartTime: number = 0;
     private animationDuration: number = 1500; // 1.5 second animation
     public scale = gameSettingsService.getDevicePixelRatioValue();
-    constructor(context, canvasWidth, canvasHeight, stoneLetter, xPos, yPos, img, timerTickingInstance) {
+    constructor(context, canvasWidth, canvasHeight, stoneLetter, xPos, yPos, img) {
         this.x = xPos;
         this.y = yPos;
         this.origx = xPos;
@@ -40,7 +38,6 @@ export class StoneConfig {
         this.calculateImageAndFontSize();
         this.imageCenterOffsetX = this.imageSize / 2.3;
         this.imageCenterOffsetY = this.imageSize / 1.5;
-        this.timerTickingInstance = timerTickingInstance;
     }
 
     public initialize() {
@@ -107,7 +104,7 @@ export class StoneConfig {
             const elapsed = performance.now() - this.animationStartTime;
             this.frame = Math.min(100, (elapsed / this.animationDuration) * 100);
         }
-
+        //shouldResize is used when stone letters are grouped together when playing word puzzle game types.
         const x = this.getX() - (shouldResize ? this.imageCenterOffsetX * 1.25 : this.imageCenterOffsetX);
         const y = this.getY() - (shouldResize ? this.imageCenterOffsetY * 1.25 : this.imageCenterOffsetY);
         const size = shouldResize ? this.imageSize * 1.25 : this.imageSize;
@@ -140,7 +137,6 @@ export class StoneConfig {
         this.isDisposed = true;
         this.img = null;
         this.context = null;
-        this.timerTickingInstance = null;
         this.frame = 0;
     }
 
