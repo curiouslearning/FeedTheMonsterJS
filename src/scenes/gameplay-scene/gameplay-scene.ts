@@ -27,7 +27,6 @@ import {
   lang,
   pseudoId,
   Utils,
-  getGameTypeName,
 } from "@common";
 import { GameScore, DataModal } from "@data";
 import {
@@ -41,7 +40,8 @@ import {
   SCENE_NAME_GAME_PLAY_REPLAY,
   SCENE_NAME_LEVEL_END,
   PreviousPlayedLevel,
-  MONSTER_PHASES
+  MONSTER_PHASES,
+  AUDIO_PATH_POINTS_ADD
 } from "@constants";
 import gameStateService from '@gameStateService';
 import gameSettingsService from '@gameSettingsService';

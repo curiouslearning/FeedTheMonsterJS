@@ -1,7 +1,7 @@
 import { loadImages } from "@common";
 import { EventManager } from "@events";
 import { AudioPlayer } from "@components";
-import { TIMER_EMPTY, ROTATING_CLOCK, AUDIO_TIMEOUT } from "@constants";
+import { TIMER_EMPTY, ROTATING_CLOCK, AUDIO_TIMEOUT, AUDIO_PATH_POINTS_ADD, AUDIO_INTRO } from "@constants";
 import './timerHtml/timerHtml.scss';
 import TimerHTMLComponent from './timerHtml/timerHtml';
 
@@ -67,10 +67,15 @@ export default class TimerTicking extends EventManager {
     }
 
     startTimer() {
+        // Play SFX (PointsAdd.wav) when timer starts or restarts
+        // This is non-blocking and decoupled from timer logic
+        // this.audioPlayer.playAudio(AUDIO_PATH_POINTS_ADD);
+        this.audioPlayer.playAudio(AUDIO_INTRO);
+
         // it will start timer immediatly
         this.readyTimer();
         this.startMyTimer = true;
-        this.isMyTimerOver = false
+        this.isMyTimerOver = false;
     }
 
     readyTimer() {
