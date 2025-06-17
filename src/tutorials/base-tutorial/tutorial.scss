@@ -9,6 +9,19 @@
   z-index: 1;
 }
 
+@media only screen and (min-device-width : 768px) and (max-device-width : 1024px) {
+  #hand-pointer {
+    margin-top: 100px;
+  }
+}
+
+@media only screen and (min-device-width : 1024px) and (max-device-width : 1366px) {
+  #hand-pointer {
+    margin-top: 220px;
+  }
+}
+
+
 @keyframes hand-bounce {
   0% {
     top: 100px;

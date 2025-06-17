@@ -154,9 +154,10 @@ export const WINTER_BG_GROUP_IMGS = {
 
 //Rive Animation
 export const MONSTER_PHASES = [
-  './assets/rive/eggmonsterclone.riv',
-  './assets/rive/hatchedmonsterclone.riv',
-  './assets/rive/adultmonsterclone.riv',
+  './assets/rive/eggmonster.riv',
+  './assets/rive/hatchedmonster.riv',
+  './assets/rive/youngmonster.riv',
+  './assets/rive/adultmonster.riv',
 ];
 
 //Start screen Monster
@@ -186,5 +187,6 @@ export const SPECIAL_LEVELS = [5, 13, 20, 30, 42];
 export const PHASES_BG ={
   0: './assets/images/phaseBackground_1.webp',
   1: './assets/images/phaseBackground_2.webp',
-  2: './assets/images/phaseBackground_3.webp'
+  2: './assets/images/phaseBackground_3.webp',
+  3: './assets/images/phaseBackground_4.webp',
 };
