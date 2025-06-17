@@ -495,43 +495,40 @@ export class GameplayScene {
   }
 
   draw(deltaTime: number) {
-    // Early exit if game is started or paused
-    if (this.isGameStarted || this.isPauseButtonClicked) {
-      this.trailEffectHandler?.draw();
-      if (this.isGameStarted) {
-        this.handleStoneLetterDrawing();
-        this.handleTimerUpdate(deltaTime);
-      }
-      this.tutorial.draw(deltaTime, this.isGameStarted);
-      return;
-    }
-
-    // Tutorial logic only for first puzzle
-    if (this.counter === 0 && this.tutorial.shouldShowTutorialAnimation) {
-      if (!this.tutorial.quickStartTutorialReady) {
-        // Optionally, show loading indicator
+    const shouldRunQuickStartTutorial = this.tutorial.shouldShowTutorialAnimation && this.tutorial.quickStartTutorialReady && this.counter === 0;
+    const shouldWaitForQuickStartTutorial = this.tutorial.shouldShowTutorialAnimation && !this.tutorial.quickStartTutorialReady && this.counter === 0;
+    // If game hasn't started and it's not paused
+    if (!this.isGameStarted && !this.isPauseButtonClicked) {
+      // Gate the tutorial animation behind both the tutorial flag and the timer-based flag
+      if (shouldRunQuickStartTutorial) {
+        // Draw the quick-start tutorial animation only after delay
+        this.tutorial.drawQuickStart(deltaTime, this.isGameStarted);
+        // Start the game after the tutorial finishes
+        if (this.tutorial.isQuickStartFinished()) {
+          this.setGameToStart();
+        }
+        return; // Wait until tutorial ends
+      } else if (shouldWaitForQuickStartTutorial) {
+        // Wait for the delay to expire before starting tutorial animation
+        // Optionally, could show a loading indicator or do nothing
         return;
+      } else {
+        // No tutorial: immediately start the game on new puzzle
+        this.time += deltaTime;
+        if (this.time >= 5000) {
+          this.setGameToStart();
+        }
       }
-      this.tutorial.drawQuickStart(deltaTime, this.isGameStarted);
-      if (this.tutorial.isQuickStartFinished()) {
-        this.setGameToStart();
-      }
-      return;
     }
-
-    // All other cases (no tutorial, or not first puzzle)
-    this.time += deltaTime;
-    if (this.time >= 5000) {
-      this.setGameToStart();
-    }
-
-    // Draw other effects/UI
+    // Trail effects drawing 
     this.trailEffectHandler?.draw();
-    this.tutorial.draw(deltaTime, this.isGameStarted);
+    // Main game logic only starts after isGameStarted = true
     if (this.isGameStarted) {
       this.handleStoneLetterDrawing();
       this.handleTimerUpdate(deltaTime);
     }
+
+    this.tutorial.draw(deltaTime, this.isGameStarted);
   }
 
   private handleStoneLetterDrawing() {
