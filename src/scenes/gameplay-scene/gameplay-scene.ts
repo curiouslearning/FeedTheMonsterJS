@@ -226,8 +226,8 @@ export class GameplayScene {
 
     //For shouldShowTutorialAnimation- If the game level should have tutorial AND level is not yet cleared, timer should be delayed.
     this.tutorial.shouldShowTutorialAnimation = gamePlayData.tutorialOn && !gamePlayData.isTutorialCleared;
-    
-    if(this.tutorial.showHandPointerInAudioPuzzle(gamePlayData.levelData)) {
+
+    if (this.tutorial.showHandPointerInAudioPuzzle(gamePlayData.levelData)) {
       this.tutorial.resetQuickStartTutorialDelay();
     } else {
       this.tutorial.quickStartTutorialReady = true;
@@ -496,10 +496,12 @@ export class GameplayScene {
   }
 
   draw(deltaTime: number) {
+    const shouldRunQuickStartTutorial = this.tutorial.shouldShowTutorialAnimation && this.tutorial.quickStartTutorialReady && this.counter === 0;
+    const shouldWaitForQuickStartTutorial = this.tutorial.shouldShowTutorialAnimation && !this.tutorial.quickStartTutorialReady && this.counter === 0;
     // If game hasn't started and it's not paused
     if (!this.isGameStarted && !this.isPauseButtonClicked) {
       // Gate the tutorial animation behind both the tutorial flag and the timer-based flag
-      if (this.tutorial.shouldShowTutorialAnimation && this.tutorial.quickStartTutorialReady) {
+      if (shouldRunQuickStartTutorial) {
         // Draw the quick-start tutorial animation only after delay
         this.tutorial.drawQuickStart(deltaTime, this.isGameStarted);
         // Start the game after the tutorial finishes
@@ -507,7 +509,7 @@ export class GameplayScene {
           this.setGameToStart();
         }
         return; // Wait until tutorial ends
-      } else if (this.tutorial.shouldShowTutorialAnimation && !this.tutorial.quickStartTutorialReady) {
+      } else if (shouldWaitForQuickStartTutorial) {
         // Wait for the delay to expire before starting tutorial animation
         // Optionally, could show a loading indicator or do nothing
         return;
