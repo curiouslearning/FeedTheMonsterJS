@@ -54,7 +54,7 @@ export class GameStateService extends PubSub {
         selectedLevelNumber: number
 
     };
-    public feedbackTexts: null |  {
+    public feedbackTexts: null | {
         amazing: string,
         fantastic: string,
         great: string
@@ -177,28 +177,28 @@ export class GameStateService extends PubSub {
             //Return determined game types and what level it will first appear.
             return gameTypes;
         }
-         return {}
+        return {}
     }
 
     private checkClearedLevels(levelNumber: number) {
-       const clearedLevels = GameScore.getAllGameLevelInfo();
-       let hasCleardLevel = false;
-       /*We don't need the whole object in Cleard level data, we just need to check if the
-        levelNumber is in the list as it means it that level has been cleared.
-       */
-       clearedLevels.every((cleardLevels: {
-           levelName: string,
-           levelNumber: number,
-           score: number,
-           starCount: number
-       }) => {
-        if (cleardLevels.levelNumber === levelNumber) {
-            hasCleardLevel = true;
-            return false; //Return false to break every loop.
-        }
-           // Return true or else, `every()` will stop.
-        return true;
-       });
+        const clearedLevels = GameScore.getAllGameLevelInfo();
+        let hasCleardLevel = false;
+        /*We don't need the whole object in Cleard level data, we just need to check if the
+         levelNumber is in the list as it means it that level has been cleared.
+        */
+        clearedLevels.every((cleardLevels: {
+            levelName: string,
+            levelNumber: number,
+            score: number,
+            starCount: number
+        }) => {
+            if (cleardLevels.levelNumber === levelNumber) {
+                hasCleardLevel = true;
+                return false; //Return false to break every loop.
+            }
+            // Return true or else, `every()` will stop.
+            return true;
+        });
 
         return hasCleardLevel;
     }
@@ -207,7 +207,7 @@ export class GameStateService extends PubSub {
      * Flag that the current tutorial has been cleared.
     */
     public setClearedTutorial(gameTypeName: string) {
-        if(this.gameTypesFirstInstanceList[gameTypeName]) {
+        if (this.gameTypesFirstInstanceList[gameTypeName]) {
             this.gameTypesFirstInstanceList[gameTypeName].isCleared = true;
         }
     }
@@ -222,11 +222,11 @@ export class GameStateService extends PubSub {
             : "";
 
         let shouldHaveTutorial = false;
-        let isTutorialCleared : boolean = false;
-        const selectedLevelNumber:string | number = this.gamePlayData.selectedLevelNumber;
+        let isTutorialCleared: boolean = false;
+        const selectedLevelNumber: string | number = this.gamePlayData.selectedLevelNumber;
         const levelNumber = typeof selectedLevelNumber === 'string' ? parseInt(selectedLevelNumber) : selectedLevelNumber;
         //Very small array to iterate.
-        Object.values(this.gameTypesFirstInstanceList).forEach((listedLevelNumber: { levelNumber: number, isCleared: boolean}) => {
+        Object.values(this.gameTypesFirstInstanceList).forEach((listedLevelNumber: { levelNumber: number, isCleared: boolean }) => {
             if (listedLevelNumber?.levelNumber === levelNumber) {
                 isTutorialCleared = listedLevelNumber?.isCleared;
                 shouldHaveTutorial = true;
@@ -250,8 +250,8 @@ export class GameStateService extends PubSub {
         };
     }
 
-    levelEndSceneData({levelEndData, data}) {
-        this.levelEndData = {...levelEndData};
+    levelEndSceneData({ levelEndData, data }) {
+        this.levelEndData = { ...levelEndData };
         this.data = data;
         this.isLastLevel = levelEndData.currentLevel === data.levels[data.levels.length - 1].levelMeta.levelNumber;
     }
@@ -273,12 +273,14 @@ export class GameStateService extends PubSub {
     public checkMonsterPhaseUpdation(): number {
         const totalStarCount = this.getTotalStars();
         switch (true) {
-          case totalStarCount >= 38:
-            return 2; // Phase 4
-          case totalStarCount >= 8:
-            return 1; // Phase 2
-          default:
-            return 0; // Phase 1 (default)
+            case totalStarCount >= 38:
+                return 3; // Phase 4
+            case totalStarCount >= 23:
+                return 2; // Phase 3
+            case totalStarCount >= 8:
+                return 1; // Phase 2
+            default:
+                return 0; // Phase 1 (default)
         }
     }
 
