@@ -20,7 +20,7 @@ export default class TutorialHandler {
   private height: number;
   private context: CanvasRenderingContext2D;
   private puzzleLevel: number;
-  private activeTutorial: null | MatchLetterPuzzleTutorial | WordPuzzleTutorial | AudioPuzzleTutorial;
+  public activeTutorial: null | MatchLetterPuzzleTutorial | WordPuzzleTutorial | AudioPuzzleTutorial;
   private quickTutorial: null | QuickStartTutorial;
   private hasGameEnded: boolean = false;
   private isGameOnPause: boolean = false;
@@ -255,7 +255,6 @@ export default class TutorialHandler {
         gameType.levelNumber === meta.levelNumber
     );
   }
-
   
   /**
    * Starts or resets the 6-second timer that gates the quick start tutorial animation.

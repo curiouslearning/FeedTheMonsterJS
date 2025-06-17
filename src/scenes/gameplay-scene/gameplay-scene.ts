@@ -462,6 +462,8 @@ export class GameplayScene {
     if (this.monster.onClick(x, y)) {
       this.setGameToStart();
     }
+    
+    this.tutorial?.activeTutorial?.removeHandPointer();
 
     // Use the play button in the HTML implementation instead of onClick
     const promptPlayButton = document.getElementById('prompt-play-button');
