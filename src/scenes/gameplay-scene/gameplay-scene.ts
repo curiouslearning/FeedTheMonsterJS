@@ -225,8 +225,8 @@ export class GameplayScene {
 
     //For shouldShowTutorialAnimation- If the game level should have tutorial AND level is not yet cleared, timer should be delayed.
     this.tutorial.shouldShowTutorialAnimation = gamePlayData.tutorialOn && !gamePlayData.isTutorialCleared;
-    
-    if(this.tutorial.showHandPointerInAudioPuzzle(gamePlayData.levelData)) {
+
+    if (this.tutorial.showHandPointerInAudioPuzzle(gamePlayData.levelData)) {
       this.tutorial.resetQuickStartTutorialDelay();
     } else {
       this.tutorial.quickStartTutorialReady = true;
@@ -495,38 +495,43 @@ export class GameplayScene {
   }
 
   draw(deltaTime: number) {
-    // If game hasn't started and it's not paused
-    if (!this.isGameStarted && !this.isPauseButtonClicked) {
-      // Gate the tutorial animation behind both the tutorial flag and the timer-based flag
-      if (this.tutorial.shouldShowTutorialAnimation && this.tutorial.quickStartTutorialReady) {
-        // Draw the quick-start tutorial animation only after delay
-        this.tutorial.drawQuickStart(deltaTime, this.isGameStarted);
-        // Start the game after the tutorial finishes
-        if (this.tutorial.isQuickStartFinished()) {
-          this.setGameToStart();
-        }
-        return; // Wait until tutorial ends
-      } else if (this.tutorial.shouldShowTutorialAnimation && !this.tutorial.quickStartTutorialReady) {
-        // Wait for the delay to expire before starting tutorial animation
-        // Optionally, could show a loading indicator or do nothing
-        return;
-      } else {
-        // No tutorial: immediately start the game on new puzzle
-        this.time += deltaTime;
-        if (this.time >= 5000) {
-          this.setGameToStart();
-        }
+    // Early exit if game is started or paused
+    if (this.isGameStarted || this.isPauseButtonClicked) {
+      this.trailEffectHandler?.draw();
+      if (this.isGameStarted) {
+        this.handleStoneLetterDrawing();
+        this.handleTimerUpdate(deltaTime);
       }
+      this.tutorial.draw(deltaTime, this.isGameStarted);
+      return;
     }
-    // Trail effects drawing 
+
+    // Tutorial logic only for first puzzle
+    if (this.counter === 0 && this.tutorial.shouldShowTutorialAnimation) {
+      if (!this.tutorial.quickStartTutorialReady) {
+        // Optionally, show loading indicator
+        return;
+      }
+      this.tutorial.drawQuickStart(deltaTime, this.isGameStarted);
+      if (this.tutorial.isQuickStartFinished()) {
+        this.setGameToStart();
+      }
+      return;
+    }
+
+    // All other cases (no tutorial, or not first puzzle)
+    this.time += deltaTime;
+    if (this.time >= 5000) {
+      this.setGameToStart();
+    }
+
+    // Draw other effects/UI
     this.trailEffectHandler?.draw();
-    // Main game logic only starts after isGameStarted = true
+    this.tutorial.draw(deltaTime, this.isGameStarted);
     if (this.isGameStarted) {
       this.handleStoneLetterDrawing();
       this.handleTimerUpdate(deltaTime);
     }
-
-    this.tutorial.draw(deltaTime, this.isGameStarted);
   }
 
   private handleStoneLetterDrawing() {
