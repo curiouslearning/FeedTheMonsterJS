@@ -1,3 +1,5 @@
+// Firebase configuration for analytics
+// Used by @curiouslearning/analytics FirebaseStrategy
 export const firebaseConfig = {
     apiKey: "AIzaSyB8c2lBVi26u7YRL9sxOP97Uaq3yN8hTl4",
     authDomain: "ftm-b9d99.firebaseapp.com",
