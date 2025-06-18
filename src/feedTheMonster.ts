@@ -53,7 +53,7 @@ class App {
 
   constructor(lang: string) {
     this.lang = lang;
-    this.currentProgress = 10; // Initialize progress to 0
+    this.currentProgress = 25; // Initialize fake progress to 25%
     this.background = document.getElementById("background") as HTMLElement;
     this.channel = new BroadcastChannel("my-channel");
     this.progressBar = document.getElementById("progress-bar") as HTMLElement;
@@ -226,7 +226,7 @@ class App {
     } else {
       this.progressBarContainer.style.display = "flex";
       this.progressBar.style.display = "flex";
-      this.progressBar.style.width = "10%";
+      this.progressBar.style.width = "25%";
     }
 
   };

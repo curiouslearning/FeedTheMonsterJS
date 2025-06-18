@@ -163,8 +163,9 @@ export const MONSTER_PHASES = [
 //Start screen Monster
 export const STARTSCREEN_MONSTER = './assets/rive/phase4Monster.riv';
 export const EVOL_MONSTER = [
-  './assets/rive/ftm_monster_evolve1-2.riv', // add new files when other evolution files are ready
-  './assets/rive/ftm_monster_evolve2-4.riv'
+  './assets/rive/ftm_monster_evolve1-2.riv',
+  './assets/rive/ftm_monster_evolve2-3.riv',
+  './assets/rive/ftm_monster_evolve3-4.riv'
 ];
 
 export const CACHED_RIVE_WASM = './assets/rive/rive.wasm';
