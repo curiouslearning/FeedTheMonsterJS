@@ -461,9 +461,8 @@ export class GameplayScene {
 
     if (this.monster.onClick(x, y)) {
       this.setGameToStart();
+      this.tutorial?.activeTutorial?.removeHandPointer();
     }
-    
-    this.tutorial?.activeTutorial?.removeHandPointer();
 
     // Use the play button in the HTML implementation instead of onClick
     const promptPlayButton = document.getElementById('prompt-play-button');
@@ -498,31 +497,16 @@ export class GameplayScene {
   }
 
   draw(deltaTime: number) {
-    const shouldRunQuickStartTutorial = this.tutorial.shouldShowTutorialAnimation && this.tutorial.quickStartTutorialReady && this.counter === 0;
-    const shouldWaitForQuickStartTutorial = this.tutorial.shouldShowTutorialAnimation && !this.tutorial.quickStartTutorialReady && this.counter === 0;
-    // If game hasn't started and it's not paused
-    if (!this.isGameStarted && !this.isPauseButtonClicked) {
-      // Gate the tutorial animation behind both the tutorial flag and the timer-based flag
-      if (shouldRunQuickStartTutorial) {
-        // Draw the quick-start tutorial animation only after delay
-        this.tutorial.drawQuickStart(deltaTime, this.isGameStarted);
-        // Start the game after the tutorial finishes
-        if (this.tutorial.isQuickStartFinished()) {
-          this.setGameToStart();
-        }
-        return; // Wait until tutorial ends
-      } else if (shouldWaitForQuickStartTutorial) {
-        // Wait for the delay to expire before starting tutorial animation
-        // Optionally, could show a loading indicator or do nothing
-        return;
-      } else {
-        // No tutorial: immediately start the game on new puzzle
-        this.time += deltaTime;
-        if (this.time >= 5000) {
-          this.setGameToStart();
-        }
-      }
-    }
+    const timeRef = { value: this.time };
+    this.tutorial?.handleTutorialAndGameStart({
+      deltaTime,
+      isGameStarted: this.isGameStarted,
+      isPauseButtonClicked: this.isPauseButtonClicked,
+      setGameToStart: this.setGameToStart.bind(this),
+      timeRef
+    });
+    this.time = timeRef.value;
+
     // Trail effects drawing 
     this.trailEffectHandler?.draw();
     // Main game logic only starts after isGameStarted = true
