@@ -126,7 +126,7 @@ export class GameplayScene {
     this.addEventListeners();
     this.startGameTime();
     this.startPuzzleTime();
-    this.firebaseIntegration = new FirebaseIntegration();
+    this.firebaseIntegration = FirebaseIntegration.getInstance();
     this.feedbackTextEffects = new FeedbackTextEffects();
     this.audioPlayer = new AudioPlayer();
     this.puzzleHandler = new PuzzleHandler(this.levelData, this.counter, gamePlayData.feedbackAudios);

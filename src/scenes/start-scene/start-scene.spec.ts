@@ -1,11 +1,35 @@
 import { StartScene } from './start-scene';
-import { PlayButtonHtml,  } from '@components/buttons';
+import { PlayButtonHtml } from '@components/buttons';
 import { FirebaseIntegration } from "../../Firebase/firebase-integration";
 import { AudioPlayer } from "../../components/audio-player";
 import gameStateService from '@gameStateService';
 import gameSettingsService from '@gameSettingsService';
 import { SCENE_NAME_LEVEL_SELECT } from "@constants";
 import { RiveMonsterComponent } from '@components/riveMonster/rive-monster-component';
+
+// Define mock implementation first
+const mockInstance = {
+  sendTappedStartEvent: jest.fn(),
+  sendUserClickedOnPlayEvent: jest.fn(),
+  isAnalyticsReady: jest.fn().mockReturnValue(true)
+};
+
+let mockInstanceRef = mockInstance;
+
+// Mock the FirebaseIntegration module before other imports
+jest.mock("../../Firebase/firebase-integration", () => ({
+  FirebaseIntegration: {
+    initializeAnalytics: jest.fn().mockImplementation(async () => {
+      mockInstanceRef = {
+        sendTappedStartEvent: jest.fn(),
+        sendUserClickedOnPlayEvent: jest.fn(),
+        isAnalyticsReady: jest.fn().mockReturnValue(true)
+      };
+      return Promise.resolve();
+    }),
+    getInstance: jest.fn().mockImplementation(() => mockInstanceRef)
+  }
+}));
 
 jest.mock('@rive-app/canvas', () => ({
   Rive: jest.fn().mockImplementation(() => ({
@@ -32,11 +56,9 @@ jest.mock('@components/riveMonster/rive-monster-component', () => ({
   })),
 }));
 
-jest.mock("../../Firebase/firebase-integration", () => ({
-  FirebaseIntegration: jest.fn().mockImplementation(() => ({
-    sendTappedStartEvent: jest.fn()
-  })),
-}));
+// Mock implementations
+let mockFirebaseInstance: any;
+
 jest.mock("../../components/audio-player", () => ({
   AudioPlayer: jest.fn().mockImplementation(() => ({
     playButtonClickSound: jest.fn()
@@ -72,7 +94,7 @@ describe('Start Scene Test', () => {
   let mockAudioPlayer;
   const switchSceneMockFunc = jest.fn();
 
-  beforeEach(() => {
+  beforeEach(async () => {
     document.body.innerHTML = `
       <div>
         <div id="title-and-play-button"></div>
@@ -89,8 +111,9 @@ describe('Start Scene Test', () => {
       </div>
     `;
 
-    // Mock the Firebase instance (this is what is used in your StartScene class)
-    mockFirebase = new FirebaseIntegration();
+    // Initialize Firebase mock with fresh instance
+    await FirebaseIntegration.initializeAnalytics();
+    mockFirebase = FirebaseIntegration.getInstance();
 
     //Mock Audio Player instance
     mockAudioPlayer = new AudioPlayer();

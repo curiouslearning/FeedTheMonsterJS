@@ -78,7 +78,7 @@ export class LevelSelectionScreen {
         ? Math.floor(self.data.levels.length / 10) + 1
         : Math.floor(self.data.levels.length / 10);
     this.levels = [];
-    this.firebaseIntegration = new FirebaseIntegration();
+    this.firebaseIntegration = FirebaseIntegration.getInstance();
     this.init();
     this.createLevelButtons();
     this.gameLevelData = GameScore.getAllGameLevelInfo();

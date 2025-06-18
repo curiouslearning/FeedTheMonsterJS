@@ -27,6 +27,7 @@
   "dependencies": {
     "@capacitor/android": "^4.4.0",
     "@capacitor/core": "^4.4.0",
+    "@curiouslearning/analytics": "^1.2.0",
     "@curiouslearning/features": "^1.2.5",
     "@octokit/rest": "^20.0.1",
     "@release-it/conventional-changelog": "^8.0.1",
