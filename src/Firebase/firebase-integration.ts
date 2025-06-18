@@ -57,7 +57,7 @@ export class FirebaseIntegration extends BaseFirebaseIntegration {
    */
   public static getInstance(): FirebaseIntegration {
     if (!this.instance || !this.instance.isAnalyticsReady()) {
-      throw new Error('FirebaseIntegration.initializeApp() must be called before accessing the instance');
+      throw new Error('FirebaseIntegration.initializeAnalytics() must be called before accessing the instance');
     }
     
     return this.instance;
