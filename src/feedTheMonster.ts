@@ -69,7 +69,6 @@ class App {
       "loading-screen"
     ) as HTMLElement;
     this.is_cached = this.initializeCachedData();
-    this.firebaseIntegration = new FirebaseIntegration();
     this.startSessionTime = 0;
     this.init();
     this.channel.addEventListener("message", this.handleServiceWorkerMessage);
@@ -78,6 +77,12 @@ class App {
   }
 
   private async init() {
+    // BOOKMARK: Initialize the Firebase Integration singleton.
+    // This must be called once at app startup before any other Firebase methods.
+    // This step makes sure that the analytics are initialized before any 
+    // tracking is done.
+    await FirebaseIntegration.initializeAnalytics();
+    this.firebaseIntegration = FirebaseIntegration.getInstance();
     const font = await Utils.getLanguageSpecificFont(this.lang);
     await this.loadAndCacheFont(font, `./assets/fonts/${font}.ttf`);
     await this.loadTitleFeedbackCustomFont();
