@@ -333,7 +333,7 @@ export default class TutorialComponent {
     pointer.className = 'hand-pointer';
     pointer.alt = 'Tutorial hand pointer';
     // Optionally, you can add ARIA attributes or tabIndex for accessibility
-    const target = document.querySelector(targetSelector || '#prompt-container');
+    const target = document.querySelector(targetSelector || '#prompt-background');
     if (target) {
       target.appendChild(pointer);
     }

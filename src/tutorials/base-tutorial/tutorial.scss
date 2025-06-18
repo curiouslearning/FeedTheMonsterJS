@@ -1,26 +1,13 @@
 #hand-pointer {
   position: absolute;
   left: 55%;
-  margin-top: 15px;
+  margin-top: -115px;
   /* Center horizontally, adjust as needed */
   transform: translateX(-55%);
   /* The animation below mimics the up-and-down motion */
   animation: hand-bounce 2s linear infinite;
   z-index: 1;
 }
-
-@media only screen and (min-device-width : 768px) and (max-device-width : 1024px) {
-  #hand-pointer {
-    margin-top: 100px;
-  }
-}
-
-@media only screen and (min-device-width : 1024px) and (max-device-width : 1366px) {
-  #hand-pointer {
-    margin-top: 220px;
-  }
-}
-
 
 @keyframes hand-bounce {
   0% {
