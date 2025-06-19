@@ -104,6 +104,7 @@ export class GameplayScene {
   private animationDelays = [
     { backToIdle: 350, isChewing: 0, isHappy: 1700, isSpit: 1500, isSad: 3000 }, // Phase 1
     { backToIdle: 350, isChewing: 0, isHappy: 1700, isSpit: 1000, isSad: 2500 }, // Phase 2
+    { backToIdle: 350, isChewing: 0, isHappy: 1700, isSpit: 1300, isSad: 2600 }, // Phase 3
     { backToIdle: 350, isChewing: 0, isHappy: 1700, isSpit: 100, isSad: 2500 }  // Phase 4
   ];
 
@@ -225,8 +226,8 @@ export class GameplayScene {
 
     //For shouldShowTutorialAnimation- If the game level should have tutorial AND level is not yet cleared, timer should be delayed.
     this.tutorial.shouldShowTutorialAnimation = gamePlayData.tutorialOn && !gamePlayData.isTutorialCleared;
-    
-    if(this.tutorial.showHandPointerInAudioPuzzle(gamePlayData.levelData)) {
+
+    if (this.tutorial.showHandPointerInAudioPuzzle(gamePlayData.levelData)) {
       this.tutorial.resetQuickStartTutorialDelay();
     } else {
       this.tutorial.quickStartTutorialReady = true;
@@ -460,6 +461,7 @@ export class GameplayScene {
 
     if (this.monster.onClick(x, y)) {
       this.setGameToStart();
+      this.tutorial?.activeTutorial?.removeHandPointer();
     }
   };
 
@@ -489,29 +491,16 @@ export class GameplayScene {
   }
 
   draw(deltaTime: number) {
-    // If game hasn't started and it's not paused
-    if (!this.isGameStarted && !this.isPauseButtonClicked) {
-      // Gate the tutorial animation behind both the tutorial flag and the timer-based flag
-      if (this.tutorial.shouldShowTutorialAnimation && this.tutorial.quickStartTutorialReady) {
-        // Draw the quick-start tutorial animation only after delay
-        this.tutorial.drawQuickStart(deltaTime, this.isGameStarted);
-        // Start the game after the tutorial finishes
-        if (this.tutorial.isQuickStartFinished()) {
-          this.setGameToStart();
-        }
-        return; // Wait until tutorial ends
-      } else if (this.tutorial.shouldShowTutorialAnimation && !this.tutorial.quickStartTutorialReady) {
-        // Wait for the delay to expire before starting tutorial animation
-        // Optionally, could show a loading indicator or do nothing
-        return;
-      } else {
-        // No tutorial: immediately start the game on new puzzle
-        this.time += deltaTime;
-        if (this.time >= 5000) {
-          this.setGameToStart();
-        }
-      }
-    }
+    const timeRef = { value: this.time };
+    this.tutorial?.handleTutorialAndGameStart({
+      deltaTime,
+      isGameStarted: this.isGameStarted,
+      isPauseButtonClicked: this.isPauseButtonClicked,
+      setGameToStart: this.setGameToStart.bind(this),
+      timeRef
+    });
+    this.time = timeRef.value;
+
     // Trail effects drawing 
     this.trailEffectHandler?.draw();
     // Main game logic only starts after isGameStarted = true

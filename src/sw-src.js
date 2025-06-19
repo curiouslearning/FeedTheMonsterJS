@@ -50,10 +50,12 @@ self.registration.addEventListener("updatefound", function (e) {
 async function preloadAdditionalAssets() {
   const assetsToCache = [
     "/assets/rive/ftm_monster_evolve1-2.riv",
-    "/assets/rive/ftm_monster_evolve2-4.riv",
-    "/assets/rive/eggmonsterclone.riv",
-    "/assets/rive/hatchedmonsterclone.riv",
-    "/assets/rive/adultmonsterclone.riv",
+    "/assets/rive/ftm_monster_evolve2-3.riv",
+    "/assets/rive/ftm_monster_evolve3-4.riv",
+    "/assets/rive/eggmonster.riv",
+    "/assets/rive/hatchedmonster.riv",
+    "/assets/rive/youngmonster.riv",
+    "/assets/rive/adultmonster.riv",
     "/assets/rive/rive.wasm",
   ];
   const cache = await caches.open("dynamic-cache");

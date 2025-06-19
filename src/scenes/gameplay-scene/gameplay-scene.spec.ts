@@ -635,6 +635,11 @@ describe('GameplayScene with BasePopupComponent', () => {
         draw: jest.fn(), // stubbed to avoid internal errors
       };
 
+      (gameplayScene as any).tutorial = {
+        handleTutorialAndGameStart: jest.fn(),
+        draw: jest.fn(),
+      };
+
       (gameplayScene as any).isPauseButtonClicked = false;
       (gameplayScene as any).isGameStarted = true;
 
