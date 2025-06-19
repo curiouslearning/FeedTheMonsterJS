@@ -108,6 +108,10 @@ export default class TimerTicking extends EventManager {
         }
     }
 
+    /**
+     * Plays the timer start sound effect (SFX) once per timer start or restart.
+     * Ensures the SFX is only triggered a single time, and handles audio errors gracefully.
+     */
     private triggerTimerStartSFX() {
         if (!this.hasPlayedTimerStartSFX) {
             try {
