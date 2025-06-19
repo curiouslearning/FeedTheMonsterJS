@@ -85,15 +85,7 @@ export default class TimerTicking extends EventManager {
     update(deltaTime) {
         // console.log('update')
         if (this.startMyTimer && !this.isStoneDropped) {
-            // Play timer start SFX only once per timer start
-            if (!this.hasPlayedTimerStartSFX) {
-                try {
-                    this.audioPlayer.playAudio(AUDIO_PATH_POINTS_ADD);
-                } catch (e) {
-                    console.warn('Failed to play timer start SFX:', e);
-                }
-                this.hasPlayedTimerStartSFX = true;
-            }
+            this.triggerTimerStartSFX();
 
             this.timer += deltaTime * 0.008;
             // Calculate the new width percentage for the timer
@@ -114,6 +106,17 @@ export default class TimerTicking extends EventManager {
                 this.applyRotation(false); 
                 this.callback(true);
             }
+        }
+    }
+
+    private triggerTimerStartSFX() {
+        if (!this.hasPlayedTimerStartSFX) {
+            try {
+                this.audioPlayer.playAudio(AUDIO_PATH_POINTS_ADD);
+            } catch (e) {
+                console.warn('Failed to play timer start SFX:', e);
+            }
+            this.hasPlayedTimerStartSFX = true;
         }
     }
 
