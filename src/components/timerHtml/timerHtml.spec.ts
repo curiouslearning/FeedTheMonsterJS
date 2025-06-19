@@ -16,6 +16,7 @@ jest.mock('./timerHtml', () => {
 jest.mock('@components', () => ({
   AudioPlayer: jest.fn(() => ({
     playAudio: jest.fn(),
+    preloadGameAudio: jest.fn(), // Add this to fix TypeError
   })),
 }));
 
@@ -36,6 +37,25 @@ describe('TimerTicking', () => {
     // Initialize TimerTicking instance
     timerTicking = new TimerTicking(800, 600, mockCallback);
 
+  });
+
+  test('should play timer start SFX only once per timer start and again after restart', () => {
+    timerTicking.startTimer();
+    timerTicking.audioPlayer.playAudio = jest.fn();
+
+    // First update: should play SFX
+    timerTicking.update(16);
+    expect(timerTicking.audioPlayer.playAudio).toHaveBeenCalledWith(require('@constants').AUDIO_PATH_POINTS_ADD);
+
+    // Reset mock and update again: should NOT play SFX again
+    (timerTicking.audioPlayer.playAudio as jest.Mock).mockClear();
+    timerTicking.update(16);
+    expect(timerTicking.audioPlayer.playAudio).not.toHaveBeenCalledWith(require('@constants').AUDIO_PATH_POINTS_ADD);
+
+    // Restart timer: should play SFX again
+    timerTicking.startTimer();
+    timerTicking.update(16);
+    expect(timerTicking.audioPlayer.playAudio).toHaveBeenCalledWith(require('@constants').AUDIO_PATH_POINTS_ADD);
   });
 
   afterEach(() => {

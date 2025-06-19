@@ -7,6 +7,7 @@ import TimerHTMLComponent from './timerHtml/timerHtml';
 
 
 export default class TimerTicking extends EventManager {
+    public hasPlayedTimerStartSFX: boolean = false;
     public width: number;
     public height: number;
     public timerWidth: number;
@@ -45,6 +46,8 @@ export default class TimerTicking extends EventManager {
         this.isTimerRunningOut = false;
         this.audioPlayer = new AudioPlayer();
         this.playLevelEndAudioOnce = true;
+        // Preload the timer start SFX to avoid playback delay
+        this.audioPlayer.preloadGameAudio(AUDIO_PATH_POINTS_ADD);
         this.images = {
             timer_empty: TIMER_EMPTY,
             rotating_clock: ROTATING_CLOCK,
@@ -67,15 +70,11 @@ export default class TimerTicking extends EventManager {
     }
 
     startTimer() {
-        // Play SFX (PointsAdd.wav) when timer starts or restarts
-        // This is non-blocking and decoupled from timer logic
-        // this.audioPlayer.playAudio(AUDIO_PATH_POINTS_ADD);
-        this.audioPlayer.playAudio(AUDIO_INTRO);
-
-        // it will start timer immediatly
+        // it will start timer immediately
         this.readyTimer();
         this.startMyTimer = true;
         this.isMyTimerOver = false;
+        this.hasPlayedTimerStartSFX = false; // Reset SFX flag on timer start
     }
 
     readyTimer() {
@@ -84,7 +83,18 @@ export default class TimerTicking extends EventManager {
         if (this.timerFullContainer) this.timerFullContainer.style.width = "100%"; // Reset width on start
     }
     update(deltaTime) {
+        // console.log('update')
         if (this.startMyTimer && !this.isStoneDropped) {
+            // Play timer start SFX only once per timer start
+            if (!this.hasPlayedTimerStartSFX) {
+                try {
+                    this.audioPlayer.playAudio(AUDIO_PATH_POINTS_ADD);
+                } catch (e) {
+                    console.warn('Failed to play timer start SFX:', e);
+                }
+                this.hasPlayedTimerStartSFX = true;
+            }
+
             this.timer += deltaTime * 0.008;
             // Calculate the new width percentage for the timer
             const timerDepletion = Math.max(0, 100 - this.timer);
