@@ -41,7 +41,6 @@ import {
   SCENE_NAME_LEVEL_END,
   PreviousPlayedLevel,
   MONSTER_PHASES,
-  AUDIO_PATH_POINTS_ADD
 } from "@constants";
 import gameStateService from '@gameStateService';
 import gameSettingsService from '@gameSettingsService';

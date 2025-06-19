@@ -83,7 +83,6 @@ export default class TimerTicking extends EventManager {
         if (this.timerFullContainer) this.timerFullContainer.style.width = "100%"; // Reset width on start
     }
     update(deltaTime) {
-        // console.log('update')
         if (this.startMyTimer && !this.isStoneDropped) {
             this.triggerTimerStartSFX();
 
