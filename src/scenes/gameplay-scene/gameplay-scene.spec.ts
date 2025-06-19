@@ -142,6 +142,7 @@ Object.defineProperty(HTMLCanvasElement.prototype, 'getContext', {
   })),
 });
 
+
 import { GameplayScene } from './gameplay-scene';
 import gameStateService from '@gameStateService';
 import gameSettingsService from '@gameSettingsService';

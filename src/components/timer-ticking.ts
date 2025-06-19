@@ -1,13 +1,18 @@
 import { loadImages } from "@common";
 import { EventManager } from "@events";
 import { AudioPlayer } from "@components";
-import { TIMER_EMPTY, ROTATING_CLOCK, AUDIO_TIMEOUT, AUDIO_PATH_POINTS_ADD, AUDIO_INTRO } from "@constants";
+import { TIMER_EMPTY, ROTATING_CLOCK, AUDIO_TIMEOUT } from "@constants";
 import './timerHtml/timerHtml.scss';
 import TimerHTMLComponent from './timerHtml/timerHtml';
 
 
 export default class TimerTicking extends EventManager {
-    public hasPlayedTimerStartSFX: boolean = false;
+    /**
+     * Optional callback to notify when the timer has just started (first update after startTimer).
+     * Use this for SFX or other side effects in the parent/gameplay scene.
+     */
+    public onTimerStart?: () => void;
+    private hasEmittedTimerStart: boolean = false;
     public width: number;
     public height: number;
     public timerWidth: number;
@@ -46,8 +51,6 @@ export default class TimerTicking extends EventManager {
         this.isTimerRunningOut = false;
         this.audioPlayer = new AudioPlayer();
         this.playLevelEndAudioOnce = true;
-        // Preload the timer start SFX to avoid playback delay
-        this.audioPlayer.preloadGameAudio(AUDIO_PATH_POINTS_ADD);
         this.images = {
             timer_empty: TIMER_EMPTY,
             rotating_clock: ROTATING_CLOCK,
@@ -74,7 +77,7 @@ export default class TimerTicking extends EventManager {
         this.readyTimer();
         this.startMyTimer = true;
         this.isMyTimerOver = false;
-        this.hasPlayedTimerStartSFX = false; // Reset SFX flag on timer start
+        this.hasEmittedTimerStart = false; // Reset timer start event flag
     }
 
     readyTimer() {
@@ -84,7 +87,11 @@ export default class TimerTicking extends EventManager {
     }
     update(deltaTime) {
         if (this.startMyTimer && !this.isStoneDropped) {
-            this.triggerTimerStartSFX();
+            // Emit timer start event/callback exactly once per timer start
+            if (!this.hasEmittedTimerStart && this.onTimerStart) {
+                this.onTimerStart();
+                this.hasEmittedTimerStart = true;
+            }
 
             this.timer += deltaTime * 0.008;
             // Calculate the new width percentage for the timer
@@ -105,21 +112,6 @@ export default class TimerTicking extends EventManager {
                 this.applyRotation(false); 
                 this.callback(true);
             }
-        }
-    }
-
-    /**
-     * Plays the timer start sound effect (SFX) once per timer start or restart.
-     * Ensures the SFX is only triggered a single time, and handles audio errors gracefully.
-     */
-    private triggerTimerStartSFX() {
-        if (!this.hasPlayedTimerStartSFX) {
-            try {
-                this.audioPlayer.playAudio(AUDIO_PATH_POINTS_ADD);
-            } catch (e) {
-                console.warn('Failed to play timer start SFX:', e);
-            }
-            this.hasPlayedTimerStartSFX = true;
         }
     }
 

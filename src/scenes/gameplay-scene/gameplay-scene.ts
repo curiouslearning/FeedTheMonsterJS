@@ -182,6 +182,9 @@ export class GameplayScene {
       this.pauseGamePlay();
     });
     this.timerTicking = new TimerTicking(this.width, this.height, this.loadPuzzle);
+    this.timerTicking.onTimerStart = () => {
+      this.timerTicking.audioPlayer.playTimerStartSFX();
+    };
     this.stoneHandler = new StoneHandler(
       this.context,
       this.canvas,

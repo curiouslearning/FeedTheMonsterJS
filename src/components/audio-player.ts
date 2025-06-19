@@ -1,5 +1,5 @@
 import { Window } from "@common";
-import { AUDIO_PATH_BTN_CLICK } from "@constants";
+import { AUDIO_PATH_BTN_CLICK, AUDIO_PATH_POINTS_ADD } from "@constants";
 
 export class AudioPlayer {
   private audioContext: AudioContext | null;
@@ -211,6 +211,19 @@ export class AudioPlayer {
     }
     this.playFetch(index + 1, loop);
   };
+
+  /**
+   * Plays the timer start sound effect (SFX), preloading if necessary.
+   * Handles errors gracefully to avoid breaking timer logic.
+   */
+  playTimerStartSFX() {
+    try {
+      this.preloadGameAudio(AUDIO_PATH_POINTS_ADD);
+      this.playAudio(AUDIO_PATH_POINTS_ADD);
+    } catch (e) {
+      console.warn('Failed to play timer start SFX:', e);
+    }
+  }
 }
 
 class AudioContextManager {
