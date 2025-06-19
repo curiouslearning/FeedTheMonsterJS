@@ -138,7 +138,7 @@ export class PromptText extends BaseHTML {
         
         // Update event listeners to include the callback
         const handleClick = (e: Event) => {
-            Utils.playPromptSound(this.audioPlayer, this.currentPuzzleData, this.isAppForeground);
+            this.audioPlayer.handlePlayPromptAudioClickEvent();
             if (this.onClickCallback) {
                 this.onClickCallback();
             }
@@ -176,7 +176,8 @@ export class PromptText extends BaseHTML {
     playSound = () => {
         if (this.isAppForeground) {
             console.log('Playing prompt audio:', this.getPromptAudioUrl());
-            this.audioPlayer.playPromptAudio(this.getPromptAudioUrl());
+            
+            this.audioPlayer.handlePlayPromptAudioClickEvent();
         }
     }
 
@@ -488,7 +489,7 @@ export class PromptText extends BaseHTML {
                 this.shouldPlayTutorialPromptAudio &&
                 this.shouldPlayTutorialPromptAudio(this)
             ) {
-                this.playSound();
+                this.audioPlayer.playPromptAudio();
             }
             //Note: !isGameTypeAudio(this.levelData.levelMeta.protoType) is needed to make sure the audio play button won't pulsate.
             if (!this.isStoneDropped && !isGameTypeAudio(this.levelData.levelMeta.protoType)) {

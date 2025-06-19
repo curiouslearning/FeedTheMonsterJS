@@ -463,12 +463,6 @@ export class GameplayScene {
       this.setGameToStart();
       this.tutorial?.activeTutorial?.removeHandPointer();
     }
-
-    // Use the play button in the HTML implementation instead of onClick
-    const promptPlayButton = document.getElementById('prompt-play-button');
-    if (promptPlayButton && promptPlayButton.contains(event.target as Node)) {
-      this.promptText.playSound();
-    }
   };
 
   // Event to identify touch on the canvas
