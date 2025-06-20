@@ -40,26 +40,6 @@ describe('TimerTicking', () => {
 
   });
 
-  test('should play timer start SFX only once per timer start and again after restart', () => {
-    // Wire up the timer start event to play the SFX, as in real usage
-    timerTicking.onTimerStart = () => timerTicking.audioPlayer.playTimerStartSFX();
-    timerTicking.startTimer();
-
-    // First update: should play SFX
-    timerTicking.update(16);
-    expect(timerTicking.audioPlayer.playTimerStartSFX).toHaveBeenCalled();
-
-    // Reset mock and update again: should NOT play SFX again
-    (timerTicking.audioPlayer.playTimerStartSFX as jest.Mock).mockClear();
-    timerTicking.update(16);
-    expect(timerTicking.audioPlayer.playTimerStartSFX).not.toHaveBeenCalled();
-
-    // Restart timer: should play SFX again
-    timerTicking.startTimer();
-    timerTicking.update(16);
-    expect(timerTicking.audioPlayer.playTimerStartSFX).toHaveBeenCalled();
-  });
-
   afterEach(() => {
     jest.clearAllMocks();
     document.body.innerHTML = ''; // Clean up DOM

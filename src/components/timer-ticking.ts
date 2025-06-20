@@ -7,12 +7,6 @@ import TimerHTMLComponent from './timerHtml/timerHtml';
 
 
 export default class TimerTicking extends EventManager {
-    /**
-     * Optional callback to notify when the timer has just started (first update after startTimer).
-     * Use this for SFX or other side effects in the parent/gameplay scene.
-     */
-    public onTimerStart?: () => void;
-    private hasEmittedTimerStart: boolean = false;
     public width: number;
     public height: number;
     public timerWidth: number;
@@ -73,11 +67,10 @@ export default class TimerTicking extends EventManager {
     }
 
     startTimer() {
-        // it will start timer immediately
+        // it will start timer immediatly
         this.readyTimer();
         this.startMyTimer = true;
-        this.isMyTimerOver = false;
-        this.hasEmittedTimerStart = false; // Reset timer start event flag
+        this.isMyTimerOver = false
     }
 
     readyTimer() {
@@ -87,12 +80,6 @@ export default class TimerTicking extends EventManager {
     }
     update(deltaTime) {
         if (this.startMyTimer && !this.isStoneDropped) {
-            // Emit timer start event/callback exactly once per timer start
-            if (!this.hasEmittedTimerStart && this.onTimerStart) {
-                this.onTimerStart();
-                this.hasEmittedTimerStart = true;
-            }
-
             this.timer += deltaTime * 0.008;
             // Calculate the new width percentage for the timer
             const timerDepletion = Math.max(0, 100 - this.timer);

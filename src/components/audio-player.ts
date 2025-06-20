@@ -13,7 +13,7 @@ export class AudioPlayer {
   private isClickSoundLoaded: boolean;
   private playAudioTimeoutId: any;
   private isPromptAudioPlaying: boolean;
-
+  private timerStartSFXPlayed: boolean;
   constructor() {
     this.audioContext = AudioContextManager.getAudioContext();
     this.sourceNode = null;
@@ -21,7 +21,7 @@ export class AudioPlayer {
     this.clickSoundBuffer = null; // Initialize the clickSoundBuffer
     this.isClickSoundLoaded = false; // Initialize as false
     this.isPromptAudioPlaying = false;
-
+    this.timerStartSFXPlayed = false;
   }
 
   async playButtonClickSound() {
@@ -212,16 +212,19 @@ export class AudioPlayer {
     this.playFetch(index + 1, loop);
   };
 
-  /**
-   * Plays the timer start sound effect (SFX), preloading if necessary.
-   * Handles errors gracefully to avoid breaking timer logic.
-   */
-  playTimerStartSFX() {
-    try {
-      this.preloadGameAudio(AUDIO_PATH_POINTS_ADD);
-      this.playAudio(AUDIO_PATH_POINTS_ADD);
-    } catch (e) {
-      console.warn('Failed to play timer start SFX:', e);
+  resetTimerStartSFXFlag() {
+    this.timerStartSFXPlayed = false;
+  }
+
+  playTimerStartSFX(deltaTime: number) {
+    if (!this.timerStartSFXPlayed && deltaTime >= 1 && deltaTime <= 100) {
+      try {
+        this.preloadGameAudio(AUDIO_PATH_POINTS_ADD);
+        this.playAudio(AUDIO_PATH_POINTS_ADD);
+      } catch (e) {
+        console.warn('Failed to play timer start SFX:', e);
+      }
+      this.timerStartSFXPlayed = true;
     }
   }
 }

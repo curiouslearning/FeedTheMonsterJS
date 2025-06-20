@@ -537,10 +537,11 @@ export class GameplayScene {
         if (isTimerAllowed) {
           // After 12s, start timer updates
           this.timerTicking.update(deltaTime);
+          this.audioPlayer.playTimerStartSFX(deltaTime);
         }
       } else {
         this.timerTicking.update(deltaTime);
-
+        this.audioPlayer.playTimerStartSFX(deltaTime);
       }
     }
   }
