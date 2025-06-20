@@ -641,6 +641,10 @@ describe('GameplayScene with BasePopupComponent', () => {
         draw: jest.fn(),
       };
 
+      (gameplayScene as any).audioPlayer = {
+        playTimerStartSFX: jest.fn(),
+      };
+
       (gameplayScene as any).isPauseButtonClicked = false;
       (gameplayScene as any).isGameStarted = true;
 
