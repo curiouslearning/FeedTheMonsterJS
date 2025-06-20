@@ -142,6 +142,7 @@ Object.defineProperty(HTMLCanvasElement.prototype, 'getContext', {
   })),
 });
 
+
 import { GameplayScene } from './gameplay-scene';
 import gameStateService from '@gameStateService';
 import gameSettingsService from '@gameSettingsService';
@@ -638,6 +639,10 @@ describe('GameplayScene with BasePopupComponent', () => {
       (gameplayScene as any).tutorial = {
         handleTutorialAndGameStart: jest.fn(),
         draw: jest.fn(),
+      };
+
+      (gameplayScene as any).audioPlayer = {
+        playTimerStartSFX: jest.fn(),
       };
 
       (gameplayScene as any).isPauseButtonClicked = false;
