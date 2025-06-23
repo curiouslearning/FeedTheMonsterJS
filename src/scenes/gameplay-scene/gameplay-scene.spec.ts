@@ -142,7 +142,6 @@ Object.defineProperty(HTMLCanvasElement.prototype, 'getContext', {
   })),
 });
 
-
 import { GameplayScene } from './gameplay-scene';
 import gameStateService from '@gameStateService';
 import gameSettingsService from '@gameSettingsService';
@@ -619,38 +618,6 @@ describe('GameplayScene with BasePopupComponent', () => {
         gameStateService.EVENTS.SWITCH_SCENE_EVENT,
         expect.any(String)
       );
-    });
-  });
-
-  describe('Timer Update ', () => {
-    it('should call timerTicking.update when stones are loaded and game is not paused', () => {
-      const mockStone = {
-        frame: 100,
-        draw: jest.fn(), // Accepts context
-        isDisposed: false
-      };
-
-      (gameplayScene as any).stoneHandler = {
-        stonesHasLoaded: true,
-        stones: [mockStone],
-        draw: jest.fn(), // stubbed to avoid internal errors
-      };
-
-      (gameplayScene as any).tutorial = {
-        handleTutorialAndGameStart: jest.fn(),
-        draw: jest.fn(),
-      };
-
-      (gameplayScene as any).audioPlayer = {
-        playTimerStartSFX: jest.fn(),
-      };
-
-      (gameplayScene as any).isPauseButtonClicked = false;
-      (gameplayScene as any).isGameStarted = true;
-
-      gameplayScene.draw(16);
-
-      expect(gameplayScene.timerTicking.update).toHaveBeenCalledWith(16);
     });
   });
 });

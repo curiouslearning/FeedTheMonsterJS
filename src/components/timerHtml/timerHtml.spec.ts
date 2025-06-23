@@ -16,8 +16,6 @@ jest.mock('./timerHtml', () => {
 jest.mock('@components', () => ({
   AudioPlayer: jest.fn(() => ({
     playAudio: jest.fn(),
-    preloadGameAudio: jest.fn(),
-    playTimerStartSFX: jest.fn(), // Ensure all AudioPlayer instances have this method
   })),
 }));
 

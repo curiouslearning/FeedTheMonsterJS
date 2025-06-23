@@ -41,7 +41,8 @@ import {
   SCENE_NAME_GAME_PLAY_REPLAY,
   SCENE_NAME_LEVEL_END,
   PreviousPlayedLevel,
-  MONSTER_PHASES
+  MONSTER_PHASES,
+  AUDIO_PATH_POINTS_ADD
 } from "@constants";
 import gameStateService from '@gameStateService';
 import gameSettingsService from '@gameSettingsService';
@@ -100,6 +101,7 @@ export class GameplayScene {
   private backgroundGenerator: PhasesBackground;
   public loadPuzzleDelay: 3000 | 4500;
   private puzzleHandler: any;
+  private timerStartSFXPlayed: boolean;
   // Define animation delays as an array where index 0 = phase 0, index 1 = phase 1, index 2 = phase 2
   private animationDelays = [
     { backToIdle: 350, isChewing: 0, isHappy: 1700, isSpit: 1500, isSad: 3000 }, // Phase 1
@@ -161,6 +163,7 @@ export class GameplayScene {
     });
     //this.setupBg(); //Temporary disabled to try evolution background.
     this.setupMonsterPhaseBg();
+    this.timerStartSFXPlayed = false;
   }
 
   private initializeRiveMonster(): RiveMonsterComponent {
@@ -488,6 +491,8 @@ export class GameplayScene {
     this.isGameStarted = true;
     this.time = 0;
     this.trailEffectHandler.setGameHasStarted(true);
+    this.audioPlayer.preloadGameAudio(AUDIO_PATH_POINTS_ADD); // to preload the PointsAdd.wav
+    this.timerStartSFXPlayed = true; // This flag needed to ensure that the timer starts sfx will only trigger once.
   }
 
   draw(deltaTime: number) {
@@ -528,17 +533,13 @@ export class GameplayScene {
   private handleTimerUpdate(deltaTime: number) {
     // Update timer only once animation is complete and game is not paused.
     if (this.stoneHandler.stonesHasLoaded && !this.isPauseButtonClicked) {
-      if (this.tutorial.shouldShowTutorialAnimation) {
-        // FM-544 add or modify code logic here to controlling the timer when tutorial is animating.
-        const isTimerAllowed = this.tutorial.updateTutorialTimer(deltaTime);
-        if (isTimerAllowed) {
-          // After 12s, start timer updates
-          this.timerTicking.update(deltaTime);
-          this.audioPlayer.playTimerStartSFX(deltaTime);
-        }
-      } else {
+      const hasTutorial = this.tutorial.shouldShowTutorialAnimation;
+      const shouldStartTimer = this.tutorial.updateTutorialTimer(deltaTime);
+      if (!hasTutorial || (shouldStartTimer && hasTutorial)) { 
+        // After 12s, start timer updates
         this.timerTicking.update(deltaTime);
-        this.audioPlayer.playTimerStartSFX(deltaTime);
+        this.timerStartSFXPlayed && this.audioPlayer.playAudio(AUDIO_PATH_POINTS_ADD);
+        this.timerStartSFXPlayed = false; // to ensure it wont run again in the current level.
       }
     }
   }
