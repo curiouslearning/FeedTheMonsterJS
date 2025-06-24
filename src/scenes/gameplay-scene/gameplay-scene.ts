@@ -217,8 +217,8 @@ export class GameplayScene {
       this.rightToLeft,
       'prompt-container',  // id parameter (string)
       { selectors: DEFAULT_SELECTORS },  // options parameter
+      gamePlayData?.tutorialOn && this.counter === 0,
       onClickCallback,
-      this.tutorial.shouldPlayTutorialPromptAudio
     );
     this.levelIndicators = new LevelIndicators();
     this.levelIndicators.setIndicators(this.counter);
