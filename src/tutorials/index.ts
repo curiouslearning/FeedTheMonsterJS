@@ -256,20 +256,6 @@ export default class TutorialHandler {
     }
   }
 
-  public shouldPlayTutorialPromptAudio(promptTextInstance: any): boolean {
-    if (!promptTextInstance || !promptTextInstance.levelData || !promptTextInstance.currentPuzzleData) return false;
-    const gameTypesList = gameStateService.getGameTypeList();
-    const { isMatchSound, gameTypeName, gameType } = TutorialHandler.getPromptTextContext(promptTextInstance.levelData, gameTypesList);
-    const isValidGameType = gameType && !gameType.isCleared && gameType.levelNumber === promptTextInstance.levelData.levelMeta.levelNumber;
-    let triggerStart = 1910, triggerEnd = 1926;
-    if (isMatchSound && isValidGameType) {
-      triggerStart = 3000;
-      triggerEnd = 3016;
-    }
-
-    return Math.floor(promptTextInstance.time) >= triggerStart && Math.floor(promptTextInstance.time) <= triggerEnd;
-  }
-
   dispose() {
     //Clear canvas tutorials and reset values;
     if (this.hasEstablishedSubscriptions) {

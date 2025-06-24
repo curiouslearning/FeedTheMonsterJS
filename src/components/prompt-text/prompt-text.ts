@@ -41,7 +41,6 @@ export const PROMPT_TEXT_LAYOUT = (id: string, levelData: any) => {
  */
 export class PromptText extends BaseHTML {
     // ...
-    public shouldPlayTutorialPromptAudio?: (instance: PromptText) => boolean; // Optional callback for tutorial prompt audio
     public width: number;
     public height: number;
     public levelData: any;
@@ -61,7 +60,10 @@ export class PromptText extends BaseHTML {
     public translateY: number = 0;
     public isTranslatingUp: boolean = true;
     public translateFactor: number = 0.05;
-    
+    public triggerStart: number;
+    public triggerEnd: number;
+    private hasInitialAudioPlayed: boolean = false;
+
     // HTML elements for the prompt
     public promptContainer: HTMLDivElement;
     public promptBackground: HTMLDivElement;
@@ -88,8 +90,8 @@ export class PromptText extends BaseHTML {
         rightToLeft: boolean,
         id: string = 'prompt-container',
         options: BaseHtmlOptions = { selectors: DEFAULT_SELECTORS },
+        isLevelHaveTutorial: boolean,
         onClickCallback?: () => void,
-        shouldPlayTutorialPromptAudio?: (instance: PromptText) => boolean
     ) {
         super(
             options,
@@ -114,16 +116,26 @@ export class PromptText extends BaseHTML {
         this.currentPuzzleData = currentPuzzleData;
         this.targetStones = this.currentPuzzleData.targetStones;
         this.audioPlayer = new AudioPlayer();
-        this.audioPlayer.preloadPromptAudio(Utils.getPromptAudioUrl(this.currentPuzzleData));
+        this.audioPlayer.preloadPromptAudio(this.getPromptAudioUrl());
         document.addEventListener(VISIBILITY_CHANGE, this.handleVisibilityChange, false);
         
+        //Set initial auto audio play timing.
+        this.setPromptInitialAudioDelayValues(isLevelHaveTutorial);
+
         // Initialize HTML elements
         this.initializeHtmlElements();
         
         // Start animation loop
         this.startAnimationLoop();
         this.onClickCallback = onClickCallback;
-        this.shouldPlayTutorialPromptAudio = shouldPlayTutorialPromptAudio;
+    }
+
+    // This improves on the nested callbacks introduced in FM-484.
+    // While prompt-text.ts is still a tangled mess, this method offers a cleaner and more readable approach.
+    // Long-term: the entire module needs refactoring for maintainability.
+    private setPromptInitialAudioDelayValues(isTutorialOn: boolean) {
+        this.triggerStart = isTutorialOn ? 3000 : 1910;
+        this.triggerEnd = isTutorialOn ? 3016 : 1926;
     }
 
     /**
@@ -484,13 +496,16 @@ export class PromptText extends BaseHTML {
             
             this.time += deltaTime;
             
+
             // Play sound at specific time
             if (
-                this.shouldPlayTutorialPromptAudio &&
-                this.shouldPlayTutorialPromptAudio(this)
+                !this.hasInitialAudioPlayed &&
+                Math.floor(this.time) >= this.triggerStart && Math.floor(this.time) <= this.triggerEnd
             ) {
+                this.hasInitialAudioPlayed = true; //Flag to true to prevent double triggering of initial auto audio.
                 this.audioPlayer.playPromptAudio();
             }
+
             //Note: !isGameTypeAudio(this.levelData.levelMeta.protoType) is needed to make sure the audio play button won't pulsate.
             if (!this.isStoneDropped && !isGameTypeAudio(this.levelData.levelMeta.protoType)) {
                 // Update scaling
@@ -526,15 +541,16 @@ export class PromptText extends BaseHTML {
      * @param event The event.
      */
     public handleLoadPuzzle(event) {
+        this.setPromptInitialAudioDelayValues(false); //Always false so we can use the default time triggers in puzzle segment 2 to 5..
         this.droppedStones = 0;
         this.droppedStoneCount = 0;
         this.currentPuzzleData = this.levelData.puzzles[event.detail.counter];
         this.currentPromptText = this.currentPuzzleData.prompt.promptText;
         this.targetStones = this.currentPuzzleData.targetStones;
-        this.audioPlayer.preloadPromptAudio(Utils.getPromptAudioUrl(this.currentPuzzleData));
+        this.audioPlayer.preloadPromptAudio(this.getPromptAudioUrl());
         this.isStoneDropped = false;
         this.time = 0;
-        
+        this.hasInitialAudioPlayed = false; //Reset the flag for initial auto audio prompt play.
         // Update font size for new text
         this.promptTextElement.style.fontSize = `${this.calculateFont()}px`;
         
