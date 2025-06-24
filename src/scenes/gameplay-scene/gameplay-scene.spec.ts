@@ -638,6 +638,7 @@ describe('GameplayScene with BasePopupComponent', () => {
       (gameplayScene as any).tutorial = {
         handleTutorialAndGameStart: jest.fn(),
         draw: jest.fn(),
+        updateTutorialTimer: jest.fn(), // <-- This is the key addition!
       };
 
       (gameplayScene as any).isPauseButtonClicked = false;
