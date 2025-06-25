@@ -1,6 +1,5 @@
 import { AnalyticsService, FirebaseStrategy, StatsigStrategy } from '@curiouslearning/analytics';
-import { firebaseConfig } from "./firebase-config";
-import { statsigConfig } from "./statsig-config";
+import { firebaseConfig, statsigConfig } from "./analytics-config";
 import { source, campaign_id, pseudoId } from "@common";
 
 export class BaseFirebaseIntegration {
