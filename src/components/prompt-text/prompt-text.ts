@@ -135,7 +135,6 @@ export class PromptText extends BaseHTML {
     // Long-term: the entire module needs refactoring for maintainability.
     private setPromptInitialAudioDelayValues(isTutorialOn: boolean = false) {
         this.triggerStart = isTutorialOn ? 3000 : 1910;
-        this.triggerEnd = isTutorialOn ? 3100 : 2100;
     }
 
     /**
