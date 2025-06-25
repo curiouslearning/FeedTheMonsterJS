@@ -52,6 +52,7 @@ import PuzzleHandler from "@gamepuzzles/puzzleHandler/puzzleHandler";
 import { DEFAULT_SELECTORS } from '@components/prompt-text/prompt-text';
 
 export class GameplayScene {
+  private justClickedMonster: boolean = false;
   public width: number;
   public height: number;
   public monster: RiveMonsterComponent;
@@ -463,6 +464,11 @@ export class GameplayScene {
     const y = event.clientY - rect.top;
 
     if (this.monster.onClick(x, y)) {
+      // Only set justClickedMonster if not in tutorial intro/hand-pointer state
+      console.log('this.tutorial?.shouldShowTutorialAnimation', this.tutorial?.shouldShowTutorialAnimation)
+      if (this.tutorial?.shouldShowTutorialAnimation) {
+        this.justClickedMonster = false;
+      }
       this.setGameToStart();
       this.tutorial?.activeTutorial?.removeHandPointer();
     }
@@ -538,7 +544,11 @@ export class GameplayScene {
       if (!hasTutorial || (shouldStartTimer && hasTutorial)) { 
         // After 12s, start timer updates
         this.timerTicking.update(deltaTime);
-        this.timerStartSFXPlayed && this.audioPlayer.playAudio(AUDIO_PATH_POINTS_ADD);
+        console.log('this.justClickedMonster', this.justClickedMonster)
+        if (!this.justClickedMonster && this.timerStartSFXPlayed) {
+          this.audioPlayer.playAudio(AUDIO_PATH_POINTS_ADD);
+        }
+        this.justClickedMonster = false; // Always reset after check
         this.timerStartSFXPlayed = false; // to ensure it wont run again in the current level.
       }
     }
