@@ -487,7 +487,7 @@ export class GameplayScene {
     this.handleMouseUp({ clientX: touch.clientX, clientY: touch.clientY });
   };
 
-  private setGameToStart() {
+  private setGameToStart() { 
     this.isGameStarted = true;
     this.time = 0;
     this.trailEffectHandler.setGameHasStarted(true);
