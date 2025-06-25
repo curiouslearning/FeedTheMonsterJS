@@ -118,7 +118,7 @@ export class PromptText extends BaseHTML {
         this.audioPlayer = new AudioPlayer();
         this.audioPlayer.preloadPromptAudio(this.getPromptAudioUrl());
         document.addEventListener(VISIBILITY_CHANGE, this.handleVisibilityChange, false);
-        
+        this.hasInitialAudioPlayed = false;
         //Set initial auto audio play timing.
         this.setPromptInitialAudioDelayValues(isLevelHaveTutorial);
 
@@ -133,9 +133,8 @@ export class PromptText extends BaseHTML {
     // This improves on the nested callbacks introduced in FM-484.
     // While prompt-text.ts is still a tangled mess, this method offers a cleaner and more readable approach.
     // Long-term: the entire module needs refactoring for maintainability.
-    private setPromptInitialAudioDelayValues(isTutorialOn: boolean) {
+    private setPromptInitialAudioDelayValues(isTutorialOn: boolean = false) {
         this.triggerStart = isTutorialOn ? 3000 : 1910;
-        this.triggerEnd = isTutorialOn ? 3016 : 1926;
     }
 
     /**
@@ -500,7 +499,7 @@ export class PromptText extends BaseHTML {
             // Play sound at specific time
             if (
                 !this.hasInitialAudioPlayed &&
-                Math.floor(this.time) >= this.triggerStart && Math.floor(this.time) <= this.triggerEnd
+                Math.floor(this.time) >= this.triggerStart
             ) {
                 this.hasInitialAudioPlayed = true; //Flag to true to prevent double triggering of initial auto audio.
                 this.audioPlayer.playPromptAudio();
