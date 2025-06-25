@@ -45,4 +45,5 @@ export class GameSettingsService extends PubSub{
   public getDevicePixelRatioValue() {
     return this.devicePixelRatio;
   }
+
 }
