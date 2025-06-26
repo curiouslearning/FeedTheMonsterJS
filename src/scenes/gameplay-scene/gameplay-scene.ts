@@ -102,6 +102,7 @@ export class GameplayScene {
   public loadPuzzleDelay: 3000 | 4500;
   private puzzleHandler: any;
   private timerStartSFXPlayed: boolean;
+  public isMonsterClicked: boolean = false;
   // Define animation delays as an array where index 0 = phase 0, index 1 = phase 1, index 2 = phase 2
   private animationDelays = [
     { backToIdle: 350, isChewing: 0, isHappy: 1700, isSpit: 1500, isSad: 3000 }, // Phase 1
@@ -463,6 +464,7 @@ export class GameplayScene {
     const y = event.clientY - rect.top;
 
     if (this.monster.onClick(x, y)) {
+      this.isMonsterClicked = true;
       this.setGameToStart();
       this.tutorial?.activeTutorial?.removeHandPointer();
     }
@@ -492,6 +494,7 @@ export class GameplayScene {
     this.time = 0;
     this.trailEffectHandler.setGameHasStarted(true);
     this.audioPlayer.preloadGameAudio(AUDIO_PATH_POINTS_ADD); // to preload the PointsAdd.wav
+    if(!this.isMonsterClicked) return;
     this.timerStartSFXPlayed = true; // This flag needed to ensure that the timer starts sfx will only trigger once.
   }
 
@@ -531,6 +534,7 @@ export class GameplayScene {
   }
 
   private handleTimerUpdate(deltaTime: number) {
+    console.log('handleTimerUpdate')
     // Update timer only once animation is complete and game is not paused.
     if (this.stoneHandler.stonesHasLoaded && !this.isPauseButtonClicked) {
       const hasTutorial = this.tutorial.shouldShowTutorialAnimation;
@@ -538,8 +542,13 @@ export class GameplayScene {
       if (!hasTutorial || (shouldStartTimer && hasTutorial)) { 
         // After 12s, start timer updates
         this.timerTicking.update(deltaTime);
-        this.timerStartSFXPlayed && this.audioPlayer.playAudio(AUDIO_PATH_POINTS_ADD);
-        this.timerStartSFXPlayed = false; // to ensure it wont run again in the current level.
+        console.log('this.isMonsterClicked ', this.isMonsterClicked, this.timerStartSFXPlayed)
+        !this.isMonsterClicked && !this.timerStartSFXPlayed && this.audioPlayer.playAudio(AUDIO_PATH_POINTS_ADD);
+        this.isMonsterClicked && this.timerStartSFXPlayed && this.audioPlayer.playAudio(AUDIO_PATH_POINTS_ADD);
+        if(this.isMonsterClicked) {
+          this.isMonsterClicked = false;
+        } 
+        this.timerStartSFXPlayed = true; // This flag needed to ensure that the timer starts sfx will only trigger once.
       }
     }
   }
