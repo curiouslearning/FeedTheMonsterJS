@@ -61,7 +61,8 @@ jest.mock('@components', () => {
       sourceNode: {} as AudioBufferSourceNode,
       audioQueue: [],
       promptAudioBuffer: null,
-      playBackgroundMusic: jest.fn()
+      playBackgroundMusic: jest.fn(),
+      preloadGameAudio: jest.fn()
     })),
     TrailEffectsHandler: jest.fn().mockImplementation(() => ({
       dispose: jest.fn(),
@@ -175,7 +176,8 @@ jest.mock('@components', () => {
       sourceNode: {} as AudioBufferSourceNode,
       audioQueue: [],
       promptAudioBuffer: null,
-      playBackgroundMusic: jest.fn()
+      playBackgroundMusic: jest.fn(),
+      preloadGameAudio: jest.fn()
     })),
     TrailEffectsHandler: jest.fn().mockImplementation(() => ({
       dispose: jest.fn(),

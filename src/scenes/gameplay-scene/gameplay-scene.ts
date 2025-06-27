@@ -538,6 +538,7 @@ export class GameplayScene {
       if (!hasTutorial || (shouldStartTimer && hasTutorial)) { 
         // After 12s, start timer updates
         this.timerTicking.update(deltaTime);
+        // added delta time checking to ensure that the timer starts sfx will only trigger once.
         if (!this.timerStartSFXPlayed && deltaTime > 1 && deltaTime <= 100) {
           this.audioPlayer.playAudio(AUDIO_PATH_POINTS_ADD);
           this.timerStartSFXPlayed = true; // This flag needed to ensure that the timer starts sfx will only trigger once.
