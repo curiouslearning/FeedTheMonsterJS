@@ -589,6 +589,7 @@ export class GameplayScene {
     this.counter += 1; //increment Puzzle
     this.isGameStarted = false;
     this.tutorial.resetTutorialTimer();
+    this.timerStartSFXPlayed = false; // make sure when loading new puzzle, timer start sfx will set to false.
     // Reset the 6-second tutorial delay timer each time a new puzzle is loaded
     this.tutorial.resetQuickStartTutorialDelay();
     if (this.counter === this.levelData.puzzles.length) {
