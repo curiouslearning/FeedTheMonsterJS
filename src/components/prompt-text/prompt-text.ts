@@ -181,7 +181,14 @@ export class PromptText extends BaseHTML {
                 const targetLetterText = typeof targetStone === 'string' 
                     ? targetStone 
                     : (targetStone as { StoneText: string }).StoneText;
-                const parts = this.currentPromptText.split(targetLetterText);
+                const index = this.currentPromptText.indexOf(targetLetterText);
+                const parts =
+                    index !== -1
+                        ? [
+                            this.currentPromptText.slice(0, index),
+                            this.currentPromptText.slice(index + targetLetterText.length),
+                        ]
+                        : [this.currentPromptText];
                 
                 // Add the text with the highlighted letter
                 if (parts.length > 1) {
