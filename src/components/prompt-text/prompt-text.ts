@@ -1,7 +1,7 @@
 import { EventManager } from "@events";
-import { Utils, VISIBILITY_CHANGE } from "@common";
+import { Utils, VISIBILITY_CHANGE, isGameTypeAudio } from "@common";
 import { AudioPlayer } from "@components";
-import { PROMPT_PLAY_BUTTON, PROMPT_TEXT_BG } from "@constants";
+import { PROMPT_TEXT_BG, AUDIO_PLAY_BUTTON } from "@constants";
 import { BaseHTML, BaseHtmlOptions } from "../baseHTML/base-html";
 import './prompt-text.scss';
 
@@ -14,13 +14,22 @@ export const DEFAULT_SELECTORS = {
 };
 
 // HTML template for the prompt text component
-export const PROMPT_TEXT_LAYOUT = (id: string) => {
+export const PROMPT_TEXT_LAYOUT = (id: string, levelData: any) => {
+    /*
+        Note: hidePromptBG is a dirty fix to easily implement the new AUDIO_PLAY_BUTTON.
+        AUDIO_PLAY_BUTTON is a new asset that is similar to start-scene play button.
+        So rendering this asset requires removing the prompt background entirely.
+        However due to how coupled and tied the logic in this class. It is not easy to
+        handle the AUDIO_PLAY_BUTTON only without breaking the tightly connected logic.
+    */
+    const hidePromptBG = isGameTypeAudio(levelData.levelMeta.protoType);
+
     return (`
         <div id="${id}" class="prompt-container">
-            <div id="prompt-background" class="prompt-background" style="background-image: url(${PROMPT_TEXT_BG})">
+            <div id="prompt-background" class="prompt-background" style="background-image: url(${hidePromptBG ? null :PROMPT_TEXT_BG})">
                 <div id="prompt-text-button-container">
                     <div id="prompt-text" class="prompt-text"></div>
-                    <div id="prompt-play-button" class="prompt-play-button" style="background-image: url(${PROMPT_PLAY_BUTTON}); pointer-events: auto;"></div>
+                    <div id="prompt-play-button" class="prompt-play-button" style="background-image: url(${AUDIO_PLAY_BUTTON}); pointer-events: auto;"></div>
                 </div>
             </div>
         </div>
@@ -31,6 +40,7 @@ export const PROMPT_TEXT_LAYOUT = (id: string) => {
  * Represents a prompt text component.
  */
 export class PromptText extends BaseHTML {
+    // ...
     public width: number;
     public height: number;
     public levelData: any;
@@ -50,7 +60,10 @@ export class PromptText extends BaseHTML {
     public translateY: number = 0;
     public isTranslatingUp: boolean = true;
     public translateFactor: number = 0.05;
-    
+    public triggerStart: number;
+    public triggerEnd: number;
+    private hasInitialAudioPlayed: boolean = false;
+
     // HTML elements for the prompt
     public promptContainer: HTMLDivElement;
     public promptBackground: HTMLDivElement;
@@ -59,6 +72,7 @@ export class PromptText extends BaseHTML {
     private animationFrameId: number;
     private eventManager: EventManager;
     private containerId: string;
+    private onClickCallback?: () => void;
 
     /**
      * Initializes a new instance of the PromptText class.
@@ -75,12 +89,14 @@ export class PromptText extends BaseHTML {
         levelData: any, 
         rightToLeft: boolean,
         id: string = 'prompt-container',
-        options: BaseHtmlOptions = { selectors: DEFAULT_SELECTORS }
+        options: BaseHtmlOptions = { selectors: DEFAULT_SELECTORS },
+        isLevelHaveTutorial: boolean,
+        onClickCallback?: () => void,
     ) {
         super(
             options,
             id,
-            PROMPT_TEXT_LAYOUT
+            (id: string) => PROMPT_TEXT_LAYOUT(id, levelData)
         );
 
         // Store id for later use
@@ -102,12 +118,23 @@ export class PromptText extends BaseHTML {
         this.audioPlayer = new AudioPlayer();
         this.audioPlayer.preloadPromptAudio(this.getPromptAudioUrl());
         document.addEventListener(VISIBILITY_CHANGE, this.handleVisibilityChange, false);
-        
+        this.hasInitialAudioPlayed = false;
+        //Set initial auto audio play timing.
+        this.setPromptInitialAudioDelayValues(isLevelHaveTutorial);
+
         // Initialize HTML elements
         this.initializeHtmlElements();
         
         // Start animation loop
         this.startAnimationLoop();
+        this.onClickCallback = onClickCallback;
+    }
+
+    // This improves on the nested callbacks introduced in FM-484.
+    // While prompt-text.ts is still a tangled mess, this method offers a cleaner and more readable approach.
+    // Long-term: the entire module needs refactoring for maintainability.
+    private setPromptInitialAudioDelayValues(isTutorialOn: boolean = false) {
+        this.triggerStart = isTutorialOn ? 3000 : 1910;
     }
 
     /**
@@ -120,10 +147,20 @@ export class PromptText extends BaseHTML {
         this.promptTextElement = this.promptContainer.querySelector('#prompt-text') as HTMLDivElement;
         this.promptPlayButtonElement = this.promptContainer.querySelector('#prompt-play-button') as HTMLDivElement;
         
+        // Update event listeners to include the callback
+        const handleClick = (e: Event) => {
+            this.audioPlayer.handlePlayPromptAudioClickEvent();
+            if (this.onClickCallback) {
+                this.onClickCallback();
+            }
+            e.stopPropagation();
+        };
+
+
         // Add event listeners to all prompt elements
-        this.promptPlayButtonElement.addEventListener('click', this.playSound);
-        this.promptBackground.addEventListener('click', this.playSound);
-        this.promptTextElement.addEventListener('click', this.playSound);
+        this.promptPlayButtonElement.addEventListener('click', handleClick);
+        this.promptBackground.addEventListener('click', handleClick);
+        this.promptTextElement.addEventListener('click', handleClick);
         
         // Make sure all elements are clickable
         this.promptBackground.style.pointerEvents = 'auto';
@@ -150,7 +187,8 @@ export class PromptText extends BaseHTML {
     playSound = () => {
         if (this.isAppForeground) {
             console.log('Playing prompt audio:', this.getPromptAudioUrl());
-            this.audioPlayer.playPromptAudio(this.getPromptAudioUrl());
+            
+            this.audioPlayer.handlePlayPromptAudioClickEvent();
         }
     }
 
@@ -457,12 +495,18 @@ export class PromptText extends BaseHTML {
             
             this.time += deltaTime;
             
+
             // Play sound at specific time
-            if (Math.floor(this.time) >= 1910 && Math.floor(this.time) <= 1926) {
-                this.playSound();
+            if (
+                !this.hasInitialAudioPlayed &&
+                Math.floor(this.time) >= this.triggerStart
+            ) {
+                this.hasInitialAudioPlayed = true; //Flag to true to prevent double triggering of initial auto audio.
+                this.audioPlayer.playPromptAudio();
             }
-            
-            if (!this.isStoneDropped) {
+
+            //Note: !isGameTypeAudio(this.levelData.levelMeta.protoType) is needed to make sure the audio play button won't pulsate.
+            if (!this.isStoneDropped && !isGameTypeAudio(this.levelData.levelMeta.protoType)) {
                 // Update scaling
                 this.updateScaling();
                 
@@ -496,6 +540,7 @@ export class PromptText extends BaseHTML {
      * @param event The event.
      */
     public handleLoadPuzzle(event) {
+        this.setPromptInitialAudioDelayValues(false); //Always false so we can use the default time triggers in puzzle segment 2 to 5..
         this.droppedStones = 0;
         this.droppedStoneCount = 0;
         this.currentPuzzleData = this.levelData.puzzles[event.detail.counter];
@@ -504,7 +549,7 @@ export class PromptText extends BaseHTML {
         this.audioPlayer.preloadPromptAudio(this.getPromptAudioUrl());
         this.isStoneDropped = false;
         this.time = 0;
-        
+        this.hasInitialAudioPlayed = false; //Reset the flag for initial auto audio prompt play.
         // Update font size for new text
         this.promptTextElement.style.fontSize = `${this.calculateFont()}px`;
         
