@@ -164,6 +164,7 @@ export class GameplayScene {
     //this.setupBg(); //Temporary disabled to try evolution background.
     this.setupMonsterPhaseBg();
     this.timerStartSFXPlayed = false;
+    this.audioPlayer.preloadGameAudio(AUDIO_PATH_POINTS_ADD); // to preload the PointsAdd.wav
   }
 
   private initializeRiveMonster(): RiveMonsterComponent {
@@ -491,8 +492,6 @@ export class GameplayScene {
     this.isGameStarted = true;
     this.time = 0;
     this.trailEffectHandler.setGameHasStarted(true);
-    this.audioPlayer.preloadGameAudio(AUDIO_PATH_POINTS_ADD); // to preload the PointsAdd.wav
-    this.timerStartSFXPlayed = true; // This flag needed to ensure that the timer starts sfx will only trigger once.
   }
 
   draw(deltaTime: number) {
@@ -538,8 +537,11 @@ export class GameplayScene {
       if (!hasTutorial || (shouldStartTimer && hasTutorial)) { 
         // After 12s, start timer updates
         this.timerTicking.update(deltaTime);
-        this.timerStartSFXPlayed && this.audioPlayer.playAudio(AUDIO_PATH_POINTS_ADD);
-        this.timerStartSFXPlayed = false; // to ensure it wont run again in the current level.
+        // added delta time checking to ensure that the timer starts sfx will only trigger once at the beginning of the timer countdown.
+        if (!this.timerStartSFXPlayed && deltaTime > 1 && deltaTime <= 100) {
+          this.audioPlayer.playAudio(AUDIO_PATH_POINTS_ADD);
+          this.timerStartSFXPlayed = true; // This flag needed to ensure that the timer starts sfx will only trigger once.
+        }
       }
     }
   }
@@ -587,6 +589,7 @@ export class GameplayScene {
     this.counter += 1; //increment Puzzle
     this.isGameStarted = false;
     this.tutorial.resetTutorialTimer();
+    this.timerStartSFXPlayed = false; // make sure when loading new puzzle, timer start sfx will set to false.
     // Reset the 6-second tutorial delay timer each time a new puzzle is loaded
     this.tutorial.resetQuickStartTutorialDelay();
     if (this.counter === this.levelData.puzzles.length) {
