@@ -1,14 +1,12 @@
-import { StoneConfig, VISIBILITY_CHANGE, Utils } from '@common'
+import { StoneConfig, VISIBILITY_CHANGE } from '@common'
 import { EventManager } from "@events";
-import { AudioPlayer, TimerTicking } from "@components"
-import { GameScore } from "@data";
+import { AudioPlayer } from "@components";
 import {
   ASSETS_PATH_STONE_PINK_BG,
   AUDIO_PATH_ON_DRAG
 } from '@constants';
 import gameStateService from '@gameStateService';
 import gameSettingsService from '@gameSettingsService';
-import { FeedbackType } from '@gamepuzzles';
 
 /**
  * StoneHandler is responsible for creating, drawing, and positioning stones.
@@ -28,23 +26,19 @@ export default class StoneHandler extends EventManager {
   public levelData: any;
   public correctAnswer: string;
   public puzzleStartTime: Date;
-  public showTutorial: boolean =
-    GameScore.getDatafromStorage().length == undefined ? true : false;
   correctTargetStone: string;
   stonebg: HTMLImageElement;
   public audioPlayer: AudioPlayer;
-  public timerTickingInstance: TimerTicking;
-  isGamePaused: boolean = false;
   public originalWidth: any;
   public originalHeight:any;
-  private unsubscribeEvent: () => void;
+  public stonesHasLoaded: boolean = false;
+  public activeStones: Array<StoneConfig> = new Array<StoneConfig>();
 
   constructor(
     context: CanvasRenderingContext2D,
     canvas,
     puzzleNumber: number,
     levelData,
-    timerTickingInstance: TimerTicking
   ) {
     super({
       stoneDropCallbackHandler: (event) => this.handleStoneDrop(event),
@@ -63,22 +57,14 @@ export default class StoneHandler extends EventManager {
     this.puzzleStartTime = new Date();
     this.stonebg = new Image();
     this.stonebg.src = ASSETS_PATH_STONE_PINK_BG;
-    this.audioPlayer = new AudioPlayer();
     this.stonebg.onload = (e) => {
       this.createStones(this.stonebg);
     };
     this.audioPlayer = new AudioPlayer();
-    this.timerTickingInstance = timerTickingInstance;
     document.addEventListener(
       VISIBILITY_CHANGE,
       this.handleVisibilityChange,
       false
-    );
-    this.unsubscribeEvent = gameStateService.subscribe(
-      gameStateService.EVENTS.GAME_PAUSE_STATUS_EVENT,
-      (isGamePaused: boolean) => {
-        this.isGamePaused = isGamePaused;
-      }
     );
   }
 
@@ -104,9 +90,6 @@ export default class StoneHandler extends EventManager {
     // Clear existing stones first to prevent memory leaks
     this.disposeStones();
 
-    // Create stone pool for reuse
-    const stonePool = new Map();
-
     const foilStones = this.getFoilStones();
     // Randomize stone positions
     const positions = this.shuffleArray(this.stonePos);
@@ -114,7 +97,6 @@ export default class StoneHandler extends EventManager {
     this.canvas.width = this.canvas.clientWidth * scale;
     this.canvas.height = this.canvas.clientHeight * scale;
     this.context.scale(scale, scale);
-    
     for (let i = 0; i < foilStones.length; i++) {
       // Create new stone with all required parameters
       const stone = new StoneConfig(
@@ -124,55 +106,59 @@ export default class StoneHandler extends EventManager {
         foilStones[i],
         positions[i][0],
         positions[i][1],
-        img,
-        this.timerTickingInstance
+        img
       );
 
       // Initialize stone
       stone.initialize();
 
-      //Publish stone details, image and level data for stone tutorial only at the first puzzle segment.
-      if (foilStones[i] == this.correctTargetStone && this.currentPuzzleData.segmentNumber === 0) {
-        gameStateService.publish(gameStateService.EVENTS.CORRECT_STONE_POSITION, {
-          stonePosVal: positions[i],
-          img,
-          levelData: this.levelData
-        });
+      // Publish stone details, image and level data for stone tutorial only at the first puzzle segment.
+      if (this.currentPuzzleData.segmentNumber === 0) {
+        const isWordPuzzle = this.levelData?.levelMeta?.levelType === 'Word';
+        
+        // For letter puzzles, only publish when the correct target stone is found
+        if (foilStones[i] == this.correctTargetStone) {
+          gameStateService.publish(gameStateService.EVENTS.CORRECT_STONE_POSITION, {
+            stonePosVal: positions[i],
+            img,
+            levelData: this.levelData
+          });
+        }
+        
+        // For word puzzles, we only need to publish once with all positions
+        // This is done after all stones are created
+        if (isWordPuzzle && i === foilStones.length - 1) {
+          gameStateService.publish(
+            gameStateService.EVENTS.CORRECT_STONE_POSITION, 
+            {
+              stonePosVal: positions,       // All stone positions
+              img,                          // Stone image
+              levelData: this.levelData     // Level data
+            }
+          );
+        }
       }
 
-      // Store in pool for potential reuse
-      stonePool.set(foilStones[i], stone);
       this.foilStones.push(stone);
     }
+    this.activeStones = this.foilStones.filter(stone => stone && !stone.isDisposed);
   }
 
   /**
    * Performance optimized draw loop
    * Only processes active stones and updates timer efficiently
    */
-  draw(deltaTime: number) {
+  draw() {
     if (this.foilStones.length === 0) return;
 
-    // Only check animation completion once per frame
-    let isAnimationComplete = true;
-    const activeStones = this.foilStones.filter(stone => stone && !stone.isDisposed);
-
-    // Draw only active stones
-    for (const stone of activeStones) {
-      if (stone.frame < 100) {
-        isAnimationComplete = false;
-      }
+    for (const stone of this.foilStones) {
       stone.draw();
     }
 
-    // Update timer only once animation is complete and game is not paused
-    if (isAnimationComplete && !this.isGamePaused) {
-      this.timerTickingInstance.update(deltaTime);
-    }
+    !this.stonesHasLoaded && this.areStonesReadyForPlay();
   }
 
   drawWordPuzzleLetters(
-    deltaTime: number,
     shouldHideStoneChecker: (index: number) => boolean,
     groupedLetters: {} | { [key: number]: string }
   ): void {
@@ -184,8 +170,15 @@ export default class StoneHandler extends EventManager {
       }
     }
 
-    if (this.foilStones.length > 0 && this.foilStones[this.foilStones.length - 1].frame >= 100 && !this.isGamePaused) {
-      this.timerTickingInstance.update(deltaTime);
+    !this.stonesHasLoaded && this.areStonesReadyForPlay();
+  }
+
+  private areStonesReadyForPlay() {
+    /* if stone frames are above 100, it means it has properly loaded in its default position
+        and ready to be move by the user.
+    */
+    if (this.foilStones[this.foilStones.length - 1].frame >= 100) {
+      this.stonesHasLoaded = true;
     }
   }
 
@@ -208,7 +201,6 @@ export default class StoneHandler extends EventManager {
   public dispose() {
     this.canvas.width = this.originalWidth;
     this.canvas.height = this.originalHeight;
-    this.unsubscribeEvent();
     document.removeEventListener(
       VISIBILITY_CHANGE,
       this.handleVisibilityChange,
@@ -223,9 +215,6 @@ export default class StoneHandler extends EventManager {
 
     // Remove event listeners
     document.removeEventListener(VISIBILITY_CHANGE, this.handleVisibilityChange);
-    if (this.unsubscribeEvent) {
-      this.unsubscribeEvent();
-    }
   }
 
   public getCorrectTargetStone(): string {
@@ -416,16 +405,6 @@ export default class StoneHandler extends EventManager {
     *  use the original canvas width and height instead.
     *  this is the default coordinates
     */
-    const baseCoordinateFactors = [
-      [5, 1.9], //Left stone 1 - upper
-      [7, 1.5], //Left stone 2
-      [setCoordinateFactor(4.3, 4.5), 1.28], //Left stone 3
-      [6.4, 1.1], //Left stone 4 - very bottom
-      [setCoordinateFactor(2, 1.3), 1.07], //Middle stone that is located right below the monster.
-      [[2.3, 2.1], 1.9], //Right stone 1 - upper
-      [[setCoordinateFactor(2.8, 2.5), 2], 1.2], //Right stone 2
-      [[setCoordinateFactor(3, 2.4), 2.1], 1.42],  //Right stone 3
-    ];
 
     // Separate coordinate factors for egg monster due to different dimensionse
     const eggMonsterCoordinateFactors = [

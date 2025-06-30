@@ -37,7 +37,6 @@ export default class MatchLetterPuzzleTutorial extends TutorialComponent {
     if (this.stonePosDetailsType && this.frame >= 100) {
       const { dx, absdx, dy, absdy } = this.animateImagePosVal;
       const { startX, startY, endX, endY, monsterStoneDifference } = this.stonePosDetailsType;
-
       this.x = dx >= 0
         ? this.x + absdx * deltaTime
         : this.x - absdx * deltaTime;

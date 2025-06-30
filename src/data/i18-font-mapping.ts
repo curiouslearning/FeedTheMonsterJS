@@ -48,5 +48,6 @@ export const languageFontMapping: { [language: string]: string } = {
   Vietnamese: "NotoSans-Regular",
   Pashto: "Consolas",
   Twi: "NotoSans-Regular",
-  Arabic:"Adobe-Arabic-Bold"
+  Arabic:"Adobe-Arabic-Bold",
+  Mixe: "Mutsk-Regular"
 };

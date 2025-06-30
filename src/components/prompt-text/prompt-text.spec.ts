@@ -1,4 +1,4 @@
-import { PromptText } from './prompt-text';
+import { PromptText, DEFAULT_SELECTORS } from './prompt-text';
 import { AudioPlayer } from '@components';
 import { EventManager } from '@events';
 import { Utils } from '@common';
@@ -239,7 +239,10 @@ describe('PromptText', () => {
       mockHeight,
       mockPuzzleData,
       mockLevelData,
-      mockRightToLeft
+      mockRightToLeft,
+      'prompt-container',  // id parameter (string)
+      { selectors: DEFAULT_SELECTORS },
+      false
     );
   });
   
