@@ -5,7 +5,6 @@ import {
   LevelIndicators,
   StoneHandler,
   BackgroundHtmlGenerator,
-  FeedbackTextEffects,
   AudioPlayer,
   PhasesBackground,
   TrailEffectsHandler
@@ -80,7 +79,6 @@ export class GameplayScene {
   isPauseButtonClicked: boolean;
   public background: any;
   feedBackTextCanavsElement: HTMLCanvasElement;
-  feedbackTextEffects: FeedbackTextEffects;
   public isGameStarted: boolean = false;
   public time: number = 0;
   public score: number = 0;
@@ -131,7 +129,6 @@ export class GameplayScene {
     this.startGameTime();
     this.startPuzzleTime();
     this.firebaseIntegration = FirebaseIntegration.getInstance();
-    this.feedbackTextEffects = new FeedbackTextEffects();
     this.audioPlayer = new AudioPlayer();
     this.puzzleHandler = new PuzzleHandler(this.levelData, this.counter, gamePlayData.feedbackAudios);
     this.unsubscribeEvent = gameStateService.subscribe(
@@ -317,37 +314,28 @@ export class GameplayScene {
           frame: this.pickedStone.frame
         },
         targetLetterText: this.stoneHandler.getCorrectTargetStone(), // Pass only the data needed
-        audioPlayer: this.audioPlayer,
         promptText: this.promptText,
-        handleCorrectLetterDrop: undefined, // will be set below
-        handleLetterDropEnd: this.handleStoneDropEnd.bind(this),
+        handleLetterDropEnd: (isCorrect, puzzleType) => {
+          this.isFeedBackTriggered = isCorrect;
+          if (isCorrect) {
+            this.score += 100; //100 as static default value for adding score.
+          }
+          this.handleStoneDropEnd(isCorrect, puzzleType);
+        },
         triggerMonsterAnimation: this.triggerMonsterAnimation.bind(this),
         timerTicking: this.timerTicking,
-        isFeedBackTriggeredSetter: (v) => { this.isFeedBackTriggered = v; },
         lang,
         lettersCountRef,
-        feedBackTexts: this.feedBackTexts,
-        levelData: this.levelData,
-        counter: this.counter,
-        width: this.width
+        feedBackTexts: this.feedBackTexts
       };
-      ctx.handleCorrectLetterDrop = (feedbackIndex) => {
-        this.puzzleHandler.handleCorrectLetterDrop(
-          feedbackIndex,
-          this.feedbackTextEffects,
-          ctx,
-          (amount) => this.score += amount
-        );
-        // Hide the picked letter after puzzle logic is handled
-        this.stoneHandler.hideStone(this.pickedStoneObject);
-      };
+
       this.puzzleHandler.createPuzzle(ctx);
+
       // For Word puzzles, hide the letter immediately after dropping it into the monster
       if (ctx.levelType === "Word" || ctx.levelType === "SoundWord") {
         this.stoneHandler.hideStone(this.pickedStoneObject);
       }
       this.stonesCount = lettersCountRef.value;
-      this.isFeedBackTriggered = true;
       this.trailEffectHandler.setGameHasStarted(false);
     } else if (this.pickedStoneObject) {
       // Handle letter drop (fail/miss case)
@@ -534,7 +522,7 @@ export class GameplayScene {
     if (this.stoneHandler.stonesHasLoaded && !this.isPauseButtonClicked) {
       const hasTutorial = this.tutorial.shouldShowTutorialAnimation;
       const shouldStartTimer = this.tutorial.updateTutorialTimer(deltaTime);
-      if (!hasTutorial || (shouldStartTimer && hasTutorial)) { 
+      if (!hasTutorial || (shouldStartTimer && hasTutorial)) {
         // After 12s, start timer updates
         this.timerTicking.update(deltaTime);
         // added delta time checking to ensure that the timer starts sfx will only trigger once at the beginning of the timer countdown.
@@ -589,7 +577,6 @@ export class GameplayScene {
     this.counter += 1; //increment Puzzle
     this.isGameStarted = false;
     this.tutorial.resetTutorialTimer();
-    this.timerStartSFXPlayed = false; // make sure when loading new puzzle, timer start sfx will set to false.
     // Reset the 6-second tutorial delay timer each time a new puzzle is loaded
     this.tutorial.resetQuickStartTutorialDelay();
     if (this.counter === this.levelData.puzzles.length) {
@@ -608,22 +595,12 @@ export class GameplayScene {
         gameStateService.publish(gameStateService.EVENTS.SWITCH_SCENE_EVENT, SCENE_NAME_LEVEL_END);
         this.monster.dispose(); //Adding the monster dispose here due to the scenario that this.monster is still needed when restart game level is played.
       };
-
+      this.tutorial.hideTutorial(); // Turn off tutorial
       if (timerEnded) {
         handleLevelEnd();
-        return;
-      }
-      this.tutorial.hideTutorial(); // Turn off tutorial
-      const timeoutId = setTimeout(handleLevelEnd, this.loadPuzzleDelay); // added delay for switching to level end screen
-      if (this.isFeedBackTriggered) {
-        const audioSources = this.audioPlayer?.audioSourcs || [];
-        const lastAudio = audioSources[audioSources.length - 1];
-        if (lastAudio) {
-          lastAudio.onended = () => {
-            clearTimeout(timeoutId);
-            handleLevelEnd();
-          };
-        }
+      } else {
+        //Trigger the handleLevelEnd with a delay to let the audio play in puzzleHandler.ts before switching to level end screen.
+        setTimeout(handleLevelEnd, this.loadPuzzleDelay);
       }
     } else {
       const loadPuzzleEvent = new CustomEvent(LOADPUZZLE, {
@@ -648,6 +625,7 @@ export class GameplayScene {
     if (this.monster) {
       this.monster.dispose();
     }
+    this.timerStartSFXPlayed = false; // move this flag from loadpuzzle to initnewpuzzle to make sure when loading new puzzle, timer start sfx will set to false.
     this.stoneHandler.stonesHasLoaded = false;
     this.monster = this.initializeRiveMonster();
     this.removeEventListeners();
@@ -764,14 +742,10 @@ export class GameplayScene {
     this.logPuzzleEndFirebaseEvent(isCorrect, puzzleType);
     this.dispatchStoneDropEvent(isCorrect);
     setTimeout(() => {
-      this.adjustLoadPuzzleDelay(isCorrect);
+      //Adjust the delay of 4500 (4.5 seconds) to 2500 (2.5 seconds) if the puzzle is incorrect.
+      this.loadPuzzleDelay = isCorrect ? 4500 : 3000;
       this.loadPuzzle();
     }, isCorrect ? 0 : 2000);
-  }
-
-  private adjustLoadPuzzleDelay(isCorrect) {
-    //Adjust the delay of 4500 (4.5 seconds) to 2500 (2.5 seconds) if the puzzle is incorrect.
-    this.loadPuzzleDelay = isCorrect ? 4500 : 3000;
   }
 
   private dispatchStoneDropEvent(isCorrect: boolean): void {
