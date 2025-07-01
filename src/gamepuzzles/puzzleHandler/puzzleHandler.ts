@@ -37,8 +37,6 @@ export default class PuzzleHandler {
     if (feedbackAudios) {
       this.feedbackAudioHandler = new FeedbackAudioHandler(feedbackAudios);
     }
-    this.letterPuzzleLogic = null;
-    this.wordPuzzleLogic = null;
     this.feedbackTextEffects = new FeedbackTextEffects();
     this.initialize(levelData, counter);
   }
