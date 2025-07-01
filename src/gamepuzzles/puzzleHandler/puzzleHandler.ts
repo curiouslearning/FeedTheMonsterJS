@@ -2,7 +2,6 @@ import LetterPuzzleLogic from '../letterPuzzleLogic/letterPuzzleLogic';
 import WordPuzzleLogic from '../wordPuzzleLogic/wordPuzzleLogic';
 import { FeedbackTextEffects } from '@components/feedback-text';
 import { FeedbackAudioHandler, FeedbackType } from '@gamepuzzles';
-import gameStateService from '@gameStateService';
 
 /**
  * Context object for creating a puzzle/handling a letter drop.
