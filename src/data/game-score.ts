@@ -42,7 +42,6 @@ export class GameScore {
   private static updateTotalStarCount(): void {
     const allGameLevelInfo = this.getAllGameLevelInfo();
     const totalStarCount = allGameLevelInfo.reduce(
-      // Only count levels with 2 or more stars toward the total
       (sum, level) => sum + level.starCount,
       0
     );
