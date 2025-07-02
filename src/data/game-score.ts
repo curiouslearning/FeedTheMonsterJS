@@ -43,7 +43,7 @@ export class GameScore {
     const allGameLevelInfo = this.getAllGameLevelInfo();
     const totalStarCount = allGameLevelInfo.reduce(
       // Only count levels with 2 or more stars toward the total
-      (sum, level) => sum + (level.starCount >= 2 ? level.starCount : 0),
+      (sum, level) => sum + level.starCount,
       0
     );
     localStorage.setItem(this.currentlanguage + "totalStarCount", totalStarCount.toString());
