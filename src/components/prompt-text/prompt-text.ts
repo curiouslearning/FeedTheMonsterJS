@@ -195,10 +195,9 @@ export class PromptText extends BaseHTML {
     /**
      * Helper method to render letters with pulsating effect on the first incomplete letter
      * @param stones Array of target stones to render
-     * @param addSpacing Whether to add letter spacing (used in LTR mode)
      * @returns HTML string with rendered letters
      */
-    private renderLettersWithPulsation(stones: any[], addSpacing: boolean = false): string {
+    private renderLettersWithPulsation(stones: any[]): string {
         let html = '';
         let foundFirstIncomplete = false;
         
@@ -394,7 +393,7 @@ export class PromptText extends BaseHTML {
                     
                     if (this.targetStones.length != this.currentPromptText.length) {
                         // For Word level type where target stones don't match prompt text length
-                        html = this.renderLettersWithPulsation(this.targetStones, true);
+                        html = this.renderLettersWithPulsation(this.targetStones);
                     } else {
                         // For Word level type where target stones match prompt text length
                         if (this.droppedStones >= this.targetStones.length) {
