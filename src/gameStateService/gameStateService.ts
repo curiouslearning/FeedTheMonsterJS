@@ -271,13 +271,13 @@ export class GameStateService extends PubSub {
     }
 
     public checkMonsterPhaseUpdation(): number {
-        const totalStarCount = this.getTotalStars();
+        const successStarCount = GameScore.getAllGameLevelInfo().reduce((sum, level) => sum + (level.starCount >= 2 ? level.starCount : 0), 0);
         switch (true) {
-            case totalStarCount >= 38:
+            case successStarCount >= 38:
                 return 3; // Phase 4
-            case totalStarCount >= 23:
+            case successStarCount >= 23:
                 return 2; // Phase 3
-            case totalStarCount >= 8:
+            case successStarCount >= 8:
                 return 1; // Phase 2
             default:
                 return 0; // Phase 1 (default)
