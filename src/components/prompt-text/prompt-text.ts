@@ -193,6 +193,35 @@ export class PromptText extends BaseHTML {
     }
 
     /**
+     * Helper method to render letters with pulsating effect on the first incomplete letter
+     * @param stones Array of target stones to render
+     * @param addSpacing Whether to add letter spacing (used in LTR mode)
+     * @returns HTML string with rendered letters
+     */
+    private renderLettersWithPulsation(stones: any[], addSpacing: boolean = false): string {
+        let html = '';
+        let foundFirstIncomplete = false;
+        
+        stones.forEach((stone, i) => {
+            // Get stone text and check completion status
+            const stoneText = typeof stone === 'string' ? stone : stone.StoneText;
+            const isCompleted = i < this.droppedStones;
+            
+            // Build class string with conditionals
+            const pulseClass = (!isCompleted && !foundFirstIncomplete) ? ' text-red-pulse-letter' : '';
+            const baseClass = isCompleted ? 'text-black' : 'text-red';
+            
+            // Update flag if we found our first incomplete letter
+            if (pulseClass) foundFirstIncomplete = true;
+            
+            // Add the span to our HTML
+            html += `<span class="${baseClass}${pulseClass}">${stoneText}</span>`;
+        });
+        
+        return html;
+    }
+
+    /**
      * Updates the HTML prompt text for right-to-left languages.
      */
     updateRTLText() {
@@ -249,23 +278,9 @@ export class PromptText extends BaseHTML {
                 wrapper.style.width = '100%';
                 wrapper.style.display = 'inline-block';
                 
-                let html = '';
+                // Use the helper method to render letters with pulsation
+                wrapper.innerHTML = this.renderLettersWithPulsation(this.targetStones);
                 
-                // For RTL, add the stones in the correct order
-                for (let i = 0; i < this.targetStones.length; i++) {
-                    // Handle both string and object formats for target stones
-                    const stoneText = typeof this.targetStones[i] === 'string' 
-                        ? this.targetStones[i] 
-                        : (this.targetStones[i] as { StoneText: string }).StoneText;
-                    
-                    const letterClass = (i < this.droppedStones) 
-                        ? "text-black" 
-                        : "text-red";
-                    
-                    html += `<span class="${letterClass}">${stoneText}</span>`;
-                }
-                
-                wrapper.innerHTML = html;
                 this.promptTextElement.appendChild(wrapper);
                 
                 // Show text element, hide play button
@@ -379,19 +394,7 @@ export class PromptText extends BaseHTML {
                     
                     if (this.targetStones.length != this.currentPromptText.length) {
                         // For Word level type where target stones don't match prompt text length
-                        for (let j = 0; j < this.targetStones.length; j++) {
-                            // Handle both string and object formats for target stones
-                            const stoneText = typeof this.targetStones[j] === 'string' 
-                                ? this.targetStones[j] 
-                                : (this.targetStones[j] as { StoneText: string }).StoneText;
-                            
-                            const letterClass = (j < this.droppedStones) 
-                                ? "text-black" 
-                                : "text-red";
-                            
-                            const spacing = j > 0 ? " letter-spacing" : "";
-                            html += `<span class="${letterClass}${spacing}">${stoneText}</span>`;
-                        }
+                        html = this.renderLettersWithPulsation(this.targetStones, true);
                     } else {
                         // For Word level type where target stones match prompt text length
                         if (this.droppedStones >= this.targetStones.length) {
@@ -400,15 +403,7 @@ export class PromptText extends BaseHTML {
                         } else {
                             // Some letters still need to be dropped
                             // Matching the original canvas implementation
-                            for (let i = 0; i < this.targetStones.length; i++) {
-                                // Handle both string and object formats for target stones
-                                const stoneText = typeof this.targetStones[i] === 'string' 
-                                    ? this.targetStones[i] 
-                                    : (this.targetStones[i] as { StoneText: string }).StoneText;
-                                    
-                                const letterClass = i < this.droppedStones ? "text-black" : "text-red";
-                                html += `<span class="${letterClass}">${stoneText}</span>`;
-                            }
+                            html = this.renderLettersWithPulsation(this.targetStones);
                         }
                     }
                     
