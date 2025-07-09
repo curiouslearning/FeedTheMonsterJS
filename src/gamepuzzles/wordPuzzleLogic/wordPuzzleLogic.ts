@@ -178,6 +178,7 @@ export default class WordPuzzleLogic {
      * Moves grouped letters to dropped letters
      */
     setGroupToDropped(): void {
+       
         this.droppedLetters = `${this.droppedLetters}${this.groupedLetters}`;
         this.droppedHistory = {
             ...this.droppedHistory,

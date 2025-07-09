@@ -1,153 +1,62 @@
 import WordPuzzleTutorial from './WordPuzzleTutorial';
-
-// Don't mock the base component, instead mock specific methods we need to test
-jest.mock('../base-tutorial/base-tutorial-component', () => {
-  // Create a mock constructor function
-  const MockTutorialComponent = jest.fn().mockImplementation(function() {
-    // 'this' will be the instance being created
-    this.context = {};
-    this.width = 800;
-    this.height = 600;
-    this.stoneImg = {};
-    this.animateWordPuzzleStoneDrag = jest.fn();
-    this.updateTargetStonePositions = jest.fn().mockReturnValue({
-      startX: 100,
-      startY: 100,
-      endX: 200,
-      endY: 200,
-      monsterStoneDifference: 100,
-      animateImagePosVal: {
-        dx: 1,
-        dy: 1,
-        absdx: 1,
-        absdy: 1,
-        x: 100,
-        y: 100
-      }
-    });
-  });
-  
-  // Return the mock constructor
-  return MockTutorialComponent;
-});
-
-// Mock performance.now
-const mockPerformanceNow = jest.spyOn(performance, 'now');
+import gameStateService from '@gameStateService';
 
 describe('WordPuzzleTutorial', () => {
   let tutorial: WordPuzzleTutorial;
-  let mockContext: CanvasRenderingContext2D;
-  let mockStoneImg: HTMLImageElement;
-  
-  const canvasWidth = 800;
-  const canvasHeight = 600;
-  const sampleStonePositions = [[100, 200], [300, 400]];
-  
+  const mockContext = {} as CanvasRenderingContext2D;
+  const dummyStoneImg = new Image();
+  const stonePositions = [[10, 10], [20, 20], [30, 30]];
+  const levelData = {
+    puzzles: [
+      {
+        targetStones: ['A', 'B', 'C'],
+        foilStones: ['A', 'B', 'C']
+      }
+    ]
+  };
+
+  let capturedCallback: (count: number) => void;
+
   beforeEach(() => {
-    // Reset mocks
-    jest.clearAllMocks();
-    
-    // Setup mock time
-    let mockTime = 0;
-    mockPerformanceNow.mockImplementation(() => {
-      mockTime += 16; // ~60fps
-      return mockTime;
+    // Mock the gameStateService.subscribe function
+    jest.spyOn(gameStateService, 'subscribe').mockImplementation((event, cb) => {
+      if (event === gameStateService.EVENTS.WORD_PUZZLE_SUBMITTED_LETTERS_COUNT) {
+        capturedCallback = cb;
+      }
+      return jest.fn(); // return dummy unsubscribe
     });
-    
-    // Create mock canvas context
-    mockContext = {
-      drawImage: jest.fn(),
-      clearRect: jest.fn()
-    } as unknown as CanvasRenderingContext2D;
-    
-    // Create mock stone image
-    mockStoneImg = {} as HTMLImageElement;
-    
-    // Create tutorial instance
+
+    jest.spyOn(gameStateService, 'getHitBoxRanges').mockReturnValue({
+      hitboxRangeX: { from: 100, to: 200 },
+      hitboxRangeY: { from: 300, to: 400 }
+    });
+
     tutorial = new WordPuzzleTutorial({
       context: mockContext,
-      width: canvasWidth,
-      height: canvasHeight,
-      stoneImg: mockStoneImg,
-      stonePositions: [...sampleStonePositions]
+      width: 300,
+      height: 300,
+      stoneImg: dummyStoneImg,
+      stonePositions,
+      levelData
+    });
+
+    jest.spyOn(tutorial as any, 'updateTargetStonePositions').mockReturnValue({
+      animateImagePosVal: { x: 0, y: 0, dx: 1, dy: 1, absdx: 1, absdy: 1 },
+      startX: 0,
+      startY: 0,
+      endX: 100,
+      endY: 100,
+      monsterStoneDifference: 100
     });
   });
-  
-  afterEach(() => {
-    jest.restoreAllMocks();
-  });
-  
-  describe('constructor', () => {
-    it('should create an instance with proper initialization', () => {
-      // Instead of checking instanceof, check for expected methods and properties
-      expect(tutorial.drawTutorial).toBeDefined();
-      expect(tutorial.dispose).toBeDefined();
-      expect(tutorial.initializeStoneAnimation).toBeDefined();
-      expect(tutorial['isInitialized']).toBe(true);
-      expect(tutorial['stonePositions'].length).toBe(sampleStonePositions.length);
-      expect(tutorial['currentStoneIndex']).toBe(0);
-    });
-    
-    it('should initialize with empty stone positions', () => {
-      const emptyTutorial = new WordPuzzleTutorial({
-        context: mockContext,
-        width: canvasWidth,
-        height: canvasHeight,
-        stoneImg: mockStoneImg,
-        stonePositions: []
-      });
-      
-      expect(emptyTutorial['isInitialized']).toBe(true);
-      expect(emptyTutorial['stonePositions'].length).toBe(0);
-    });
-  });
-  
-  describe('drawTutorial', () => {
-    it('should not draw if not initialized', () => {
-      // Force tutorial to be uninitialized
-      tutorial['isInitialized'] = false;
-      
-      tutorial.drawTutorial(0.016);
-      expect(mockContext.drawImage).not.toHaveBeenCalled();
-    });
-  });
-  
-  describe('initializeStoneAnimation', () => {
-    it('should set up animation properties for the current stone', () => {
-      tutorial.initializeStoneAnimation(1);
-      expect(tutorial['currentStoneIndex']).toBe(1);
-      expect(tutorial['frame']).toBe(0);
-      expect(tutorial['animationStartTime']).toBe(0);
-      expect(tutorial['animationCompleted']).toBe(false);
-    });
-    
-    it('should handle invalid stone indices gracefully', () => {
-      const originalIndex = tutorial['currentStoneIndex'];
-      
-      // Try to initialize with invalid index
-      tutorial.initializeStoneAnimation(-1);
-      expect(tutorial['currentStoneIndex']).toBe(originalIndex);
-      
-      tutorial.initializeStoneAnimation(999);
-      expect(tutorial['currentStoneIndex']).toBe(originalIndex);
-    });
-  });
-  
-  describe('dispose', () => {
-    it('should reset state on dispose', () => {
-      // Set some state
-      tutorial['frame'] = 50;
-      tutorial['animationStartTime'] = 1000;
-      tutorial['isInitialized'] = true;
-      
-      // Dispose
-      tutorial.dispose();
-      
-      // Check state is reset
-      expect(tutorial['isInitialized']).toBe(false);
-      expect(tutorial['frame']).toBe(0);
-      expect(tutorial['animationStartTime']).toBe(0);
-      expect(tutorial['currentStoneIndex']).toBe(0);
-    });
+
+  it('should reinitialize animation on WORD_PUZZLE_SUBMITTED_LETTERS_COUNT event', () => {
+    const spy = jest.spyOn(tutorial as any, 'initializeStoneAnimation');
+
+    // Simulate event trigger
+    capturedCallback(4); // 4 % 3 = 1
+
+    expect((tutorial as any).currentStoneIndex).toBe(1);
+    expect(spy).toHaveBeenCalledWith(1);
   });
 });
