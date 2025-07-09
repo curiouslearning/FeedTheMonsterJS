@@ -409,6 +409,7 @@ export class GameplayScene {
       event.clientX,
       event.clientY
     );
+
     this.pickedStone = newStoneCoordinates;
     let trailX = newStoneCoordinates.x;
     let trailY = newStoneCoordinates.y;
