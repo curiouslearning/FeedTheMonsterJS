@@ -147,13 +147,12 @@ export class AudioPlayer {
       const timeoutDelay = audioDuration / 2;
 
       if (this.playAudioTimeoutId) {
+        this.isPromptAudioPlaying = true;
         clearTimeout(this.playAudioTimeoutId);
       }
 
       // Schedule the next audio play after current one ends
       this.playAudioTimeoutId = setTimeout(() => {
-        this.isPromptAudioPlaying = true;
-
         //Call playPromptAudio with a callback for onended method to call.
         this.playPromptAudio(() => {
           this.isPromptAudioPlaying = false;

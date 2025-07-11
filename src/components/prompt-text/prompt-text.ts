@@ -55,7 +55,6 @@ export class PromptText extends BaseHTML {
     public isTranslatingUp: boolean = true;
     public translateFactor: number = 0.05;
     public AUTO_PROMPT_ACTIVE_WINDOW_START: number;
-    private AUTO_PROMPT_ACTIVE_WINDOW_END: number = 9300;
     private isAutoPromptPlaying: boolean = false;
     private isLevelHaveTutorial: boolean = false;
 
@@ -129,7 +128,8 @@ export class PromptText extends BaseHTML {
     // While prompt-text.ts is still a tangled mess, this method offers a cleaner and more readable approach.
     // Long-term: the entire module needs refactoring for maintainability.
     private setPromptInitialAudioDelayValues(isTutorialOn: boolean = false) {
-        this.AUTO_PROMPT_ACTIVE_WINDOW_START = isTutorialOn ? 3000 : 1910;
+        //Changing the value from 3000 to 6000; 3000 is the normal delay, another 3000 because FM-577 auto audio plays happens after 3 seconds from normal delay.
+        this.AUTO_PROMPT_ACTIVE_WINDOW_START = isTutorialOn ? 6000 : 1910;
     }
 
     private removePulseClassIfSpellMatchTutorial() {
@@ -493,7 +493,6 @@ export class PromptText extends BaseHTML {
 
     private stopAutoPromptReplay(): void {
         this.isAutoPromptPlaying = true;
-        this.AUTO_PROMPT_ACTIVE_WINDOW_END = this.AUTO_PROMPT_ACTIVE_WINDOW_START; //Closes the time window gap that triggers the auto replay.
     }
 
     private handleAutoPromptPlay(time) {
@@ -505,22 +504,7 @@ export class PromptText extends BaseHTML {
 
             // We use handlePlayPromptAudioClickEvent so both user-triggered clicks and auto replays
             // go through the same debounce check. If audio is still playing, it prevents overlap.
-            // Relating to FM-555: debounce covers click events, but auto replay here in FM-577 needs setTimeout to
-            // further control spacing and avoid audio playing too close together.
-            this.audioPlayer.handlePlayPromptAudioClickEvent(
-                () => {
-                    if (
-                        this.isSpellSoundMatchTutorial() &&
-                        time <= this.AUTO_PROMPT_ACTIVE_WINDOW_END // Ensures auto audio replay only happens within the range of 3000–9300ms.
-                    ) {
-                        // Trigger a 1-second delay before allowing another auto replay.
-                        // This controls spacing specifically for auto replays, separate from click debounce.
-                        setTimeout(() => {
-                            this.isAutoPromptPlaying = false; // Ready for another auto replay.
-                        }, 1000);
-                    }
-                }
-            );
+            this.audioPlayer.handlePlayPromptAudioClickEvent();
         }
     }
 
