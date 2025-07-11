@@ -119,22 +119,25 @@ export class AudioPlayer {
 
 
   /**
-  To manage audio playback in response to user clicks, we use both a timeout delay 
-  and a playback flag (`isPromptAudioPlaying`).
-
-  - The `setTimeout` serves as a debounce mechanism, preventing immediate playback on every click.
-    The delay is dynamically calculated as half of the audio’s duration. This adapts to different 
-    sound lengths and avoids relying on a fixed delay like 500ms.
-
-  - The `isPromptAudioPlaying` flag ensures that once an audio clip is actively playing, 
-    no other playback is triggered until it ends. This prevents overlapping or duplicated playback.
-
-  Using both strategies together allows us to:
-    - Prevent audio spam and overlapping sounds
-    - Ensure that at least one playback still happens even during rapid clicks
-    - Maintain a smooth and responsive user experience during frequent interactions
-**/
-  handlePlayPromptAudioClickEvent() {
+  ** To manage audio playback in response to user clicks, we use both a timeout delay 
+  ** and a playback flag (`isPromptAudioPlaying`).
+  **
+  ** - The `setTimeout` serves as a debounce mechanism, preventing immediate playback on every click.
+  **   The delay is dynamically calculated as half of the audio’s duration. This adapts to different 
+  **   sound lengths and avoids relying on a fixed delay like 500ms.
+  **
+  ** - The `isPromptAudioPlaying` flag ensures that once an audio clip is actively playing, 
+  **   no other playback is triggered until it ends. This prevents overlapping or duplicated playback.
+  ** - An optional `externalCallback` can now be provided, allowing external logic (e.g., starting animations)
+  **   to be triggered right after the audio finishes playing. This keeps the method flexible and decoupled.
+  **
+  ** Using both strategies together allows us to:
+  ** - Prevent audio spam and overlapping sounds
+  ** - Ensure that at least one playback still happens even during rapid clicks
+  ** - Maintain a smooth and responsive user experience during frequent interactions
+  ** 
+  **/
+  handlePlayPromptAudioClickEvent(externalCallback: () => void = null) {
     // Only proceed if audio isn't already playing
     if (this.promptAudioBuffer && !this.isPromptAudioPlaying) {
       const audioDuration = this.promptAudioBuffer?.duration;
@@ -144,16 +147,20 @@ export class AudioPlayer {
       const timeoutDelay = audioDuration / 2;
 
       if (this.playAudioTimeoutId) {
+        this.isPromptAudioPlaying = true;
         clearTimeout(this.playAudioTimeoutId);
       }
 
       // Schedule the next audio play after current one ends
       this.playAudioTimeoutId = setTimeout(() => {
-        this.isPromptAudioPlaying = true;
-
         //Call playPromptAudio with a callback for onended method to call.
         this.playPromptAudio(() => {
           this.isPromptAudioPlaying = false;
+
+          // Trigger optional external callback after audio finishes
+          if (externalCallback) {
+            externalCallback();
+          }
         });
       }, timeoutDelay);
     }
