@@ -133,7 +133,7 @@ export class PromptText extends BaseHTML {
     }
 
     private removePulseClassIfSpellMatchTutorial() {
-        if (this.isSpellMatchTutorial()) {
+        if (this.isSpellSoundMatchTutorial()) {
             const playButton = document.getElementById("prompt-play-button");
             if (playButton?.classList.contains("pulsing")) {
                 playButton.classList.remove("pulsing");
@@ -483,7 +483,7 @@ export class PromptText extends BaseHTML {
         }
     }
 
-    private isSpellMatchTutorial(): boolean {
+    private isSpellSoundMatchTutorial(): boolean {
         return (
             this.isLevelHaveTutorial &&
             this.levelData?.levelMeta?.levelType === "LetterOnly" &&
@@ -510,7 +510,7 @@ export class PromptText extends BaseHTML {
             this.audioPlayer.handlePlayPromptAudioClickEvent(
                 () => {
                     if (
-                        this.isSpellMatchTutorial() &&
+                        this.isSpellSoundMatchTutorial() &&
                         time <= this.AUTO_PROMPT_ACTIVE_WINDOW_END // Ensures auto audio replay only happens within the range of 3000–9300ms.
                     ) {
                         // Trigger a 1-second delay before allowing another auto replay.
