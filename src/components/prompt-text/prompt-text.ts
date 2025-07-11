@@ -14,22 +14,16 @@ export const DEFAULT_SELECTORS = {
 };
 
 // HTML template for the prompt text component
-export const PROMPT_TEXT_LAYOUT = (id: string, levelData: any) => {
-    /*
-        Note: hidePromptBG is a dirty fix to easily implement the new AUDIO_PLAY_BUTTON.
-        AUDIO_PLAY_BUTTON is a new asset that is similar to start-scene play button.
-        So rendering this asset requires removing the prompt background entirely.
-        However due to how coupled and tied the logic in this class. It is not easy to
-        handle the AUDIO_PLAY_BUTTON only without breaking the tightly connected logic.
-    */
-    const hidePromptBG = isGameTypeAudio(levelData.levelMeta.protoType);
-
+export const PROMPT_TEXT_LAYOUT = (id: string, isLevelHaveTutorial: boolean) => {
     return (`
         <div id="${id}" class="prompt-container">
-            <div id="prompt-background" class="prompt-background" style="background-image: url(${hidePromptBG ? null :PROMPT_TEXT_BG})">
+            <div id="prompt-background" class="prompt-background" style="background-image: url(${PROMPT_TEXT_BG})">
                 <div id="prompt-text-button-container">
                     <div id="prompt-text" class="prompt-text"></div>
-                    <div id="prompt-play-button" class="prompt-play-button" style="background-image: url(${AUDIO_PLAY_BUTTON}); pointer-events: auto;"></div>
+                    <div id="prompt-play-button"
+                        class="prompt-play-button ${isLevelHaveTutorial ? 'pulsing' : ''}"
+                        style="background-image: url(${AUDIO_PLAY_BUTTON}); pointer-events: auto;">
+                    </div>
                 </div>
             </div>
         </div>
@@ -60,9 +54,10 @@ export class PromptText extends BaseHTML {
     public translateY: number = 0;
     public isTranslatingUp: boolean = true;
     public translateFactor: number = 0.05;
-    public triggerStart: number;
-    public triggerEnd: number;
-    private hasInitialAudioPlayed: boolean = false;
+    public AUTO_PROMPT_ACTIVE_WINDOW_START: number;
+    private AUTO_PROMPT_ACTIVE_WINDOW_END: number = 9300;
+    private isAutoPromptPlaying: boolean = false;
+    private isLevelHaveTutorial: boolean = false;
 
     // HTML elements for the prompt
     public promptContainer: HTMLDivElement;
@@ -96,7 +91,7 @@ export class PromptText extends BaseHTML {
         super(
             options,
             id,
-            (id: string) => PROMPT_TEXT_LAYOUT(id, levelData)
+            (id: string) => PROMPT_TEXT_LAYOUT(id, isLevelHaveTutorial)
         );
 
         // Store id for later use
@@ -115,10 +110,11 @@ export class PromptText extends BaseHTML {
         this.currentPromptText = currentPuzzleData.prompt.promptText;
         this.currentPuzzleData = currentPuzzleData;
         this.targetStones = this.currentPuzzleData.targetStones;
+        this.isLevelHaveTutorial = isLevelHaveTutorial;
         this.audioPlayer = new AudioPlayer();
         this.audioPlayer.preloadPromptAudio(this.getPromptAudioUrl());
         document.addEventListener(VISIBILITY_CHANGE, this.handleVisibilityChange, false);
-        this.hasInitialAudioPlayed = false;
+        this.isAutoPromptPlaying = false;
         //Set initial auto audio play timing.
         this.setPromptInitialAudioDelayValues(isLevelHaveTutorial);
 
@@ -134,7 +130,16 @@ export class PromptText extends BaseHTML {
     // While prompt-text.ts is still a tangled mess, this method offers a cleaner and more readable approach.
     // Long-term: the entire module needs refactoring for maintainability.
     private setPromptInitialAudioDelayValues(isTutorialOn: boolean = false) {
-        this.triggerStart = isTutorialOn ? 3000 : 1910;
+        this.AUTO_PROMPT_ACTIVE_WINDOW_START = isTutorialOn ? 3000 : 1910;
+    }
+
+    private removePulseClassIfSpellMatchTutorial() {
+        if (this.isSpellMatchTutorial()) {
+            const playButton = document.getElementById("prompt-play-button");
+            if (playButton?.classList.contains("pulsing")) {
+                playButton.classList.remove("pulsing");
+            }
+        }
     }
 
     /**
@@ -146,9 +151,12 @@ export class PromptText extends BaseHTML {
         this.promptBackground = this.promptContainer.querySelector('#prompt-background') as HTMLDivElement;
         this.promptTextElement = this.promptContainer.querySelector('#prompt-text') as HTMLDivElement;
         this.promptPlayButtonElement = this.promptContainer.querySelector('#prompt-play-button') as HTMLDivElement;
-        
+
         // Update event listeners to include the callback
         const handleClick = (e: Event) => {
+            this.stopAutoPromptReplay();
+            this.removePulseClassIfSpellMatchTutorial();
+
             this.audioPlayer.handlePlayPromptAudioClickEvent();
             if (this.onClickCallback) {
                 this.onClickCallback();
@@ -476,9 +484,62 @@ export class PromptText extends BaseHTML {
         }
     }
 
+    private isSpellMatchTutorial(): boolean {
+        return (
+            this.isLevelHaveTutorial &&
+            this.levelData?.levelMeta?.levelType === "LetterOnly" &&
+            this.levelData?.levelMeta?.protoType === "Hidden"
+        );
+    }
+
+    private stopAutoPromptReplay(): void {
+        this.isAutoPromptPlaying = true;
+        this.AUTO_PROMPT_ACTIVE_WINDOW_END = this.AUTO_PROMPT_ACTIVE_WINDOW_START; //Closes the time window gap to trigger the auto replay.
+    }
+
+    private handleAutoPromptPlay(time) {
+        if (
+            !this.isAutoPromptPlaying &&
+            Math.floor(time) >= this.AUTO_PROMPT_ACTIVE_WINDOW_START // If time is greater than AUTO_PROMPT_ACTIVE_WINDOW_START (e.g., 3000 for tutorial, 1910 otherwise)
+        ) {
+            this.isAutoPromptPlaying = true; // Flag to true to prevent double-triggering of initial auto audio or firing setTimeout callback.
+
+            // We use handlePlayPromptAudioClickEvent so both user-triggered clicks and auto replays
+            // go through the same debounce check. If audio is still playing, it prevents overlap.
+            // Relating to FM-555: debounce covers click events, but auto replay here in FM-577 needs setTimeout to
+            // further control spacing and avoid audio playing too close together.
+            this.audioPlayer.handlePlayPromptAudioClickEvent(
+                () => {
+                    if (
+                        this.isSpellMatchTutorial() &&
+                        time <= this.AUTO_PROMPT_ACTIVE_WINDOW_END // Ensures auto audio replay only happens within the range of 3000–9300ms.
+                    ) {
+                        // Trigger a 1-second delay before allowing another auto replay.
+                        // This controls spacing specifically for auto replays, separate from click debounce.
+                        setTimeout(() => {
+                            this.isAutoPromptPlaying = false; // Ready for another auto replay.
+                        }, 1000);
+                    }
+                }
+            );
+        }
+    }
+
     /**
-     * Starts the animation loop for the prompt background.
-     */
+    ** Starts the animation loop for the prompt background.
+    ** NOTE: This method should be deprecated and refactored out.
+    *
+    ** Reasons:
+    ** - Redundant requestAnimationFrame loop — the application already uses a main centralized animation loop.
+    ** - Mixes multiple responsibilities: audio triggering, visual scaling, DOM updates, and time tracking.
+    ** - No clear cleanup or stop mechanism — leads to unnecessary processing and potential conflicts with global loop.
+    ** - UI transformations like scaling and translation are better handled using CSS transitions or keyframe animations.
+    *
+    ** Recommended:
+    ** - Remove this loop entirely and migrate its responsibilities to the main animation loop or event-driven hooks.
+    ** - Offload prompt scaling and translation to CSS where possible.
+    ** - Handle audio timing logic in a dedicated, reusable method.
+    */
     startAnimationLoop() {
         let lastTime = 0;
         
@@ -488,16 +549,8 @@ export class PromptText extends BaseHTML {
             lastTime = timestamp;
             
             this.time += deltaTime;
-            
 
-            // Play sound at specific time
-            if (
-                !this.hasInitialAudioPlayed &&
-                Math.floor(this.time) >= this.triggerStart
-            ) {
-                this.hasInitialAudioPlayed = true; //Flag to true to prevent double triggering of initial auto audio.
-                this.audioPlayer.playPromptAudio();
-            }
+            this.handleAutoPromptPlay(this.time);
 
             //Note: !isGameTypeAudio(this.levelData.levelMeta.protoType) is needed to make sure the audio play button won't pulsate.
             if (!this.isStoneDropped && !isGameTypeAudio(this.levelData.levelMeta.protoType)) {
@@ -543,7 +596,7 @@ export class PromptText extends BaseHTML {
         this.audioPlayer.preloadPromptAudio(this.getPromptAudioUrl());
         this.isStoneDropped = false;
         this.time = 0;
-        this.hasInitialAudioPlayed = false; //Reset the flag for initial auto audio prompt play.
+        this.isAutoPromptPlaying = false; //Reset the flag for initial auto audio prompt play.
         // Update font size for new text
         this.promptTextElement.style.fontSize = `${this.calculateFont()}px`;
         
