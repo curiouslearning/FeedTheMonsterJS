@@ -114,7 +114,6 @@ export class PromptText extends BaseHTML {
         this.audioPlayer = new AudioPlayer();
         this.audioPlayer.preloadPromptAudio(this.getPromptAudioUrl());
         document.addEventListener(VISIBILITY_CHANGE, this.handleVisibilityChange, false);
-        this.isAutoPromptPlaying = false;
         //Set initial auto audio play timing.
         this.setPromptInitialAudioDelayValues(isLevelHaveTutorial);
 
@@ -494,7 +493,7 @@ export class PromptText extends BaseHTML {
 
     private stopAutoPromptReplay(): void {
         this.isAutoPromptPlaying = true;
-        this.AUTO_PROMPT_ACTIVE_WINDOW_END = this.AUTO_PROMPT_ACTIVE_WINDOW_START; //Closes the time window gap to trigger the auto replay.
+        this.AUTO_PROMPT_ACTIVE_WINDOW_END = this.AUTO_PROMPT_ACTIVE_WINDOW_START; //Closes the time window gap that triggers the auto replay.
     }
 
     private handleAutoPromptPlay(time) {
