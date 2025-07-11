@@ -128,8 +128,12 @@ export class PromptText extends BaseHTML {
     // While prompt-text.ts is still a tangled mess, this method offers a cleaner and more readable approach.
     // Long-term: the entire module needs refactoring for maintainability.
     private setPromptInitialAudioDelayValues(isTutorialOn: boolean = false) {
-        //Changing the value from 3000 to 6000; 3000 is the normal delay, another 3000 because FM-577 auto audio plays happens after 3 seconds from normal delay.
-        this.AUTO_PROMPT_ACTIVE_WINDOW_START = isTutorialOn ? 6000 : 1910;
+        this.AUTO_PROMPT_ACTIVE_WINDOW_START = isTutorialOn ? 3000 : 1910;
+
+        if (this.isSpellSoundMatchTutorial()) {
+            //3000 is the normal delay, another 3000 because FM - 577 auto audio plays happens after 3 seconds from normal delay.
+            this.AUTO_PROMPT_ACTIVE_WINDOW_START += 3000;
+        }
     }
 
     private removePulseClassIfSpellMatchTutorial() {
