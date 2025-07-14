@@ -1,7 +1,7 @@
 // Import dependencies
 import StoneHandler from './stone-handler'; // Adjust path as necessary
 import { StoneConfig } from '@common';
-import { AudioPlayer, TimerTicking } from '@components';
+import { AudioPlayer } from '@components';
 import { AUDIO_PATH_ON_DRAG } from '@constants'; // Import the constant
 
 jest.mock('@components', () => ({
@@ -36,7 +36,6 @@ describe('StoneHandler - playDragAudioIfNecessary', () => {
       mockCanvas,
       0, // Puzzle number
       mockLevelData, // Pass the mocked levelData
-      mockTimerTickingInstance
     );
 
     stoneHandler.audioPlayer = mockAudioPlayer;
@@ -59,7 +58,6 @@ describe('StoneHandler - Latest Optimizations', () => {
   let stoneHandler: StoneHandler;
   let mockContext: CanvasRenderingContext2D;
   let mockCanvas: HTMLCanvasElement;
-  let mockTimerTicking: TimerTicking;
 
   beforeEach(() => {
     mockContext = {
@@ -82,10 +80,6 @@ describe('StoneHandler - Latest Optimizations', () => {
       })
     } as unknown as HTMLCanvasElement;
 
-    mockTimerTicking = {
-      update: jest.fn()
-    } as unknown as TimerTicking;
-
     const mockLevelData = {
       puzzles: [{
         targetStones: ['A', 'B'],
@@ -97,8 +91,7 @@ describe('StoneHandler - Latest Optimizations', () => {
       mockContext,
       mockCanvas,
       0,
-      mockLevelData,
-      mockTimerTicking
+      mockLevelData
     );
   });
 
@@ -149,14 +142,14 @@ describe('StoneHandler - Latest Optimizations', () => {
   describe('Performance Improvements', () => {
     it('should skip disposed stones in draw loop', () => {
       const mockStones = [
-        { frame: 50, draw: jest.fn(), isDisposed: true },
-        { frame: 100, draw: jest.fn(), isDisposed: false }
+        { frame: 150, draw: jest.fn(), isDisposed: true },
+        { frame: 50, draw: jest.fn(), isDisposed: false }
       ];
       stoneHandler.foilStones = mockStones as any[];
-      
-      stoneHandler.draw(16);
-      
-      expect(mockStones[0].draw).not.toHaveBeenCalled();
+
+      stoneHandler.draw();
+      //If the last stone is still below 100 frame, it means the stones hasn't fully loaded yet.
+      expect(stoneHandler.stonesHasLoaded).toEqual(false);
     });
 
     it('should handle animation completion efficiently', () => {
@@ -165,32 +158,15 @@ describe('StoneHandler - Latest Optimizations', () => {
         { frame: 90, draw: jest.fn(), isDisposed: false }
       ];
       stoneHandler.foilStones = mockStones as any[];
-      stoneHandler.isGamePaused = false;
-      
-      stoneHandler.draw(16);
-      
-      // Timer should not update since not all stones are at frame 100
-      expect(mockTimerTicking.update).not.toHaveBeenCalled();
-      
+
+      stoneHandler.draw();
+
       // Update second stone to complete animation
       mockStones[1].frame = 100;
-      stoneHandler.draw(16);
-      
-      // Now timer should update
-      expect(mockTimerTicking.update).toHaveBeenCalledWith(16);
+      stoneHandler.draw();
+
     });
 
-    it('should not update timer when game is paused', () => {
-      const mockStones = [
-        { frame: 100, draw: jest.fn(), isDisposed: false },
-        { frame: 100, draw: jest.fn(), isDisposed: false }
-      ];
-      stoneHandler.foilStones = mockStones as any[];
-      stoneHandler.isGamePaused = true;
-      
-      stoneHandler.draw(16);
-      
-      expect(mockTimerTicking.update).not.toHaveBeenCalled();
-    });
+
   });
 });

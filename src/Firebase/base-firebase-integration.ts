@@ -1,49 +1,98 @@
-import { initializeApp } from "firebase/app";
-import { getAnalytics, logEvent, setUserProperties } from "firebase/analytics";
-import { firebaseConfig } from "./firebase-config";
-import { source, campaign_id } from "@common";
+import { AnalyticsService, FirebaseStrategy, StatsigStrategy } from '@curiouslearning/analytics';
+import { firebaseConfig, statsigConfig } from "./analytics-config";
+import { source, campaign_id, pseudoId } from "@common";
+
 export class BaseFirebaseIntegration {
-    firebaseApp: any;
-    analytics: any;
+    private analyticsService: AnalyticsService;
+    private firebaseStrategy: FirebaseStrategy;
+    private statsigStrategy: StatsigStrategy;
+    private isInitialized: boolean = false;
+
     constructor() {
-        this.initializeFirebase();
-        // console.log(" source : ",source ," and  campaign_id: ",campaign_id);
-        if(source!=null || campaign_id!=null)
-        this.setUserProperty(source ,campaign_id);
+        this.analyticsService = new AnalyticsService();
     }
-    protected customEvents(eventName: string, event: object): void {
+
+    public async initialize(): Promise<void> {
+        if (this.isInitialized) {
+            return;
+        }
+
         try {
-            logEvent(this.analytics, eventName, event);
+            // Initialize Firebase Strategy
+            this.firebaseStrategy = new FirebaseStrategy({
+                firebaseOptions: {
+                    apiKey: firebaseConfig.apiKey,
+                    authDomain: firebaseConfig.authDomain,
+                    databaseURL: firebaseConfig.databaseURL,
+                    projectId: firebaseConfig.projectId,
+                    storageBucket: firebaseConfig.storageBucket,
+                    messagingSenderId: firebaseConfig.messagingSenderId,
+                    appId: firebaseConfig.appId,
+                    measurementId: firebaseConfig.measurementId,
+                },
+                userProperties: {
+                    campaign_id: campaign_id || '',
+                    source: source || ''
+                }
+            });
+
+            await this.firebaseStrategy.initialize();
+            this.analyticsService.register('firebase', this.firebaseStrategy);
+
+            // Initialize Statsig Strategy
+            this.statsigStrategy = new StatsigStrategy({
+                clientKey: statsigConfig.clientKey,
+                statsigUser: {
+                    userID: pseudoId || statsigConfig.userId
+                }
+            });
+
+            await this.statsigStrategy.initialize();
+            this.analyticsService.register('statsig', this.statsigStrategy);
+
+            this.isInitialized = true;
+            console.log("Analytics service initialized successfully with Firebase and Statsig");
+
+        } catch (error) {
+            console.error("Error while initializing analytics:", error);
+            throw error; // Re-throw to let users handle initialization errors
+        }
+    }
+
+    protected trackCustomEvent(eventName: string, event: object): void {
+        if (!this.isInitialized) {
+            console.warn("Analytics not initialized, queuing event:", eventName);
+            // The analytics service should handle queuing events until initialization
+        }
+
+        try {
+            this.analyticsService.track(eventName, event);
         } catch (error) {
             console.error("Error while logging custom event:", error);
         }
     }
+
     protected sessionEnd(): void {
         try {
-            if (navigator.onLine && this.analytics !== undefined) {
-                logEvent(this.analytics, "session_end");
+            if (navigator.onLine && this.isInitialized) {
+                this.analyticsService.track("session_end", {});
             }
         } catch (error) {
             console.error("Error while logging session_end event:", error);
         }
     }
-    private setUserProperty(source: string, campaignId: string): void {
-        try {
-            setUserProperties(this.analytics, {
-                source: source,
-                campaign_id: campaignId
-            }, { global: true });
-            console.log("User properties set: ", { source, campaignId });
-        } catch (error) {
-            console.error("Error while setting user properties:", error);
-        }
+
+    // Getter methods for backward compatibility if needed
+    get analytics() {
+        return this.analyticsService;
     }
-    protected initializeFirebase() {
-        try {
-            this.firebaseApp = initializeApp(firebaseConfig);
-            this.analytics = getAnalytics(this.firebaseApp);
-        } catch (error) {
-            console.error("Error while initializing Firebase:", error);
-        }
+
+    get firebaseApp() {
+        return this.firebaseStrategy?.firebaseApp;
+    }
+
+    // Method to check if analytics is ready
+    public isAnalyticsReady(): boolean {
+        return this.isInitialized;
     }
 }

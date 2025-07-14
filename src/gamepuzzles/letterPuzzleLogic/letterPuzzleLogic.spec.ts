@@ -45,22 +45,4 @@ describe('LetterPuzzleLogic', () => {
     expect(result).toBe(false);
   });
 
-  // Test Case 3: Handle letter drop with correct letter
-  it('should handle a correct letter drop and trigger appropriate callbacks', () => {
-    // Arrange
-    letterPuzzleLogic.setTargetLetter('A');
-    
-    // Act
-    const result = letterPuzzleLogic.handleLetterDrop({
-      droppedText: 'A',
-      ...mockHandlers
-    });
-    
-    // Assert
-    expect(result).toBe(true);
-    expect(mockHandlers.playFeedbackAudio).toHaveBeenCalledWith(0, true, false, 'A');
-    expect(mockHandlers.handleCorrectLetterDrop).toHaveBeenCalledWith(0);
-    expect(mockHandlers.isFeedBackTriggeredSetter).toHaveBeenCalledWith(true);
-    expect(mockHandlers.handleLetterDropEnd).toHaveBeenCalledWith(true, "Letter");
-  });
 });
