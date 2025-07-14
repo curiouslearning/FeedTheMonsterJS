@@ -5,7 +5,6 @@ import {
   LevelIndicators,
   StoneHandler,
   BackgroundHtmlGenerator,
-  FeedbackTextEffects,
   AudioPlayer,
   PhasesBackground,
   TrailEffectsHandler
@@ -27,6 +26,7 @@ import {
   lang,
   pseudoId,
   Utils,
+  getGameTypeName,
 } from "@common";
 import { GameScore, DataModal } from "@data";
 import {
@@ -40,13 +40,15 @@ import {
   SCENE_NAME_GAME_PLAY_REPLAY,
   SCENE_NAME_LEVEL_END,
   PreviousPlayedLevel,
-  MONSTER_PHASES
+  MONSTER_PHASES,
+  AUDIO_PATH_POINTS_ADD
 } from "@constants";
 import gameStateService from '@gameStateService';
 import gameSettingsService from '@gameSettingsService';
 import { PAUSE_POPUP_EVENT_DATA, PausePopupComponent } from '@components/popups/pause-popup/pause-popup-component';
 import { RiveMonsterComponent } from '@components/riveMonster/rive-monster-component';
 import PuzzleHandler from "@gamepuzzles/puzzleHandler/puzzleHandler";
+import { DEFAULT_SELECTORS } from '@components/prompt-text/prompt-text';
 
 export class GameplayScene {
   public width: number;
@@ -77,7 +79,6 @@ export class GameplayScene {
   isPauseButtonClicked: boolean;
   public background: any;
   feedBackTextCanavsElement: HTMLCanvasElement;
-  feedbackTextEffects: FeedbackTextEffects;
   public isGameStarted: boolean = false;
   public time: number = 0;
   public score: number = 0;
@@ -98,11 +99,12 @@ export class GameplayScene {
   private backgroundGenerator: PhasesBackground;
   public loadPuzzleDelay: 3000 | 4500;
   private puzzleHandler: any;
-
+  private timerStartSFXPlayed: boolean;
   // Define animation delays as an array where index 0 = phase 0, index 1 = phase 1, index 2 = phase 2
   private animationDelays = [
     { backToIdle: 350, isChewing: 0, isHappy: 1700, isSpit: 1500, isSad: 3000 }, // Phase 1
     { backToIdle: 350, isChewing: 0, isHappy: 1700, isSpit: 1000, isSad: 2500 }, // Phase 2
+    { backToIdle: 350, isChewing: 0, isHappy: 1700, isSpit: 1300, isSad: 2600 }, // Phase 3
     { backToIdle: 350, isChewing: 0, isHappy: 1700, isSpit: 100, isSad: 2500 }  // Phase 4
   ];
 
@@ -126,15 +128,13 @@ export class GameplayScene {
     this.addEventListeners();
     this.startGameTime();
     this.startPuzzleTime();
-    this.firebaseIntegration = new FirebaseIntegration();
-    this.feedbackTextEffects = new FeedbackTextEffects();
+    this.firebaseIntegration = FirebaseIntegration.getInstance();
     this.audioPlayer = new AudioPlayer();
     this.puzzleHandler = new PuzzleHandler(this.levelData, this.counter, gamePlayData.feedbackAudios);
     this.unsubscribeEvent = gameStateService.subscribe(
       gameStateService.EVENTS.GAME_PAUSE_STATUS_EVENT,
       (isPause: boolean) => {
         this.isPauseButtonClicked = isPause;
-
         if (isPause) this.pausePopupComponent.open();
       }
     );
@@ -160,6 +160,8 @@ export class GameplayScene {
     });
     //this.setupBg(); //Temporary disabled to try evolution background.
     this.setupMonsterPhaseBg();
+    this.timerStartSFXPlayed = false;
+    this.audioPlayer.preloadGameAudio(AUDIO_PATH_POINTS_ADD); // to preload the PointsAdd.wav
   }
 
   private initializeRiveMonster(): RiveMonsterComponent {
@@ -185,8 +187,7 @@ export class GameplayScene {
       this.context,
       this.canvas,
       this.counter,
-      this.levelData,
-      this.timerTicking
+      this.levelData
     );
     this.tutorial = new TutorialHandler({
       context: this.context,
@@ -195,16 +196,43 @@ export class GameplayScene {
       puzzleLevel: this.counter,
       shouldHaveTutorial: gamePlayData?.tutorialOn
     });
+
+    let onClickCallback;
+    /**
+     * Assign the onClickCallback ONLY for audio puzzle levels where the tutorial hand pointer should be shown.
+     * This callback is passed to the PromptText component and is triggered when the prompt is clicked.
+     * When invoked, it starts the tutorial hand animation and marks the quick start tutorial as ready.
+     * For non-audio puzzles or levels without the hand pointer tutorial, no callback is assigned.
+     */
+    if (this.tutorial.showHandPointerInAudioPuzzle(gamePlayData.levelData)) {
+      onClickCallback = () => {
+        this.tutorial.shouldShowTutorialAnimation = true;
+        this.tutorial.quickStartTutorialReady = true;
+      };
+    }
     this.promptText = new PromptText(
       this.width,
       this.height,
       this.levelData.puzzles[this.counter],
       this.levelData,
-      this.rightToLeft
+      this.rightToLeft,
+      'prompt-container',  // id parameter (string)
+      { selectors: DEFAULT_SELECTORS },  // options parameter
+      gamePlayData?.tutorialOn && this.counter === 0,
+      onClickCallback,
     );
     this.levelIndicators = new LevelIndicators();
     this.levelIndicators.setIndicators(this.counter);
     this.monster = this.initializeRiveMonster();
+
+    //For shouldShowTutorialAnimation- If the game level should have tutorial AND level is not yet cleared, timer should be delayed.
+    this.tutorial.shouldShowTutorialAnimation = gamePlayData.tutorialOn && !gamePlayData.isTutorialCleared;
+
+    if (this.tutorial.showHandPointerInAudioPuzzle(gamePlayData.levelData)) {
+      this.tutorial.resetQuickStartTutorialDelay();
+    } else {
+      this.tutorial.quickStartTutorialReady = true;
+    }
   }
 
   private setupUIElements() {
@@ -286,37 +314,28 @@ export class GameplayScene {
           frame: this.pickedStone.frame
         },
         targetLetterText: this.stoneHandler.getCorrectTargetStone(), // Pass only the data needed
-        audioPlayer: this.audioPlayer,
         promptText: this.promptText,
-        handleCorrectLetterDrop: undefined, // will be set below
-        handleLetterDropEnd: this.handleStoneDropEnd.bind(this),
+        handleLetterDropEnd: (isCorrect, puzzleType) => {
+          this.isFeedBackTriggered = isCorrect;
+          if (isCorrect) {
+            this.score += 100; //100 as static default value for adding score.
+          }
+          this.handleStoneDropEnd(isCorrect, puzzleType);
+        },
         triggerMonsterAnimation: this.triggerMonsterAnimation.bind(this),
         timerTicking: this.timerTicking,
-        isFeedBackTriggeredSetter: (v) => { this.isFeedBackTriggered = v; },
         lang,
         lettersCountRef,
-        feedBackTexts: this.feedBackTexts,
-        levelData: this.levelData,
-        counter: this.counter,
-        width: this.width
+        feedBackTexts: this.feedBackTexts
       };
-      ctx.handleCorrectLetterDrop = (feedbackIndex) => {
-        this.puzzleHandler.handleCorrectLetterDrop(
-          feedbackIndex,
-          this.feedbackTextEffects,
-          ctx,
-          (amount) => this.score += amount
-        );
-        // Hide the picked letter after puzzle logic is handled
-        this.stoneHandler.hideStone(this.pickedStoneObject);
-      };
+
       this.puzzleHandler.createPuzzle(ctx);
+
       // For Word puzzles, hide the letter immediately after dropping it into the monster
       if (ctx.levelType === "Word" || ctx.levelType === "SoundWord") {
         this.stoneHandler.hideStone(this.pickedStoneObject);
       }
       this.stonesCount = lettersCountRef.value;
-      this.isFeedBackTriggered = true;
       this.trailEffectHandler.setGameHasStarted(false);
     } else if (this.pickedStoneObject) {
       // Handle letter drop (fail/miss case)
@@ -421,6 +440,8 @@ export class GameplayScene {
       }
     }
 
+    this.tutorial.shouldShowTutorialAnimation = false; //Drag action will start the timer and disable the tutorial.
+
     // Trigger open mouth animation
     this.triggerMonsterAnimation('isMouthOpen');
   };
@@ -432,12 +453,7 @@ export class GameplayScene {
 
     if (this.monster.onClick(x, y)) {
       this.setGameToStart();
-    }
-
-    // Use the play button in the HTML implementation instead of onClick
-    const promptPlayButton = document.getElementById('prompt-play-button');
-    if (promptPlayButton && promptPlayButton.contains(event.target as Node)) {
-      this.promptText.playSound();
+      this.tutorial?.activeTutorial?.removeHandPointer();
     }
   };
 
@@ -467,41 +483,54 @@ export class GameplayScene {
   }
 
   draw(deltaTime: number) {
-    // If game hasn't started and it's not paused
-    if (!this.isGameStarted && !this.isPauseButtonClicked) {
-      // Increment time using deltaTime to keep it consistent across devices
-      this.time += deltaTime;
+    const timeRef = { value: this.time };
+    this.tutorial?.handleTutorialAndGameStart({
+      deltaTime,
+      isGameStarted: this.isGameStarted,
+      isPauseButtonClicked: this.isPauseButtonClicked,
+      setGameToStart: this.setGameToStart.bind(this),
+      timeRef
+    });
+    this.time = timeRef.value;
 
-      // Draw the quick-start tutorial animation
-      this.tutorial.drawQuickStart(deltaTime, this.isGameStarted);
-      // Start the game after a configured delay (default 5 seconds)
-      if (this.time >= 5000) {
-        this.setGameToStart();
-      }
-      // Don't draw game elements until started
-      return;
-    }
     // Trail effects drawing 
     this.trailEffectHandler?.draw();
     // Main game logic only starts after isGameStarted = true
     if (this.isGameStarted) {
-      this.handleStoneLetterDrawing(deltaTime);
+      this.handleStoneLetterDrawing();
+      this.handleTimerUpdate(deltaTime);
     }
-    // Continue drawing tutorial layer if needed during gameplay
+
     this.tutorial.draw(deltaTime, this.isGameStarted);
   }
 
-  private handleStoneLetterDrawing(deltaTime) {
+  private handleStoneLetterDrawing() {
     if (this.puzzleHandler.checkIsWordPuzzle()) {
       this.stoneHandler.drawWordPuzzleLetters(
-        deltaTime,
         (foilStoneIndex) => {
           return this.puzzleHandler.validateShouldHideLetter(foilStoneIndex);
         },
         this.puzzleHandler.getWordPuzzleGroupedObj()
       );
     } else {
-      this.stoneHandler.draw(deltaTime);
+      this.stoneHandler.draw();
+    }
+  }
+
+  private handleTimerUpdate(deltaTime: number) {
+    // Update timer only once animation is complete and game is not paused.
+    if (this.stoneHandler.stonesHasLoaded && !this.isPauseButtonClicked) {
+      const hasTutorial = this.tutorial.shouldShowTutorialAnimation;
+      const shouldStartTimer = this.tutorial.updateTutorialTimer(deltaTime);
+      if (!hasTutorial || (shouldStartTimer && hasTutorial)) {
+        // After 12s, start timer updates
+        this.timerTicking.update(deltaTime);
+        // added delta time checking to ensure that the timer starts sfx will only trigger once at the beginning of the timer countdown.
+        if (!this.timerStartSFXPlayed && deltaTime > 1 && deltaTime <= 100) {
+          this.audioPlayer.playAudio(AUDIO_PATH_POINTS_ADD);
+          this.timerStartSFXPlayed = true; // This flag needed to ensure that the timer starts sfx will only trigger once.
+        }
+      }
     }
   }
 
@@ -547,7 +576,9 @@ export class GameplayScene {
     }
     this.counter += 1; //increment Puzzle
     this.isGameStarted = false;
-
+    this.tutorial.resetTutorialTimer();
+    // Reset the 6-second tutorial delay timer each time a new puzzle is loaded
+    this.tutorial.resetQuickStartTutorialDelay();
     if (this.counter === this.levelData.puzzles.length) {
       const handleLevelEnd = () => {
         this.levelIndicators.setIndicators(this.counter);
@@ -564,22 +595,12 @@ export class GameplayScene {
         gameStateService.publish(gameStateService.EVENTS.SWITCH_SCENE_EVENT, SCENE_NAME_LEVEL_END);
         this.monster.dispose(); //Adding the monster dispose here due to the scenario that this.monster is still needed when restart game level is played.
       };
-
+      this.tutorial.hideTutorial(); // Turn off tutorial
       if (timerEnded) {
         handleLevelEnd();
-        return;
-      }
-      this.tutorial.hideTutorial(); // Turn off tutorial
-      const timeoutId = setTimeout(handleLevelEnd, this.loadPuzzleDelay); // added delay for switching to level end screen
-      if (this.isFeedBackTriggered) {
-        const audioSources = this.audioPlayer?.audioSourcs || [];
-        const lastAudio = audioSources[audioSources.length - 1];
-        if (lastAudio) {
-          lastAudio.onended = () => {
-            clearTimeout(timeoutId);
-            handleLevelEnd();
-          };
-        }
+      } else {
+        //Trigger the handleLevelEnd with a delay to let the audio play in puzzleHandler.ts before switching to level end screen.
+        setTimeout(handleLevelEnd, this.loadPuzzleDelay);
       }
     } else {
       const loadPuzzleEvent = new CustomEvent(LOADPUZZLE, {
@@ -604,6 +625,8 @@ export class GameplayScene {
     if (this.monster) {
       this.monster.dispose();
     }
+    this.timerStartSFXPlayed = false; // move this flag from loadpuzzle to initnewpuzzle to make sure when loading new puzzle, timer start sfx will set to false.
+    this.stoneHandler.stonesHasLoaded = false;
     this.monster = this.initializeRiveMonster();
     this.removeEventListeners();
     this.isGameStarted = false;
@@ -616,6 +639,7 @@ export class GameplayScene {
     this.addEventListeners();
     this.audioPlayer.stopAllAudios();
     this.startPuzzleTime();
+    this.tutorial.resetQuickStartTutorialDelay();
   }
 
   public dispose = () => {
@@ -718,14 +742,10 @@ export class GameplayScene {
     this.logPuzzleEndFirebaseEvent(isCorrect, puzzleType);
     this.dispatchStoneDropEvent(isCorrect);
     setTimeout(() => {
-      this.adjustLoadPuzzleDelay(isCorrect);
+      //Adjust the delay of 4500 (4.5 seconds) to 2500 (2.5 seconds) if the puzzle is incorrect.
+      this.loadPuzzleDelay = isCorrect ? 4500 : 3000;
       this.loadPuzzle();
     }, isCorrect ? 0 : 2000);
-  }
-
-  private adjustLoadPuzzleDelay(isCorrect) {
-    //Adjust the delay of 4500 (4.5 seconds) to 2500 (2.5 seconds) if the puzzle is incorrect.
-    this.loadPuzzleDelay = isCorrect ? 4500 : 3000;
   }
 
   private dispatchStoneDropEvent(isCorrect: boolean): void {

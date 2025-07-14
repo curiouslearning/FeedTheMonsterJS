@@ -28,9 +28,8 @@ export interface PuzzleCompletedEvent extends CommonEventProperties {
     puzzle_number: number;
     item_selected: string;
     target: string;
-    foils: string[];
+    foils: string[] | string; // Allow both array and string formats
     response_time: number;
-    
 }
 export interface LevelCompletedEvent extends CommonEventProperties {
     success_or_failure: string;
