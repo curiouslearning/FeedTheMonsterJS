@@ -100,6 +100,13 @@ export class GameplayScene {
   public loadPuzzleDelay: 3000 | 4500;
   private puzzleHandler: any;
   private timerStartSFXPlayed: boolean;
+  // Throttling variables for mouse move
+  private lastMoveTime = 0;
+  private moveThrottleInterval = 16; // ~60fps (adjust if needed for performance)
+  private isMonsterMouthOpen = false;
+  private lastClientX = 0;
+  private lastClientY = 0;
+  private animationFrameId: number | null = null;
   // Define animation delays as an array where index 0 = phase 0, index 1 = phase 1, index 2 = phase 2
   private animationDelays = [
     { backToIdle: 350, isChewing: 0, isHappy: 1700, isSpit: 1500, isSad: 3000 }, // Phase 1
@@ -303,10 +310,10 @@ export class GameplayScene {
       cancelAnimationFrame(this.animationFrameId);
       this.animationFrameId = null;
     }
-    
+
     // Reset monster mouth state
     this.isMonsterMouthOpen = false;
-    
+
     if (!this.pickedStone || this.pickedStone.frame <= 99) {
       this.puzzleHandler.clearPickedUp();
       return;
@@ -356,7 +363,7 @@ export class GameplayScene {
       this.triggerMonsterAnimation('isMouthClosed');
       this.triggerMonsterAnimation('backToIdle');
     }
-    
+
     // Clear stored coordinates
     this.lastClientX = 0;
     this.lastClientY = 0;
@@ -409,14 +416,6 @@ export class GameplayScene {
     }
   }
 
-  // Throttling variables for mouse move
-  private lastMoveTime = 0;
-  private moveThrottleInterval = 16; // ~60fps (adjust if needed for performance)
-  private isMonsterMouthOpen = false;
-  private lastClientX = 0;
-  private lastClientY = 0;
-  private animationFrameId: number | null = null;
-
   handleMouseMove = (event) => {
     // Store the latest coordinates even if we don't process this event
     this.lastClientX = event.clientX;
@@ -434,7 +433,7 @@ export class GameplayScene {
       });
     }
   };
-  
+
   // Separate method to process drag movement - improves testability and organization
   private processDragMovement(clientX: number, clientY: number) {
     // Throttle processing based on time
@@ -443,12 +442,12 @@ export class GameplayScene {
       return;
     }
     this.lastMoveTime = now;
-    
+
     // Disable tutorial on any drag movement
     if (this.tutorial.shouldShowTutorialAnimation) {
       this.tutorial.shouldShowTutorialAnimation = false;
     }
-    
+
     // Fast path for matchfirst puzzles (LetterOnly/LetterInWord)
     if (!this.puzzleHandler.checkIsWordPuzzle()) {
       // Direct coordinate update without complex hover detection
@@ -458,16 +457,16 @@ export class GameplayScene {
         clientY
       );
       this.pickedStone = newStoneCoordinates;
-      
+
       // Only trigger monster animation if not already open
       if (!this.isMonsterMouthOpen) {
         this.triggerMonsterAnimation('isMouthOpen');
         this.isMonsterMouthOpen = true;
       }
-      
+
       return; // Exit early for matchfirst puzzles
     }
-    
+
     // Complex path for word puzzles
     let newStoneCoordinates = this.stoneHandler.handleMovingStoneLetter(
       this.pickedStone,
@@ -533,7 +532,7 @@ export class GameplayScene {
   handleTouchMove = (event) => {
     if (!this.pickedStone) return;
     event.preventDefault(); // Prevent scrolling while dragging
-    
+
     // Convert touch event to mouse event format
     const touch = event.touches[0];
     // Store coordinates and let handleMouseMove handle the throttling
@@ -591,7 +590,7 @@ export class GameplayScene {
     if (this.stoneHandler.stonesHasLoaded && !this.isPauseButtonClicked) {
       const hasTutorial = this.tutorial.shouldShowTutorialAnimation;
       const shouldStartTimer = this.tutorial.updateTutorialTimer(deltaTime);
-      if (!hasTutorial || (shouldStartTimer && hasTutorial)) { 
+      if (!hasTutorial || (shouldStartTimer && hasTutorial)) {
         // After 12s, start timer updates
         this.timerTicking.update(deltaTime);
         // added delta time checking to ensure that the timer starts sfx will only trigger once at the beginning of the timer countdown.
