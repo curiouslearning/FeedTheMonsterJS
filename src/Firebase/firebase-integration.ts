@@ -84,8 +84,16 @@ export class FirebaseIntegration extends BaseFirebaseIntegration {
   }
 
   public sendPuzzleCompletedEvent(data: PuzzleCompletedEvent): void {
-    this.trackCustomEvent('puzzle_completed', data);
-  }
+    // Create event data
+    const eventData = { ...data };
+    
+    // Ensure foils is a comma-separated string
+    if (Array.isArray(eventData.foils)) {
+        eventData.foils = eventData.foils.join(',');
+    }
+    
+    this.trackCustomEvent('puzzle_completed', eventData);
+}
 
   public sendLevelCompletedEvent(data: LevelCompletedEvent): void {
     this.trackCustomEvent('level_completed', data);
