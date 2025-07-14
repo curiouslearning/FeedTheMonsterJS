@@ -298,6 +298,15 @@ export class GameplayScene {
   }
 
   handleMouseUp = (event) => {
+    // Cancel any pending animation frame
+    if (this.animationFrameId !== null) {
+      cancelAnimationFrame(this.animationFrameId);
+      this.animationFrameId = null;
+    }
+    
+    // Reset monster mouth state
+    this.isMonsterMouthOpen = false;
+    
     if (!this.pickedStone || this.pickedStone.frame <= 99) {
       this.puzzleHandler.clearPickedUp();
       return;
@@ -347,6 +356,10 @@ export class GameplayScene {
       this.triggerMonsterAnimation('isMouthClosed');
       this.triggerMonsterAnimation('backToIdle');
     }
+    
+    // Clear stored coordinates
+    this.lastClientX = 0;
+    this.lastClientY = 0;
 
     this.pickedStone = null;
     this.puzzleHandler.clearPickedUp();
@@ -396,55 +409,105 @@ export class GameplayScene {
     }
   }
 
+  // Throttling variables for mouse move
+  private lastMoveTime = 0;
+  private moveThrottleInterval = 16; // ~60fps (adjust if needed for performance)
+  private isMonsterMouthOpen = false;
+  private lastClientX = 0;
+  private lastClientY = 0;
+  private animationFrameId: number | null = null;
+
   handleMouseMove = (event) => {
-    if (this.pickedStone && this.pickedStone.frame <= 99) {
-      return; // Prevent dragging if the letter is animating
-    }
+    // Store the latest coordinates even if we don't process this event
+    this.lastClientX = event.clientX;
+    this.lastClientY = event.clientY;
 
+    // Early returns for invalid states
     if (!this.pickedStone) return;
+    if (this.pickedStone.frame <= 99) return; // Prevent dragging if the letter is animating
 
-    // Move letter regardless of puzzle type
+    // Use requestAnimationFrame for smoother performance
+    if (this.animationFrameId === null) {
+      this.animationFrameId = requestAnimationFrame(() => {
+        this.processDragMovement(this.lastClientX, this.lastClientY);
+        this.animationFrameId = null;
+      });
+    }
+  };
+  
+  // Separate method to process drag movement - improves testability and organization
+  private processDragMovement(clientX: number, clientY: number) {
+    // Throttle processing based on time
+    const now = performance.now();
+    if (now - this.lastMoveTime < this.moveThrottleInterval) {
+      return;
+    }
+    this.lastMoveTime = now;
+    
+    // Disable tutorial on any drag movement
+    if (this.tutorial.shouldShowTutorialAnimation) {
+      this.tutorial.shouldShowTutorialAnimation = false;
+    }
+    
+    // Fast path for matchfirst puzzles (LetterOnly/LetterInWord)
+    if (!this.puzzleHandler.checkIsWordPuzzle()) {
+      // Direct coordinate update without complex hover detection
+      let newStoneCoordinates = this.stoneHandler.handleMovingStoneLetter(
+        this.pickedStone,
+        clientX,
+        clientY
+      );
+      this.pickedStone = newStoneCoordinates;
+      
+      // Only trigger monster animation if not already open
+      if (!this.isMonsterMouthOpen) {
+        this.triggerMonsterAnimation('isMouthOpen');
+        this.isMonsterMouthOpen = true;
+      }
+      
+      return; // Exit early for matchfirst puzzles
+    }
+    
+    // Complex path for word puzzles
     let newStoneCoordinates = this.stoneHandler.handleMovingStoneLetter(
       this.pickedStone,
-      event.clientX,
-      event.clientY
+      clientX,
+      clientY
     );
-
     this.pickedStone = newStoneCoordinates;
     let trailX = newStoneCoordinates.x;
     let trailY = newStoneCoordinates.y;
 
-    if (this.puzzleHandler.checkIsWordPuzzle()) {
-      const newStoneLetter = this.stoneHandler.handleHoveringToAnotherStone(
-        trailX,
-        trailY,
-        (foilStoneText, foilStoneIndex) => {
-          return this.puzzleHandler.handleCheckHoveredLetter(foilStoneText, foilStoneIndex);
-        }
+    const newStoneLetter = this.stoneHandler.handleHoveringToAnotherStone(
+      trailX,
+      trailY,
+      (foilStoneText, foilStoneIndex) => {
+        return this.puzzleHandler.handleCheckHoveredLetter(foilStoneText, foilStoneIndex);
+      }
+    );
+
+    if (newStoneLetter) {
+      this.puzzleHandler.setPickUpLetter(
+        newStoneLetter?.text,
+        newStoneLetter?.foilStoneIndex
       );
 
-      if (newStoneLetter) {
-        this.puzzleHandler.setPickUpLetter(
-          newStoneLetter?.text,
-          newStoneLetter?.foilStoneIndex
-        );
+      this.pickedStone = this.stoneHandler.resetStonePosition(
+        this.width,
+        this.pickedStone,
+        this.pickedStoneObject
+      );
 
-        this.pickedStone = this.stoneHandler.resetStonePosition(
-          this.width,
-          this.pickedStone,
-          this.pickedStoneObject
-        );
-
-        // After resetting its original position, replace with the new letter.
-        this.pickedStoneObject = newStoneLetter;
-        this.pickedStone = newStoneLetter;
-      }
+      // After resetting its original position, replace with the new letter.
+      this.pickedStoneObject = newStoneLetter;
+      this.pickedStone = newStoneLetter;
     }
 
-    this.tutorial.shouldShowTutorialAnimation = false; //Drag action will start the timer and disable the tutorial.
-
-    // Trigger open mouth animation
-    this.triggerMonsterAnimation('isMouthOpen');
+    // Trigger open mouth animation if not already open
+    if (!this.isMonsterMouthOpen) {
+      this.triggerMonsterAnimation('isMouthOpen');
+      this.isMonsterMouthOpen = true;
+    }
   };
 
   handleMouseClick = (event) => {
@@ -468,7 +531,12 @@ export class GameplayScene {
   };
 
   handleTouchMove = (event) => {
+    if (!this.pickedStone) return;
+    event.preventDefault(); // Prevent scrolling while dragging
+    
+    // Convert touch event to mouse event format
     const touch = event.touches[0];
+    // Store coordinates and let handleMouseMove handle the throttling
     this.handleMouseMove({ clientX: touch.clientX, clientY: touch.clientY });
   };
 
