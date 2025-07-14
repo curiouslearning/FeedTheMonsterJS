@@ -283,7 +283,7 @@ describe('Firebase Event Logging - puzzle_completed', () => {
             ? droppedLetters ?? 'TIMEOUT'
             : 'STONE_TEXT',
         target: correctTarget,
-        foils: foilStones,
+        foils: foilStones.join(','), // Convert array to comma-separated string
         response_time: (endTime - puzzleTime) / 1000,
       };
 
@@ -307,7 +307,7 @@ describe('Firebase Event Logging - puzzle_completed', () => {
         puzzle_number: 2,
         item_selected: 'DOG',
         target: 'CAT',
-        foils: ['BAT', 'RAT']
+        foils: 'BAT,RAT' // Expect comma-separated string
       })
     );
 
