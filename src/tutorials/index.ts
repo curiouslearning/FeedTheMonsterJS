@@ -233,7 +233,7 @@ export default class TutorialHandler {
    * hideTutorial - Use this method if we want to hide the tutorial during certain event or action.
   */
   public hideTutorial() {
-    if (this.activeTutorial && !this.isWordPuzzle) {
+    if (this.activeTutorial) {
       this.puzzleLevel++;
       //Dispose first any active tutorial's dispose method if there is any.
       this.activeTutorial?.dispose();
