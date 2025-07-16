@@ -14,22 +14,16 @@ export const DEFAULT_SELECTORS = {
 };
 
 // HTML template for the prompt text component
-export const PROMPT_TEXT_LAYOUT = (id: string, levelData: any) => {
-    /*
-        Note: hidePromptBG is a dirty fix to easily implement the new AUDIO_PLAY_BUTTON.
-        AUDIO_PLAY_BUTTON is a new asset that is similar to start-scene play button.
-        So rendering this asset requires removing the prompt background entirely.
-        However due to how coupled and tied the logic in this class. It is not easy to
-        handle the AUDIO_PLAY_BUTTON only without breaking the tightly connected logic.
-    */
-    const hidePromptBG = isGameTypeAudio(levelData.levelMeta.protoType);
-
+export const PROMPT_TEXT_LAYOUT = (id: string, isLevelHaveTutorial: boolean) => {
     return (`
         <div id="${id}" class="prompt-container">
-            <div id="prompt-background" class="prompt-background" style="background-image: url(${hidePromptBG ? null :PROMPT_TEXT_BG})">
+            <div id="prompt-background" class="prompt-background" style="background-image: url(${PROMPT_TEXT_BG})">
                 <div id="prompt-text-button-container">
                     <div id="prompt-text" class="prompt-text"></div>
-                    <div id="prompt-play-button" class="prompt-play-button" style="background-image: url(${AUDIO_PLAY_BUTTON}); pointer-events: auto;"></div>
+                    <div id="prompt-play-button"
+                        class="prompt-play-button ${isLevelHaveTutorial ? 'pulsing' : ''}"
+                        style="background-image: url(${AUDIO_PLAY_BUTTON}); pointer-events: auto;">
+                    </div>
                 </div>
             </div>
         </div>
@@ -60,9 +54,9 @@ export class PromptText extends BaseHTML {
     public translateY: number = 0;
     public isTranslatingUp: boolean = true;
     public translateFactor: number = 0.05;
-    public triggerStart: number;
-    public triggerEnd: number;
-    private hasInitialAudioPlayed: boolean = false;
+    public AUTO_PROMPT_ACTIVE_WINDOW_START: number;
+    private isAutoPromptPlaying: boolean = false;
+    private isLevelHaveTutorial: boolean = false;
 
     // HTML elements for the prompt
     public promptContainer: HTMLDivElement;
@@ -96,7 +90,7 @@ export class PromptText extends BaseHTML {
         super(
             options,
             id,
-            (id: string) => PROMPT_TEXT_LAYOUT(id, levelData)
+            (id: string) => PROMPT_TEXT_LAYOUT(id, isLevelHaveTutorial)
         );
 
         // Store id for later use
@@ -115,10 +109,10 @@ export class PromptText extends BaseHTML {
         this.currentPromptText = currentPuzzleData.prompt.promptText;
         this.currentPuzzleData = currentPuzzleData;
         this.targetStones = this.currentPuzzleData.targetStones;
+        this.isLevelHaveTutorial = isLevelHaveTutorial;
         this.audioPlayer = new AudioPlayer();
         this.audioPlayer.preloadPromptAudio(this.getPromptAudioUrl());
         document.addEventListener(VISIBILITY_CHANGE, this.handleVisibilityChange, false);
-        this.hasInitialAudioPlayed = false;
         //Set initial auto audio play timing.
         this.setPromptInitialAudioDelayValues(isLevelHaveTutorial);
 
@@ -134,7 +128,21 @@ export class PromptText extends BaseHTML {
     // While prompt-text.ts is still a tangled mess, this method offers a cleaner and more readable approach.
     // Long-term: the entire module needs refactoring for maintainability.
     private setPromptInitialAudioDelayValues(isTutorialOn: boolean = false) {
-        this.triggerStart = isTutorialOn ? 3000 : 1910;
+        this.AUTO_PROMPT_ACTIVE_WINDOW_START = isTutorialOn ? 3000 : 1910;
+
+        if (this.isSpellSoundMatchTutorial()) {
+            //3000 is the normal delay, another 3000 because FM - 577 auto audio plays happens after 3 seconds from normal delay.
+            this.AUTO_PROMPT_ACTIVE_WINDOW_START += 3000;
+        }
+    }
+
+    private removePulseClassIfSpellMatchTutorial() {
+        if (this.isSpellSoundMatchTutorial()) {
+            const playButton = document.getElementById("prompt-play-button");
+            if (playButton?.classList.contains("pulsing")) {
+                playButton.classList.remove("pulsing");
+            }
+        }
     }
 
     /**
@@ -146,9 +154,12 @@ export class PromptText extends BaseHTML {
         this.promptBackground = this.promptContainer.querySelector('#prompt-background') as HTMLDivElement;
         this.promptTextElement = this.promptContainer.querySelector('#prompt-text') as HTMLDivElement;
         this.promptPlayButtonElement = this.promptContainer.querySelector('#prompt-play-button') as HTMLDivElement;
-        
+
         // Update event listeners to include the callback
         const handleClick = (e: Event) => {
+            this.stopAutoPromptReplay();
+            this.removePulseClassIfSpellMatchTutorial();
+
             this.audioPlayer.handlePlayPromptAudioClickEvent();
             if (this.onClickCallback) {
                 this.onClickCallback();
@@ -190,6 +201,34 @@ export class PromptText extends BaseHTML {
             
             this.audioPlayer.handlePlayPromptAudioClickEvent();
         }
+    }
+
+    /**
+     * Helper method to render letters with pulsating effect on the first incomplete letter
+     * @param stones Array of target stones to render
+     * @returns HTML string with rendered letters
+     */
+    private renderLettersWithPulsation(stones: any[]): string {
+        let html = '';
+        let foundFirstIncomplete = false;
+        
+        stones.forEach((stone, i) => {
+            // Get stone text and check completion status
+            const stoneText = typeof stone === 'string' ? stone : stone.StoneText;
+            const isCompleted = i < this.droppedStones;
+            
+            // Build class string with conditionals
+            const pulseClass = (!isCompleted && !foundFirstIncomplete) ? ' text-red-pulse-letter' : '';
+            const baseClass = isCompleted ? 'text-black' : 'text-red';
+            
+            // Update flag if we found our first incomplete letter
+            if (pulseClass) foundFirstIncomplete = true;
+            
+            // Add the span to our HTML
+            html += `<span class="${baseClass}${pulseClass}">${stoneText}</span>`;
+        });
+        
+        return html;
     }
 
     /**
@@ -249,23 +288,9 @@ export class PromptText extends BaseHTML {
                 wrapper.style.width = '100%';
                 wrapper.style.display = 'inline-block';
                 
-                let html = '';
+                // Use the helper method to render letters with pulsation
+                wrapper.innerHTML = this.renderLettersWithPulsation(this.targetStones);
                 
-                // For RTL, add the stones in the correct order
-                for (let i = 0; i < this.targetStones.length; i++) {
-                    // Handle both string and object formats for target stones
-                    const stoneText = typeof this.targetStones[i] === 'string' 
-                        ? this.targetStones[i] 
-                        : (this.targetStones[i] as { StoneText: string }).StoneText;
-                    
-                    const letterClass = (i < this.droppedStones) 
-                        ? "text-black" 
-                        : "text-red";
-                    
-                    html += `<span class="${letterClass}">${stoneText}</span>`;
-                }
-                
-                wrapper.innerHTML = html;
                 this.promptTextElement.appendChild(wrapper);
                 
                 // Show text element, hide play button
@@ -379,19 +404,7 @@ export class PromptText extends BaseHTML {
                     
                     if (this.targetStones.length != this.currentPromptText.length) {
                         // For Word level type where target stones don't match prompt text length
-                        for (let j = 0; j < this.targetStones.length; j++) {
-                            // Handle both string and object formats for target stones
-                            const stoneText = typeof this.targetStones[j] === 'string' 
-                                ? this.targetStones[j] 
-                                : (this.targetStones[j] as { StoneText: string }).StoneText;
-                            
-                            const letterClass = (j < this.droppedStones) 
-                                ? "text-black" 
-                                : "text-red";
-                            
-                            const spacing = j > 0 ? " letter-spacing" : "";
-                            html += `<span class="${letterClass}${spacing}">${stoneText}</span>`;
-                        }
+                        html = this.renderLettersWithPulsation(this.targetStones);
                     } else {
                         // For Word level type where target stones match prompt text length
                         if (this.droppedStones >= this.targetStones.length) {
@@ -400,15 +413,7 @@ export class PromptText extends BaseHTML {
                         } else {
                             // Some letters still need to be dropped
                             // Matching the original canvas implementation
-                            for (let i = 0; i < this.targetStones.length; i++) {
-                                // Handle both string and object formats for target stones
-                                const stoneText = typeof this.targetStones[i] === 'string' 
-                                    ? this.targetStones[i] 
-                                    : (this.targetStones[i] as { StoneText: string }).StoneText;
-                                    
-                                const letterClass = i < this.droppedStones ? "text-black" : "text-red";
-                                html += `<span class="${letterClass}">${stoneText}</span>`;
-                            }
+                            html = this.renderLettersWithPulsation(this.targetStones);
                         }
                     }
                     
@@ -482,9 +487,46 @@ export class PromptText extends BaseHTML {
         }
     }
 
+    private isSpellSoundMatchTutorial(): boolean {
+        return (
+            this.isLevelHaveTutorial &&
+            this.levelData?.levelMeta?.levelType === "LetterOnly" &&
+            this.levelData?.levelMeta?.protoType === "Hidden"
+        );
+    }
+
+    private stopAutoPromptReplay(): void {
+        this.isAutoPromptPlaying = true;
+    }
+
+    private handleAutoPromptPlay(time) {
+        if (
+            !this.isAutoPromptPlaying &&
+            Math.floor(time) >= this.AUTO_PROMPT_ACTIVE_WINDOW_START // If time is greater than AUTO_PROMPT_ACTIVE_WINDOW_START (e.g., 3000 for tutorial, 1910 otherwise)
+        ) {
+            this.isAutoPromptPlaying = true; // Flag to true to prevent double-triggering of initial auto audio or firing setTimeout callback.
+
+            // We use handlePlayPromptAudioClickEvent so both user-triggered clicks and auto replays
+            // go through the same debounce check. If audio is still playing, it prevents overlap.
+            this.audioPlayer.handlePlayPromptAudioClickEvent();
+        }
+    }
+
     /**
-     * Starts the animation loop for the prompt background.
-     */
+    ** Starts the animation loop for the prompt background.
+    ** NOTE: This method should be deprecated and refactored out.
+    *
+    ** Reasons:
+    ** - Redundant requestAnimationFrame loop — the application already uses a main centralized animation loop.
+    ** - Mixes multiple responsibilities: audio triggering, visual scaling, DOM updates, and time tracking.
+    ** - No clear cleanup or stop mechanism — leads to unnecessary processing and potential conflicts with global loop.
+    ** - UI transformations like scaling and translation are better handled using CSS transitions or keyframe animations.
+    *
+    ** Recommended:
+    ** - Remove this loop entirely and migrate its responsibilities to the main animation loop or event-driven hooks.
+    ** - Offload prompt scaling and translation to CSS where possible.
+    ** - Handle audio timing logic in a dedicated, reusable method.
+    */
     startAnimationLoop() {
         let lastTime = 0;
         
@@ -494,16 +536,8 @@ export class PromptText extends BaseHTML {
             lastTime = timestamp;
             
             this.time += deltaTime;
-            
 
-            // Play sound at specific time
-            if (
-                !this.hasInitialAudioPlayed &&
-                Math.floor(this.time) >= this.triggerStart
-            ) {
-                this.hasInitialAudioPlayed = true; //Flag to true to prevent double triggering of initial auto audio.
-                this.audioPlayer.playPromptAudio();
-            }
+            this.handleAutoPromptPlay(this.time);
 
             //Note: !isGameTypeAudio(this.levelData.levelMeta.protoType) is needed to make sure the audio play button won't pulsate.
             if (!this.isStoneDropped && !isGameTypeAudio(this.levelData.levelMeta.protoType)) {
@@ -549,7 +583,7 @@ export class PromptText extends BaseHTML {
         this.audioPlayer.preloadPromptAudio(this.getPromptAudioUrl());
         this.isStoneDropped = false;
         this.time = 0;
-        this.hasInitialAudioPlayed = false; //Reset the flag for initial auto audio prompt play.
+        this.isAutoPromptPlaying = false; //Reset the flag for initial auto audio prompt play.
         // Update font size for new text
         this.promptTextElement.style.fontSize = `${this.calculateFont()}px`;
         
