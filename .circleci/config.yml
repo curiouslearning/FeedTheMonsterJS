@@ -76,7 +76,6 @@ jobs:
     steps:
       - invalidate-cloudfront-cache:
           distribution-id: 'E2QD6IZIYBGTJK'
-          paths: '"/src"'
 
 # http://curious-reader-books-production.s3-website.ap-south-1.amazonaws.com/
 
