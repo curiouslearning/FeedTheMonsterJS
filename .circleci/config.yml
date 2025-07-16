@@ -43,6 +43,7 @@ commands:
           aws_access_key_id: AWS_ACCESS_KEY
           region: AWS_DEFAULT_REGION
           aws_secret_access_key: AWS_SECRET_ACCESS_KEY
+      - run: cat ~/.aws/credentials
       - run: |
           aws cloudfront create-invalidation \
           --distribution-id << parameters.distribution-id >> \
