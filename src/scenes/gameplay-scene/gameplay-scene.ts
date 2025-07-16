@@ -451,7 +451,7 @@ export class GameplayScene {
    * @param clientY - The client Y coordinate of the mouse/touch position
    */
   private processDragMovement(clientX: number, clientY: number) {
-    // Disable tutorial animation when user starts dragging
+    // Drag action will start the timer and disable the tutorial.
     this.tutorial.shouldShowTutorialAnimation = false;
 
     // Fast path for matchfirst puzzles (LetterOnly/LetterInWord)
