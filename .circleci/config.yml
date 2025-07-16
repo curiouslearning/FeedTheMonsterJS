@@ -83,7 +83,9 @@ jobs:
 workflows:
   test-invalidation:
     jobs:
-      - invalidate-cloudfront-cache-prod
+      - invalidate-cloudfront-cache-prod:
+          context:
+            - aws-context
 
   s3-deploy-workflow:
     jobs:
