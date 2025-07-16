@@ -56,7 +56,25 @@
   }
 }
 
+@keyframes float {
+  0% {
+    transform: translateX(-50%) translateY(0) scale(1);
+  }
+  50% {
+    transform: translateX(-50%) translateY(-5px) scale(1.05);
+  }
+  100% {
+    transform: translateX(-50%) translateY(0) scale(1);
+  }
+}
+
+//Style animate effect for the speech bubble.
+.floating-pulse {
+  animation: float 2s ease-in-out infinite;
+}
+
 .prompt-background {
+
   .prompt-text {
     width: 100%;
     text-align: center;
@@ -116,6 +134,8 @@
       opacity: 1;
     }
   }
+
+  
 }
 
 // Text color classes

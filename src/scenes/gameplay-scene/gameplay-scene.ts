@@ -485,6 +485,7 @@ export class GameplayScene {
 
   draw(deltaTime: number) {
     const timeRef = { value: this.time };
+    //this.promptText.handleAutoPromptPlay(deltaTime);
     this.tutorial?.handleTutorialAndGameStart({
       deltaTime,
       isGameStarted: this.isGameStarted,
@@ -503,6 +504,7 @@ export class GameplayScene {
     }
 
     this.tutorial.draw(deltaTime, this.isGameStarted);
+    
   }
 
   private handleStoneLetterDrawing() {

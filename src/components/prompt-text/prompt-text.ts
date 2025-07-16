@@ -14,14 +14,27 @@ export const DEFAULT_SELECTORS = {
 };
 
 // HTML template for the prompt text component
-export const PROMPT_TEXT_LAYOUT = (id: string, isLevelHaveTutorial: boolean) => {
+export const PROMPT_TEXT_LAYOUT = (
+    {   id,
+        isLevelHaveTutorial,
+        gamePrototype
+    }: {
+        id: string,
+        isLevelHaveTutorial: boolean,
+        gamePrototype: 'Hidden' | 'Visible';
+    }) => {
+    //If the game type is audio puzzle (audio button displayed instead of word or letter), we won't apply the bubble pulsate effect.
+    const bubblePulsateStyle = isGameTypeAudio(gamePrototype) ? '' : 'floating-pulse';
+    //If the game type is audio and it is the audio tutorial level then we apply the button pulsate effect for the button.
+    const audioBtnPulsateStyle = isLevelHaveTutorial ? 'pulsing' : '';
+
     return (`
         <div id="${id}" class="prompt-container">
-            <div id="prompt-background" class="prompt-background" style="background-image: url(${PROMPT_TEXT_BG})">
+            <div id="prompt-background" class="prompt-background ${bubblePulsateStyle}" style="background-image: url(${PROMPT_TEXT_BG})">
                 <div id="prompt-text-button-container">
                     <div id="prompt-text" class="prompt-text"></div>
                     <div id="prompt-play-button"
-                        class="prompt-play-button ${isLevelHaveTutorial ? 'pulsing' : ''}"
+                        class="prompt-play-button ${audioBtnPulsateStyle}"
                         style="background-image: url(${AUDIO_PLAY_BUTTON}); pointer-events: auto;">
                     </div>
                 </div>
@@ -68,6 +81,8 @@ export class PromptText extends BaseHTML {
     private containerId: string;
     private onClickCallback?: () => void;
 
+    private lastTime: any = 0;
+
     /**
      * Initializes a new instance of the PromptText class.
      * @param width The width of the component.
@@ -77,10 +92,10 @@ export class PromptText extends BaseHTML {
      * @param rightToLeft Whether the text is right-to-left.
      */
     constructor(
-        width: number, 
-        height: number, 
-        currentPuzzleData: any, 
-        levelData: any, 
+        width: number,
+        height: number,
+        currentPuzzleData: any,
+        levelData: any,
         rightToLeft: boolean,
         id: string = 'prompt-container',
         options: BaseHtmlOptions = { selectors: DEFAULT_SELECTORS },
@@ -90,9 +105,13 @@ export class PromptText extends BaseHTML {
         super(
             options,
             id,
-            (id: string) => PROMPT_TEXT_LAYOUT(id, isLevelHaveTutorial)
+            (id: string) => PROMPT_TEXT_LAYOUT({
+                id,
+                isLevelHaveTutorial,
+                gamePrototype: levelData.levelMeta.protoType //Determines if the game is audio puzzle type or not.
+            })
         );
-
+        console.log({ levelData })
         // Store id for later use
         this.containerId = id;
 
@@ -118,9 +137,9 @@ export class PromptText extends BaseHTML {
 
         // Initialize HTML elements
         this.initializeHtmlElements();
-        
-        // Start animation loop
-        this.startAnimationLoop();
+
+        this.handleAutoPromptPlay();
+
         this.onClickCallback = onClickCallback;
     }
 
@@ -192,16 +211,6 @@ export class PromptText extends BaseHTML {
         return Utils.getConvertedDevProdURL(this.currentPuzzleData.prompt.promptAudio);
     }
 
-    /**
-     * Plays the sound.
-     */
-    playSound = () => {
-        if (this.isAppForeground) {
-            console.log('Playing prompt audio:', this.getPromptAudioUrl());
-            
-            this.audioPlayer.handlePlayPromptAudioClickEvent();
-        }
-    }
 
     /**
      * Helper method to render letters with pulsating effect on the first incomplete letter
@@ -499,65 +508,13 @@ export class PromptText extends BaseHTML {
         this.isAutoPromptPlaying = true;
     }
 
-    private handleAutoPromptPlay(time) {
-        if (
-            !this.isAutoPromptPlaying &&
-            Math.floor(time) >= this.AUTO_PROMPT_ACTIVE_WINDOW_START // If time is greater than AUTO_PROMPT_ACTIVE_WINDOW_START (e.g., 3000 for tutorial, 1910 otherwise)
-        ) {
-            this.isAutoPromptPlaying = true; // Flag to true to prevent double-triggering of initial auto audio or firing setTimeout callback.
-
-            // We use handlePlayPromptAudioClickEvent so both user-triggered clicks and auto replays
-            // go through the same debounce check. If audio is still playing, it prevents overlap.
-            this.audioPlayer.handlePlayPromptAudioClickEvent();
-        }
-    }
-
-    /**
-    ** Starts the animation loop for the prompt background.
-    ** NOTE: This method should be deprecated and refactored out.
-    *
-    ** Reasons:
-    ** - Redundant requestAnimationFrame loop — the application already uses a main centralized animation loop.
-    ** - Mixes multiple responsibilities: audio triggering, visual scaling, DOM updates, and time tracking.
-    ** - No clear cleanup or stop mechanism — leads to unnecessary processing and potential conflicts with global loop.
-    ** - UI transformations like scaling and translation are better handled using CSS transitions or keyframe animations.
-    *
-    ** Recommended:
-    ** - Remove this loop entirely and migrate its responsibilities to the main animation loop or event-driven hooks.
-    ** - Offload prompt scaling and translation to CSS where possible.
-    ** - Handle audio timing logic in a dedicated, reusable method.
-    */
-    startAnimationLoop() {
-        let lastTime = 0;
-        
-        const animate = (timestamp) => {
-            if (!lastTime) lastTime = timestamp;
-            const deltaTime = timestamp - lastTime;
-            lastTime = timestamp;
-            
-            this.time += deltaTime;
-
-            this.handleAutoPromptPlay(this.time);
-
-            //Note: !isGameTypeAudio(this.levelData.levelMeta.protoType) is needed to make sure the audio play button won't pulsate.
-            if (!this.isStoneDropped && !isGameTypeAudio(this.levelData.levelMeta.protoType)) {
-                // Update scaling
-                this.updateScaling();
-                
-                // Update translation
-                this.updateTranslation();
-                
-                // Apply transformations - preserve translateX(-50%) for horizontal centering
-                this.promptBackground.style.transform = `translateX(-50%) scale(${this.scale}) translateY(${this.translateY}px)`;
-                
-                // Show the prompt container
-                this.promptContainer.style.display = 'block';
+    private handleAutoPromptPlay() {
+        setTimeout(() => {
+            if (!this.isAutoPromptPlaying) {
+                this.audioPlayer.handlePlayPromptAudioClickEvent();
             }
-            
-            this.animationFrameId = requestAnimationFrame(animate);
-        };
-        
-        this.animationFrameId = requestAnimationFrame(animate);
+
+        }, this.AUTO_PROMPT_ACTIVE_WINDOW_START);
     }
 
     /**
@@ -582,7 +539,7 @@ export class PromptText extends BaseHTML {
         this.targetStones = this.currentPuzzleData.targetStones;
         this.audioPlayer.preloadPromptAudio(this.getPromptAudioUrl());
         this.isStoneDropped = false;
-        this.time = 0;
+        this.handleAutoPromptPlay();
         this.isAutoPromptPlaying = false; //Reset the flag for initial auto audio prompt play.
         // Update font size for new text
         this.promptTextElement.style.fontSize = `${this.calculateFont()}px`;
@@ -630,42 +587,6 @@ export class PromptText extends BaseHTML {
      */
     calculateFont(): number {
         return (this.width * 0.65 / this.currentPromptText.length > 35) ? 25 : this.width * 0.65 / this.currentPromptText.length;
-    }
-
-    /**
-     * Updates the scaling.
-     */
-    updateScaling() {
-        if (this.isScalingUp) {
-            this.scale += this.scaleFactor;
-            if (this.scale >= 1.05) {
-                this.isScalingUp = false;
-            }
-        } else {
-            this.scale -= this.scaleFactor;
-            if (this.scale <= 0.95) {
-                this.scale = 0.95;
-                this.isScalingUp = true;
-            }
-        }
-    }
-
-    /**
-     * Updates the vertical translation for floating animation.
-     */
-    updateTranslation() {
-        if (this.isTranslatingUp) {
-            this.translateY -= this.translateFactor;
-            if (this.translateY <= -5) {
-                this.isTranslatingUp = false;
-            }
-        } else {
-            this.translateY += this.translateFactor;
-            if (this.translateY >= 5) {
-                this.translateY = 5;
-                this.isTranslatingUp = true;
-            }
-        }
     }
 
     /**
