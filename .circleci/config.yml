@@ -30,6 +30,23 @@ commands:
           aws-secret-access-key: AWS_SECRET_ACCESS_KEY
           from: ./build/
           to: << parameters.to >>
+  invalidate-cloudfront-cache:
+    parameters:
+      distribution-id:
+        type: string
+        default: ''
+      paths:
+        type: string
+        default: '/*'
+    steps:
+      - aws-cli/setup:
+          aws-access-key-id: AWS_ACCESS_KEY
+          aws-region: AWS_DEFAULT_REGION
+          aws-secret-access-key: AWS_SECRET_ACCESS_KEY
+      - run: |
+          aws cloudfront create-invalidation \
+          --distribution-id << parameters.distribution-id >> \
+          --paths << parameters.paths >>
 
 jobs:
   build-and-deploy-dev:
@@ -53,9 +70,21 @@ jobs:
       - build-and-deploy:
           to: 's3://feedthemonster-production'
 
+  invalidate-cloudfront-cache-prod:
+    docker:
+      - image: cimg/python:3.13.2-node
+    steps:
+      - invalidate-cloudfront-cache:
+          distribution-id: 'E2QD6IZIYBGTJK'
+          paths: '"/src"'
+
 # http://curious-reader-books-production.s3-website.ap-south-1.amazonaws.com/
 
 workflows:
+  test-invalidation:
+    jobs:
+      - invalidate-cloudfront-cache-prod
+
   s3-deploy-workflow:
     jobs:
       - node/test
