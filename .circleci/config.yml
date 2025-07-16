@@ -40,9 +40,9 @@ commands:
         default: '/*'
     steps:
       - aws-cli/setup:
-          aws-access-key-id: AWS_ACCESS_KEY
-          aws-region: AWS_DEFAULT_REGION
-          aws-secret-access-key: AWS_SECRET_ACCESS_KEY
+          aws_access_key_id: AWS_ACCESS_KEY
+          region: AWS_DEFAULT_REGION
+          aws_secret_access_key: AWS_SECRET_ACCESS_KEY
       - run: |
           aws cloudfront create-invalidation \
           --distribution-id << parameters.distribution-id >> \
