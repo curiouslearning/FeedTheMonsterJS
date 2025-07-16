@@ -421,31 +421,38 @@ export class GameplayScene {
     this.lastClientY = event.clientY;
 
     // Early returns for invalid states
-    if (!this.pickedStone) return;
-    if (this.pickedStone.frame <= 99) return; // Prevent dragging if the letter is animating
+    if (!this.pickedStone || this.pickedStone.frame <= 99) return; // Prevent dragging if the letter is animating
 
-    // Use requestAnimationFrame for smoother performance
+    // Schedule the next animation frame if not already scheduled
+    this.scheduleDragMovementProcessing();
+  };
+
+  /**
+   * Schedules the processing of drag movement on the next animation frame.
+   * This separates the scheduling logic from the actual movement processing,
+   * improving code organization and maintainability.
+   */
+  private scheduleDragMovementProcessing() {
     if (this.animationFrameId === null) {
       this.animationFrameId = requestAnimationFrame(() => {
-        this.processDragMovement(this.lastClientX, this.lastClientY);
+        // Clear the ID first to allow scheduling of the next frame
         this.animationFrameId = null;
+        // Process the movement with the latest coordinates
+        this.processDragMovement(this.lastClientX, this.lastClientY);
       });
     }
   };
 
-  // Separate method to process drag movement - improves testability and organization
+  /**
+   * Processes the actual drag movement logic. This method is called via requestAnimationFrame
+   * to ensure smooth performance and avoid redundant processing.
+   * 
+   * @param clientX - The client X coordinate of the mouse/touch position
+   * @param clientY - The client Y coordinate of the mouse/touch position
+   */
   private processDragMovement(clientX: number, clientY: number) {
-    // Throttle processing based on time
-    const now = performance.now();
-    if (now - this.lastMoveTime < this.moveThrottleInterval) {
-      return;
-    }
-    this.lastMoveTime = now;
-
-    // Disable tutorial on any drag movement
-    if (this.tutorial.shouldShowTutorialAnimation) {
-      this.tutorial.shouldShowTutorialAnimation = false;
-    }
+    // Disable tutorial animation when user starts dragging
+    this.tutorial.shouldShowTutorialAnimation = false;
 
     // Fast path for matchfirst puzzles (LetterOnly/LetterInWord)
     if (!this.puzzleHandler.checkIsWordPuzzle()) {
