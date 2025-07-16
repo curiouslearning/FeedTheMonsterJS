@@ -192,9 +192,9 @@ export class PromptText extends BaseHTML {
         this.promptBackground.addEventListener('click', handleClick);
         this.promptTextElement.addEventListener('click', handleClick);
         
-        // Make sure all elements are clickable
-        this.promptBackground.style.pointerEvents = 'auto';
-        this.promptTextElement.style.pointerEvents = 'auto';
+        // // Make sure all elements are clickable
+        // this.promptBackground.style.pointerEvents = 'auto';
+        // this.promptTextElement.style.pointerEvents = 'auto';
         
         // Set initial font size
         this.promptTextElement.style.fontSize = `${this.calculateFont()}px`;
@@ -240,35 +240,60 @@ export class PromptText extends BaseHTML {
         return html;
     }
 
-    /**
-     * Updates the HTML prompt text for right-to-left languages.
-     */
-    updateRTLText() {
+    private cleanPromptText() {
         // Clear previous content
-        this.promptTextElement.innerHTML = '';
-        
+        if(this.promptTextElement) {
+            this.promptTextElement.innerHTML = ''
+        };
+    }
+
+    private setupPromptTextDirection(cssDirection: 'rtl' | 'ltr' = 'rtl') {
         // Set RTL direction for the text element while keeping text centered
         this.promptTextElement.style.direction = 'rtl';
         this.promptTextElement.setAttribute('dir', 'rtl');
         this.promptTextElement.style.textAlign = 'center'; // Ensure text is always centered
-        
-        if (this.levelData.levelMeta.levelType == "LetterInWord") {
-            if (this.levelData.levelMeta.protoType == "Visible") {
-                // For RTL, we need to ensure the text flows right to left
-                const wrapper = document.createElement('span');
-                wrapper.style.direction = 'rtl';
-                wrapper.style.unicodeBidi = 'embed'; // Critical for RTL rendering
-                wrapper.style.textAlign = 'center';
-                wrapper.style.width = '100%';
-                wrapper.style.display = 'inline-block';
-                
+    }
+
+    /**
+    * Generates and updates the prompt text markup with appropriate styling and layout.
+    *
+    * @param cssDirection - Specifies the text direction for the prompt.
+    * Accepts `'rtl'` (right-to-left) or `'ltr'` (left-to-right). Defaults to `'rtl'`.
+    */
+    generateTextMarkup(cssDirection: 'rtl' | 'ltr' = 'rtl') {
+        this.cleanPromptText();
+        this.setupPromptTextDirection();
+
+
+        const { levelType, protoType } = this.levelData.levelMeta
+        if (
+            levelType == "audioPlayerWord" ||
+            protoType === "Hidden"
+        ) {
+            // Show play button instead of text for audioPlayerWord levelType or hidden prototypes
+            this.updateCenteredPlayButton();
+            return;
+        }
+
+
+        const wrapper = document.createElement('span');
+        wrapper.style.direction = 'rtl';
+        wrapper.style.unicodeBidi = 'embed';
+        wrapper.style.textAlign = 'center';
+        wrapper.style.width = '100%';
+        wrapper.style.display = 'inline-block';
+
+
+
+        switch (levelType) {
+            case "LetterInWord":
                 // In RTL, we need to highlight the target letter
                 const targetStone = this.targetStones[0];
-                const targetLetterText = typeof targetStone === 'string' 
-                    ? targetStone 
+                const targetLetterText = typeof targetStone === 'string'
+                    ? targetStone
                     : (targetStone as { StoneText: string }).StoneText;
                 const parts = this.currentPromptText.split(targetLetterText);
-                
+
                 // Add the text with the highlighted letter
                 if (parts.length > 1) {
                     // Create the text with the highlighted letter with pulsating effect for LetterInWord
@@ -277,63 +302,29 @@ export class PromptText extends BaseHTML {
                     // Just show the text as is
                     wrapper.textContent = this.currentPromptText;
                 }
-                
-                this.promptTextElement.appendChild(wrapper);
-                
-                // Show text element, hide play button
-                this.promptTextElement.style.display = 'block';
-                this.promptPlayButtonElement.style.display = 'none';
-            } else {
-                // Show play button instead of text
-                this.updateCenteredPlayButton();
-            }
-        } else if (this.levelData.levelMeta.levelType == "Word") {
-            if (this.levelData.levelMeta.protoType == "Visible") {
-                // For Word level type in RTL
-                const wrapper = document.createElement('span');
-                wrapper.style.direction = 'rtl';
-                wrapper.style.unicodeBidi = 'embed'; // Critical for RTL rendering
-                wrapper.style.textAlign = 'center';
-                wrapper.style.width = '100%';
-                wrapper.style.display = 'inline-block';
-                
+                break;
+            case "Word":
                 // Use the helper method to render letters with pulsation
                 wrapper.innerHTML = this.renderLettersWithPulsation(this.targetStones);
-                
-                this.promptTextElement.appendChild(wrapper);
-                
-                // Show text element, hide play button
-                this.promptTextElement.style.display = 'block';
-                this.promptPlayButtonElement.style.display = 'none';
-            } else {
-                // Show play button instead of text
-                this.updateCenteredPlayButton();
-            }
-        } else if (this.levelData.levelMeta.levelType == "audioPlayerWord") {
-            // Show play button for audio word
-            this.updateCenteredPlayButton();
-        } else {
-            if (this.levelData.levelMeta.protoType == "Visible") {
-                // Simple text display for RTL
-                const wrapper = document.createElement('span');
+                break;
+            default:
                 wrapper.className = 'text-black';
-                wrapper.style.direction = 'rtl';
-                wrapper.style.unicodeBidi = 'embed'; // Critical for RTL rendering
-                wrapper.style.textAlign = 'center';
-                wrapper.style.width = '100%';
-                wrapper.style.display = 'inline-block';
                 wrapper.textContent = this.currentPromptText;
-                
-                this.promptTextElement.appendChild(wrapper);
-                
-                // Show text element, hide play button
-                this.promptTextElement.style.display = 'block';
-                this.promptPlayButtonElement.style.display = 'none';
-            } else {
-                // Show play button instead of text
-                this.updateCenteredPlayButton();
-            }
+                break;
         }
+
+
+        this.promptTextElement.appendChild(wrapper);
+
+        this.promptTextElement.style.display = 'block';
+        this.promptPlayButtonElement.style.display = 'none';
+    }
+
+    /**
+     * Updates the HTML prompt text for right-to-left languages.
+     */
+    updateRTLText() {
+        this.generateTextMarkup()
     }
 
     /**
@@ -484,9 +475,6 @@ export class PromptText extends BaseHTML {
      * Updates the text display based on language direction.
      */
     updateTextDisplay() {
-        // Calculate font size
-        const fontSize = this.calculateFont();
-        this.promptTextElement.style.fontSize = `${fontSize}px`;
         
         // Update the text content based on language direction
         if (this.rightToLeft) {

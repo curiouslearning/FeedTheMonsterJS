@@ -82,7 +82,7 @@
     font-weight: bold;
     color: #000;
     z-index: 2;
-
+    pointer-events: auto;
     // Support for RTL languages
     &[dir="rtl"] {
       unicode-bidi: bidi-override;
