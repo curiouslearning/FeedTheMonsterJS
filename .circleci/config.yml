@@ -37,7 +37,7 @@ commands:
         default: ''
       paths:
         type: string
-        default: '/*'
+        default: '"/*"'
     steps:
       - aws-cli/setup:
           aws_access_key_id: AWS_ACCESS_KEY
