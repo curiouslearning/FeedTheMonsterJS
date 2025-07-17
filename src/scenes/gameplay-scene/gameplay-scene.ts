@@ -100,9 +100,6 @@ export class GameplayScene {
   public loadPuzzleDelay: 3000 | 4500;
   private puzzleHandler: any;
   private timerStartSFXPlayed: boolean;
-  // Throttling variables for mouse move
-  private lastMoveTime = 0;
-  private moveThrottleInterval = 16; // ~60fps (adjust if needed for performance)
   private isMonsterMouthOpen = false;
   private lastClientX = 0;
   private lastClientY = 0;
@@ -437,83 +434,150 @@ export class GameplayScene {
       this.animationFrameId = requestAnimationFrame(() => {
         // Clear the ID first to allow scheduling of the next frame
         this.animationFrameId = null;
-        // Process the movement with the latest coordinates
-        this.processDragMovement(this.lastClientX, this.lastClientY);
+        // Use a small coordinator method to delegate to specialized handlers
+        this.handleDragMovementFrame(this.lastClientX, this.lastClientY);
       });
     }
   };
 
   /**
-   * Processes the actual drag movement logic. This method is called via requestAnimationFrame
-   * to ensure smooth performance and avoid redundant processing.
+   * Coordinates drag movement processing based on puzzle type.
+   * This method serves as a thin coordinator that delegates to specialized methods.
    * 
    * @param clientX - The client X coordinate of the mouse/touch position
    * @param clientY - The client Y coordinate of the mouse/touch position
    */
-  private processDragMovement(clientX: number, clientY: number) {
-    // Drag action will start the timer and disable the tutorial.
+  private handleDragMovementFrame(clientX: number, clientY: number) {
+    // Drag action will start the timer and disable the tutorial
     this.tutorial.shouldShowTutorialAnimation = false;
-
-    // Fast path for matchfirst puzzles (LetterOnly/LetterInWord)
+    
+    // Determine which processing method to call based on puzzle type
     if (!this.puzzleHandler.checkIsWordPuzzle()) {
-      // Direct coordinate update without complex hover detection
-      let newStoneCoordinates = this.stoneHandler.handleMovingStoneLetter(
-        this.pickedStone,
-        clientX,
-        clientY
-      );
-      this.pickedStone = newStoneCoordinates;
-
-      // Only trigger monster animation if not already open
-      if (!this.isMonsterMouthOpen) {
-        this.triggerMonsterAnimation('isMouthOpen');
-        this.isMonsterMouthOpen = true;
-      }
-
-      return; // Exit early for matchfirst puzzles
+      this.processSimpleDragMovement(clientX, clientY);
+    } else {
+      this.processWordPuzzleDragMovement(clientX, clientY);
     }
-
-    // Complex path for word puzzles
+  }
+  
+  /**
+   * Processes simple drag movement for matchfirst puzzles (LetterOnly/LetterInWord).
+   * This is a streamlined path with direct coordinate updates and no hover detection.
+   * 
+   * @param clientX - The client X coordinate of the mouse/touch position
+   * @param clientY - The client Y coordinate of the mouse/touch position
+   */
+  private processSimpleDragMovement(clientX: number, clientY: number) {
+    // Direct coordinate update without complex hover detection
     let newStoneCoordinates = this.stoneHandler.handleMovingStoneLetter(
       this.pickedStone,
       clientX,
       clientY
     );
     this.pickedStone = newStoneCoordinates;
-    let trailX = newStoneCoordinates.x;
-    let trailY = newStoneCoordinates.y;
 
-    const newStoneLetter = this.stoneHandler.handleHoveringToAnotherStone(
+    // Only trigger monster animation if not already open
+    if (!this.isMonsterMouthOpen) {
+      this.triggerMonsterAnimation('isMouthOpen');
+      this.isMonsterMouthOpen = true;
+    }
+  }
+
+  /**
+   * Processes complex drag movement for word puzzles with hover detection.
+   * Delegates to specialized methods for updating coordinates, checking hover, and handling letter pickup.
+   * 
+   * @param clientX - The client X coordinate of the mouse/touch position
+   * @param clientY - The client Y coordinate of the mouse/touch position
+   */
+  private processWordPuzzleDragMovement(clientX: number, clientY: number) {
+    // Update stone coordinates and get trail position
+    const { trailX, trailY } = this.updateDraggedStonePosition(clientX, clientY);
+    
+    // Check for hovering over other stones
+    const newStoneLetter = this.checkStoneHovering(trailX, trailY);
+    
+    // Handle letter pickup if hovering detected
+    if (newStoneLetter) {
+      this.handleLetterPickup(newStoneLetter);
+    }
+    
+    // Ensure monster mouth is open during dragging
+    this.ensureMonsterMouthOpen();
+  }
+  
+  /**
+   * Updates the position of the currently dragged stone.
+   * 
+   * @param clientX - The client X coordinate of the mouse/touch position
+   * @param clientY - The client Y coordinate of the mouse/touch position
+   * @returns Object containing trail X and Y coordinates for hover detection
+   */
+  private updateDraggedStonePosition(clientX: number, clientY: number): { trailX: number, trailY: number } {
+    const newStoneCoordinates = this.stoneHandler.handleMovingStoneLetter(
+      this.pickedStone,
+      clientX,
+      clientY
+    );
+    this.pickedStone = newStoneCoordinates;
+    
+    return {
+      trailX: newStoneCoordinates.x,
+      trailY: newStoneCoordinates.y
+    };
+  }
+  
+  /**
+   * Checks if the dragged stone is hovering over another stone.
+   * 
+   * @param trailX - The X coordinate of the dragged stone
+   * @param trailY - The Y coordinate of the dragged stone
+   * @returns The new stone letter object if hovering, otherwise null
+   */
+  private checkStoneHovering(trailX: number, trailY: number) {
+    return this.stoneHandler.handleHoveringToAnotherStone(
       trailX,
       trailY,
       (foilStoneText, foilStoneIndex) => {
         return this.puzzleHandler.handleCheckHoveredLetter(foilStoneText, foilStoneIndex);
       }
     );
-
-    if (newStoneLetter) {
-      this.puzzleHandler.setPickUpLetter(
-        newStoneLetter?.text,
-        newStoneLetter?.foilStoneIndex
-      );
-
-      this.pickedStone = this.stoneHandler.resetStonePosition(
-        this.width,
-        this.pickedStone,
-        this.pickedStoneObject
-      );
-
-      // After resetting its original position, replace with the new letter.
-      this.pickedStoneObject = newStoneLetter;
-      this.pickedStone = newStoneLetter;
-    }
-
-    // Trigger open mouth animation if not already open
+  }
+  
+  /**
+   * Handles the letter pickup process when hovering over a valid stone.
+   * Updates puzzle state, resets original stone position, and replaces with new letter.
+   * 
+   * @param newStoneLetter - The new stone letter object to pick up
+   */
+  private handleLetterPickup(newStoneLetter: any) {
+    // Update puzzle state with the picked up letter
+    this.puzzleHandler.setPickUpLetter(
+      newStoneLetter.text,
+      newStoneLetter.foilStoneIndex
+    );
+    
+    // Reset the original stone position
+    this.pickedStone = this.stoneHandler.resetStonePosition(
+      this.width,
+      this.pickedStone,
+      this.pickedStoneObject
+    );
+    
+    // Replace with the new letter
+    this.pickedStoneObject = newStoneLetter;
+    this.pickedStone = newStoneLetter;
+  }
+  
+  /**
+   * Ensures the monster mouth is open during dragging.
+   * Only triggers the animation if the mouth isn't already open.
+   */
+  private ensureMonsterMouthOpen() {
     if (!this.isMonsterMouthOpen) {
       this.triggerMonsterAnimation('isMouthOpen');
       this.isMonsterMouthOpen = true;
     }
-  };
+  }
 
   handleMouseClick = (event) => {
     let rect = this.canvas.getBoundingClientRect();
