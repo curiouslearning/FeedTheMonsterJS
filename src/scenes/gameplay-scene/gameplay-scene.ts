@@ -107,9 +107,18 @@ export class GameplayScene {
     { backToIdle: 350, isChewing: 0, isHappy: 1700, isSpit: 1300, isSad: 2600 }, // Phase 3
     { backToIdle: 350, isChewing: 0, isHappy: 1700, isSpit: 100, isSad: 2500 }  // Phase 4
   ];
+  private progressContainer: HTMLDivElement;
+  private progressBar: HTMLDivElement;
+  private progressText: HTMLSpanElement;
 
+  private currentStars: number = 0;
+  private maxStars: number = 10;
   constructor() {
     const gamePlayData = gameStateService.getGamePlaySceneDetails();
+    this.createProgressBar();
+    setTimeout(() => {
+      this.onStarCollected()
+    }, 5000);
     this.pausePopupComponent = new PausePopupComponent();
     // Assign state properties based on game state
     this.initializeProperties(gamePlayData);
@@ -162,6 +171,41 @@ export class GameplayScene {
     this.setupMonsterPhaseBg();
     this.timerStartSFXPlayed = false;
     this.audioPlayer.preloadGameAudio(AUDIO_PATH_POINTS_ADD); // to preload the PointsAdd.wav
+  }
+
+  private createProgressBar() {
+    // Create container
+    this.progressContainer = document.createElement('div');
+    this.progressContainer.className = 'progress-container';
+
+    // Create bar
+    this.progressBar = document.createElement('div');
+    this.progressBar.className = 'progress-bar';
+
+    // Create text
+    this.progressText = document.createElement('span');
+    this.progressText.className = 'progress-text';
+    this.progressText.innerText = '0%';
+
+    this.progressContainer.appendChild(this.progressBar);
+    this.progressContainer.appendChild(this.progressText);
+
+    // Attach to DOM (overlay above canvas)
+    document.body.appendChild(this.progressContainer);
+  }
+
+  public updateProgress(stars: number) {
+    this.currentStars = stars;
+    const progress = Math.min((stars / this.maxStars) * 100, 100);
+
+    this.progressBar.style.width = `${progress}%`;
+    this.progressText.innerText = `${Math.round(progress)}%`;
+  }
+
+  // Example: Call this when stars are collected
+  public onStarCollected() {
+    this.currentStars++;
+    this.updateProgress(this.currentStars);
   }
 
   private initializeRiveMonster(): RiveMonsterComponent {

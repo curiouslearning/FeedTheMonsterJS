@@ -1002,3 +1002,33 @@ img {
     width: 65px;
   }
 }
+
+.progress-container {
+  position: absolute;
+  top: 10px;
+  left: 64%;
+  transform: translateX(-50%);
+  width: 150px;
+  height: 50px;
+  background-color: #333;
+  border-radius: 20px;
+  overflow: hidden;
+  z-index: 1000;
+}
+
+.progress-bar {
+  width: 0%;
+  height: 100%;
+  background: linear-gradient(90deg, #f8b400, #ff5e00);
+  transition: width 0.5s ease-in-out;
+}
+
+.progress-text {
+  position: absolute;
+  width: 100%;
+  text-align: center;
+  color: white;
+  font-weight: bold;
+  top: 50%;
+  transform: translateY(-50%);
+}
