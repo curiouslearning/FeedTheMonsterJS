@@ -77,17 +77,15 @@ jobs:
     steps:
       - invalidate-cloudfront-cache:
           distribution-id: 'E2QD6IZIYBGTJK'
-          paths: '"/src"'
+          paths: '"/*"'
+
+# TODO: move invalidate-cloudfront-cache parameters to project env variables
+# Eventually these will be the new cloudfront name for apps and app name respectively.
+
 
 # http://curious-reader-books-production.s3-website.ap-south-1.amazonaws.com/
 
 workflows:
-  test-invalidation:
-    jobs:
-      - invalidate-cloudfront-cache-prod:
-          context:
-            - aws-context
-
   s3-deploy-workflow:
     jobs:
       - node/test
@@ -108,7 +106,12 @@ workflows:
       - build-and-deploy-prod:
           context:
             - aws-context
+          requires:
+            - node/test
           filters:
             branches:
               only:
                 - main
+      - invalidate-cloudfront-cache-prod:
+          requires:
+            - build-and-deploy-prod
