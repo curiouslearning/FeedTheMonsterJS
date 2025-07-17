@@ -210,7 +210,7 @@ export class GameplayScene {
      */
     if (this.tutorial.showHandPointerInAudioPuzzle(gamePlayData.levelData)) {
       onClickCallback = () => {
-        this.tutorial.shouldShowTutorialAnimation = true;
+        this.tutorial.shouldShowQuickStartTutorial = true;
         this.tutorial.quickStartTutorialReady = true;
       };
     }
@@ -229,8 +229,8 @@ export class GameplayScene {
     this.levelIndicators.setIndicators(this.counter);
     this.monster = this.initializeRiveMonster();
 
-    //For shouldShowTutorialAnimation- If the game level should have tutorial AND level is not yet cleared, timer should be delayed.
-    this.tutorial.shouldShowTutorialAnimation = gamePlayData.tutorialOn && !gamePlayData.isTutorialCleared;
+    //For shouldShowQuickStartTutorial- If the game level should have tutorial AND level is not yet cleared, timer should be delayed.
+    this.tutorial.shouldShowQuickStartTutorial = gamePlayData.tutorialOn && !gamePlayData.isTutorialCleared;
 
     if (this.tutorial.showHandPointerInAudioPuzzle(gamePlayData.levelData)) {
       this.tutorial.resetQuickStartTutorialDelay();
@@ -448,7 +448,7 @@ export class GameplayScene {
    */
   private dispatchDragUpdate(clientX: number, clientY: number) {
     // Disable quick start tutorial animation since user has started interacting
-    this.tutorial.shouldShowTutorialAnimation = false;
+    this.tutorial.shouldShowQuickStartTutorial = false;
     
     // Determine which processing method to call based on puzzle type
     if (!this.puzzleHandler.checkIsWordPuzzle()) {
@@ -657,7 +657,7 @@ export class GameplayScene {
   private handleTimerUpdate(deltaTime: number) {
     // Update timer only once animation is complete and game is not paused.
     if (this.stoneHandler.stonesHasLoaded && !this.isPauseButtonClicked) {
-      const hasTutorial = this.tutorial.shouldShowTutorialAnimation;
+      const hasTutorial = this.tutorial.shouldShowQuickStartTutorial;
       const shouldStartTimer = this.tutorial.updateTutorialTimer(deltaTime);
       if (!hasTutorial || (shouldStartTimer && hasTutorial)) {
         // After 12s, start timer updates
