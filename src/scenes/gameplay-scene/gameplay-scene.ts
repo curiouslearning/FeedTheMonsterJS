@@ -421,34 +421,33 @@ export class GameplayScene {
     if (!this.pickedStone || this.pickedStone.frame <= 99) return; // Prevent dragging if the letter is animating
 
     // Schedule the next animation frame if not already scheduled
-    this.scheduleDragMovementProcessing();
+    this.requestDragUpdate();
   };
 
   /**
-   * Schedules the processing of drag movement on the next animation frame.
-   * This separates the scheduling logic from the actual movement processing,
-   * improving code organization and maintainability.
+   * Requests an animation frame for drag updates.
+   * Uses requestAnimationFrame for optimal performance and visual smoothness.
    */
-  private scheduleDragMovementProcessing() {
+  private requestDragUpdate() {
     if (this.animationFrameId === null) {
       this.animationFrameId = requestAnimationFrame(() => {
         // Clear the ID first to allow scheduling of the next frame
         this.animationFrameId = null;
         // Use a small coordinator method to delegate to specialized handlers
-        this.handleDragMovementFrame(this.lastClientX, this.lastClientY);
+        this.dispatchDragUpdate(this.lastClientX, this.lastClientY);
       });
     }
   };
 
   /**
-   * Coordinates drag movement processing based on puzzle type.
-   * This method serves as a thin coordinator that delegates to specialized methods.
+   * Dispatches drag updates to the appropriate specialized processor based on puzzle type.
+   * Acts as a thin coordinator that routes to specialized processing methods.
    * 
    * @param clientX - The client X coordinate of the mouse/touch position
    * @param clientY - The client Y coordinate of the mouse/touch position
    */
-  private handleDragMovementFrame(clientX: number, clientY: number) {
-    // Drag action will start the timer and disable the tutorial
+  private dispatchDragUpdate(clientX: number, clientY: number) {
+    // Disable quick start tutorial animation since user has started interacting
     this.tutorial.shouldShowTutorialAnimation = false;
     
     // Determine which processing method to call based on puzzle type
