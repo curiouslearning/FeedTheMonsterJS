@@ -100,6 +100,10 @@ export class GameplayScene {
   public loadPuzzleDelay: 3000 | 4500;
   private puzzleHandler: any;
   private timerStartSFXPlayed: boolean;
+  private isMonsterMouthOpen = false;
+  private lastClientX = 0;
+  private lastClientY = 0;
+  private animationFrameId: number | null = null;
   // Define animation delays as an array where index 0 = phase 0, index 1 = phase 1, index 2 = phase 2
   private animationDelays = [
     { backToIdle: 350, isChewing: 0, isHappy: 1700, isSpit: 1500, isSad: 3000 }, // Phase 1
@@ -206,7 +210,7 @@ export class GameplayScene {
      */
     if (this.tutorial.showHandPointerInAudioPuzzle(gamePlayData.levelData)) {
       onClickCallback = () => {
-        this.tutorial.shouldShowTutorialAnimation = true;
+        this.tutorial.shouldShowQuickStartTutorial = true;
         this.tutorial.quickStartTutorialReady = true;
       };
     }
@@ -225,8 +229,8 @@ export class GameplayScene {
     this.levelIndicators.setIndicators(this.counter);
     this.monster = this.initializeRiveMonster();
 
-    //For shouldShowTutorialAnimation- If the game level should have tutorial AND level is not yet cleared, timer should be delayed.
-    this.tutorial.shouldShowTutorialAnimation = gamePlayData.tutorialOn && !gamePlayData.isTutorialCleared;
+    //For shouldShowQuickStartTutorial- If the game level should have tutorial AND level is not yet cleared, timer should be delayed.
+    this.tutorial.shouldShowQuickStartTutorial = gamePlayData.tutorialOn && !gamePlayData.isTutorialCleared;
 
     if (this.tutorial.showHandPointerInAudioPuzzle(gamePlayData.levelData)) {
       this.tutorial.resetQuickStartTutorialDelay();
@@ -298,6 +302,15 @@ export class GameplayScene {
   }
 
   handleMouseUp = (event) => {
+    // Cancel any pending animation frame
+    if (this.animationFrameId !== null) {
+      cancelAnimationFrame(this.animationFrameId);
+      this.animationFrameId = null;
+    }
+
+    // Reset monster mouth state
+    this.isMonsterMouthOpen = false;
+
     if (!this.pickedStone || this.pickedStone.frame <= 99) {
       this.puzzleHandler.clearPickedUp();
       return;
@@ -346,6 +359,10 @@ export class GameplayScene {
       this.triggerMonsterAnimation('isMouthClosed');
       this.triggerMonsterAnimation('backToIdle');
     }
+
+    // Clear stored coordinates
+    this.lastClientX = 0;
+    this.lastClientY = 0;
 
     this.pickedStone = null;
     this.puzzleHandler.clearPickedUp();
@@ -396,55 +413,170 @@ export class GameplayScene {
   }
 
   handleMouseMove = (event) => {
-    if (this.pickedStone && this.pickedStone.frame <= 99) {
-      return; // Prevent dragging if the letter is animating
+    // Store the latest coordinates even if we don't process this event
+    this.lastClientX = event.clientX;
+    this.lastClientY = event.clientY;
+
+    // Early returns for invalid states
+    if (!this.pickedStone || this.pickedStone.frame <= 99) return; // Prevent dragging if the letter is animating
+
+    // Schedule the next animation frame if not already scheduled
+    this.requestDragUpdate();
+  };
+
+  /**
+   * Requests an animation frame for drag updates.
+   * Uses requestAnimationFrame for optimal performance and visual smoothness.
+   */
+  private requestDragUpdate() {
+    if (this.animationFrameId === null) {
+      this.animationFrameId = requestAnimationFrame(() => {
+        // Clear the ID first to allow scheduling of the next frame
+        this.animationFrameId = null;
+        // Use a small coordinator method to delegate to specialized handlers
+        this.dispatchDragUpdate(this.lastClientX, this.lastClientY);
+      });
     }
+  };
 
-    if (!this.pickedStone) return;
-
-    // Move letter regardless of puzzle type
+  /**
+   * Dispatches drag updates to the appropriate specialized processor based on puzzle type.
+   * Acts as a thin coordinator that routes to specialized processing methods.
+   * 
+   * @param clientX - The client X coordinate of the mouse/touch position
+   * @param clientY - The client Y coordinate of the mouse/touch position
+   */
+  private dispatchDragUpdate(clientX: number, clientY: number) {
+    // Disable quick start tutorial animation since user has started interacting
+    this.tutorial.shouldShowQuickStartTutorial = false;
+    
+    // Determine which processing method to call based on puzzle type
+    if (!this.puzzleHandler.checkIsWordPuzzle()) {
+      this.processSimpleDragMovement(clientX, clientY);
+    } else {
+      this.processWordPuzzleDragMovement(clientX, clientY);
+    }
+  }
+  
+  /**
+   * Processes simple drag movement for matchfirst puzzles (LetterOnly/LetterInWord).
+   * This is a streamlined path with direct coordinate updates and no hover detection.
+   * 
+   * @param clientX - The client X coordinate of the mouse/touch position
+   * @param clientY - The client Y coordinate of the mouse/touch position
+   */
+  private processSimpleDragMovement(clientX: number, clientY: number) {
+    // Direct coordinate update without complex hover detection
     let newStoneCoordinates = this.stoneHandler.handleMovingStoneLetter(
       this.pickedStone,
-      event.clientX,
-      event.clientY
+      clientX,
+      clientY
     );
-
     this.pickedStone = newStoneCoordinates;
-    let trailX = newStoneCoordinates.x;
-    let trailY = newStoneCoordinates.y;
 
-    if (this.puzzleHandler.checkIsWordPuzzle()) {
-      const newStoneLetter = this.stoneHandler.handleHoveringToAnotherStone(
-        trailX,
-        trailY,
-        (foilStoneText, foilStoneIndex) => {
-          return this.puzzleHandler.handleCheckHoveredLetter(foilStoneText, foilStoneIndex);
-        }
-      );
-
-      if (newStoneLetter) {
-        this.puzzleHandler.setPickUpLetter(
-          newStoneLetter?.text,
-          newStoneLetter?.foilStoneIndex
-        );
-
-        this.pickedStone = this.stoneHandler.resetStonePosition(
-          this.width,
-          this.pickedStone,
-          this.pickedStoneObject
-        );
-
-        // After resetting its original position, replace with the new letter.
-        this.pickedStoneObject = newStoneLetter;
-        this.pickedStone = newStoneLetter;
-      }
+    // Only trigger monster animation if not already open
+    if (!this.isMonsterMouthOpen) {
+      this.triggerMonsterAnimation('isMouthOpen');
+      this.isMonsterMouthOpen = true;
     }
+  }
 
-    this.tutorial.shouldShowTutorialAnimation = false; //Drag action will start the timer and disable the tutorial.
-
-    // Trigger open mouth animation
-    this.triggerMonsterAnimation('isMouthOpen');
-  };
+  /**
+   * Processes complex drag movement for word puzzles with hover detection.
+   * Delegates to specialized methods for updating coordinates, checking hover, and handling letter pickup.
+   * 
+   * @param clientX - The client X coordinate of the mouse/touch position
+   * @param clientY - The client Y coordinate of the mouse/touch position
+   */
+  private processWordPuzzleDragMovement(clientX: number, clientY: number) {
+    // Update stone coordinates and get trail position
+    const { trailX, trailY } = this.updateDraggedStonePosition(clientX, clientY);
+    
+    // Check for hovering over other stones
+    const newStoneLetter = this.checkStoneHovering(trailX, trailY);
+    
+    // Handle letter pickup if hovering detected
+    if (newStoneLetter) {
+      this.handleLetterPickup(newStoneLetter);
+    }
+    
+    // Ensure monster mouth is open during dragging
+    this.ensureMonsterMouthOpen();
+  }
+  
+  /**
+   * Updates the position of the currently dragged stone.
+   * 
+   * @param clientX - The client X coordinate of the mouse/touch position
+   * @param clientY - The client Y coordinate of the mouse/touch position
+   * @returns Object containing trail X and Y coordinates for hover detection
+   */
+  private updateDraggedStonePosition(clientX: number, clientY: number): { trailX: number, trailY: number } {
+    const newStoneCoordinates = this.stoneHandler.handleMovingStoneLetter(
+      this.pickedStone,
+      clientX,
+      clientY
+    );
+    this.pickedStone = newStoneCoordinates;
+    
+    return {
+      trailX: newStoneCoordinates.x,
+      trailY: newStoneCoordinates.y
+    };
+  }
+  
+  /**
+   * Checks if the dragged stone is hovering over another stone.
+   * 
+   * @param trailX - The X coordinate of the dragged stone
+   * @param trailY - The Y coordinate of the dragged stone
+   * @returns The new stone letter object if hovering, otherwise null
+   */
+  private checkStoneHovering(trailX: number, trailY: number) {
+    return this.stoneHandler.handleHoveringToAnotherStone(
+      trailX,
+      trailY,
+      (foilStoneText, foilStoneIndex) => {
+        return this.puzzleHandler.handleCheckHoveredLetter(foilStoneText, foilStoneIndex);
+      }
+    );
+  }
+  
+  /**
+   * Handles the letter pickup process when hovering over a valid stone.
+   * Updates puzzle state, resets original stone position, and replaces with new letter.
+   * 
+   * @param newStoneLetter - The new stone letter object to pick up
+   */
+  private handleLetterPickup(newStoneLetter: any) {
+    // Update puzzle state with the picked up letter
+    this.puzzleHandler.setPickUpLetter(
+      newStoneLetter.text,
+      newStoneLetter.foilStoneIndex
+    );
+    
+    // Reset the original stone position
+    this.pickedStone = this.stoneHandler.resetStonePosition(
+      this.width,
+      this.pickedStone,
+      this.pickedStoneObject
+    );
+    
+    // Replace with the new letter
+    this.pickedStoneObject = newStoneLetter;
+    this.pickedStone = newStoneLetter;
+  }
+  
+  /**
+   * Ensures the monster mouth is open during dragging.
+   * Only triggers the animation if the mouth isn't already open.
+   */
+  private ensureMonsterMouthOpen() {
+    if (!this.isMonsterMouthOpen) {
+      this.triggerMonsterAnimation('isMouthOpen');
+      this.isMonsterMouthOpen = true;
+    }
+  }
 
   handleMouseClick = (event) => {
     let rect = this.canvas.getBoundingClientRect();
@@ -467,7 +599,12 @@ export class GameplayScene {
   };
 
   handleTouchMove = (event) => {
+    if (!this.pickedStone) return;
+    event.preventDefault(); // Prevent scrolling while dragging
+
+    // Convert touch event to mouse event format
     const touch = event.touches[0];
+    // Store coordinates and let handleMouseMove handle the throttling
     this.handleMouseMove({ clientX: touch.clientX, clientY: touch.clientY });
   };
 
@@ -520,9 +657,9 @@ export class GameplayScene {
   private handleTimerUpdate(deltaTime: number) {
     // Update timer only once animation is complete and game is not paused.
     if (this.stoneHandler.stonesHasLoaded && !this.isPauseButtonClicked) {
-      const hasTutorial = this.tutorial.shouldShowTutorialAnimation;
+      const hasTutorial = this.tutorial.shouldShowQuickStartTutorial;
       const shouldStartTimer = this.tutorial.updateTutorialTimer(deltaTime);
-      if (!hasTutorial || (shouldStartTimer && hasTutorial)) { 
+      if (!hasTutorial || (shouldStartTimer && hasTutorial)) {
         // After 12s, start timer updates
         this.timerTicking.update(deltaTime);
         // added delta time checking to ensure that the timer starts sfx will only trigger once at the beginning of the timer countdown.
