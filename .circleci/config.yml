@@ -1,7 +1,7 @@
 version: 2.1
 
 orbs:
-  # aws-cli: circleci/aws-cli@5.2.0
+  aws-cli: circleci/aws-cli@5.2.0
   # aws-s3: circleci/aws-s3@4.1.1
   aws-s3: circleci/aws-s3@3.0
   node: circleci/node@7.0.0
@@ -30,6 +30,24 @@ commands:
           aws-secret-access-key: AWS_SECRET_ACCESS_KEY
           from: ./build/
           to: << parameters.to >>
+  invalidate-cloudfront-cache:
+    parameters:
+      distribution-id:
+        type: string
+        default: ''
+      paths:
+        type: string
+        default: '"/*"'
+    steps:
+      - aws-cli/setup:
+          aws_access_key_id: $AWS_ACCESS_KEY
+          region: $AWS_DEFAULT_REGION
+          aws_secret_access_key: $AWS_SECRET_ACCESS_KEY
+      - run: cat ~/.aws/credentials
+      - run: >
+          aws cloudfront create-invalidation
+          --distribution-id << parameters.distribution-id >>
+          --paths << parameters.paths >>
 
 jobs:
   build-and-deploy-dev:
@@ -52,6 +70,18 @@ jobs:
     steps:
       - build-and-deploy:
           to: 's3://feedthemonster-production'
+
+  invalidate-cloudfront-cache-prod:
+    docker:
+      - image: cimg/python:3.13.2-node
+    steps:
+      - invalidate-cloudfront-cache:
+          distribution-id: 'E2QD6IZIYBGTJK'
+          paths: '"/*"'
+
+# TODO: move invalidate-cloudfront-cache parameters to project env variables
+# Eventually these will be the new cloudfront name for apps and app name respectively.
+
 
 # http://curious-reader-books-production.s3-website.ap-south-1.amazonaws.com/
 
@@ -76,7 +106,12 @@ workflows:
       - build-and-deploy-prod:
           context:
             - aws-context
+          requires:
+            - node/test
           filters:
             branches:
               only:
                 - main
+      - invalidate-cloudfront-cache-prod:
+          requires:
+            - build-and-deploy-prod
