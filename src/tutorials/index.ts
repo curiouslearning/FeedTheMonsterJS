@@ -15,7 +15,7 @@ type TutorialInitParams = {
 export default class TutorialHandler {
   private quickStartTutorialTimerId: ReturnType<typeof setTimeout> | null = null;
   public quickStartTutorialReady: boolean = false;
-  public shouldShowTutorialAnimation: boolean = false; // Set externally as needed
+  public shouldShowQuickStartTutorial: boolean = false; // Set externally as needed
   private width: number;
   private height: number;
   private context: CanvasRenderingContext2D;
@@ -133,8 +133,8 @@ export default class TutorialHandler {
     setGameToStart: () => void,
     timeRef: { value: number }
   }) {
-    const shouldRunQuickStartTutorial = this.shouldShowTutorialAnimation && this.quickStartTutorialReady && this.puzzleLevel === 0;
-    const shouldWaitForQuickStartTutorial = this.shouldShowTutorialAnimation && !this.quickStartTutorialReady && this.puzzleLevel === 0;
+    const shouldRunQuickStartTutorial = this.shouldShowQuickStartTutorial && this.quickStartTutorialReady && this.puzzleLevel === 0;
+    const shouldWaitForQuickStartTutorial = this.shouldShowQuickStartTutorial && !this.quickStartTutorialReady && this.puzzleLevel === 0;
     // If game hasn't started and it's not paused
     if (!isGameStarted && !isPauseButtonClicked) {
       // Gate the tutorial animation behind both the tutorial flag and the timer-based flag
@@ -233,7 +233,7 @@ export default class TutorialHandler {
    * hideTutorial - Use this method if we want to hide the tutorial during certain event or action.
   */
   public hideTutorial() {
-    if (this.activeTutorial && !this.isWordPuzzle) {
+    if (this.activeTutorial) {
       this.puzzleLevel++;
       //Dispose first any active tutorial's dispose method if there is any.
       this.activeTutorial?.dispose();
@@ -316,7 +316,7 @@ export default class TutorialHandler {
     }
     this.quickStartTutorialReady = false;
     // Only start the timer if the tutorial should be shown
-    if (this.shouldShowTutorialAnimation) {
+    if (this.shouldShowQuickStartTutorial) {
       this.quickStartTutorialTimerId = setTimeout(() => {
         this.quickStartTutorialReady = true;
       }, 6000); // 6 seconds
