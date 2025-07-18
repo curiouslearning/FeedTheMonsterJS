@@ -47,21 +47,33 @@ export class StoneConfig {
     }
 
     calculateImageAndFontSize() {
-        const scaledWidth = Math.round(this.canWidth / this.scale); // (width multiplied by devicePixelRatio) / devicePixelRatio to get the original screen width.
         const scaledHeight = Math.round(this.canHeight / this.scale);
-        if (
-            this.context.measureText(this.text).width * 1.4 >
-            scaledHeight / 9.5
-        ) {
-            this.imageSize = this.context.measureText(this.text).width * 1.1;
-            this.textFontSize = (scaledHeight / 25);
-            if (this.text.length >= 3 && this.origx < 50 && this.origx < scaledWidth / 2) {
-                this.x = this.origx + 21;
-            }
-        } else {
-            this.imageSize = (scaledHeight / 9.5);
-            this.textFontSize = (scaledHeight / 20);
+
+        const baseStoneSize = scaledHeight / 9.5;
+        this.imageSize = baseStoneSize;
+
+        let fontSize = scaledHeight / 20;
+        // Cap by stone height so we never start larger than the drawable area
+        const maxFontByHeight = this.imageSize * 0.5; // tweak
+        fontSize = Math.min(fontSize, maxFontByHeight);
+
+        // Scaled minimum (never below 14)
+        const minFontSize = Math.max(14, this.imageSize * 0.28); // tweak % as needed
+
+        const font = 'sans-serif';
+
+        // Measure & shrink by width
+        const fitRatio = 0.6; // target: use 60% of stone width
+        this.context.font = `${fontSize}px ${font}`;
+        let textWidth = this.context.measureText(this.text).width;
+
+        while (textWidth > this.imageSize * fitRatio && fontSize > minFontSize) {
+            fontSize -= 1;
+            this.context.font = `${fontSize}px ${font}`;
+            textWidth = this.context.measureText(this.text).width;
         }
+
+        this.textFontSize = fontSize;
     }
 
     getEase = (currentProgress: number, start: number, distance: number) => {
