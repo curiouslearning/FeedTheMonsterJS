@@ -216,7 +216,6 @@ export class GameplayScene {
     }
     this.promptText = new PromptText(
       this.width,
-      this.height,
       this.levelData.puzzles[this.counter],
       this.levelData,
       this.rightToLeft,
@@ -326,7 +325,6 @@ export class GameplayScene {
           frame: this.pickedStone.frame
         },
         targetLetterText: this.stoneHandler.getCorrectTargetStone(), // Pass only the data needed
-        promptText: this.promptText,
         handleLetterDropEnd: (isCorrect, puzzleType) => {
           this.isFeedBackTriggered = isCorrect;
           if (isCorrect) {

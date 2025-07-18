@@ -4,6 +4,7 @@ import { AudioPlayer } from "@components";
 import { PROMPT_TEXT_BG, AUDIO_PLAY_BUTTON } from "@constants";
 import { BaseHTML, BaseHtmlOptions } from "../baseHTML/base-html";
 import './prompt-text.scss';
+import gameStateService from '@gameStateService';
 
 // Default selectors for the prompt text component
 export const DEFAULT_SELECTORS = {
@@ -49,7 +50,6 @@ export const PROMPT_TEXT_LAYOUT = (
 export class PromptText extends BaseHTML {
     // ...
     public width: number;
-    public height: number;
     public levelData: any;
     public currentPromptText: string;
     public currentPuzzleData: any;
@@ -57,7 +57,7 @@ export class PromptText extends BaseHTML {
     public rightToLeft: boolean;
     public audioPlayer: AudioPlayer;
     public isStoneDropped: boolean = false;
-    public droppedStones: number = 0;
+    public currentActiveLetterIndex : number = 0;
     public isAppForeground: boolean = true;
     public AUTO_PROMPT_INITIAL_DELAY_MS: number;
     private isAutoPromptPlaying: boolean = false;
@@ -71,6 +71,7 @@ export class PromptText extends BaseHTML {
     private eventManager: EventManager;
 
     private onClickCallback?: () => void;
+    private unsubscribeSubmittedLettersEvent: () => void;
 
     /**
      * Initializes a new instance of the PromptText class.
@@ -82,7 +83,6 @@ export class PromptText extends BaseHTML {
      */
     constructor(
         width: number,
-        height: number,
         currentPuzzleData: any,
         levelData: any,
         rightToLeft: boolean,
@@ -100,7 +100,6 @@ export class PromptText extends BaseHTML {
                 gamePrototype: levelData.levelMeta.protoType //Determines if the game is audio puzzle type or not.
             })
         );
-        console.log({ levelData })
 
         // Create event manager for handling events
         this.eventManager = new EventManager({
@@ -109,7 +108,6 @@ export class PromptText extends BaseHTML {
         });
 
         this.width = width;
-        this.height = height;
         this.levelData = levelData;
         this.rightToLeft = rightToLeft;
         this.currentPromptText = currentPuzzleData.prompt.promptText;
@@ -119,15 +117,24 @@ export class PromptText extends BaseHTML {
         this.audioPlayer = new AudioPlayer();
         this.audioPlayer.preloadPromptAudio(this.getPromptAudioUrl());
         document.addEventListener(VISIBILITY_CHANGE, this.handleVisibilityChange, false);
-        //Set initial auto audio play timing.
-        this.setPromptInitialAudioDelayValues(isLevelHaveTutorial);
-
-        // Initialize HTML elements
-        this.initializeHtmlElements(id);
-
+        this.setPromptInitialAudioDelayValues(isLevelHaveTutorial); //Set initial auto audio play timing.
+        this.initializeHtmlElements(id); // Initialize HTML elements
         this.handleAutoPromptPlay();
-
         this.onClickCallback = onClickCallback;
+        this.autoRemoveButtonPulse();
+
+        // Subscribe to submitted letters count updates.
+        // droppedLetterCount represents the number of letters already solved,
+        // so we assign it to currentActiveLetterIndex to reflect the next letter
+        // that should be styled as active in the prompt display.
+        this.unsubscribeSubmittedLettersEvent = gameStateService.subscribe(
+            gameStateService.EVENTS.WORD_PUZZLE_SUBMITTED_LETTERS_COUNT,
+            (droppedLetterCount: number) => {
+                this.currentActiveLetterIndex = droppedLetterCount;
+                //Update the prompt text that reflects the next active letter.
+                this.generateTextMarkup();
+            }
+        );
     }
 
     private setPromptInitialAudioDelayValues(isTutorialOn: boolean = false) {
@@ -140,6 +147,15 @@ export class PromptText extends BaseHTML {
             if (playButton?.classList.contains("pulsing")) {
                 playButton.classList.remove("pulsing");
             }
+        }
+    }
+
+    private autoRemoveButtonPulse() {
+        if (this.isSpellSoundMatchTutorial()) {
+            const totalAudioTutorialDuration = this.AUTO_PROMPT_INITIAL_DELAY_MS + 3000;
+            setTimeout(() => {
+                this.removePulseClassIfSpellMatchTutorial();
+            }, totalAudioTutorialDuration);
         }
     }
 
@@ -170,18 +186,13 @@ export class PromptText extends BaseHTML {
             e.stopPropagation();
         };
 
-
         // Add event listeners to all prompt elements
         this.promptPlayButtonElement.addEventListener('click', handleClick);
         this.promptBackground.addEventListener('click', handleClick);
         this.promptTextElement.addEventListener('click', handleClick);
 
-
-        // Set initial font size
-        this.updatePromptFontSize();
-
-        // Update the text display
-        this.updateTextDisplay();
+        this.updatePromptFontSize();// Set initial font size
+        this.generateTextMarkup();
     }
 
     /**
@@ -192,11 +203,10 @@ export class PromptText extends BaseHTML {
         return Utils.getConvertedDevProdURL(this.currentPuzzleData.prompt.promptAudio);
     }
 
-
     private cleanPromptText() {
         // Clear previous content
         if(this.promptTextElement) {
-            this.promptTextElement.innerHTML = ''
+            this.promptTextElement.innerHTML = '';
         };
     }
 
@@ -207,11 +217,6 @@ export class PromptText extends BaseHTML {
     setPromptButtonVisible(showButton: boolean) {
         this.promptPlayButtonElement.style.display = showButton ? 'block' : 'none';
         this.promptTextElement.style.display = showButton ? 'none' : 'block';
-    }
-
-    // Wraps a letter in a styled span element.
-    private generateSpanMarkup(letter: string, styleClass: string): string {
-        return `<span class="${styleClass}">${letter}</span>`;
     }
 
     /**
@@ -237,22 +242,24 @@ export class PromptText extends BaseHTML {
         activeLetter: string,
         activeLetterIndex: number // Typically starts at 0.
     }): string {
+        // Wraps a letter in a styled span element.
+        const generateSpanMarkup = (letter: string, styleClass: string) => {
+            return `<span class="${styleClass}">${letter}</span>`;
+        }
+
         const wordCharArray = [...promptWord].map(
             (letter, index) => {
+                let styleClass: string | null = null;
+
                 if (letter === activeLetter && index === activeLetterIndex) {
-                    return this.generateSpanMarkup(activeLetter, 'text-red-pulse-letter');
+                    styleClass = 'text-red-pulse-letter';
+                } else if (isSpellingPuzzle){
+                    styleClass = activeLetterIndex < index ? 'text-red' : "text-black";
                 }
 
-                if (isSpellingPuzzle){
-                    const spanStyle = activeLetterIndex < index ? 'text-red' : "text-black"
-                    return this.generateSpanMarkup(letter, spanStyle);
-                }
-
-                //Return a simple letter for Letter Only In Word puzzles.
-                return letter;
+                return styleClass ? generateSpanMarkup(letter, styleClass) : letter;
         });
         const wordTextMarkup = wordCharArray.join('');
-
         return wordTextMarkup;
     }
 
@@ -292,20 +299,17 @@ export class PromptText extends BaseHTML {
         return wrapper;
     }
 
-    //hide button and show text
+    //hide button and show text - USE THIS FOR FM-515 FEATURE.
     private showWordText() {
         this.setPromptButtonVisible(false);
-        this.updateTextDisplay();
+        this.generateTextMarkup();
     }
-
 
     /**
     * Generates and updates the prompt text markup with appropriate styling and layout.
-    *
-    * @param cssDirection - Specifies the text direction for the prompt.
-    * Accepts `'rtl'` (right-to-left) or `'ltr'` (left-to-right). Defaults to `'ltr'`.
     */
-    private generateTextMarkup(cssDirection: 'rtl' | 'ltr' = 'ltr') {
+    private generateTextMarkup() {
+        const cssDirection = this.rightToLeft ? 'rtl' : 'ltr';
         const { levelType, protoType } = this.levelData.levelMeta;
         this.cleanPromptText();
         this.promptTextElement.style.direction = cssDirection;
@@ -323,7 +327,7 @@ export class PromptText extends BaseHTML {
         }
 
         const wrapper = this.createWrapper(cssDirection);
-        const targetLetterText = this.getTargetLetter(this.targetStones[this.droppedStones]);
+        const targetLetterText = this.getTargetLetter(this.targetStones[this.currentActiveLetterIndex]);
         const isSpellingPuzzle = levelType === "Word";
 
         if (levelType === "LetterInWord" || levelType === "Word") {
@@ -335,7 +339,7 @@ export class PromptText extends BaseHTML {
                 promptWord: this.currentPromptText,
                 activeLetter: targetLetterText,
                 isSpellingPuzzle,
-                activeLetterIndex: this.droppedStones
+                activeLetterIndex: this.currentActiveLetterIndex
             });
         } else {
             // Fallback for any other level types, just plain text
@@ -344,16 +348,6 @@ export class PromptText extends BaseHTML {
 
         this.promptTextElement.appendChild(wrapper);
         this.setPromptButtonVisible(false);
-    }
-
-    /**
-     * Updates the text display based on language direction.
-     */
-    updateTextDisplay() {
-        console.log({ currentPromptText: this.currentPromptText, targetStones: this.targetStones })
-        // Update the text content based on language direction
-        this.generateTextMarkup(this.rightToLeft ? 'rtl' :'ltr');
-
     }
 
     private isSpellSoundMatchTutorial(): boolean {
@@ -388,7 +382,7 @@ export class PromptText extends BaseHTML {
      */
     public handleLoadPuzzle(event) {
         this.setPromptInitialAudioDelayValues(false); //Always false so we can use the default time triggers in puzzle segment 2 to 5..
-        this.droppedStones = 0;
+        this.currentActiveLetterIndex  = 0;
         this.currentPuzzleData = this.levelData.puzzles[event.detail.counter];
         this.currentPromptText = this.currentPuzzleData.prompt.promptText;
         this.targetStones = this.currentPuzzleData.targetStones;
@@ -396,14 +390,9 @@ export class PromptText extends BaseHTML {
         this.isStoneDropped = false;
         this.handleAutoPromptPlay();
         this.isAutoPromptPlaying = false; //Reset the flag for initial auto audio prompt play.
-        // Update font size for new text
-        this.updatePromptFontSize()
-
-        // Update text display
-        this.updateTextDisplay();
-
-        // Show the prompt container again
-        this.promptContainer.style.display = 'block';
+        this.updatePromptFontSize(); // Update font size for new text
+        this.generateTextMarkup();
+        this.promptContainer.style.display = 'block'; // Show the prompt container again
     }
 
     /**
@@ -412,22 +401,10 @@ export class PromptText extends BaseHTML {
     public dispose() {
         document.removeEventListener(VISIBILITY_CHANGE, this.handleVisibilityChange, false);
         this.eventManager.unregisterEventListener();
-
+        //unsubscribe to gameStateService event.
+        this.unsubscribeSubmittedLettersEvent();
         // Use BaseHTML's destroy method to remove the element
         super.destroy();
-    }
-
-    /**
-     * Sets the dropped letter index.
-     * @param index The index.
-     */
-    droppedLetterIndex(index: number) {
-        this.droppedStones = index;
-        console.log({ droppedStones: this.droppedStones })
-        // Update the text display to reflect the dropped letter
-        if (!this.isStoneDropped) {
-            this.updateTextDisplay();
-        }
     }
 
     /**
@@ -435,21 +412,20 @@ export class PromptText extends BaseHTML {
      * @returns The font size.
      */
     calculateFont(): number {
-        return (this.width * 0.65 / this.currentPromptText.length > 35)
-            ? 25
-            : this.width * 0.65 / this.currentPromptText.length;
+        const size = this.width * 0.65 / this.currentPromptText.length;
+        return size > 35 ? 25 : size;
     }
 
     /**
      * Handles visibility change events.
+     * Pauses all audio when app goes to background, resumes foreground state flag when visible.
      */
     handleVisibilityChange = () => {
-        if (document.visibilityState == "hidden") {
+        const isVisible = document.visibilityState === "visible";
+        this.isAppForeground = isVisible
+
+        if (!isVisible) {
             this.audioPlayer.stopAllAudios();
-            this.isAppForeground = false;
-        }
-        if (document.visibilityState == "visible") {
-            this.isAppForeground = true;
         }
     }
 }
