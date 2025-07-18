@@ -46,11 +46,12 @@ export class StoneConfig {
         this.animationStartTime = 0;
     }
 
+    /**
+     * Calculates the optimal image size and font size for the stone based on the canvas dimensions and scaling.
+     */
     calculateImageAndFontSize() {
         const scaledHeight = Math.round(this.canHeight / this.scale);
-
-        const baseStoneSize = scaledHeight / 9.5;
-        this.imageSize = baseStoneSize;
+        this.imageSize = scaledHeight / 9.5;
 
         let fontSize = scaledHeight / 20;
         // Cap by stone height so we never start larger than the drawable area
@@ -60,16 +61,16 @@ export class StoneConfig {
         // Scaled minimum (never below 14)
         const minFontSize = Math.max(14, this.imageSize * 0.28); // tweak % as needed
 
-        const font = 'sans-serif';
+        const fontFamily = font || "Arial, sans-serif";
 
         // Measure & shrink by width
         const fitRatio = 0.6; // target: use 60% of stone width
-        this.context.font = `${fontSize}px ${font}`;
+        this.context.font = `${fontSize}px ${fontFamily}`;
         let textWidth = this.context.measureText(this.text).width;
 
         while (textWidth > this.imageSize * fitRatio && fontSize > minFontSize) {
             fontSize -= 1;
-            this.context.font = `${fontSize}px ${font}`;
+            this.context.font = `${fontSize}px ${fontFamily}`;
             textWidth = this.context.measureText(this.text).width;
         }
 
