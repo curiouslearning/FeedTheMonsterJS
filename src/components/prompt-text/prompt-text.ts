@@ -56,7 +56,6 @@ export class PromptText extends BaseHTML {
     public targetStones: (string | { StoneText: string })[];
     public rightToLeft: boolean;
     public audioPlayer: AudioPlayer;
-    public isStoneDropped: boolean = false;
     public currentActiveLetterIndex : number = 0;
     public isAppForeground: boolean = true;
     public AUTO_PROMPT_INITIAL_DELAY_MS: number;
@@ -138,6 +137,7 @@ export class PromptText extends BaseHTML {
     }
 
     private setPromptInitialAudioDelayValues(isTutorialOn: boolean = false) {
+        //Delay the initial auto prompt play; For any level with tutorial, 3 seconds delay and 1.9 for normal.
         this.AUTO_PROMPT_INITIAL_DELAY_MS = isTutorialOn ? 3000 : 1910;
     }
 
@@ -152,6 +152,7 @@ export class PromptText extends BaseHTML {
 
     private autoRemoveButtonPulse() {
         if (this.isSpellSoundMatchTutorial()) {
+            //Audio tutorial duration is 6 seconds to interact with the prompt.
             const totalAudioTutorialDuration = this.AUTO_PROMPT_INITIAL_DELAY_MS + 3000;
             setTimeout(() => {
                 this.removePulseClassIfSpellMatchTutorial();
@@ -257,6 +258,7 @@ export class PromptText extends BaseHTML {
                     styleClass = activeLetterIndex < index ? 'text-red' : "text-black";
                 }
 
+                //If styleClass is null, generate letter only text. But for any word puzzle or target letter generate span markup.
                 return styleClass ? generateSpanMarkup(letter, styleClass) : letter;
         });
         const wordTextMarkup = wordCharArray.join('');
@@ -309,7 +311,7 @@ export class PromptText extends BaseHTML {
     * Generates and updates the prompt text markup with appropriate styling and layout.
     */
     private generateTextMarkup() {
-        const cssDirection = this.rightToLeft ? 'rtl' : 'ltr';
+        const cssDirection = this.rightToLeft ? 'rtl' : 'ltr'; //Determines the CSS direction style.
         const { levelType, protoType } = this.levelData.levelMeta;
         this.cleanPromptText();
         this.promptTextElement.style.direction = cssDirection;
@@ -372,7 +374,6 @@ export class PromptText extends BaseHTML {
      * @param event The event.
      */
     public handleStoneDrop(event) {
-        this.isStoneDropped = true;
         this.promptContainer.style.display = 'none';
     }
 
@@ -387,7 +388,6 @@ export class PromptText extends BaseHTML {
         this.currentPromptText = this.currentPuzzleData.prompt.promptText;
         this.targetStones = this.currentPuzzleData.targetStones;
         this.audioPlayer.preloadPromptAudio(this.getPromptAudioUrl());
-        this.isStoneDropped = false;
         this.handleAutoPromptPlay();
         this.isAutoPromptPlaying = false; //Reset the flag for initial auto audio prompt play.
         this.updatePromptFontSize(); // Update font size for new text
@@ -422,7 +422,7 @@ export class PromptText extends BaseHTML {
      */
     handleVisibilityChange = () => {
         const isVisible = document.visibilityState === "visible";
-        this.isAppForeground = isVisible
+        this.isAppForeground = isVisible;
 
         if (!isVisible) {
             this.audioPlayer.stopAllAudios();
