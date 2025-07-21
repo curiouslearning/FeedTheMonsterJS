@@ -105,7 +105,6 @@ export default class WordPuzzleTutorial extends TutorialComponent {
       const disy = this.y - endY + absdy;
       const distance = Math.sqrt(disx * disx + disy * disy);
       const monsterStoneDifferenceInPercentage = (100 * distance / monsterStoneDifference);
-
       // Directly call the specialized word puzzle animation method
       // This reduces conditional complexity in the base class
       this.animateWordPuzzleStoneDrag({
@@ -164,18 +163,15 @@ export default class WordPuzzleTutorial extends TutorialComponent {
    */
   private findTargetStonePositions(targetStones: string[], foilStones: string[], positions: number[][]): number[][] {
     const usedIndices = new Set<number>();
-
     return targetStones.map(targetChar => {
       // Find the index of the first unused occurrence of this character
       const targetIndex = foilStones.findIndex((stone, index) => 
         stone === targetChar && !usedIndices.has(index)
       );
-
       if (targetIndex !== -1) {
         usedIndices.add(targetIndex); // Mark this index as used
         return positions[targetIndex];
       }
-
       return null; // Handle case where character isn't found (shouldn't happen)
     }).filter(position => position !== null); // Filter out any nulls
   }

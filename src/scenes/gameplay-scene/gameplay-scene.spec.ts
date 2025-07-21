@@ -1,3 +1,35 @@
+// Define mock implementation first
+const mockInstance = {
+  sendPuzzleCompletedEvent: jest.fn(),
+  sendLevelCompletedEvent: jest.fn(),
+  sendSessionEndEvent: jest.fn(),
+  isAnalyticsReady: jest.fn().mockReturnValue(true)
+};
+
+let mockInstanceRef = mockInstance;
+
+// Mock the module before imports
+jest.mock("../../Firebase/firebase-integration", () => ({
+  FirebaseIntegration: {
+    initializeAnalytics: jest.fn().mockImplementation(async () => {
+      mockInstanceRef = {
+        sendPuzzleCompletedEvent: jest.fn(),
+        sendLevelCompletedEvent: jest.fn(),
+        sendSessionEndEvent: jest.fn(),
+        isAnalyticsReady: jest.fn().mockReturnValue(true)
+      };
+      return Promise.resolve();
+    }),
+    getInstance: jest.fn().mockImplementation(() => mockInstanceRef)
+  }
+}));
+
+import { GameplayScene } from './gameplay-scene';
+import gameStateService from '@gameStateService';
+import gameSettingsService from '@gameSettingsService';
+import { SCENE_NAME_GAME_PLAY } from "@constants";
+import { FirebaseIntegration } from '../../Firebase/firebase-integration';
+
 // --- IMPORTANT: All mocks must be defined BEFORE imports to ensure proper isolation ---
 // Mock Rive (prevents any real Rive/WebGL code from running in Jest)
 jest.mock('@rive-app/canvas', () => ({
@@ -142,14 +174,6 @@ Object.defineProperty(HTMLCanvasElement.prototype, 'getContext', {
     // ...add more if needed
   })),
 });
-
-import { GameplayScene } from './gameplay-scene';
-import gameStateService from '@gameStateService';
-import gameSettingsService from '@gameSettingsService';
-import { SCENE_NAME_GAME_PLAY } from "@constants";
-import { TimerTicking } from '@components';
-import { update } from 'lodash-es';
-
 // Mocking dependencies
 jest.mock('@components', () => {
   const BackgroundHtmlGenerator = jest.fn().mockImplementation(() => ({
@@ -279,10 +303,13 @@ describe('GameplayScene with BasePopupComponent', () => {
   let mockSwitchSceneToEnd: jest.Mock;
   let phaseIndex: number;
 
-  beforeEach(() => {
+  beforeEach(async () => {
     jest.clearAllMocks();
     jest.useFakeTimers();
     phaseIndex = 0;
+
+    // Initialize Firebase mock with fresh instance
+    await FirebaseIntegration.initializeAnalytics();
 
     // Mock DOM elements, including the expected popup root and version-info-id
     document.body.innerHTML = `

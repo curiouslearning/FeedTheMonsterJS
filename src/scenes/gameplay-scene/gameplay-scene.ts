@@ -132,7 +132,7 @@ export class GameplayScene {
     this.addEventListeners();
     this.startGameTime();
     this.startPuzzleTime();
-    this.firebaseIntegration = new FirebaseIntegration();
+    this.firebaseIntegration = FirebaseIntegration.getInstance();
     this.audioPlayer = new AudioPlayer();
     this.puzzleHandler = new PuzzleHandler(this.levelData, this.counter, gamePlayData.feedbackAudios);
     this.unsubscribeEvent = gameStateService.subscribe(
@@ -732,7 +732,7 @@ export class GameplayScene {
         gameStateService.publish(gameStateService.EVENTS.SWITCH_SCENE_EVENT, SCENE_NAME_LEVEL_END);
         this.monster.dispose(); //Adding the monster dispose here due to the scenario that this.monster is still needed when restart game level is played.
       };
-
+      this.tutorial.hideTutorial(); // Turn off tutorial
       if (timerEnded) {
         handleLevelEnd();
       } else {

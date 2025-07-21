@@ -117,7 +117,7 @@ export class StartScene {
     this.titleTextElement = document.getElementById("title");
     this.generateGameTitle();
     this.riveMonsterElement.style.zIndex = '4';
-    this.firebaseIntegration = new FirebaseIntegration();
+    this.firebaseIntegration = FirebaseIntegration.getInstance();
     this.setOnClicknAreaStyle();
   }
 
