@@ -147,7 +147,6 @@ export default class PuzzleHandler {
         droppedLettersCount
       );
 
-      ctx.promptText.droppedLetterIndex(droppedLettersCount);
       ctx.lettersCountRef.value++;
     } else {
       ctx.handleLetterDropEnd(isCorrect, "Word");
