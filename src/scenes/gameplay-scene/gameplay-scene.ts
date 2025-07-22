@@ -715,9 +715,7 @@ export class GameplayScene {
     this.tutorial.resetTutorialTimer();
 
     // Hide tutorial if counter is greater than 0
-    if(this.counter > 0) {
-      this.tutorial.hideTutorial();
-    }
+    this.counter > 0 && this.tutorial.hideTutorial();
 
     // Reset the 6-second tutorial delay timer each time a new puzzle is loaded
     this.tutorial.resetQuickStartTutorialDelay();
