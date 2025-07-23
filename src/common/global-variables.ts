@@ -18,7 +18,7 @@ export const Debugger = {
   TestLink: window.location.href.includes(TestServer)
     ? true
     : false,
-  DebugMode: true,
+  DebugMode: false,
 };
 
 export interface Window {
