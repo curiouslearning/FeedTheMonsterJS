@@ -29,6 +29,7 @@ import gameStateService from '@gameStateService';
 import gameSettingsService from '@gameSettingsService';
 import { SCENE_NAME_GAME_PLAY } from "@constants";
 import { FirebaseIntegration } from '../../Firebase/firebase-integration';
+
 // --- IMPORTANT: All mocks must be defined BEFORE imports to ensure proper isolation ---
 // Mock Rive (prevents any real Rive/WebGL code from running in Jest)
 jest.mock('@rive-app/canvas', () => ({
@@ -173,7 +174,6 @@ Object.defineProperty(HTMLCanvasElement.prototype, 'getContext', {
     // ...add more if needed
   })),
 });
-
 // Mocking dependencies
 jest.mock('@components', () => {
   const BackgroundHtmlGenerator = jest.fn().mockImplementation(() => ({
