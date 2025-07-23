@@ -715,7 +715,7 @@ export class GameplayScene {
     this.tutorial.resetTutorialTimer();
     // Reset the 6-second tutorial delay timer each time a new puzzle is loaded
     this.tutorial.resetQuickStartTutorialDelay();
-    
+    this.tutorial.hideTutorial(); // Turn off tutorial via loading the puzzle.
     if (this.counter === this.levelData.puzzles.length) {
       const handleLevelEnd = () => {
         this.levelIndicators.setIndicators(this.counter);
@@ -732,7 +732,7 @@ export class GameplayScene {
         gameStateService.publish(gameStateService.EVENTS.SWITCH_SCENE_EVENT, SCENE_NAME_LEVEL_END);
         this.monster.dispose(); //Adding the monster dispose here due to the scenario that this.monster is still needed when restart game level is played.
       };
-      this.tutorial.hideTutorial(); // Turn off tutorial
+      
       if (timerEnded) {
         handleLevelEnd();
       } else {
@@ -878,7 +878,7 @@ export class GameplayScene {
 
     this.logPuzzleEndFirebaseEvent(isCorrect, puzzleType);
     this.dispatchStoneDropEvent(isCorrect);
-    this.tutorial.hideTutorial(); // Turn off tutorial
+    this.tutorial.hideTutorial(); //  Turn off tutorial via user playing correctly
     setTimeout(() => {
       //Adjust the delay of 4500 (4.5 seconds) to 2500 (2.5 seconds) if the puzzle is incorrect.
       this.loadPuzzleDelay = isCorrect ? 4500 : 3000;
