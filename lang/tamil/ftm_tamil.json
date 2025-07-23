@@ -3,16 +3,14 @@
   "RightToLeft": false,
   "FeedbackTexts": [
     "அற்புதம்",
-    " பிரமாதம்",
-    "உயரிய"
+    " பிரமாதம்"
   ],
   "majversion": 3,
   "minversion": 11,
   "langname": "TAMIL",
   "FeedbackAudios": [
     "https://feedthemonster.curiouscontent.org/lang/tamil/audios/fantastic.mp3",
-    "https://feedthemonster.curiouscontent.org/lang/tamil/audios/great.mp3",
-    "https://feedthemonster.curiouscontent.org/lang/tamil/audios/amazing.mp3"
+    "https://feedthemonster.curiouscontent.org/lang/tamil/audios/great.mp3"
   ],
   "OtherAudios": {
     "Select your player": "https://feedthemonster.curiouscontent.org/lang/tamil/audios/Select-your-player.mp3",
@@ -103,7 +101,7 @@
           },
           "foilstones": [
             {
-              "StoneText": "ங்"
+              "StoneText": "ஞ்"
             },
             {
               "StoneText": "ங்"
@@ -158,7 +156,7 @@
           },
           "foilstones": [
             {
-              "StoneText": "ஞ்"
+              "StoneText": "க்"
             },
             {
               "StoneText": "ஞ்"
@@ -187,7 +185,7 @@
               "StoneText": "ச்"
             },
             {
-              "StoneText": "ட்"
+              "StoneText": "ஞ்"
             }
           ]
         },
@@ -311,7 +309,7 @@
               "StoneText": "க்"
             },
             {
-              "StoneText": "க்"
+              "StoneText": "ங்"
             }
           ]
         },
@@ -331,7 +329,7 @@
               "StoneText": "ஞ்"
             },
             {
-              "StoneText": "ங்"
+              "StoneText": "ட்"
             }
           ]
         },
@@ -403,10 +401,10 @@
           },
           "foilstones": [
             {
-              "StoneText": "ட்"
+              "StoneText": "ச்"
             },
             {
-              "StoneText": "ஞ்"
+              "StoneText": "ட்"
             }
           ]
         },
@@ -541,7 +539,7 @@
           },
           "foilstones": [
             {
-              "StoneText": "ஞ்"
+              "StoneText": "ங்"
             },
             {
               "StoneText": "ட்"
@@ -613,10 +611,10 @@
               "StoneText": "ஞ்"
             },
             {
-              "StoneText": "ங்"
+              "StoneText": "ஞ்"
             },
             {
-              "StoneText": "ச்"
+              "StoneText": "ஞ்"
             },
             {
               "StoneText": "க்"
@@ -1003,10 +1001,10 @@
               "StoneText": "ப்"
             },
             {
-              "StoneText": "த்"
+              "StoneText": "ம்"
             },
             {
-              "StoneText": "ஞ்"
+              "StoneText": "ப்"
             },
             {
               "StoneText": "ப்"
@@ -1194,7 +1192,10 @@
               "StoneText": "ஞ்"
             },
             {
-              "StoneText": "ஞ்"
+              "StoneText": "ம்"
+            },
+            {
+              "StoneText": "ம்"
             },
             {
               "StoneText": "ச்"
@@ -1298,7 +1299,7 @@
           },
           "foilstones": [
             {
-              "StoneText": "த்"
+              "StoneText": "ம்"
             },
             {
               "StoneText": "ந்"
@@ -1370,10 +1371,10 @@
               "StoneText": "ந்"
             },
             {
-              "StoneText": "ட்"
+              "StoneText": "ந்"
             },
             {
-              "StoneText": "ட்"
+              "StoneText": "ஞ்"
             },
             {
               "StoneText": "ப்"
@@ -1474,7 +1475,7 @@
           },
           "foilstones": [
             {
-              "StoneText": "ல்"
+              "StoneText": "ழ்"
             },
             {
               "StoneText": "ண்"
@@ -1651,9 +1652,6 @@
           "foilstones": [
             {
               "StoneText": "வ்"
-            },
-            {
-              "StoneText": "ய்"
             },
             {
               "StoneText": "ம்"
@@ -1901,7 +1899,7 @@
               "StoneText": "ர்"
             },
             {
-              "StoneText": "ங்"
+              "StoneText": "ர்"
             },
             {
               "StoneText": "ர்"
@@ -2066,7 +2064,7 @@
               "StoneText": "ர்"
             },
             {
-              "StoneText": "ச்"
+              "StoneText": "ப்"
             },
             {
               "StoneText": "ல்"
@@ -2173,7 +2171,7 @@
               "StoneText": "ய்"
             },
             {
-              "StoneText": "ழ்"
+              "StoneText": "ர்"
             },
             {
               "StoneText": "ல்"
@@ -2238,6 +2236,9 @@
             },
             {
               "StoneText": "ட்"
+            },
+            {
+              "StoneText": "ள்"
             },
             {
               "StoneText": "அ"
@@ -2312,10 +2313,10 @@
               "StoneText": "ற்"
             },
             {
-              "StoneText": "ற்"
+              "StoneText": "ய்"
             },
             {
-              "StoneText": "க்"
+              "StoneText": "ஆ"
             },
             {
               "StoneText": "ம்"
@@ -2378,6 +2379,15 @@
             "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/tamil/audios/ற்.mp3"
           },
           "foilstones": [
+            {
+              "StoneText": "க்"
+            },
+            {
+              "StoneText": "ஞ்"
+            },
+            {
+              "StoneText": "ற்"
+            },
             {
               "StoneText": "ள்"
             },
@@ -2469,7 +2479,7 @@
               "StoneText": "ஞ்"
             },
             {
-              "StoneText": "க்"
+              "StoneText": "ய்"
             },
             {
               "StoneText": "அ"
@@ -2501,7 +2511,7 @@
           },
           "foilstones": [
             {
-              "StoneText": "ன்"
+              "StoneText": "ள்"
             },
             {
               "StoneText": "ப்"
@@ -2730,13 +2740,13 @@
               "StoneText": "ர்"
             },
             {
-              "StoneText": "ஆ"
+              "StoneText": "ந்"
             },
             {
               "StoneText": "ஞ்"
             },
             {
-              "StoneText": "ள்"
+              "StoneText": "ட்"
             }
           ]
         },
@@ -2950,7 +2960,7 @@
           },
           "foilstones": [
             {
-              "StoneText": "ந்"
+              "StoneText": "ஆ"
             },
             {
               "StoneText": "ர்"
@@ -3210,7 +3220,7 @@
               "StoneText": "ன்"
             },
             {
-              "StoneText": "ய்"
+              "StoneText": "எ"
             },
             {
               "StoneText": "ட்"
@@ -3315,9 +3325,6 @@
           "foilstones": [
             {
               "StoneText": "ம்"
-            },
-            {
-              "StoneText": "அ"
             },
             {
               "StoneText": "எ"
@@ -3444,7 +3451,7 @@
           },
           "foilstones": [
             {
-              "StoneText": "ற்"
+              "StoneText": "ந்"
             },
             {
               "StoneText": "ஞ்"
@@ -3539,7 +3546,7 @@
           },
           "foilstones": [
             {
-              "StoneText": "வ்"
+              "StoneText": "ற்"
             },
             {
               "StoneText": "இ"
@@ -3716,7 +3723,7 @@
               "StoneText": "ல்"
             },
             {
-              "StoneText": "ன்"
+              "StoneText": "ள்"
             },
             {
               "StoneText": "க்"
@@ -3774,7 +3781,7 @@
               "StoneText": "ம்"
             },
             {
-              "StoneText": "ன்"
+              "StoneText": "ஈ"
             },
             {
               "StoneText": "ஊ"
@@ -3873,10 +3880,10 @@
               "StoneText": "ர்"
             },
             {
-              "StoneText": "அ"
+              "StoneText": "ழ்"
             },
             {
-              "StoneText": "உ"
+              "StoneText": "ஈ"
             },
             {
               "StoneText": "க்"
@@ -3963,7 +3970,7 @@
           },
           "foilstones": [
             {
-              "StoneText": "ஓ"
+              "StoneText": "ஈ"
             },
             {
               "StoneText": "க்"
@@ -4048,7 +4055,7 @@
               "StoneText": "எ"
             },
             {
-              "StoneText": "ஓ"
+              "StoneText": "ஏ"
             },
             {
               "StoneText": "ற்"
@@ -4243,7 +4250,7 @@
               "StoneText": "ஆ"
             },
             {
-              "StoneText": "ள்"
+              "StoneText": "ஒ"
             },
             {
               "StoneText": "க்"
@@ -4301,7 +4308,7 @@
               "StoneText": "ஐ"
             },
             {
-              "StoneText": "ங்"
+              "StoneText": "ன்"
             },
             {
               "StoneText": "ந்"
@@ -4371,7 +4378,7 @@
               "StoneText": "ஊ"
             },
             {
-              "StoneText": "எ"
+              "StoneText": "ர்"
             },
             {
               "StoneText": "ஈ"
@@ -4601,7 +4608,7 @@
               "StoneText": "ள்"
             },
             {
-              "StoneText": "ற்"
+              "StoneText": "ஒ"
             },
             {
               "StoneText": "ஐ"
@@ -4639,7 +4646,7 @@
               "StoneText": "ஒ"
             },
             {
-              "StoneText": "ழ்"
+              "StoneText": "உ"
             },
             {
               "StoneText": "அ"
@@ -4668,7 +4675,7 @@
               "StoneText": "ங்"
             },
             {
-              "StoneText": "ல்"
+              "StoneText": "ஐ"
             },
             {
               "StoneText": "ட்"
@@ -4738,13 +4745,10 @@
               "StoneText": "ஆ"
             },
             {
-              "StoneText": "ஞ்"
+              "StoneText": "அ"
             },
             {
-              "StoneText": "ண்"
-            },
-            {
-              "StoneText": "ஒ"
+              "StoneText": "எ"
             },
             {
               "StoneText": "ஐ"
@@ -4767,13 +4771,13 @@
               "StoneText": "த்"
             },
             {
-              "StoneText": "ஈ"
+              "StoneText": "ப்"
             },
             {
               "StoneText": "அ"
             },
             {
-              "StoneText": "ய்"
+              "StoneText": "ஒ"
             },
             {
               "StoneText": "ர்"
@@ -4802,7 +4806,7 @@
               "StoneText": "ந்"
             },
             {
-              "StoneText": "ஈ"
+              "StoneText": "ஒ"
             },
             {
               "StoneText": "ஈ"
@@ -4884,7 +4888,7 @@
               "StoneText": "ல்"
             },
             {
-              "StoneText": "ஆ"
+              "StoneText": "கி"
             },
             {
               "StoneText": "க"
@@ -4907,10 +4911,10 @@
               "StoneText": "ற்"
             },
             {
-              "StoneText": "கி"
+              "StoneText": "ட்"
             },
             {
-              "StoneText": "கீ"
+              "StoneText": "ன்"
             },
             {
               "StoneText": "கீ"
@@ -4951,10 +4955,10 @@
               "StoneText": "கா"
             },
             {
-              "StoneText": "கி"
+              "StoneText": "ற்"
             },
             {
-              "StoneText": "ட்"
+              "StoneText": "இ"
             },
             {
               "StoneText": "கீ"
@@ -4980,7 +4984,7 @@
               "StoneText": "ங்"
             },
             {
-              "StoneText": "ந்"
+              "StoneText": "க"
             },
             {
               "StoneText": "கா"
@@ -5030,7 +5034,7 @@
               "StoneText": "ய்"
             },
             {
-              "StoneText": "கா"
+              "StoneText": "ழ்"
             },
             {
               "StoneText": "ஈ"
@@ -5074,10 +5078,10 @@
               "StoneText": "கா"
             },
             {
-              "StoneText": "கு"
+              "StoneText": "ப்"
             },
             {
-              "StoneText": "ன்"
+              "StoneText": "உ"
             },
             {
               "StoneText": "கீ"
@@ -5115,7 +5119,7 @@
               "StoneText": "கீ"
             },
             {
-              "StoneText": "ர்"
+              "StoneText": "ன்"
             },
             {
               "StoneText": "கீ"
@@ -5217,10 +5221,10 @@
               "StoneText": "ன்"
             },
             {
-              "StoneText": "க"
+              "StoneText": "ஓ"
             },
             {
-              "StoneText": "ஐ"
+              "StoneText": "கு"
             },
             {
               "StoneText": "ம்"
@@ -5264,10 +5268,10 @@
               "StoneText": "க"
             },
             {
-              "StoneText": "ர்"
+              "StoneText": "ஓ"
             },
             {
-              "StoneText": "ஈ"
+              "StoneText": "ல்"
             },
             {
               "StoneText": "கு"
@@ -5378,7 +5382,7 @@
               "StoneText": "ல்"
             },
             {
-              "StoneText": "அ"
+              "StoneText": "கி"
             },
             {
               "StoneText": "கீ"
@@ -5554,7 +5558,7 @@
               "StoneText": "ஓ"
             },
             {
-              "StoneText": "ழ்"
+              "StoneText": "வ்"
             },
             {
               "StoneText": "ங்"
@@ -5612,7 +5616,7 @@
               "StoneText": "ஓ"
             },
             {
-              "StoneText": "கு"
+              "StoneText": "ஏ"
             },
             {
               "StoneText": "கு"
@@ -5779,7 +5783,7 @@
               "StoneText": "ல்"
             },
             {
-              "StoneText": "க்"
+              "StoneText": "கீ"
             },
             {
               "StoneText": "உ"
@@ -5870,9 +5874,6 @@
               "StoneText": "ன்"
             },
             {
-              "StoneText": "ஆ"
-            },
-            {
               "StoneText": "ஒ"
             },
             {
@@ -5943,7 +5944,7 @@
               "StoneText": "ட்"
             },
             {
-              "StoneText": "ஞ்"
+              "StoneText": "ங்"
             },
             {
               "StoneText": "ம்"
@@ -5955,7 +5956,7 @@
               "StoneText": "ற்"
             },
             {
-              "StoneText": "கி"
+              "StoneText": "எ"
             },
             {
               "StoneText": "ஊ"
@@ -5999,7 +6000,13 @@
               "StoneText": "ன்"
             },
             {
-              "StoneText": "ஊ"
+              "StoneText": "ல்"
+            },
+            {
+              "StoneText": "கா"
+            },
+            {
+              "StoneText": "கு"
             },
             {
               "StoneText": "ஈ"
@@ -6110,13 +6117,13 @@
               "StoneText": "கூ"
             },
             {
-              "StoneText": "ட்"
+              "StoneText": "ற்"
             },
             {
               "StoneText": "கூ"
             },
             {
-              "StoneText": "ச்"
+              "StoneText": "ன்"
             },
             {
               "StoneText": "ஙீ"
@@ -6145,13 +6152,13 @@
               "StoneText": "ழ்"
             },
             {
-              "StoneText": "கீ"
+              "StoneText": "ண்"
             },
             {
-              "StoneText": "ழ்"
+              "StoneText": "ஒ"
             },
             {
-              "StoneText": "ஙீ"
+              "StoneText": "ய்"
             },
             {
               "StoneText": "ஈ"
@@ -6268,7 +6275,7 @@
           },
           "foilstones": [
             {
-              "StoneText": "கூ"
+              "StoneText": "கீ"
             },
             {
               "StoneText": "ஆ"
@@ -6287,6 +6294,15 @@
             },
             {
               "StoneText": "ஙீ"
+            },
+            {
+              "StoneText": "ச்"
+            },
+            {
+              "StoneText": "ஙா"
+            },
+            {
+              "StoneText": "க"
             },
             {
               "StoneText": "கூ"
@@ -6347,10 +6363,10 @@
               "StoneText": "இ"
             },
             {
-              "StoneText": "ஐ"
+              "StoneText": "ஒ"
             },
             {
-              "StoneText": "ப்"
+              "StoneText": "க"
             },
             {
               "StoneText": "த்"
@@ -6385,7 +6401,7 @@
               "StoneText": "ய்"
             },
             {
-              "StoneText": "கூ"
+              "StoneText": "ல்"
             },
             {
               "StoneText": "ஏ"
@@ -6429,13 +6445,16 @@
               "StoneText": "ஙி"
             },
             {
+              "StoneText": "ஒள"
+            },
+            {
               "StoneText": "ஓ"
             },
             {
               "StoneText": "ஙி"
             },
             {
-              "StoneText": "அ"
+              "StoneText": "ஙி"
             },
             {
               "StoneText": "ப்"
@@ -6517,16 +6536,16 @@
               "StoneText": "ஙி"
             },
             {
-              "StoneText": "கூ"
+              "StoneText": "ழ்"
             },
             {
               "StoneText": "ண்"
             },
             {
-              "StoneText": "உ"
+              "StoneText": "ங"
             },
             {
-              "StoneText": "ஙி"
+              "StoneText": "ள்"
             },
             {
               "StoneText": "ஐ"
@@ -6590,7 +6609,7 @@
               "StoneText": "ள்"
             },
             {
-              "StoneText": "கூ"
+              "StoneText": "ர்"
             },
             {
               "StoneText": "ஊ"
@@ -6599,7 +6618,7 @@
               "StoneText": "ஙா"
             },
             {
-              "StoneText": "ஊ"
+              "StoneText": "த்"
             },
             {
               "StoneText": "ஏ"
@@ -6725,10 +6744,10 @@
               "StoneText": "ஙா"
             },
             {
-              "StoneText": "ஓ"
+              "StoneText": "ச்"
             },
             {
-              "StoneText": "ற்"
+              "StoneText": "ஆ"
             },
             {
               "StoneText": "ழ்"
@@ -6795,16 +6814,16 @@
               "StoneText": "ப்"
             },
             {
-              "StoneText": "ஏ"
+              "StoneText": "கூ"
             },
             {
-              "StoneText": "ஙி"
+              "StoneText": "க"
             },
             {
-              "StoneText": "ஙா"
+              "StoneText": "ப்"
             },
             {
-              "StoneText": "ஊ"
+              "StoneText": "ர்"
             },
             {
               "StoneText": "ஏ"
@@ -6842,7 +6861,7 @@
               "StoneText": "ஊ"
             },
             {
-              "StoneText": "இ"
+              "StoneText": "ச்"
             },
             {
               "StoneText": "ன்"
@@ -6889,7 +6908,7 @@
               "StoneText": "ங"
             },
             {
-              "StoneText": "ங்"
+              "StoneText": "ண்"
             },
             {
               "StoneText": "ட்"
@@ -6927,7 +6946,10 @@
               "StoneText": "ஏ"
             },
             {
-              "StoneText": "வ்"
+              "StoneText": "த்"
+            },
+            {
+              "StoneText": "ல்"
             },
             {
               "StoneText": "ஙா"
@@ -6950,7 +6972,7 @@
           },
           "foilstones": [
             {
-              "StoneText": "ள"
+              "StoneText": "ம்"
             },
             {
               "StoneText": "ஊ"
@@ -6994,7 +7016,7 @@
               "StoneText": "ற்"
             },
             {
-              "StoneText": "ள"
+              "StoneText": "ர்"
             },
             {
               "StoneText": "ஒ"
@@ -7032,7 +7054,7 @@
               "StoneText": "கா"
             },
             {
-              "StoneText": "வ்"
+              "StoneText": "க"
             },
             {
               "StoneText": "ள"
@@ -7079,13 +7101,13 @@
               "StoneText": "கீ"
             },
             {
-              "StoneText": "ஈ"
+              "StoneText": "கூ"
             },
             {
-              "StoneText": "ர்"
+              "StoneText": "ட்"
             },
             {
-              "StoneText": "ஆ"
+              "StoneText": "ய்"
             },
             {
               "StoneText": "எ"
@@ -7132,7 +7154,7 @@
               "StoneText": "ஙி"
             },
             {
-              "StoneText": "ள்"
+              "StoneText": "க"
             },
             {
               "StoneText": "ஊ"
@@ -7199,13 +7221,13 @@
               "StoneText": "ல்"
             },
             {
-              "StoneText": "கு"
+              "StoneText": "ஆ"
             },
             {
-              "StoneText": "ந்"
+              "StoneText": "ள்"
             },
             {
-              "StoneText": "வ்"
+              "StoneText": "ஙா"
             },
             {
               "StoneText": "ஏ"
@@ -7431,7 +7453,7 @@
           },
           "foilstones": [
             {
-              "StoneText": "ச"
+              "StoneText": "கா"
             },
             {
               "StoneText": "ஙூ"
@@ -7506,7 +7528,7 @@
               "StoneText": "சி"
             },
             {
-              "StoneText": "ய்"
+              "StoneText": "உ"
             },
             {
               "StoneText": "ஊ"
@@ -7541,10 +7563,10 @@
               "StoneText": "ங"
             },
             {
-              "StoneText": "ஈ"
+              "StoneText": "சி"
             },
             {
-              "StoneText": "ழ்"
+              "StoneText": "ஞ்"
             },
             {
               "StoneText": "ஓ"
@@ -7617,7 +7639,7 @@
               "StoneText": "கூ"
             },
             {
-              "StoneText": "சி"
+              "StoneText": "ழ்"
             },
             {
               "StoneText": "சி"
@@ -7655,10 +7677,10 @@
               "StoneText": "ஙு"
             },
             {
-              "StoneText": "கீ"
+              "StoneText": "ஒ"
             },
             {
-              "StoneText": "ழ்"
+              "StoneText": "ஆ"
             },
             {
               "StoneText": "கூ"
@@ -7699,10 +7721,10 @@
               "StoneText": "ச்"
             },
             {
-              "StoneText": "ல்"
+              "StoneText": "ள்"
             },
             {
-              "StoneText": "த்"
+              "StoneText": "ந்"
             },
             {
               "StoneText": "கீ"
@@ -7834,7 +7856,7 @@
               "StoneText": "ஏ"
             },
             {
-              "StoneText": "ச்"
+              "StoneText": "ஓ"
             },
             {
               "StoneText": "கூ"
@@ -7913,6 +7935,9 @@
               "StoneText": "ஓ"
             },
             {
+              "StoneText": "ஞ்"
+            },
+            {
               "StoneText": "ர்"
             }
           ]
@@ -7945,16 +7970,19 @@
               "StoneText": "ந்"
             },
             {
-              "StoneText": "கீ"
+              "StoneText": "ள"
+            },
+            {
+              "StoneText": "த்"
             },
             {
               "StoneText": "ன்"
             },
             {
-              "StoneText": "ர்"
+              "StoneText": "ஙா"
             },
             {
-              "StoneText": "ற்"
+              "StoneText": "ந்"
             },
             {
               "StoneText": "ன்"
@@ -7983,7 +8011,19 @@
               "StoneText": "கீ"
             },
             {
-              "StoneText": "ப்"
+              "StoneText": "ஆ"
+            },
+            {
+              "StoneText": "ஙி"
+            },
+            {
+              "StoneText": "வ்"
+            },
+            {
+              "StoneText": "ம்"
+            },
+            {
+              "StoneText": "கீ"
             },
             {
               "StoneText": "கா"
@@ -8059,7 +8099,7 @@
               "StoneText": "ஒ"
             },
             {
-              "StoneText": "ம்"
+              "StoneText": "ஞ்"
             },
             {
               "StoneText": "ஈ"
@@ -8103,10 +8143,10 @@
               "StoneText": "வ்"
             },
             {
-              "StoneText": "ஒள"
+              "StoneText": "ஙா"
             },
             {
-              "StoneText": "கூ"
+              "StoneText": "ள்"
             },
             {
               "StoneText": "ஏ"
@@ -8191,7 +8231,7 @@
               "StoneText": "ஙீ"
             },
             {
-              "StoneText": "ஏ"
+              "StoneText": "ர்"
             },
             {
               "StoneText": "கி"
@@ -8387,7 +8427,7 @@
               "StoneText": "க்"
             },
             {
-              "StoneText": "ஞா"
+              "StoneText": "ஙு"
             },
             {
               "StoneText": "ச"
@@ -8434,7 +8474,7 @@
               "StoneText": "கூ"
             },
             {
-              "StoneText": "ள"
+              "StoneText": "ர்"
             },
             {
               "StoneText": "ஙு"
@@ -8472,10 +8512,10 @@
               "StoneText": "கா"
             },
             {
-              "StoneText": "சி"
+              "StoneText": "த்"
             },
             {
-              "StoneText": "சீ"
+              "StoneText": "ஏ"
             },
             {
               "StoneText": "ப்"
@@ -8604,7 +8644,7 @@
               "StoneText": "ஙா"
             },
             {
-              "StoneText": "சூ"
+              "StoneText": "சா"
             },
             {
               "StoneText": "ன்"
@@ -8633,13 +8673,13 @@
               "StoneText": "சி"
             },
             {
-              "StoneText": "சீ"
+              "StoneText": "சு"
             },
             {
-              "StoneText": "க"
+              "StoneText": "ஓ"
             },
             {
-              "StoneText": "அ"
+              "StoneText": "ப்"
             },
             {
               "StoneText": "ஙு"
@@ -8756,7 +8796,7 @@
               "StoneText": "ஞ்"
             },
             {
-              "StoneText": "ள"
+              "StoneText": "ங"
             },
             {
               "StoneText": "க"
@@ -8803,10 +8843,10 @@
               "StoneText": "சீ"
             },
             {
-              "StoneText": "ஙி"
+              "StoneText": "வ்"
             },
             {
-              "StoneText": "ல்"
+              "StoneText": "வ்"
             },
             {
               "StoneText": "ஏ"
@@ -8841,13 +8881,13 @@
               "StoneText": "க்"
             },
             {
-              "StoneText": "ஙீ"
+              "StoneText": "ள"
             },
             {
-              "StoneText": "ஞ்"
+              "StoneText": "ன்"
             },
             {
-              "StoneText": "ஙி"
+              "StoneText": "ஆ"
             },
             {
               "StoneText": "ஊ"
@@ -8870,10 +8910,10 @@
               "StoneText": "ஞா"
             },
             {
-              "StoneText": "ஙீ"
+              "StoneText": "ஞா"
             },
             {
-              "StoneText": "ஙா"
+              "StoneText": "கீ"
             },
             {
               "StoneText": "ஞ்"
@@ -8908,7 +8948,7 @@
               "StoneText": "ஙூ"
             },
             {
-              "StoneText": "இ"
+              "StoneText": "க்"
             },
             {
               "StoneText": "ர்"
@@ -8955,22 +8995,16 @@
               "StoneText": "கூ"
             },
             {
-              "StoneText": "ஞ்"
+              "StoneText": "ட்"
             },
             {
-              "StoneText": "உ"
+              "StoneText": "ஒள"
             },
             {
-              "StoneText": "கா"
+              "StoneText": "ல்"
             },
             {
-              "StoneText": "ஒ"
-            },
-            {
-              "StoneText": "ஞ"
-            },
-            {
-              "StoneText": "ழ்"
+              "StoneText": "சா"
             },
             {
               "StoneText": "ஙி"
@@ -8996,16 +9030,19 @@
               "StoneText": "கி"
             },
             {
-              "StoneText": "ஊ"
+              "StoneText": "ஏ"
             },
             {
-              "StoneText": "ஞா"
+              "StoneText": "கு"
             },
             {
-              "StoneText": "சூ"
+              "StoneText": "சி"
             },
             {
-              "StoneText": "உ"
+              "StoneText": "சா"
+            },
+            {
+              "StoneText": "ற்"
             },
             {
               "StoneText": "ம்"
@@ -9031,7 +9068,7 @@
               "StoneText": "ற்"
             },
             {
-              "StoneText": "வ்"
+              "StoneText": "ள"
             },
             {
               "StoneText": "சீ"
@@ -9043,10 +9080,10 @@
               "StoneText": "ஞ்"
             },
             {
-              "StoneText": "ன்"
+              "StoneText": "கூ"
             },
             {
-              "StoneText": "ஓ"
+              "StoneText": "சூ"
             },
             {
               "StoneText": "க"
@@ -9069,7 +9106,7 @@
               "StoneText": "ஏ"
             },
             {
-              "StoneText": "சீ"
+              "StoneText": "ஙூ"
             },
             {
               "StoneText": "அ"
@@ -9195,7 +9232,13 @@
               "StoneText": "எ"
             },
             {
-              "StoneText": "ல்"
+              "StoneText": "ஙூ"
+            },
+            {
+              "StoneText": "ஙூ"
+            },
+            {
+              "StoneText": "இ"
             },
             {
               "StoneText": "ஐ"
@@ -9233,7 +9276,19 @@
               "StoneText": "ல்"
             },
             {
-              "StoneText": "கா"
+              "StoneText": "ஙா"
+            },
+            {
+              "StoneText": "ன்"
+            },
+            {
+              "StoneText": "ந்"
+            },
+            {
+              "StoneText": "கூ"
+            },
+            {
+              "StoneText": "ஙூ"
             },
             {
               "StoneText": "உ"
@@ -9359,16 +9414,16 @@
               "StoneText": "ச்"
             },
             {
-              "StoneText": "ன்"
+              "StoneText": "சா"
             },
             {
-              "StoneText": "ஒ"
+              "StoneText": "ங"
             },
             {
               "StoneText": "ஊ"
             },
             {
-              "StoneText": "க"
+              "StoneText": "சி"
             },
             {
               "StoneText": "ஆ"
@@ -9403,13 +9458,13 @@
               "StoneText": "எ"
             },
             {
-              "StoneText": "ள்"
+              "StoneText": "ங்"
             },
             {
-              "StoneText": "சி"
+              "StoneText": "உ"
             },
             {
-              "StoneText": "ன்"
+              "StoneText": "ஓ"
             },
             {
               "StoneText": "ய்"
@@ -9470,16 +9525,16 @@
               "StoneText": "ழ்"
             },
             {
-              "StoneText": "சு"
+              "StoneText": "ற்"
             },
             {
-              "StoneText": "ஈ"
+              "StoneText": "ற்"
             },
             {
-              "StoneText": "க்"
+              "StoneText": "ஞா"
             },
             {
-              "StoneText": "கு"
+              "StoneText": "ஙூ"
             },
             {
               "StoneText": "த்"
@@ -9520,13 +9575,10 @@
               "StoneText": "ஞா"
             },
             {
-              "StoneText": "ஙி"
+              "StoneText": "ஞ்"
             },
             {
-              "StoneText": "ஓ"
-            },
-            {
-              "StoneText": "ஐ"
+              "StoneText": "சு"
             },
             {
               "StoneText": "சீ"
@@ -9564,7 +9616,7 @@
               "StoneText": "ர்"
             },
             {
-              "StoneText": "ஞா"
+              "StoneText": "ஏ"
             },
             {
               "StoneText": "ச்"
@@ -9637,10 +9689,7 @@
               "StoneText": "க்"
             },
             {
-              "StoneText": "ழ்"
-            },
-            {
-              "StoneText": "கூ"
+              "StoneText": "ள"
             },
             {
               "StoneText": "ண்"
@@ -9681,13 +9730,13 @@
               "StoneText": "ச"
             },
             {
-              "StoneText": "சு"
+              "StoneText": "ஙீ"
             },
             {
-              "StoneText": "ஐ"
+              "StoneText": "ஙூ"
             },
             {
-              "StoneText": "கு"
+              "StoneText": "ஙூ"
             },
             {
               "StoneText": "ங"
@@ -9710,7 +9759,7 @@
               "StoneText": "ஈ"
             },
             {
-              "StoneText": "ஓ"
+              "StoneText": "ஞூ"
             },
             {
               "StoneText": "ஞ"
@@ -9763,7 +9812,7 @@
               "StoneText": "ங"
             },
             {
-              "StoneText": "ஙூ"
+              "StoneText": "எ"
             },
             {
               "StoneText": "ஞு"
@@ -9839,19 +9888,13 @@
               "StoneText": "ழ்"
             },
             {
-              "StoneText": "வ்"
+              "StoneText": "ட்"
             },
             {
-              "StoneText": "சீ"
+              "StoneText": "ஞூ"
             },
             {
-              "StoneText": "ஈ"
-            },
-            {
-              "StoneText": "ங்"
-            },
-            {
-              "StoneText": "ச்"
+              "StoneText": "ந்"
             },
             {
               "StoneText": "சூ"
@@ -9921,16 +9964,19 @@
               "StoneText": "கு"
             },
             {
-              "StoneText": "ஐ"
+              "StoneText": "ங்"
+            },
+            {
+              "StoneText": "சூ"
             },
             {
               "StoneText": "க"
             },
             {
-              "StoneText": "ஞூ"
+              "StoneText": "கூ"
             },
             {
-              "StoneText": "ய்"
+              "StoneText": "சா"
             },
             {
               "StoneText": "ம்"
@@ -10003,13 +10049,19 @@
               "StoneText": "சி"
             },
             {
-              "StoneText": "வ்"
+              "StoneText": "ழ்"
             },
             {
-              "StoneText": "ஒ"
+              "StoneText": "இ"
             },
             {
-              "StoneText": "வ்"
+              "StoneText": "சா"
+            },
+            {
+              "StoneText": "ஙீ"
+            },
+            {
+              "StoneText": "ஞு"
             },
             {
               "StoneText": "ஞீ"
@@ -10041,10 +10093,10 @@
               "StoneText": "ஙு"
             },
             {
-              "StoneText": "ஞி"
+              "StoneText": "ங"
             },
             {
-              "StoneText": "க்"
+              "StoneText": "ஐ"
             },
             {
               "StoneText": "ண்"
@@ -10114,22 +10166,19 @@
               "StoneText": "ம்"
             },
             {
-              "StoneText": "ஙா"
-            },
-            {
               "StoneText": "கீ"
             },
             {
-              "StoneText": "ஞா"
+              "StoneText": "ஒ"
             },
             {
               "StoneText": "ர்"
             },
             {
-              "StoneText": "ல்"
+              "StoneText": "ஊ"
             },
             {
-              "StoneText": "ப்"
+              "StoneText": "ஞா"
             },
             {
               "StoneText": "சி"
@@ -10182,7 +10231,7 @@
               "StoneText": "ண்"
             },
             {
-              "StoneText": "கு"
+              "StoneText": "ஞி"
             },
             {
               "StoneText": "கி"
@@ -10252,10 +10301,10 @@
               "StoneText": "ஞு"
             },
             {
-              "StoneText": "வ்"
+              "StoneText": "த்"
             },
             {
-              "StoneText": "வ்"
+              "StoneText": "ஞா"
             },
             {
               "StoneText": "ஞீ"
@@ -10278,7 +10327,7 @@
               "StoneText": "சா"
             },
             {
-              "StoneText": "ந்"
+              "StoneText": "சி"
             },
             {
               "StoneText": "ற்"
@@ -10293,7 +10342,7 @@
               "StoneText": "சா"
             },
             {
-              "StoneText": "ஊ"
+              "StoneText": "கா"
             },
             {
               "StoneText": "கு"
@@ -10422,7 +10471,7 @@
               "StoneText": "ஙு"
             },
             {
-              "StoneText": "இ"
+              "StoneText": "சா"
             },
             {
               "StoneText": "ச்"
@@ -10480,7 +10529,7 @@
               "StoneText": "ற்"
             },
             {
-              "StoneText": "க்"
+              "StoneText": "ஞ"
             },
             {
               "StoneText": "ங்"
@@ -10533,10 +10582,10 @@
               "StoneText": "சா"
             },
             {
-              "StoneText": "ஞீ"
+              "StoneText": "ஙு"
             },
             {
-              "StoneText": "ஞூ"
+              "StoneText": "ஏ"
             },
             {
               "StoneText": "க"
@@ -10650,7 +10699,7 @@
               "StoneText": "சி"
             },
             {
-              "StoneText": "சு"
+              "StoneText": "ஙூ"
             },
             {
               "StoneText": "ஏ"
@@ -10732,7 +10781,7 @@
               "StoneText": "ஙூ"
             },
             {
-              "StoneText": "கு"
+              "StoneText": "ள்"
             },
             {
               "StoneText": "ஙீ"
