@@ -619,7 +619,6 @@ export class GameplayScene {
 
   draw(deltaTime: number) {
     const timeRef = { value: this.time };
-    //this.promptText.handleAutoPromptPlay(deltaTime);
     this.tutorial?.handleTutorialAndGameStart({
       deltaTime,
       isGameStarted: this.isGameStarted,
