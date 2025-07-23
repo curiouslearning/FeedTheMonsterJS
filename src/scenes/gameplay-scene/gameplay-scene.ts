@@ -741,7 +741,7 @@ export class GameplayScene {
 
     this.logPuzzleEndFirebaseEvent(isCorrect, puzzleType);
     this.dispatchStoneDropEvent(isCorrect);
-    this.tutorial.hideTutorial(); // Turn off tutorial
+    this.tutorial.hideTutorial(); // Commenting for git to see this change - Turn off tutorial
     setTimeout(() => {
       //Adjust the delay of 4500 (4.5 seconds) to 2500 (2.5 seconds) if the puzzle is incorrect.
       this.loadPuzzleDelay = isCorrect ? 4500 : 3000;
