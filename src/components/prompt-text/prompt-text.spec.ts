@@ -21,7 +21,7 @@ jest.mock('@gameStateService', () => ({
   EVENTS: {
     WORD_PUZZLE_SUBMITTED_LETTERS_COUNT: 'WORD_PUZZLE_SUBMITTED_LETTERS_COUNT'
   },
-  subscribe: jest.fn(() => jest.fn()) // unsubscribe fn
+  subscribe: jest.fn(() => jest.fn()) // unsubscribe function
 }));
 
 describe('PromptText', () => {
@@ -36,7 +36,10 @@ describe('PromptText', () => {
         <div id="prompt-background" class="prompt-background">
           <div id="prompt-text-button-container">
             <div id="prompt-text" class="prompt-text"></div>
-            <div id="prompt-play-button" class="prompt-play-button"></div>
+            <div class="prompt-button-slots-wrapper">
+              <div id="prompt-play-button" class="prompt-play-button"></div>
+              <div id="prompt-slots" class="prompt-slots"></div>
+            </div>
           </div>
         </div>
       </div>
@@ -75,7 +78,7 @@ describe('PromptText', () => {
   });
 
   afterEach(() => {
-    jest.clearAllTimers();
+    jest.clearAllMocks();
     jest.useRealTimers();
   });
 
@@ -113,11 +116,9 @@ describe('PromptText', () => {
       const promptEl = document.querySelector('#prompt-text');
       expect(promptEl).toBeTruthy();
 
-      // Get the wrapper span (it contains the child letter spans)
       const wrapper = promptEl?.querySelector('span');
       expect(wrapper).toBeTruthy();
 
-      // Get only the inner spans (the actual letter elements)
       const letterSpans = wrapper?.querySelectorAll('span') ?? [];
 
       const characters = Array.from(letterSpans)
@@ -129,4 +130,34 @@ describe('PromptText', () => {
     });
   });
 
+  describe('generatePromptSlots', () => {
+    it('should generate underscore slots initially', () => {
+      promptText.levelData.levelMeta.protoType = 'Hidden';
+      (promptText as any).generateTextMarkup(); // Re-trigger slot logic with updated protoType
+      const slots = document.querySelectorAll('#prompt-slots .slot');
+      expect(slots.length).toBe(3);
+
+      slots.forEach((slot, i) => {
+        expect(slot.textContent).toBe('_');
+        expect(slot.classList.contains('revealed-letter')).toBe(false);
+      });
+    });
+
+    it('should display revealed letters when active index advances', () => {
+      // Simulate some letters already solved
+      promptText.currentActiveLetterIndex = 2;
+      promptText.generatePromptSlots();
+
+      const slots = document.querySelectorAll('#prompt-slots .slot');
+      expect(slots.length).toBe(3);
+
+      expect(slots[0].textContent).toBe('c');
+      expect(slots[1].textContent).toBe('a');
+      expect(slots[2].textContent).toBe('_');
+
+      expect(slots[0].classList.contains('revealed-letter')).toBe(true);
+      expect(slots[1].classList.contains('revealed-letter')).toBe(true);
+      expect(slots[2].classList.contains('revealed-letter')).toBe(false);
+    });
+  });
 });

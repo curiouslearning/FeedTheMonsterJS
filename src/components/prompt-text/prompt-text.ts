@@ -34,9 +34,14 @@ export const PROMPT_TEXT_LAYOUT = (
             <div id="prompt-background" class="prompt-background ${bubblePulsateStyle}" style="background-image: url(${PROMPT_TEXT_BG})">
                 <div id="prompt-text-button-container">
                     <div id="prompt-text" class="prompt-text"></div>
-                    <div id="prompt-play-button"
-                        class="prompt-play-button ${audioBtnPulsateStyle}"
-                        style="background-image: url(${AUDIO_PLAY_BUTTON}); pointer-events: auto;">
+
+                    <!-- Wrap button and slots vertically -->
+                    <div class="prompt-button-slots-wrapper">
+                        <div id="prompt-play-button"
+                            class="prompt-play-button ${audioBtnPulsateStyle}"
+                            style="background-image: url(${AUDIO_PLAY_BUTTON}); pointer-events: auto;">
+                        </div>
+                        <div id="prompt-slots" class="prompt-slots"></div>
                     </div>
                 </div>
             </div>
@@ -67,6 +72,7 @@ export class PromptText extends BaseHTML {
     public promptBackground: HTMLDivElement;
     public promptTextElement: HTMLDivElement;
     public promptPlayButtonElement: HTMLDivElement;
+    public promptSlotElement: HTMLDivElement;
     private eventManager: EventManager;
 
     private onClickCallback?: () => void;
@@ -142,7 +148,7 @@ export class PromptText extends BaseHTML {
     }
 
     private removePulseClassIfSpellMatchTutorial() {
-        if (this.isSpellSoundMatchTutorial()) {
+        if (this.isLetterSoundMatchTutorial() || this.isSpellSoundMatchTutorial()) {
             const playButton = document.getElementById("prompt-play-button");
             if (playButton?.classList.contains("pulsing")) {
                 playButton.classList.remove("pulsing");
@@ -151,7 +157,7 @@ export class PromptText extends BaseHTML {
     }
 
     private autoRemoveButtonPulse() {
-        if (this.isSpellSoundMatchTutorial()) {
+        if (this.isLetterSoundMatchTutorial() || this.isSpellSoundMatchTutorial()) {
             //Audio tutorial duration is 6 seconds to interact with the prompt.
             const totalAudioTutorialDuration = this.AUTO_PROMPT_INITIAL_DELAY_MS + 3000;
             setTimeout(() => {
@@ -174,6 +180,7 @@ export class PromptText extends BaseHTML {
         this.promptBackground = this.promptContainer.querySelector('#prompt-background') as HTMLDivElement;
         this.promptTextElement = this.promptContainer.querySelector('#prompt-text') as HTMLDivElement;
         this.promptPlayButtonElement = this.promptContainer.querySelector('#prompt-play-button') as HTMLDivElement;
+        this.promptSlotElement = this.promptContainer.querySelector('#prompt-slots') as HTMLDivElement;
 
         // Update event listeners to include the callback
         const handleClick = (e: Event) => {
@@ -219,6 +226,31 @@ export class PromptText extends BaseHTML {
         this.promptPlayButtonElement.style.display = showButton ? 'block' : 'none';
         this.promptTextElement.style.display = showButton ? 'none' : 'block';
     }
+
+    generatePromptSlots() {
+        if (!this.promptSlotElement) return;
+
+        this.promptSlotElement.innerHTML = ""; // Clear any previous slots
+
+        //Create slots based on number of target letters.
+        [...this.targetStones].forEach((letter, index) => {
+            const slot: any = document.createElement("div");
+            slot.classList.add("slot");
+
+            //If index of the char is less than the active letter index. It means letter should be revealed.
+            if (index < this.currentActiveLetterIndex) {
+                const isRevealed: (string | { StoneText: string }) = this.targetStones?.[index];
+
+                slot.textContent = isRevealed; // Show the letter
+                slot.classList.add("revealed-letter");
+            } else {
+                slot.textContent = "_"; // Show underscore
+            }
+
+            this.promptSlotElement.appendChild(slot);
+        });
+    }
+
 
     /**
      * Generates HTML markup for a prompt word with dynamic letter styling.
@@ -301,12 +333,6 @@ export class PromptText extends BaseHTML {
         return wrapper;
     }
 
-    //hide button and show text - USE THIS FOR FM-515 FEATURE.
-    private showWordText() {
-        this.setPromptButtonVisible(false);
-        this.generateTextMarkup();
-    }
-
     /**
     * Generates and updates the prompt text markup with appropriate styling and layout.
     */
@@ -319,12 +345,16 @@ export class PromptText extends BaseHTML {
 
         // Handle special types where only the play button is shown
         if (
-            levelType == "SoundWord" ||
-            levelType == "audioPlayerWord" ||
-            protoType === "Hidden"
+            protoType === "Hidden" &&
+            (
+                levelType == "Word" ||
+                levelType == "SoundWord" ||
+                levelType == "audioPlayerWord"
+            )
         ) {
             // Show play button instead of text for audioPlayerWord levelType or hidden prototypes
             this.setPromptButtonVisible(true);
+            this.generatePromptSlots();
             return;
         }
 
@@ -352,10 +382,18 @@ export class PromptText extends BaseHTML {
         this.setPromptButtonVisible(false);
     }
 
-    private isSpellSoundMatchTutorial(): boolean {
+    private isLetterSoundMatchTutorial(): boolean {
         return (
             this.isLevelHaveTutorial &&
             this.levelData?.levelMeta?.levelType === "LetterOnly" &&
+            this.levelData?.levelMeta?.protoType === "Hidden"
+        );
+    }
+
+    private isSpellSoundMatchTutorial(): boolean {
+        return (
+            this.isLevelHaveTutorial &&
+            this.levelData?.levelMeta?.levelType === "Word" &&
             this.levelData?.levelMeta?.protoType === "Hidden"
         );
     }
