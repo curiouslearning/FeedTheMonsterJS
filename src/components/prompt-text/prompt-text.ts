@@ -344,17 +344,10 @@ export class PromptText extends BaseHTML {
         this.promptTextElement.setAttribute('dir', cssDirection);
 
         // Handle special types where only the play button is shown
-        if (
-            protoType === "Hidden" &&
-            (
-                levelType == "Word" ||
-                levelType == "SoundWord" ||
-                levelType == "audioPlayerWord"
-            )
-        ) {
+        if (protoType === "Hidden") {
             // Show play button instead of text for audioPlayerWord levelType or hidden prototypes
             this.setPromptButtonVisible(true);
-            this.generatePromptSlots();
+            this.isSpellSoundMatchTutorial() && this.generatePromptSlots();
             return;
         }
 
