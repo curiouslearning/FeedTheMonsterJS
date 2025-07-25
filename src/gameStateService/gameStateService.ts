@@ -28,6 +28,7 @@ export class GameStateService extends PubSub {
         GAME_PAUSE_STATUS_EVENT: string;
         LEVEL_END_DATA_EVENT: string;
         CORRECT_STONE_POSITION: string;
+        WORD_PUZZLE_SUBMITTED_LETTERS_COUNT: string;
     }
     public data: null | DataModal;
     public isGamePaused: boolean;
@@ -104,7 +105,8 @@ export class GameStateService extends PubSub {
             GAMEPLAY_DATA_EVENT: 'GAMEPLAY_DATA_EVENT',
             GAME_PAUSE_STATUS_EVENT: 'GAME_PAUSE_STATUS_EVENT',
             LEVEL_END_DATA_EVENT: 'LEVEL_END_DATA_EVENT', // To move this event on DOM Event once created.
-            CORRECT_STONE_POSITION: 'CORRECT_STONE_POSITION'  //Stone image, position and level data for tutorial.
+            CORRECT_STONE_POSITION: 'CORRECT_STONE_POSITION',  //Stone image, position and level data for tutorial.
+            WORD_PUZZLE_SUBMITTED_LETTERS_COUNT: 'WORD_PUZZLE_SUBMITTED_LETTERS_COUNT',
         };
         this.data = null;
         /* Gameplay States */
@@ -271,13 +273,13 @@ export class GameStateService extends PubSub {
     }
 
     public checkMonsterPhaseUpdation(): number {
-        const totalStarCount = this.getTotalStars();
+        const successStarCount = GameScore.getAllGameLevelInfo().reduce((sum, level) => sum + (level.starCount >= 2 ? level.starCount : 0), 0);
         switch (true) {
-            case totalStarCount >= 38:
+            case successStarCount >= 38:
                 return 3; // Phase 4
-            case totalStarCount >= 23:
+            case successStarCount >= 23:
                 return 2; // Phase 3
-            case totalStarCount >= 8:
+            case successStarCount >= 8:
                 return 1; // Phase 2
             default:
                 return 0; // Phase 1 (default)

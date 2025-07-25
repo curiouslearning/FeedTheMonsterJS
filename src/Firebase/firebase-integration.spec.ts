@@ -8,13 +8,64 @@ import { FirebaseIntegration } from './firebase-integration';
 import { logEvent, getAnalytics } from 'firebase/analytics';
 import { BaseFirebaseIntegration } from "./base-firebase-integration";
 
+// Mock the AnalyticsService and related classes
+let mockAnalyticsService = {
+  track: jest.fn(),
+  register: jest.fn()
+};
+
+jest.mock('@curiouslearning/analytics', () => ({
+  AnalyticsService: jest.fn().mockImplementation(() => mockAnalyticsService),
+  FirebaseStrategy: jest.fn().mockImplementation(() => ({
+    initialize: jest.fn().mockResolvedValue(undefined),
+    firebaseApp: {}
+  })),
+  StatsigStrategy: jest.fn().mockImplementation(() => ({
+    initialize: jest.fn().mockResolvedValue(undefined)
+  }))
+}));
+
+describe('FirebaseIntegration Singleton', () => {
+  beforeEach(() => {
+    // Reset the singleton instance and mocks before each test
+    (FirebaseIntegration as any).instance = null;
+    jest.clearAllMocks();
+    mockAnalyticsService.track.mockClear();
+    mockAnalyticsService.register.mockClear();
+  });
+
+  it('should throw error when getInstance is called before initialization', () => {
+    expect(() => {
+      FirebaseIntegration.getInstance();
+    }).toThrow('FirebaseIntegration.initializeAnalytics() must be called before accessing the instance');
+  });
+
+  it('should initialize analytics and return same instance', async () => {
+    await FirebaseIntegration.initializeAnalytics();
+    const instance1 = FirebaseIntegration.getInstance();
+    const instance2 = FirebaseIntegration.getInstance();
+    
+    expect(instance1).toBeTruthy();
+    expect(instance1).toBe(instance2);
+  });
+
+  it('should not reinitialize if already initialized', async () => {
+    await FirebaseIntegration.initializeAnalytics();
+    const instance1 = FirebaseIntegration.getInstance();
+    
+    await FirebaseIntegration.initializeAnalytics();
+    const instance2 = FirebaseIntegration.getInstance();
+    
+    expect(instance1).toBe(instance2);
+  });
+});
 
 describe('Firebase Event Logging - Download_Completed', () => {
-
   let firebaseIntegration: FirebaseIntegration;
   let logDownloadPercentageComplete: (percentage: number, timeDiff: number) => void;
 
-  beforeEach(() => {
+  beforeEach(async () => {
+    await FirebaseIntegration.initializeAnalytics();
     firebaseIntegration = FirebaseIntegration.getInstance();
     jest.spyOn(firebaseIntegration, 'sendDownloadCompletedEvent').mockImplementation(() => { });
     const versionInfoElement = { innerHTML: '2.0.1' };
@@ -39,7 +90,6 @@ describe('Firebase Event Logging - Download_Completed', () => {
     };
   });
 
-
   it('should log Download_Completed event with correct parameters', () => {
     logDownloadPercentageComplete(100, 5000);
 
@@ -53,13 +103,10 @@ describe('Firebase Event Logging - Download_Completed', () => {
     });
   });
 
-
-
   it('should have required fields and correct types', () => {
     logDownloadPercentageComplete(100, 1234);
 
     const [eventData] = (firebaseIntegration.sendDownloadCompletedEvent as jest.Mock).mock.calls[1];
-
 
     expect(typeof eventData.cr_user_id).toBe('object');
     expect(typeof eventData.ftm_language).toBe('string');
@@ -67,26 +114,22 @@ describe('Firebase Event Logging - Download_Completed', () => {
     expect(typeof eventData.json_version_number).toBe('string');
     expect(typeof eventData.ms_since_session_start).toBe('number');
 
-
     const allowedLangs = ["english"];
     expect(allowedLangs).toContain(eventData.ftm_language);
   });
-
-
 });
+
 describe('Firebase Event Logging - tapped_start', () => {
-  let firebaseIntegration: any;
+  let firebaseIntegration: FirebaseIntegration;
   let logTappedStartEvent: () => void;
 
-  beforeEach(() => {
-    firebaseIntegration = {
-      sendTappedStartEvent: jest.fn(),
-    };
-
+  beforeEach(async () => {
+    await FirebaseIntegration.initializeAnalytics();
+    firebaseIntegration = FirebaseIntegration.getInstance();
+    jest.spyOn(firebaseIntegration, 'sendTappedStartEvent').mockImplementation(() => {});
 
     const versionInfoElement = { innerHTML: '1.2.3' };
     document.getElementById = jest.fn().mockReturnValue(versionInfoElement);
-
 
     (global as any).pseudoId = 'user-123';
     (global as any).lang = 'hi';
@@ -94,13 +137,13 @@ describe('Firebase Event Logging - tapped_start', () => {
     const majVersion = 1;
     const minVersion = 5;
 
-
     logTappedStartEvent = () => {
       const tappedStartData = {
         cr_user_id: null,
         ftm_language: "english",
-        app_version_number: document.getElementById('version-info-id')?.innerHTML,
-        json_version_number: parseFloat(`${majVersion}.${minVersion}`),
+        profile_number: 0,
+        version_number: document.getElementById('version-info-id')?.innerHTML,
+        json_version_number: `${majVersion}.${minVersion}`,
       };
 
       firebaseIntegration.sendTappedStartEvent(tappedStartData);
@@ -113,20 +156,22 @@ describe('Firebase Event Logging - tapped_start', () => {
     expect(firebaseIntegration.sendTappedStartEvent).toHaveBeenCalledWith({
       cr_user_id: null,
       ftm_language: 'english',
-      app_version_number: '1.2.3',
-      json_version_number: 1.5,
+      profile_number: 0,
+      version_number: '1.2.3',
+      json_version_number: '1.5',
     });
   });
 
   it('should validate required fields and types', () => {
     logTappedStartEvent();
 
-    const [eventData] = firebaseIntegration.sendTappedStartEvent.mock.calls[0];
+    const calls = jest.mocked(firebaseIntegration.sendTappedStartEvent).mock.calls;
+    const [eventData] = calls[0];
 
     expect(typeof eventData.cr_user_id).toBe('object');
     expect(typeof eventData.ftm_language).toBe('string');
-    expect(typeof eventData.app_version_number).toBe('string');
-    expect(typeof eventData.json_version_number).toBe('number');
+    expect(typeof eventData.version_number).toBe('string');
+    expect(typeof eventData.json_version_number).toBe('string');
 
     const allowedLangs = ['english'];
     expect(allowedLangs).toContain(eventData.ftm_language);
@@ -134,18 +179,16 @@ describe('Firebase Event Logging - tapped_start', () => {
 });
 
 describe('Firebase Event Logging - selected_level', () => {
-  let firebaseIntegration: any;
+  let firebaseIntegration: FirebaseIntegration;
   let logSelectedLevelEvent: () => void;
 
-  beforeEach(() => {
-    firebaseIntegration = {
-      sendSelectedLevelEvent: jest.fn(),
-    };
-
+  beforeEach(async () => {
+    await FirebaseIntegration.initializeAnalytics();
+    firebaseIntegration = FirebaseIntegration.getInstance();
+    jest.spyOn(firebaseIntegration, 'sendSelectedLevelEvent').mockImplementation(() => {});
 
     const versionInfoElement = { innerHTML: '3.0.0' };
     document.getElementById = jest.fn().mockReturnValue(versionInfoElement);
-
 
     (global as any).pseudoId = 'user-456';
     (global as any).lang = 'sw';
@@ -153,7 +196,6 @@ describe('Firebase Event Logging - selected_level', () => {
     const majVersion = 2;
     const minVersion = 3;
     const levelNumber = 5;
-
 
     logSelectedLevelEvent = () => {
       const selectedLevelData = {
@@ -185,7 +227,8 @@ describe('Firebase Event Logging - selected_level', () => {
   it('should validate required fields and types', () => {
     logSelectedLevelEvent();
 
-    const [eventData] = firebaseIntegration.sendSelectedLevelEvent.mock.calls[0];
+    const calls = jest.mocked(firebaseIntegration.sendSelectedLevelEvent).mock.calls;
+    const [eventData] = calls[0];
 
     expect(typeof eventData.cr_user_id).toBe('object');
     expect(typeof eventData.ftm_language).toBe('string');
@@ -198,24 +241,23 @@ describe('Firebase Event Logging - selected_level', () => {
     expect(allowedLangs).toContain(eventData.ftm_language);
   });
 });
+
 describe('Firebase Event Logging - puzzle_completed', () => {
-  let firebaseIntegration: any;
+  let firebaseIntegration: FirebaseIntegration;
   let logPuzzleEndFirebaseEvent: (isCorrect: boolean, puzzleType?: string) => void;
 
-  beforeEach(() => {
-    firebaseIntegration = {
-      sendPuzzleCompletedEvent: jest.fn(),
-    };
+  beforeEach(async () => {
+    jest.clearAllMocks();
+    await FirebaseIntegration.initializeAnalytics();
+    firebaseIntegration = FirebaseIntegration.getInstance();
 
     (global as any).pseudoId = 'puzzle-user';
     (global as any).lang = 'en';
 
-
     const versionInfoElement = { innerHTML: '1.2.3' };
     document.getElementById = jest.fn().mockReturnValue(versionInfoElement);
 
-
-    const jsonVersionNumber = 4.56;
+    const jsonVersionNumber = '4.56';
     const levelNumber = 7;
     const puzzleNumber = 2;
     const puzzleTime = Date.now() - 4000;
@@ -223,7 +265,6 @@ describe('Firebase Event Logging - puzzle_completed', () => {
     const droppedLetters = 'DOG';
     const correctTarget = 'CAT';
     const foilStones = ['BAT', 'RAT'];
-
 
     logPuzzleEndFirebaseEvent = (isCorrect: boolean, puzzleType?: string) => {
       const endTime = Date.now();
@@ -233,7 +274,7 @@ describe('Firebase Event Logging - puzzle_completed', () => {
         ftm_language: "english",
         profile_number: 0,
         version_number: document.getElementById('version-info-id')?.innerHTML,
-        json_version_number: 4.56,
+        json_version_number: jsonVersionNumber,
         success_or_failure: isCorrect ? 'success' : 'failure',
         level_number: levelNumber,
         puzzle_number: puzzleNumber,
@@ -242,7 +283,7 @@ describe('Firebase Event Logging - puzzle_completed', () => {
             ? droppedLetters ?? 'TIMEOUT'
             : 'STONE_TEXT',
         target: correctTarget,
-        foils: foilStones,
+        foils: foilStones.join(','), // Convert array to comma-separated string
         response_time: (endTime - puzzleTime) / 1000,
       };
 
@@ -250,46 +291,51 @@ describe('Firebase Event Logging - puzzle_completed', () => {
     };
   });
 
-  it('should log puzzle_completed event with correct parameters for Word puzzle', () => {
+  it('should log puzzle_completed event with correct parameters', () => {
     logPuzzleEndFirebaseEvent(true, 'Word');
 
-    const [eventData] = firebaseIntegration.sendPuzzleCompletedEvent.mock.calls[0];
+    expect(mockAnalyticsService.track).toHaveBeenCalledWith(
+      'puzzle_completed',
+      expect.objectContaining({
+        cr_user_id: null,
+        ftm_language: "english",
+        profile_number: 0,
+        version_number: '1.2.3',
+        json_version_number: '4.56',
+        success_or_failure: 'success',
+        level_number: 7,
+        puzzle_number: 2,
+        item_selected: 'DOG',
+        target: 'CAT',
+        foils: 'BAT,RAT' // Expect comma-separated string
+      })
+    );
 
-    expect(typeof eventData.cr_user_id).toBe('object');
-    expect(typeof eventData.ftm_language).toBe('string');
-    expect(typeof eventData.version_number).toBe('string');
-    expect(typeof eventData.json_version_number).toBe('number');
-    expect(typeof eventData.level_number).toBe('number');
-    expect(typeof eventData.puzzle_number).toBe('number');
-    expect(typeof eventData.item_selected).toBe('string');
-    expect(typeof eventData.target).toBe('string');
-    expect(Array.isArray(eventData.foils)).toBe(true);
+    const [, eventData] = mockAnalyticsService.track.mock.calls[0];
     expect(typeof eventData.response_time).toBe('number');
-    expect(eventData.success_or_failure).toBe('success');
-
-    const allowedLangs = ["english"];
-    expect(allowedLangs).toContain(eventData.ftm_language);
   });
 
   it('should log puzzle_completed event with failure for Stone puzzle', () => {
     logPuzzleEndFirebaseEvent(false, 'Stone');
 
-    const [eventData] = firebaseIntegration.sendPuzzleCompletedEvent.mock.calls[0];
-
-    expect(eventData.success_or_failure).toBe('failure');
-    expect(eventData.item_selected).toBe('STONE_TEXT');
+    expect(mockAnalyticsService.track).toHaveBeenCalledWith(
+      'puzzle_completed',
+      expect.objectContaining({
+        success_or_failure: 'failure',
+        item_selected: 'STONE_TEXT'
+      })
+    );
   });
 });
 
 describe('Firebase Event Logging - level_completed', () => {
-  let firebaseIntegration: any;
+  let firebaseIntegration: FirebaseIntegration;
   let logLevelEndFirebaseEvent: () => void;
 
-  beforeEach(() => {
-    firebaseIntegration = {
-      sendLevelCompletedEvent: jest.fn(),
-    };
-
+  beforeEach(async () => {
+    jest.clearAllMocks();
+    await FirebaseIntegration.initializeAnalytics();
+    firebaseIntegration = FirebaseIntegration.getInstance();
 
     (global as any).pseudoId = 'level-user';
     (global as any).lang = 'en';
@@ -297,11 +343,10 @@ describe('Firebase Event Logging - level_completed', () => {
     const versionInfoElement = { innerHTML: '3.4.5' };
     document.getElementById = jest.fn().mockReturnValue(versionInfoElement);
 
-    const jsonVersionNumber = 5.67;
+    const jsonVersionNumber = '5.67';
     const startTime = Date.now() - 7000;
     const score = 350;
     const levelNumber = 9;
-
 
     const GameScore = {
       calculateStarCount: (score: number) => Math.floor(score / 100),
@@ -328,26 +373,26 @@ describe('Firebase Event Logging - level_completed', () => {
   it('should log level_completed event with success status if stars >= 3', () => {
     logLevelEndFirebaseEvent();
 
-    const [eventData] = firebaseIntegration.sendLevelCompletedEvent.mock.calls[0];
+    expect(mockAnalyticsService.track).toHaveBeenCalledWith(
+      'level_completed',
+      expect.objectContaining({
+        cr_user_id: null,
+        ftm_language: "english",
+        profile_number: 0,
+        version_number: '3.4.5',
+        json_version_number: '5.67',
+        success_or_failure: 'success',
+        number_of_successful_puzzles: 3.5,
+        level_number: 9
+      })
+    );
 
-    expect(typeof eventData.cr_user_id).toBe('object');
-    expect(typeof eventData.ftm_language).toBe('string');
-    expect(typeof eventData.version_number).toBe('string');
-    expect(typeof eventData.json_version_number).toBe('number');
-    expect(eventData.success_or_failure).toBe('success');
-    expect(typeof eventData.number_of_successful_puzzles).toBe('number');
-    expect(typeof eventData.level_number).toBe('number');
+    const [, eventData] = mockAnalyticsService.track.mock.calls[0];
     expect(typeof eventData.duration).toBe('number');
-
-    const allowedLangs = ["english"];
-    expect(allowedLangs).toContain(eventData.ftm_language);
   });
 
   it('should log failure if stars < 3', () => {
-
     const score = 250;
-
-
     const GameScore = {
       calculateStarCount: (score: number) => Math.floor(score / 100),
     };
@@ -356,11 +401,11 @@ describe('Firebase Event Logging - level_completed', () => {
     const startTime = endTime - 8000;
 
     const levelCompletedData = {
-      cr_user_id: 'level-user',
-      ftm_language: 'en',
+      cr_user_id: null,
+      ftm_language: "english",
       profile_number: 0,
       version_number: '3.4.5',
-      json_version_number: 5.67,
+      json_version_number: '5.67',
       success_or_failure:
         GameScore.calculateStarCount(score) >= 3 ? 'success' : 'failure',
       number_of_successful_puzzles: score / 100,
@@ -368,14 +413,17 @@ describe('Firebase Event Logging - level_completed', () => {
       duration: (endTime - startTime) / 1000,
     };
 
-    firebaseIntegration.sendLevelCompletedEvent.mockClear();
-
     firebaseIntegration.sendLevelCompletedEvent(levelCompletedData);
 
-    const [eventData] = firebaseIntegration.sendLevelCompletedEvent.mock.calls[0];
-    expect(eventData.success_or_failure).toBe('failure');
+    expect(mockAnalyticsService.track).toHaveBeenCalledWith(
+      'level_completed',
+      expect.objectContaining({
+        success_or_failure: 'failure'
+      })
+    );
   });
 });
+
 describe('Firebase Event Logging - session_start', () => {
   let firebaseIntegration: any;
   let logSessionStartFirebaseEvent: () => void;
@@ -459,6 +507,7 @@ describe('Firebase Event Logging - session_start', () => {
     expect(eventData.days_since_last).toBe(0);
   });
 });
+
 describe('Firebase Event Logging - session_end', () => {
   let firebaseIntegration: any;
   let logSessionEndFirebaseEvent: () => void;
@@ -531,49 +580,24 @@ describe('Firebase Event Logging - session_end', () => {
     expect(spySetItem).toHaveBeenCalledWith('lastSessionEndTime', expect.any(String));
   });
 });
+
 class TestFirebaseIntegration extends BaseFirebaseIntegration {
   public triggerCustomEvent(name: string, data: object) {
-    this.customEvents(name, data);
+    this.trackCustomEvent(name, data);
   }
 }
 
-// describe("BaseFirebaseIntegration", () => {
-//   beforeEach(() => {
-//     jest.clearAllMocks();
-//   });
+describe('BaseFirebaseIntegration', () => {
+  let integration: TestFirebaseIntegration;
 
-//   it("should call logEvent with correct parameters via customEvents", () => {
-//     const integration = new TestFirebaseIntegration();
-
-//     const mockEventName = "download_completed";
-//     const mockData = {
-//       cr_user_id: null,
-//       ftm_language: "english",
-//       profile_number: 0,
-//       version_number: "2.0.1",
-//       json_version_number: "3.14",
-//       ms_since_session_start: 5000,
-//     };
-
-//     integration.triggerCustomEvent(mockEventName, mockData);
-
-//     expect(logEvent).toHaveBeenCalledWith(
-//       "mockAnalytics",     
-//       mockEventName,       
-//       mockData             
-//     );
-//   });
-// });
-
-describe("BaseFirebaseIntegration", () => {
-  beforeEach(() => {
-    jest.clearAllMocks();
+  beforeEach(async () => {
+    await FirebaseIntegration.initializeAnalytics();
+    integration = new TestFirebaseIntegration();
+    await integration.initialize();
   });
 
-  it("should call logEvent with correct parameters via customEvents", () => {
-    const integration = new TestFirebaseIntegration();
-
-    const mockEventName = "download_completed";
+  it('should call track with correct parameters via customEvents', () => {
+    const mockEventName = 'download_completed';
     const mockData = {
       cr_user_id: null,
       ftm_language: "english",
@@ -585,10 +609,14 @@ describe("BaseFirebaseIntegration", () => {
 
     integration.triggerCustomEvent(mockEventName, mockData);
 
-    expect(logEvent).toHaveBeenCalledWith(
-      expect.anything(),    
+    expect(mockAnalyticsService.track).toHaveBeenCalledWith(
       mockEventName,
       mockData
     );
+  });
+
+  it('should initialize analytics service with Firebase and Statsig strategies', async () => {
+    expect(mockAnalyticsService.register).toHaveBeenCalledWith('firebase', expect.anything());
+    expect(mockAnalyticsService.register).toHaveBeenCalledWith('statsig', expect.anything());
   });
 });

@@ -2,6 +2,7 @@ import LetterPuzzleLogic from '../letterPuzzleLogic/letterPuzzleLogic';
 import WordPuzzleLogic from '../wordPuzzleLogic/wordPuzzleLogic';
 import { FeedbackTextEffects } from '@components/feedback-text';
 import { FeedbackAudioHandler, FeedbackType } from '@gamepuzzles';
+import gameStateService from '@gameStateService';
 
 /**
  * Context object for creating a puzzle/handling a letter drop.
@@ -13,18 +14,13 @@ interface CreatePuzzleContext {
     frame: number;
   };
   targetLetterText: string; // Instead of passing the entire letterHandler
-  audioPlayer: any;
   promptText: any;
   feedBackTexts: Record<string, string>;
-  handleCorrectLetterDrop: (feedbackIndex: number) => void;
   handleLetterDropEnd: (isCorrect: boolean, type: string) => void;
   triggerMonsterAnimation: (name: string) => void;
   timerTicking: any;
-  isFeedBackTriggeredSetter: (v: boolean) => void;
   lang: string;
   lettersCountRef: { value: number };
-  counter?: number;
-  width?: number;
 }
 
 /**
@@ -35,13 +31,14 @@ export default class PuzzleHandler {
   private wordPuzzleLogic: WordPuzzleLogic | null = null;
   private letterPuzzleLogic: LetterPuzzleLogic | null = null;
   private feedbackAudioHandler: FeedbackAudioHandler;
+  private feedbackTextEffects: FeedbackTextEffects
 
   constructor(levelData: any, counter: number = 0, feedbackAudios?: any) {
     // Initialize feedback audio handler if audio resources are provided
     if (feedbackAudios) {
       this.feedbackAudioHandler = new FeedbackAudioHandler(feedbackAudios);
     }
-    
+    this.feedbackTextEffects = new FeedbackTextEffects();
     this.initialize(levelData, counter);
   }
 
@@ -57,11 +54,8 @@ export default class PuzzleHandler {
     if (levelType === "Word" || levelType === "SoundWord") {
       this.wordPuzzleLogic = new WordPuzzleLogic(levelData, counter);
     } else {
-      this.wordPuzzleLogic = null;
+      this.letterPuzzleLogic = new LetterPuzzleLogic();
     }
-    
-    // Letter puzzle logic is created on demand in handleLetterPuzzle
-    this.letterPuzzleLogic = null;
   }
 
   /**
@@ -83,28 +77,30 @@ export default class PuzzleHandler {
   /**
    * Handles Letter puzzle logic.
    */
-  private handleLetterPuzzle(ctx: CreatePuzzleContext): boolean | void {
-    if (!this.letterPuzzleLogic) {
-      this.letterPuzzleLogic = new LetterPuzzleLogic();
-      this.letterPuzzleLogic.setTargetLetter(ctx.targetLetterText);
+  private handleLetterPuzzle(ctx: CreatePuzzleContext) {
+    this.letterPuzzleLogic.setTargetLetter(ctx.targetLetterText);
+
+    const droppedText = ctx.pickedLetter.text;
+
+    // Get a random feedback index
+    const feedBackIndex = this.getRandomInt(0, 1, ctx.feedBackTexts);
+    const isCorrect = this.letterPuzzleLogic.validateLetterDrop(droppedText);
+
+    // Play appropriate audio feedback
+    this.processLetterDropFeedbackAudio(
+      ctx.targetLetterText,
+      feedBackIndex,
+      isCorrect,
+      false,
+      droppedText
+    );
+
+    if (isCorrect) {
+      // Handle correct letter drop if needed
+      this.handleCorrectLetterDrop(feedBackIndex, ctx);
     }
-    
-    return this.letterPuzzleLogic.handleLetterDrop({
-      droppedText: ctx.pickedLetter.text,
-      getRandomInt: (min: number, max: number) => this.getRandomInt(min, max, ctx.feedBackTexts),
-      handleCorrectLetterDrop: ctx.handleCorrectLetterDrop,
-      handleLetterDropEnd: ctx.handleLetterDropEnd,
-      isFeedBackTriggeredSetter: ctx.isFeedBackTriggeredSetter,
-      playFeedbackAudio: (feedBackIndex, isCorrect, isWord, droppedLetter) => {
-        this.processLetterDropFeedbackAudio(
-          ctx.targetLetterText,
-          feedBackIndex,
-          isCorrect,
-          isWord,
-          droppedLetter
-        );
-      }
-    });
+
+    ctx.handleLetterDropEnd(isCorrect, "Letter");
   }
 
   /**
@@ -112,14 +108,14 @@ export default class PuzzleHandler {
    */
   private handleWordPuzzle(ctx: CreatePuzzleContext): void {
     if (!this.wordPuzzleLogic) return;
-    
+
     // Use our own stopFeedbackAudio method instead of ctx.audioPlayer
     this.stopFeedbackAudio();
-    
+
     const feedBackIndex = this.getRandomInt(0, 1, ctx.feedBackTexts);
     this.wordPuzzleLogic.setGroupToDropped();
     const isCorrect = this.wordPuzzleLogic.validateFedLetters();
-    
+
     this.processLetterDropFeedbackAudio(
       ctx.targetLetterText,
       feedBackIndex,
@@ -127,26 +123,30 @@ export default class PuzzleHandler {
       true,
       this.getWordPuzzleDroppedLetters()
     );
-    
+
     if (isCorrect) {
-      if (this.wordPuzzleLogic.validateWordPuzzle()) {
-        ctx.handleCorrectLetterDrop(feedBackIndex);
-        ctx.handleLetterDropEnd(isCorrect, "Word");
+      const isWordSpellingCorrect = this.wordPuzzleLogic.validateWordPuzzle();
+      if (isWordSpellingCorrect) {
+        this.handleCorrectLetterDrop(feedBackIndex, ctx);
+        ctx.handleLetterDropEnd(isWordSpellingCorrect, "Word");
         ctx.lettersCountRef.value = 1;
         return;
       }
-      
+
       ctx.triggerMonsterAnimation('isMouthClosed');
       ctx.triggerMonsterAnimation('backToIdle');
       ctx.timerTicking.startTimer();
-      
+
       const { droppedHistory } = this.wordPuzzleLogic.getValues();
-      const droppedLettersCount = Object.keys(droppedHistory).length;
-      
-      ctx.promptText.droppedLetterIndex(
-        ctx.lang === "arabic" ? ctx.lettersCountRef.value : droppedLettersCount
+      const droppedLettersCount = ctx.lang === "arabic"
+        ? ctx.lettersCountRef.value
+        : Object.keys(droppedHistory).length;
+
+      gameStateService.publish(
+        gameStateService.EVENTS.WORD_PUZZLE_SUBMITTED_LETTERS_COUNT,
+        droppedLettersCount
       );
-      
+
       ctx.lettersCountRef.value++;
     } else {
       ctx.handleLetterDropEnd(isCorrect, "Word");
@@ -241,8 +241,8 @@ export default class PuzzleHandler {
   /**
    * Handles checking hovered letter for word puzzles.
    */
-  handleCheckHoveredLetter(letterText: string, letterIndex: number): boolean | undefined {
-    return this.wordPuzzleLogic?.handleCheckHoveredLetter(letterText, letterIndex);
+  handleCheckHoveredLetter(letterText: string, letterIndex: number): boolean {
+     return this.wordPuzzleLogic?.handleCheckHoveredLetter(letterText, letterIndex);
   }
 
   /**
@@ -266,23 +266,18 @@ export default class PuzzleHandler {
    */
   handleCorrectLetterDrop(
     feedbackIndex: number,
-    feedbackTextEffects: FeedbackTextEffects,
     ctx: CreatePuzzleContext,
-    addScore: (amount: number) => void
   ): void {
-    /**
-     The hardcoded value was carried over from the original implementation. The key change is that instead of directly modifying a score property (this.score += 100), we now call an injected function (addScore(100)). This improves separation of concerns - the PuzzleHandler doesn't manage the score directly but delegates that responsibility to the caller. In a future refactoring, this value could be made configurable rather than hardcoded.
-     */
-    addScore(100);
+
     
     // Get feedback text and display it
     const feedbackText = this.getRandomFeedBackText(feedbackIndex, ctx.feedBackTexts);
-    feedbackTextEffects.wrapText(feedbackText);
+    this.feedbackTextEffects.wrapText(feedbackText);
     
     // Hide feedback text after audio finishes
     const totalAudioDuration = 4500; // Approximate duration of feedback audio
     setTimeout(() => {
-      feedbackTextEffects.hideText();
+      this.feedbackTextEffects.hideText();
     }, totalAudioDuration);
   }
 

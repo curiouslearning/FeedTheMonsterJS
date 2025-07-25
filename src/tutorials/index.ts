@@ -3,7 +3,7 @@ import MatchLetterPuzzleTutorial from './MatchLetterPuzzleTutorial/MatchLetterPu
 import WordPuzzleTutorial from './WordPuzzleTutorial/WordPuzzleTutorial';
 import AudioPuzzleTutorial from './AudioPuzzleTutorial/AudioPuzzleTutorial';
 import gameStateService from '@gameStateService';
-import { getGameTypeName, isGameTypeAudio, Utils } from '@common';
+import { getGameTypeName, isGameTypeAudio } from '@common';
 
 type TutorialInitParams = {
   context: CanvasRenderingContext2D;
@@ -15,12 +15,13 @@ type TutorialInitParams = {
 export default class TutorialHandler {
   private quickStartTutorialTimerId: ReturnType<typeof setTimeout> | null = null;
   public quickStartTutorialReady: boolean = false;
-  public shouldShowTutorialAnimation: boolean = false; // Set externally as needed
+  public shouldShowQuickStartTutorial: boolean = false; // Set externally as needed
   private width: number;
   private height: number;
   private context: CanvasRenderingContext2D;
   private puzzleLevel: number;
-  private activeTutorial: null | MatchLetterPuzzleTutorial | WordPuzzleTutorial | AudioPuzzleTutorial;
+  private shouldHaveTutorial: boolean;
+  public activeTutorial: null | MatchLetterPuzzleTutorial | WordPuzzleTutorial | AudioPuzzleTutorial;
   private quickTutorial: null | QuickStartTutorial;
   private hasGameEnded: boolean = false;
   private isGameOnPause: boolean = false;
@@ -38,19 +39,26 @@ export default class TutorialHandler {
   private unsubscribeLevelEndData: () => void; //Listener to check if the game is about to switch to level-end.
   private tutorialElapsedTime: number = 0;
   private readonly tutorialHoldDuration: number = 12000; // 12 seconds
+  private isWordPuzzle: boolean = false;
+
   constructor({ context, width, height, puzzleLevel, shouldHaveTutorial }: TutorialInitParams) {
     this.quickTutorial = null;
     this.activeTutorial = null;
     this.puzzleLevel = puzzleLevel;
-    this.initializeSubscriptionsAndValues({ shouldHaveTutorial, context, width, height });
+    this.shouldHaveTutorial = shouldHaveTutorial;
+    this.initializeSubscriptionsAndValues({ context, width, height });
   }
 
-  private initializeSubscriptionsAndValues({ shouldHaveTutorial, context, width, height }: TutorialInitParams) {
-    //Create and initialize values only if tutorial should be created.
-    if (
-      shouldHaveTutorial &&
+  private checkShouldHaveTutorial() {
+    return this.shouldHaveTutorial &&
       this.puzzleLevel === 0 &&
       !this.hasEstablishedSubscriptions
+  }
+
+  private initializeSubscriptionsAndValues({ context, width, height }: TutorialInitParams) {
+    //Create and initialize values only if tutorial should be created.
+    if (
+      this.checkShouldHaveTutorial()
     ) {
       this.hasEstablishedSubscriptions = true;
       this.gameTypesList = gameStateService.getGameTypeList();
@@ -59,10 +67,13 @@ export default class TutorialHandler {
       this.unsubscribeStoneCreationEvent = gameStateService.subscribe(
         gameStateService.EVENTS.CORRECT_STONE_POSITION,
         (eventData: {
-          stonePosVal: number[] | number[][],
+          stonePosVal: number[], //single stone position for non-word puzzles.
+          allStonePosVal: number[][], //all stone positions.
           img: any,
           levelData: any
         }) => {
+          this.isWordPuzzle = eventData.levelData?.levelMeta?.levelType === 'Word';
+
           // Get game type from level data
           const gameTypeName = getGameTypeName(
             eventData.levelData.levelMeta.protoType,
@@ -75,9 +86,12 @@ export default class TutorialHandler {
 
           // Only create tutorial if the game type hasn't been cleared yet
           if (!this.gameTypesList[gameTypeName]?.isCleared) {
+            //If this.isWordPuzzle is true, use the allStonePosVal; Otherwise use the stone poition value for non-word/spelling game types.
+            const stonePosVal = this.isWordPuzzle ? eventData.allStonePosVal : eventData.stonePosVal
+
             this.activeTutorial = this.createTutorialInstance({
               gameLevel,
-              stonePosVal: eventData.stonePosVal,
+              stonePosVal,
               img: eventData.img,
               gameTypeName,
               levelData: eventData.levelData
@@ -98,6 +112,51 @@ export default class TutorialHandler {
           //Marked the tutorial as cleared so it won't show up again after clearing it.
           gameStateService.setClearedTutorial(this.gameTypeName);
         });
+    }
+  }
+
+  /**
+ * Handles all tutorial gating and quick start logic for a scene.
+ * Call this from GameplayScene.draw for clean separation.
+ * Mutates timeRef and calls setGameToStart when appropriate.
+ */
+  public handleTutorialAndGameStart({
+    deltaTime,
+    isGameStarted,
+    isPauseButtonClicked,
+    setGameToStart,
+    timeRef
+  }: {
+    deltaTime: number,
+    isGameStarted: boolean,
+    isPauseButtonClicked: boolean,
+    setGameToStart: () => void,
+    timeRef: { value: number }
+  }) {
+    const shouldRunQuickStartTutorial = this.shouldShowQuickStartTutorial && this.quickStartTutorialReady && this.puzzleLevel === 0;
+    const shouldWaitForQuickStartTutorial = this.shouldShowQuickStartTutorial && !this.quickStartTutorialReady && this.puzzleLevel === 0;
+    // If game hasn't started and it's not paused
+    if (!isGameStarted && !isPauseButtonClicked) {
+      // Gate the tutorial animation behind both the tutorial flag and the timer-based flag
+      if (shouldRunQuickStartTutorial) {
+        // Draw the quick-start tutorial animation only after delay
+        this.drawQuickStart(deltaTime, isGameStarted);
+        // Start the game after the tutorial finishes
+        if (this.isQuickStartFinished()) {
+          setGameToStart();
+        }
+        return; // Wait until tutorial ends
+      } else if (shouldWaitForQuickStartTutorial) {
+        // Wait for the delay to expire before starting tutorial animation
+        // Optionally, could show a loading indicator or do nothing
+        return;
+      } else {
+        // No tutorial: immediately start the game on new puzzle
+        timeRef.value += deltaTime;
+        if (timeRef.value >= 5000) {
+          setGameToStart();
+        }
+      }
     }
   }
 
@@ -176,6 +235,8 @@ export default class TutorialHandler {
   public hideTutorial() {
     if (this.activeTutorial) {
       this.puzzleLevel++;
+      //Dispose first any active tutorial's dispose method if there is any.
+      this.activeTutorial?.dispose();
       this.activeTutorial = null;
       this.quickTutorial = null;
     }
@@ -205,20 +266,6 @@ export default class TutorialHandler {
     }
   }
 
-  public shouldPlayTutorialPromptAudio(promptTextInstance: any): boolean {
-    if (!promptTextInstance || !promptTextInstance.levelData || !promptTextInstance.currentPuzzleData) return false;
-    const gameTypesList = gameStateService.getGameTypeList();
-    const { isMatchSound, gameTypeName, gameType } = TutorialHandler.getPromptTextContext(promptTextInstance.levelData, gameTypesList);
-    const isValidGameType = gameType && !gameType.isCleared && gameType.levelNumber === promptTextInstance.levelData.levelMeta.levelNumber;
-    let triggerStart = 1910, triggerEnd = 1926;
-    if (isMatchSound && isValidGameType) {
-        triggerStart = 3000;
-        triggerEnd = 3016;
-    }
-
-    return Math.floor(promptTextInstance.time) >= triggerStart && Math.floor(promptTextInstance.time) <= triggerEnd;
-  }
-
   dispose() {
     //Clear canvas tutorials and reset values;
     if (this.hasEstablishedSubscriptions) {
@@ -231,6 +278,7 @@ export default class TutorialHandler {
       this.unsubscribePauseEvent();
       this.unsubscribeLevelEndData();
       this.hasEstablishedSubscriptions = false;
+      this.isWordPuzzle = false;
     }
   }
 
@@ -240,23 +288,22 @@ export default class TutorialHandler {
     const key = meta && getGameTypeName(meta.protoType, meta.levelType);
 
     if (
-        !meta ||
-        !gameTypesList ||
-        key !== 'SoundLetterOnly'
+      !meta ||
+      !gameTypesList ||
+      key !== 'SoundLetterOnly'
     ) {
-        return false;
+      return false;
     }
 
     const gameType = gameTypesList[key];
     if (!gameType) return false;
 
     return this.instantDropStone = !!(
-        !gameType.isCleared &&
-        gameType.levelNumber === meta.levelNumber
+      !gameType.isCleared &&
+      gameType.levelNumber === meta.levelNumber
     );
   }
 
-  
   /**
    * Starts or resets the 6-second timer that gates the quick start tutorial animation.
    * This should be called whenever the prompt is shown or a new puzzle is loaded.
@@ -269,7 +316,7 @@ export default class TutorialHandler {
     }
     this.quickStartTutorialReady = false;
     // Only start the timer if the tutorial should be shown
-    if (this.shouldShowTutorialAnimation) {
+    if (this.shouldShowQuickStartTutorial) {
       this.quickStartTutorialTimerId = setTimeout(() => {
         this.quickStartTutorialReady = true;
       }, 6000); // 6 seconds

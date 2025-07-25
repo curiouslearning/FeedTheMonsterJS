@@ -1,129 +1,181 @@
 import PuzzleHandler from './puzzleHandler';
 import { FeedbackTextEffects } from '@components/feedback-text';
 import { FeedbackType } from '@gamepuzzles';
+import WordPuzzleLogic from '../wordPuzzleLogic/wordPuzzleLogic';
+import LetterPuzzleLogic from '../letterPuzzleLogic/letterPuzzleLogic';
 
-jest.mock('../letterPuzzleLogic/letterPuzzleLogic');
 jest.mock('../wordPuzzleLogic/wordPuzzleLogic');
+jest.mock('../letterPuzzleLogic/letterPuzzleLogic');
+jest.mock('@components/feedback-text');
+jest.mock('@gamepuzzles', () => ({
+  FeedbackAudioHandler: jest.fn().mockImplementation(() => ({
+    playFeedback: jest.fn(),
+    stopAllAudio: jest.fn(),
+    dispose: jest.fn(),
+  })),
+  FeedbackType: {
+    CORRECT_ANSWER: 'CORRECT_ANSWER',
+    PARTIAL_CORRECT: 'PARTIAL_CORRECT',
+    INCORRECT: 'INCORRECT',
+  },
+}));
 
 describe('PuzzleHandler', () => {
-  let puzzleHandler: PuzzleHandler;
-  let mockLevelData: any;
-  let mockContext: any;
-  let mockFeedbackTextEffects: any;
+  let handler: PuzzleHandler;
+  let ctx: any;
 
   beforeEach(() => {
-    // Mock level data for testing
-    mockLevelData = {
-      levelMeta: {
-        levelType: 'LetterOnly'
-      }
-    };
+    jest.clearAllMocks();
 
-    // Mock context for puzzle creation
-    mockContext = {
+    (LetterPuzzleLogic as jest.Mock).mockImplementation(() => ({
+      setTargetLetter: jest.fn(),
+      validateLetterDrop: jest.fn().mockReturnValue(true),
+    }));
+
+    (WordPuzzleLogic as jest.Mock).mockImplementation(() => ({
+      validateFedLetters: jest.fn().mockReturnValue(true),
+      validateWordPuzzle: jest.fn().mockReturnValue(true),
+      setGroupToDropped: jest.fn(),
+      getValues: jest.fn().mockReturnValue({
+        droppedLetters: 'WORD',
+        groupedObj: {},
+        droppedHistory: { A: true, B: true },
+      }),
+      clearPickedUp: jest.fn(),
+    }));
+
+    (FeedbackTextEffects as jest.Mock).mockImplementation(() => ({
+      wrapText: jest.fn(),
+      hideText: jest.fn(),
+    }));
+
+    ctx = {
       levelType: 'LetterOnly',
-      pickedLetter: {
-        text: 'A',
-        frame: 1
-      },
+      pickedLetter: { text: 'A', frame: 0 },
       targetLetterText: 'A',
-      audioPlayer: {
-        play: jest.fn()
-      },
-      promptText: {
-        droppedLetterIndex: jest.fn()
-      },
-      feedBackTexts: {
-        'feedback1': 'Great job!',
-        'feedback2': 'Well done!'
-      },
-      handleCorrectLetterDrop: jest.fn(),
+      feedBackTexts: { 0: 'Nice!', 1: 'Great job!' },
       handleLetterDropEnd: jest.fn(),
       triggerMonsterAnimation: jest.fn(),
-      timerTicking: {
-        startTimer: jest.fn()
-      },
-      isFeedBackTriggeredSetter: jest.fn(),
+      timerTicking: { startTimer: jest.fn() },
       lang: 'english',
-      lettersCountRef: { value: 1 }
+      lettersCountRef: { value: 0 }
     };
 
-    mockFeedbackTextEffects = {
-      wrapText: jest.fn(),
-      hideText: jest.fn()
-    };
-
-    // Create PuzzleHandler instance
-    puzzleHandler = new PuzzleHandler(mockLevelData, 0);
-    
-    // Mock setTimeout
-    jest.useFakeTimers();
+    handler = new PuzzleHandler({ levelMeta: { levelType: 'LetterOnly' } }, 0, {});
   });
 
-  afterEach(() => {
-    jest.clearAllMocks();
-    jest.useRealTimers();
-  });
+  describe('handleLetterPuzzle', () => {
+    it('should validate letter drop, play correct audio and call feedback', () => {
+      handler.createPuzzle(ctx);
 
-  // Test Case 1: Initialize with different level types
-  it('should initialize with the correct puzzle logic based on level type', () => {
-    // Test LetterOnly level type
-    const letterHandler = new PuzzleHandler({ levelMeta: { levelType: 'LetterOnly' } }, 0);
-    expect(letterHandler['wordPuzzleLogic']).toBeNull();
-    
-    // Test Word level type
-    const wordHandler = new PuzzleHandler({ levelMeta: { levelType: 'Word' } }, 0);
-    expect(wordHandler['wordPuzzleLogic']).not.toBeNull();
-  });
-
-  // Test Case 2: Test handleCorrectLetterDrop method
-  it('should handle correct letter drop with proper feedback and scoring', () => {
-    // Mock the addScore function
-    const mockAddScore = jest.fn();
-    
-    // Call the method
-    puzzleHandler.handleCorrectLetterDrop(
-      0,
-      mockFeedbackTextEffects as any,
-      mockContext,
-      mockAddScore
-    );
-    
-    // Verify the score was added
-    expect(mockAddScore).toHaveBeenCalledWith(100);
-    
-    // Verify feedback text was displayed
-    expect(mockFeedbackTextEffects.wrapText).toHaveBeenCalled();
-    
-    // Advance timers to verify feedback text is hidden after delay
-    jest.advanceTimersByTime(4500);
-    expect(mockFeedbackTextEffects.hideText).toHaveBeenCalled();
-  });
-
-  // Test Case 3: Test createPuzzle routing to correct handler
-  it('should route to the correct puzzle handler based on level type', () => {
-    // Spy on the private methods
-    const letterPuzzleSpy = jest.spyOn(puzzleHandler as any, 'handleLetterPuzzle');
-    const wordPuzzleSpy = jest.spyOn(puzzleHandler as any, 'handleWordPuzzle');
-    
-    // Test LetterOnly level type
-    puzzleHandler.createPuzzle({
-      ...mockContext,
-      levelType: 'LetterOnly'
+      const mockAudio = (handler as any).feedbackAudioHandler;
+      expect(mockAudio.playFeedback).toHaveBeenCalledWith(FeedbackType.CORRECT_ANSWER, expect.any(Number));
+      expect(ctx.handleLetterDropEnd).toHaveBeenCalledWith(true, 'Letter');
     });
-    expect(letterPuzzleSpy).toHaveBeenCalled();
-    expect(wordPuzzleSpy).not.toHaveBeenCalled();
-    
-    // Reset spies
-    letterPuzzleSpy.mockClear();
-    wordPuzzleSpy.mockClear();
-    
-    // Test Word level type
-    puzzleHandler.createPuzzle({
-      ...mockContext,
-      levelType: 'Word'
+
+    it('should skip feedback text if incorrect', () => {
+      (LetterPuzzleLogic as jest.Mock).mockImplementation(() => ({
+        setTargetLetter: jest.fn(),
+        validateLetterDrop: jest.fn().mockReturnValue(false),
+      }));
+
+      const handlerIncorrect = new PuzzleHandler({ levelMeta: { levelType: 'LetterOnly' } }, 0, {});
+      handlerIncorrect.createPuzzle(ctx);
+
+      expect(ctx.handleLetterDropEnd).toHaveBeenCalledWith(false, 'Letter');
+      expect(FeedbackTextEffects.prototype.wrapText).not.toHaveBeenCalled();
     });
-    expect(wordPuzzleSpy).toHaveBeenCalled();
-    expect(letterPuzzleSpy).not.toHaveBeenCalled();
+  });
+
+  describe('handleWordPuzzle', () => {
+    beforeEach(() => {
+      handler = new PuzzleHandler({ levelMeta: { levelType: 'Word' } }, 0, {});
+      ctx.levelType = 'Word';
+    });
+
+    it('should process correct word drop and complete word', () => {
+      handler.createPuzzle(ctx);
+
+      expect(ctx.handleLetterDropEnd).toHaveBeenCalledWith(true, 'Word');
+      expect(ctx.lettersCountRef.value).toBe(1);
+    });
+
+    it('should process partially correct word drop', () => {
+      (WordPuzzleLogic as jest.Mock).mockImplementation(() => ({
+        validateFedLetters: jest.fn().mockReturnValue(true),
+        validateWordPuzzle: jest.fn().mockReturnValue(false),
+        setGroupToDropped: jest.fn(),
+        getValues: jest.fn().mockReturnValue({
+          droppedHistory: { A: true },
+          droppedLetters: 'W',
+        }),
+      }));
+
+      handler = new PuzzleHandler({ levelMeta: { levelType: 'Word' } }, 0, {});
+      handler.createPuzzle(ctx);
+
+      expect(ctx.triggerMonsterAnimation).toHaveBeenCalledWith('isMouthClosed');
+      expect(ctx.lettersCountRef.value).toBe(1);
+    });
+
+    it('should process incorrect word drop', () => {
+      (WordPuzzleLogic as jest.Mock).mockImplementation(() => ({
+        validateFedLetters: jest.fn().mockReturnValue(false),
+        getValues: jest.fn().mockReturnValue({}),
+        setGroupToDropped: jest.fn(),
+      }));
+
+      handler = new PuzzleHandler({ levelMeta: { levelType: 'Word' } }, 0, {});
+      handler.createPuzzle(ctx);
+
+      expect(ctx.handleLetterDropEnd).toHaveBeenCalledWith(false, 'Word');
+      expect(ctx.lettersCountRef.value).toBe(1);
+    });
+  });
+
+  describe('processLetterDropFeedbackAudio', () => {
+    it('should play correct, partial, or incorrect audio', () => {
+      const instance = handler as any;
+
+      // simulate correct exact match
+      instance.processLetterDropFeedbackAudio('A', 0, true, true, 'A');
+      expect(instance.feedbackAudioHandler.playFeedback).toHaveBeenCalledWith(
+        FeedbackType.CORRECT_ANSWER,
+        0
+      );
+
+      // simulate partial match
+      instance.processLetterDropFeedbackAudio('A', 1, true, true, 'B');
+      expect(instance.feedbackAudioHandler.playFeedback).toHaveBeenCalledWith(
+        FeedbackType.PARTIAL_CORRECT,
+        1
+      );
+
+      // simulate incorrect
+      instance.processLetterDropFeedbackAudio('A', 0, false, true, 'B');
+      expect(instance.feedbackAudioHandler.playFeedback).toHaveBeenCalledWith(
+        FeedbackType.INCORRECT,
+        0
+      );
+    });
+  });
+
+  describe('utilities', () => {
+    it('getRandomInt returns value in bounds', () => {
+      const val = handler.getRandomInt(0, 1, ctx.feedBackTexts);
+      expect(val).toBeGreaterThanOrEqual(0);
+      expect(val).toBeLessThanOrEqual(1);
+    });
+
+    it('getRandomFeedBackText returns expected text', () => {
+      const text = handler.getRandomFeedBackText(0, ctx.feedBackTexts);
+      expect(text).toBe('Nice!');
+    });
+  });
+
+  it('should dispose feedback audio handler', () => {
+    const audioHandler = handler['feedbackAudioHandler'];
+    handler.dispose();
+    expect(audioHandler.dispose).toHaveBeenCalled();
   });
 });

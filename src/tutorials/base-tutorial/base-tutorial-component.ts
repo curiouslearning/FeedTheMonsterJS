@@ -264,7 +264,7 @@ export default class TutorialComponent {
   }) {
     // Draw the stone at current position with slightly higher opacity for word puzzles
     const previousAlpha = this.context.globalAlpha;
-    
+  
     // Near the start position
     if (monsterStoneDifferenceInPercentage > 80) {
       this.context.globalAlpha = 0.8;

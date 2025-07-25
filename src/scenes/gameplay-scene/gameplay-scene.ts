@@ -5,7 +5,6 @@ import {
   LevelIndicators,
   StoneHandler,
   BackgroundHtmlGenerator,
-  FeedbackTextEffects,
   AudioPlayer,
   PhasesBackground,
   TrailEffectsHandler
@@ -41,7 +40,8 @@ import {
   SCENE_NAME_GAME_PLAY_REPLAY,
   SCENE_NAME_LEVEL_END,
   PreviousPlayedLevel,
-  MONSTER_PHASES
+  MONSTER_PHASES,
+  AUDIO_PATH_POINTS_ADD
 } from "@constants";
 import gameStateService from '@gameStateService';
 import gameSettingsService from '@gameSettingsService';
@@ -79,7 +79,6 @@ export class GameplayScene {
   isPauseButtonClicked: boolean;
   public background: any;
   feedBackTextCanavsElement: HTMLCanvasElement;
-  feedbackTextEffects: FeedbackTextEffects;
   public isGameStarted: boolean = false;
   public time: number = 0;
   public score: number = 0;
@@ -100,6 +99,11 @@ export class GameplayScene {
   private backgroundGenerator: PhasesBackground;
   public loadPuzzleDelay: 3000 | 4500;
   private puzzleHandler: any;
+  private timerStartSFXPlayed: boolean;
+  private isMonsterMouthOpen = false;
+  private lastClientX = 0;
+  private lastClientY = 0;
+  private animationFrameId: number | null = null;
   // Define animation delays as an array where index 0 = phase 0, index 1 = phase 1, index 2 = phase 2
   private animationDelays = [
     { backToIdle: 350, isChewing: 0, isHappy: 1700, isSpit: 1500, isSad: 3000 }, // Phase 1
@@ -128,8 +132,7 @@ export class GameplayScene {
     this.addEventListeners();
     this.startGameTime();
     this.startPuzzleTime();
-    this.firebaseIntegration = new FirebaseIntegration();
-    this.feedbackTextEffects = new FeedbackTextEffects();
+    this.firebaseIntegration = FirebaseIntegration.getInstance();
     this.audioPlayer = new AudioPlayer();
     this.puzzleHandler = new PuzzleHandler(this.levelData, this.counter, gamePlayData.feedbackAudios);
     this.unsubscribeEvent = gameStateService.subscribe(
@@ -161,6 +164,8 @@ export class GameplayScene {
     });
     //this.setupBg(); //Temporary disabled to try evolution background.
     this.setupMonsterPhaseBg();
+    this.timerStartSFXPlayed = false;
+    this.audioPlayer.preloadGameAudio(AUDIO_PATH_POINTS_ADD); // to preload the PointsAdd.wav
   }
 
   private initializeRiveMonster(): RiveMonsterComponent {
@@ -205,27 +210,26 @@ export class GameplayScene {
      */
     if (this.tutorial.showHandPointerInAudioPuzzle(gamePlayData.levelData)) {
       onClickCallback = () => {
-        this.tutorial.shouldShowTutorialAnimation = true;
+        this.tutorial.shouldShowQuickStartTutorial = true;
         this.tutorial.quickStartTutorialReady = true;
       };
     }
     this.promptText = new PromptText(
       this.width,
-      this.height,
       this.levelData.puzzles[this.counter],
       this.levelData,
       this.rightToLeft,
       'prompt-container',  // id parameter (string)
       { selectors: DEFAULT_SELECTORS },  // options parameter
+      gamePlayData?.tutorialOn && this.counter === 0,
       onClickCallback,
-      this.tutorial.shouldPlayTutorialPromptAudio
     );
     this.levelIndicators = new LevelIndicators();
     this.levelIndicators.setIndicators(this.counter);
     this.monster = this.initializeRiveMonster();
 
-    //For shouldShowTutorialAnimation- If the game level should have tutorial AND level is not yet cleared, timer should be delayed.
-    this.tutorial.shouldShowTutorialAnimation = gamePlayData.tutorialOn && !gamePlayData.isTutorialCleared;
+    //For shouldShowQuickStartTutorial- If the game level should have tutorial AND level is not yet cleared, timer should be delayed.
+    this.tutorial.shouldShowQuickStartTutorial = gamePlayData.tutorialOn && !gamePlayData.isTutorialCleared;
 
     if (this.tutorial.showHandPointerInAudioPuzzle(gamePlayData.levelData)) {
       this.tutorial.resetQuickStartTutorialDelay();
@@ -297,13 +301,21 @@ export class GameplayScene {
   }
 
   handleMouseUp = (event) => {
+    // Cancel any pending animation frame
+    if (this.animationFrameId !== null) {
+      cancelAnimationFrame(this.animationFrameId);
+      this.animationFrameId = null;
+    }
+
+    // Reset monster mouth state
+    this.isMonsterMouthOpen = false;
+
     if (!this.pickedStone || this.pickedStone.frame <= 99) {
       this.puzzleHandler.clearPickedUp();
       return;
     }
 
     if (this.monster.checkHitboxDistance(event)) {
-      this.tutorial.hideTutorial();
       // Handle letter drop (success case)
       const lettersCountRef = { value: this.stonesCount };
       const ctx = {
@@ -313,37 +325,27 @@ export class GameplayScene {
           frame: this.pickedStone.frame
         },
         targetLetterText: this.stoneHandler.getCorrectTargetStone(), // Pass only the data needed
-        audioPlayer: this.audioPlayer,
-        promptText: this.promptText,
-        handleCorrectLetterDrop: undefined, // will be set below
-        handleLetterDropEnd: this.handleStoneDropEnd.bind(this),
+        handleLetterDropEnd: (isCorrect, puzzleType) => {
+          this.isFeedBackTriggered = isCorrect;
+          if (isCorrect) {
+            this.score += 100; //100 as static default value for adding score.
+          }
+          this.handleStoneDropEnd(isCorrect, puzzleType);
+        },
         triggerMonsterAnimation: this.triggerMonsterAnimation.bind(this),
         timerTicking: this.timerTicking,
-        isFeedBackTriggeredSetter: (v) => { this.isFeedBackTriggered = v; },
         lang,
         lettersCountRef,
-        feedBackTexts: this.feedBackTexts,
-        levelData: this.levelData,
-        counter: this.counter,
-        width: this.width
+        feedBackTexts: this.feedBackTexts
       };
-      ctx.handleCorrectLetterDrop = (feedbackIndex) => {
-        this.puzzleHandler.handleCorrectLetterDrop(
-          feedbackIndex,
-          this.feedbackTextEffects,
-          ctx,
-          (amount) => this.score += amount
-        );
-        // Hide the picked letter after puzzle logic is handled
-        this.stoneHandler.hideStone(this.pickedStoneObject);
-      };
+
       this.puzzleHandler.createPuzzle(ctx);
+
       // For Word puzzles, hide the letter immediately after dropping it into the monster
       if (ctx.levelType === "Word" || ctx.levelType === "SoundWord") {
         this.stoneHandler.hideStone(this.pickedStoneObject);
       }
       this.stonesCount = lettersCountRef.value;
-      this.isFeedBackTriggered = true;
       this.trailEffectHandler.setGameHasStarted(false);
     } else if (this.pickedStoneObject) {
       // Handle letter drop (fail/miss case)
@@ -355,6 +357,10 @@ export class GameplayScene {
       this.triggerMonsterAnimation('isMouthClosed');
       this.triggerMonsterAnimation('backToIdle');
     }
+
+    // Clear stored coordinates
+    this.lastClientX = 0;
+    this.lastClientY = 0;
 
     this.pickedStone = null;
     this.puzzleHandler.clearPickedUp();
@@ -405,54 +411,170 @@ export class GameplayScene {
   }
 
   handleMouseMove = (event) => {
-    if (this.pickedStone && this.pickedStone.frame <= 99) {
-      return; // Prevent dragging if the letter is animating
+    // Store the latest coordinates even if we don't process this event
+    this.lastClientX = event.clientX;
+    this.lastClientY = event.clientY;
+
+    // Early returns for invalid states
+    if (!this.pickedStone || this.pickedStone.frame <= 99) return; // Prevent dragging if the letter is animating
+
+    // Schedule the next animation frame if not already scheduled
+    this.requestDragUpdate();
+  };
+
+  /**
+   * Requests an animation frame for drag updates.
+   * Uses requestAnimationFrame for optimal performance and visual smoothness.
+   */
+  private requestDragUpdate() {
+    if (this.animationFrameId === null) {
+      this.animationFrameId = requestAnimationFrame(() => {
+        // Clear the ID first to allow scheduling of the next frame
+        this.animationFrameId = null;
+        // Use a small coordinator method to delegate to specialized handlers
+        this.dispatchDragUpdate(this.lastClientX, this.lastClientY);
+      });
     }
+  };
 
-    if (!this.pickedStone) return;
-
-    // Move letter regardless of puzzle type
+  /**
+   * Dispatches drag updates to the appropriate specialized processor based on puzzle type.
+   * Acts as a thin coordinator that routes to specialized processing methods.
+   * 
+   * @param clientX - The client X coordinate of the mouse/touch position
+   * @param clientY - The client Y coordinate of the mouse/touch position
+   */
+  private dispatchDragUpdate(clientX: number, clientY: number) {
+    // Disable quick start tutorial animation since user has started interacting
+    this.tutorial.shouldShowQuickStartTutorial = false;
+    
+    // Determine which processing method to call based on puzzle type
+    if (!this.puzzleHandler.checkIsWordPuzzle()) {
+      this.processSimpleDragMovement(clientX, clientY);
+    } else {
+      this.processWordPuzzleDragMovement(clientX, clientY);
+    }
+  }
+  
+  /**
+   * Processes simple drag movement for matchfirst puzzles (LetterOnly/LetterInWord).
+   * This is a streamlined path with direct coordinate updates and no hover detection.
+   * 
+   * @param clientX - The client X coordinate of the mouse/touch position
+   * @param clientY - The client Y coordinate of the mouse/touch position
+   */
+  private processSimpleDragMovement(clientX: number, clientY: number) {
+    // Direct coordinate update without complex hover detection
     let newStoneCoordinates = this.stoneHandler.handleMovingStoneLetter(
       this.pickedStone,
-      event.clientX,
-      event.clientY
+      clientX,
+      clientY
     );
     this.pickedStone = newStoneCoordinates;
-    let trailX = newStoneCoordinates.x;
-    let trailY = newStoneCoordinates.y;
 
-    if (this.puzzleHandler.checkIsWordPuzzle()) {
-      const newStoneLetter = this.stoneHandler.handleHoveringToAnotherStone(
-        trailX,
-        trailY,
-        (foilStoneText, foilStoneIndex) => {
-          return this.puzzleHandler.handleCheckHoveredLetter(foilStoneText, foilStoneIndex);
-        }
-      );
-
-      if (newStoneLetter) {
-        this.puzzleHandler.setPickUpLetter(
-          newStoneLetter?.text,
-          newStoneLetter?.foilStoneIndex
-        );
-
-        this.pickedStone = this.stoneHandler.resetStonePosition(
-          this.width,
-          this.pickedStone,
-          this.pickedStoneObject
-        );
-
-        // After resetting its original position, replace with the new letter.
-        this.pickedStoneObject = newStoneLetter;
-        this.pickedStone = newStoneLetter;
-      }
+    // Only trigger monster animation if not already open
+    if (!this.isMonsterMouthOpen) {
+      this.triggerMonsterAnimation('isMouthOpen');
+      this.isMonsterMouthOpen = true;
     }
+  }
 
-    this.tutorial.shouldShowTutorialAnimation = false; //Drag action will start the timer and disable the tutorial.
-
-    // Trigger open mouth animation
-    this.triggerMonsterAnimation('isMouthOpen');
-  };
+  /**
+   * Processes complex drag movement for word puzzles with hover detection.
+   * Delegates to specialized methods for updating coordinates, checking hover, and handling letter pickup.
+   * 
+   * @param clientX - The client X coordinate of the mouse/touch position
+   * @param clientY - The client Y coordinate of the mouse/touch position
+   */
+  private processWordPuzzleDragMovement(clientX: number, clientY: number) {
+    // Update stone coordinates and get trail position
+    const { trailX, trailY } = this.updateDraggedStonePosition(clientX, clientY);
+    
+    // Check for hovering over other stones
+    const newStoneLetter = this.checkStoneHovering(trailX, trailY);
+    
+    // Handle letter pickup if hovering detected
+    if (newStoneLetter) {
+      this.handleLetterPickup(newStoneLetter);
+    }
+    
+    // Ensure monster mouth is open during dragging
+    this.ensureMonsterMouthOpen();
+  }
+  
+  /**
+   * Updates the position of the currently dragged stone.
+   * 
+   * @param clientX - The client X coordinate of the mouse/touch position
+   * @param clientY - The client Y coordinate of the mouse/touch position
+   * @returns Object containing trail X and Y coordinates for hover detection
+   */
+  private updateDraggedStonePosition(clientX: number, clientY: number): { trailX: number, trailY: number } {
+    const newStoneCoordinates = this.stoneHandler.handleMovingStoneLetter(
+      this.pickedStone,
+      clientX,
+      clientY
+    );
+    this.pickedStone = newStoneCoordinates;
+    
+    return {
+      trailX: newStoneCoordinates.x,
+      trailY: newStoneCoordinates.y
+    };
+  }
+  
+  /**
+   * Checks if the dragged stone is hovering over another stone.
+   * 
+   * @param trailX - The X coordinate of the dragged stone
+   * @param trailY - The Y coordinate of the dragged stone
+   * @returns The new stone letter object if hovering, otherwise null
+   */
+  private checkStoneHovering(trailX: number, trailY: number) {
+    return this.stoneHandler.handleHoveringToAnotherStone(
+      trailX,
+      trailY,
+      (foilStoneText, foilStoneIndex) => {
+        return this.puzzleHandler.handleCheckHoveredLetter(foilStoneText, foilStoneIndex);
+      }
+    );
+  }
+  
+  /**
+   * Handles the letter pickup process when hovering over a valid stone.
+   * Updates puzzle state, resets original stone position, and replaces with new letter.
+   * 
+   * @param newStoneLetter - The new stone letter object to pick up
+   */
+  private handleLetterPickup(newStoneLetter: any) {
+    // Update puzzle state with the picked up letter
+    this.puzzleHandler.setPickUpLetter(
+      newStoneLetter.text,
+      newStoneLetter.foilStoneIndex
+    );
+    
+    // Reset the original stone position
+    this.pickedStone = this.stoneHandler.resetStonePosition(
+      this.width,
+      this.pickedStone,
+      this.pickedStoneObject
+    );
+    
+    // Replace with the new letter
+    this.pickedStoneObject = newStoneLetter;
+    this.pickedStone = newStoneLetter;
+  }
+  
+  /**
+   * Ensures the monster mouth is open during dragging.
+   * Only triggers the animation if the mouth isn't already open.
+   */
+  private ensureMonsterMouthOpen() {
+    if (!this.isMonsterMouthOpen) {
+      this.triggerMonsterAnimation('isMouthOpen');
+      this.isMonsterMouthOpen = true;
+    }
+  }
 
   handleMouseClick = (event) => {
     let rect = this.canvas.getBoundingClientRect();
@@ -461,12 +583,7 @@ export class GameplayScene {
 
     if (this.monster.onClick(x, y)) {
       this.setGameToStart();
-    }
-
-    // Use the play button in the HTML implementation instead of onClick
-    const promptPlayButton = document.getElementById('prompt-play-button');
-    if (promptPlayButton && promptPlayButton.contains(event.target as Node)) {
-      this.promptText.playSound();
+      this.tutorial?.activeTutorial?.removeHandPointer();
     }
   };
 
@@ -480,7 +597,12 @@ export class GameplayScene {
   };
 
   handleTouchMove = (event) => {
+    if (!this.pickedStone) return;
+    event.preventDefault(); // Prevent scrolling while dragging
+
+    // Convert touch event to mouse event format
     const touch = event.touches[0];
+    // Store coordinates and let handleMouseMove handle the throttling
     this.handleMouseMove({ clientX: touch.clientX, clientY: touch.clientY });
   };
 
@@ -496,31 +618,17 @@ export class GameplayScene {
   }
 
   draw(deltaTime: number) {
-    const shouldRunQuickStartTutorial = this.tutorial.shouldShowTutorialAnimation && this.tutorial.quickStartTutorialReady && this.counter === 0;
-    const shouldWaitForQuickStartTutorial = this.tutorial.shouldShowTutorialAnimation && !this.tutorial.quickStartTutorialReady && this.counter === 0;
-    // If game hasn't started and it's not paused
-    if (!this.isGameStarted && !this.isPauseButtonClicked) {
-      // Gate the tutorial animation behind both the tutorial flag and the timer-based flag
-      if (shouldRunQuickStartTutorial) {
-        // Draw the quick-start tutorial animation only after delay
-        this.tutorial.drawQuickStart(deltaTime, this.isGameStarted);
-        // Start the game after the tutorial finishes
-        if (this.tutorial.isQuickStartFinished()) {
-          this.setGameToStart();
-        }
-        return; // Wait until tutorial ends
-      } else if (shouldWaitForQuickStartTutorial) {
-        // Wait for the delay to expire before starting tutorial animation
-        // Optionally, could show a loading indicator or do nothing
-        return;
-      } else {
-        // No tutorial: immediately start the game on new puzzle
-        this.time += deltaTime;
-        if (this.time >= 5000) {
-          this.setGameToStart();
-        }
-      }
-    }
+    const timeRef = { value: this.time };
+    //this.promptText.handleAutoPromptPlay(deltaTime);
+    this.tutorial?.handleTutorialAndGameStart({
+      deltaTime,
+      isGameStarted: this.isGameStarted,
+      isPauseButtonClicked: this.isPauseButtonClicked,
+      setGameToStart: this.setGameToStart.bind(this),
+      timeRef
+    });
+    this.time = timeRef.value;
+
     // Trail effects drawing 
     this.trailEffectHandler?.draw();
     // Main game logic only starts after isGameStarted = true
@@ -530,6 +638,7 @@ export class GameplayScene {
     }
 
     this.tutorial.draw(deltaTime, this.isGameStarted);
+    
   }
 
   private handleStoneLetterDrawing() {
@@ -548,16 +657,16 @@ export class GameplayScene {
   private handleTimerUpdate(deltaTime: number) {
     // Update timer only once animation is complete and game is not paused.
     if (this.stoneHandler.stonesHasLoaded && !this.isPauseButtonClicked) {
-      if (this.tutorial.shouldShowTutorialAnimation) {
-        // FM-544 add or modify code logic here to controlling the timer when tutorial is animating.
-        const isTimerAllowed = this.tutorial.updateTutorialTimer(deltaTime);
-        if (isTimerAllowed) {
-          // After 12s, start timer updates
-          this.timerTicking.update(deltaTime);
-        }
-      } else {
+      const hasTutorial = this.tutorial.shouldShowQuickStartTutorial;
+      const shouldStartTimer = this.tutorial.updateTutorialTimer(deltaTime);
+      if (!hasTutorial || (shouldStartTimer && hasTutorial)) {
+        // After 12s, start timer updates
         this.timerTicking.update(deltaTime);
-
+        // added delta time checking to ensure that the timer starts sfx will only trigger once at the beginning of the timer countdown.
+        if (!this.timerStartSFXPlayed && deltaTime > 1 && deltaTime <= 100) {
+          this.audioPlayer.playAudio(AUDIO_PATH_POINTS_ADD);
+          this.timerStartSFXPlayed = true; // This flag needed to ensure that the timer starts sfx will only trigger once.
+        }
       }
     }
   }
@@ -599,7 +708,6 @@ export class GameplayScene {
     this.stonesCount = 1;
     const timerEnded = Boolean(isTimerEnded);
     if (timerEnded) {
-      this.tutorial.hideTutorial();
       this.logPuzzleEndFirebaseEvent(false);
     }
     this.counter += 1; //increment Puzzle
@@ -607,6 +715,7 @@ export class GameplayScene {
     this.tutorial.resetTutorialTimer();
     // Reset the 6-second tutorial delay timer each time a new puzzle is loaded
     this.tutorial.resetQuickStartTutorialDelay();
+    this.tutorial.hideTutorial(); // Turn off tutorial via loading the puzzle.
     if (this.counter === this.levelData.puzzles.length) {
       const handleLevelEnd = () => {
         this.levelIndicators.setIndicators(this.counter);
@@ -623,22 +732,12 @@ export class GameplayScene {
         gameStateService.publish(gameStateService.EVENTS.SWITCH_SCENE_EVENT, SCENE_NAME_LEVEL_END);
         this.monster.dispose(); //Adding the monster dispose here due to the scenario that this.monster is still needed when restart game level is played.
       };
-
+      
       if (timerEnded) {
         handleLevelEnd();
-        return;
-      }
-      this.tutorial.hideTutorial(); // Turn off tutorial
-      const timeoutId = setTimeout(handleLevelEnd, this.loadPuzzleDelay); // added delay for switching to level end screen
-      if (this.isFeedBackTriggered) {
-        const audioSources = this.audioPlayer?.audioSourcs || [];
-        const lastAudio = audioSources[audioSources.length - 1];
-        if (lastAudio) {
-          lastAudio.onended = () => {
-            clearTimeout(timeoutId);
-            handleLevelEnd();
-          };
-        }
+      } else {
+        //Trigger the handleLevelEnd with a delay to let the audio play in puzzleHandler.ts before switching to level end screen.
+        setTimeout(handleLevelEnd, this.loadPuzzleDelay);
       }
     } else {
       const loadPuzzleEvent = new CustomEvent(LOADPUZZLE, {
@@ -663,6 +762,7 @@ export class GameplayScene {
     if (this.monster) {
       this.monster.dispose();
     }
+    this.timerStartSFXPlayed = false; // move this flag from loadpuzzle to initnewpuzzle to make sure when loading new puzzle, timer start sfx will set to false.
     this.stoneHandler.stonesHasLoaded = false;
     this.monster = this.initializeRiveMonster();
     this.removeEventListeners();
@@ -778,15 +878,12 @@ export class GameplayScene {
 
     this.logPuzzleEndFirebaseEvent(isCorrect, puzzleType);
     this.dispatchStoneDropEvent(isCorrect);
+    this.tutorial.hideTutorial(); //  Turn off tutorial via user playing correctly
     setTimeout(() => {
-      this.adjustLoadPuzzleDelay(isCorrect);
+      //Adjust the delay of 4500 (4.5 seconds) to 2500 (2.5 seconds) if the puzzle is incorrect.
+      this.loadPuzzleDelay = isCorrect ? 4500 : 3000;
       this.loadPuzzle();
     }, isCorrect ? 0 : 2000);
-  }
-
-  private adjustLoadPuzzleDelay(isCorrect) {
-    //Adjust the delay of 4500 (4.5 seconds) to 2500 (2.5 seconds) if the puzzle is incorrect.
-    this.loadPuzzleDelay = isCorrect ? 4500 : 3000;
   }
 
   private dispatchStoneDropEvent(isCorrect: boolean): void {
