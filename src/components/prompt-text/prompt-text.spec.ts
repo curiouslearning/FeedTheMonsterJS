@@ -132,7 +132,23 @@ describe('PromptText', () => {
 
   describe('generatePromptSlots', () => {
     it('should generate underscore slots initially', () => {
-      promptText.levelData.levelMeta.protoType = 'Hidden';
+      // Reconstruct with tutorial enabled
+      promptText = new PromptText(
+        500,
+        puzzleDataMock,
+        {
+          ...levelDataMock,
+          levelMeta: {
+            levelType: 'Word',
+            protoType: 'Hidden' // triggers slot logic
+          }
+        },
+        false,
+        'prompt-container',
+        undefined,
+        true, // ✅ tutorial enabled for generatePromptSlots
+        onClickMock
+      );
       (promptText as any).generateTextMarkup(); // Re-trigger slot logic with updated protoType
       const slots = document.querySelectorAll('#prompt-slots .slot');
       expect(slots.length).toBe(3);
