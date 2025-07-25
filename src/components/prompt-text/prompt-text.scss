@@ -135,7 +135,36 @@
     }
   }
 
-  
+  .prompt-button-slots-wrapper {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-top: 8px; // space between text and button+slots
+  }
+
+  .prompt-slots {
+  display: flex;
+  justify-content: center;
+  gap: 8px;
+  margin-top: 10px;
+
+  .slot {
+    min-width: 24px;
+    height: 28px;
+    font-size: 24px;
+    text-align: center;
+    font-weight: bold;
+    font-family: 'Quicksand', sans-serif;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: black;
+  }
+
+  .revealed-letter {
+    color: #000; // You can customize this for correct/incorrect colors
+  }
+}
 }
 
 // Text color classes

@@ -212,7 +212,7 @@ export default class TutorialHandler {
       }
 
       // For word puzzles (multiple stones in sequence)
-      if (gameTypeName === 'Word') {
+      if (gameTypeName === 'Word' || gameTypeName === 'SoundWord') {
         return new WordPuzzleTutorial({
           context: this.context,
           width: this.width,
