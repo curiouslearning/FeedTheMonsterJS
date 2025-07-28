@@ -31,6 +31,9 @@ export default class TutorialComponent {
   public x: number = 0;
   public y: number = 0;
   public totalTime: number = 0;
+  public frame: number = 0;
+  protected animationStartTime: number = 0;
+  protected maxDeltaTime: number = 33; // Cap deltaTime to 33ms (approx 30fps) for consistent animation
   private centerX: number = 0;
   private centerY: number = 0;
   private initialOuterRadius: number = 10
@@ -146,7 +149,7 @@ export default class TutorialComponent {
         from: number,
         to: number
       }
-  } = gameStateService.getHitBoxRanges();
+    } = gameStateService.getHitBoxRanges();
     const getRangeCenter = (hitBoxFromPos: number, hitBoxToPos: number) => {
       return (hitBoxFromPos + hitBoxToPos) / 2;
     }
@@ -236,7 +239,7 @@ export default class TutorialComponent {
       this.context.drawImage(this.tutorialImg, this.x + 15, this.y + 10);//draws the hand stone drag animation!
     }
   }
-  
+
   /**
    * Specialized animation for word puzzle tutorials
    * Provides a more guided animation path with visual cues for multi-letter words
@@ -264,7 +267,7 @@ export default class TutorialComponent {
   }) {
     // Draw the stone at current position with slightly higher opacity for word puzzles
     const previousAlpha = this.context.globalAlpha;
-  
+
     // Near the start position
     if (monsterStoneDifferenceInPercentage > 80) {
       this.context.globalAlpha = 0.8;
@@ -278,10 +281,10 @@ export default class TutorialComponent {
         // Draw at the CURRENT position instead of a fixed position
         // This ensures continuous movement all the way to the end
         this.context.drawImage(img, this.x, this.y, imageSize, imageSize);
-        
+
         // Move the hand with the stone
         this.createHandScaleAnimation(deltaTime, this.x + 15, this.y + 10, true);
-        
+
         // Add a subtle highlight effect at the destination
         this.context.beginPath();
         this.context.arc(endX, endY, imageSize/2, 0, Math.PI * 2);
@@ -299,7 +302,7 @@ export default class TutorialComponent {
       this.context.globalAlpha = previousAlpha;
       this.context.drawImage(this.tutorialImg, this.x + 15, this.y + 10);
     }
-    
+
     this.context.globalAlpha = previousAlpha;
   }
 
@@ -317,6 +320,123 @@ export default class TutorialComponent {
     const amplitude = (maxScale - minScale) / 2;
     const frequency = Math.PI / duration;
     return minScale + amplitude * Math.sin(frequency * time);
+  }
+
+  /**
+   * Updates the animation frame based on elapsed time
+   * @param maxFrame The maximum frame value to reach
+   * @param animationDuration The duration of the animation in milliseconds
+   */
+  protected updateAnimationFrame(maxFrame: number, animationDuration: number): void {
+    if (this.frame < maxFrame) {
+      if (this.animationStartTime === 0) {
+        this.animationStartTime = performance.now();
+      }
+      const elapsed = performance.now() - this.animationStartTime;
+      this.frame = Math.min(maxFrame, (elapsed / animationDuration) * 100);
+    }
+  }
+
+  /**
+   * Calculates the next position of the stone based on delta time
+   * @param cappedDeltaTime The capped delta time value
+   * @param speedMultiplier Optional speed multiplier (default: 1)
+   */
+  protected calculateNextPosition(cappedDeltaTime: number, speedMultiplier: number = 1): { nextX: number, nextY: number } {
+    if (!this.animateImagePosVal) return { nextX: this.x, nextY: this.y };
+
+    const { dx, absdx, dy, absdy } = this.animateImagePosVal;
+    const multiplier = cappedDeltaTime * speedMultiplier;
+
+    // Simplified calculation using the sign of dx/dy
+    const nextX = this.x + (dx >= 0 ? 1 : -1) * absdx * multiplier;
+    const nextY = this.y + (dy >= 0 ? 1 : -1) * absdy * multiplier;
+
+    return { nextX, nextY };
+  }
+
+  /**
+   * Calculates the distance percentage from the current position to the target
+   * @param x Current x position
+   * @param y Current y position
+   * @returns Object containing distance metrics and percentage
+   */
+  protected calculateDistancePercentage(x: number, y: number): {
+    disX: number,
+    disY: number,
+    distance: number,
+    percentage: number
+  } {
+    if (!this.stonePosDetailsType || !this.animateImagePosVal) {
+      // Return safe default values instead of throwing
+      return { disX: 0, disY: 0, distance: 0, percentage: 0 };
+    }
+
+    const { endX, endY, monsterStoneDifference } = this.stonePosDetailsType;
+    const { absdx, absdy } = this.animateImagePosVal;
+
+    const disX = x - endX + absdx;
+    const disY = y - endY + absdy;
+    const distance = Math.sqrt(disX * disX + disY * disY);
+    const percentage = monsterStoneDifference > 0 ? 
+      (100 * distance / monsterStoneDifference) : 0;
+
+    return { disX, disY, distance, percentage };
+  }
+
+  /**
+   * Adjusts position to hit a specific percentage mark
+   * @param currentPercentage Current distance percentage
+   * @param targetPercentage Target distance percentage to achieve
+   * @param currentDisX Current x distance
+   * @param currentDisY Current y distance
+   */
+  protected adjustPositionToPercentage(currentPercentage: number, targetPercentage: number, currentDisX: number, currentDisY: number): void {
+    if (!this.stonePosDetailsType || !this.animateImagePosVal) return;
+
+    const { endX, endY, monsterStoneDifference } = this.stonePosDetailsType;
+    const { absdx, absdy } = this.animateImagePosVal;
+
+    const targetDistance = (targetPercentage * monsterStoneDifference) / 100;
+    const currentDistance = (currentPercentage * monsterStoneDifference) / 100;
+    const ratio = targetDistance / currentDistance;
+
+    this.x = endX - absdx + (currentDisX * ratio);
+    this.y = endY - absdy + (currentDisY * ratio);
+  }
+
+  /**
+   * Core animation update logic that can be used by child classes
+   * @param deltaTime Time elapsed since last frame
+   * @param speedMultiplier Speed multiplier for the animation (default: 1)
+   * @returns The final percentage for this frame
+   */
+  protected updateStonePosition(deltaTime: number, speedMultiplier: number = 1): number {
+    if (!this.stonePosDetailsType) return 0;
+
+    // Cap deltaTime to prevent large jumps on low-end devices
+    const cappedDeltaTime = Math.min(deltaTime, this.maxDeltaTime);
+
+    // Calculate next position
+    const { nextX, nextY } = this.calculateNextPosition(cappedDeltaTime, speedMultiplier);
+
+    // Calculate current and next distance percentages
+    const current = this.calculateDistancePercentage(this.x, this.y);
+    const next = this.calculateDistancePercentage(nextX, nextY);
+
+    // Critical animation range (1-15%): ensure we don't skip it
+    const CRITICAL_PERCENTAGE = 14;
+    if (current.percentage > 15 && next.percentage < 15) {
+      // Adjust position to ensure we hit the critical percentage mark
+      this.adjustPositionToPercentage(current.percentage, CRITICAL_PERCENTAGE, current.disX, current.disY);
+    } else {
+      // Normal update
+      this.x = nextX;
+      this.y = nextY;
+    }
+
+    // Calculate and return final percentage for this frame
+    return this.calculateDistancePercentage(this.x, this.y).percentage;
   }
 
   /**
