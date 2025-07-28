@@ -26,12 +26,17 @@ export const PROMPT_TEXT_LAYOUT = (
     }) => {
     //If the game type is audio puzzle (audio button displayed instead of word or letter), we won't apply the bubble pulsate effect.
     const bubblePulsateStyle = isGameTypeAudio(gamePrototype) ? '' : 'floating-pulse';
+
     //If the game type is audio and it is the audio tutorial level then we apply the button pulsate effect for the button.
-    const audioBtnPulsateStyle = isLevelHaveTutorial ? 'pulsing' : '';
+    const audioBtnPulsateStyle = isLevelHaveTutorial && isGameTypeAudio(gamePrototype) ? 'pulsing' : '';
 
     return (`
-        <div id="${id}" class="prompt-container">
-            <div id="prompt-background" class="prompt-background ${bubblePulsateStyle}" style="background-image: url(${PROMPT_TEXT_BG})">
+        <div id="${id}" class="prompt-container ">
+            <div
+                id="prompt-background"
+                class="prompt-background ${bubblePulsateStyle} "
+                style="background-image: url(${PROMPT_TEXT_BG})"
+            >
                 <div id="prompt-text-button-container">
                     <div id="prompt-text" class="prompt-text"></div>
 
@@ -181,6 +186,13 @@ export class PromptText extends BaseHTML {
         this.promptTextElement = this.promptContainer.querySelector('#prompt-text') as HTMLDivElement;
         this.promptPlayButtonElement = this.promptContainer.querySelector('#prompt-play-button') as HTMLDivElement;
         this.promptSlotElement = this.promptContainer.querySelector('#prompt-slots') as HTMLDivElement;
+
+        if (this.isSpellSoundMatchTutorial()) {
+            // Patch fix: Apply 'prompt-bubble-custom' to override prompt background dimensions
+            // for Spell Sound tutorial layout. This ensures the audio button and slot text
+            // fit properly inside the bubble. Not a scalable solution — revisit if reused elsewhere.
+            this.promptBackground.classList.add('prompt-bubble-custom');
+        }
 
         // Update event listeners to include the callback
         const handleClick = (e: Event) => {
