@@ -397,7 +397,6 @@ export class PromptText extends BaseHTML {
 
     private isSpellSoundMatchTutorial(): boolean {
         return (
-            this.isLevelHaveTutorial &&
             this.levelData?.levelMeta?.levelType === "Word" &&
             this.levelData?.levelMeta?.protoType === "Hidden"
         );
