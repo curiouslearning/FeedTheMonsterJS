@@ -44,7 +44,7 @@ export const PROMPT_TEXT_LAYOUT = (
                     <div class="prompt-button-slots-wrapper">
                         <div id="prompt-play-button"
                             class="prompt-play-button ${audioBtnPulsateStyle}"
-                            style="background-image: url(${AUDIO_PLAY_BUTTON}); pointer-events: auto;">
+                            style="background-image: url(${AUDIO_PLAY_BUTTON});">
                         </div>
                         <div id="prompt-slots" class="prompt-slots"></div>
                     </div>

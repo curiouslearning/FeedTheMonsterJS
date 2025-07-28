@@ -78,7 +78,7 @@
   }
 
   // Tablets (481-820px)
-  @media (min-width: 481px) and (max-width: 820px) {
+  @media (min-width: 481px) {
     width: 260px;
     height: 300px;
     top: 20%;
@@ -86,8 +86,6 @@
 
   // large tablet (>820px)
   @media (min-width: 821px) {
-    width: 260px;
-    height: 300px;
     top: 25%;
   }
 }
