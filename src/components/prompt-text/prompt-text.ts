@@ -153,7 +153,7 @@ export class PromptText extends BaseHTML {
     }
 
     private removePulseClassIfSpellMatchTutorial() {
-        if (this.isLetterSoundMatchTutorial() || this.isSpellSoundMatchTutorial()) {
+        if (this.isLetterSoundMatchTutorial() || this.isSpellSoundMatch()) {
             const playButton = document.getElementById("prompt-play-button");
             if (playButton?.classList.contains("pulsing")) {
                 playButton.classList.remove("pulsing");
@@ -162,7 +162,7 @@ export class PromptText extends BaseHTML {
     }
 
     private autoRemoveButtonPulse() {
-        if (this.isLetterSoundMatchTutorial() || this.isSpellSoundMatchTutorial()) {
+        if (this.isLetterSoundMatchTutorial() || this.isSpellSoundMatch()) {
             //Audio tutorial duration is 6 seconds to interact with the prompt.
             const totalAudioTutorialDuration = this.AUTO_PROMPT_INITIAL_DELAY_MS + 3000;
             setTimeout(() => {
@@ -187,7 +187,7 @@ export class PromptText extends BaseHTML {
         this.promptPlayButtonElement = this.promptContainer.querySelector('#prompt-play-button') as HTMLDivElement;
         this.promptSlotElement = this.promptContainer.querySelector('#prompt-slots') as HTMLDivElement;
 
-        if (this.isSpellSoundMatchTutorial()) {
+        if (this.isSpellSoundMatch()) {
             // Patch fix: Apply 'prompt-bubble-custom' to override prompt background dimensions
             // for Spell Sound tutorial layout. This ensures the audio button and slot text
             // fit properly inside the bubble. Not a scalable solution — revisit if reused elsewhere.
@@ -359,7 +359,7 @@ export class PromptText extends BaseHTML {
         if (protoType === "Hidden") {
             // Show play button instead of text for audioPlayerWord levelType or hidden prototypes
             this.setPromptButtonVisible(true);
-            this.isSpellSoundMatchTutorial() && this.generatePromptSlots();
+            this.isSpellSoundMatch() && this.generatePromptSlots();
             return;
         }
 
@@ -395,7 +395,7 @@ export class PromptText extends BaseHTML {
         );
     }
 
-    private isSpellSoundMatchTutorial(): boolean {
+    private isSpellSoundMatch(): boolean {
         return (
             this.levelData?.levelMeta?.levelType === "Word" &&
             this.levelData?.levelMeta?.protoType === "Hidden"
