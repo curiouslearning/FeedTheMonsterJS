@@ -18,6 +18,8 @@
   }
 }
 
+
+
 .prompt-background {
   position: relative;
   background-size: contain;
@@ -52,6 +54,38 @@
   @media (min-width: 821px) {
     width: 48%;
     height: 22%;
+    top: 25%;
+  }
+}
+
+// TEMP: Spell Sound only - overrides prompt bubble size
+// This is a band-aid fix to force specific dimensions for that gameplay.
+// Consider refactoring layout structure if background scaling becomes shared.
+.prompt-bubble-custom {
+
+  // Small mobile (≤376px)
+  @media (max-width: 376px) {
+    width: 300px;
+    height: 210px;
+    top: 18%;
+  }
+
+  // Large mobile (377-480px)
+  @media (min-width: 377px) and (max-width: 480px) {
+    width: 230px;
+    height: 230px;
+    top: 15%;
+  }
+
+  // Tablets (481-820px)
+  @media (min-width: 481px) {
+    width: 260px;
+    height: 300px;
+    top: 20%;
+  }
+
+  // large tablet (>820px)
+  @media (min-width: 821px) {
     top: 25%;
   }
 }
@@ -135,7 +169,34 @@
     }
   }
 
-  
+  .prompt-button-slots-wrapper {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .prompt-slots {
+    display: flex;
+    justify-content: center;
+    gap: 8px;
+
+  .slot {
+    min-width: 24px;
+    height: 28px;
+    font-size: 24px;
+    text-align: center;
+    font-weight: bold;
+    font-family: 'Quicksand', sans-serif;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: black;
+  }
+
+  .revealed-letter {
+    color: #000; // You can customize this for correct/incorrect colors
+  }
+}
 }
 
 // Text color classes
