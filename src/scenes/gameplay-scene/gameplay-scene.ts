@@ -316,7 +316,6 @@ export class GameplayScene {
     }
 
     if (this.monster.checkHitboxDistance(event)) {
-      this.tutorial.hideTutorial();
       // Handle letter drop (success case)
       const lettersCountRef = { value: this.stonesCount };
       const ctx = {
