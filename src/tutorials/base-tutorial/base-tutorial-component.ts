@@ -23,8 +23,8 @@ export default class TutorialComponent {
   public width: number;
   public height: number;
   public context: CanvasRenderingContext2D;
-  public tutorialImg: any;
-  public imagesLoaded: boolean = false;
+  protected tutorialImg: any;
+  protected imagesLoaded: boolean = false;
   public animateImagePosVal: undefined | AnimStoneImagePosValTypes;
   public stonePosDetailsType: undefined | StonePosDetailsType;
   public stoneImg: undefined | any;
@@ -43,7 +43,7 @@ export default class TutorialComponent {
   private outerRadius: number;
   private innerRadius: number;
 
-  constructor(context) {
+  constructor(context: CanvasRenderingContext2D) {
     this.context = context;
     this.tutorialImg = new Image();
     this.tutorialImg.src = TUTORIAL_HAND;
@@ -64,7 +64,7 @@ export default class TutorialComponent {
     this.innerRadius = this.initialInnerRadius;
   }
 
-  public udpdateDrawPosition(deltaTime: number, height: number) {
+  public updateDrawPosition(deltaTime: number, height: number) {
     const transitionDuration = 2000;
     const bottomPosition = height / 1.9 + (this.tutorialImg.height / 0.8);
     const topPosition = height / 1.9 + (this.tutorialImg.height / 0.8) - this.tutorialImg.height;
@@ -129,10 +129,11 @@ export default class TutorialComponent {
   }
 
   private animateImage({ startX, startY, endX, endY }): AnimStoneImagePosValTypes {
+    let STONE_ANIMATION_DURATION_MS = 5000;
     const x = startX;
     const y = startY;
-    const dx = (endX - startX) / 5000;
-    const dy = (endY - startY) / 5000;
+    const dx = (endX - startX) / STONE_ANIMATION_DURATION_MS;
+    const dy = (endY - startY) / STONE_ANIMATION_DURATION_MS;
     const absdx = this.isMobile() ? Math.abs(dx) * 3 : Math.abs(dx);
     const absdy = this.isMobile() ? Math.abs(dy) * 3 : Math.abs(dy);
 

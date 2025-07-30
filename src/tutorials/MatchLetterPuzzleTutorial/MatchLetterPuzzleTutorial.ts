@@ -7,8 +7,8 @@ export default class MatchLetterPuzzleTutorial extends TutorialComponent {
     context: CanvasRenderingContext2D;
     width: number;
     height: number;
-    stoneImg: any,
-    stonePosVal: number[],
+    stoneImg: any;
+    stonePosVal: number[];
   }) {
     super(context);
     this.width = width;

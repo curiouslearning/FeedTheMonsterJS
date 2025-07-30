@@ -83,7 +83,7 @@ export default class WordPuzzleTutorial extends TutorialComponent {
     // Update animation frame using our specific method
     this.updateWordPuzzleAnimationFrame();
 
-    if (!this.pauseWordTutorialRendering && this.stonePosDetailsType && this.frame >= 250) {
+    if (!this.pauseWordTutorialRendering && this.stonePosDetailsType && this.frame >= 250 && this.stonePositions?.length) {
       // Use the base class method to update stone position
       const { startX, startY, endX, endY } = this.stonePosDetailsType;
       
