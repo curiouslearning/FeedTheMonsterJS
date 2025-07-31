@@ -330,11 +330,12 @@ export default class TutorialComponent {
    */
   protected updateAnimationFrame(maxFrame: number, animationDuration: number): void {
     if (this.frame < maxFrame) {
+      // Set animation start time once — acts as a one-time initializer
       if (this.animationStartTime === 0) {
         this.animationStartTime = performance.now();
       }
       const elapsed = performance.now() - this.animationStartTime;
-      this.frame = Math.min(maxFrame, (elapsed / animationDuration) * 100);
+      this.frame = Math.min(maxFrame, (elapsed / animationDuration) * maxFrame);
     }
   }
 
@@ -400,6 +401,8 @@ export default class TutorialComponent {
 
     const targetDistance = (targetPercentage * monsterStoneDifference) / 100;
     const currentDistance = (currentPercentage * monsterStoneDifference) / 100;
+
+    if (currentDistance <= 0.0001) return; // Prevent divide-by-zero
     const ratio = targetDistance / currentDistance;
 
     this.x = endX - absdx + (currentDisX * ratio);
