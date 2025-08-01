@@ -3,8 +3,6 @@ import gameStateService from '@gameStateService';
 
 export default class WordPuzzleTutorial extends TutorialComponent {
   // Animation timing properties
-  private animationStartTime = 0;
-  public frame = 0;
   private animationDuration = 700; // 700ms animation (faster than original 1000ms)
   private stonePositions: number[][] = [];
   private currentStoneIndex = 0;
@@ -70,58 +68,42 @@ export default class WordPuzzleTutorial extends TutorialComponent {
     }
   }
 
+  /**
+   * Updates the animation frame specific to WordPuzzleTutorial
+   */
+  private updateWordPuzzleAnimationFrame(): void {
+    // Use the base class method with our specific parameters
+    this.updateAnimationFrame(250, this.animationDuration);
+  }
+
+  /**
+   * Main tutorial drawing method
+   */
   public drawTutorial(deltaTime: number): void {
-    // Update animation based on actual time elapsed
-    if (this.frame < 250) {
-      if (this.animationStartTime === 0) {
-        this.animationStartTime = performance.now();
-      }
-      const elapsed = performance.now() - this.animationStartTime;
-      // Use a frame-based delay system instead of relying on time-based checks like performance.now().
-      // The frame progresses based on elapsed time, scaled by animationDuration,
-      // and is clamped at a max of 250 to act as a hard delay cap.
-      // Once frame reaches 250, we treat the delay as completed and allow the next logic to run.
-      this.frame = Math.min(250, (elapsed / this.animationDuration) * 100);
-    }
+    // Update animation frame using our specific method
+    this.updateWordPuzzleAnimationFrame();
 
-    // Only start stone drag animation after initial animation frame reaches 250
-    // This matches the approach used in MatchLetterPuzzleTutorial
-    if (!this.pauseWordTutorialRendering && this.stonePosDetailsType && this.frame >= 250) {
-      const { dx, absdx, dy, absdy } = this.animateImagePosVal;
-      const { startX, startY, endX, endY, monsterStoneDifference } = this.stonePosDetailsType;
-
-      // Use similar position update logic as MatchLetterPuzzleTutorial but with speed boost
-      const speedMultiplier = 1.5; // Make animation 1.5x faster (increased from 1.2x)
-
-      this.x = dx >= 0
-        ? this.x + absdx * deltaTime * speedMultiplier
-        : this.x - absdx * deltaTime * speedMultiplier;
-      this.y = dy >= 0
-        ? this.y + absdy * deltaTime * speedMultiplier
-        : this.y - absdy * deltaTime * speedMultiplier;
-
-      // Use EXACTLY the same distance calculation as MatchLetterPuzzleTutorial
-      const disx = this.x - endX + absdx;
-      const disy = this.y - endY + absdy;
-      const distance = Math.sqrt(disx * disx + disy * disy);
-      const monsterStoneDifferenceInPercentage = (100 * distance / monsterStoneDifference);
+    if (!this.pauseWordTutorialRendering && this.stonePosDetailsType && this.frame >= 250 && this.stonePositions?.length) {
+      // Use the base class method to update stone position
+      const { startX, startY, endX, endY } = this.stonePosDetailsType;
+      
+      // Use the base class method for position updates with a speed multiplier and get the final percentage
+      const speedMultiplier = 1.5; // Make animation 1.5x faster
+      const finalPercentage = this.updateStonePosition(deltaTime, speedMultiplier);
+      
       // Directly call the specialized word puzzle animation method
-      // This reduces conditional complexity in the base class
       this.animateWordPuzzleStoneDrag({
-        deltaTime,
+        deltaTime: Math.min(deltaTime, this.maxDeltaTime),
         img: this.stoneImg,
         imageSize: this.imageSize,
-        monsterStoneDifferenceInPercentage,
-        startX,
-        startY,
-        endX,
-        endY
+        monsterStoneDifferenceInPercentage: finalPercentage,
+        startX, startY, endX, endY
       });
 
-      //Check if stone has reached the monster (near the end position)
-      if (monsterStoneDifferenceInPercentage < 15) {
+      // Check if stone has reached the monster (near the end position)
+      if (finalPercentage < 15) {
         this.pauseWordTutorialRendering = true;
-        //Reset position to redo the dragging tutorial.
+        // Reset position to redo the dragging tutorial
         this.initializeStoneAnimation(this.currentStoneIndex);
       }
     }
