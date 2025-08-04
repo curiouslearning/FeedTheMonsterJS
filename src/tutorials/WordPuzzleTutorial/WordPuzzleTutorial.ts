@@ -36,6 +36,8 @@ export default class WordPuzzleTutorial extends TutorialComponent {
     this.getFoilAndStonesFromData(stonePositions, levelData);
     this.initializeStoneAnimation(0);
     this.currentStoneIndex = 0;
+    // Always inject hand pointer on creation
+    this.injectHandPointer();
 
     this.unsubscribeSubmittedLettersCountHandler = gameStateService.subscribe(
       gameStateService.EVENTS.WORD_PUZZLE_SUBMITTED_LETTERS_COUNT,
