@@ -38,7 +38,7 @@ describe('PromptText', () => {
             <div id="prompt-text" class="prompt-text"></div>
             <div class="prompt-button-slots-wrapper">
               <div id="prompt-play-button" class="prompt-play-button"></div>
-              <div id="prompt-slots" class="prompt-slots"></div> <!-- ✅ important -->
+              <div id="prompt-slots" class="prompt-slots"></div> <!-- important -->
             </div>
           </div>
         </div>
