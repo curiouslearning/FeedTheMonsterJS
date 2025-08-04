@@ -38,7 +38,7 @@ describe('PromptText', () => {
             <div id="prompt-text" class="prompt-text"></div>
             <div class="prompt-button-slots-wrapper">
               <div id="prompt-play-button" class="prompt-play-button"></div>
-              <div id="prompt-slots" class="prompt-slots"></div>
+              <div id="prompt-slots" class="prompt-slots"></div> <!-- ✅ important -->
             </div>
           </div>
         </div>
@@ -131,8 +131,9 @@ describe('PromptText', () => {
   });
 
   describe('generatePromptSlots', () => {
-    it('should generate underscore slots initially', () => {
-      // Reconstruct with tutorial enabled
+    it('should generate underscore slots after GAME_HAS_STARTED event', () => {
+      jest.useFakeTimers(); // ✅ use fake timers
+
       promptText = new PromptText(
         500,
         puzzleDataMock,
@@ -140,24 +141,36 @@ describe('PromptText', () => {
           ...levelDataMock,
           levelMeta: {
             levelType: 'Word',
-            protoType: 'Hidden' // triggers slot logic
+            protoType: 'Hidden'
           }
         },
         false,
         'prompt-container',
         undefined,
-        true, // ✅ tutorial enabled for generatePromptSlots
+        true,
         onClickMock
       );
-      (promptText as any).generateTextMarkup(); // Re-trigger slot logic with updated protoType
+
+      const subscribeMock = gameStateService.subscribe as jest.Mock;
+      const gameStartedHandler = subscribeMock.mock.calls.find(
+        ([eventName]) => eventName === gameStateService.EVENTS.GAME_HAS_STARTED
+      )?.[1];
+
+      gameStartedHandler?.(true);
+
+      // Advance timers to allow any scheduled rendering
+      jest.runAllTimers();
+
       const slots = document.querySelectorAll('#prompt-slots .slot');
       expect(slots.length).toBe(3);
 
-      slots.forEach((slot, i) => {
+      slots.forEach(slot => {
         expect(slot.textContent).toBe('_');
         expect(slot.classList.contains('revealed-letter')).toBe(false);
       });
     });
+
+
 
     it('should display revealed letters when active index advances', () => {
       // Simulate some letters already solved

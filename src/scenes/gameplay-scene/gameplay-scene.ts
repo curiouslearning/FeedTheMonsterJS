@@ -208,12 +208,14 @@ export class GameplayScene {
      * When invoked, it starts the tutorial hand animation and marks the quick start tutorial as ready.
      * For non-audio puzzles or levels without the hand pointer tutorial, no callback is assigned.
      */
+    //TO DO - This needs to be cleaned up. Utilize the game event feature rather than using nested call back approach.
     if (this.tutorial.showHandPointerInAudioPuzzle(gamePlayData.levelData)) {
       onClickCallback = () => {
         this.tutorial.shouldShowQuickStartTutorial = true;
         this.tutorial.quickStartTutorialReady = true;
       };
     }
+
     this.promptText = new PromptText(
       this.width,
       this.levelData.puzzles[this.counter],
@@ -221,13 +223,16 @@ export class GameplayScene {
       this.rightToLeft,
       'prompt-container',  // id parameter (string)
       { selectors: DEFAULT_SELECTORS },  // options parameter
-      gamePlayData?.tutorialOn && this.counter === 0,
+      !gamePlayData?.isTutorialCleared && gamePlayData?.tutorialOn && this.counter === 0,// Has tutorial + uncleared tutorial and at segment 0.
       onClickCallback,
     );
     this.levelIndicators = new LevelIndicators();
     this.levelIndicators.setIndicators(this.counter);
     this.monster = this.initializeRiveMonster();
 
+    /*TO DO: The following code lines of this method should've been and can be handled within the tutorial class.
+      we could have a method in the tutorial that accepts gamePlayData - tutorialOn, isTutorialCleared and levelData.
+    */
     //For shouldShowQuickStartTutorial- If the game level should have tutorial AND level is not yet cleared, timer should be delayed.
     this.tutorial.shouldShowQuickStartTutorial = gamePlayData.tutorialOn && !gamePlayData.isTutorialCleared;
 
@@ -447,7 +452,7 @@ export class GameplayScene {
   private dispatchDragUpdate(clientX: number, clientY: number) {
     // Disable quick start tutorial animation since user has started interacting
     this.tutorial.shouldShowQuickStartTutorial = false;
-    
+
     // Determine which processing method to call based on puzzle type
     if (!this.puzzleHandler.checkIsWordPuzzle()) {
       this.processSimpleDragMovement(clientX, clientY);
@@ -584,6 +589,10 @@ export class GameplayScene {
     if (this.monster.onClick(x, y)) {
       this.setGameToStart();
       this.tutorial?.activeTutorial?.removeHandPointer();
+      gameStateService.publish(
+        gameStateService.EVENTS.GAME_HAS_STARTED,
+        true
+      ); //Send event that the game has started and stones will now be dropped.
     }
   };
 
