@@ -136,7 +136,7 @@ describe('generateTextMarkup', () => {
 
     // Assert expected characters — modify this as per test case
     expect(characters.length).toBe(3);
-    expect(characters).toEqual(['c', 'a', 't']); // or ['c', 'a', 't'] for LTR
+    expect(characters).toEqual(['c', 'a', 't']); // or ['دَ', 'رَ', 'سَ'] for RTL
   });
 });
 
