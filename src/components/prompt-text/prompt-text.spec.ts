@@ -1,4 +1,4 @@
-import { PromptText } from './prompt-text';
+import { PromptText, DEFAULT_SELECTORS } from './prompt-text';
 import { AudioPlayer } from '@components';
 import { EventManager } from '@events';
 import gameStateService from '@gameStateService';
@@ -38,7 +38,7 @@ describe('PromptText', () => {
             <div id="prompt-text" class="prompt-text"></div>
             <div class="prompt-button-slots-wrapper">
               <div id="prompt-play-button" class="prompt-play-button"></div>
-              <div id="prompt-slots" class="prompt-slots"></div>
+              <div id="prompt-slots" class="prompt-slots"></div> <!-- important -->
             </div>
           </div>
         </div>
@@ -131,13 +131,38 @@ describe('PromptText', () => {
   });
 
   describe('generatePromptSlots', () => {
-    it('should generate underscore slots initially', () => {
-      promptText.levelData.levelMeta.protoType = 'Hidden';
-      (promptText as any).generateTextMarkup(); // Re-trigger slot logic with updated protoType
+    it('should generate underscore slots after GAME_HAS_STARTED event', () => {
+      jest.useFakeTimers(); // ✅ use fake timers
+      promptText = new PromptText(
+        500,
+        puzzleDataMock,
+        {
+          ...levelDataMock,
+          levelMeta: {
+            levelType: 'Word',
+            protoType: 'Hidden'
+          }
+        },
+        false,
+        'prompt-container',
+        undefined,
+        true,
+        onClickMock
+      );
+
+      const subscribeMock = gameStateService.subscribe as jest.Mock;
+      const gameStartedHandler = subscribeMock.mock.calls.find(
+        ([eventName]) => eventName === gameStateService.EVENTS.GAME_HAS_STARTED
+      )?.[1];
+
+      gameStartedHandler?.(true);
+
+      // Advance timers to allow any scheduled rendering
+      jest.runAllTimers();
+
       const slots = document.querySelectorAll('#prompt-slots .slot');
       expect(slots.length).toBe(3);
-
-      slots.forEach((slot, i) => {
+      slots.forEach(slot => {
         expect(slot.textContent).toBe('_');
         expect(slot.classList.contains('revealed-letter')).toBe(false);
       });

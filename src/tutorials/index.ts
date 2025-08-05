@@ -111,7 +111,7 @@ export default class TutorialHandler {
         gameStateService.EVENTS.LEVEL_END_DATA_EVENT, (data) => {
           //Marked the tutorial as cleared so it won't show up again after clearing it.
           gameStateService.setClearedTutorial(this.gameTypeName);
-        });
+      });
     }
   }
 
@@ -135,6 +135,7 @@ export default class TutorialHandler {
   }) {
     const shouldRunQuickStartTutorial = this.shouldShowQuickStartTutorial && this.quickStartTutorialReady && this.puzzleLevel === 0;
     const shouldWaitForQuickStartTutorial = this.shouldShowQuickStartTutorial && !this.quickStartTutorialReady && this.puzzleLevel === 0;
+
     // If game hasn't started and it's not paused
     if (!isGameStarted && !isPauseButtonClicked) {
       // Gate the tutorial animation behind both the tutorial flag and the timer-based flag
@@ -283,14 +284,25 @@ export default class TutorialHandler {
   }
 
   showHandPointerInAudioPuzzle(levelData: any) {
+    //Patch fix - gameplayscene showHandPointerInAudioPuzzle is being invoke when certain levels didnt
+    //need to run any tutorial related logic.
+    //If gameTypesList is undefined, return false to skip the logic.
+    if (!this.gameTypesList) {
+      return false;
+    }
+
+    // TODO: Needs cleanup — this method mutates `instantDropStone` as a side effect of a return value.
+    // Logic is tangled: combines state mutation, level validation, and UI trigger in one place.
+    // Consider separating state setting from return, and isolating condition checks for clarity.
     const meta = levelData?.levelMeta;
     const gameTypesList = this.gameTypesList;
     const key = meta && getGameTypeName(meta.protoType, meta.levelType);
 
     if (
-      !meta ||
+      (!meta ||
       !gameTypesList ||
-      key !== 'SoundLetterOnly'
+      key !== 'SoundLetterOnly')
+      && meta?.protoType !== 'Hidden'
     ) {
       return false;
     }

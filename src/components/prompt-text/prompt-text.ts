@@ -26,12 +26,17 @@ export const PROMPT_TEXT_LAYOUT = (
     }) => {
     //If the game type is audio puzzle (audio button displayed instead of word or letter), we won't apply the bubble pulsate effect.
     const bubblePulsateStyle = isGameTypeAudio(gamePrototype) ? '' : 'floating-pulse';
+
     //If the game type is audio and it is the audio tutorial level then we apply the button pulsate effect for the button.
-    const audioBtnPulsateStyle = isLevelHaveTutorial ? 'pulsing' : '';
+    const audioBtnPulsateStyle = isLevelHaveTutorial && isGameTypeAudio(gamePrototype) ? 'pulsing' : '';
 
     return (`
-        <div id="${id}" class="prompt-container">
-            <div id="prompt-background" class="prompt-background ${bubblePulsateStyle}" style="background-image: url(${PROMPT_TEXT_BG})">
+        <div id="${id}" class="prompt-container ">
+            <div
+                id="prompt-background"
+                class="prompt-background ${bubblePulsateStyle} "
+                style="background-image: url(${PROMPT_TEXT_BG})"
+            >
                 <div id="prompt-text-button-container">
                     <div id="prompt-text" class="prompt-text"></div>
 
@@ -39,7 +44,7 @@ export const PROMPT_TEXT_LAYOUT = (
                     <div class="prompt-button-slots-wrapper">
                         <div id="prompt-play-button"
                             class="prompt-play-button ${audioBtnPulsateStyle}"
-                            style="background-image: url(${AUDIO_PLAY_BUTTON}); pointer-events: auto;">
+                            style="background-image: url(${AUDIO_PLAY_BUTTON});">
                         </div>
                         <div id="prompt-slots" class="prompt-slots"></div>
                     </div>
@@ -77,6 +82,7 @@ export class PromptText extends BaseHTML {
 
     private onClickCallback?: () => void;
     private unsubscribeSubmittedLettersEvent: () => void;
+    private unsubscribeHasGameStartedEvent: () => void;
 
     /**
      * Initializes a new instance of the PromptText class.
@@ -126,20 +132,36 @@ export class PromptText extends BaseHTML {
         this.initializeHtmlElements(id); // Initialize HTML elements
         this.handleAutoPromptPlay();
         this.onClickCallback = onClickCallback;
-        this.autoRemoveButtonPulse();
+        this.schedulePromptAndPulseUpdate();
+        const {
+            WORD_PUZZLE_SUBMITTED_LETTERS_COUNT,
+            GAME_HAS_STARTED
+        } = gameStateService.EVENTS;
 
         // Subscribe to submitted letters count updates.
         // droppedLetterCount represents the number of letters already solved,
         // so we assign it to currentActiveLetterIndex to reflect the next letter
         // that should be styled as active in the prompt display.
         this.unsubscribeSubmittedLettersEvent = gameStateService.subscribe(
-            gameStateService.EVENTS.WORD_PUZZLE_SUBMITTED_LETTERS_COUNT,
+           WORD_PUZZLE_SUBMITTED_LETTERS_COUNT,
             (droppedLetterCount: number) => {
                 this.currentActiveLetterIndex = droppedLetterCount;
                 //Update the prompt text that reflects the next active letter.
-                this.generateTextMarkup();
+                if (this.isSpellSoundMatch()) {
+                    this.generatePromptSlots();
+                } else {
+                    this.generateTextMarkup();
+                }
             }
         );
+
+        this.unsubscribeHasGameStartedEvent = gameStateService.subscribe(
+            GAME_HAS_STARTED, (isGameStarted: boolean) => {
+                if (isGameStarted) {
+                    this.showSpellSlots();
+                }
+            }
+        )
     }
 
     private setPromptInitialAudioDelayValues(isTutorialOn: boolean = false) {
@@ -147,8 +169,8 @@ export class PromptText extends BaseHTML {
         this.AUTO_PROMPT_INITIAL_DELAY_MS = isTutorialOn ? 3000 : 1910;
     }
 
-    private removePulseClassIfSpellMatchTutorial() {
-        if (this.isLetterSoundMatchTutorial() || this.isSpellSoundMatchTutorial()) {
+    private removePulseAudioEffect() {
+        if (this.isLetterSoundMatchTutorial() || this.isSpellSoundMatch()) {
             const playButton = document.getElementById("prompt-play-button");
             if (playButton?.classList.contains("pulsing")) {
                 playButton.classList.remove("pulsing");
@@ -156,13 +178,32 @@ export class PromptText extends BaseHTML {
         }
     }
 
-    private autoRemoveButtonPulse() {
-        if (this.isLetterSoundMatchTutorial() || this.isSpellSoundMatchTutorial()) {
-            //Audio tutorial duration is 6 seconds to interact with the prompt.
-            const totalAudioTutorialDuration = this.AUTO_PROMPT_INITIAL_DELAY_MS + 3000;
-            setTimeout(() => {
-                this.removePulseClassIfSpellMatchTutorial();
-            }, totalAudioTutorialDuration);
+    private showSpellSlots() {
+        if (this.isSpellSoundMatch()) {
+            this.promptSlotElement.style.display = 'flex';
+            this.generatePromptSlots();
+        }
+    }
+
+    private runAfterInitialAudioDelay(delayMs: number, callback: () => void) {
+        setTimeout(callback, delayMs);
+    }
+
+    private schedulePromptAndPulseUpdate() {
+        if (this.isLetterSoundMatchTutorial() || this.isSpellSoundMatch()) {
+            // Wait for initial delay plus 3s interaction time (audio or tutorial).
+            const totalInitialAudioDuration = this.AUTO_PROMPT_INITIAL_DELAY_MS + 3000;
+
+            this.runAfterInitialAudioDelay(
+                totalInitialAudioDuration,
+                () => {
+                    if (this.isSpellSoundMatch()) {
+                        this.promptSlotElement.style.display = 'flex';
+                        this.generatePromptSlots();
+                    }
+                    this.removePulseAudioEffect();
+                }
+            );
         }
     }
 
@@ -182,11 +223,18 @@ export class PromptText extends BaseHTML {
         this.promptPlayButtonElement = this.promptContainer.querySelector('#prompt-play-button') as HTMLDivElement;
         this.promptSlotElement = this.promptContainer.querySelector('#prompt-slots') as HTMLDivElement;
 
+        if (this.isSpellSoundMatch()) {
+            // Patch fix: Apply 'prompt-bubble-custom' to override prompt background dimensions
+            // for Spell Sound tutorial layout. This ensures the audio button and slot text
+            // fit properly inside the bubble. Not a scalable solution — revisit if reused elsewhere.
+            this.promptBackground.classList.add('prompt-bubble-custom');
+        }
+
         // Update event listeners to include the callback
         const handleClick = (e: Event) => {
             this.isAutoPromptPlaying = true; //stop auto prompt replay
-            this.removePulseClassIfSpellMatchTutorial();
-
+            this.removePulseAudioEffect();
+            this.showSpellSlots();
             this.audioPlayer.handlePlayPromptAudioClickEvent();
             if (this.onClickCallback) {
                 this.onClickCallback();
@@ -250,7 +298,6 @@ export class PromptText extends BaseHTML {
             this.promptSlotElement.appendChild(slot);
         });
     }
-
 
     /**
      * Generates HTML markup for a prompt word with dynamic letter styling.
@@ -347,7 +394,7 @@ export class PromptText extends BaseHTML {
         if (protoType === "Hidden") {
             // Show play button instead of text for audioPlayerWord levelType or hidden prototypes
             this.setPromptButtonVisible(true);
-            this.isSpellSoundMatchTutorial() && this.generatePromptSlots();
+            this.isSpellSoundMatch() && this.generatePromptSlots();
             return;
         }
 
@@ -383,9 +430,8 @@ export class PromptText extends BaseHTML {
         );
     }
 
-    private isSpellSoundMatchTutorial(): boolean {
+    private isSpellSoundMatch(): boolean {
         return (
-            this.isLevelHaveTutorial &&
             this.levelData?.levelMeta?.levelType === "Word" &&
             this.levelData?.levelMeta?.protoType === "Hidden"
         );
@@ -400,12 +446,27 @@ export class PromptText extends BaseHTML {
         }, this.AUTO_PROMPT_INITIAL_DELAY_MS);
     }
 
+    private resetSpellSoundSlots() {
+        this.promptSlotElement.innerHTML = ""; // Clear any previous slots
+        this.runAfterInitialAudioDelay(
+            6000, //6 seconds to sync the rendering when the stone letter drops.
+            () => {
+                this.promptSlotElement.style.display = 'flex';
+                this.generatePromptSlots();
+            }
+        )
+    }
+
     /**
      * Handles stone drop events.
      * @param event The event.
      */
     public handleStoneDrop(event) {
         this.promptContainer.style.display = 'none';
+        if (this.isSpellSoundMatch()) {
+            this.promptSlotElement.style.display = 'hidden';
+            this.promptSlotElement.innerHTML = "";
+        }
     }
 
     /**
@@ -423,6 +484,7 @@ export class PromptText extends BaseHTML {
         this.isAutoPromptPlaying = false; //Reset the flag for initial auto audio prompt play.
         this.updatePromptFontSize(); // Update font size for new text
         this.generateTextMarkup();
+        this.isSpellSoundMatch() && this.resetSpellSoundSlots();
         this.promptContainer.style.display = 'block'; // Show the prompt container again
     }
 
@@ -434,6 +496,7 @@ export class PromptText extends BaseHTML {
         this.eventManager.unregisterEventListener();
         //unsubscribe to gameStateService event.
         this.unsubscribeSubmittedLettersEvent();
+        this.unsubscribeHasGameStartedEvent();
         // Use BaseHTML's destroy method to remove the element
         super.destroy();
     }
