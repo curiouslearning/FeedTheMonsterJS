@@ -327,11 +327,11 @@ export class PromptText extends BaseHTML {
             return `<span class="${styleClass}">${letter}</span>`;
         }
 
-        // Use Intl.Segmenter to get grapheme clusters
+        // Use Intl.Segmenter to get grapheme clusters 
         const segmenter = new Intl.Segmenter(undefined, { granularity: 'grapheme' });
         const graphemes = Array.from(segmenter.segment(promptWord), s => s.segment);
 
-        const isRTL = Utils.isRTLText(promptWord) // Get direction
+        const isRTL = Utils.isRTLText(promptWord) // Get direction of the language
 
         const wordCharArray = graphemes.map(
             (letter, index) => {
@@ -347,7 +347,7 @@ export class PromptText extends BaseHTML {
                 return styleClass ? generateSpanMarkup(letter, styleClass) : letter;
             });
         const wordTextMarkup = wordCharArray.join('');
-        // Wrap with a direction-aware container
+        // Wrap with a direction-aware container depending on the text direction.
         return `<span dir="${isRTL ? 'rtl' : 'ltr'}">${wordTextMarkup}</span>`;
     }
 
