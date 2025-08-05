@@ -176,7 +176,7 @@
   }
 
   .prompt-slots {
-    display: flex;
+    display: hidden; //Hidden by default, will be set to flex when rendering.
     justify-content: center;
     gap: 8px;
 

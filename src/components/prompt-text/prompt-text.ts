@@ -82,6 +82,7 @@ export class PromptText extends BaseHTML {
 
     private onClickCallback?: () => void;
     private unsubscribeSubmittedLettersEvent: () => void;
+    private unsubscribeHasGameStartedEvent: () => void;
 
     /**
      * Initializes a new instance of the PromptText class.
@@ -131,20 +132,36 @@ export class PromptText extends BaseHTML {
         this.initializeHtmlElements(id); // Initialize HTML elements
         this.handleAutoPromptPlay();
         this.onClickCallback = onClickCallback;
-        this.autoRemoveButtonPulse();
+        this.schedulePromptAndPulseUpdate();
+        const {
+            WORD_PUZZLE_SUBMITTED_LETTERS_COUNT,
+            GAME_HAS_STARTED
+        } = gameStateService.EVENTS;
 
         // Subscribe to submitted letters count updates.
         // droppedLetterCount represents the number of letters already solved,
         // so we assign it to currentActiveLetterIndex to reflect the next letter
         // that should be styled as active in the prompt display.
         this.unsubscribeSubmittedLettersEvent = gameStateService.subscribe(
-            gameStateService.EVENTS.WORD_PUZZLE_SUBMITTED_LETTERS_COUNT,
+           WORD_PUZZLE_SUBMITTED_LETTERS_COUNT,
             (droppedLetterCount: number) => {
                 this.currentActiveLetterIndex = droppedLetterCount;
                 //Update the prompt text that reflects the next active letter.
-                this.generateTextMarkup();
+                if (this.isSpellSoundMatch()) {
+                    this.generatePromptSlots();
+                } else {
+                    this.generateTextMarkup();
+                }
             }
         );
+
+        this.unsubscribeHasGameStartedEvent = gameStateService.subscribe(
+            GAME_HAS_STARTED, (isGameStarted: boolean) => {
+                if (isGameStarted) {
+                    this.showSpellSlots();
+                }
+            }
+        )
     }
 
     private setPromptInitialAudioDelayValues(isTutorialOn: boolean = false) {
@@ -152,7 +169,7 @@ export class PromptText extends BaseHTML {
         this.AUTO_PROMPT_INITIAL_DELAY_MS = isTutorialOn ? 3000 : 1910;
     }
 
-    private removePulseClassIfSpellMatchTutorial() {
+    private removePulseAudioEffect() {
         if (this.isLetterSoundMatchTutorial() || this.isSpellSoundMatch()) {
             const playButton = document.getElementById("prompt-play-button");
             if (playButton?.classList.contains("pulsing")) {
@@ -161,13 +178,32 @@ export class PromptText extends BaseHTML {
         }
     }
 
-    private autoRemoveButtonPulse() {
+    private showSpellSlots() {
+        if (this.isSpellSoundMatch()) {
+            this.promptSlotElement.style.display = 'flex';
+            this.generatePromptSlots();
+        }
+    }
+
+    private runAfterInitialAudioDelay(delayMs: number, callback: () => void) {
+        setTimeout(callback, delayMs);
+    }
+
+    private schedulePromptAndPulseUpdate() {
         if (this.isLetterSoundMatchTutorial() || this.isSpellSoundMatch()) {
-            //Audio tutorial duration is 6 seconds to interact with the prompt.
-            const totalAudioTutorialDuration = this.AUTO_PROMPT_INITIAL_DELAY_MS + 3000;
-            setTimeout(() => {
-                this.removePulseClassIfSpellMatchTutorial();
-            }, totalAudioTutorialDuration);
+            // Wait for initial delay plus 3s interaction time (audio or tutorial).
+            const totalInitialAudioDuration = this.AUTO_PROMPT_INITIAL_DELAY_MS + 3000;
+
+            this.runAfterInitialAudioDelay(
+                totalInitialAudioDuration,
+                () => {
+                    if (this.isSpellSoundMatch()) {
+                        this.promptSlotElement.style.display = 'flex';
+                        this.generatePromptSlots();
+                    }
+                    this.removePulseAudioEffect();
+                }
+            );
         }
     }
 
@@ -197,8 +233,8 @@ export class PromptText extends BaseHTML {
         // Update event listeners to include the callback
         const handleClick = (e: Event) => {
             this.isAutoPromptPlaying = true; //stop auto prompt replay
-            this.removePulseClassIfSpellMatchTutorial();
-
+            this.removePulseAudioEffect();
+            this.showSpellSlots();
             this.audioPlayer.handlePlayPromptAudioClickEvent();
             if (this.onClickCallback) {
                 this.onClickCallback();
@@ -262,7 +298,6 @@ export class PromptText extends BaseHTML {
             this.promptSlotElement.appendChild(slot);
         });
     }
-
 
     /**
      * Generates HTML markup for a prompt word with dynamic letter styling.
@@ -411,12 +446,27 @@ export class PromptText extends BaseHTML {
         }, this.AUTO_PROMPT_INITIAL_DELAY_MS);
     }
 
+    private resetSpellSoundSlots() {
+        this.promptSlotElement.innerHTML = ""; // Clear any previous slots
+        this.runAfterInitialAudioDelay(
+            6000, //6 seconds to sync the rendering when the stone letter drops.
+            () => {
+                this.promptSlotElement.style.display = 'flex';
+                this.generatePromptSlots();
+            }
+        )
+    }
+
     /**
      * Handles stone drop events.
      * @param event The event.
      */
     public handleStoneDrop(event) {
         this.promptContainer.style.display = 'none';
+        if (this.isSpellSoundMatch()) {
+            this.promptSlotElement.style.display = 'hidden';
+            this.promptSlotElement.innerHTML = "";
+        }
     }
 
     /**
@@ -434,6 +484,7 @@ export class PromptText extends BaseHTML {
         this.isAutoPromptPlaying = false; //Reset the flag for initial auto audio prompt play.
         this.updatePromptFontSize(); // Update font size for new text
         this.generateTextMarkup();
+        this.isSpellSoundMatch() && this.resetSpellSoundSlots();
         this.promptContainer.style.display = 'block'; // Show the prompt container again
     }
 
@@ -445,6 +496,7 @@ export class PromptText extends BaseHTML {
         this.eventManager.unregisterEventListener();
         //unsubscribe to gameStateService event.
         this.unsubscribeSubmittedLettersEvent();
+        this.unsubscribeHasGameStartedEvent();
         // Use BaseHTML's destroy method to remove the element
         super.destroy();
     }
