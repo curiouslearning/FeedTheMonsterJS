@@ -717,6 +717,7 @@ export class GameplayScene {
     this.stonesCount = 1;
     const timerEnded = Boolean(isTimerEnded);
     if (timerEnded) {
+      this.tutorial.hideTutorial();
       this.logPuzzleEndFirebaseEvent(false);
     }
     this.counter += 1; //increment Puzzle

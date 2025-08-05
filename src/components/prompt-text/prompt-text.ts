@@ -394,6 +394,7 @@ export class PromptText extends BaseHTML {
         if (protoType === "Hidden") {
             // Show play button instead of text for audioPlayerWord levelType or hidden prototypes
             this.setPromptButtonVisible(true);
+            this.isSpellSoundMatch() && this.generatePromptSlots();
             return;
         }
 

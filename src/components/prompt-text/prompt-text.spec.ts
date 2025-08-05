@@ -1,4 +1,4 @@
-import { PromptText } from './prompt-text';
+import { PromptText, DEFAULT_SELECTORS } from './prompt-text';
 import { AudioPlayer } from '@components';
 import { EventManager } from '@events';
 import gameStateService from '@gameStateService';
@@ -133,7 +133,6 @@ describe('PromptText', () => {
   describe('generatePromptSlots', () => {
     it('should generate underscore slots after GAME_HAS_STARTED event', () => {
       jest.useFakeTimers(); // ✅ use fake timers
-
       promptText = new PromptText(
         500,
         puzzleDataMock,
@@ -163,13 +162,11 @@ describe('PromptText', () => {
 
       const slots = document.querySelectorAll('#prompt-slots .slot');
       expect(slots.length).toBe(3);
-
       slots.forEach(slot => {
         expect(slot.textContent).toBe('_');
         expect(slot.classList.contains('revealed-letter')).toBe(false);
       });
     });
-
 
 
     it('should display revealed letters when active index advances', () => {
