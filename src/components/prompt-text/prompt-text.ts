@@ -16,7 +16,7 @@ export const DEFAULT_SELECTORS = {
 
 // HTML template for the prompt text component
 export const PROMPT_TEXT_LAYOUT = (
-    {   id,
+    { id,
         isLevelHaveTutorial,
         gamePrototype
     }: {
@@ -66,7 +66,7 @@ export class PromptText extends BaseHTML {
     public targetStones: (string | { StoneText: string })[];
     public rightToLeft: boolean;
     public audioPlayer: AudioPlayer;
-    public currentActiveLetterIndex : number = 0;
+    public currentActiveLetterIndex: number = 0;
     public isAppForeground: boolean = true;
     public AUTO_PROMPT_INITIAL_DELAY_MS: number;
     private isAutoPromptPlaying: boolean = false;
@@ -261,7 +261,7 @@ export class PromptText extends BaseHTML {
 
     private cleanPromptText() {
         // Clear previous content
-        if(this.promptTextElement) {
+        if (this.promptTextElement) {
             this.promptTextElement.innerHTML = '';
         };
     }
@@ -327,21 +327,28 @@ export class PromptText extends BaseHTML {
             return `<span class="${styleClass}">${letter}</span>`;
         }
 
-        const wordCharArray = [...promptWord].map(
+        // Use Intl.Segmenter to get grapheme clusters 
+        const segmenter = new Intl.Segmenter(undefined, { granularity: 'grapheme' });
+        const graphemes = Array.from(segmenter.segment(promptWord), s => s.segment);
+
+        const isRTL = Utils.isRTLText(promptWord) // Get direction of the language
+
+        const wordCharArray = graphemes.map(
             (letter, index) => {
                 let styleClass: string | null = null;
 
                 if (letter === activeLetter && index === activeLetterIndex) {
                     styleClass = 'text-red-pulse-letter';
-                } else if (isSpellingPuzzle){
+                } else if (isSpellingPuzzle) {
                     styleClass = activeLetterIndex < index ? 'text-red' : "text-black";
                 }
 
                 //If styleClass is null, generate letter only text. But for any word puzzle or target letter generate span markup.
                 return styleClass ? generateSpanMarkup(letter, styleClass) : letter;
-        });
+            });
         const wordTextMarkup = wordCharArray.join('');
-        return wordTextMarkup;
+        // Wrap with a direction-aware container depending on the text direction.
+        return `<span dir="${isRTL ? 'rtl' : 'ltr'}">${wordTextMarkup}</span>`;
     }
 
     /**
@@ -394,7 +401,6 @@ export class PromptText extends BaseHTML {
         if (protoType === "Hidden") {
             // Show play button instead of text for audioPlayerWord levelType or hidden prototypes
             this.setPromptButtonVisible(true);
-            this.isSpellSoundMatch() && this.generatePromptSlots();
             return;
         }
 
@@ -475,7 +481,7 @@ export class PromptText extends BaseHTML {
      */
     public handleLoadPuzzle(event) {
         this.setPromptInitialAudioDelayValues(false); //Always false so we can use the default time triggers in puzzle segment 2 to 5..
-        this.currentActiveLetterIndex  = 0;
+        this.currentActiveLetterIndex = 0;
         this.currentPuzzleData = this.levelData.puzzles[event.detail.counter];
         this.currentPromptText = this.currentPuzzleData.prompt.promptText;
         this.targetStones = this.currentPuzzleData.targetStones;
