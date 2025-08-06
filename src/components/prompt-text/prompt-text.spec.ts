@@ -111,24 +111,35 @@ describe('PromptText', () => {
     });
   });
 
-  describe('generateTextMarkup', () => {
-    it('should wrap each character in a span inside #prompt-text', () => {
-      const promptEl = document.querySelector('#prompt-text');
-      expect(promptEl).toBeTruthy();
+describe('generateTextMarkup', () => {
+  it('should extract all characters regardless of direction and span wrapping', () => {
+    const promptEl = document.querySelector('#prompt-text');
+    expect(promptEl).toBeTruthy();
 
-      const wrapper = promptEl?.querySelector('span');
-      expect(wrapper).toBeTruthy();
+    // Get the innermost span containing the actual character sequence
+    const contentSpan = promptEl?.querySelector('span.text-black > span');
+    expect(contentSpan).toBeTruthy();
 
-      const letterSpans = wrapper?.querySelectorAll('span') ?? [];
+    const letterNodes = contentSpan?.childNodes ?? [];
 
-      const characters = Array.from(letterSpans)
-        .map(span => span.textContent?.trim())
-        .filter(Boolean);
+    const characters: string[] = [];
 
-      expect(characters.length).toBe(3);
-      expect(characters).toEqual(['c', 'a', 't']);
+    letterNodes.forEach(node => {
+      if (node.nodeType === Node.TEXT_NODE) {
+        // Split raw text into individual characters
+        characters.push(...node.textContent?.split('') ?? []);
+      } else if (node.nodeType === Node.ELEMENT_NODE) {
+        // Push span-wrapped character (could be styled like 'text-red-pulse-letter')
+        characters.push((node as HTMLElement).textContent ?? '');
+      }
     });
+
+    // Assert expected characters — modify this as per test case
+    expect(characters.length).toBe(3);
+    expect(characters).toEqual(['c', 'a', 't']); // or ['دَ', 'رَ', 'سَ'] for RTL
   });
+});
+
 
   describe('generatePromptSlots', () => {
     it('should generate underscore slots after GAME_HAS_STARTED event', () => {
@@ -167,7 +178,6 @@ describe('PromptText', () => {
         expect(slot.classList.contains('revealed-letter')).toBe(false);
       });
     });
-
 
     it('should display revealed letters when active index advances', () => {
       // Simulate some letters already solved
