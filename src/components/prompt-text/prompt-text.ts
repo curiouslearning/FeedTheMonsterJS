@@ -143,7 +143,7 @@ export class PromptText extends BaseHTML {
         // so we assign it to currentActiveLetterIndex to reflect the next letter
         // that should be styled as active in the prompt display.
         this.unsubscribeSubmittedLettersEvent = gameStateService.subscribe(
-            WORD_PUZZLE_SUBMITTED_LETTERS_COUNT,
+           WORD_PUZZLE_SUBMITTED_LETTERS_COUNT,
             (droppedLetterCount: number) => {
                 this.currentActiveLetterIndex = droppedLetterCount;
                 //Update the prompt text that reflects the next active letter.

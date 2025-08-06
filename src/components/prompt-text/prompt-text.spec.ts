@@ -179,6 +179,7 @@ describe('generateTextMarkup', () => {
       });
     });
 
+
     it('should display revealed letters when active index advances', () => {
       // Simulate some letters already solved
       promptText.currentActiveLetterIndex = 2;
