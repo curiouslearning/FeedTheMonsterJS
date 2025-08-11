@@ -1,5 +1,5 @@
 import { AnalyticsService, FirebaseStrategy, StatsigStrategy } from '@curiouslearning/analytics';
-import { analyticsConfig, statsigConfig } from "./analytics-config";
+import { firebaseConfig, statsigConfig } from "./analytics-config";
 import { source, campaign_id, pseudoId } from "@common";
 
 export class BaseAnalyticsIntegration {
@@ -21,14 +21,14 @@ export class BaseAnalyticsIntegration {
             // Initialize Analytics Strategy
             this.firebaseStrategy = new FirebaseStrategy({
                 firebaseOptions: {
-                    apiKey: analyticsConfig.apiKey,
-                    authDomain: analyticsConfig.authDomain,
-                    databaseURL: analyticsConfig.databaseURL,
-                    projectId: analyticsConfig.projectId,
-                    storageBucket: analyticsConfig.storageBucket,
-                    messagingSenderId: analyticsConfig.messagingSenderId,
-                    appId: analyticsConfig.appId,
-                    measurementId: analyticsConfig.measurementId,
+                    apiKey: firebaseConfig.apiKey,
+                    authDomain: firebaseConfig.authDomain,
+                    databaseURL: firebaseConfig.databaseURL,
+                    projectId: firebaseConfig.projectId,
+                    storageBucket: firebaseConfig.storageBucket,
+                    messagingSenderId: firebaseConfig.messagingSenderId,
+                    appId: firebaseConfig.appId,
+                    measurementId: firebaseConfig.measurementId,
                 },
                 userProperties: {
                     campaign_id: campaign_id || '',

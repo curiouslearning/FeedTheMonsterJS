@@ -3,7 +3,7 @@ import { getData, DataModal, customFonts } from "@data";
 import { SceneHandler } from "@sceneHandler/scene-handler";
 import { AUDIO_URL_PRELOAD, IsCached, PreviousPlayedLevel } from "@constants";
 import { Workbox } from "workbox-window";
-import { AnalyticsIntegration } from "./Analytics/analytics-integration";
+import { AnalyticsIntegration } from "./analytics/analytics-integration";
 import {
   Utils,
   VISIBILITY_CHANGE,
@@ -16,7 +16,7 @@ import { AudioPlayer } from "@components";
 import {
   SessionStart,
   SessionEnd,
-} from "./Analytics/analytics-event-interface";
+} from "./analytics/analytics-event-interface";
 import { URL } from "@data";
 import './styles/main.scss';
 import { FeatureFlagsService } from '@curiouslearning/features';

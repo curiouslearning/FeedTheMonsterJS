@@ -4,7 +4,7 @@
 /**
  * Analytics configuration for analytics
  */
-export const analyticsConfig = {
+export const firebaseConfig = {
     apiKey: "AIzaSyB8c2lBVi26u7YRL9sxOP97Uaq3yN8hTl4",
     authDomain: "ftm-b9d99.firebaseapp.com",
     databaseURL: "https://ftm-b9d99.firebaseio.com",

@@ -10,8 +10,8 @@ import {
   pseudoId,
   lang
 } from "@common";
-import { AnalyticsIntegration } from "../../Analytics/analytics-integration";
-import { TappedStart } from "../../Analytics/analytics-event-interface";
+import { AnalyticsIntegration } from "../../analytics/analytics-integration";
+import { TappedStart } from "../../analytics/analytics-event-interface";
 import {
   SCENE_NAME_LEVEL_SELECT,
   FirebaseUserClicked,

@@ -6,8 +6,8 @@ import {
 } from "@common";
 import { AudioPlayer } from "@components";
 import { getData, GameScore } from "@data";
-import { SelectedLevel } from "../Analytics/analytics-event-interface";
-import { AnalyticsIntegration } from "../Analytics/analytics-integration";
+import { SelectedLevel } from "../analytics/analytics-event-interface";
+import { AnalyticsIntegration } from "../analytics/analytics-integration";
 import {
   createBackground,
   levelSelectBgDrawing,

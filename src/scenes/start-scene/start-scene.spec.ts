@@ -1,6 +1,6 @@
 import { StartScene } from './start-scene';
 import { PlayButtonHtml } from '@components/buttons';
-import { AnalyticsIntegration } from "../../Analytics/analytics-integration";
+import { AnalyticsIntegration } from "../../analytics/analytics-integration";
 import { AudioPlayer } from "../../components/audio-player";
 import gameStateService from '@gameStateService';
 import gameSettingsService from '@gameSettingsService';
@@ -17,7 +17,7 @@ const mockInstance = {
 let mockInstanceRef = mockInstance;
 
 // Mock the AnalyticsIntegration module before other imports
-jest.mock("../../Analytics/analytics-integration", () => ({
+jest.mock("../../analytics/analytics-integration", () => ({
   AnalyticsIntegration: {
     initializeAnalytics: jest.fn().mockImplementation(async () => {
       mockInstanceRef = {
