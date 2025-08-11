@@ -6,8 +6,8 @@ import {
 } from "@common";
 import { AudioPlayer } from "@components";
 import { getData, GameScore } from "@data";
-import { SelectedLevel } from "../Firebase/firebase-event-interface";
-import { FirebaseIntegration } from "../Firebase/firebase-integration";
+import { SelectedLevel } from "../analytics/analytics-event-interface";
+import { AnalyticsIntegration } from "../analytics/analytics-integration";
 import {
   createBackground,
   levelSelectBgDrawing,
@@ -48,7 +48,7 @@ export class LevelSelectionScreen {
   private unlockLevelIndex: number;
   private majVersion: string;
   private minVersion: string;
-  private firebaseIntegration: FirebaseIntegration;
+  private analyticsIntegration: AnalyticsIntegration;
   public background: any;
   private rightBtnSize: any;
   private rightBtnX: number;
@@ -78,7 +78,7 @@ export class LevelSelectionScreen {
         ? Math.floor(self.data.levels.length / 10) + 1
         : Math.floor(self.data.levels.length / 10);
     this.levels = [];
-    this.firebaseIntegration = FirebaseIntegration.getInstance();
+    this.analyticsIntegration = AnalyticsIntegration.getInstance();
     this.init();
     this.createLevelButtons();
     this.gameLevelData = GameScore.getAllGameLevelInfo();
@@ -409,7 +409,7 @@ export class LevelSelectionScreen {
           : "",
       level_selected: this.levelNumber,
     };
-    this.firebaseIntegration.sendSelectedLevelEvent(selectedLeveltData);
+    this.analyticsIntegration.sendSelectedLevelEvent(selectedLeveltData);
   }
   public draw() {
     if (this.imagesLoaded) {
