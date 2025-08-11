@@ -68,7 +68,7 @@ export class AnalyticsIntegration extends BaseAnalyticsIntegration {
   }
 
   public sendSessionStartEvent(data: SessionStart): void {
-    this.trackCustomEvent('session_start_test', data);
+    this.trackCustomEvent('session_start', data);
   }
 
   public sendSessionEndEvent(data: SessionEnd): void {
