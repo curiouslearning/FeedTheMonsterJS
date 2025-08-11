@@ -3,7 +3,7 @@ import { getData, DataModal, customFonts } from "@data";
 import { SceneHandler } from "@sceneHandler/scene-handler";
 import { AUDIO_URL_PRELOAD, IsCached, PreviousPlayedLevel } from "@constants";
 import { Workbox } from "workbox-window";
-import { FirebaseIntegration } from "./Firebase/firebase-integration";
+import { AnalyticsIntegration } from "./Analytics/analytics-integration";
 import {
   Utils,
   VISIBILITY_CHANGE,
@@ -16,7 +16,7 @@ import { AudioPlayer } from "@components";
 import {
   SessionStart,
   SessionEnd,
-} from "./Firebase/firebase-event-interface";
+} from "./Analytics/analytics-event-interface";
 import { URL } from "@data";
 import './styles/main.scss';
 import { FeatureFlagsService } from '@curiouslearning/features';
@@ -46,7 +46,7 @@ class App {
   private feedBackTextElement: HTMLElement | null;
   public currentProgress: any;
   public background: HTMLElement | null;
-  firebaseIntegration: FirebaseIntegration;
+  analyticsIntegration: AnalyticsIntegration;
   private logged25: boolean = false;
   private logged50: boolean = false;
   private logged75: boolean = false;
@@ -81,8 +81,8 @@ class App {
     // This must be called once at app startup before any other Firebase methods.
     // This step makes sure that the analytics are initialized before any 
     // tracking is done.
-    await FirebaseIntegration.initializeAnalytics();
-    this.firebaseIntegration = FirebaseIntegration.getInstance();
+    await AnalyticsIntegration.initializeAnalytics();
+    this.analyticsIntegration = AnalyticsIntegration.getInstance();
     const font = await Utils.getLanguageSpecificFont(this.lang);
     await this.loadAndCacheFont(font, `./assets/fonts/${font}.ttf`);
     await this.loadTitleFeedbackCustomFont();
@@ -137,16 +137,16 @@ class App {
 
     switch (percentage) {
       case 25:
-        this.firebaseIntegration.sendDownload25PercentCompletedEvent(downloadCompleteData);
+        this.analyticsIntegration.sendDownload25PercentCompletedEvent(downloadCompleteData);
         break;
       case 50:
-        this.firebaseIntegration.sendDownload50PercentCompletedEvent(downloadCompleteData);
+        this.analyticsIntegration.sendDownload50PercentCompletedEvent(downloadCompleteData);
         break;
       case 75:
-        this.firebaseIntegration.sendDownload75PercentCompletedEvent(downloadCompleteData);
+        this.analyticsIntegration.sendDownload75PercentCompletedEvent(downloadCompleteData);
         break;
       case 100:
-        this.firebaseIntegration.sendDownloadCompletedEvent(downloadCompleteData);
+        this.analyticsIntegration.sendDownloadCompletedEvent(downloadCompleteData);
         break;
       default:
         console.warn(`Unsupported progress percentage: ${percentage}`);
@@ -180,7 +180,7 @@ class App {
           : "",
       days_since_last: roundedDaysSinceLast,
     };
-    this.firebaseIntegration.sendSessionStartEvent(sessionStartData);
+    this.analyticsIntegration.sendSessionStartEvent(sessionStartData);
   }
 
   private logSessionEndFirebaseEvent() {
@@ -196,7 +196,7 @@ class App {
       duration: (new Date().getTime() - this.startSessionTime) / 1000,
     };
     localStorage.setItem("lastSessionEndTime", new Date().getTime().toString());
-    this.firebaseIntegration.sendSessionEndEvent(sessionEndData);
+    this.analyticsIntegration.sendSessionEndEvent(sessionEndData);
   }
 
   private initializeCachedData(): Map<string, boolean> {

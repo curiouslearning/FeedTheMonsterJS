@@ -32,8 +32,8 @@ import { GameScore, DataModal } from "@data";
 import {
   LevelCompletedEvent,
   PuzzleCompletedEvent,
-} from "../../Firebase/firebase-event-interface";
-import { FirebaseIntegration } from "../../Firebase/firebase-integration";
+} from "../../Analytics/analytics-event-interface";
+import { AnalyticsIntegration } from "../../Analytics/analytics-integration";
 import {
   SCENE_NAME_LEVEL_SELECT,
   SCENE_NAME_GAME_PLAY,
@@ -85,7 +85,7 @@ export class GameplayScene {
   private data: DataModal;
   public triggerInputs: any;
   audioPlayer: AudioPlayer;
-  firebaseIntegration: FirebaseIntegration;
+  analyticsIntegration: AnalyticsIntegration;
   startTime: number;
   puzzleTime: number;
   isDisposing: boolean;
@@ -132,7 +132,7 @@ export class GameplayScene {
     this.addEventListeners();
     this.startGameTime();
     this.startPuzzleTime();
-    this.firebaseIntegration = FirebaseIntegration.getInstance();
+    this.analyticsIntegration = AnalyticsIntegration.getInstance();
     this.audioPlayer = new AudioPlayer();
     this.puzzleHandler = new PuzzleHandler(this.levelData, this.counter, gamePlayData.feedbackAudios);
     this.unsubscribeEvent = gameStateService.subscribe(
@@ -929,7 +929,7 @@ export class GameplayScene {
       foils: this.stoneHandler.getFoilStones(),
       response_time: (endTime - this.puzzleTime) / 1000,
     };
-    this.firebaseIntegration.sendPuzzleCompletedEvent(puzzleCompletedData);
+    this.analyticsIntegration.sendPuzzleCompletedEvent(puzzleCompletedData);
   }
 
   public logLevelEndFirebaseEvent() {
@@ -946,7 +946,7 @@ export class GameplayScene {
       level_number: this.levelData.levelMeta.levelNumber,
       duration: (endTime - this.startTime) / 1000,
     };
-    this.firebaseIntegration.sendLevelCompletedEvent(levelCompletedData);
+    this.analyticsIntegration.sendLevelCompletedEvent(levelCompletedData);
   }
 
   public startGameTime() {

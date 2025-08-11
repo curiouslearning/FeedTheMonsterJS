@@ -1,6 +1,6 @@
 import { StartScene } from './start-scene';
 import { PlayButtonHtml } from '@components/buttons';
-import { FirebaseIntegration } from "../../Firebase/firebase-integration";
+import { AnalyticsIntegration } from "../../Analytics/analytics-integration";
 import { AudioPlayer } from "../../components/audio-player";
 import gameStateService from '@gameStateService';
 import gameSettingsService from '@gameSettingsService';
@@ -16,9 +16,9 @@ const mockInstance = {
 
 let mockInstanceRef = mockInstance;
 
-// Mock the FirebaseIntegration module before other imports
-jest.mock("../../Firebase/firebase-integration", () => ({
-  FirebaseIntegration: {
+// Mock the AnalyticsIntegration module before other imports
+jest.mock("../../Analytics/analytics-integration", () => ({
+  AnalyticsIntegration: {
     initializeAnalytics: jest.fn().mockImplementation(async () => {
       mockInstanceRef = {
         sendTappedStartEvent: jest.fn(),
@@ -57,7 +57,7 @@ jest.mock('@components/riveMonster/rive-monster-component', () => ({
 }));
 
 // Mock implementations
-let mockFirebaseInstance: any;
+let mockAnalyticsInstance: any;
 
 jest.mock("../../components/audio-player", () => ({
   AudioPlayer: jest.fn().mockImplementation(() => ({
@@ -90,7 +90,7 @@ describe('Start Scene Test', () => {
   let startScene;
   let mockPlayBtn;
   let mockOnClickCallback;
-  let mockFirebase;
+  let mockAnalytics;
   let mockAudioPlayer;
   const switchSceneMockFunc = jest.fn();
 
@@ -111,9 +111,9 @@ describe('Start Scene Test', () => {
       </div>
     `;
 
-    // Initialize Firebase mock with fresh instance
-    await FirebaseIntegration.initializeAnalytics();
-    mockFirebase = FirebaseIntegration.getInstance();
+    // Initialize Analytics mock with fresh instance
+    await AnalyticsIntegration.initializeAnalytics();
+    mockAnalytics = AnalyticsIntegration.getInstance();
 
     //Mock Audio Player instance
     mockAudioPlayer = new AudioPlayer();
@@ -153,7 +153,7 @@ describe('Start Scene Test', () => {
     startScene.toggleBtn = document.getElementById('toggle-btn');
 
     // Ensure startScene uses the mock data
-    startScene.firebaseIntegration = mockFirebase;
+    startScene.analyticsIntegration = mockAnalytics;
     startScene.audioPlayer = mockAudioPlayer;
 
     // Create the play button and mock the callback
@@ -254,7 +254,7 @@ describe('Start Scene Test', () => {
       }
 
       // Check if sendTappedStartEvent was called
-      expect(mockFirebase.sendTappedStartEvent).toHaveBeenCalledTimes(1); // Assuming mockFirebase is correctly set
+      expect(mockAnalytics.sendTappedStartEvent).toHaveBeenCalledTimes(1); // Assuming mockAnalytics is correctly set
     });
 
     it('Should remove the dev button.', () => {
