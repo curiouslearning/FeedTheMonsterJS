@@ -292,6 +292,7 @@ export class LevelEndScene {
 
   renderButtonsHTML() {
     const nextButton = document.getElementById('levelend-next-btn');
+    const replayButton = document.getElementById('levelend-retry-btn');
     // Define configurations for each button
     const buttonConfigs = [
       {
@@ -302,31 +303,55 @@ export class LevelEndScene {
         },
       },
     ];
-    
-    // Add NextButtonHtml only if not the last level and the star count is sufficient
-    if (!this.isLastLevel && this.starCount >= 2) {
-      buttonConfigs.push({
-        ButtonClass: NextButtonHtml,
-        id: 'levelend-next-btn',
-        onClick: () => {
-          this.buttonCallbackFn('next');
-        },
-      });
-    } else {
-      if (nextButton) {
-        nextButton.remove();
+
+    // Level 1 logic
+    if (this.currentLevel === 0) {
+      if (this.starCount >= 2) {
+        // PASS: Show Next Level 
+        buttonConfigs.push({
+          ButtonClass: NextButtonHtml,
+          id: 'levelend-next-btn',
+          onClick: () => {
+            this.buttonCallbackFn('next');
+          },
+        });
+
+        // Ensure Replay is removed if exists
+        if (replayButton) replayButton.remove();
+
+      }
+      else {
+        // FAIL: Show Replay
+        buttonConfigs.push({
+          ButtonClass: RetryButtonHtml,
+          id: 'levelend-retry-btn',
+          onClick: () => this.buttonCallbackFn('retry'),
+        });
       }
     }
-    
-    // Add retry button last as requested
-    buttonConfigs.push({
-      ButtonClass: RetryButtonHtml,
-      id: 'levelend-retry-btn',
-      onClick: () => {
-        this.buttonCallbackFn('retry');
-      },
-    });
-    
+    else {
+      if (this.starCount >= 2) {
+        // Show Next Level
+        buttonConfigs.push({
+          ButtonClass: NextButtonHtml,
+          id: 'levelend-next-btn',
+          onClick: () => this.buttonCallbackFn('next'),
+        });
+      }
+      // Show Replay Level
+      buttonConfigs.push({
+        ButtonClass: RetryButtonHtml,
+        id: 'levelend-retry-btn',
+        onClick: () => this.buttonCallbackFn('retry'),
+      });
+    }
+
+    // Remove Next if last level
+    if (this.isLastLevel) {
+      const index = buttonConfigs.findIndex(cfg => cfg.id === 'levelend-next-btn');
+      if (index > -1) buttonConfigs.splice(index, 1);
+      if (nextButton) nextButton.remove();
+    }
     // Create buttons based on configuration
     buttonConfigs.forEach(({ ButtonClass, id, onClick }) => {
       this.createButton(ButtonClass, id, onClick);
