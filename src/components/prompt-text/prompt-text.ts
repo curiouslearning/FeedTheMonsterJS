@@ -10,7 +10,7 @@ import gameStateService from '@gameStateService';
 export const DEFAULT_SELECTORS = {
     root: '#background', // The background element to append the prompt to
     promptText: '.prompt-text',
-    promptBackground: '.prompt-position',
+    promptContent: '.prompt-position',
     promptPlayButton: '.prompt-play-button'
 };
 
@@ -34,13 +34,13 @@ export const PROMPT_TEXT_LAYOUT = (
         <div id="${id}" class="prompt-container ">
             <img
                 id="prompt-bubble"
-                class="responsive-position ${bubblePulsateStyle}"
+                class="prompt-center-responsive ${bubblePulsateStyle}"
                 src="${PROMPT_TEXT_BG}"
                 alt="audio button"
             />
             <div
                 id="prompt-content"
-                class="responsive-position ${bubblePulsateStyle}"
+                class="prompt-center-responsive ${bubblePulsateStyle}"
             >
                 <div id="prompt-text-button-container">
                     <div id="prompt-text" class="prompt-text"></div>
@@ -79,7 +79,7 @@ export class PromptText extends BaseHTML {
 
     // HTML elements for the prompt
     public promptContainer: HTMLDivElement;
-    public promptBackground: HTMLDivElement;
+    public promptContent: HTMLDivElement;
     public promptBubbleImg: HTMLImageElement;
     public promptTextElement: HTMLDivElement;
     public promptPlayButtonElement: HTMLDivElement;
@@ -221,7 +221,7 @@ export class PromptText extends BaseHTML {
     public initializeHtmlElements(containerId: string) {
         // Get references to the created elements
         this.promptContainer = document.getElementById(containerId) as HTMLDivElement;
-        this.promptBackground = this.promptContainer.querySelector('#prompt-content') as HTMLDivElement;
+        this.promptContent = this.promptContainer.querySelector('#prompt-content') as HTMLDivElement;
         this.promptBubbleImg = this.promptContainer.querySelector('#prompt-bubble') as HTMLImageElement;
         this.promptTextElement = this.promptContainer.querySelector('#prompt-text') as HTMLDivElement;
         this.promptPlayButtonElement = this.promptContainer.querySelector('#prompt-play-button') as HTMLDivElement;
@@ -229,7 +229,7 @@ export class PromptText extends BaseHTML {
 
         if (this.isSpellSoundMatch()) {
             //Add custom style for prompt bubble for Spell Word Audio puzzle.
-            this.promptBubbleImg.classList.add('prompt-bubble-custom');
+            this.promptBubbleImg.classList.add('prompt-bubble-spell-audio');
         }
 
         // Update event listeners to include the callback
@@ -246,7 +246,7 @@ export class PromptText extends BaseHTML {
 
         // Add event listeners to all prompt elements
         this.promptPlayButtonElement.addEventListener('click', handleClick);
-        this.promptBackground.addEventListener('click', handleClick);
+        this.promptContent.addEventListener('click', handleClick);
         this.promptTextElement.addEventListener('click', handleClick);
 
         this.updatePromptFontSize();// Set initial font size

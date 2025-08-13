@@ -35,7 +35,7 @@ describe('PromptText', () => {
       <div id="prompt-container">
         <img
           id="prompt-bubble"
-          class="responsive-position"
+          class="prompt-center-responsive"
           alt="audio button"
         />
         <div id="prompt-content" class="prompt-content">

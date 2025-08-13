@@ -18,7 +18,7 @@
   }
 }
 
-.responsive-position {
+.prompt-center-responsive {
   position: relative;
   left: 50%;
   transform: translateX(-50%);
@@ -58,7 +58,7 @@
 }
 
 //Custom position and size for prompt bubble. Used for Spell Word Audio puzzle.
-.prompt-bubble-custom {
+.prompt-bubble-spell-audio {
 
   // Small mobile (≤376px)
   @media (max-width: 376px) {
@@ -70,7 +70,7 @@
   // Large mobile (377-480px)
   @media (min-width: 377px) and (max-width: 480px) {
     width: 280px;
-    height: 240px;
+    height: 245px;
     top: 13%;
   }
 
