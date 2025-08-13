@@ -304,46 +304,36 @@ export class LevelEndScene {
       },
     ];
 
-    // Level 1 logic
-    if (this.currentLevel === 0) {
-      if (this.starCount >= 2) {
-        // PASS: Show Next Level 
-        buttonConfigs.push({
-          ButtonClass: NextButtonHtml,
-          id: 'levelend-next-btn',
-          onClick: () => {
-            this.buttonCallbackFn('next');
-          },
-        });
-
-        // Ensure Replay is removed if exists
-        if (replayButton) replayButton.remove();
-
-      }
-      else {
-        // FAIL: Show Replay
-        buttonConfigs.push({
-          ButtonClass: RetryButtonHtml,
-          id: 'levelend-retry-btn',
-          onClick: () => this.buttonCallbackFn('retry'),
-        });
-      }
+    // Show Next Level button if passed and not last level
+    if (this.starCount >= 2 && !this.isLastLevel) {
+      buttonConfigs.push({
+        ButtonClass: NextButtonHtml,
+        id: 'levelend-next-btn',
+        onClick: () => this.buttonCallbackFn('next'),
+      });
     }
-    else {
-      if (this.starCount >= 2) {
-        // Show Next Level
-        buttonConfigs.push({
-          ButtonClass: NextButtonHtml,
-          id: 'levelend-next-btn',
-          onClick: () => this.buttonCallbackFn('next'),
-        });
-      }
-      // Show Replay Level
+
+    // Level 1 fail - replay only
+    if (this.currentLevel === 0 && this.starCount < 2) {
       buttonConfigs.push({
         ButtonClass: RetryButtonHtml,
         id: 'levelend-retry-btn',
         onClick: () => this.buttonCallbackFn('retry'),
       });
+    }
+
+    // Non-first levels - always show replay
+    if (this.currentLevel !== 0) {
+      buttonConfigs.push({
+        ButtonClass: RetryButtonHtml,
+        id: 'levelend-retry-btn',
+        onClick: () => this.buttonCallbackFn('retry'),
+      });
+    }
+
+    // Remove Replay if Level 1 passed
+    if (this.currentLevel === 0 && this.starCount >= 2) {
+      if (replayButton) replayButton.remove();
     }
 
     // Remove Next if last level
