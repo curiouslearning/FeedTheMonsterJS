@@ -33,7 +33,12 @@ describe('PromptText', () => {
   beforeEach(() => {
     document.body.innerHTML = `
       <div id="prompt-container">
-        <div id="prompt-background" class="prompt-background">
+        <img
+          id="prompt-bubble"
+          class="prompt-center-responsive"
+          alt="audio button"
+        />
+        <div id="prompt-content" class="prompt-content">
           <div id="prompt-text-button-container">
             <div id="prompt-text" class="prompt-text"></div>
             <div class="prompt-button-slots-wrapper">
@@ -91,7 +96,7 @@ describe('PromptText', () => {
     it('should inject click event listeners into prompt elements', () => {
       const playButton = document.getElementById('prompt-play-button');
       const textElement = document.getElementById('prompt-text');
-      const background = document.getElementById('prompt-background');
+      const background = document.getElementById('prompt-content');
 
       playButton?.click();
       textElement?.click();

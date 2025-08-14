@@ -4,9 +4,9 @@ jest.mock('firebase/analytics', () => ({
   setUserProperties: jest.fn(),
 }));
 
-import { FirebaseIntegration } from './firebase-integration';
+import { AnalyticsIntegration } from './analytics-integration';
 import { logEvent, getAnalytics } from 'firebase/analytics';
-import { BaseFirebaseIntegration } from "./base-firebase-integration";
+import { BaseAnalyticsIntegration } from "./base-analytics-integration";
 
 // Mock the AnalyticsService and related classes
 let mockAnalyticsService = {
@@ -25,10 +25,10 @@ jest.mock('@curiouslearning/analytics', () => ({
   }))
 }));
 
-describe('FirebaseIntegration Singleton', () => {
+describe('AnalyticsIntegration Singleton', () => {
   beforeEach(() => {
     // Reset the singleton instance and mocks before each test
-    (FirebaseIntegration as any).instance = null;
+    (AnalyticsIntegration as any).instance = null;
     jest.clearAllMocks();
     mockAnalyticsService.track.mockClear();
     mockAnalyticsService.register.mockClear();
@@ -36,38 +36,38 @@ describe('FirebaseIntegration Singleton', () => {
 
   it('should throw error when getInstance is called before initialization', () => {
     expect(() => {
-      FirebaseIntegration.getInstance();
-    }).toThrow('FirebaseIntegration.initializeAnalytics() must be called before accessing the instance');
+      AnalyticsIntegration.getInstance();
+    }).toThrow('AnalyticsIntegration.initializeAnalytics() must be called before accessing the instance');
   });
 
   it('should initialize analytics and return same instance', async () => {
-    await FirebaseIntegration.initializeAnalytics();
-    const instance1 = FirebaseIntegration.getInstance();
-    const instance2 = FirebaseIntegration.getInstance();
+    await AnalyticsIntegration.initializeAnalytics();
+    const instance1 = AnalyticsIntegration.getInstance();
+    const instance2 = AnalyticsIntegration.getInstance();
     
     expect(instance1).toBeTruthy();
     expect(instance1).toBe(instance2);
   });
 
   it('should not reinitialize if already initialized', async () => {
-    await FirebaseIntegration.initializeAnalytics();
-    const instance1 = FirebaseIntegration.getInstance();
+    await AnalyticsIntegration.initializeAnalytics();
+    const instance1 = AnalyticsIntegration.getInstance();
     
-    await FirebaseIntegration.initializeAnalytics();
-    const instance2 = FirebaseIntegration.getInstance();
+    await AnalyticsIntegration.initializeAnalytics();
+    const instance2 = AnalyticsIntegration.getInstance();
     
     expect(instance1).toBe(instance2);
   });
 });
 
 describe('Firebase Event Logging - Download_Completed', () => {
-  let firebaseIntegration: FirebaseIntegration;
+  let analyticsIntegration: AnalyticsIntegration;
   let logDownloadPercentageComplete: (percentage: number, timeDiff: number) => void;
 
   beforeEach(async () => {
-    await FirebaseIntegration.initializeAnalytics();
-    firebaseIntegration = FirebaseIntegration.getInstance();
-    jest.spyOn(firebaseIntegration, 'sendDownloadCompletedEvent').mockImplementation(() => { });
+    await AnalyticsIntegration.initializeAnalytics();
+    analyticsIntegration = AnalyticsIntegration.getInstance();
+    jest.spyOn(analyticsIntegration, 'sendDownloadCompletedEvent').mockImplementation(() => { });
     const versionInfoElement = { innerHTML: '2.0.1' };
     const getJsonVersionNumber = () => '3.14';
 
@@ -86,14 +86,14 @@ describe('Firebase Event Logging - Download_Completed', () => {
         ms_since_session_start: timeDiff,
       };
 
-      firebaseIntegration.sendDownloadCompletedEvent(eventData);
+      analyticsIntegration.sendDownloadCompletedEvent(eventData);
     };
   });
 
   it('should log Download_Completed event with correct parameters', () => {
     logDownloadPercentageComplete(100, 5000);
 
-    expect(firebaseIntegration.sendDownloadCompletedEvent).toHaveBeenCalledWith({
+    expect(analyticsIntegration.sendDownloadCompletedEvent).toHaveBeenCalledWith({
       cr_user_id: null,
       ftm_language: 'english',
       profile_number: 0,
@@ -106,7 +106,7 @@ describe('Firebase Event Logging - Download_Completed', () => {
   it('should have required fields and correct types', () => {
     logDownloadPercentageComplete(100, 1234);
 
-    const [eventData] = (firebaseIntegration.sendDownloadCompletedEvent as jest.Mock).mock.calls[1];
+    const [eventData] = (analyticsIntegration.sendDownloadCompletedEvent as jest.Mock).mock.calls[1];
 
     expect(typeof eventData.cr_user_id).toBe('object');
     expect(typeof eventData.ftm_language).toBe('string');
@@ -120,13 +120,13 @@ describe('Firebase Event Logging - Download_Completed', () => {
 });
 
 describe('Firebase Event Logging - tapped_start', () => {
-  let firebaseIntegration: FirebaseIntegration;
+  let analyticsIntegration: AnalyticsIntegration;
   let logTappedStartEvent: () => void;
 
   beforeEach(async () => {
-    await FirebaseIntegration.initializeAnalytics();
-    firebaseIntegration = FirebaseIntegration.getInstance();
-    jest.spyOn(firebaseIntegration, 'sendTappedStartEvent').mockImplementation(() => {});
+    await AnalyticsIntegration.initializeAnalytics();
+    analyticsIntegration = AnalyticsIntegration.getInstance();
+    jest.spyOn(analyticsIntegration, 'sendTappedStartEvent').mockImplementation(() => {});
 
     const versionInfoElement = { innerHTML: '1.2.3' };
     document.getElementById = jest.fn().mockReturnValue(versionInfoElement);
@@ -146,14 +146,14 @@ describe('Firebase Event Logging - tapped_start', () => {
         json_version_number: `${majVersion}.${minVersion}`,
       };
 
-      firebaseIntegration.sendTappedStartEvent(tappedStartData);
+      analyticsIntegration.sendTappedStartEvent(tappedStartData);
     };
   });
 
   it('should log tapped_start event with correct parameters', () => {
     logTappedStartEvent();
 
-    expect(firebaseIntegration.sendTappedStartEvent).toHaveBeenCalledWith({
+    expect(analyticsIntegration.sendTappedStartEvent).toHaveBeenCalledWith({
       cr_user_id: null,
       ftm_language: 'english',
       profile_number: 0,
@@ -165,7 +165,7 @@ describe('Firebase Event Logging - tapped_start', () => {
   it('should validate required fields and types', () => {
     logTappedStartEvent();
 
-    const calls = jest.mocked(firebaseIntegration.sendTappedStartEvent).mock.calls;
+    const calls = jest.mocked(analyticsIntegration.sendTappedStartEvent).mock.calls;
     const [eventData] = calls[0];
 
     expect(typeof eventData.cr_user_id).toBe('object');
@@ -179,13 +179,13 @@ describe('Firebase Event Logging - tapped_start', () => {
 });
 
 describe('Firebase Event Logging - selected_level', () => {
-  let firebaseIntegration: FirebaseIntegration;
+  let analyticsIntegration: AnalyticsIntegration;
   let logSelectedLevelEvent: () => void;
 
   beforeEach(async () => {
-    await FirebaseIntegration.initializeAnalytics();
-    firebaseIntegration = FirebaseIntegration.getInstance();
-    jest.spyOn(firebaseIntegration, 'sendSelectedLevelEvent').mockImplementation(() => {});
+    await AnalyticsIntegration.initializeAnalytics();
+    analyticsIntegration = AnalyticsIntegration.getInstance();
+    jest.spyOn(analyticsIntegration, 'sendSelectedLevelEvent').mockImplementation(() => {});
 
     const versionInfoElement = { innerHTML: '3.0.0' };
     document.getElementById = jest.fn().mockReturnValue(versionInfoElement);
@@ -207,14 +207,14 @@ describe('Firebase Event Logging - selected_level', () => {
         level_selected: levelNumber,
       };
 
-      firebaseIntegration.sendSelectedLevelEvent(selectedLevelData);
+      analyticsIntegration.sendSelectedLevelEvent(selectedLevelData);
     };
   });
 
   it('should log selected_level event with correct parameters', () => {
     logSelectedLevelEvent();
 
-    expect(firebaseIntegration.sendSelectedLevelEvent).toHaveBeenCalledWith({
+    expect(analyticsIntegration.sendSelectedLevelEvent).toHaveBeenCalledWith({
       cr_user_id: null,
       ftm_language: "english",
       profile_number: 0,
@@ -227,7 +227,7 @@ describe('Firebase Event Logging - selected_level', () => {
   it('should validate required fields and types', () => {
     logSelectedLevelEvent();
 
-    const calls = jest.mocked(firebaseIntegration.sendSelectedLevelEvent).mock.calls;
+    const calls = jest.mocked(analyticsIntegration.sendSelectedLevelEvent).mock.calls;
     const [eventData] = calls[0];
 
     expect(typeof eventData.cr_user_id).toBe('object');
@@ -243,13 +243,13 @@ describe('Firebase Event Logging - selected_level', () => {
 });
 
 describe('Firebase Event Logging - puzzle_completed', () => {
-  let firebaseIntegration: FirebaseIntegration;
+  let analyticsIntegration: AnalyticsIntegration;
   let logPuzzleEndFirebaseEvent: (isCorrect: boolean, puzzleType?: string) => void;
 
   beforeEach(async () => {
     jest.clearAllMocks();
-    await FirebaseIntegration.initializeAnalytics();
-    firebaseIntegration = FirebaseIntegration.getInstance();
+    await AnalyticsIntegration.initializeAnalytics();
+    analyticsIntegration = AnalyticsIntegration.getInstance();
 
     (global as any).pseudoId = 'puzzle-user';
     (global as any).lang = 'en';
@@ -287,7 +287,7 @@ describe('Firebase Event Logging - puzzle_completed', () => {
         response_time: (endTime - puzzleTime) / 1000,
       };
 
-      firebaseIntegration.sendPuzzleCompletedEvent(puzzleCompletedData);
+      analyticsIntegration.sendPuzzleCompletedEvent(puzzleCompletedData);
     };
   });
 
@@ -329,13 +329,13 @@ describe('Firebase Event Logging - puzzle_completed', () => {
 });
 
 describe('Firebase Event Logging - level_completed', () => {
-  let firebaseIntegration: FirebaseIntegration;
+  let analyticsIntegration: AnalyticsIntegration;
   let logLevelEndFirebaseEvent: () => void;
 
   beforeEach(async () => {
     jest.clearAllMocks();
-    await FirebaseIntegration.initializeAnalytics();
-    firebaseIntegration = FirebaseIntegration.getInstance();
+    await AnalyticsIntegration.initializeAnalytics();
+    analyticsIntegration = AnalyticsIntegration.getInstance();
 
     (global as any).pseudoId = 'level-user';
     (global as any).lang = 'en';
@@ -366,7 +366,7 @@ describe('Firebase Event Logging - level_completed', () => {
         level_number: levelNumber,
         duration: (endTime - startTime) / 1000,
       };
-      firebaseIntegration.sendLevelCompletedEvent(levelCompletedData);
+      analyticsIntegration.sendLevelCompletedEvent(levelCompletedData);
     };
   });
 
@@ -413,7 +413,7 @@ describe('Firebase Event Logging - level_completed', () => {
       duration: (endTime - startTime) / 1000,
     };
 
-    firebaseIntegration.sendLevelCompletedEvent(levelCompletedData);
+    analyticsIntegration.sendLevelCompletedEvent(levelCompletedData);
 
     expect(mockAnalyticsService.track).toHaveBeenCalledWith(
       'level_completed',
@@ -425,11 +425,11 @@ describe('Firebase Event Logging - level_completed', () => {
 });
 
 describe('Firebase Event Logging - session_start', () => {
-  let firebaseIntegration: any;
+  let analyticsIntegration: any;
   let logSessionStartFirebaseEvent: () => void;
 
   beforeEach(() => {
-    firebaseIntegration = {
+    analyticsIntegration = {
       sendSessionStartEvent: jest.fn(),
     };
 
@@ -476,16 +476,16 @@ describe('Firebase Event Logging - session_start', () => {
         json_version_number: majVersion.toString() + '.' + minVersion.toString(),
         days_since_last: roundedDaysSinceLast,
       };
-      firebaseIntegration.sendSessionStartEvent(sessionStartData);
+      analyticsIntegration.sendSessionStartEvent(sessionStartData);
     };
   });
 
   it('should log session_start event with correct parameters', () => {
     logSessionStartFirebaseEvent();
 
-    expect(firebaseIntegration.sendSessionStartEvent).toHaveBeenCalled();
+    expect(analyticsIntegration.sendSessionStartEvent).toHaveBeenCalled();
 
-    const [eventData] = firebaseIntegration.sendSessionStartEvent.mock.calls[0];
+    const [eventData] = analyticsIntegration.sendSessionStartEvent.mock.calls[0];
 
     expect(typeof eventData.cr_user_id).toBe('object');
     expect(typeof eventData.ftm_language).toBe('string');
@@ -503,17 +503,17 @@ describe('Firebase Event Logging - session_start', () => {
 
     logSessionStartFirebaseEvent();
 
-    const [eventData] = firebaseIntegration.sendSessionStartEvent.mock.calls[0];
+    const [eventData] = analyticsIntegration.sendSessionStartEvent.mock.calls[0];
     expect(eventData.days_since_last).toBe(0);
   });
 });
 
 describe('Firebase Event Logging - session_end', () => {
-  let firebaseIntegration: any;
+  let analyticsIntegration: any;
   let logSessionEndFirebaseEvent: () => void;
 
   beforeEach(() => {
-    firebaseIntegration = {
+    analyticsIntegration = {
       sendSessionEndEvent: jest.fn(),
     };
 
@@ -550,16 +550,16 @@ describe('Firebase Event Logging - session_end', () => {
         duration: (new Date().getTime() - startSessionTime) / 1000,
       };
       localStorage.setItem('lastSessionEndTime', new Date().getTime().toString());
-      firebaseIntegration.sendSessionEndEvent(sessionEndData);
+      analyticsIntegration.sendSessionEndEvent(sessionEndData);
     };
   });
 
   it('should log session_end event with correct parameters', () => {
     logSessionEndFirebaseEvent();
 
-    expect(firebaseIntegration.sendSessionEndEvent).toHaveBeenCalled();
+    expect(analyticsIntegration.sendSessionEndEvent).toHaveBeenCalled();
 
-    const [eventData] = firebaseIntegration.sendSessionEndEvent.mock.calls[0];
+    const [eventData] = analyticsIntegration.sendSessionEndEvent.mock.calls[0];
 
     expect(typeof eventData.cr_user_id).toBe('object');
     expect(typeof eventData.ftm_language).toBe('string');
@@ -581,18 +581,18 @@ describe('Firebase Event Logging - session_end', () => {
   });
 });
 
-class TestFirebaseIntegration extends BaseFirebaseIntegration {
+class TestAnalyticsIntegration extends BaseAnalyticsIntegration {
   public triggerCustomEvent(name: string, data: object) {
     this.trackCustomEvent(name, data);
   }
 }
 
-describe('BaseFirebaseIntegration', () => {
-  let integration: TestFirebaseIntegration;
+describe('BaseAnalyticsIntegration', () => {
+  let integration: TestAnalyticsIntegration;
 
   beforeEach(async () => {
-    await FirebaseIntegration.initializeAnalytics();
-    integration = new TestFirebaseIntegration();
+    await AnalyticsIntegration.initializeAnalytics();
+    integration = new TestAnalyticsIntegration();
     await integration.initialize();
   });
 

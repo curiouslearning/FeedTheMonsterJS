@@ -10,7 +10,7 @@ import gameStateService from '@gameStateService';
 export const DEFAULT_SELECTORS = {
     root: '#background', // The background element to append the prompt to
     promptText: '.prompt-text',
-    promptBackground: '.prompt-background',
+    promptContent: '.prompt-position',
     promptPlayButton: '.prompt-play-button'
 };
 
@@ -32,10 +32,15 @@ export const PROMPT_TEXT_LAYOUT = (
 
     return (`
         <div id="${id}" class="prompt-container ">
+            <img
+                id="prompt-bubble"
+                class="prompt-center-responsive ${bubblePulsateStyle}"
+                src="${PROMPT_TEXT_BG}"
+                alt="audio button"
+            />
             <div
-                id="prompt-background"
-                class="prompt-background ${bubblePulsateStyle} "
-                style="background-image: url(${PROMPT_TEXT_BG})"
+                id="prompt-content"
+                class="prompt-center-responsive ${bubblePulsateStyle}"
             >
                 <div id="prompt-text-button-container">
                     <div id="prompt-text" class="prompt-text"></div>
@@ -74,7 +79,8 @@ export class PromptText extends BaseHTML {
 
     // HTML elements for the prompt
     public promptContainer: HTMLDivElement;
-    public promptBackground: HTMLDivElement;
+    public promptContent: HTMLDivElement;
+    public promptBubbleImg: HTMLImageElement;
     public promptTextElement: HTMLDivElement;
     public promptPlayButtonElement: HTMLDivElement;
     public promptSlotElement: HTMLDivElement;
@@ -197,10 +203,7 @@ export class PromptText extends BaseHTML {
             this.runAfterInitialAudioDelay(
                 totalInitialAudioDuration,
                 () => {
-                    if (this.isSpellSoundMatch()) {
-                        this.promptSlotElement.style.display = 'flex';
-                        this.generatePromptSlots();
-                    }
+                    this.showSpellSlots();
                     this.removePulseAudioEffect();
                 }
             );
@@ -218,16 +221,15 @@ export class PromptText extends BaseHTML {
     public initializeHtmlElements(containerId: string) {
         // Get references to the created elements
         this.promptContainer = document.getElementById(containerId) as HTMLDivElement;
-        this.promptBackground = this.promptContainer.querySelector('#prompt-background') as HTMLDivElement;
+        this.promptContent = this.promptContainer.querySelector('#prompt-content') as HTMLDivElement;
+        this.promptBubbleImg = this.promptContainer.querySelector('#prompt-bubble') as HTMLImageElement;
         this.promptTextElement = this.promptContainer.querySelector('#prompt-text') as HTMLDivElement;
         this.promptPlayButtonElement = this.promptContainer.querySelector('#prompt-play-button') as HTMLDivElement;
         this.promptSlotElement = this.promptContainer.querySelector('#prompt-slots') as HTMLDivElement;
 
         if (this.isSpellSoundMatch()) {
-            // Patch fix: Apply 'prompt-bubble-custom' to override prompt background dimensions
-            // for Spell Sound tutorial layout. This ensures the audio button and slot text
-            // fit properly inside the bubble. Not a scalable solution — revisit if reused elsewhere.
-            this.promptBackground.classList.add('prompt-bubble-custom');
+            //Add custom style for prompt bubble for Spell Word Audio puzzle.
+            this.promptBubbleImg.classList.add('prompt-bubble-spell-audio');
         }
 
         // Update event listeners to include the callback
@@ -244,7 +246,7 @@ export class PromptText extends BaseHTML {
 
         // Add event listeners to all prompt elements
         this.promptPlayButtonElement.addEventListener('click', handleClick);
-        this.promptBackground.addEventListener('click', handleClick);
+        this.promptContent.addEventListener('click', handleClick);
         this.promptTextElement.addEventListener('click', handleClick);
 
         this.updatePromptFontSize();// Set initial font size
@@ -513,7 +515,7 @@ export class PromptText extends BaseHTML {
      */
     calculateFont(): number {
         const size = this.width * 0.65 / this.currentPromptText.length;
-        return size > 35 ? 25 : size;
+        return size > 35 || this.currentPromptText.length > 4 ? 25 : size;
     }
 
     /**
