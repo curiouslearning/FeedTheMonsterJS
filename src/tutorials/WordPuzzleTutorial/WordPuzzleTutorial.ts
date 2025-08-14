@@ -3,7 +3,7 @@ import gameStateService from '@gameStateService';
 
 export default class WordPuzzleTutorial extends TutorialComponent {
   // Animation timing properties
-  private animationDuration = 700; // 700ms animation (faster than original 1000ms)
+  private animationDuration = 1500; // 1.5 second animation same with match letter puzzle
   private stonePositions: number[][] = [];
   private currentStoneIndex = 0;
   // stoneImg is declared in the base class
