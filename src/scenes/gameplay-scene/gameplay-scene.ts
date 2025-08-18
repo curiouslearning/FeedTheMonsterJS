@@ -715,7 +715,12 @@ export class GameplayScene {
     this.handler.removeEventListener("touchmove", this.handleTouchMove, false);
     this.handler.removeEventListener("touchend", this.handleTouchEnd, false);
   }
-
+  
+  /**
+ * Determines the next game flow after a puzzle event (solved or timed out).
+ * Decides whether to trigger a mini-game or proceed to loading the next puzzle,
+ * applying delays when needed to allow audio/animations to finish.
+ */
   determineNextStep(isCorrect = false, isTimeOver = false) {
     const loadPuzzleDelay = isCorrect ? 4500 : 3000;
 
