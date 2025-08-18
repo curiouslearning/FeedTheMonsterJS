@@ -97,7 +97,6 @@ export class GameplayScene {
   isFeedBackTriggered: boolean;
   public monsterPhaseNumber: 0 | 1 | 2;
   private backgroundGenerator: PhasesBackground;
-  public loadPuzzleDelay: 3000 | 4500;
   private puzzleHandler: any;
   private timerStartSFXPlayed: boolean;
   private isMonsterMouthOpen = false;
@@ -142,7 +141,6 @@ export class GameplayScene {
         if (isPause) this.pausePopupComponent.open();
       }
     );
-    this.loadPuzzleDelay = 4500;
     this.pausePopupComponent.onClose((event) => {
       const { data } = event;
 
@@ -186,7 +184,14 @@ export class GameplayScene {
       gameStateService.publish(gameStateService.EVENTS.GAME_PAUSE_STATUS_EVENT, true);
       this.pauseGamePlay();
     });
-    this.timerTicking = new TimerTicking(this.width, this.height, this.loadPuzzle);
+    this.timerTicking = new TimerTicking(
+      this.width,
+      this.height,
+      (isMyTimerOver: boolean) => {
+        //Callback triggered when timer ends.
+        this.determineNextStep(false, isMyTimerOver);
+      }
+    );
     this.stoneHandler = new StoneHandler(
       this.context,
       this.canvas,
@@ -711,18 +716,36 @@ export class GameplayScene {
     this.handler.removeEventListener("touchend", this.handleTouchEnd, false);
   }
 
-  loadPuzzle = (isTimerEnded?) => {
+  determineNextStep(isCorrect = false, isTimeOver = false) {
+    const loadPuzzleDelay = isCorrect ? 4500 : 3000;
+
+    if (!isCorrect || isTimeOver) {
+      //For incorrect answers only; Start loading the next puzzle with 2 seconds delay to let the audios play.
+      const delay = isCorrect && !isTimeOver ? 0 : 2000;
+      setTimeout(() => {
+        this.loadPuzzle(isTimeOver, loadPuzzleDelay);
+      }, delay);
+
+      return;
+    }
+
+    //Insert mini game condition here  before loading the next puzzle.
+
+    this.loadPuzzle(isTimeOver, loadPuzzleDelay);
+  }
+
+  loadPuzzle = (isTimerEnded: boolean, loadPuzzleDelay: number) => {
     this.removeEventListeners();
 
     this.stonesCount = 1;
     const timerEnded = Boolean(isTimerEnded);
+    this.tutorial.resetTutorialTimer();
     if (timerEnded) {
-      this.tutorial.hideTutorial();
+
       this.logPuzzleEndFirebaseEvent(false);
     }
     this.counter += 1; //increment Puzzle
     this.isGameStarted = false;
-    this.tutorial.resetTutorialTimer();
     // Reset the 6-second tutorial delay timer each time a new puzzle is loaded
     this.tutorial.resetQuickStartTutorialDelay();
     this.tutorial.hideTutorial(); // Turn off tutorial via loading the puzzle.
@@ -742,12 +765,12 @@ export class GameplayScene {
         gameStateService.publish(gameStateService.EVENTS.SWITCH_SCENE_EVENT, SCENE_NAME_LEVEL_END);
         this.monster.dispose(); //Adding the monster dispose here due to the scenario that this.monster is still needed when restart game level is played.
       };
-      
+
       if (timerEnded) {
         handleLevelEnd();
       } else {
         //Trigger the handleLevelEnd with a delay to let the audio play in puzzleHandler.ts before switching to level end screen.
-        setTimeout(handleLevelEnd, this.loadPuzzleDelay);
+        setTimeout(handleLevelEnd, loadPuzzleDelay);
       }
     } else {
       const loadPuzzleEvent = new CustomEvent(LOADPUZZLE, {
@@ -762,7 +785,7 @@ export class GameplayScene {
             this.timerTicking.startTimer(); // Start the timer for the new puzzle
           }
         },
-        timerEnded ? 0 : this.loadPuzzleDelay // added delay for switching to level end screen
+        timerEnded ? 0 : loadPuzzleDelay // added delay for switching to level end screen
       );
     }
   };
@@ -778,7 +801,6 @@ export class GameplayScene {
     this.removeEventListeners();
     this.isGameStarted = false;
     this.time = 0;
-    this.loadPuzzleDelay = 4500;
     // Ensure puzzleHandler is set up for new puzzle
     this.puzzleHandler.initialize(this.levelData, this.counter);
     this.pickedStone = null;
@@ -889,11 +911,8 @@ export class GameplayScene {
     this.logPuzzleEndFirebaseEvent(isCorrect, puzzleType);
     this.dispatchStoneDropEvent(isCorrect);
     this.tutorial.hideTutorial(); //  Turn off tutorial via user playing correctly
-    setTimeout(() => {
-      //Adjust the delay of 4500 (4.5 seconds) to 2500 (2.5 seconds) if the puzzle is incorrect.
-      this.loadPuzzleDelay = isCorrect ? 4500 : 3000;
-      this.loadPuzzle();
-    }, isCorrect ? 0 : 2000);
+
+    this.determineNextStep(isCorrect);
   }
 
   private dispatchStoneDropEvent(isCorrect: boolean): void {
