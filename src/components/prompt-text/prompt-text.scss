@@ -27,21 +27,21 @@
   @media (max-width: 376px) {
     width: 50%;
     height: 26%;
-    top: 18%;
+    top: 19%;
   }
 
   // Large mobile (377-480px)
   @media (min-width: 377px) and (max-width: 480px) {
     width: 50%;
     height: 22%;
-    top: 15%;
+    top: 18%;
   }
 
   // Tablets (481-820px)
   @media (min-width: 481px) and (max-width: 820px) {
     width: 48%;
     height: 22%;
-    top: 20%;
+    top: 25%;
   }
 
   // large tablet (>820px)
@@ -54,7 +54,7 @@
 
 #prompt-bubble {
   position: absolute;
-  transition: transform 0.05s ease;
+  transition: width 0.3s ease, height 0.3s ease, transform 0.05s ease;
 }
 
 //Custom position and size for prompt bubble. Used for Spell Word Audio puzzle.
@@ -64,26 +64,18 @@
   @media (max-width: 376px) {
     width: 300px;
     height: 235px;
-    top: 16%;
   }
 
   // Large mobile (377-480px)
   @media (min-width: 377px) and (max-width: 480px) {
     width: 280px;
     height: 245px;
-    top: 13%;
   }
 
   // Tablets (481 above)
   @media (min-width: 481px) {
     width: 280px;
     height: 300px;
-    top: 18%;
-  }
-
-  // large tablet (>820px)
-  @media (min-width: 821px) {
-    top: 20%;
   }
 
 }
@@ -179,9 +171,9 @@
     gap: 3px;
 
   .slot {
-    min-width: 24px;
+    min-width: 18px;
     height: 28px;
-    font-size: 24px;
+    font-size: 23px;
     text-align: center;
     font-weight: bold;
     font-family: 'Quicksand', sans-serif;

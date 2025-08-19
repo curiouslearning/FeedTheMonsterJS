@@ -228,8 +228,8 @@ export class PromptText extends BaseHTML {
         this.promptSlotElement = this.promptContainer.querySelector('#prompt-slots') as HTMLDivElement;
 
         if (this.isSpellSoundMatch()) {
-            //Add custom style for prompt bubble for Spell Word Audio puzzle.
             this.promptBubbleImg.classList.add('prompt-bubble-spell-audio');
+            this.promptContent.style.marginTop = '35px';
         }
 
         // Update event listeners to include the callback
@@ -281,11 +281,16 @@ export class PromptText extends BaseHTML {
         if (!this.promptSlotElement) return;
 
         this.promptSlotElement.innerHTML = ""; // Clear any previous slots
+        const isLargeWord = this.targetStones.length > 4;
 
         //Create slots based on number of target letters.
         [...this.targetStones].forEach((letter, index) => {
             const slot: any = document.createElement("div");
             slot.classList.add("slot");
+            if (isLargeWord) {
+                slot.style.fontSize = "20px";
+                slot.style.minWidth = "15px";
+            }
 
             //If index of the char is less than the active letter index. It means letter should be revealed.
             if (index < this.currentActiveLetterIndex) {
@@ -459,8 +464,7 @@ export class PromptText extends BaseHTML {
         this.runAfterInitialAudioDelay(
             6000, //6 seconds to sync the rendering when the stone letter drops.
             () => {
-                this.promptSlotElement.style.display = 'flex';
-                this.generatePromptSlots();
+                this.showSpellSlots();
             }
         )
     }
@@ -515,7 +519,7 @@ export class PromptText extends BaseHTML {
      */
     calculateFont(): number {
         const size = this.width * 0.65 / this.currentPromptText.length;
-        return size > 35 || this.currentPromptText.length > 4 ? 25 : size;
+        return size > 35 || this.currentPromptText.length > 5 ? 19 : size;
     }
 
     /**
