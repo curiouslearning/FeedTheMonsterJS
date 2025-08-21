@@ -84,6 +84,7 @@ export class PromptText extends BaseHTML {
     public promptTextElement: HTMLDivElement;
     public promptPlayButtonElement: HTMLDivElement;
     public promptSlotElement: HTMLDivElement;
+    public promptTextButtonContainer: HTMLDivElement;
     private eventManager: EventManager;
 
     private onClickCallback?: () => void;
@@ -226,10 +227,14 @@ export class PromptText extends BaseHTML {
         this.promptTextElement = this.promptContainer.querySelector('#prompt-text') as HTMLDivElement;
         this.promptPlayButtonElement = this.promptContainer.querySelector('#prompt-play-button') as HTMLDivElement;
         this.promptSlotElement = this.promptContainer.querySelector('#prompt-slots') as HTMLDivElement;
+        this.promptTextButtonContainer = this.promptContainer.querySelector('#prompt-text-button-container') as HTMLDivElement;
 
         if (this.isSpellSoundMatch()) {
             this.promptBubbleImg.classList.add('prompt-bubble-spell-audio');
-            this.promptContent.style.marginTop = '35px';
+            /*Only during spell sound match; Set height from 74% to 100% so that
+            prompt-button-slots-wrapper would be properly be centered.
+            */
+            this.promptTextButtonContainer.style.height = '100%';
         }
 
         // Update event listeners to include the callback

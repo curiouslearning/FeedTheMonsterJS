@@ -63,13 +63,29 @@
   // Small mobile (≤376px)
   @media (max-width: 376px) {
     width: 300px;
-    height: 235px;
+    height: 245px;
   }
 
-  // Large mobile (377-480px)
+  // Small mobile (≤376px)
+  @media (max-width: 360px) {
+    width: 300px;
+    height: 245px;
+  }
+
+  // Small mobile (≤376px) with higher heights
+  @media (max-width: 376px) and (min-height: 882px) {
+    top: 21%;
+  }
+
+  // medium mobile (377-480px)
   @media (min-width: 377px) and (max-width: 480px) {
     width: 280px;
-    height: 245px;
+    height: 270px;
+  }
+
+  // medium mobile (377-480px) and height lower than 791px
+  @media (min-width: 377px) and (max-width: 480px) and (max-height:790px) {
+    top: 16%;
   }
 
   // Tablets (481 above)
@@ -78,7 +94,22 @@
     height: 300px;
   }
 
+  // Specific tablets
+  @media (width: 540px) and (height: 720px){
+    top: 21%;
+  }
+
+  // large tablet (>820px)
+  @media (min-width: 821px) {
+    top: 28%;
+  }
+
+  // large tablet (>820px) with height 1000px below.
+  @media (min-width: 821px) and (max-height: 999px) {
+    top: 21%;
+  }
 }
+
 
 @keyframes float {
   0% {
@@ -163,6 +194,10 @@
     display: flex;
     flex-direction: column;
     align-items: center;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
   }
 
   .prompt-slots {
