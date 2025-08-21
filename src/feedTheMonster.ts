@@ -3,7 +3,7 @@ import { getData, DataModal, customFonts } from "@data";
 import { SceneHandler } from "@sceneHandler/scene-handler";
 import { AUDIO_URL_PRELOAD, IsCached, PreviousPlayedLevel } from "@constants";
 import { Workbox } from "workbox-window";
-import { AnalyticsIntegration, AnalyticsEventType } from "./Analytics/analytics-integration";
+import { AnalyticsIntegration, AnalyticsEventType } from "./analytics/analytics-integration";
 import {
   Utils,
   VISIBILITY_CHANGE,

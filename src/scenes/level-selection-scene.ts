@@ -6,7 +6,7 @@ import {
 } from "@common";
 import { AudioPlayer } from "@components";
 import { getData, GameScore } from "@data";
-import { AnalyticsIntegration, AnalyticsEventType } from "../Analytics/analytics-integration";
+import { AnalyticsIntegration, AnalyticsEventType } from "../analytics/analytics-integration";
 import {
   createBackground,
   levelSelectBgDrawing,
@@ -406,6 +406,7 @@ export class LevelSelectionScreen {
         level_selected: this.levelNumber,
       }
     );
+    this.analyticsIntegration.track(AnalyticsEventType.LEVEL_END_BUTTON_CLICK
   }
   public draw() {
     if (this.imagesLoaded) {

@@ -32,8 +32,8 @@ import { GameScore, DataModal } from "@data";
 import {
   LevelCompletedEvent,
   PuzzleCompletedEvent,
-} from "../../Analytics/analytics-event-interface";
-import { AnalyticsIntegration, AnalyticsEventType } from "../../Analytics/analytics-integration";
+} from "../../analytics/analytics-event-interface";
+import { AnalyticsIntegration, AnalyticsEventType } from "../../analytics/analytics-integration";
 import {
   SCENE_NAME_LEVEL_SELECT,
   SCENE_NAME_GAME_PLAY,
