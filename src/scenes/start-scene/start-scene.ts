@@ -21,7 +21,7 @@ import {
 import gameStateService from '@gameStateService';
 import gameSettingsService from '@gameSettingsService';
 import './start-scene.scss';
-
+import { TreasureChestAnimation } from '@components/treasureChestAnimation/treasureChestAnimation';
 export class StartScene {
   public data: DataModal;
   public pwa_status: string;
@@ -54,6 +54,10 @@ export class StartScene {
     this.riveMonsterElement = gameSettingsService.getRiveCanvasValue();
     this.toggleBtn = document.getElementById("toggle-btn") as HTMLElement;
     this.loadingElement = document.getElementById("loading-screen") as HTMLElement;
+    let chestAnim: TreasureChestAnimation = new TreasureChestAnimation(window.innerWidth, window.innerHeight);
+        setTimeout(() => {
+          chestAnim.show();
+        }, 5000);
     this.riveMonster = new RiveMonsterComponent({
       canvas: this.riveMonsterElement,
       autoplay: true,
