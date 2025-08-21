@@ -4,7 +4,7 @@ jest.mock('firebase/analytics', () => ({
   setUserProperties: jest.fn(),
 }));
 
-import { AnalyticsIntegration } from './analytics-integration';
+import { AnalyticsIntegration, AnalyticsEventType } from './analytics-integration';
 import { logEvent, getAnalytics } from 'firebase/analytics';
 import { BaseAnalyticsIntegration } from "./base-analytics-integration";
 
@@ -25,8 +25,134 @@ jest.mock('@curiouslearning/analytics', () => ({
   }))
 }));
 
-describe('AnalyticsIntegration Singleton', () => {
-  beforeEach(() => {
+describe('AnalyticsIntegration Core', () => {
+  let analyticsIntegration: AnalyticsIntegration;
+
+  beforeEach(async () => {
+    (AnalyticsIntegration as any).instance = null;
+    jest.clearAllMocks();
+    mockAnalyticsService.track.mockClear();
+    mockAnalyticsService.register.mockClear();
+
+    await AnalyticsIntegration.initializeAnalytics();
+    analyticsIntegration = AnalyticsIntegration.getInstance();
+
+    (global as any).pseudoId = null;
+    (global as any).lang = 'english';
+    const versionInfoElement = { innerHTML: '1.2.3' };
+    document.getElementById = jest.fn().mockReturnValue(versionInfoElement);
+  });
+
+  describe('track method', () => {
+    it('should handle base event data correctly', () => {
+      analyticsIntegration.track(AnalyticsEventType.TAPPED_START, {
+        json_version_number: '2.0',
+      });
+
+      expect(mockAnalyticsService.track).toHaveBeenCalledWith(
+        'tapped_start',
+        expect.objectContaining({
+          cr_user_id: null,
+          ftm_language: 'english',
+          profile_number: 0,
+          version_number: '1.2.3',
+          json_version_number: '2.0',
+        })
+      );
+    });
+
+    it('should handle array to string conversion for puzzle foils', () => {
+      analyticsIntegration.track(AnalyticsEventType.PUZZLE_COMPLETED, {
+        json_version_number: '2.0',
+        success_or_failure: 'success',
+        level_number: 1,
+        puzzle_number: 2,
+        item_selected: 'CAT',
+        target: 'DOG',
+        foils: 'RAT,BAT,HAT',
+        response_time: 1.5,
+      });
+
+      expect(mockAnalyticsService.track).toHaveBeenCalledWith(
+        'puzzle_completed',
+        expect.objectContaining({
+          foils: 'RAT,BAT,HAT',
+        })
+      );
+    });
+
+    it('should preserve string foils in puzzle events', () => {
+      const foilString = 'RAT,BAT,HAT';
+      analyticsIntegration.track(AnalyticsEventType.PUZZLE_COMPLETED, {
+        json_version_number: '2.0',
+        success_or_failure: 'success',
+        level_number: 1,
+        puzzle_number: 2,
+        item_selected: 'CAT',
+        target: 'DOG',
+        foils: foilString,
+        response_time: 1.5,
+      });
+
+      expect(mockAnalyticsService.track).toHaveBeenCalledWith(
+        'puzzle_completed',
+        expect.objectContaining({
+          foils: foilString,
+        })
+      );
+    });
+
+    it('should handle download events with correct data', () => {
+      analyticsIntegration.track(AnalyticsEventType.DOWNLOAD_25, {
+        json_version_number: '2.0',
+        ms_since_session_start: 1000,
+      });
+
+      expect(mockAnalyticsService.track).toHaveBeenCalledWith(
+        'download_25',
+        expect.objectContaining({
+          ms_since_session_start: 1000,
+        })
+      );
+    });
+
+    it('should handle level completed events with correct data', () => {
+      analyticsIntegration.track(AnalyticsEventType.LEVEL_COMPLETED, {
+        json_version_number: '2.0',
+        success_or_failure: 'success',
+        number_of_successful_puzzles: 3,
+        level_number: 5,
+        duration: 120,
+      });
+
+      expect(mockAnalyticsService.track).toHaveBeenCalledWith(
+        'level_completed',
+        expect.objectContaining({
+          success_or_failure: 'success',
+          number_of_successful_puzzles: 3,
+          level_number: 5,
+          duration: 120,
+        })
+      );
+    });
+
+    it('should handle deprecated user clicked event', () => {
+      analyticsIntegration.track(AnalyticsEventType.USER_CLICKED, {
+        json_version_number: '2.0',
+        click: 'Click',
+      });
+
+      expect(mockAnalyticsService.track).toHaveBeenCalledWith(
+        'user_clicked',
+        expect.objectContaining({
+          click: 'Click',
+        })
+      );
+    });
+  });
+
+  describe('Singleton', () => {
+    beforeEach(() => {
     // Reset the singleton instance and mocks before each test
     (AnalyticsIntegration as any).instance = null;
     jest.clearAllMocks();
@@ -65,9 +191,10 @@ describe('Firebase Event Logging - Download_Completed', () => {
   let logDownloadPercentageComplete: (percentage: number, timeDiff: number) => void;
 
   beforeEach(async () => {
+    jest.clearAllMocks();
+    mockAnalyticsService.track.mockClear();
     await AnalyticsIntegration.initializeAnalytics();
     analyticsIntegration = AnalyticsIntegration.getInstance();
-    jest.spyOn(analyticsIntegration, 'sendDownloadCompletedEvent').mockImplementation(() => { });
     const versionInfoElement = { innerHTML: '2.0.1' };
     const getJsonVersionNumber = () => '3.14';
 
@@ -86,28 +213,42 @@ describe('Firebase Event Logging - Download_Completed', () => {
         ms_since_session_start: timeDiff,
       };
 
-      analyticsIntegration.sendDownloadCompletedEvent(eventData);
+      analyticsIntegration.track(AnalyticsEventType.DOWNLOAD_COMPLETED, eventData);
     };
   });
 
   it('should log Download_Completed event with correct parameters', () => {
     logDownloadPercentageComplete(100, 5000);
 
-    expect(analyticsIntegration.sendDownloadCompletedEvent).toHaveBeenCalledWith({
-      cr_user_id: null,
-      ftm_language: 'english',
-      profile_number: 0,
-      version_number: '2.0.1',
-      json_version_number: "3.14",
-      ms_since_session_start: 5000,
-    });
+    expect(mockAnalyticsService.track).toHaveBeenCalledWith(
+      'download_completed',
+      expect.objectContaining({
+        cr_user_id: null,
+        ftm_language: 'english',
+        profile_number: 0,
+        version_number: '2.0.1',
+        json_version_number: "3.14",
+        ms_since_session_start: 5000,
+      })
+    );
   });
 
   it('should have required fields and correct types', () => {
     logDownloadPercentageComplete(100, 1234);
 
-    const [eventData] = (analyticsIntegration.sendDownloadCompletedEvent as jest.Mock).mock.calls[1];
+    expect(mockAnalyticsService.track).toHaveBeenCalledWith(
+      AnalyticsEventType.DOWNLOAD_COMPLETED,
+      expect.objectContaining({
+        cr_user_id: null,
+        ftm_language: "english",
+        profile_number: 0,
+        version_number: "2.0.1",
+        json_version_number: "3.14",
+        ms_since_session_start: 1234,
+      })
+    );
 
+    const [eventName, eventData] = mockAnalyticsService.track.mock.calls[0];
     expect(typeof eventData.cr_user_id).toBe('object');
     expect(typeof eventData.ftm_language).toBe('string');
     expect(typeof eventData.version_number).toBe('string');
@@ -287,7 +428,7 @@ describe('Firebase Event Logging - puzzle_completed', () => {
         response_time: (endTime - puzzleTime) / 1000,
       };
 
-      analyticsIntegration.sendPuzzleCompletedEvent(puzzleCompletedData);
+      analyticsIntegration.track(AnalyticsEventType.PUZZLE_COMPLETED, puzzleCompletedData);
     };
   });
 
@@ -366,7 +507,7 @@ describe('Firebase Event Logging - level_completed', () => {
         level_number: levelNumber,
         duration: (endTime - startTime) / 1000,
       };
-      analyticsIntegration.sendLevelCompletedEvent(levelCompletedData);
+      analyticsIntegration.track(AnalyticsEventType.LEVEL_COMPLETED, levelCompletedData);
     };
   });
 
@@ -430,7 +571,7 @@ describe('Firebase Event Logging - session_start', () => {
 
   beforeEach(() => {
     analyticsIntegration = {
-      sendSessionStartEvent: jest.fn(),
+      track: jest.fn(),
     };
 
     (global as any).pseudoId = 'session-user';
@@ -476,16 +617,19 @@ describe('Firebase Event Logging - session_start', () => {
         json_version_number: majVersion.toString() + '.' + minVersion.toString(),
         days_since_last: roundedDaysSinceLast,
       };
-      analyticsIntegration.sendSessionStartEvent(sessionStartData);
+      analyticsIntegration.track(AnalyticsEventType.SESSION_START, sessionStartData);
     };
   });
 
   it('should log session_start event with correct parameters', () => {
     logSessionStartFirebaseEvent();
 
-    expect(analyticsIntegration.sendSessionStartEvent).toHaveBeenCalled();
+    expect(analyticsIntegration.track).toHaveBeenCalledWith(
+      AnalyticsEventType.SESSION_START,
+      expect.any(Object)
+    );
 
-    const [eventData] = analyticsIntegration.sendSessionStartEvent.mock.calls[0];
+    const [, eventData] = analyticsIntegration.track.mock.calls[0];
 
     expect(typeof eventData.cr_user_id).toBe('object');
     expect(typeof eventData.ftm_language).toBe('string');
@@ -503,7 +647,7 @@ describe('Firebase Event Logging - session_start', () => {
 
     logSessionStartFirebaseEvent();
 
-    const [eventData] = analyticsIntegration.sendSessionStartEvent.mock.calls[0];
+    const [, eventData] = analyticsIntegration.track.mock.calls[0];
     expect(eventData.days_since_last).toBe(0);
   });
 });
@@ -514,7 +658,7 @@ describe('Firebase Event Logging - session_end', () => {
 
   beforeEach(() => {
     analyticsIntegration = {
-      sendSessionEndEvent: jest.fn(),
+      track: jest.fn(),
     };
 
     (global as any).pseudoId = 'session-user-end';
@@ -550,16 +694,19 @@ describe('Firebase Event Logging - session_end', () => {
         duration: (new Date().getTime() - startSessionTime) / 1000,
       };
       localStorage.setItem('lastSessionEndTime', new Date().getTime().toString());
-      analyticsIntegration.sendSessionEndEvent(sessionEndData);
+      analyticsIntegration.track(AnalyticsEventType.SESSION_END, sessionEndData);
     };
   });
 
   it('should log session_end event with correct parameters', () => {
     logSessionEndFirebaseEvent();
 
-    expect(analyticsIntegration.sendSessionEndEvent).toHaveBeenCalled();
+    expect(analyticsIntegration.track).toHaveBeenCalledWith(
+      AnalyticsEventType.SESSION_END,
+      expect.any(Object)
+    );
 
-    const [eventData] = analyticsIntegration.sendSessionEndEvent.mock.calls[0];
+    const [, eventData] = analyticsIntegration.track.mock.calls[0];
 
     expect(typeof eventData.cr_user_id).toBe('object');
     expect(typeof eventData.ftm_language).toBe('string');
@@ -618,5 +765,6 @@ describe('BaseAnalyticsIntegration', () => {
   it('should initialize analytics service with Firebase and Statsig strategies', async () => {
     expect(mockAnalyticsService.register).toHaveBeenCalledWith('firebase', expect.anything());
     expect(mockAnalyticsService.register).toHaveBeenCalledWith('statsig', expect.anything());
+  });
   });
 });

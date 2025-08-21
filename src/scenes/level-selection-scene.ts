@@ -6,8 +6,7 @@ import {
 } from "@common";
 import { AudioPlayer } from "@components";
 import { getData, GameScore } from "@data";
-import { SelectedLevel } from "../analytics/analytics-event-interface";
-import { AnalyticsIntegration } from "../analytics/analytics-integration";
+import { AnalyticsIntegration, AnalyticsEventType } from "../Analytics/analytics-integration";
 import {
   createBackground,
   levelSelectBgDrawing,
@@ -398,18 +397,15 @@ export class LevelSelectionScreen {
     gameStateService.publish(gameStateService.EVENTS.SWITCH_SCENE_EVENT, SCENE_NAME_GAME_PLAY);
   }
   public logSelectedLevelEvent() {
-    const selectedLeveltData: SelectedLevel = {
-      cr_user_id: pseudoId,
-      ftm_language: lang,
-      profile_number: 0,
-      version_number: document.getElementById("version-info-id").innerHTML,
-      json_version_number:
-        !!this.majVersion && !!this.minVersion
-          ? this.majVersion.toString() + "." + this.minVersion.toString()
+    this.analyticsIntegration.track(
+      AnalyticsEventType.SELECTED_LEVEL,
+      {
+        json_version_number: !!this.majVersion && !!this.minVersion
+          ? `${this.majVersion}.${this.minVersion}`
           : "",
-      level_selected: this.levelNumber,
-    };
-    this.analyticsIntegration.sendSelectedLevelEvent(selectedLeveltData);
+        level_selected: this.levelNumber,
+      }
+    );
   }
   public draw() {
     if (this.imagesLoaded) {
