@@ -1,10 +1,32 @@
-
-
-## [1.0.44](https://github.com/curiouslearning/FeedTheMonsterJS/compare/1.0.46...1.0.44) (2025-08-25)
-
 ## [1.0.46](https://github.com/curiouslearning/FeedTheMonsterJS/compare/1.0.45...1.0.46) (2025-08-25)
 
+### Features and Bug Fixes
+* feat: Changed the logic of slots to show in all spell sound puzzle not just in tutorial (FM-516) #1770
+* feat: Added slots and text reveal for audio spelling game (FM-516) #1769
+* feat: Updated spell word audio logic and added patch fix to tutorial error undefined (FM-516). #1774
+* fix: Re-apply line of code of FM-516 recent changes. #1777
+* feat: User experience for redundant audio icon click (FM-555) #1729
+* fix: FM-568 The drag tutorial gets interrupted when device screen goes to sleep while the tutorial is playing. #1773
+* chore: FM-605 Develop to Test code merge #1775
+* optimize: Refactor Prompt Text Class (FM-586) #1765
+* optimize: Refactor Prompt Text Class (FM-586) #1762
+* feat: Spell sound tutorial - Updated audio logic for Auto replay (FM-577) #1751
+* feat: patch fix issues raised during testing (FM-577) #1756
+* feat: Re-apply FM-577 missing code. #1767
+* fix: FM-589 Kannada language: stone to letter fit #1758
+* fix: Fixed word tutorial showing way too fast before the stones are in position and fix for click pointer in audio (FM-606). #1784
+* enhancement: Updated prompt bubble rendering and its CSS styling (FM-597) #1781
+* enhance: Updated css styling and adjusted how spell word audio puzzle is being handled with styling (FM-597) #1788
+* enhance: Update css styling for prompt rending (FM-597) #1789
+* fix: FTM Analytics: Updating Firebase class and Variable names along with test cases as well! #1779
+* feat: Update logic to add and remove Next and Replay button on level 1 and other levels also check last level doesn't have next button. #1780
+* fix: Pr for updating directory name to remove build errors! #1782
+
+ 
+
 ## [1.0.45](https://github.com/curiouslearning/FeedTheMonsterJS/compare/1.0.43...1.0.45) (2025-07-14)
+
+## [1.0.44](https://github.com/curiouslearning/FeedTheMonsterJS/compare/1.0.46...1.0.44) (2025-08-25)
 
 ## [1.0.43](https://github.com/curiouslearning/FeedTheMonsterJS/compare/1.0.42...1.0.43) (2025-06-10)
 
