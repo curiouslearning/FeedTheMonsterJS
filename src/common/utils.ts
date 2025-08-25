@@ -55,6 +55,17 @@ export class Utils {
 
     return { excludeX: excludedAreaWidth, excludeY: excludedAreaHeight };
   }
+
+  /**
+ * Determines if a given string contains any characters from RTL scripts.
+ * Supports Arabic, Hebrew, Syriac, Thaana, N’Ko, Adlam, and Arabic presentation forms.
+ */
+  public static isRTLText(text: string): boolean {
+    // Unicode character ranges for major RTL scripts
+    const rtlCharRegex = /[\u0590-\u08FF\uFB1D-\uFDFF\uFE70-\uFEFF]/;
+
+    return rtlCharRegex.test(text);
+  };
 }
 
 export function createRippleEffect(

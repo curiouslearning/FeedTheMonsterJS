@@ -87,60 +87,68 @@ export default class StoneHandler extends EventManager {
    * Properly initializes stones and prevents memory leaks
    */
   createStones(img) {
-    // Clear existing stones first to prevent memory leaks
+    // Clear existing stones first to prevent memory leaks.
     this.disposeStones();
 
+    //Get the static foil stones — an array of string characters.
     const foilStones = this.getFoilStones();
-    // Randomize stone positions
+
+    // Randomize stone positions.
     const positions = this.shuffleArray(this.stonePos);
+
+    //Prepare canvas scaling for consistent rendering across devices.
     const scale = gameSettingsService.getDevicePixelRatioValue();
     this.canvas.width = this.canvas.clientWidth * scale;
     this.canvas.height = this.canvas.clientHeight * scale;
     this.context.scale(scale, scale);
+
+    //Check if the level type is Word/Spelling; Used for flagging condition for publishing data to tutorial.
+    const isWordPuzzle = this.levelData?.levelMeta?.levelType === 'Word';
+
+    // Create a stone for each character in the foilStones array,
+    // using a corresponding randomized position from the shuffled positions array.
+    // We iterate over `foilStones` (not `positions`) to ensure we only create stones for actual string characters,
+    // preventing extra randomized positions from being used without matching visual stones.
     for (let i = 0; i < foilStones.length; i++) {
       // Create new stone with all required parameters
       const stone = new StoneConfig(
         this.context,
         this.canvas.width,
         this.canvas.height,
-        foilStones[i],
-        positions[i][0],
-        positions[i][1],
-        img
+        foilStones[i], // The displayed character (e.g. distractor letter)
+        positions[i][0], // Randomized X coordinate
+        positions[i][1], // Randomized Y coordinate
+        img // Image used for rendering the stone
       );
 
-      // Initialize stone
+      // Initialize stone with its configuration.
       stone.initialize();
 
-      // Publish stone details, image and level data for stone tutorial only at the first puzzle segment.
-      if (this.currentPuzzleData.segmentNumber === 0) {
-        const isWordPuzzle = this.levelData?.levelMeta?.levelType === 'Word';
-        
-        // For letter puzzles, only publish when the correct target stone is found
-        if (foilStones[i] == this.correctTargetStone) {
-          gameStateService.publish(gameStateService.EVENTS.CORRECT_STONE_POSITION, {
-            stonePosVal: positions[i],
-            img,
-            levelData: this.levelData
-          });
-        }
-        
-        // For word puzzles, we only need to publish once with all positions
-        // This is done after all stones are created
-        if (isWordPuzzle && i === foilStones.length - 1) {
-          gameStateService.publish(
-            gameStateService.EVENTS.CORRECT_STONE_POSITION, 
-            {
-              stonePosVal: positions,       // All stone positions
-              img,                          // Stone image
-              levelData: this.levelData     // Level data
-            }
-          );
-        }
+      // Publish the correct stone's data for use in the tutorial (only at segment 0).
+      // This provides the exact coordinates, image, and level data to the tutorial system.
+      if (
+        this.currentPuzzleData.segmentNumber === 0 &&
+        (
+          /* If isWordPuzzle is true, publish data to tutorial at last loop iteration.
+            Otherwise if the current index is the correct stone for non-word or spelling puzzle type.
+          */
+          isWordPuzzle && i === foilStones.length - 1 ||
+          foilStones[i] == this.correctTargetStone
+        )
+      ) {
+        gameStateService.publish(gameStateService.EVENTS.CORRECT_STONE_POSITION, {
+          stonePosVal: positions[i], //single stone position for non word puzzles.
+          allStonePosVal: positions, //all stone positions.
+          img, //stone image as tutorial needs a copy of the image for rendering.
+          levelData: this.levelData
+        });
       }
 
+      //Store the generated stone instance.
       this.foilStones.push(stone);
     }
+
+    //Filter only active (non-disposed) stones to track for rendering or interaction.
     this.activeStones = this.foilStones.filter(stone => stone && !stone.isDisposed);
   }
 

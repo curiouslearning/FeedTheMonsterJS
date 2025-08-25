@@ -2,6 +2,7 @@ import LetterPuzzleLogic from '../letterPuzzleLogic/letterPuzzleLogic';
 import WordPuzzleLogic from '../wordPuzzleLogic/wordPuzzleLogic';
 import { FeedbackTextEffects } from '@components/feedback-text';
 import { FeedbackAudioHandler, FeedbackType } from '@gamepuzzles';
+import gameStateService from '@gameStateService';
 
 /**
  * Context object for creating a puzzle/handling a letter drop.
@@ -107,14 +108,14 @@ export default class PuzzleHandler {
    */
   private handleWordPuzzle(ctx: CreatePuzzleContext): void {
     if (!this.wordPuzzleLogic) return;
-    
+
     // Use our own stopFeedbackAudio method instead of ctx.audioPlayer
     this.stopFeedbackAudio();
-    
+
     const feedBackIndex = this.getRandomInt(0, 1, ctx.feedBackTexts);
     this.wordPuzzleLogic.setGroupToDropped();
     const isCorrect = this.wordPuzzleLogic.validateFedLetters();
-    
+
     this.processLetterDropFeedbackAudio(
       ctx.targetLetterText,
       feedBackIndex,
@@ -122,7 +123,7 @@ export default class PuzzleHandler {
       true,
       this.getWordPuzzleDroppedLetters()
     );
-    
+
     if (isCorrect) {
       const isWordSpellingCorrect = this.wordPuzzleLogic.validateWordPuzzle();
       if (isWordSpellingCorrect) {
@@ -131,18 +132,21 @@ export default class PuzzleHandler {
         ctx.lettersCountRef.value = 1;
         return;
       }
-      
+
       ctx.triggerMonsterAnimation('isMouthClosed');
       ctx.triggerMonsterAnimation('backToIdle');
       ctx.timerTicking.startTimer();
-      
+
       const { droppedHistory } = this.wordPuzzleLogic.getValues();
-      const droppedLettersCount = Object.keys(droppedHistory).length;
-      
-      ctx.promptText.droppedLetterIndex(
-        ctx.lang === "arabic" ? ctx.lettersCountRef.value : droppedLettersCount
+      const droppedLettersCount = ctx.lang === "arabic"
+        ? ctx.lettersCountRef.value
+        : Object.keys(droppedHistory).length;
+
+      gameStateService.publish(
+        gameStateService.EVENTS.WORD_PUZZLE_SUBMITTED_LETTERS_COUNT,
+        droppedLettersCount
       );
-      
+
       ctx.lettersCountRef.value++;
     } else {
       ctx.handleLetterDropEnd(isCorrect, "Word");
@@ -237,8 +241,8 @@ export default class PuzzleHandler {
   /**
    * Handles checking hovered letter for word puzzles.
    */
-  handleCheckHoveredLetter(letterText: string, letterIndex: number): boolean | undefined {
-    return this.wordPuzzleLogic?.handleCheckHoveredLetter(letterText, letterIndex);
+  handleCheckHoveredLetter(letterText: string, letterIndex: number): boolean {
+     return this.wordPuzzleLogic?.handleCheckHoveredLetter(letterText, letterIndex);
   }
 
   /**
