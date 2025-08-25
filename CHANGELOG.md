@@ -21,7 +21,8 @@
 * fix: FTM Analytics: Updating Firebase class and Variable names along with test cases as well! #1779
 * feat: Update logic to add and remove Next and Replay button on level 1 and other levels also check last level doesn't have next button. #1780
 * fix: Pr for updating directory name to remove build errors! #1782
-
+* chore: Test to production deployment v1.0.46 
+by @ashwinnair-chimple in https://github.com/curiouslearning/FeedTheMonsterJS/pull/1791
  
 
 ## [1.0.45](https://github.com/curiouslearning/FeedTheMonsterJS/compare/1.0.43...1.0.45) (2025-07-14)
