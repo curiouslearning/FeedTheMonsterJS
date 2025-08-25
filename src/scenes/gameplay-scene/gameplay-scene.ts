@@ -49,6 +49,7 @@ import { PAUSE_POPUP_EVENT_DATA, PausePopupComponent } from '@components/popups/
 import { RiveMonsterComponent } from '@components/riveMonster/rive-monster-component';
 import PuzzleHandler from "@gamepuzzles/puzzleHandler/puzzleHandler";
 import { DEFAULT_SELECTORS } from '@components/prompt-text/prompt-text';
+import { TreasureChestAnimation } from '@components/treasureChestAnimation/treasureChestAnimation';
 
 export class GameplayScene {
   public width: number;

@@ -54,10 +54,6 @@ export class StartScene {
     this.riveMonsterElement = gameSettingsService.getRiveCanvasValue();
     this.toggleBtn = document.getElementById("toggle-btn") as HTMLElement;
     this.loadingElement = document.getElementById("loading-screen") as HTMLElement;
-    let chestAnim: TreasureChestAnimation = new TreasureChestAnimation(window.innerWidth, window.innerHeight);
-        setTimeout(() => {
-          chestAnim.show();
-        }, 5000);
     this.riveMonster = new RiveMonsterComponent({
       canvas: this.riveMonsterElement,
       autoplay: true,
@@ -72,18 +68,18 @@ export class StartScene {
         this.hideInitialLoading();
         // this.riveMonster.play(RiveMonsterComponent.Animations.MOUTHOPEN); // Start with the "Idle" animation
         // Trigger a "Happy" animation
-       // Set initial state inputs
-      //  this.riveMonster.setInput(RiveMonsterComponent.Animations.IDLE,true);
+        // Set initial state inputs
+        //  this.riveMonster.setInput(RiveMonsterComponent.Animations.IDLE,true);
 
-       // Listen for state changes
-      //  this.riveMonster.onStateChange((stateName) => {
-      //      console.log('New State:', stateName);
-      //  });
+        // Listen for state changes
+        //  this.riveMonster.onStateChange((stateName) => {
+        //      console.log('New State:', stateName);
+        //  });
 
-       // Example: Trigger "Sad" state after 2 seconds
-       setTimeout(() => {
+        // Example: Trigger "Sad" state after 2 seconds
+        setTimeout(() => {
           //  this.riveMonster.setInput(RiveMonsterComponent.Animations.STOMP,true);
-       }, 2000);
+        }, 2000);
       }
     });
 
@@ -120,6 +116,10 @@ export class StartScene {
     this.setupBg();
     this.titleTextElement = document.getElementById("title");
     this.generateGameTitle();
+    let chestAnim: TreasureChestAnimation = new TreasureChestAnimation(window.innerWidth, window.innerHeight);
+    setTimeout(() => {
+      chestAnim.show();
+    }, 5000);
     this.riveMonsterElement.style.zIndex = '4';
     this.analyticsIntegration = AnalyticsIntegration.getInstance();
     this.setOnClicknAreaStyle();
