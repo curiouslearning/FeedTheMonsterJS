@@ -25,6 +25,8 @@ module.exports = {
     "^@gamepuzzles(.*)$": "<rootDir>/src/gamepuzzles$1",
     "@gameSettingsService/*":  ["<rootDir>/src/gameSettingsService/$1"],
     "@tutorials/*": ["<rootDir>/src/tutorials/$1"],
+    "@miniGames/*": ["<rootDir>/src/miniGame/miniGames/$1"],
+    "@miniGameStateService/*": ["<rootDir>/src/miniGame/miniGameStateService/$1"],
     "@curiouslearning/analytics": "<rootDir>/node_modules/@curiouslearning/analytics/dist/index.js"
   },
   roots: [

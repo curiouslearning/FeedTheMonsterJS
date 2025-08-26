@@ -27,6 +27,7 @@ jest.mock("../../analytics/analytics-integration", () => ({
 import { GameplayScene } from './gameplay-scene';
 import gameStateService from '@gameStateService';
 import gameSettingsService from '@gameSettingsService';
+import miniGameStateService from '@miniGameStateService'
 import { SCENE_NAME_GAME_PLAY } from "@constants";
 import { AnalyticsIntegration } from '../../analytics/analytics-integration';
 
@@ -295,6 +296,19 @@ jest.mock('@gameStateService', () => ({
     },
     getGameTypeList: jest.fn(),
     saveHitBoxRanges: jest.fn(),
+  }
+}));
+
+
+jest.mock('@miniGameStateService', () => ({
+  __esModule: true,
+  default: {
+    subscribe: jest.fn(),
+    publish: jest.fn(),
+    EVENTS: {
+      IS_MINI_GAME_DONE: 'IS_MINI_GAME_DONE',
+    },
+    selectLevelAtRandom: jest.fn(),
   }
 }));
 
