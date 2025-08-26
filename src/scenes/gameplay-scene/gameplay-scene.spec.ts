@@ -397,7 +397,7 @@ describe('GameplayScene with BasePopupComponent', () => {
     const timerEnded = true; // Simulate timer has ended
 
     // Act
-    gameplayScene.loadPuzzle(timerEnded);
+    gameplayScene.loadPuzzle(timerEnded, 4500);
 
     // Force immediate execution of timers
     jest.runAllTimers();
@@ -418,7 +418,7 @@ describe('GameplayScene with BasePopupComponent', () => {
     const timerEnded = false; // Timer has not ended
 
     // Act
-    gameplayScene.loadPuzzle(timerEnded);
+    gameplayScene.loadPuzzle(timerEnded, 4500);
 
     // Assert: Ensure it is not called immediately
     expect(mockSwitchSceneToEnd).not.toHaveBeenCalled();
@@ -475,7 +475,7 @@ describe('GameplayScene with BasePopupComponent', () => {
     const timerEnded = false; // Timer not ended
 
     // Act
-    gameplayScene.loadPuzzle(timerEnded);
+    gameplayScene.loadPuzzle(timerEnded, 4500);
 
     // Assert: Ensure no call before 4500ms
     jest.advanceTimersByTime(4499);
