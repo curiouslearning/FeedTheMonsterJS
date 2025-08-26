@@ -18,7 +18,6 @@ import {
 } from "@constants";
 import gameStateService from '@gameStateService';
 import gameSettingsService from '@gameSettingsService';
-import miniGameStateService from '@miniGameStateService';
 import { FeatureFlagsService} from '@curiouslearning/features';
 import { FEATURE_QUICK_START } from '../services/features/constants';
 
