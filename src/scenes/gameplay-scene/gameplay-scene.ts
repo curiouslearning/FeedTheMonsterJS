@@ -731,7 +731,6 @@ export class GameplayScene {
     if (!isCorrect || isTimeOver) {
       //For incorrect answers only; Start loading the next puzzle with 2 seconds delay to let the audios play.
       const delay = isCorrect && !isTimeOver ? 0 : 2000;
-      console.log('!isCorrect || isTimeOver')
       setTimeout(() => {
         this.loadPuzzle(isTimeOver, loadPuzzleDelay);
       }, delay);
@@ -743,11 +742,6 @@ export class GameplayScene {
     const currentLevel = this.counter + 1;
 
     if (currentLevel === this.levelForMinigame) {
-      console.log('show mini game',{
-        currentLevel,
-        levelForMinigame: this.levelForMinigame
-      })
-
       //Insert mini game condition here  before loading the next puzzle.
     }
 
