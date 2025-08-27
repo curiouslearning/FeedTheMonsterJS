@@ -554,7 +554,7 @@ describe('Firebase Event Logging - level_completed', () => {
       duration: (endTime - startTime) / 1000,
     };
 
-    analyticsIntegration.sendLevelCompletedEvent(levelCompletedData);
+    analyticsIntegration.track(AnalyticsEventType.LEVEL_COMPLETED, levelCompletedData);
 
     expect(mockAnalyticsService.track).toHaveBeenCalledWith(
       'level_completed',
