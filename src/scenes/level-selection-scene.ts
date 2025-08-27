@@ -406,7 +406,6 @@ export class LevelSelectionScreen {
         level_selected: this.levelNumber,
       }
     );
-    this.analyticsIntegration.track(AnalyticsEventType.LEVEL_END_BUTTON_CLICK
   }
   public draw() {
     if (this.imagesLoaded) {
