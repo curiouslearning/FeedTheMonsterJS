@@ -187,15 +187,18 @@ export class StartScene {
 
   handleMouseClick = (event) => {
     event.preventDefault();
-    AnalyticsIntegration.getInstance().track(
-      AnalyticsEventType.USER_CLICKED, 
-      { 
-        json_version_number: !!this.data.majVersion && !!this.data.minVersion 
-          ? `${this.data.majVersion}.${this.data.minVersion}` 
-          : "",
-        click: 'Click' 
-      }
-    );
+    /** Keeping this for now, but we can remove it if we want in the future.
+     * Caused confusion with tapped_start event in the past.
+     */
+    // AnalyticsIntegration.getInstance().track(
+    //   AnalyticsEventType.USER_CLICKED, 
+    //   { 
+    //     json_version_number: !!this.data.majVersion && !!this.data.minVersion 
+    //       ? `${this.data.majVersion}.${this.data.minVersion}` 
+    //       : "",
+    //     click: 'Click' 
+    //   }
+    // );
     // @ts-ignore
     fbq("trackCustom", FirebaseUserClicked, {
       event: "click",
@@ -234,7 +237,7 @@ export class StartScene {
       ? `${this.data.majVersion}.${this.data.minVersion}` 
       : "";
 
-    this.analyticsIntegration.track(
+    AnalyticsIntegration.getInstance().track(
       AnalyticsEventType.TAPPED_START,
       {
         json_version_number: jsonVersionNumber,
