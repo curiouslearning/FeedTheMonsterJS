@@ -11,6 +11,7 @@ import { RiveMonsterComponent } from '@components/riveMonster/rive-monster-compo
 const mockInstance = {
   sendTappedStartEvent: jest.fn(),
   sendUserClickedOnPlayEvent: jest.fn(),
+  track: jest.fn(), // ✅ Add the track method
   isAnalyticsReady: jest.fn().mockReturnValue(true)
 };
 
@@ -23,6 +24,7 @@ jest.mock("../../analytics/analytics-integration", () => ({
       mockInstanceRef = {
         sendTappedStartEvent: jest.fn(),
         sendUserClickedOnPlayEvent: jest.fn(),
+        track: jest.fn(), // ✅ Add the track method here too
         isAnalyticsReady: jest.fn().mockReturnValue(true)
       };
       return Promise.resolve();
@@ -247,14 +249,20 @@ describe('Start Scene Test', () => {
       expect(mockPlayBtn.onClick).toHaveBeenCalledTimes(1);
     });
 
-    it('The sendTappedStartEvent should be called', () => {
+    it('The track method should be called with TAPPED_START event', () => {
       // Trigger the onClick callback directly by calling the mock callback
       if (mockOnClickCallback) {
         mockOnClickCallback(); // Simulate the button click
       }
 
-      // Check if sendTappedStartEvent was called
-      expect(mockAnalytics.sendTappedStartEvent).toHaveBeenCalledTimes(1); // Assuming mockAnalytics is correctly set
+      // Check if track method was called with the correct event type
+      expect(mockAnalytics.track).toHaveBeenCalledTimes(1);
+      expect(mockAnalytics.track).toHaveBeenCalledWith(
+        expect.any(String), // AnalyticsEventType.TAPPED_START
+        expect.objectContaining({
+          json_version_number: expect.any(String)
+        })
+      );
     });
 
     it('Should remove the dev button.', () => {
