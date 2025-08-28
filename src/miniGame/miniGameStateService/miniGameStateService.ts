@@ -9,7 +9,7 @@ export class MiniGameStateService extends PubSub {
     super();
     this.EVENTS = {
       IS_MINI_GAME_DONE: 'IS_MINI_GAME_DONE'
-    }
+    };
     //Add states here needed for mini games
 
     this.initListeners();
