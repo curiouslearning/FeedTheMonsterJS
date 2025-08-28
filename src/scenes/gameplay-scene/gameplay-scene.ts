@@ -26,7 +26,6 @@ import {
   lang,
   pseudoId,
   Utils,
-  getGameTypeName,
 } from "@common";
 import { GameScore, DataModal } from "@data";
 import {
@@ -45,10 +44,12 @@ import {
 } from "@constants";
 import gameStateService from '@gameStateService';
 import gameSettingsService from '@gameSettingsService';
+import miniGameStateService from '@miniGameStateService'
 import { PAUSE_POPUP_EVENT_DATA, PausePopupComponent } from '@components/popups/pause-popup/pause-popup-component';
 import { RiveMonsterComponent } from '@components/riveMonster/rive-monster-component';
 import PuzzleHandler from "@gamepuzzles/puzzleHandler/puzzleHandler";
 import { DEFAULT_SELECTORS } from '@components/prompt-text/prompt-text';
+import { MiniGameHandler } from '@miniGames/miniGameHandler'
 
 export class GameplayScene {
   public width: number;
@@ -110,9 +111,12 @@ export class GameplayScene {
     { backToIdle: 350, isChewing: 0, isHappy: 1700, isSpit: 1300, isSad: 2600 }, // Phase 3
     { backToIdle: 350, isChewing: 0, isHappy: 1700, isSpit: 100, isSad: 2500 }  // Phase 4
   ];
+  private levelForMinigame: number;
 
   constructor() {
     const gamePlayData = gameStateService.getGamePlaySceneDetails();
+    this.levelForMinigame = miniGameStateService.selectLevelAtRandom(gamePlayData.levelData.puzzles.length);
+
     this.pausePopupComponent = new PausePopupComponent();
     // Assign state properties based on game state
     this.initializeProperties(gamePlayData);
@@ -734,7 +738,12 @@ export class GameplayScene {
       return;
     }
 
-    //Insert mini game condition here  before loading the next puzzle.
+    //this.counter is 0 by default; So +1 to actually match with levelForMinigame values as it starts with 1.
+    const currentLevel = this.counter + 1;
+
+    if (currentLevel === this.levelForMinigame) {
+      //Insert mini game condition here  before loading the next puzzle.
+    }
 
     this.loadPuzzle(isTimeOver, loadPuzzleDelay);
   }
