@@ -14,3 +14,9 @@ coverage
 git
 __mocks__
 .vscode
+
+# Playwright
+/test-results/
+/playwright-report/
+/blob-report/
+/playwright/.cache/

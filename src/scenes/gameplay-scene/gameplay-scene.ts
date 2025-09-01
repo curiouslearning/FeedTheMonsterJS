@@ -50,6 +50,7 @@ import { RiveMonsterComponent } from '@components/riveMonster/rive-monster-compo
 import PuzzleHandler from "@gamepuzzles/puzzleHandler/puzzleHandler";
 import { DEFAULT_SELECTORS } from '@components/prompt-text/prompt-text';
 import { MiniGameHandler } from '@miniGames/miniGameHandler'
+import { TreasureChestAnimation } from '@components/treasureChestAnimation/treasureChestAnimation';
 
 export class GameplayScene {
   public width: number;
