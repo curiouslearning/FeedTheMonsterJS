@@ -94,7 +94,7 @@ export class GameplayScene {
   public riveMonsterElement: HTMLCanvasElement;
   public gameControl: HTMLCanvasElement;
   private unsubscribeEvent: () => void;
-  private unsubscribeMiniGameEvent: () => void;
+  public unsubscribeMiniGameEvent: () => void;
   public timeTicker: HTMLElement;
   isFeedBackTriggered: boolean;
   public monsterPhaseNumber: 0 | 1 | 2;
@@ -875,7 +875,10 @@ export class GameplayScene {
       this.unsubscribeEvent = null;
     }
 
-    this.unsubscribeMiniGameEvent();
+    if (this.unsubscribeEvent) {
+      this.unsubscribeMiniGameEvent();
+      this.unsubscribeEvent = null;
+    }
 
     document.removeEventListener(
       VISIBILITY_CHANGE,
