@@ -116,10 +116,6 @@ export class StartScene {
     this.setupBg();
     this.titleTextElement = document.getElementById("title");
     this.generateGameTitle();
-    let chestAnim: TreasureChestAnimation = new TreasureChestAnimation(window.innerWidth, window.innerHeight);
-    setTimeout(() => {
-      chestAnim.show();
-    }, 5000);
     this.riveMonsterElement.style.zIndex = '4';
     this.analyticsIntegration = AnalyticsIntegration.getInstance();
     this.setOnClicknAreaStyle();

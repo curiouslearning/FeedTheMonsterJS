@@ -105,6 +105,8 @@ export class GameplayScene {
   private lastClientX = 0;
   private lastClientY = 0;
   private animationFrameId: number | null = null;
+  private hasShownChest: boolean = false;
+  private miniGameHandler: MiniGameHandler;
   // Define animation delays as an array where index 0 = phase 0, index 1 = phase 1, index 2 = phase 2
   private animationDelays = [
     { backToIdle: 350, isChewing: 0, isHappy: 1700, isSpit: 1500, isSad: 3000 }, // Phase 1
@@ -470,7 +472,7 @@ export class GameplayScene {
       this.processWordPuzzleDragMovement(clientX, clientY);
     }
   }
-  
+
   /**
    * Processes simple drag movement for matchfirst puzzles (LetterOnly/LetterInWord).
    * This is a streamlined path with direct coordinate updates and no hover detection.
@@ -504,19 +506,19 @@ export class GameplayScene {
   private processWordPuzzleDragMovement(clientX: number, clientY: number) {
     // Update stone coordinates and get trail position
     const { trailX, trailY } = this.updateDraggedStonePosition(clientX, clientY);
-    
+
     // Check for hovering over other stones
     const newStoneLetter = this.checkStoneHovering(trailX, trailY);
-    
+
     // Handle letter pickup if hovering detected
     if (newStoneLetter) {
       this.handleLetterPickup(newStoneLetter);
     }
-    
+
     // Ensure monster mouth is open during dragging
     this.ensureMonsterMouthOpen();
   }
-  
+
   /**
    * Updates the position of the currently dragged stone.
    * 
@@ -531,13 +533,13 @@ export class GameplayScene {
       clientY
     );
     this.pickedStone = newStoneCoordinates;
-    
+
     return {
       trailX: newStoneCoordinates.x,
       trailY: newStoneCoordinates.y
     };
   }
-  
+
   /**
    * Checks if the dragged stone is hovering over another stone.
    * 
@@ -554,7 +556,7 @@ export class GameplayScene {
       }
     );
   }
-  
+
   /**
    * Handles the letter pickup process when hovering over a valid stone.
    * Updates puzzle state, resets original stone position, and replaces with new letter.
@@ -567,19 +569,19 @@ export class GameplayScene {
       newStoneLetter.text,
       newStoneLetter.foilStoneIndex
     );
-    
+
     // Reset the original stone position
     this.pickedStone = this.stoneHandler.resetStonePosition(
       this.width,
       this.pickedStone,
       this.pickedStoneObject
     );
-    
+
     // Replace with the new letter
     this.pickedStoneObject = newStoneLetter;
     this.pickedStone = newStoneLetter;
   }
-  
+
   /**
    * Ensures the monster mouth is open during dragging.
    * Only triggers the animation if the mouth isn't already open.
@@ -657,7 +659,7 @@ export class GameplayScene {
     }
 
     this.tutorial.draw(deltaTime, this.isGameStarted);
-    
+
   }
 
   private handleStoneLetterDrawing() {
@@ -720,7 +722,7 @@ export class GameplayScene {
     this.handler.removeEventListener("touchmove", this.handleTouchMove, false);
     this.handler.removeEventListener("touchend", this.handleTouchEnd, false);
   }
-  
+
   /**
  * Determines the next game flow after a puzzle event (solved or timed out).
  * Decides whether to trigger a mini-game or proceed to loading the next puzzle,
@@ -764,6 +766,30 @@ export class GameplayScene {
     // Reset the 6-second tutorial delay timer each time a new puzzle is loaded
     this.tutorial.resetQuickStartTutorialDelay();
     this.tutorial.hideTutorial(); // Turn off tutorial via loading the puzzle.
+
+    // Trigger chest right after 2nd puzzle
+    if (!this.hasShownChest && this.counter === 2) {
+      this.hasShownChest = true;
+
+      const chestAnim = new TreasureChestAnimation(window.innerWidth, window.innerHeight);
+
+      // Pause gameplay
+      this.pauseGamePlay();
+
+      // Run chest animation
+      chestAnim.show(() => {
+        console.log("Chest animation finished");
+
+        // Resume gameplay
+        this.resumeGame();
+
+        // Continue puzzle flow after chest
+        this.loadPuzzle(isTimerEnded, loadPuzzleDelay);
+      });
+
+      return; //stop further execution until chest finishes
+    }
+
     if (this.counter === this.levelData.puzzles.length) {
       const handleLevelEnd = () => {
         this.levelIndicators.setIndicators(this.counter);
