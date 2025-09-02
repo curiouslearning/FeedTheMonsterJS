@@ -1,4 +1,5 @@
 import miniGameStateService from '@miniGameStateService';
+import { TreasureChestMiniGame } from './treasureChest/treasureChestMiniGame';
 
 /**
  * MiniGame handler class.
@@ -22,10 +23,11 @@ import miniGameStateService from '@miniGameStateService';
  *    render, clean up) across all mini-game types.
  */
 export class MiniGameHandler {
-  public activeMiniGame: any; //Any for now as default.
+  public activeMiniGame: TreasureChestMiniGame | null; //Any for now as default.
 
   constructor() {
-
+    this.activeMiniGame = null;
+    this.createMiniGameInstance();
   }
 
   /**
@@ -41,18 +43,12 @@ export class MiniGameHandler {
    *    mini-games are introduced.
    */
   private createMiniGameInstance() {
-    // Create default mini-game instance
-    // TODO: Replace with actual instantiation once the core mini-game logic is ready
+    //Since we only have one mini game instance we will just assigned treasure chest mini game.
+    //Update and add logic here to handle loading of different mini game.
 
-    // Example for future expansion:
-    // if (gameTypeName === 'MiniGameTypeA') {
-    //   return new MiniGameTypeA({ context: this.context });
-    // }
-    //
-    // if (gameTypeName === 'MiniGameTypeB') {
-    //   return new MiniGameTypeB({ context: this.context });
-    // }
-    return null;
+    this.activeMiniGame = new TreasureChestMiniGame((earnedStarCount: number) => {
+      this.handleMiniGameComplete(earnedStarCount);
+    });
   }
 
   /**
@@ -68,11 +64,17 @@ export class MiniGameHandler {
  *    mini-game type or state.
  */
   public draw() {
-
+    //Draw mini game.
+    this.activeMiniGame?.draw();
   }
 
-  private handleMiniGameComplete() {
-    
+  private handleMiniGameComplete(earnedStarCount: number) {
+
+    // ADD logic here relating to star count.
+    // For example relating to game score to reflext the correct star count for monster evolution with GameScore @data class.
+
+    //Communicate to GamePlay-Scene that the mini game is done to trigger the load puzzle method.
+    miniGameStateService.publish(miniGameStateService.EVENTS.IS_MINI_GAME_DONE, true);
   }
 
   /**
@@ -86,7 +88,10 @@ export class MiniGameHandler {
  * This ensures a clean teardown before switching 
  * to another mini-game or exiting.
  */
-  dispose() {
+  public dispose() {
     //Clear canvas mini game and reset values;
+
+    this.activeMiniGame?.dispose();
+    this.activeMiniGame = null;
   }
 }
