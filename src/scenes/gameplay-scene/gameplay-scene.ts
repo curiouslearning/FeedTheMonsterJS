@@ -44,7 +44,7 @@ import {
 } from "@constants";
 import gameStateService from '@gameStateService';
 import gameSettingsService from '@gameSettingsService';
-import miniGameStateService from '@miniGameStateService'
+import miniGameStateService from '@miniGameStateService';
 import { PAUSE_POPUP_EVENT_DATA, PausePopupComponent } from '@components/popups/pause-popup/pause-popup-component';
 import { RiveMonsterComponent } from '@components/riveMonster/rive-monster-component';
 import PuzzleHandler from "@gamepuzzles/puzzleHandler/puzzleHandler";
@@ -95,6 +95,7 @@ export class GameplayScene {
   public riveMonsterElement: HTMLCanvasElement;
   public gameControl: HTMLCanvasElement;
   private unsubscribeEvent: () => void;
+  public unsubscribeMiniGameEvent: () => void;
   public timeTicker: HTMLElement;
   isFeedBackTriggered: boolean;
   public monsterPhaseNumber: 0 | 1 | 2;
@@ -148,6 +149,14 @@ export class GameplayScene {
         if (isPause) this.pausePopupComponent.open();
       }
     );
+    this.unsubscribeMiniGameEvent = miniGameStateService.subscribe(
+      miniGameStateService.EVENTS.IS_MINI_GAME_DONE,
+      (isDone: boolean) => {
+        if (isDone) {
+          //Load the next puzzle segment after mini game.
+          this.loadPuzzle(false, 4500);
+        }
+      });
     this.pausePopupComponent.onClose((event) => {
       const { data } = event;
 
@@ -890,6 +899,11 @@ export class GameplayScene {
     // Clear event listeners
     if (this.unsubscribeEvent) {
       this.unsubscribeEvent();
+      this.unsubscribeEvent = null;
+    }
+
+    if (this.unsubscribeEvent) {
+      this.unsubscribeMiniGameEvent();
       this.unsubscribeEvent = null;
     }
 
