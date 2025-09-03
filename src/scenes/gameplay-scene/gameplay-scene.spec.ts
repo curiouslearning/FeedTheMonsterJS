@@ -583,6 +583,9 @@ describe('GameplayScene with BasePopupComponent', () => {
       const tutorial = {
         dispose: jest.fn()
       }
+      const mockUnsubscribeMiniGameEvent = {
+        dispose: jest.fn()
+      }
 
       // Replace the actual components with mocks
       gameplayScene.stoneHandler = mockStoneHandler as any;
@@ -593,6 +596,7 @@ describe('GameplayScene with BasePopupComponent', () => {
       gameplayScene.promptText = mockPromptText as any;
       gameplayScene.pauseButton = mockPauseButton as any;
       gameplayScene.pausePopupComponent = mockPausePopup as any;
+      gameplayScene.unsubscribeMiniGameEvent = mockUnsubscribeMiniGameEvent as any
       gameplayScene.tutorial = {
         ...tutorial,
         resetQuickStartTutorialDelay: jest.fn(),
