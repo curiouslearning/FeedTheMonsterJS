@@ -184,7 +184,7 @@ jest.mock('@components', () => {
   (BackgroundHtmlGenerator as any).createBackgroundComponent = jest
     .fn()
     .mockReturnValue('summer');
-  
+
   const PhasesBackground = jest.fn().mockImplementation(() => ({
     generateBackground: jest.fn(),
   }));
@@ -330,6 +330,7 @@ describe('GameplayScene with BasePopupComponent', () => {
       <div class="game-scene"></div>
       <div id="canvas"></div>
       <canvas id="rivecanvas"></canvas>
+      <canvas id="treasurecanvas"></canvas>
       <canvas id="game-control"></canvas>
       <div id="popup-root"></div>
       <div id="version-info-id">1.0.0</div>
@@ -422,7 +423,6 @@ describe('GameplayScene with BasePopupComponent', () => {
       gameStateService.EVENTS.SWITCH_SCENE_EVENT,
       expect.any(String)
     );
-
   });
 
   it('should call switchSceneToEnd after 4500ms when timerEnded is false or isFeedBackTriggered is true', () => {
@@ -481,7 +481,7 @@ describe('GameplayScene with BasePopupComponent', () => {
     expect(gameplayScene.monster.triggerInput).toHaveBeenCalledWith('isChewing');
     expect(gameplayScene.monster.triggerInput).toHaveBeenCalledWith('isHappy');
   });
-  
+
   it('should call switchSceneToEnd after 4500ms when timerEnded is false and isFeedBackTriggered is false', () => {
     // Arrange
     gameplayScene.counter = 2;

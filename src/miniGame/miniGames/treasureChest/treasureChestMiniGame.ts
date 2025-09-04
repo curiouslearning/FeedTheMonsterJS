@@ -1,3 +1,5 @@
+import { TreasureChestAnimation } from './treasureChestAnimation';
+
 export class TreasureChestMiniGame {
   private earnedStarCount: number;
   /**
@@ -10,12 +12,12 @@ export class TreasureChestMiniGame {
   private collectedStones: number;
   private callback: any;
   public miniGameStatus: boolean = false;
-
+  private treasureAnimation: TreasureChestAnimation;
   constructor(miniGameCompleteCallback) {
     this.earnedStarCount = 0;
     this.collectedStones = 0;
     this.callback = miniGameCompleteCallback();
-
+    this.treasureAnimation = new TreasureChestAnimation(window.innerWidth, window.innerHeight);
   }
 
   public tapStoneCallback() {
@@ -44,7 +46,11 @@ export class TreasureChestMiniGame {
   //Draw logic for treasure chest minigame. Called by mini game handler.
   public draw() {
     if (!this.miniGameStatus) {
-      //IF mini game status is false; Draw the mini game.
+      // Start the animation
+      this.treasureAnimation.show(() => {
+        // Animation complete callback
+        console.log("Treasure Chest Animation Completed");
+      });
     }
 
   }
@@ -54,5 +60,6 @@ export class TreasureChestMiniGame {
     this.earnedStarCount = 0;
     this.collectedStones = 0;
     this.miniGameStatus = false;
+    this.treasureAnimation.hide();
   }
 }
