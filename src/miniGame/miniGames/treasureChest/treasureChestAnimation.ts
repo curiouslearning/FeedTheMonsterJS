@@ -128,8 +128,6 @@ export class TreasureChestAnimation {
       size: 120,
     };
 
-    console.log("Spawned stone:", stone, "Total stones on screen:", this.stones.length + 1);
-
     return stone;  
   }
 

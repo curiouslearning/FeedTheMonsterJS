@@ -667,7 +667,6 @@ export class GameplayScene {
     }
 
     this.tutorial.draw(deltaTime, this.isGameStarted);
-
   }
 
   private handleStoneLetterDrawing() {
@@ -753,7 +752,11 @@ export class GameplayScene {
     const currentLevel = this.counter + 1;
 
     if (currentLevel === this.levelForMinigame) {
-      //Insert mini game condition here  before loading the next puzzle.
+      if (!this.hasShownChest ) {
+        this.hasShownChest = true;
+        // Run chest animation
+        this.miniGameHandler.draw();
+      }
     }
 
     this.loadPuzzle(isTimeOver, loadPuzzleDelay);
@@ -774,13 +777,6 @@ export class GameplayScene {
     // Reset the 6-second tutorial delay timer each time a new puzzle is loaded
     this.tutorial.resetQuickStartTutorialDelay();
     this.tutorial.hideTutorial(); // Turn off tutorial via loading the puzzle.
-
-    // Trigger chest right after 2nd puzzle
-    if (!this.hasShownChest && this.counter === 2) {
-      this.hasShownChest = true;
-      // Run chest animation
-      this.miniGameHandler.draw();
-    }
 
     if (this.counter === this.levelData.puzzles.length) {
       const handleLevelEnd = () => {
