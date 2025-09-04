@@ -752,14 +752,15 @@ export class GameplayScene {
     const currentLevel = this.counter + 1;
 
     if (currentLevel === this.levelForMinigame) {
-      if (!this.hasShownChest ) {
+      if (!this.hasShownChest) {
         this.hasShownChest = true;
         // Run chest animation
         this.miniGameHandler.draw();
       }
     }
-
-    this.loadPuzzle(isTimeOver, loadPuzzleDelay);
+    else {
+      this.loadPuzzle(isTimeOver, loadPuzzleDelay);
+    }
   }
 
   loadPuzzle = (isTimerEnded: boolean, loadPuzzleDelay: number) => {
