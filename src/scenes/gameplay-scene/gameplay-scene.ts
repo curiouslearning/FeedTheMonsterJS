@@ -50,7 +50,6 @@ import { RiveMonsterComponent } from '@components/riveMonster/rive-monster-compo
 import PuzzleHandler from "@gamepuzzles/puzzleHandler/puzzleHandler";
 import { DEFAULT_SELECTORS } from '@components/prompt-text/prompt-text';
 import { MiniGameHandler } from '@miniGames/miniGameHandler'
-import { TreasureChestAnimation } from '@components/treasureChestAnimation/treasureChestAnimation';
 
 export class GameplayScene {
   public width: number;
@@ -780,23 +779,9 @@ export class GameplayScene {
     if (!this.hasShownChest && this.counter === 2) {
       this.hasShownChest = true;
 
-      const chestAnim = new TreasureChestAnimation(window.innerWidth, window.innerHeight);
-
-      // Pause gameplay
-      this.pauseGamePlay();
-
+      this.miniGameHandler = new MiniGameHandler();
       // Run chest animation
-      chestAnim.show(() => {
-        console.log("Chest animation finished");
-
-        // Resume gameplay
-        this.resumeGame();
-
-        // Continue puzzle flow after chest
-        this.loadPuzzle(isTimerEnded, loadPuzzleDelay);
-      });
-
-      return; //stop further execution until chest finishes
+      this.miniGameHandler.draw();
     }
 
     if (this.counter === this.levelData.puzzles.length) {

@@ -21,7 +21,6 @@ import {
 import gameStateService from '@gameStateService';
 import gameSettingsService from '@gameSettingsService';
 import './start-scene.scss';
-import { TreasureChestAnimation } from '@components/treasureChestAnimation/treasureChestAnimation';
 export class StartScene {
   public data: DataModal;
   public pwa_status: string;

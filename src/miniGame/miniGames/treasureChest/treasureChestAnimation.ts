@@ -35,7 +35,7 @@ export class TreasureChestAnimation {
     this.canvas.style.top = "0";
     this.canvas.style.left = "0";
     this.canvas.style.display = "none";
-    this.canvas.style.zIndex = "9";
+    this.canvas.style.zIndex = "11";
     this.canvas.style.pointerEvents = "none";
     this.lastSpawnTime = performance.now();
 
