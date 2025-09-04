@@ -119,7 +119,7 @@ export class GameplayScene {
   constructor() {
     const gamePlayData = gameStateService.getGamePlaySceneDetails();
     this.levelForMinigame = miniGameStateService.selectLevelAtRandom(gamePlayData.levelData.puzzles.length);
-
+    this.miniGameHandler = new MiniGameHandler();
     this.pausePopupComponent = new PausePopupComponent();
     // Assign state properties based on game state
     this.initializeProperties(gamePlayData);
@@ -778,8 +778,6 @@ export class GameplayScene {
     // Trigger chest right after 2nd puzzle
     if (!this.hasShownChest && this.counter === 2) {
       this.hasShownChest = true;
-
-      this.miniGameHandler = new MiniGameHandler();
       // Run chest animation
       this.miniGameHandler.draw();
     }

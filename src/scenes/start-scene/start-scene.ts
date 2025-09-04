@@ -65,20 +65,6 @@ export class StartScene {
         //Sets if Rive file flag has been loaded to true and trigger to remove the initial loading.
         this.hasRiveLoaded = true;
         this.hideInitialLoading();
-        // this.riveMonster.play(RiveMonsterComponent.Animations.MOUTHOPEN); // Start with the "Idle" animation
-        // Trigger a "Happy" animation
-        // Set initial state inputs
-        //  this.riveMonster.setInput(RiveMonsterComponent.Animations.IDLE,true);
-
-        // Listen for state changes
-        //  this.riveMonster.onStateChange((stateName) => {
-        //      console.log('New State:', stateName);
-        //  });
-
-        // Example: Trigger "Sad" state after 2 seconds
-        setTimeout(() => {
-          //  this.riveMonster.setInput(RiveMonsterComponent.Animations.STOMP,true);
-        }, 2000);
       }
     });
 
