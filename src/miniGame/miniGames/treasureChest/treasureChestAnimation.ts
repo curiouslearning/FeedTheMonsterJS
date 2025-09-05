@@ -26,8 +26,13 @@ export class TreasureChestAnimation {
   private startTime: number = 0;
   private shakeDuration: number = 1000; // 1s
   private chestStayedOpenMs: number = 1200; // how long chest remains open before cleanup
+  private callback: () => void; //Callback method to parent to trigger scoring or any logics relating to tapping of stones.
 
-  constructor(private width: number, private height: number) {
+  constructor(
+    private width: number,
+    private height: number,
+    callback: () => void,
+  ) {
     this.canvas = document.getElementById("treasurecanvas") as HTMLCanvasElement;
     this.canvas.width = width;
     this.canvas.height = height;
@@ -38,6 +43,7 @@ export class TreasureChestAnimation {
     this.canvas.style.zIndex = "11";
     this.canvas.style.pointerEvents = "none";
     this.lastSpawnTime = performance.now();
+    this.callback = callback;
 
     const context = this.canvas.getContext("2d");
     if (!context) throw new Error("Canvas not supported");

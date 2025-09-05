@@ -16,8 +16,12 @@ export class TreasureChestMiniGame {
   constructor(miniGameCompleteCallback) {
     this.earnedStarCount = 0;
     this.collectedStones = 0;
-    this.callback = miniGameCompleteCallback();
-    this.treasureAnimation = new TreasureChestAnimation(window.innerWidth, window.innerHeight);
+    this.callback = miniGameCompleteCallback;
+    this.treasureAnimation = new TreasureChestAnimation(
+      window.innerWidth,
+      window.innerHeight,
+      this.tapStoneCallback
+    );
   }
 
   public tapStoneCallback() {
@@ -50,6 +54,10 @@ export class TreasureChestMiniGame {
       this.treasureAnimation.show(() => {
         // Animation complete callback
         console.log("Treasure Chest Animation Completed");
+
+        //Note: this is temporary as currently
+        // as stones from treasure chest doesn't have onclick feature to handle the tapStoneCallback method.
+        this.callback(1);
       });
     }
 
