@@ -46,9 +46,7 @@ export class MiniGameHandler {
     //Since we only have one mini game instance we will just assigned treasure chest mini game.
     //Update and add logic here to handle loading of different mini game.
 
-    this.activeMiniGame = new TreasureChestMiniGame((earnedStarCount: number) => {
-      this.handleMiniGameComplete(earnedStarCount);
-    });
+    this.activeMiniGame = new TreasureChestMiniGame(this.handleMiniGameComplete);
   }
 
   /**
