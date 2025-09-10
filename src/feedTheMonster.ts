@@ -2,7 +2,7 @@ import * as Sentry from "@sentry/browser";
 import { getData, DataModal, customFonts } from "@data";
 import { SceneHandler } from "@sceneHandler/scene-handler";
 import { AUDIO_URL_PRELOAD, IsCached, PreviousPlayedLevel } from "@constants";
-import { Workbox } from "workbox-window";
+// import { Workbox } from "workbox-window";
 import { AnalyticsIntegration } from "./analytics/analytics-integration";
 import {
   Utils,
@@ -88,7 +88,6 @@ class App {
     await this.loadTitleFeedbackCustomFont();
     await this.preloadGameAudios();
     await featureFlagService.initialize();
-    this.handleLoadingScreen();
     this.setupCanvas();
     const data = await getData();
     this.majVersion = data.majversion;
@@ -96,6 +95,15 @@ class App {
     this.dataModal = this.createDataModal(data);
     this.globalInitialization(data);
     this.logSessionStartFirebaseEvent();
+      // Initialize scene handler
+      this.updateVersionInfoElement(this.dataModal);
+      this.sceneHandler = new SceneHandler(this.dataModal);
+      this.passingDataToContainer();
+      
+      // Hide loading screen after scene is initialized
+      if (this.loadingElement) {
+        this.loadingElement.style.display = "none";
+      }
     window.addEventListener("resize", () => {
       this.handleResize(this.dataModal);
     });
@@ -111,7 +119,7 @@ class App {
     if (this.is_cached.has(this.lang)) {
       this.handleCachedScenario(this.dataModal);
     }
-    this.registerWorkbox();
+    // this.registerWorkbox();
   }
 
   private async loadTitleFeedbackCustomFont() {
@@ -226,8 +234,7 @@ class App {
 
   private handleLoadingScreen = () => {
     if (this.is_cached.get(lang)) {
-      this.progressBarContainer.style.display = "none";
-      this.progressBar.style.display = "none";
+      
     } else {
       this.progressBarContainer.style.display = "flex";
       this.progressBar.style.display = "flex";
@@ -236,69 +243,69 @@ class App {
 
   };
 
-  private async registerWorkbox(): Promise<void> {
-    if ("serviceWorker" in navigator) {
-      try {
-        const wb = new Workbox("./sw.js", {});
-        await wb.register();
-        await navigator.serviceWorker.ready;
+  // private async registerWorkbox(): Promise<void> {
+  //   if ("serviceWorker" in navigator) {
+  //     try {
+  //       const wb = new Workbox("./sw.js", {});
+  //       await wb.register();
+  //       await navigator.serviceWorker.ready;
 
-        if (!this.is_cached.has(this.lang)) {
-          this.channel.postMessage({ command: "Cache", data: this.lang });
-        } else {
-          fetch(URL + "?cache-bust=" + new Date().getTime(), {
-            method: "GET",
-            headers: {
-              "Content-Type": "application/json",
-              "Cache-Control": "no-store",
-            },
-            cache: "no-store",
-          })
-            .then(async (response) => {
-              if (!response.ok) {
-                console.error(
-                  "Failed to fetch the content file from the server!"
-                );
-                return;
-              }
-              const newContentFileData = await response.json();
-              const aheadContentVersion =
-                newContentFileData["majversion"] +
-                "." +
-                newContentFileData["minversion"];
-              const cachedVersion = localStorage.getItem(
-                "version" + lang.toLowerCase()
-              );
-              // We need to check here for the content version updates
-              // If there's a new content version, we need to remove the cached content and reload
-              // We are comparing here the contentVersion with the aheadContentVersion
-              if (aheadContentVersion && cachedVersion != aheadContentVersion) {
-                console.log("Content version mismatch! Reloading...");
-                var cachedItem = JSON.parse(localStorage.getItem("is_cached"));
-                console.log("current lang  " + lang);
-                var newCachedItem = cachedItem.filter(
-                  (e) => !e.toString().includes(lang)
-                );
-                localStorage.setItem(IsCached, JSON.stringify(newCachedItem));
-                localStorage.removeItem("version" + lang.toLowerCase());
-                // Clear the cache for tht particular content
-                caches.delete(lang);
-                this.handleUpdateFoundMessage();
-              }
-            })
-            .catch((error) => {
-              console.error("Error fetching the content file: " + error);
-            });
-        }
-        navigator.serviceWorker.addEventListener(
-          "message",
-          this.handleServiceWorkerMessage
-        );
-      } catch (error) {
-        console.error(`Failed to register service worker: ${error}`);
-      }
-    }
-  }
+  //       if (!this.is_cached.has(this.lang)) {
+  //         this.channel.postMessage({ command: "Cache", data: this.lang });
+  //       } else {
+  //         fetch(URL + "?cache-bust=" + new Date().getTime(), {
+  //           method: "GET",
+  //           headers: {
+  //             "Content-Type": "application/json",
+  //             "Cache-Control": "no-store",
+  //           },
+  //           cache: "no-store",
+  //         })
+  //           .then(async (response) => {
+  //             if (!response.ok) {
+  //               console.error(
+  //                 "Failed to fetch the content file from the server!"
+  //               );
+  //               return;
+  //             }
+  //             const newContentFileData = await response.json();
+  //             const aheadContentVersion =
+  //               newContentFileData["majversion"] +
+  //               "." +
+  //               newContentFileData["minversion"];
+  //             const cachedVersion = localStorage.getItem(
+  //               "version" + lang.toLowerCase()
+  //             );
+  //             // We need to check here for the content version updates
+  //             // If there's a new content version, we need to remove the cached content and reload
+  //             // We are comparing here the contentVersion with the aheadContentVersion
+  //             if (aheadContentVersion && cachedVersion != aheadContentVersion) {
+  //               console.log("Content version mismatch! Reloading...");
+  //               var cachedItem = JSON.parse(localStorage.getItem("is_cached"));
+  //               console.log("current lang  " + lang);
+  //               var newCachedItem = cachedItem.filter(
+  //                 (e) => !e.toString().includes(lang)
+  //               );
+  //               localStorage.setItem(IsCached, JSON.stringify(newCachedItem));
+  //               localStorage.removeItem("version" + lang.toLowerCase());
+  //               // Clear the cache for tht particular content
+  //               caches.delete(lang);
+  //               this.handleUpdateFoundMessage();
+  //             }
+  //           })
+  //           .catch((error) => {
+  //             console.error("Error fetching the content file: " + error);
+  //           });
+  //       }
+  //       navigator.serviceWorker.addEventListener(
+  //         "message",
+  //         this.handleServiceWorkerMessage
+  //       );
+  //     } catch (error) {
+  //       console.error(`Failed to register service worker: ${error}`);
+  //     }
+  //   }
+  // }
 
   private setupCanvas() {
     this.canvas = document.getElementById("canvas") as HTMLCanvasElement;
