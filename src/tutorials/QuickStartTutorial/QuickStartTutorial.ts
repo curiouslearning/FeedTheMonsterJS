@@ -16,7 +16,7 @@ export default class QuickStartTutorial extends TutorialComponent {
     }
 
     if (this.imagesLoaded) {
-      const { currentOffsetY, shouldResetOrRevertPosition } = this.udpdateDrawPosition(deltaTime, height)
+      const { currentOffsetY, shouldResetOrRevertPosition } = this.updateDrawPosition(deltaTime, height);
       const offsetX = width / 2;
       this.drawPointer(offsetX, currentOffsetY);
 

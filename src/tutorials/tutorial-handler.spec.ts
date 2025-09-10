@@ -58,7 +58,9 @@ describe('TutorialHandler', () => {
       puzzleLevel: 0
     });
 
-    (handler as any).activeTutorial = {} as MatchLetterPuzzleTutorial;
+    (handler as any).activeTutorial = {
+      dispose: jest.fn()
+    } as unknown as MatchLetterPuzzleTutorial;
     handler.hideTutorial();
 
     expect((handler as any).activeTutorial).toBeNull();

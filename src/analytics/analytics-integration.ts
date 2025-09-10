@@ -1,4 +1,4 @@
-import {BaseFirebaseIntegration} from './base-firebase-integration';
+import {BaseAnalyticsIntegration} from './base-analytics-integration';
 import {
   DowloadPercentCompleted,
   LevelCompletedEvent,
@@ -7,10 +7,10 @@ import {
   SessionEnd,
   SessionStart,
   TappedStart,
-} from './firebase-event-interface';
+} from './analytics-event-interface';
 
 /**
- * FirebaseIntegration is a singleton class that handles all Firebase analytics.
+ * AnalyitcsIntegration is a singleton class that handles all Analytics analytics.
  * It is responsible for initializing the analytics package and tracking events.
  * 
  * Please note that this class is not async, so it will return the instance
@@ -18,32 +18,32 @@ import {
  * 
  * @example
  * ```ts
- * // Step1. Initialize the Firebase Integration singleton.
- * await FirebaseIntegration.initializeAnalytics();
+ * // Step1. Initialize the Analytics Integration singleton.
+ * await AnalticsIntegration.initializeAnalytics();
  * 
  * // Step2. Get the singleton instance.
- * const firebaseIntegration = FirebaseIntegration.getInstance();
+ * const analyticsIntegration = AnalyticsIntegration.getInstance();
  * 
  * // Step3. Track an event.
- * firebaseIntegration.sendSessionStartEvent({});
+ * analyticsIntegration.sendSessionStartEvent({});
  * ```
  */
-export class FirebaseIntegration extends BaseFirebaseIntegration {
-  private static instance: FirebaseIntegration | null = null;
+export class AnalyticsIntegration extends BaseAnalyticsIntegration {
+  private static instance: AnalyticsIntegration | null = null;
 
   protected constructor() {
     super();
   }
 
   /**
-   * Initialize the Firebase Integration singleton.
-   * This must be called once at app startup before any other Firebase methods.
+   * Initialize the Analytics Integration singleton.
+   * This must be called once at app startup before any other Analytics methods.
    * This step makes sure that the analytics are initialized before any 
    * tracking is done.
    */
   public static async initializeAnalytics(): Promise<void> {
     if (!this.instance) {
-      this.instance = new FirebaseIntegration();
+      this.instance = new AnalyticsIntegration();
     }
 
     if (!this.instance.isAnalyticsReady()) {
@@ -52,12 +52,12 @@ export class FirebaseIntegration extends BaseFirebaseIntegration {
   }
 
   /**
-   * Get the Firebase Integration instance.
+   * Get the Analytics Integration instance.
    * @throws Error if getInstance is called before initializeApp
    */
-  public static getInstance(): FirebaseIntegration {
+  public static getInstance(): AnalyticsIntegration {
     if (!this.instance || !this.instance.isAnalyticsReady()) {
-      throw new Error('FirebaseIntegration.initializeAnalytics() must be called before accessing the instance');
+      throw new Error('AnalyticsIntegration.initializeAnalytics() must be called before accessing the instance');
     }
     
     return this.instance;

@@ -292,6 +292,7 @@ export class LevelEndScene {
 
   renderButtonsHTML() {
     const nextButton = document.getElementById('levelend-next-btn');
+    const replayButton = document.getElementById('levelend-retry-btn');
     // Define configurations for each button
     const buttonConfigs = [
       {
@@ -302,31 +303,45 @@ export class LevelEndScene {
         },
       },
     ];
-    
-    // Add NextButtonHtml only if not the last level and the star count is sufficient
-    if (!this.isLastLevel && this.starCount >= 2) {
+
+    // Show Next Level button if passed and not last level
+    if (this.starCount >= 2 && !this.isLastLevel) {
       buttonConfigs.push({
         ButtonClass: NextButtonHtml,
         id: 'levelend-next-btn',
-        onClick: () => {
-          this.buttonCallbackFn('next');
-        },
+        onClick: () => this.buttonCallbackFn('next'),
       });
-    } else {
-      if (nextButton) {
-        nextButton.remove();
-      }
     }
-    
-    // Add retry button last as requested
-    buttonConfigs.push({
-      ButtonClass: RetryButtonHtml,
-      id: 'levelend-retry-btn',
-      onClick: () => {
-        this.buttonCallbackFn('retry');
-      },
-    });
-    
+
+    // Level 1 fail - replay only
+    if (this.currentLevel === 0 && this.starCount < 2) {
+      buttonConfigs.push({
+        ButtonClass: RetryButtonHtml,
+        id: 'levelend-retry-btn',
+        onClick: () => this.buttonCallbackFn('retry'),
+      });
+    }
+
+    // Non-first levels - always show replay
+    if (this.currentLevel !== 0) {
+      buttonConfigs.push({
+        ButtonClass: RetryButtonHtml,
+        id: 'levelend-retry-btn',
+        onClick: () => this.buttonCallbackFn('retry'),
+      });
+    }
+
+    // Remove Replay if Level 1 passed
+    if (this.currentLevel === 0 && this.starCount >= 2) {
+      if (replayButton) replayButton.remove();
+    }
+
+    // Remove Next if last level
+    if (this.isLastLevel) {
+      const index = buttonConfigs.findIndex(cfg => cfg.id === 'levelend-next-btn');
+      if (index > -1) buttonConfigs.splice(index, 1);
+      if (nextButton) nextButton.remove();
+    }
     // Create buttons based on configuration
     buttonConfigs.forEach(({ ButtonClass, id, onClick }) => {
       this.createButton(ButtonClass, id, onClick);

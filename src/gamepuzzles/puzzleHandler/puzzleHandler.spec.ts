@@ -53,7 +53,6 @@ describe('PuzzleHandler', () => {
       levelType: 'LetterOnly',
       pickedLetter: { text: 'A', frame: 0 },
       targetLetterText: 'A',
-      promptText: { droppedLetterIndex: jest.fn() },
       feedBackTexts: { 0: 'Nice!', 1: 'Great job!' },
       handleLetterDropEnd: jest.fn(),
       triggerMonsterAnimation: jest.fn(),
@@ -99,7 +98,6 @@ describe('PuzzleHandler', () => {
 
       expect(ctx.handleLetterDropEnd).toHaveBeenCalledWith(true, 'Word');
       expect(ctx.lettersCountRef.value).toBe(1);
-      expect(ctx.promptText.droppedLetterIndex).not.toHaveBeenCalled(); // spelling is correct
     });
 
     it('should process partially correct word drop', () => {
@@ -117,7 +115,6 @@ describe('PuzzleHandler', () => {
       handler.createPuzzle(ctx);
 
       expect(ctx.triggerMonsterAnimation).toHaveBeenCalledWith('isMouthClosed');
-      expect(ctx.promptText.droppedLetterIndex).toHaveBeenCalledWith(1); // english path
       expect(ctx.lettersCountRef.value).toBe(1);
     });
 

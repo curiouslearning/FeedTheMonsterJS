@@ -1,8 +1,8 @@
-// Analytics configuration for Firebase and Statsig
-// Used by @curiouslearning/analytics FirebaseStrategy and StatsigStrategy
+// Analytics configuration for Analytics and Statsig
+// Used by @curiouslearning/analytics AnalyticsStrategy and StatsigStrategy
 
 /**
- * Firebase configuration for analytics
+ * Analytics configuration for analytics
  */
 export const firebaseConfig = {
     apiKey: "AIzaSyB8c2lBVi26u7YRL9sxOP97Uaq3yN8hTl4",

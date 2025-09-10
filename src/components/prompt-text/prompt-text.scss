@@ -18,12 +18,8 @@
   }
 }
 
-.prompt-background {
+.prompt-center-responsive {
   position: relative;
-  background-size: contain;
-  background-repeat: no-repeat;
-  background-position: center;
-  transition: transform 0.05s ease;
   left: 50%;
   transform: translateX(-50%);
 
@@ -31,21 +27,21 @@
   @media (max-width: 376px) {
     width: 50%;
     height: 26%;
-    top: 18%;
+    top: 19%;
   }
 
   // Large mobile (377-480px)
   @media (min-width: 377px) and (max-width: 480px) {
     width: 50%;
     height: 22%;
-    top: 15%;
+    top: 18%;
   }
 
   // Tablets (481-820px)
   @media (min-width: 481px) and (max-width: 820px) {
     width: 48%;
     height: 22%;
-    top: 20%;
+    top: 25%;
   }
 
   // large tablet (>820px)
@@ -56,7 +52,84 @@
   }
 }
 
-.prompt-background {
+#prompt-bubble {
+  position: absolute;
+  transition: width 0.3s ease, height 0.3s ease, transform 0.05s ease;
+}
+
+//Custom position and size for prompt bubble. Used for Spell Word Audio puzzle.
+.prompt-bubble-spell-audio {
+
+  // Small mobile (≤376px)
+  @media (max-width: 376px) {
+    width: 300px;
+    height: 245px;
+  }
+
+  // Small mobile (≤376px)
+  @media (max-width: 360px) {
+    width: 300px;
+    height: 245px;
+  }
+
+  // Small mobile (≤376px) with higher heights
+  @media (max-width: 376px) and (min-height: 882px) {
+    top: 21%;
+  }
+
+  // medium mobile (377-480px)
+  @media (min-width: 377px) and (max-width: 480px) {
+    width: 280px;
+    height: 270px;
+  }
+
+  // medium mobile (377-480px) and height lower than 791px
+  @media (min-width: 377px) and (max-width: 480px) and (max-height:790px) {
+    top: 16%;
+  }
+
+  // Tablets (481 above)
+  @media (min-width: 481px) {
+    width: 280px;
+    height: 300px;
+  }
+
+  // Specific tablets
+  @media (width: 540px) and (height: 720px){
+    top: 21%;
+  }
+
+  // large tablet (>820px)
+  @media (min-width: 821px) {
+    top: 28%;
+  }
+
+  // large tablet (>820px) with height 1000px below.
+  @media (min-width: 821px) and (max-height: 999px) {
+    top: 21%;
+  }
+}
+
+
+@keyframes float {
+  0% {
+    transform: translateX(-50%) translateY(0) scale(1);
+  }
+  50% {
+    transform: translateX(-50%) translateY(-5px) scale(1.05);
+  }
+  100% {
+    transform: translateX(-50%) translateY(0) scale(1);
+  }
+}
+
+//Style animate effect for the speech bubble.
+.floating-pulse {
+  animation: float 2s ease-in-out infinite;
+}
+
+#prompt-content {
+
   .prompt-text {
     width: 100%;
     text-align: center;
@@ -64,7 +137,7 @@
     font-weight: bold;
     color: #000;
     z-index: 2;
-
+    pointer-events: auto;
     // Support for RTL languages
     &[dir="rtl"] {
       unicode-bidi: bidi-override;
@@ -73,22 +146,82 @@
   }
 
   .prompt-play-button {
-    width: 120px;
-    height: 120px;
+    width: 60px; // new button width size.
+    height: 60px;  // new button width size.
     background-size: contain;
     background-repeat: no-repeat;
     background-position: center;
     cursor: pointer;
     pointer-events: auto; // Make sure the play button is clickable
-    position: absolute;
-    top: 10px;
     // Prevent highlight on press
     -webkit-tap-highlight-color: transparent;
     outline: none;
     user-select: none;
     -webkit-touch-callout: none;
     -webkit-user-select: none;
+    transition: transform 0.1s ease;
   }
+
+  .prompt-play-button:active {
+    transform: scale(0.95);
+  }
+
+  .pulsing {
+    animation: pulse 1.5s infinite;
+    transition: transform 0.1s ease;
+  }
+
+  .pulsing:active {
+    transform: scale(0.95);
+  }
+  
+  @keyframes pulse {
+    0% {
+      transform: scale(1);
+      opacity: 1;
+    }
+    50% {
+      transform: scale(1.1);
+      opacity: 0.7;
+    }
+    100% {
+      transform: scale(1);
+      opacity: 1;
+    }
+  }
+
+  .prompt-button-slots-wrapper {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+  }
+
+  .prompt-slots {
+    display: hidden; //Hidden by default, will be set to flex when rendering.
+    justify-content: center;
+    gap: 3px;
+
+  .slot {
+    min-width: 18px;
+    height: 28px;
+    font-size: 23px;
+    text-align: center;
+    font-weight: bold;
+    font-family: 'Quicksand', sans-serif;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: black;
+  }
+
+  .revealed-letter {
+    color: #000; // You can customize this for correct/incorrect colors
+  }
+}
 }
 
 // Text color classes
@@ -157,7 +290,7 @@
 
 /* For desktops or larger devices above 1080px */
 @media (min-width: 1080px){
-  .prompt-background{
+  .prompt-content{
     width: 50%;
     height: 25%;
     top: 18%;

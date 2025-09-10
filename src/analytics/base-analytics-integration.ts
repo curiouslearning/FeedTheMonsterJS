@@ -2,7 +2,7 @@ import { AnalyticsService, FirebaseStrategy, StatsigStrategy } from '@curiouslea
 import { firebaseConfig, statsigConfig } from "./analytics-config";
 import { source, campaign_id, pseudoId } from "@common";
 
-export class BaseFirebaseIntegration {
+export class BaseAnalyticsIntegration {
     private analyticsService: AnalyticsService;
     private firebaseStrategy: FirebaseStrategy;
     private statsigStrategy: StatsigStrategy;
@@ -18,7 +18,7 @@ export class BaseFirebaseIntegration {
         }
 
         try {
-            // Initialize Firebase Strategy
+            // Initialize Analytics Strategy
             this.firebaseStrategy = new FirebaseStrategy({
                 firebaseOptions: {
                     apiKey: firebaseConfig.apiKey,

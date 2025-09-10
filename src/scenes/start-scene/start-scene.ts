@@ -10,8 +10,8 @@ import {
   pseudoId,
   lang
 } from "@common";
-import { FirebaseIntegration } from "../../Firebase/firebase-integration";
-import { TappedStart } from "../../Firebase/firebase-event-interface";
+import { AnalyticsIntegration } from "../../analytics/analytics-integration";
+import { TappedStart } from "../../analytics/analytics-event-interface";
 import {
   SCENE_NAME_LEVEL_SELECT,
   FirebaseUserClicked,
@@ -41,7 +41,7 @@ export class StartScene {
   private pwa_install_status: Event;
   private titleTextElement: HTMLElement | null;
   public riveMonster: RiveMonsterComponent;
-  private firebaseIntegration: FirebaseIntegration;
+  private analyticsIntegration: AnalyticsIntegration;
   private loadingElement: HTMLElement;
   private onClickArea: BaseHTML;
   private hasBGLoaded: boolean = false;
@@ -117,7 +117,7 @@ export class StartScene {
     this.titleTextElement = document.getElementById("title");
     this.generateGameTitle();
     this.riveMonsterElement.style.zIndex = '4';
-    this.firebaseIntegration = FirebaseIntegration.getInstance();
+    this.analyticsIntegration = AnalyticsIntegration.getInstance();
     this.setOnClicknAreaStyle();
   }
 
@@ -188,7 +188,7 @@ export class StartScene {
 
   handleMouseClick = (event) => {
     event.preventDefault();
-    FirebaseIntegration.getInstance().sendUserClickedOnPlayEvent();
+    AnalyticsIntegration.getInstance().sendUserClickedOnPlayEvent();
     // @ts-ignore
     fbq("trackCustom", FirebaseUserClicked, {
       event: "click",
@@ -230,6 +230,6 @@ export class StartScene {
       version_number: document.getElementById("version-info-id").innerHTML,
       json_version_number: !!this.data.majVersion && !!this.data.minVersion ? this.data.majVersion.toString() + "." + this.data.minVersion.toString() : "",
     };
-    this.firebaseIntegration.sendTappedStartEvent(tappedStartData);
+    this.analyticsIntegration.sendTappedStartEvent(tappedStartData);
   }
 }
