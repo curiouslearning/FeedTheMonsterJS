@@ -7,7 +7,7 @@ export interface CommonEventProperties {
 }
 
 export interface SessionStart extends CommonEventProperties {
-    days_since_last: Number;
+    days_since_last: number;
 }
 
 export interface SessionEnd extends CommonEventProperties {
@@ -15,7 +15,7 @@ export interface SessionEnd extends CommonEventProperties {
 }
 
 export interface DowloadPercentCompleted extends CommonEventProperties {
-    ms_since_session_start: Number;
+    ms_since_session_start: number;
 }
 
 export interface TappedStart extends CommonEventProperties {
