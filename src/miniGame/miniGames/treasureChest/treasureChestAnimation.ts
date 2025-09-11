@@ -1,4 +1,5 @@
-// TreasureChestAnimation.ts
+import gameSettingsServiceInstance from '@gameSettingsService/index';
+
 type Stone = {
   x: number;
   y: number;
@@ -10,6 +11,9 @@ type Stone = {
   lifetime: number;
   img: HTMLImageElement;
   size: number;
+  burning?: boolean;
+  burnStartTime?: number;
+  burnFrameIndex?: number;
 };
 
 export class TreasureChestAnimation {
@@ -25,31 +29,40 @@ export class TreasureChestAnimation {
   private lastSpawnTime: number;
   private startTime: number = 0;
   private shakeDuration: number = 1000; // 1s
-  private chestStayedOpenMs: number = 1200; // how long chest remains open before cleanup
-  private callback: () => void; //Callback method to parent to trigger scoring or any logics relating to tapping of stones.
-
+  private callback: () => void; //Callback method to parent to trigger scoring / tapping of stones.
+  private burnFrames: HTMLImageElement[] = [];
+  private lastTapTime = 0;
+  private fadeOutStart: number | null = null;
+  private fadeDuration = 1000; // 1s fade
+  private onFadeComplete?: () => void;
+  public dpr: number;
   constructor(
     private width: number,
     private height: number,
     callback: () => void,
   ) {
     this.canvas = document.getElementById("treasurecanvas") as HTMLCanvasElement;
-    this.canvas.width = width;
-    this.canvas.height = height;
+    this.dpr = gameSettingsServiceInstance.getDevicePixelRatioValue();
+    this.canvas.width = this.width * this.dpr;
+    this.canvas.height = this.height * this.dpr;
+    this.canvas.style.width = `${this.width}px`;
+    this.canvas.style.height = `${this.height}px`;
     this.canvas.style.position = "absolute";
     this.canvas.style.top = "0";
     this.canvas.style.left = "0";
     this.canvas.style.display = "none";
     this.canvas.style.zIndex = "11";
-    this.canvas.style.pointerEvents = "none";
+    this.canvas.style.pointerEvents = "auto";
+    this.canvas.addEventListener("click", this.handleClick);
+    this.canvas.addEventListener("touchstart", this.handleClick);
     this.lastSpawnTime = performance.now();
     this.callback = callback;
 
     const context = this.canvas.getContext("2d");
     if (!context) throw new Error("Canvas not supported");
     this.ctx = context;
-
-    // load chest images
+    this.ctx.scale(this.dpr, this.dpr); // scale at init
+    // load chest and stone images
     this.closedChestImg = new Image();
     this.closedChestImg.src = "./assets/images/closedchest.svg"; // closed chest
 
@@ -57,8 +70,64 @@ export class TreasureChestAnimation {
     this.openChestImg.src = "./assets/images/chest.svg"; // open chest
 
     this.stoneImg = new Image();
-    this.stoneImg.src = "./assets/images/stone_blue.png";
+    this.stoneImg.src = "./assets/images/stone_blue.svg";
+
+    // load burn frames
+    for (let i = 1; i <= 4; i++) {
+      const burnImg = new Image();
+      burnImg.src = `./assets/images/stone_burn_export_${i}.png`;
+      this.burnFrames.push(burnImg);
+    }
   }
+
+  private handleClick = (e: MouseEvent | TouchEvent) => {
+    // Prevent double trigger on touch devices
+    if (e.type === "touchstart") {
+      this.lastTapTime = Date.now();
+    } else if (e.type === "click") {
+      if (Date.now() - this.lastTapTime < 500) {
+        return; // skip synthetic click
+      }
+    }
+    let clientX: number, clientY: number;
+    if (e instanceof MouseEvent) {
+      clientX = e.clientX;
+      clientY = e.clientY;
+    } else {
+      clientX = e.touches[0].clientX;
+      clientY = e.touches[0].clientY;
+    }
+    const rect = this.canvas.getBoundingClientRect();
+    const scaleX = this.width / rect.width;
+    const scaleY = this.height / rect.height;
+
+    const x = (clientX - rect.left) * scaleX;
+    const y = (clientY - rect.top) * scaleY;
+
+    for (const stone of this.stones) {
+      if (!stone.active) continue;
+
+      // Check if click is inside stone bounds
+      const dx = x - stone.x;
+      const dy = y - stone.y;
+      if (Math.sqrt(dx * dx + dy * dy) <= stone.size / 2) {
+        // Freeze stone
+        stone.dx = 0;
+        stone.dy = 0;
+        if (stone.burning || !stone.active) {
+          return;
+        }
+        // Trigger burn sequence
+        stone.burning = true;
+        stone.burnStartTime = performance.now();
+        stone.burnFrameIndex = 0;
+
+        this.callback(); // notify MiniGame
+        break;
+      }
+    }
+  };
+
 
   /** Starts the mini chest animation */
   public show(onComplete?: () => void) {
@@ -67,7 +136,8 @@ export class TreasureChestAnimation {
     this.chestOpen = false;
     this.startTime = performance.now();
     this.stones = [];
-
+    this.fadeOutStart = null;
+    this.onFadeComplete = onComplete;
     this.loop();
 
     // after 1s, chest opens
@@ -75,16 +145,17 @@ export class TreasureChestAnimation {
       this.chestOpen = true;
     }, this.shakeDuration);
 
-    // play for 15s total, then cleanup
+    // play for 12s total, then cleanup
     setTimeout(() => {
-      this.hide();
-      if (onComplete) onComplete();
-    }, 15000);
+      this.fadeOutStart = performance.now();
+    }, 12000);
   }
 
   /** Stops & hides */
   public hide() {
     this.canvas.style.display = "none";
+    this.canvas.removeEventListener("click", this.handleClick);
+    this.canvas.removeEventListener("touchstart", this.handleClick);
     this.isVisible = false;
     if (this.animationFrameId) {
       cancelAnimationFrame(this.animationFrameId);
@@ -122,8 +193,8 @@ export class TreasureChestAnimation {
     const speed = 2 + Math.random() * 2;
 
     const stone: Stone = {
-      x: chestX,
-      y: chestY,
+      x: chestX + 50,
+      y: chestY + 50,
       radius,
       dx: Math.cos(angle) * speed,
       dy: -Math.sin(angle) * speed,
@@ -131,10 +202,10 @@ export class TreasureChestAnimation {
       active: true,
       lifetime: 300,
       img: this.stoneImg,
-      size: 120,
+      size: 100,
     };
 
-    return stone;  
+    return stone;
   }
 
   /** Main loop */
@@ -142,6 +213,24 @@ export class TreasureChestAnimation {
     if (!this.isVisible) return;
 
     this.ctx.clearRect(0, 0, this.width, this.height);
+
+    // apply fade
+    let alpha = 1;
+    if (this.fadeOutStart) {
+      const elapsed = performance.now() - this.fadeOutStart;
+      alpha = Math.max(0, 1 - elapsed / this.fadeDuration);
+
+      if (alpha === 0) {
+        this.hide();
+        if (this.onFadeComplete) {
+          this.onFadeComplete();
+          this.onFadeComplete = undefined; // prevent double calling
+        }
+        return;
+      }
+    }
+    this.ctx.save();
+    this.ctx.globalAlpha = alpha;
 
     // shadow overlay
     this.ctx.fillStyle = "rgba(0, 0, 0, 0.5)";
@@ -188,9 +277,22 @@ export class TreasureChestAnimation {
       for (const stone of this.stones) {
         if (!stone.active) continue;
 
-        stone.x += stone.dx;
-        stone.y += stone.dy;
-        stone.lifetime--;
+        if (!stone.burning) {
+          // Normal movement
+          stone.x += stone.dx;
+          stone.y += stone.dy;
+          stone.lifetime--;
+        } else {
+          // Burn animation logic
+          const elapsed = performance.now() - (stone.burnStartTime || 0);
+          stone.burnFrameIndex = Math.floor(elapsed / 75); // each frame lasts 75ms
+
+          if (stone.burnFrameIndex >= this.burnFrames.length) {
+            stone.active = false; // remove stone after burn finishes
+            continue;
+          }
+        }
+
 
         if (stone.lifetime < 60) {
           stone.opacity -= 0.002;
@@ -198,9 +300,9 @@ export class TreasureChestAnimation {
 
         if (
           stone.lifetime <= 0 ||
-          stone.y + stone.radius < 0 ||
-          stone.x < -stone.radius ||
-          stone.x > this.width + stone.radius
+          stone.y + stone.size / 2 < 0 ||
+          stone.x < - stone.size / 2 ||
+          stone.x > this.width + stone.size / 2
         ) {
           stone.active = false;
           continue;
@@ -209,12 +311,28 @@ export class TreasureChestAnimation {
         this.ctx.globalAlpha = stone.opacity;
         this.ctx.drawImage(
           stone.img,
-          stone.x - stone.radius,
-          stone.y - stone.radius,
+          stone.x - stone.size / 2,
+          stone.y - stone.size / 2,
           stone.size,
           stone.size
         );
         this.ctx.globalAlpha = 1.0;
+        // this.ctx.beginPath();
+        // this.ctx.arc(stone.x, stone.y, stone.size / 2, 0, Math.PI * 2);
+        // this.ctx.strokeStyle = "red";
+        // this.ctx.lineWidth = 1;
+        // this.ctx.stroke();
+        // If burning, draw overlay on top
+        if (stone.burning && stone.burnFrameIndex! < this.burnFrames.length) {
+          const burnImg = this.burnFrames[stone.burnFrameIndex!];
+          this.ctx.drawImage(
+            burnImg,
+            stone.x - stone.size / 2,
+            stone.y - stone.size / 2,
+            stone.size,
+            stone.size
+          );
+        }
       }
 
       // cleanup
@@ -226,7 +344,7 @@ export class TreasureChestAnimation {
         this.stones.push(this.spawnStone());
       }
     }
-
+    this.ctx.restore();
     this.animationFrameId = requestAnimationFrame(this.loop);
   };
 }

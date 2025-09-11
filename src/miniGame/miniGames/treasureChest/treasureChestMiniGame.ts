@@ -13,6 +13,7 @@ export class TreasureChestMiniGame {
   private callback: any;
   public miniGameStatus: boolean = false;
   private treasureAnimation: TreasureChestAnimation;
+  private clickedCount = 0;
   constructor(miniGameCompleteCallback) {
     this.earnedStarCount = 0;
     this.collectedStones = 0;
@@ -20,13 +21,16 @@ export class TreasureChestMiniGame {
     this.treasureAnimation = new TreasureChestAnimation(
       window.innerWidth,
       window.innerHeight,
-      this.tapStoneCallback
+      this.tapStoneCallback.bind(this)
     );
   }
 
   public tapStoneCallback() {
-    this.updateCollectedStone();
-    this.processStoneCollection()
+    this.clickedCount++;
+    console.log("Stone achieved in Treasure Chest MiniGame:" + this.clickedCount);
+    
+    // this.updateCollectedStone(); // commented out to test without collecting stones
+    // this.processStoneCollection() // commented out to test without collecting stones
   }
 
   private updateCollectedStone() {
@@ -55,9 +59,11 @@ export class TreasureChestMiniGame {
         // Animation complete callback
         console.log("Treasure Chest Animation Completed");
 
-        //Note: this is temporary as currently
-        // as stones from treasure chest doesn't have onclick feature to handle the tapStoneCallback method.
-        this.callback(1);
+        
+      // If player didn't collect enough stones, still call parent
+      if (!this.miniGameStatus) {
+        this.callback(this.earnedStarCount);
+      }
       });
     }
 
