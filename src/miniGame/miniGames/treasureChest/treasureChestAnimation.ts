@@ -1,3 +1,4 @@
+import { CLOSED_CHEST, OPEN_CHEST, STONE_BLUE } from '@constants';
 import gameSettingsServiceInstance from '@gameSettingsService/index';
 
 type Stone = {
@@ -64,14 +65,13 @@ export class TreasureChestAnimation {
     this.ctx.scale(this.dpr, this.dpr); // scale at init
     // load chest and stone images
     this.closedChestImg = new Image();
-    this.closedChestImg.src = "./assets/images/closedchest.svg"; // closed chest
+    this.closedChestImg.src = CLOSED_CHEST; // closed chest
 
     this.openChestImg = new Image();
-    this.openChestImg.src = "./assets/images/chest.svg"; // open chest
+    this.openChestImg.src = OPEN_CHEST; // open chest
 
     this.stoneImg = new Image();
-    this.stoneImg.src = "./assets/images/stone_blue.svg";
-
+    this.stoneImg.src = STONE_BLUE; // blue stone
     // load burn frames
     for (let i = 1; i <= 4; i++) {
       const burnImg = new Image();
