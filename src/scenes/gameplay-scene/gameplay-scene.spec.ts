@@ -165,6 +165,7 @@ jest.mock('@components', () => {
 Object.defineProperty(HTMLCanvasElement.prototype, 'getContext', {
   value: jest.fn(() => ({
     fillRect: jest.fn(),
+    scale:jest.fn(),
     clearRect: jest.fn(),
     drawImage: jest.fn(),
     getImageData: jest.fn(),

@@ -257,7 +257,7 @@ export class GameplayScene {
     this.tutorial.shouldShowQuickStartTutorial = gamePlayData.tutorialOn && !gamePlayData.isTutorialCleared;
 
     if (this.tutorial.showHandPointerInAudioPuzzle(gamePlayData.levelData)) {
-      this.tutorial.resetQuickStartTutorialDelay();
+      this.tutorial?.resetQuickStartTutorialDelay();
     } else {
       this.tutorial.quickStartTutorialReady = true;
     }
@@ -768,16 +768,15 @@ export class GameplayScene {
 
     this.stonesCount = 1;
     const timerEnded = Boolean(isTimerEnded);
-    this.tutorial.resetTutorialTimer();
+    this.tutorial?.resetTutorialTimer();
     if (timerEnded) {
-
       this.logPuzzleEndFirebaseEvent(false);
     }
     this.counter += 1; //increment Puzzle
     this.isGameStarted = false;
     // Reset the 6-second tutorial delay timer each time a new puzzle is loaded
-    this.tutorial.resetQuickStartTutorialDelay();
-    this.tutorial.hideTutorial(); // Turn off tutorial via loading the puzzle.
+    this.tutorial?.resetQuickStartTutorialDelay();
+    this.tutorial?.hideTutorial(); // Turn off tutorial via loading the puzzle.
 
     if (this.counter === this.levelData.puzzles.length) {
       const handleLevelEnd = () => {
@@ -838,7 +837,7 @@ export class GameplayScene {
     this.addEventListeners();
     this.audioPlayer.stopAllAudios();
     this.startPuzzleTime();
-    this.tutorial.resetQuickStartTutorialDelay();
+    this.tutorial?.resetQuickStartTutorialDelay();
   }
 
   public dispose = () => {
@@ -945,7 +944,7 @@ export class GameplayScene {
 
     this.logPuzzleEndFirebaseEvent(isCorrect, puzzleType);
     this.dispatchStoneDropEvent(isCorrect);
-    this.tutorial.hideTutorial(); //  Turn off tutorial via user playing correctly
+    this.tutorial?.hideTutorial(); //  Turn off tutorial via user playing correctly
 
     this.determineNextStep(isCorrect);
   }
