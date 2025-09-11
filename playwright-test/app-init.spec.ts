@@ -26,7 +26,7 @@ test.describe('App Initialization Flow', () => {
     });
 
     // Navigate to the page that loads the App class
-    await page.goto('http://localhost:8080/'); // Adjust according to your test server
+    await page.goto('https://feedthemonsterdev.curiouscontent.org/'); // Adjust according to your test server
   });
 
   test('should render essential elements on startup', async ({ page }) => {
