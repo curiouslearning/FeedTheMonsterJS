@@ -115,8 +115,8 @@ export class TreasureChestAnimation {
         stone.dx = 0;
         stone.dy = 0;
         if (stone.burning || !stone.active) {
-          return;
-        }
+          continue;
+        }        
         // Trigger burn sequence
         stone.burning = true;
         stone.burnStartTime = performance.now();
@@ -155,7 +155,7 @@ export class TreasureChestAnimation {
   public hide() {
     this.canvas.style.display = "none";
     this.canvas.removeEventListener("click", this.handleClick);
-    this.canvas.removeEventListener("touchstart", this.handleClick);
+    this.canvas.removeEventListener("touchstart", this.handleClick);    
     this.isVisible = false;
     if (this.animationFrameId) {
       cancelAnimationFrame(this.animationFrameId);

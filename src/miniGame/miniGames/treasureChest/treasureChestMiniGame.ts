@@ -28,9 +28,8 @@ export class TreasureChestMiniGame {
   public tapStoneCallback() {
     this.clickedCount++;
     console.log("Stone achieved in Treasure Chest MiniGame:" + this.clickedCount);
-    
-    // this.updateCollectedStone(); // commented out to test without collecting stones
-    // this.processStoneCollection() // commented out to test without collecting stones
+    this.updateCollectedStone();
+    this.processStoneCollection();
   }
 
   private updateCollectedStone() {
