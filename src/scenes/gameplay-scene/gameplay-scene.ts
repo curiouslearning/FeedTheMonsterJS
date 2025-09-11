@@ -751,7 +751,7 @@ export class GameplayScene {
     //this.counter is 0 by default; So +1 to actually match with levelForMinigame values as it starts with 1.
     const currentLevel = this.counter + 1;
 
-    if (currentLevel === 1) { //this.levelForMinigame
+    if (currentLevel === this.levelForMinigame) {
       if (!this.hasShownChest) {
         this.hasShownChest = true;
         // Run chest animation
