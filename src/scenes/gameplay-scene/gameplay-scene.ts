@@ -768,7 +768,7 @@ export class GameplayScene {
 
     this.stonesCount = 1;
     const timerEnded = Boolean(isTimerEnded);
-    if(this.tutorial){this.tutorial?.resetTutorialTimer();}
+    this.tutorial?.resetTutorialTimer();
     if (timerEnded) {
       this.logPuzzleEndFirebaseEvent(false);
     }
