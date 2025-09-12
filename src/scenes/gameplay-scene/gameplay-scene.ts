@@ -32,7 +32,7 @@ import {
   LevelCompletedEvent,
   PuzzleCompletedEvent,
 } from "../../analytics/analytics-event-interface";
-import { AnalyticsIntegration } from "../../analytics/analytics-integration";
+import { AnalyticsIntegration, AnalyticsEventType } from "../../analytics/analytics-integration";
 import {
   SCENE_NAME_LEVEL_SELECT,
   SCENE_NAME_GAME_PLAY,
@@ -958,48 +958,41 @@ export class GameplayScene {
   }
 
   public logPuzzleEndFirebaseEvent(isCorrect: boolean, puzzleType?: string) {
-    let endTime = Date.now();
+    const endTime = Date.now();
     const droppedLetters = this.puzzleHandler.getWordPuzzleDroppedLetters();
-    const puzzleCompletedData: PuzzleCompletedEvent = {
-      cr_user_id: pseudoId,
-      ftm_language: lang,
-      profile_number: 0,
-      version_number: document.getElementById("version-info-id").innerHTML,
-      json_version_number: this.jsonVersionNumber,
-      success_or_failure: isCorrect ? "success" : "failure",
-      level_number: this.levelData.levelMeta.levelNumber,
-      puzzle_number: this.counter,
-      item_selected:
-        puzzleType == "Word"
-          ? droppedLetters == null ||
-            droppedLetters == undefined
-            ? "TIMEOUT"
-            : droppedLetters
-          : this.pickedStone == null || this.pickedStone == undefined
-            ? "TIMEOUT"
-            : this.pickedStone?.text,
-      target: this.stoneHandler.getCorrectTargetStone(),
-      foils: this.stoneHandler.getFoilStones(),
-      response_time: (endTime - this.puzzleTime) / 1000,
-    };
-    this.analyticsIntegration.sendPuzzleCompletedEvent(puzzleCompletedData);
+    
+    this.analyticsIntegration.track(
+      AnalyticsEventType.PUZZLE_COMPLETED,
+      {
+        json_version_number: this.jsonVersionNumber,
+        success_or_failure: isCorrect ? "success" : "failure",
+        level_number: this.levelData.levelMeta.levelNumber,
+        puzzle_number: this.counter,
+        item_selected: puzzleType === "Word"
+          ? (droppedLetters ?? "TIMEOUT")
+          : (this.pickedStone?.text ?? "TIMEOUT"),
+        target: this.stoneHandler.getCorrectTargetStone(),
+        foils: Array.isArray(this.stoneHandler.getFoilStones()) 
+          ? this.stoneHandler.getFoilStones().join(',')
+          : this.stoneHandler.getFoilStones(),
+        response_time: (endTime - this.puzzleTime) / 1000,
+      }
+    );
   }
 
   public logLevelEndFirebaseEvent() {
-    let endTime = Date.now();
-    const levelCompletedData: LevelCompletedEvent = {
-      cr_user_id: pseudoId,
-      ftm_language: lang,
-      profile_number: 0,
-      version_number: document.getElementById("version-info-id").innerHTML,
-      json_version_number: this.jsonVersionNumber,
-      success_or_failure:
-        GameScore.calculateStarCount(this.score) >= 3 ? "success" : "failure",
-      number_of_successful_puzzles: this.score / 100,
-      level_number: this.levelData.levelMeta.levelNumber,
-      duration: (endTime - this.startTime) / 1000,
-    };
-    this.analyticsIntegration.sendLevelCompletedEvent(levelCompletedData);
+    const endTime = Date.now();
+    
+    this.analyticsIntegration.track(
+      AnalyticsEventType.LEVEL_COMPLETED,
+      {
+        json_version_number: this.jsonVersionNumber,
+        success_or_failure: GameScore.calculateStarCount(this.score) >= 3 ? "success" : "failure",
+        number_of_successful_puzzles: this.score / 100,
+        level_number: this.levelData.levelMeta.levelNumber,
+        duration: (endTime - this.startTime) / 1000,
+      }
+    );
   }
 
   public startGameTime() {

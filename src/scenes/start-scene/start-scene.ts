@@ -10,8 +10,7 @@ import {
   pseudoId,
   lang
 } from "@common";
-import { AnalyticsIntegration } from "../../analytics/analytics-integration";
-import { TappedStart } from "../../analytics/analytics-event-interface";
+import { AnalyticsIntegration, AnalyticsEventType } from "../../analytics/analytics-integration";
 import {
   SCENE_NAME_LEVEL_SELECT,
   FirebaseUserClicked,
@@ -173,7 +172,18 @@ export class StartScene {
 
   handleMouseClick = (event) => {
     event.preventDefault();
-    AnalyticsIntegration.getInstance().sendUserClickedOnPlayEvent();
+    /** Keeping this for now, but we can remove it if we want in the future.
+     * Caused confusion with tapped_start event in the past.
+     */
+    // AnalyticsIntegration.getInstance().track(
+    //   AnalyticsEventType.USER_CLICKED, 
+    //   { 
+    //     json_version_number: !!this.data.majVersion && !!this.data.minVersion 
+    //       ? `${this.data.majVersion}.${this.data.minVersion}` 
+    //       : "",
+    //     click: 'Click' 
+    //   }
+    // );
     // @ts-ignore
     fbq("trackCustom", FirebaseUserClicked, {
       event: "click",
@@ -208,13 +218,15 @@ export class StartScene {
   };
 
   private logTappedStartFirebaseEvent() {
-    const tappedStartData: TappedStart = {
-      cr_user_id: pseudoId,
-      ftm_language: lang,
-      profile_number: 0,
-      version_number: document.getElementById("version-info-id").innerHTML,
-      json_version_number: !!this.data.majVersion && !!this.data.minVersion ? this.data.majVersion.toString() + "." + this.data.minVersion.toString() : "",
-    };
-    this.analyticsIntegration.sendTappedStartEvent(tappedStartData);
+    const jsonVersionNumber = !!this.data.majVersion && !!this.data.minVersion 
+      ? `${this.data.majVersion}.${this.data.minVersion}` 
+      : "";
+
+    AnalyticsIntegration.getInstance().track(
+      AnalyticsEventType.TAPPED_START,
+      {
+        json_version_number: jsonVersionNumber,
+      }
+    );
   }
 }
