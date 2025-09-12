@@ -1,4 +1,41 @@
+# .coderabbit.yaml
+
+version: 1
+
+# Enable/disable CodeRabbit globally
+enabled: true
+
+# Branch rules (reviews will run only on these)
+branches:
+  include:
+    - "develop"
+    - "test"
+    - "main"
+  exclude:
+    - "docs/**"
+    - "dist/**"
+
+# PR review settings
 reviews:
-  auto_review:
-    enabled: true
-    base_branches: ["main", "test", "develop"]
+  auto_review: true        # Automatically review new PRs
+  require_approval: true   # Block merge until review passes
+  labels:
+    enabled: true          # Add labels automatically
+  max_comments: 15         # Prevent overwhelming feedback
+
+# Quality checks
+checks:
+  require_tests: true      # PR must include or update tests
+  require_lint: true       # Enforce linting rules
+  min_coverage: 70         # Require minimum test coverage %
+
+# File exclusions (skip reviews for these)
+ignore:
+  - "**/*.md"
+  - "**/*.json"
+  - "package-lock.json"
+
+# Notifications
+notifications:
+  slack: false
+  github: true
