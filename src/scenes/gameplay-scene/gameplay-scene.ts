@@ -7,7 +7,7 @@ import {
   BackgroundHtmlGenerator,
   AudioPlayer,
   PhasesBackground,
-  TrailEffectsHandler
+  TrailEffectsHandler,
 } from "@components";
 import TutorialHandler from '@tutorials';
 import {
@@ -361,7 +361,11 @@ export class GameplayScene {
         timerTicking: this.timerTicking,
         lang,
         lettersCountRef,
-        feedBackTexts: this.feedBackTexts
+        feedBackTexts: this.feedBackTexts,
+        onFeedbackAudioEnd: (isCorrect) => {
+          console.log(isCorrect,"Feedback audio ended callback triggered.");
+          this.determineNextStep(true); // <-- This will be call minigame if level is for minigame.
+        }
       };
 
       this.puzzleHandler.createPuzzle(ctx);
@@ -747,11 +751,10 @@ export class GameplayScene {
 
       return;
     }
-
     //this.counter is 0 by default; So +1 to actually match with levelForMinigame values as it starts with 1.
     const currentLevel = this.counter + 1;
 
-    if (currentLevel === this.levelForMinigame) {
+    if (currentLevel === 1) {//this.levelForMinigame
       if (!this.hasShownChest) {
         this.hasShownChest = true;
         // Run chest animation
@@ -945,8 +948,6 @@ export class GameplayScene {
     this.logPuzzleEndFirebaseEvent(isCorrect, puzzleType);
     this.dispatchStoneDropEvent(isCorrect);
     this.tutorial?.hideTutorial(); //  Turn off tutorial via user playing correctly
-
-    this.determineNextStep(isCorrect);
   }
 
   private dispatchStoneDropEvent(isCorrect: boolean): void {

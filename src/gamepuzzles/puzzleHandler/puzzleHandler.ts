@@ -21,6 +21,7 @@ interface CreatePuzzleContext {
   timerTicking: any;
   lang: string;
   lettersCountRef: { value: number };
+  onFeedbackAudioEnd?: (isCorrect: boolean) => void;
 }
 
 /**
@@ -47,9 +48,9 @@ export default class PuzzleHandler {
    */
   initialize(levelData: any, counter: number): void {
     if (!levelData || !levelData.levelMeta) return;
-    
+
     const { levelType } = levelData.levelMeta;
-    
+
     // Initialize word puzzle logic for Word and SoundWord types
     if (levelType === "Word" || levelType === "SoundWord") {
       this.wordPuzzleLogic = new WordPuzzleLogic(levelData, counter);
@@ -92,7 +93,8 @@ export default class PuzzleHandler {
       feedBackIndex,
       isCorrect,
       false,
-      droppedText
+      droppedText,
+      ctx.onFeedbackAudioEnd
     );
 
     if (isCorrect) {
@@ -181,23 +183,25 @@ export default class PuzzleHandler {
     isLetterDropCorrect: boolean,
     isWord: boolean,
     droppedLetter: string,
+    onFeedbackAudioEnd?: (isCorrect: boolean) => void
   ) {
     if (!this.feedbackAudioHandler) {
-      return; // No audio handler available
+      if (onFeedbackAudioEnd) onFeedbackAudioEnd(isLetterDropCorrect);
+      return;
     }
-    
+
     if (isLetterDropCorrect) {
       const condition = isWord
         ? droppedLetter === targetLetterText // condition for word puzzle
         : isLetterDropCorrect // for letter and letter for word puzzle
 
       if (condition) {
-        this.feedbackAudioHandler.playFeedback(FeedbackType.CORRECT_ANSWER, feedBackIndex);
+        this.feedbackAudioHandler.playFeedback(FeedbackType.CORRECT_ANSWER, feedBackIndex, () => { if (onFeedbackAudioEnd) onFeedbackAudioEnd(true); });
       } else {
-        this.feedbackAudioHandler.playFeedback(FeedbackType.PARTIAL_CORRECT, feedBackIndex);
+        this.feedbackAudioHandler.playFeedback(FeedbackType.PARTIAL_CORRECT, feedBackIndex, () => { if (onFeedbackAudioEnd) onFeedbackAudioEnd(true); });
       }
     } else {
-      this.feedbackAudioHandler.playFeedback(FeedbackType.INCORRECT, feedBackIndex);
+      this.feedbackAudioHandler.playFeedback(FeedbackType.INCORRECT, feedBackIndex, () => { if (onFeedbackAudioEnd) onFeedbackAudioEnd(false); });
     }
   }
 
@@ -242,7 +246,7 @@ export default class PuzzleHandler {
    * Handles checking hovered letter for word puzzles.
    */
   handleCheckHoveredLetter(letterText: string, letterIndex: number): boolean {
-     return this.wordPuzzleLogic?.handleCheckHoveredLetter(letterText, letterIndex);
+    return this.wordPuzzleLogic?.handleCheckHoveredLetter(letterText, letterIndex);
   }
 
   /**
@@ -269,11 +273,11 @@ export default class PuzzleHandler {
     ctx: CreatePuzzleContext,
   ): void {
 
-    
+
     // Get feedback text and display it
     const feedbackText = this.getRandomFeedBackText(feedbackIndex, ctx.feedBackTexts);
     this.feedbackTextEffects.wrapText(feedbackText);
-    
+
     // Hide feedback text after audio finishes
     const totalAudioDuration = 4500; // Approximate duration of feedback audio
     setTimeout(() => {

@@ -39,16 +39,16 @@ export default class FeedbackAudioHandler {
    * @param feedbackType - The type of feedback to play
    * @param feedBackIndex - Index for feedback audio selection
    */
-  public playFeedback(feedbackType: FeedbackType, feedBackIndex: number): void {
+  public playFeedback(feedbackType: FeedbackType, feedBackIndex: number, onFeedbackAudioEnd?: () => void): void {
     switch (feedbackType) {
       case FeedbackType.CORRECT_ANSWER:
-        this.playCorrectAnswerFeedbackSound(feedBackIndex);
+        this.playCorrectAnswerFeedbackSound(feedBackIndex, onFeedbackAudioEnd);
         break;
       case FeedbackType.PARTIAL_CORRECT:
-        this.playPartialCorrectFeedbackSound();
+        this.playPartialCorrectFeedbackSound(onFeedbackAudioEnd);
         break;
       case FeedbackType.INCORRECT:
-        this.playIncorrectFeedbackSound();
+        this.playIncorrectFeedbackSound(onFeedbackAudioEnd);
         break;
     }
   }
@@ -56,29 +56,35 @@ export default class FeedbackAudioHandler {
   /**
    * Plays audio for a partially correct answer (e.g., correct letter in a word puzzle)
    */
-  private playPartialCorrectFeedbackSound(): void {
+  private playPartialCorrectFeedbackSound(onFeedbackAudioEnd?: () => void): void {
     this.audioPlayer.playAudioQueue(
       false,
       AUDIO_PATH_EATS,
       AUDIO_PATH_CHEERING_FUNC(2)
     );
+    setTimeout(() => {
+      if (onFeedbackAudioEnd) onFeedbackAudioEnd();
+    }, 2000);
   }
 
   /**
    * Plays audio for an incorrect answer
    */
-  private playIncorrectFeedbackSound(): void {
+  private playIncorrectFeedbackSound(onFeedbackAudioEnd?: () => void): void {
     this.audioPlayer.playAudioQueue(
       false,
       AUDIO_PATH_EATS
     );
-    
+
     setTimeout(() => {
       this.audioPlayer.playAudioQueue(
         false,
         AUDIO_PATH_MONSTER_SPIT,
         Math.round(Math.random()) > 0 ? AUDIO_PATH_MONSTER_DISSAPOINTED : null
       );
+      setTimeout(() => {
+        if (onFeedbackAudioEnd) onFeedbackAudioEnd();
+      }, 3000); // After second audio
     }, 1700); // 1700ms is tailored to handleStoneDropEnd 1000 delay of isSpit animation
   }
 
@@ -86,7 +92,7 @@ export default class FeedbackAudioHandler {
    * Plays the correct answer feedback sounds
    * @param feedBackIndex - Index for feedback audio selection
    */
-  private async playCorrectAnswerFeedbackSound(feedBackIndex: number): Promise<void> {
+  private async playCorrectAnswerFeedbackSound(feedBackIndex: number, onFeedbackAudioEnd?: () => void): Promise<void> {
     try {
       // Play feedback audio in parallel for better performance
       const randomNumber = Utils.getRandomNumber(1, 3).toString();
@@ -100,8 +106,14 @@ export default class FeedbackAudioHandler {
           Utils.getConvertedDevProdURL(this.feedbackAudios[feedBackIndex])
         )
       ]);
+      setTimeout(() => {
+        if (onFeedbackAudioEnd) onFeedbackAudioEnd(); // Callback after audios finish playing
+      }, 4500);
     } catch (error) {
       console.warn('Audio playback failed:', error);
+      setTimeout(() => {
+        if (onFeedbackAudioEnd) onFeedbackAudioEnd(); // Ensure callback is called even if audio fails
+      }, 4500); 
     }
   }
 
