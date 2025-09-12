@@ -27,8 +27,8 @@ export class TreasureChestMiniGame {
 
   public tapStoneCallback() {
     this.clickedCount++;
-    this.updateCollectedStone();
-    this.processStoneCollection();
+    // this.updateCollectedStone();
+    // this.processStoneCollection();
   }
 
   private updateCollectedStone() {
