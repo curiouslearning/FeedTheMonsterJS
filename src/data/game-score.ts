@@ -3,25 +3,32 @@ import { Debugger, lang } from "@common";
 export class GameScore {
   public static currentlanguage: string = lang;
 
-  public static setGameLevelScore(currentLevelInfo, score) {
+  public static setGameLevelScore(currentLevelInfo, score, treasureChestMiniGameScore) {
     let starsGained = this.calculateStarCount(score);
     let levelPlayedInfo = {
       levelName: currentLevelInfo.levelMeta.levelType,
       levelNumber: currentLevelInfo.levelMeta.levelNumber,
       score: score,
       starCount: starsGained,
+      treasureChestMiniGameScore,
     };
     let allGameLevelInfo = this.getAllGameLevelInfo();
     let index = allGameLevelInfo.findIndex(
       (level) => level.levelNumber === levelPlayedInfo.levelNumber
     );
 
+    //If there are data found in local storage, cross check the scores.
     if (index !== -1) {
-      // Update only if the new score is higher
-      if (levelPlayedInfo.score > allGameLevelInfo[index].score) {
+      //Check if the new scores are higher.
+      const isNewScoreHigher = score > allGameLevelInfo[index].score;
+      const isNewMiniGameScoreHigher = treasureChestMiniGameScore > allGameLevelInfo[index].treasureChestMiniGameScore;
+
+      // Update only if the new score is higher either from mini game or actual game score.
+      if (isNewScoreHigher || isNewMiniGameScoreHigher) {
         allGameLevelInfo[index] = levelPlayedInfo;
       }
     } else {
+      // If the game level is newly cleared.
       allGameLevelInfo.push(levelPlayedInfo);
     }
 
