@@ -339,7 +339,7 @@ class App {
   }
 
   private updateVersionInfoElement(dataModal: DataModal): void {
-    const isDevOrTestEnv = this.is_cached.has(this.lang) && (Debugger.TestLink || Debugger.DevelopmentLink || Debugger.DebugMode);
+    const isDevOrTestEnv = this.is_cached.has(this.lang) && (Debugger.LocalLink || Debugger.TestLink || Debugger.DevelopmentLink || Debugger.DebugMode);
     
     // Update version info when in development/test environment
     if (isDevOrTestEnv) {

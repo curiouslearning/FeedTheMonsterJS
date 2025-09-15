@@ -363,8 +363,7 @@ export class GameplayScene {
         lettersCountRef,
         feedBackTexts: this.feedBackTexts,
         onFeedbackAudioEnd: (isCorrect) => {
-          console.log(isCorrect,"Feedback audio ended callback triggered.");
-          this.determineNextStep(true); // <-- This will be call minigame if level is for minigame.
+          this.determineNextStep(isCorrect); // <-- This will be call minigame if level is for minigame.
         }
       };
 

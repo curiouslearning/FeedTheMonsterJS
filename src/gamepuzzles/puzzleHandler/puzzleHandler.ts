@@ -123,7 +123,8 @@ export default class PuzzleHandler {
       feedBackIndex,
       isCorrect,
       true,
-      this.getWordPuzzleDroppedLetters()
+      this.getWordPuzzleDroppedLetters(),
+      ctx.onFeedbackAudioEnd
     );
 
     if (isCorrect) {
@@ -198,10 +199,10 @@ export default class PuzzleHandler {
       if (condition) {
         this.feedbackAudioHandler.playFeedback(FeedbackType.CORRECT_ANSWER, feedBackIndex, () => { if (onFeedbackAudioEnd) onFeedbackAudioEnd(true); });
       } else {
-        this.feedbackAudioHandler.playFeedback(FeedbackType.PARTIAL_CORRECT, feedBackIndex, () => { if (onFeedbackAudioEnd) onFeedbackAudioEnd(true); });
+        this.feedbackAudioHandler.playFeedback(FeedbackType.PARTIAL_CORRECT, feedBackIndex);
       }
     } else {
-      this.feedbackAudioHandler.playFeedback(FeedbackType.INCORRECT, feedBackIndex, () => { if (onFeedbackAudioEnd) onFeedbackAudioEnd(false); });
+      this.feedbackAudioHandler.playFeedback(FeedbackType.INCORRECT, feedBackIndex, () => { if (onFeedbackAudioEnd) onFeedbackAudioEnd(true); });
     }
   }
 
