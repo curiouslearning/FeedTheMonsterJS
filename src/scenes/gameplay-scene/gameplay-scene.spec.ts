@@ -309,7 +309,7 @@ jest.mock('@miniGameStateService', () => ({
     EVENTS: {
       IS_MINI_GAME_DONE: 'IS_MINI_GAME_DONE',
     },
-    selectLevelAtRandom: jest.fn(),
+    shouldShowMiniGame: jest.fn(),
   }
 }));
 
