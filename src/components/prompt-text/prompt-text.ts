@@ -345,19 +345,43 @@ export class PromptText extends BaseHTML {
 
         const isRTL = Utils.isRTLText(promptWord) // Get direction of the language
 
-        const wordCharArray = graphemes.map(
-            (letter, index) => {
-                let styleClass: string | null = null;
-
-                if (letter === activeLetter && index === activeLetterIndex) {
-                    styleClass = 'text-red-pulse-letter';
-                } else if (isSpellingPuzzle) {
-                    styleClass = activeLetterIndex < index ? 'text-red' : "text-black";
+        let wordCharArray;
+        // Only apply grapheme sequence matching for RTL and LetterInWord
+        if (isRTL && this.levelData?.levelMeta?.levelType === "LetterInWord") {
+            wordCharArray = [];
+            let i = 0;
+            while (i < graphemes.length) {
+                let matchLength = 0;
+                let joined = '';
+                for (let j = i; j < graphemes.length; j++) {
+                    joined += graphemes[j];
+                    if (joined === activeLetter) {
+                        matchLength = j - i + 1;
+                        break;
+                    }
                 }
-
-                //If styleClass is null, generate letter only text. But for any word puzzle or target letter generate span markup.
-                return styleClass ? generateSpanMarkup(letter, styleClass) : letter;
-            });
+                if (matchLength > 0) {
+                    wordCharArray.push(generateSpanMarkup(joined, 'text-red-pulse-letter'));
+                    i += matchLength;
+                } else {
+                    wordCharArray.push(graphemes[i]);
+                    i++;
+                }
+            }
+        } else {
+            // Original logic for other cases
+            wordCharArray = graphemes.map(
+                (letter, index) => {
+                    let styleClass: string | null = null;
+                    if (letter === activeLetter && index === activeLetterIndex) {
+                        styleClass = 'text-red-pulse-letter';
+                    } else if (isSpellingPuzzle) {
+                        styleClass = activeLetterIndex < index ? 'text-red' : "text-black";
+                    }
+                    return styleClass ? generateSpanMarkup(letter, styleClass) : letter;
+                }
+            );
+        }
         const wordTextMarkup = wordCharArray.join('');
         // Wrap with a direction-aware container depending on the text direction.
         return `<span dir="${isRTL ? 'rtl' : 'ltr'}">${wordTextMarkup}</span>`;
@@ -424,7 +448,6 @@ export class PromptText extends BaseHTML {
             if (cssDirection === 'ltr' && levelType === "LetterInWord") {
                 wrapper.style.letterSpacing = '4px'; // Specific tweak for LTR LetterInWord
             }
-
             wrapper.innerHTML = this.createWordText({
                 promptWord: this.currentPromptText,
                 activeLetter: targetLetterText,
