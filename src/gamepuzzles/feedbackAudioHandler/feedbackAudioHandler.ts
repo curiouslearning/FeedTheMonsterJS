@@ -45,7 +45,7 @@ export default class FeedbackAudioHandler {
         this.playCorrectAnswerFeedbackSound(feedBackIndex, onFeedbackAudioEnd);
         break;
       case FeedbackType.PARTIAL_CORRECT:
-        this.playPartialCorrectFeedbackSound(onFeedbackAudioEnd);
+        this.playPartialCorrectFeedbackSound();
         break;
       case FeedbackType.INCORRECT:
         this.playIncorrectFeedbackSound(onFeedbackAudioEnd);
@@ -56,15 +56,12 @@ export default class FeedbackAudioHandler {
   /**
    * Plays audio for a partially correct answer (e.g., correct letter in a word puzzle)
    */
-  private playPartialCorrectFeedbackSound(onFeedbackAudioEnd?: () => void): void {
+  private playPartialCorrectFeedbackSound(): void {
     this.audioPlayer.playAudioQueue(
       false,
       AUDIO_PATH_EATS,
       AUDIO_PATH_CHEERING_FUNC(2)
     );
-    setTimeout(() => {
-      if (onFeedbackAudioEnd) onFeedbackAudioEnd();
-    }, 2000);
   }
 
   /**
