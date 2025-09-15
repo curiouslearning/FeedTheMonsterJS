@@ -69,7 +69,11 @@ describe('PuzzleHandler', () => {
       handler.createPuzzle(ctx);
 
       const mockAudio = (handler as any).feedbackAudioHandler;
-      expect(mockAudio.playFeedback).toHaveBeenCalledWith(FeedbackType.CORRECT_ANSWER, expect.any(Number));
+      expect(mockAudio.playFeedback).toHaveBeenCalledWith(
+      FeedbackType.CORRECT_ANSWER,
+      expect.any(Number),
+      expect.any(Function)
+    );
       expect(ctx.handleLetterDropEnd).toHaveBeenCalledWith(true, 'Letter');
     });
 
@@ -134,28 +138,32 @@ describe('PuzzleHandler', () => {
   });
 
   describe('processLetterDropFeedbackAudio', () => {
-    it('should play correct, partial, or incorrect audio', () => {
+    it('should play correct, partial, or incorrect audio and handle callback only for correct/incorrect', () => {
       const instance = handler as any;
+      const mockCallback = jest.fn();
 
       // simulate correct exact match
-      instance.processLetterDropFeedbackAudio('A', 0, true, true, 'A');
+      instance.processLetterDropFeedbackAudio('A', 0, true, true, 'A', mockCallback);
       expect(instance.feedbackAudioHandler.playFeedback).toHaveBeenCalledWith(
         FeedbackType.CORRECT_ANSWER,
-        0
+        0,
+        expect.any(Function)
       );
 
-      // simulate partial match
-      instance.processLetterDropFeedbackAudio('A', 1, true, true, 'B');
+      // simulate partial match (should NOT call callback)
+      instance.processLetterDropFeedbackAudio('A', 1, true, true, 'B', mockCallback);
       expect(instance.feedbackAudioHandler.playFeedback).toHaveBeenCalledWith(
         FeedbackType.PARTIAL_CORRECT,
         1
+        // No callback here
       );
 
-      // simulate incorrect
-      instance.processLetterDropFeedbackAudio('A', 0, false, true, 'B');
+      // simulate incorrect (should call callback)
+      instance.processLetterDropFeedbackAudio('A', 0, false, true, 'B', mockCallback);
       expect(instance.feedbackAudioHandler.playFeedback).toHaveBeenCalledWith(
         FeedbackType.INCORRECT,
-        0
+        0,
+        expect.any(Function)
       );
     });
   });
