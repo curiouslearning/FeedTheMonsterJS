@@ -62,12 +62,10 @@ export class GameScore {
         }
         // Save the updated score with the preserved mini game score.
         allGameLevelInfo[index] = levelPlayedInfo;
-     } else {
-      //If new game score IS NOT higher and ONLY the MINI GAME SCORE is higher. Otherwise do nothing.
-      if (isNewMiniGameScoreHigher){
+     } else if (!isNewScoreHigher && isNewMiniGameScoreHigher){
+        //If new game score IS NOT higher and ONLY the MINI GAME SCORE is higher.
         //Update only the treasureChestMiniGameScore value.
         allGameLevelInfo[index].treasureChestMiniGameScore = treasureChestMiniGameScore;
-      }
      }
     } else {
       // If the game level is newly cleared.
