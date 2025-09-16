@@ -32,7 +32,7 @@ import {
   LevelCompletedEvent,
   PuzzleCompletedEvent,
 } from "../../analytics/analytics-event-interface";
-import { AnalyticsIntegration } from "../../analytics/analytics-integration";
+import { AnalyticsIntegration, AnalyticsEventType } from "../../analytics/analytics-integration";
 import {
   SCENE_NAME_LEVEL_SELECT,
   SCENE_NAME_GAME_PLAY,
@@ -115,11 +115,16 @@ export class GameplayScene {
     { backToIdle: 350, isChewing: 0, isHappy: 1700, isSpit: 100, isSad: 2500 }  // Phase 4
   ];
   private levelForMinigame: number;
+  private treasureChestScore: number;
 
   constructor() {
     const gamePlayData = gameStateService.getGamePlaySceneDetails();
-    this.levelForMinigame = miniGameStateService.selectLevelAtRandom(gamePlayData.levelData.puzzles.length);
-    this.miniGameHandler = new MiniGameHandler();
+    this.levelForMinigame = miniGameStateService.shouldShowMiniGame({
+      levelSegmentLength: gamePlayData.levelData.puzzles.length,
+      gameLevel: gamePlayData.levelData.levelNumber
+    });
+    this.treasureChestScore = 0;
+    this.miniGameHandler = new MiniGameHandler(gamePlayData.levelData.levelNumber);
     this.pausePopupComponent = new PausePopupComponent();
     // Assign state properties based on game state
     this.initializeProperties(gamePlayData);
@@ -150,11 +155,14 @@ export class GameplayScene {
     );
     this.unsubscribeMiniGameEvent = miniGameStateService.subscribe(
       miniGameStateService.EVENTS.IS_MINI_GAME_DONE,
-      (isDone: boolean) => {
-        if (isDone) {
-          //Load the next puzzle segment after mini game.
-          this.loadPuzzle(false, 4500);
-        }
+      ({ miniGameScore, gameLevel }: {
+        miniGameScore: number,
+        gameLevel: number,
+      }) => {
+        //Assigned new score that will be submited to GameScore at the end of game level.
+        this.treasureChestScore = miniGameScore;
+        //Load the next puzzle segment after mini game regardless if the user scored or not.
+        this.loadPuzzle(false, 4500);
       });
     this.pausePopupComponent.onClose((event) => {
       const { data } = event;
@@ -753,15 +761,16 @@ export class GameplayScene {
     //this.counter is 0 by default; So +1 to actually match with levelForMinigame values as it starts with 1.
     const currentLevel = this.counter + 1;
 
-    if (currentLevel === this.levelForMinigame) {
-      if (!this.hasShownChest) {
-        this.hasShownChest = true;
-        // Run chest animation
-        this.miniGameHandler.draw();
-      }
-    }
-    else {
-      this.loadPuzzle(isTimeOver, loadPuzzleDelay);
+    if (currentLevel === this.levelForMinigame && !this.hasShownChest) {
+      this.hasShownChest = true;
+      // Run chest animation
+      this.miniGameHandler.draw();
+    } else {
+      //For incorrect answers only; Start loading the next puzzle with 2 seconds delay to let the audios play.
+      const delay = isCorrect || isTimeOver ? 0 : 2000;
+      setTimeout(() => {
+        this.loadPuzzle(isTimeOver, loadPuzzleDelay);
+      }, delay);
     }
   }
 
@@ -784,7 +793,7 @@ export class GameplayScene {
       const handleLevelEnd = () => {
         this.levelIndicators?.setIndicators(this.counter);
         this.logLevelEndFirebaseEvent();
-        GameScore.setGameLevelScore(this.levelData, this.score);
+        GameScore.setGameLevelScore(this.levelData, this.score, this.treasureChestScore);
 
         const levelEndData = {
           starCount: GameScore.calculateStarCount(this.score),
@@ -844,7 +853,7 @@ export class GameplayScene {
 
   public dispose = () => {
     this.isDisposing = true;
-
+    this.treasureChestScore = 0;
     // Cleanup audio
     if (this.audioPlayer) {
       this.audioPlayer.stopAllAudios();
@@ -958,48 +967,41 @@ export class GameplayScene {
   }
 
   public logPuzzleEndFirebaseEvent(isCorrect: boolean, puzzleType?: string) {
-    let endTime = Date.now();
+    const endTime = Date.now();
     const droppedLetters = this.puzzleHandler.getWordPuzzleDroppedLetters();
-    const puzzleCompletedData: PuzzleCompletedEvent = {
-      cr_user_id: pseudoId,
-      ftm_language: lang,
-      profile_number: 0,
-      version_number: document.getElementById("version-info-id").innerHTML,
-      json_version_number: this.jsonVersionNumber,
-      success_or_failure: isCorrect ? "success" : "failure",
-      level_number: this.levelData.levelMeta.levelNumber,
-      puzzle_number: this.counter,
-      item_selected:
-        puzzleType == "Word"
-          ? droppedLetters == null ||
-            droppedLetters == undefined
-            ? "TIMEOUT"
-            : droppedLetters
-          : this.pickedStone == null || this.pickedStone == undefined
-            ? "TIMEOUT"
-            : this.pickedStone?.text,
-      target: this.stoneHandler.getCorrectTargetStone(),
-      foils: this.stoneHandler.getFoilStones(),
-      response_time: (endTime - this.puzzleTime) / 1000,
-    };
-    this.analyticsIntegration.sendPuzzleCompletedEvent(puzzleCompletedData);
+    
+    this.analyticsIntegration.track(
+      AnalyticsEventType.PUZZLE_COMPLETED,
+      {
+        json_version_number: this.jsonVersionNumber,
+        success_or_failure: isCorrect ? "success" : "failure",
+        level_number: this.levelData.levelMeta.levelNumber,
+        puzzle_number: this.counter,
+        item_selected: puzzleType === "Word"
+          ? (droppedLetters ?? "TIMEOUT")
+          : (this.pickedStone?.text ?? "TIMEOUT"),
+        target: this.stoneHandler.getCorrectTargetStone(),
+        foils: Array.isArray(this.stoneHandler.getFoilStones()) 
+          ? this.stoneHandler.getFoilStones().join(',')
+          : this.stoneHandler.getFoilStones(),
+        response_time: (endTime - this.puzzleTime) / 1000,
+      }
+    );
   }
 
   public logLevelEndFirebaseEvent() {
-    let endTime = Date.now();
-    const levelCompletedData: LevelCompletedEvent = {
-      cr_user_id: pseudoId,
-      ftm_language: lang,
-      profile_number: 0,
-      version_number: document.getElementById("version-info-id").innerHTML,
-      json_version_number: this.jsonVersionNumber,
-      success_or_failure:
-        GameScore.calculateStarCount(this.score) >= 3 ? "success" : "failure",
-      number_of_successful_puzzles: this.score / 100,
-      level_number: this.levelData.levelMeta.levelNumber,
-      duration: (endTime - this.startTime) / 1000,
-    };
-    this.analyticsIntegration.sendLevelCompletedEvent(levelCompletedData);
+    const endTime = Date.now();
+    
+    this.analyticsIntegration.track(
+      AnalyticsEventType.LEVEL_COMPLETED,
+      {
+        json_version_number: this.jsonVersionNumber,
+        success_or_failure: GameScore.calculateStarCount(this.score) >= 3 ? "success" : "failure",
+        number_of_successful_puzzles: this.score / 100,
+        level_number: this.levelData.levelMeta.levelNumber,
+        duration: (endTime - this.startTime) / 1000,
+      }
+    );
   }
 
   public startGameTime() {

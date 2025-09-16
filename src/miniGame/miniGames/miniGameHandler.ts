@@ -24,9 +24,11 @@ import { TreasureChestMiniGame } from './treasureChest/treasureChestMiniGame';
  */
 export class MiniGameHandler {
   public activeMiniGame: TreasureChestMiniGame | null; //Any for now as default.
+  public gameLevel: number;
 
-  constructor() {
+  constructor(gameLevel: number) {
     this.activeMiniGame = null;
+    this.gameLevel = gameLevel;
     this.createMiniGameInstance();
   }
 
@@ -46,7 +48,9 @@ export class MiniGameHandler {
     //Since we only have one mini game instance we will just assigned treasure chest mini game.
     //Update and add logic here to handle loading of different mini game.
 
-    this.activeMiniGame = new TreasureChestMiniGame(this.handleMiniGameComplete);
+    this.activeMiniGame = new TreasureChestMiniGame((earnedStarCount: number) => {
+      this.handleMiniGameComplete(earnedStarCount);
+    });
   }
 
   /**
@@ -71,8 +75,11 @@ export class MiniGameHandler {
     // ADD logic here relating to star count.
     // For example relating to game score to reflext the correct star count for monster evolution with GameScore @data class.
 
-    //Communicate to GamePlay-Scene that the mini game is done to trigger the load puzzle method.
-    miniGameStateService.publish(miniGameStateService.EVENTS.IS_MINI_GAME_DONE, true);
+    //Communicate to MiniGameStateService and GamePlay-Scene that the mini game is done to trigger the load puzzle method.
+    miniGameStateService.publish(miniGameStateService.EVENTS.IS_MINI_GAME_DONE, {
+      miniGameScore: earnedStarCount,
+      gameLevel: this.gameLevel
+    });
   }
 
   /**

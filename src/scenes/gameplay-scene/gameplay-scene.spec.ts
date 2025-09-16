@@ -3,6 +3,7 @@ const mockInstance = {
   sendPuzzleCompletedEvent: jest.fn(),
   sendLevelCompletedEvent: jest.fn(),
   sendSessionEndEvent: jest.fn(),
+  track: jest.fn(), // ✅ Add the track method
   isAnalyticsReady: jest.fn().mockReturnValue(true)
 };
 
@@ -16,6 +17,7 @@ jest.mock("../../analytics/analytics-integration", () => ({
         sendPuzzleCompletedEvent: jest.fn(),
         sendLevelCompletedEvent: jest.fn(),
         sendSessionEndEvent: jest.fn(),
+        track: jest.fn(), // ✅ Add the track method here too
         isAnalyticsReady: jest.fn().mockReturnValue(true)
       };
       return Promise.resolve();
@@ -309,7 +311,7 @@ jest.mock('@miniGameStateService', () => ({
     EVENTS: {
       IS_MINI_GAME_DONE: 'IS_MINI_GAME_DONE',
     },
-    selectLevelAtRandom: jest.fn(),
+    shouldShowMiniGame: jest.fn(),
   }
 }));
 
