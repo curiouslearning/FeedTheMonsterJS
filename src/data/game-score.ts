@@ -1,9 +1,38 @@
 import { Debugger, lang } from "@common";
 
+// === Types ===
+interface Prompt {
+  promptText: string;
+  promptAudio: string;
+}
+interface Puzzle {
+  segmentNumber: number;
+  prompt: Prompt;
+  foilStones: string[];
+  targetStones: string[];
+}
+
+interface LevelMeta {
+  promptFadeOut: number;
+  letterGroup: number;
+  levelNumber: number;
+  protoType: string;
+  levelType: string;
+}
+
+interface CurrentLevelInfo {
+  puzzles: Puzzle[];
+  levelMeta: LevelMeta;
+  levelNumber: number;
+}
 export class GameScore {
   public static currentlanguage: string = lang;
 
-  public static setGameLevelScore(currentLevelInfo, score, treasureChestMiniGameScore) {
+  public static setGameLevelScore(
+    currentLevelInfo: CurrentLevelInfo,
+    score: number,
+    treasureChestMiniGameScore: number
+  ): void {
     let starsGained = this.calculateStarCount(score);
     let levelPlayedInfo = {
       levelName: currentLevelInfo.levelMeta.levelType,

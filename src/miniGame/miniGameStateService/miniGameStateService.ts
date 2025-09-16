@@ -53,7 +53,7 @@ export class MiniGameStateService extends PubSub {
     //If there are saved data found, update the completedLevel to reflect the data saved form local storage.
     if (gameLevelsInfo.length) {
       //Update values of each levels in completedLevel based on what is saved in local storage.
-      //A separate array is required as GameScore array doesn save in sequence things in sequences so inaccurate to relay on index.
+      //A separate array is required as GameScore array doesn save in sequence things in sequences so inaccurate to rely on index.
       gameLevelsInfo.forEach((gameLevelResult: {
         levelName: string;
         levelNumber: number;
@@ -74,7 +74,7 @@ export class MiniGameStateService extends PubSub {
     this.treasureChestCompletedLevel = completedLevel;
   }
 
-  private selectLevelAtRandom(levelSegmentLength: number) {
+  private selectLevelAtRandom(levelSegmentLength: number): number {
     return Math.floor(Math.random() * levelSegmentLength) + 1;
   }
 
@@ -82,7 +82,7 @@ export class MiniGameStateService extends PubSub {
     gameLevel, levelSegmentLength
   }: {
     gameLevel: number, levelSegmentLength: number
-  }) {
+  }): number {
     //Plus one to match the expected level as game level starts at 0 whereas business logic starts at 1.
     const adjustGameLevelValue = gameLevel + 1;
 
