@@ -13,7 +13,7 @@ export class TreasureChestMiniGame {
   private callback: any;
   public miniGameStatus: boolean = false;
   private treasureAnimation: TreasureChestAnimation;
-  private clickedCount = 0;
+
   constructor(miniGameCompleteCallback) {
     this.earnedStarCount = 0;
     this.collectedStones = 0;
@@ -26,27 +26,18 @@ export class TreasureChestMiniGame {
   }
 
   public tapStoneCallback() {
-    this.clickedCount++;
-    // this.updateCollectedStone();
-    // this.processStoneCollection();
-  }
-
-  private updateCollectedStone() {
     this.collectedStones++;
   }
 
   private processStoneCollection() {
-    if (this.collectedStones >= 3) {
-      this.earnedStarCount = 1;
+    //Convert collection stones from tapping into a star value; Max of 1 star.
+    this.earnedStarCount = this.collectedStones >= 3 ? 1 : 0;
 
-      //Add more logic here relating to animation or anything tied after collecting 1 star.
+    //Set miniGameStatus to TRUE for minigame handler. Draw will be disabled.
+    this.miniGameStatus = true;
 
-      //Set miniGameStatus to TRUE for minigame handler. Draw will be disabled.
-      this.miniGameStatus = true;
-
-      //Trigger callback from parent miniGameHandler when the treasure chest mini game is complete.
-      this.callback(this.earnedStarCount);
-    }
+    //Trigger callback from parent miniGameHandler when the treasure chest mini game is complete.
+    this.callback(this.earnedStarCount);
   }
 
   //Draw logic for treasure chest minigame. Called by mini game handler.
@@ -57,11 +48,8 @@ export class TreasureChestMiniGame {
         // Animation complete callback
         console.log("Treasure Chest Animation Completed");
 
-        
-      // If player didn't collect enough stones, still call parent
-      if (!this.miniGameStatus) {
-        this.callback(this.earnedStarCount);
-      }
+        //Convert collectedStones into a star after the treasure chest animation.
+        this.processStoneCollection();
       });
     }
 

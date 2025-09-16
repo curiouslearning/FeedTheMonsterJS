@@ -115,11 +115,16 @@ export class GameplayScene {
     { backToIdle: 350, isChewing: 0, isHappy: 1700, isSpit: 100, isSad: 2500 }  // Phase 4
   ];
   private levelForMinigame: number;
+  private treasureChestScore: number;
 
   constructor() {
     const gamePlayData = gameStateService.getGamePlaySceneDetails();
-    this.levelForMinigame = miniGameStateService.selectLevelAtRandom(gamePlayData.levelData.puzzles.length);
-    this.miniGameHandler = new MiniGameHandler();
+    this.levelForMinigame = miniGameStateService.shouldShowMiniGame({
+      levelSegmentLength: gamePlayData.levelData.puzzles.length,
+      gameLevel: gamePlayData.levelData.levelNumber
+    });
+    this.treasureChestScore = 0;
+    this.miniGameHandler = new MiniGameHandler(gamePlayData.levelData.levelNumber);
     this.pausePopupComponent = new PausePopupComponent();
     // Assign state properties based on game state
     this.initializeProperties(gamePlayData);
@@ -150,11 +155,14 @@ export class GameplayScene {
     );
     this.unsubscribeMiniGameEvent = miniGameStateService.subscribe(
       miniGameStateService.EVENTS.IS_MINI_GAME_DONE,
-      (isDone: boolean) => {
-        if (isDone) {
-          //Load the next puzzle segment after mini game.
-          this.loadPuzzle(false, 4500);
-        }
+      ({ miniGameScore, gameLevel }: {
+        miniGameScore: number,
+        gameLevel: number,
+      }) => {
+        //Assigned new score that will be submited to GameScore at the end of game level.
+        this.treasureChestScore = miniGameScore;
+        //Load the next puzzle segment after mini game regardless if the user scored or not.
+        this.loadPuzzle(false, 4500);
       });
     this.pausePopupComponent.onClose((event) => {
       const { data } = event;
@@ -738,28 +746,19 @@ export class GameplayScene {
   determineNextStep(isCorrect = false, isTimeOver = false) {
     const loadPuzzleDelay = isCorrect ? 4500 : 3000;
 
-    if (!isCorrect || isTimeOver) {
-      //For incorrect answers only; Start loading the next puzzle with 2 seconds delay to let the audios play.
-      const delay = isCorrect && !isTimeOver ? 0 : 2000;
-      setTimeout(() => {
-        this.loadPuzzle(isTimeOver, loadPuzzleDelay);
-      }, delay);
-
-      return;
-    }
-
     //this.counter is 0 by default; So +1 to actually match with levelForMinigame values as it starts with 1.
     const currentLevel = this.counter + 1;
 
-    if (currentLevel === this.levelForMinigame) {
-      if (!this.hasShownChest) {
-        this.hasShownChest = true;
-        // Run chest animation
-        this.miniGameHandler.draw();
-      }
-    }
-    else {
-      this.loadPuzzle(isTimeOver, loadPuzzleDelay);
+    if (currentLevel === this.levelForMinigame && !this.hasShownChest) {
+      this.hasShownChest = true;
+      // Run chest animation
+      this.miniGameHandler.draw();
+    } else {
+      //For incorrect answers only; Start loading the next puzzle with 2 seconds delay to let the audios play.
+      const delay = isCorrect || isTimeOver ? 0 : 2000;
+      setTimeout(() => {
+        this.loadPuzzle(isTimeOver, loadPuzzleDelay);
+      }, delay);
     }
   }
 
@@ -782,7 +781,7 @@ export class GameplayScene {
       const handleLevelEnd = () => {
         this.levelIndicators.setIndicators(this.counter);
         this.logLevelEndFirebaseEvent();
-        GameScore.setGameLevelScore(this.levelData, this.score);
+        GameScore.setGameLevelScore(this.levelData, this.score, this.treasureChestScore);
 
         const levelEndData = {
           starCount: GameScore.calculateStarCount(this.score),
@@ -842,7 +841,7 @@ export class GameplayScene {
 
   public dispose = () => {
     this.isDisposing = true;
-
+    this.treasureChestScore = 0;
     // Cleanup audio
     if (this.audioPlayer) {
       this.audioPlayer.stopAllAudios();
