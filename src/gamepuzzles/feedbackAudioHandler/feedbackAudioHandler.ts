@@ -79,9 +79,7 @@ export default class FeedbackAudioHandler {
         AUDIO_PATH_MONSTER_SPIT,
         Math.round(Math.random()) > 0 ? AUDIO_PATH_MONSTER_DISSAPOINTED : null
       );
-      setTimeout(() => {
         if (onFeedbackAudioEnd) onFeedbackAudioEnd();
-      }, 3000); // After second audio
     }, 1700); // 1700ms is tailored to handleStoneDropEnd 1000 delay of isSpit animation
   }
 
@@ -103,14 +101,10 @@ export default class FeedbackAudioHandler {
           Utils.getConvertedDevProdURL(this.feedbackAudios[feedBackIndex])
         )
       ]);
-      setTimeout(() => {
         if (onFeedbackAudioEnd) onFeedbackAudioEnd(); // Callback after audios finish playing
-      }, 4500);
     } catch (error) {
       console.warn('Audio playback failed:', error);
-      setTimeout(() => {
         if (onFeedbackAudioEnd) onFeedbackAudioEnd(); // Ensure callback is called even if audio fails
-      }, 4500); 
     }
   }
 

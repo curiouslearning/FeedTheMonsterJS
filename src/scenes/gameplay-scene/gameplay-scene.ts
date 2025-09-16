@@ -351,6 +351,7 @@ export class GameplayScene {
     if (this.monster.checkHitboxDistance(event)) {
       // Handle letter drop (success case)
       const lettersCountRef = { value: this.stonesCount };
+      const isMinigameLevel = this.getCurrentLevel() === this.levelForMinigame;
       const ctx = {
         levelType: this.levelData.levelMeta.levelType,
         pickedLetter: {
@@ -370,9 +371,9 @@ export class GameplayScene {
         lang,
         lettersCountRef,
         feedBackTexts: this.feedBackTexts,
-        onFeedbackAudioEnd: (isCorrect) => {
-          this.determineNextStep(isCorrect); // <-- This will be call minigame if level is for minigame.
-        }
+        onFeedbackAudioEnd: !isMinigameLevel
+          ? (isCorrect) => this.determineNextStep(isCorrect)
+          : undefined
       };
 
       this.puzzleHandler.createPuzzle(ctx);
@@ -747,24 +748,30 @@ export class GameplayScene {
  * applying delays when needed to allow audio/animations to finish.
  */
   determineNextStep(isCorrect = false, isTimeOver = false) {
-    const loadPuzzleDelay = isCorrect ? 1200 : 3000;
-
+    const loadPuzzleDelay = isCorrect ? 4500 : 3000;
+    const currentLevel = this.getCurrentLevel();
     if (!isCorrect || isTimeOver) {
       //For incorrect answers only; Start loading the next puzzle with 2 seconds delay to let the audios play.
       const delay = isCorrect && !isTimeOver ? 0 : 2000;
       setTimeout(() => {
         this.loadPuzzle(isTimeOver, loadPuzzleDelay);
       }, delay);
-
       return;
     }
-    //this.counter is 0 by default; So +1 to actually match with levelForMinigame values as it starts with 1.
-    const currentLevel = this.counter + 1;
-
+    console.log(`Current Level: ${currentLevel}, Level for MiniGame: ${this.levelForMinigame}, Has Shown Chest: ${this.hasShownChest}`);
+    
     if (currentLevel === this.levelForMinigame && !this.hasShownChest) {
       this.hasShownChest = true;
-      // Run chest animation
+
+      // Publish event BEFORE starting the mini game
+      miniGameStateService.publish(
+        miniGameStateService.EVENTS.MINI_GAME_WILL_START,
+        { level: currentLevel }
+      );
+
+      // Run chest animation (mini game)
       this.miniGameHandler.draw();
+      return;
     } else {
       //For incorrect answers only; Start loading the next puzzle with 2 seconds delay to let the audios play.
       const delay = isCorrect || isTimeOver ? 0 : 2000;
@@ -772,6 +779,10 @@ export class GameplayScene {
         this.loadPuzzle(isTimeOver, loadPuzzleDelay);
       }, delay);
     }
+  }
+
+  private getCurrentLevel(): number {
+    return this.counter + 1;
   }
 
   loadPuzzle = (isTimerEnded: boolean, loadPuzzleDelay: number) => {
@@ -969,7 +980,7 @@ export class GameplayScene {
   public logPuzzleEndFirebaseEvent(isCorrect: boolean, puzzleType?: string) {
     const endTime = Date.now();
     const droppedLetters = this.puzzleHandler.getWordPuzzleDroppedLetters();
-    
+
     this.analyticsIntegration.track(
       AnalyticsEventType.PUZZLE_COMPLETED,
       {
@@ -981,7 +992,7 @@ export class GameplayScene {
           ? (droppedLetters ?? "TIMEOUT")
           : (this.pickedStone?.text ?? "TIMEOUT"),
         target: this.stoneHandler.getCorrectTargetStone(),
-        foils: Array.isArray(this.stoneHandler.getFoilStones()) 
+        foils: Array.isArray(this.stoneHandler.getFoilStones())
           ? this.stoneHandler.getFoilStones().join(',')
           : this.stoneHandler.getFoilStones(),
         response_time: (endTime - this.puzzleTime) / 1000,
@@ -991,7 +1002,7 @@ export class GameplayScene {
 
   public logLevelEndFirebaseEvent() {
     const endTime = Date.now();
-    
+
     this.analyticsIntegration.track(
       AnalyticsEventType.LEVEL_COMPLETED,
       {
