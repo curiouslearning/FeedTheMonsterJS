@@ -746,16 +746,6 @@ export class GameplayScene {
   determineNextStep(isCorrect = false, isTimeOver = false) {
     const loadPuzzleDelay = isCorrect ? 4500 : 3000;
 
-    if (!isCorrect || isTimeOver) {
-      //For incorrect answers only; Start loading the next puzzle with 2 seconds delay to let the audios play.
-      const delay = isCorrect && !isTimeOver ? 0 : 2000;
-      setTimeout(() => {
-        this.loadPuzzle(isTimeOver, loadPuzzleDelay);
-      }, delay);
-
-      return;
-    }
-
     //this.counter is 0 by default; So +1 to actually match with levelForMinigame values as it starts with 1.
     const currentLevel = this.counter + 1;
 
@@ -764,7 +754,11 @@ export class GameplayScene {
       // Run chest animation
       this.miniGameHandler.draw();
     } else {
-      this.loadPuzzle(isTimeOver, loadPuzzleDelay);
+      //For incorrect answers only; Start loading the next puzzle with 2 seconds delay to let the audios play.
+      const delay = isCorrect || isTimeOver ? 0 : 2000;
+      setTimeout(() => {
+        this.loadPuzzle(isTimeOver, loadPuzzleDelay);
+      }, delay);
     }
   }
 

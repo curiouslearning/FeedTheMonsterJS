@@ -52,10 +52,23 @@ export class GameScore {
       const isNewScoreHigher = score > allGameLevelInfo[index].score;
       const isNewMiniGameScoreHigher = treasureChestMiniGameScore > allGameLevelInfo[index].treasureChestMiniGameScore;
 
-      // Update only if the new score is higher either from mini game or actual game score.
-      if (isNewScoreHigher || isNewMiniGameScoreHigher) {
+      //If new game score is higher.
+      if (isNewScoreHigher) {
+        if (!isNewMiniGameScoreHigher) {
+          //Update if ONLY NEW SCORE IS HiGHER and mini game score is the same.
+          const savedMiniGameScore = allGameLevelInfo[index].treasureChestMiniGameScore;
+          //Used the saved value of mini game score.
+          levelPlayedInfo.treasureChestMiniGameScore = savedMiniGameScore;
+        }
+        // Save the updated score with the preserved mini game score.
         allGameLevelInfo[index] = levelPlayedInfo;
+     } else {
+      //If new game score IS NOT higher and ONLY the MINI GAME SCORE is higher. Otherwise do nothing.
+      if (isNewMiniGameScoreHigher){
+        //Update only the treasureChestMiniGameScore value.
+        allGameLevelInfo[index].treasureChestMiniGameScore = treasureChestMiniGameScore;
       }
+     }
     } else {
       // If the game level is newly cleared.
       allGameLevelInfo.push(levelPlayedInfo);
