@@ -1,6 +1,13 @@
 import { CLOSED_CHEST, OPEN_CHEST, STONE_BLUE } from '@constants';
 import gameSettingsServiceInstance from '@gameSettingsService/index';
 
+enum TreasureChestState {
+  FadeIn,
+  ClosedChest,
+  OpenedChest,
+  FadeOut
+}
+
 type Stone = {
   x: number;
   y: number;
@@ -26,9 +33,7 @@ export class TreasureChestAnimation {
   private stones: Stone[] = [];
   private animationFrameId: number | null = null;
   private isVisible: boolean = false;
-  private chestOpen: boolean = false;
   private lastSpawnTime: number;
-  private startTime: number = 0;
   private shakeDuration: number = 1000; // 1s
   private callback: () => void; //Callback method to parent to trigger scoring / tapping of stones.
   private burnFrames: HTMLImageElement[] = [];
@@ -38,6 +43,8 @@ export class TreasureChestAnimation {
   private fadeInDuration = 300;
   private fadeOutDuration = 400;
   private onFadeComplete?: () => void;
+  private state: TreasureChestState = TreasureChestState.FadeIn;
+  private stateStartTime: number = 0;
   public dpr: number;
   constructor(
     private width: number,
@@ -135,23 +142,11 @@ export class TreasureChestAnimation {
   public show(onComplete?: () => void) {
     this.canvas.style.display = "block";
     this.isVisible = true;
-    this.chestOpen = false;
-    this.startTime = performance.now();
     this.stones = [];
-    this.fadeOutStart = null;
-    this.fadeInStart = performance.now(); // start fade-in
     this.onFadeComplete = onComplete;
+    this.state = TreasureChestState.FadeIn;
+    this.stateStartTime = performance.now();
     this.loop();
-
-    // after 1s, chest opens
-    setTimeout(() => {
-      this.chestOpen = true;
-    }, this.shakeDuration);
-
-    // play for 12s total, then cleanup
-    setTimeout(() => {
-      this.fadeOutStart = performance.now();
-    }, 12000);
   }
 
   /** Stops & hides */
@@ -168,7 +163,7 @@ export class TreasureChestAnimation {
 
   /** Shake offset calc */
   private getShakeOffset(now: number): number {
-    const elapsed = now - this.startTime;
+    const elapsed = now - this.stateStartTime;
     if (elapsed > this.shakeDuration) return 0;
 
     const progress = elapsed / this.shakeDuration;
@@ -216,33 +211,60 @@ export class TreasureChestAnimation {
     if (!this.isVisible) return;
 
     this.ctx.clearRect(0, 0, this.width, this.height);
-
-    // Fade check
-    if (this.handleFadeOut()) {
-      if (!this.fadeOutStart) {
-        // fadeOutStart was active, now finished
-        return;
-      }
-    } else if (this.handleFadeIn()) {
-      // still fading in, globalAlpha already applied
-    } else {
-      this.ctx.globalAlpha = 1; // default
-    }
-
-
     this.ctx.save();
-
-    // Shadow overlay
     this.drawOverlay();
 
-    // Draw chest (closed/open)
-    if (!this.chestOpen) {
-      this.drawClosedChest(time);
-    } else {
-      this.drawOpenChest(time);
-      this.updateStones();
-      this.cleanupStones();
-      this.maintainStones();
+    switch (this.state) {
+      case TreasureChestState.FadeIn: {
+        const elapsed = performance.now() - this.stateStartTime;
+        const alpha = Math.min(1, elapsed / this.fadeInDuration);
+        this.ctx.globalAlpha = alpha;
+        this.drawClosedChest(time);
+        if (alpha >= 1) {
+          this.state = TreasureChestState.ClosedChest;
+          this.stateStartTime = performance.now();
+        }
+        break;
+      }
+      case TreasureChestState.ClosedChest: {
+        this.ctx.globalAlpha = 1;
+        this.drawClosedChest(time);
+        const elapsed = performance.now() - this.stateStartTime;
+        if (elapsed >= this.shakeDuration) {
+          this.state = TreasureChestState.OpenedChest;
+          this.stateStartTime = performance.now();
+        }
+        break;
+      }
+      case TreasureChestState.OpenedChest: {
+        this.ctx.globalAlpha = 1;
+        this.drawOpenChest(time);
+        this.updateStones();
+        this.cleanupStones();
+        this.maintainStones();
+        const elapsed = performance.now() - this.stateStartTime;
+        if (elapsed >= 12000) { // 12s for chest open
+          this.state = TreasureChestState.FadeOut;
+          this.stateStartTime = performance.now();
+        }
+        break;
+      }
+      case TreasureChestState.FadeOut: {
+        const elapsed = performance.now() - this.stateStartTime;
+        const alpha = Math.max(0, 1 - elapsed / this.fadeOutDuration);
+        this.ctx.globalAlpha = alpha;
+        this.drawOpenChest(time);
+        this.updateStones();
+        this.cleanupStones();
+        this.maintainStones();
+        if (alpha === 0) {
+          this.hide();
+          this.onFadeComplete?.();
+          this.onFadeComplete = undefined;
+          return;
+        }
+        break;
+      }
     }
 
     this.ctx.restore();

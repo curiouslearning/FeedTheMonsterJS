@@ -739,7 +739,7 @@ export class GameplayScene {
  * applying delays when needed to allow audio/animations to finish.
  */
   determineNextStep(isCorrect = false, isTimeOver = false) {
-    const loadPuzzleDelay = isCorrect ? 4500 : 3000;
+    const loadPuzzleDelay = isCorrect ? 1200 : 3000;
 
     if (!isCorrect || isTimeOver) {
       //For incorrect answers only; Start loading the next puzzle with 2 seconds delay to let the audios play.
@@ -782,7 +782,7 @@ export class GameplayScene {
 
     if (this.counter === this.levelData.puzzles.length) {
       const handleLevelEnd = () => {
-        this.levelIndicators.setIndicators(this.counter);
+        this.levelIndicators?.setIndicators(this.counter);
         this.logLevelEndFirebaseEvent();
         GameScore.setGameLevelScore(this.levelData, this.score);
 
