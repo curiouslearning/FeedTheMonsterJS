@@ -95,6 +95,7 @@ export class GameplayScene {
   public gameControl: HTMLCanvasElement;
   private unsubscribeEvent: () => void;
   public unsubscribeMiniGameEvent: () => void;
+  public unsubscribeLoadGamePuzzle: () => void;
   public timeTicker: HTMLElement;
   isFeedBackTriggered: boolean;
   public monsterPhaseNumber: 0 | 1 | 2;
@@ -107,6 +108,7 @@ export class GameplayScene {
   private animationFrameId: number | null = null;
   private hasShownChest: boolean = false;
   private miniGameHandler: MiniGameHandler;
+  public isCorrect: boolean;
   // Define animation delays as an array where index 0 = phase 0, index 1 = phase 1, index 2 = phase 2
   private animationDelays = [
     { backToIdle: 350, isChewing: 0, isHappy: 1700, isSpit: 1500, isSad: 3000 }, // Phase 1
@@ -153,6 +155,11 @@ export class GameplayScene {
         if (isPause) this.pausePopupComponent.open();
       }
     );
+    this.unsubscribeLoadGamePuzzle = gameStateService.subscribe(
+      gameStateService.EVENTS.LOAD_NEXT_GAME_PUZZLE,
+      () => {
+        this.determineNextStep(this.isCorrect);
+      });
     this.unsubscribeMiniGameEvent = miniGameStateService.subscribe(
       miniGameStateService.EVENTS.IS_MINI_GAME_DONE,
       ({ miniGameScore, gameLevel }: {
@@ -351,7 +358,7 @@ export class GameplayScene {
     if (this.monster.checkHitboxDistance(event)) {
       // Handle letter drop (success case)
       const lettersCountRef = { value: this.stonesCount };
-      const isMinigameLevel = this.getCurrentLevel() === this.levelForMinigame;
+      // const isMinigameLevel = this.counter + 1 === this.levelForMinigame;
       const ctx = {
         levelType: this.levelData.levelMeta.levelType,
         pickedLetter: {
@@ -371,9 +378,9 @@ export class GameplayScene {
         lang,
         lettersCountRef,
         feedBackTexts: this.feedBackTexts,
-        onFeedbackAudioEnd: !isMinigameLevel
-          ? (isCorrect) => this.determineNextStep(isCorrect)
-          : undefined
+        // onFeedbackAudioEnd: isMinigameLevel
+        //   ? (isCorrect) => setTimeout(() => this.determineNextStep(isCorrect), 4500)
+        //   : undefined
       };
 
       this.puzzleHandler.createPuzzle(ctx);
@@ -748,18 +755,8 @@ export class GameplayScene {
  * applying delays when needed to allow audio/animations to finish.
  */
   determineNextStep(isCorrect = false, isTimeOver = false) {
-    const loadPuzzleDelay = isCorrect ? 4500 : 3000;
-    const currentLevel = this.getCurrentLevel();
-    if (!isCorrect || isTimeOver) {
-      //For incorrect answers only; Start loading the next puzzle with 2 seconds delay to let the audios play.
-      const delay = isCorrect && !isTimeOver ? 0 : 2000;
-      setTimeout(() => {
-        this.loadPuzzle(isTimeOver, loadPuzzleDelay);
-      }, delay);
-      return;
-    }
-    console.log(`Current Level: ${currentLevel}, Level for MiniGame: ${this.levelForMinigame}, Has Shown Chest: ${this.hasShownChest}`);
-    
+    const currentLevel = this.counter + 1;
+    const loadPuzzleDelay = isCorrect ? 1500 : 3000;
     if (currentLevel === this.levelForMinigame && !this.hasShownChest) {
       this.hasShownChest = true;
 
@@ -779,10 +776,6 @@ export class GameplayScene {
         this.loadPuzzle(isTimeOver, loadPuzzleDelay);
       }, delay);
     }
-  }
-
-  private getCurrentLevel(): number {
-    return this.counter + 1;
   }
 
   loadPuzzle = (isTimerEnded: boolean, loadPuzzleDelay: number) => {
@@ -898,13 +891,11 @@ export class GameplayScene {
     }
 
     // Clear event listeners
-    if (this.unsubscribeEvent) {
-      this.unsubscribeEvent();
-      this.unsubscribeEvent = null;
-    }
 
     if (this.unsubscribeEvent) {
+      this.unsubscribeEvent();
       this.unsubscribeMiniGameEvent();
+      this.unsubscribeLoadGamePuzzle;
       this.unsubscribeEvent = null;
     }
 
@@ -967,6 +958,7 @@ export class GameplayScene {
     this.logPuzzleEndFirebaseEvent(isCorrect, puzzleType);
     this.dispatchStoneDropEvent(isCorrect);
     this.tutorial?.hideTutorial(); //  Turn off tutorial via user playing correctly
+    this.isCorrect = isCorrect;
   }
 
   private dispatchStoneDropEvent(isCorrect: boolean): void {

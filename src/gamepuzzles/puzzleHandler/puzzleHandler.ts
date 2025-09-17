@@ -197,12 +197,12 @@ export default class PuzzleHandler {
         : isLetterDropCorrect // for letter and letter for word puzzle
 
       if (condition) {
-        this.feedbackAudioHandler.playFeedback(FeedbackType.CORRECT_ANSWER, feedBackIndex, () => { if (onFeedbackAudioEnd) onFeedbackAudioEnd(true); });
+        this.feedbackAudioHandler.playFeedback(FeedbackType.CORRECT_ANSWER, feedBackIndex);
       } else {
         this.feedbackAudioHandler.playFeedback(FeedbackType.PARTIAL_CORRECT, feedBackIndex);
       }
     } else {
-      this.feedbackAudioHandler.playFeedback(FeedbackType.INCORRECT, feedBackIndex, () => { if (onFeedbackAudioEnd) onFeedbackAudioEnd(true); });
+      this.feedbackAudioHandler.playFeedback(FeedbackType.INCORRECT, feedBackIndex);
     }
   }
 
