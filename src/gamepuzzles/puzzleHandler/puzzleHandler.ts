@@ -21,7 +21,6 @@ interface CreatePuzzleContext {
   timerTicking: any;
   lang: string;
   lettersCountRef: { value: number };
-  onFeedbackAudioEnd?: (isCorrect: boolean) => void;
 }
 
 /**
@@ -94,7 +93,6 @@ export default class PuzzleHandler {
       isCorrect,
       false,
       droppedText,
-      ctx.onFeedbackAudioEnd
     );
 
     if (isCorrect) {
@@ -124,7 +122,6 @@ export default class PuzzleHandler {
       isCorrect,
       true,
       this.getWordPuzzleDroppedLetters(),
-      ctx.onFeedbackAudioEnd
     );
 
     if (isCorrect) {
@@ -184,12 +181,7 @@ export default class PuzzleHandler {
     isLetterDropCorrect: boolean,
     isWord: boolean,
     droppedLetter: string,
-    onFeedbackAudioEnd?: (isCorrect: boolean) => void
   ) {
-    if (!this.feedbackAudioHandler) {
-      if (onFeedbackAudioEnd) onFeedbackAudioEnd(isLetterDropCorrect);
-      return;
-    }
 
     if (isLetterDropCorrect) {
       const condition = isWord

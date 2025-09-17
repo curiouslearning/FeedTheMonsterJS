@@ -378,9 +378,6 @@ export class GameplayScene {
         lang,
         lettersCountRef,
         feedBackTexts: this.feedBackTexts,
-        // onFeedbackAudioEnd: isMinigameLevel
-        //   ? (isCorrect) => setTimeout(() => this.determineNextStep(isCorrect), 4500)
-        //   : undefined
       };
 
       this.puzzleHandler.createPuzzle(ctx);
