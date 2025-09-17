@@ -72,7 +72,6 @@ describe('PuzzleHandler', () => {
       expect(mockAudio.playFeedback).toHaveBeenCalledWith(
       FeedbackType.CORRECT_ANSWER,
       expect.any(Number),
-      expect.any(Function)
     );
       expect(ctx.handleLetterDropEnd).toHaveBeenCalledWith(true, 'Letter');
     });
@@ -146,8 +145,7 @@ describe('PuzzleHandler', () => {
       instance.processLetterDropFeedbackAudio('A', 0, true, true, 'A', mockCallback);
       expect(instance.feedbackAudioHandler.playFeedback).toHaveBeenCalledWith(
         FeedbackType.CORRECT_ANSWER,
-        0,
-        expect.any(Function)
+        0
       );
 
       // simulate partial match (should NOT call callback)
@@ -162,8 +160,7 @@ describe('PuzzleHandler', () => {
       instance.processLetterDropFeedbackAudio('A', 0, false, true, 'B', mockCallback);
       expect(instance.feedbackAudioHandler.playFeedback).toHaveBeenCalledWith(
         FeedbackType.INCORRECT,
-        0,
-        expect.any(Function)
+        0
       );
     });
   });
