@@ -72,7 +72,7 @@ export default class FeedbackAudioHandler {
   /**
    * Plays audio for an incorrect answer
    */
-  private playIncorrectFeedbackSound(onFeedbackAudioEnd?: () => void): void {
+  private playIncorrectFeedbackSound(): void {
     this.audioPlayer.playAudioQueue(
       false,
       AUDIO_PATH_EATS
