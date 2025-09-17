@@ -66,8 +66,6 @@ export class MiniGameHandler {
  *    mini-game type or state.
  */
   public draw() {
-    console.log('MiniGameHandler draw() called');
-    
     //Draw mini game.
     this.activeMiniGame?.draw();
   }
