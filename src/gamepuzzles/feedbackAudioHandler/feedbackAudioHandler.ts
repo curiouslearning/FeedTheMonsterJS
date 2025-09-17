@@ -8,6 +8,7 @@ import {
   AUDIO_PATH_CORRECT_STONE
 } from '@constants';
 import { Utils } from '@common';
+import gameStateService from '@gameStateService';
 
 /**
  * Feedback type enum for different feedback scenarios
@@ -53,6 +54,10 @@ export default class FeedbackAudioHandler {
     }
   }
 
+  private audioEndCallback(){
+    gameStateService.publish(gameStateService.EVENTS.LOAD_NEXT_GAME_PUZZLE, true);
+  };
+
   /**
    * Plays audio for a partially correct answer (e.g., correct letter in a word puzzle)
    */
@@ -72,13 +77,14 @@ export default class FeedbackAudioHandler {
       false,
       AUDIO_PATH_EATS
     );
-    
+
     setTimeout(() => {
       this.audioPlayer.playAudioQueue(
         false,
         AUDIO_PATH_MONSTER_SPIT,
         Math.round(Math.random()) > 0 ? AUDIO_PATH_MONSTER_DISSAPOINTED : null
       );
+        this.audioEndCallback();
     }, 1700); // 1700ms is tailored to handleStoneDropEnd 1000 delay of isSpit animation
   }
 
@@ -100,7 +106,13 @@ export default class FeedbackAudioHandler {
           Utils.getConvertedDevProdURL(this.feedbackAudios[feedBackIndex])
         )
       ]);
+      setTimeout(() => {
+        this.audioEndCallback(); // Callback after audios finish playing
+      }, 4000);
     } catch (error) {
+      setTimeout(() => {
+        this.audioEndCallback(); // Ensure callback is called even if audio fails
+      }, 4000); 
       console.warn('Audio playback failed:', error);
     }
   }

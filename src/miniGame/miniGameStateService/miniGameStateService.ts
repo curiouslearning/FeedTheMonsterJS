@@ -7,6 +7,7 @@ type MiniGameMap = {
 export class MiniGameStateService extends PubSub {
   public EVENTS: {
     IS_MINI_GAME_DONE: string;
+    MINI_GAME_WILL_START: string;
   }
 
   private treasureChestCompletedLevel: MiniGameMap;
@@ -14,7 +15,8 @@ export class MiniGameStateService extends PubSub {
   constructor() {
     super();
     this.EVENTS = {
-      IS_MINI_GAME_DONE: 'IS_MINI_GAME_DONE'
+      IS_MINI_GAME_DONE: 'IS_MINI_GAME_DONE',
+      MINI_GAME_WILL_START: 'MINI_GAME_WILL_START'
     };
     //Add states here needed for mini games
     this.treasureChestCompletedLevel = {};
@@ -32,6 +34,11 @@ export class MiniGameStateService extends PubSub {
       const adjustGameLevelValue = gameLevel + 1;
       //Update treasure chest completed level list; Set to 'true for completion if star score is 1.
       this.treasureChestCompletedLevel[adjustGameLevelValue].isMiniGameComplete = miniGameScore === 1;
+    });
+
+    this.subscribe(this.EVENTS.MINI_GAME_WILL_START, ({ level }) => {
+      // Add any logic to run when the mini game is about to start
+      console.log(`Mini game will start at level ${level}`);
     });
   }
 

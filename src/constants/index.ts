@@ -17,6 +17,7 @@ export const PhraseAudio = "phrase_audio";
 export const LevelEndAudio = "level_end_audio";
 export const UrlSubstring = "/feedthemonster";
 export const DevelopmentServer = "https://feedthemonsterdev.curiouscontent.org";
+export const LocalServer = "http://localhost:8080/";
 export const TestServer = "https://globallit-aws-s3-static-webapp-test-us-east-2.s3.us-west-2.amazonaws.com/feed-the-monster";
 export const StartScene1 = "StartScene1";
 export const LevelSelection1 = "LevelSelection1";

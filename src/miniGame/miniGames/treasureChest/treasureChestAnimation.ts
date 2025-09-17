@@ -1,6 +1,13 @@
 import { CLOSED_CHEST, OPEN_CHEST, STONE_BLUE } from '@constants';
 import gameSettingsServiceInstance from '@gameSettingsService/index';
 
+enum TreasureChestState {
+  FadeIn,
+  ClosedChest,
+  OpenedChest,
+  FadeOut
+}
+
 type Stone = {
   x: number;
   y: number;
@@ -26,16 +33,18 @@ export class TreasureChestAnimation {
   private stones: Stone[] = [];
   private animationFrameId: number | null = null;
   private isVisible: boolean = false;
-  private chestOpen: boolean = false;
   private lastSpawnTime: number;
-  private startTime: number = 0;
   private shakeDuration: number = 1000; // 1s
   private callback: () => void; //Callback method to parent to trigger scoring / tapping of stones.
   private burnFrames: HTMLImageElement[] = [];
   private lastTapTime = 0;
+  private fadeInStart: number | null = null;
   private fadeOutStart: number | null = null;
-  private fadeDuration = 1000; // 1s fade
+  private fadeInDuration = 300;
+  private fadeOutDuration = 400;
   private onFadeComplete?: () => void;
+  private state: TreasureChestState = TreasureChestState.FadeIn;
+  private stateStartTime: number = 0;
   public dpr: number;
   constructor(
     private width: number,
@@ -116,7 +125,7 @@ export class TreasureChestAnimation {
         stone.dy = 0;
         if (stone.burning || !stone.active) {
           continue;
-        }        
+        }
         // Trigger burn sequence
         stone.burning = true;
         stone.burnStartTime = performance.now();
@@ -133,29 +142,18 @@ export class TreasureChestAnimation {
   public show(onComplete?: () => void) {
     this.canvas.style.display = "block";
     this.isVisible = true;
-    this.chestOpen = false;
-    this.startTime = performance.now();
     this.stones = [];
-    this.fadeOutStart = null;
     this.onFadeComplete = onComplete;
+    this.state = TreasureChestState.FadeIn;
+    this.stateStartTime = performance.now();
     this.loop();
-
-    // after 1s, chest opens
-    setTimeout(() => {
-      this.chestOpen = true;
-    }, this.shakeDuration);
-
-    // play for 12s total, then cleanup
-    setTimeout(() => {
-      this.fadeOutStart = performance.now();
-    }, 12000);
   }
 
   /** Stops & hides */
   public hide() {
     this.canvas.style.display = "none";
     this.canvas.removeEventListener("click", this.handleClick);
-    this.canvas.removeEventListener("touchstart", this.handleClick);    
+    this.canvas.removeEventListener("touchstart", this.handleClick);
     this.isVisible = false;
     if (this.animationFrameId) {
       cancelAnimationFrame(this.animationFrameId);
@@ -165,7 +163,7 @@ export class TreasureChestAnimation {
 
   /** Shake offset calc */
   private getShakeOffset(now: number): number {
-    const elapsed = now - this.startTime;
+    const elapsed = now - this.stateStartTime;
     if (elapsed > this.shakeDuration) return 0;
 
     const progress = elapsed / this.shakeDuration;
@@ -213,138 +211,174 @@ export class TreasureChestAnimation {
     if (!this.isVisible) return;
 
     this.ctx.clearRect(0, 0, this.width, this.height);
-
-    // apply fade
-    let alpha = 1;
-    if (this.fadeOutStart) {
-      const elapsed = performance.now() - this.fadeOutStart;
-      alpha = Math.max(0, 1 - elapsed / this.fadeDuration);
-
-      if (alpha === 0) {
-        this.hide();
-        if (this.onFadeComplete) {
-          this.onFadeComplete();
-          this.onFadeComplete = undefined; // prevent double calling
-        }
-        return;
-      }
-    }
     this.ctx.save();
-    this.ctx.globalAlpha = alpha;
+    this.drawOverlay();
 
-    // shadow overlay
-    this.ctx.fillStyle = "rgba(0, 0, 0, 0.5)";
-    this.ctx.fillRect(0, 0, this.width, this.height);
-
-    // chest
-    const chestW = 250;
-    const chestH = 230;
-    let chestX = this.width / 2 - chestW / 2;
-    const chestY = this.height - chestH - 20;
-    // Animate chest before shooting
-    const elapsed = time - this.lastSpawnTime;
-    let scale = 1;
-    let rotation = 0;
-
-    if (elapsed < 1000) {
-      // 1 second pre-shoot animation
-      scale = 1 + Math.sin(elapsed / 1000 * Math.PI * 4) * 0.05; // squash & stretch
-      rotation = Math.sin(elapsed / 1000 * Math.PI * 6) * 0.1;   // wiggle (in radians)
-    }
-
-    if (!this.chestOpen) {
-      // Closed chest with pre-open wiggle/shake
-      this.ctx.save();
-      this.ctx.translate(chestX + chestW / 2, chestY + chestH / 2);
-      this.ctx.rotate(rotation);
-      this.ctx.scale(scale, scale);
-
-      const offset = this.getShakeOffset(time);
-      this.ctx.drawImage(
-        this.closedChestImg,
-        -chestW / 2 + offset,
-        -chestH / 2,
-        chestW,
-        chestH
-      );
-
-      this.ctx.restore();
-    } else {
-      // Open chest only
-      this.ctx.drawImage(this.openChestImg, chestX, chestY, chestW, chestH);
-
-      // update stones
-      for (const stone of this.stones) {
-        if (!stone.active) continue;
-
-        if (!stone.burning) {
-          // Normal movement
-          stone.x += stone.dx;
-          stone.y += stone.dy;
-          stone.lifetime--;
-        } else {
-          // Burn animation logic
-          const elapsed = performance.now() - (stone.burnStartTime || 0);
-          stone.burnFrameIndex = Math.floor(elapsed / 75); // each frame lasts 75ms
-
-          if (stone.burnFrameIndex >= this.burnFrames.length) {
-            stone.active = false; // remove stone after burn finishes
-            continue;
-          }
+    switch (this.state) {
+      case TreasureChestState.FadeIn: {
+        const elapsed = performance.now() - this.stateStartTime;
+        const alpha = Math.min(1, elapsed / this.fadeInDuration);
+        this.ctx.globalAlpha = alpha;
+        this.drawClosedChest(time);
+        if (alpha >= 1) {
+          this.state = TreasureChestState.ClosedChest;
+          this.stateStartTime = performance.now();
         }
-
-
-        if (stone.lifetime < 60) {
-          stone.opacity -= 0.002;
-        }
-
-        if (
-          stone.lifetime <= 0 ||
-          stone.y + stone.size / 2 < 0 ||
-          stone.x < - stone.size / 2 ||
-          stone.x > this.width + stone.size / 2
-        ) {
-          stone.active = false;
-          continue;
-        }
-
-        this.ctx.globalAlpha = stone.opacity;
-        this.ctx.drawImage(
-          stone.img,
-          stone.x - stone.size / 2,
-          stone.y - stone.size / 2,
-          stone.size,
-          stone.size
-        );
-        this.ctx.globalAlpha = 1.0;
-        // this.ctx.beginPath();
-        // this.ctx.arc(stone.x, stone.y, stone.size / 2, 0, Math.PI * 2);
-        // this.ctx.strokeStyle = "red";
-        // this.ctx.lineWidth = 1;
-        // this.ctx.stroke();
-        // If burning, draw overlay on top
-        if (stone.burning && stone.burnFrameIndex! < this.burnFrames.length) {
-          const burnImg = this.burnFrames[stone.burnFrameIndex!];
-          this.ctx.drawImage(
-            burnImg,
-            stone.x - stone.size / 2,
-            stone.y - stone.size / 2,
-            stone.size,
-            stone.size
-          );
-        }
+        break;
       }
-
-      // cleanup
-      this.stones = this.stones.filter(stone => stone.active);
-
-      // maintain between 6–12 stones
-      const maxStones = Math.floor(Math.random() * (12 - 6 + 1)) + 6;
-      while (this.stones.length < maxStones) {
-        this.stones.push(this.spawnStone());
+      case TreasureChestState.ClosedChest: {
+        this.ctx.globalAlpha = 1;
+        this.drawClosedChest(time);
+        const elapsed = performance.now() - this.stateStartTime;
+        if (elapsed >= this.shakeDuration) {
+          this.state = TreasureChestState.OpenedChest;
+          this.stateStartTime = performance.now();
+        }
+        break;
+      }
+      case TreasureChestState.OpenedChest: {
+        this.ctx.globalAlpha = 1;
+        this.drawOpenChest(time);
+        this.updateStones();
+        this.cleanupStones();
+        this.maintainStones();
+        const elapsed = performance.now() - this.stateStartTime;
+        if (elapsed >= 12000) { // 12s for chest open
+          this.state = TreasureChestState.FadeOut;
+          this.stateStartTime = performance.now();
+        }
+        break;
+      }
+      case TreasureChestState.FadeOut: {
+        const elapsed = performance.now() - this.stateStartTime;
+        const alpha = Math.max(0, 1 - elapsed / this.fadeOutDuration);
+        this.ctx.globalAlpha = alpha;
+        this.drawOpenChest(time);
+        this.updateStones();
+        this.cleanupStones();
+        this.maintainStones();
+        if (alpha === 0) {
+          this.hide();
+          this.onFadeComplete?.();
+          this.onFadeComplete = undefined;
+          return;
+        }
+        break;
       }
     }
+
     this.ctx.restore();
     this.animationFrameId = requestAnimationFrame(this.loop);
   };
+
+  private handleFadeIn(): boolean {
+    if (!this.fadeInStart) return false;
+
+    const elapsed = performance.now() - this.fadeInStart;
+    const alpha = Math.min(1, elapsed / this.fadeInDuration);
+
+    this.ctx.globalAlpha = alpha;
+
+    if (alpha >= 1) {
+      this.fadeInStart = null; // fade-in complete
+    }
+    return true;
+  }
+
+  private handleFadeOut(): boolean {
+    if (!this.fadeOutStart) return false;
+    const elapsed = performance.now() - this.fadeOutStart;
+    const alpha = Math.max(0, 1 - elapsed / this.fadeOutDuration);
+
+    this.ctx.globalAlpha = alpha;
+
+    if (alpha === 0) {
+      this.hide();
+      this.onFadeComplete?.();
+      this.onFadeComplete = undefined;
+      return true; // stop loop early
+    }
+    return true;
+  }
+
+  private drawOverlay() {
+    this.ctx.fillStyle = "rgba(0,0,0,0.7)";
+    this.ctx.fillRect(0, 0, this.width, this.height);
+  }
+
+  private drawClosedChest(time: number) {
+    const chestW = 250, chestH = 230;
+    const chestX = this.width / 2 - chestW / 2;
+    const chestY = this.height - chestH - 20;
+
+    const elapsed = time - this.lastSpawnTime;
+    let scale = 1;
+    let rotation = 0;
+    if (elapsed < 1000) {
+      scale = 1 + Math.sin((elapsed / 1000) * Math.PI * 4) * 0.05;
+      rotation = Math.sin((elapsed / 1000) * Math.PI * 6) * 0.1;
+    }
+
+    this.ctx.save();
+    this.ctx.translate(chestX + chestW / 2, chestY + chestH / 2);
+    this.ctx.rotate(rotation);
+    this.ctx.scale(scale, scale);
+    const offset = this.getShakeOffset(time);
+    this.ctx.drawImage(this.closedChestImg, -chestW / 2 + offset, -chestH / 2, chestW, chestH);
+    this.ctx.restore();
+  }
+
+  private drawOpenChest(time: number) {
+    const chestW = 250, chestH = 230;
+    const chestX = this.width / 2 - chestW / 2;
+    const chestY = this.height - chestH - 20;
+    this.ctx.drawImage(this.openChestImg, chestX, chestY, chestW, chestH);
+  }
+
+  private updateStones() {
+    for (const stone of this.stones) {
+      if (!stone.active) continue;
+      stone.burning ? this.updateBurningStone(stone) : this.updateMovingStone(stone);
+      this.drawStone(stone);
+    }
+  }
+
+  private updateMovingStone(stone: Stone) {
+    stone.x += stone.dx;
+    stone.y += stone.dy;
+    stone.lifetime--;
+    if (stone.lifetime < 60) stone.opacity -= 0.002;
+    if (stone.lifetime <= 0 || stone.y < 0 || stone.x < -stone.size || stone.x > this.width + stone.size) {
+      stone.active = false;
+    }
+  }
+
+  private updateBurningStone(stone: Stone) {
+    const elapsed = performance.now() - (stone.burnStartTime || 0);
+    stone.burnFrameIndex = Math.floor(elapsed / 75);
+    if (stone.burnFrameIndex >= this.burnFrames.length) stone.active = false;
+  }
+
+  private drawStone(stone: Stone) {
+    if (!stone.active) return;
+    this.ctx.globalAlpha = stone.opacity;
+    this.ctx.drawImage(stone.img, stone.x - stone.size / 2, stone.y - stone.size / 2, stone.size, stone.size);
+    this.ctx.globalAlpha = 1.0;
+    if (stone.burning && stone.burnFrameIndex! < this.burnFrames.length) {
+      this.ctx.drawImage(this.burnFrames[stone.burnFrameIndex!], stone.x - stone.size / 2, stone.y - stone.size / 2, stone.size, stone.size);
+    }
+  }
+
+  private cleanupStones() {
+    this.stones = this.stones.filter(stone => stone.active);
+  }
+
+  private maintainStones() {
+    const maxStones = Math.floor(Math.random() * (12 - 6 + 1)) + 6;
+    while (this.stones.length < maxStones) {
+      this.stones.push(this.spawnStone());
+    }
+  }
+
+
 }
