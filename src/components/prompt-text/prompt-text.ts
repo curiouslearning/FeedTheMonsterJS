@@ -64,6 +64,9 @@ export const PROMPT_TEXT_LAYOUT = (
  */
 export class PromptText extends BaseHTML {
     // ...
+    static STYLE_RED_PULSE = 'text-red-pulse-letter';
+    static STYLE_RED = 'text-red';
+    static STYLE_BLACK = 'text-black';
     public width: number;
     public levelData: any;
     public currentPromptText: string;
@@ -345,38 +348,53 @@ export class PromptText extends BaseHTML {
 
         const isRTL = Utils.isRTLText(promptWord) // Get direction of the language
 
-        let wordCharArray;
-        // Only apply grapheme sequence matching for RTL and LetterInWord
-        if (isRTL && this.levelData?.levelMeta?.levelType === "LetterInWord") {
-            wordCharArray = [];
+        // Use class-level style constants
+        const STYLE_RED_PULSE = PromptText.STYLE_RED_PULSE;
+        const STYLE_RED = PromptText.STYLE_RED;
+        const STYLE_BLACK = PromptText.STYLE_BLACK;
+        const levelType = this.levelData?.levelMeta?.levelType;
+
+        // Helper function to match activeLetter in RTL grapheme array
+        const matchActiveLetterRTL = (graphemes: string[], activeLetter: string): Array<string> => {
+            const result: Array<string> = [];
             let i = 0;
             while (i < graphemes.length) {
                 let matchLength = 0;
                 let joined = '';
+                // Nested for loop: tries all possible substrings starting at i to find a match for activeLetter
                 for (let j = i; j < graphemes.length; j++) {
                     joined += graphemes[j];
+                    // +1 below: j - i + 1 gives the length of the matched substring (inclusive of both i and j)
                     if (joined === activeLetter) {
-                        matchLength = j - i + 1;
+                        matchLength = j - i + 1; // +1: because both i and j are included in the substring
                         break;
                     }
+                    // stop early if joined.length > activeLetter.length
+                    if (joined.length > activeLetter.length) break;
                 }
                 if (matchLength > 0) {
-                    wordCharArray.push(generateSpanMarkup(joined, 'text-red-pulse-letter'));
+                    result.push(generateSpanMarkup(joined, STYLE_RED_PULSE));
                     i += matchLength;
                 } else {
-                    wordCharArray.push(graphemes[i]);
+                    result.push(graphemes[i]);
                     i++;
                 }
             }
+            return result;
+        };
+
+        let wordCharArray;
+        if (isRTL && levelType === "LetterInWord") {
+            wordCharArray = matchActiveLetterRTL(graphemes, activeLetter);
         } else {
             // Original logic for other cases
             wordCharArray = graphemes.map(
                 (letter, index) => {
                     let styleClass: string | null = null;
                     if (letter === activeLetter && index === activeLetterIndex) {
-                        styleClass = 'text-red-pulse-letter';
+                        styleClass = STYLE_RED_PULSE;
                     } else if (isSpellingPuzzle) {
-                        styleClass = activeLetterIndex < index ? 'text-red' : "text-black";
+                        styleClass = activeLetterIndex < index ? STYLE_RED : STYLE_BLACK;
                     }
                     return styleClass ? generateSpanMarkup(letter, styleClass) : letter;
                 }
