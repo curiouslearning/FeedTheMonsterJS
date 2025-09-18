@@ -7,7 +7,7 @@ import {
   BackgroundHtmlGenerator,
   AudioPlayer,
   PhasesBackground,
-  TrailEffectsHandler
+  TrailEffectsHandler,
 } from "@components";
 import TutorialHandler from '@tutorials';
 import {
@@ -26,14 +26,13 @@ import {
   lang,
   pseudoId,
   Utils,
-  getGameTypeName,
 } from "@common";
 import { GameScore, DataModal } from "@data";
 import {
   LevelCompletedEvent,
   PuzzleCompletedEvent,
 } from "../../analytics/analytics-event-interface";
-import { AnalyticsIntegration } from "../../analytics/analytics-integration";
+import { AnalyticsIntegration, AnalyticsEventType } from "../../analytics/analytics-integration";
 import {
   SCENE_NAME_LEVEL_SELECT,
   SCENE_NAME_GAME_PLAY,
@@ -45,10 +44,12 @@ import {
 } from "@constants";
 import gameStateService from '@gameStateService';
 import gameSettingsService from '@gameSettingsService';
+import miniGameStateService from '@miniGameStateService';
 import { PAUSE_POPUP_EVENT_DATA, PausePopupComponent } from '@components/popups/pause-popup/pause-popup-component';
 import { RiveMonsterComponent } from '@components/riveMonster/rive-monster-component';
 import PuzzleHandler from "@gamepuzzles/puzzleHandler/puzzleHandler";
 import { DEFAULT_SELECTORS } from '@components/prompt-text/prompt-text';
+import { MiniGameHandler } from '@miniGames/miniGameHandler'
 
 export class GameplayScene {
   public width: number;
@@ -93,17 +94,21 @@ export class GameplayScene {
   public riveMonsterElement: HTMLCanvasElement;
   public gameControl: HTMLCanvasElement;
   private unsubscribeEvent: () => void;
+  public unsubscribeMiniGameEvent: () => void;
+  public unsubscribeLoadGamePuzzle: () => void;
   public timeTicker: HTMLElement;
   isFeedBackTriggered: boolean;
   public monsterPhaseNumber: 0 | 1 | 2;
   private backgroundGenerator: PhasesBackground;
-  public loadPuzzleDelay: 3000 | 4500;
   private puzzleHandler: any;
   private timerStartSFXPlayed: boolean;
   private isMonsterMouthOpen = false;
   private lastClientX = 0;
   private lastClientY = 0;
   private animationFrameId: number | null = null;
+  private hasShownChest: boolean = false;
+  private miniGameHandler: MiniGameHandler;
+  public isCorrect: boolean;
   // Define animation delays as an array where index 0 = phase 0, index 1 = phase 1, index 2 = phase 2
   private animationDelays = [
     { backToIdle: 350, isChewing: 0, isHappy: 1700, isSpit: 1500, isSad: 3000 }, // Phase 1
@@ -111,9 +116,17 @@ export class GameplayScene {
     { backToIdle: 350, isChewing: 0, isHappy: 1700, isSpit: 1300, isSad: 2600 }, // Phase 3
     { backToIdle: 350, isChewing: 0, isHappy: 1700, isSpit: 100, isSad: 2500 }  // Phase 4
   ];
+  private levelForMinigame: number;
+  private treasureChestScore: number;
 
   constructor() {
     const gamePlayData = gameStateService.getGamePlaySceneDetails();
+    this.levelForMinigame = miniGameStateService.shouldShowMiniGame({
+      levelSegmentLength: gamePlayData.levelData.puzzles.length,
+      gameLevel: gamePlayData.levelData.levelNumber
+    });
+    this.treasureChestScore = 0;
+    this.miniGameHandler = new MiniGameHandler(gamePlayData.levelData.levelNumber);
     this.pausePopupComponent = new PausePopupComponent();
     // Assign state properties based on game state
     this.initializeProperties(gamePlayData);
@@ -142,7 +155,22 @@ export class GameplayScene {
         if (isPause) this.pausePopupComponent.open();
       }
     );
-    this.loadPuzzleDelay = 4500;
+    this.unsubscribeLoadGamePuzzle = gameStateService.subscribe(
+      gameStateService.EVENTS.LOAD_NEXT_GAME_PUZZLE,
+      () => {
+        this.determineNextStep(this.isCorrect);
+      });
+    this.unsubscribeMiniGameEvent = miniGameStateService.subscribe(
+      miniGameStateService.EVENTS.IS_MINI_GAME_DONE,
+      ({ miniGameScore, gameLevel }: {
+        miniGameScore: number,
+        gameLevel: number,
+      }) => {
+        //Assigned new score that will be submited to GameScore at the end of game level.
+        this.treasureChestScore = miniGameScore;
+        //Load the next puzzle segment after mini game regardless if the user scored or not.
+        this.loadPuzzle(false, 4500);
+      });
     this.pausePopupComponent.onClose((event) => {
       const { data } = event;
 
@@ -186,7 +214,14 @@ export class GameplayScene {
       gameStateService.publish(gameStateService.EVENTS.GAME_PAUSE_STATUS_EVENT, true);
       this.pauseGamePlay();
     });
-    this.timerTicking = new TimerTicking(this.width, this.height, this.loadPuzzle);
+    this.timerTicking = new TimerTicking(
+      this.width,
+      this.height,
+      (isMyTimerOver: boolean) => {
+        //Callback triggered when timer ends.
+        this.determineNextStep(false, isMyTimerOver);
+      }
+    );
     this.stoneHandler = new StoneHandler(
       this.context,
       this.canvas,
@@ -237,7 +272,7 @@ export class GameplayScene {
     this.tutorial.shouldShowQuickStartTutorial = gamePlayData.tutorialOn && !gamePlayData.isTutorialCleared;
 
     if (this.tutorial.showHandPointerInAudioPuzzle(gamePlayData.levelData)) {
-      this.tutorial.resetQuickStartTutorialDelay();
+      this.tutorial?.resetQuickStartTutorialDelay();
     } else {
       this.tutorial.quickStartTutorialReady = true;
     }
@@ -323,6 +358,7 @@ export class GameplayScene {
     if (this.monster.checkHitboxDistance(event)) {
       // Handle letter drop (success case)
       const lettersCountRef = { value: this.stonesCount };
+      // const isMinigameLevel = this.counter + 1 === this.levelForMinigame;
       const ctx = {
         levelType: this.levelData.levelMeta.levelType,
         pickedLetter: {
@@ -341,7 +377,7 @@ export class GameplayScene {
         timerTicking: this.timerTicking,
         lang,
         lettersCountRef,
-        feedBackTexts: this.feedBackTexts
+        feedBackTexts: this.feedBackTexts,
       };
 
       this.puzzleHandler.createPuzzle(ctx);
@@ -460,7 +496,7 @@ export class GameplayScene {
       this.processWordPuzzleDragMovement(clientX, clientY);
     }
   }
-  
+
   /**
    * Processes simple drag movement for matchfirst puzzles (LetterOnly/LetterInWord).
    * This is a streamlined path with direct coordinate updates and no hover detection.
@@ -494,19 +530,19 @@ export class GameplayScene {
   private processWordPuzzleDragMovement(clientX: number, clientY: number) {
     // Update stone coordinates and get trail position
     const { trailX, trailY } = this.updateDraggedStonePosition(clientX, clientY);
-    
+
     // Check for hovering over other stones
     const newStoneLetter = this.checkStoneHovering(trailX, trailY);
-    
+
     // Handle letter pickup if hovering detected
     if (newStoneLetter) {
       this.handleLetterPickup(newStoneLetter);
     }
-    
+
     // Ensure monster mouth is open during dragging
     this.ensureMonsterMouthOpen();
   }
-  
+
   /**
    * Updates the position of the currently dragged stone.
    * 
@@ -521,13 +557,13 @@ export class GameplayScene {
       clientY
     );
     this.pickedStone = newStoneCoordinates;
-    
+
     return {
       trailX: newStoneCoordinates.x,
       trailY: newStoneCoordinates.y
     };
   }
-  
+
   /**
    * Checks if the dragged stone is hovering over another stone.
    * 
@@ -544,7 +580,7 @@ export class GameplayScene {
       }
     );
   }
-  
+
   /**
    * Handles the letter pickup process when hovering over a valid stone.
    * Updates puzzle state, resets original stone position, and replaces with new letter.
@@ -557,19 +593,19 @@ export class GameplayScene {
       newStoneLetter.text,
       newStoneLetter.foilStoneIndex
     );
-    
+
     // Reset the original stone position
     this.pickedStone = this.stoneHandler.resetStonePosition(
       this.width,
       this.pickedStone,
       this.pickedStoneObject
     );
-    
+
     // Replace with the new letter
     this.pickedStoneObject = newStoneLetter;
     this.pickedStone = newStoneLetter;
   }
-  
+
   /**
    * Ensures the monster mouth is open during dragging.
    * Only triggers the animation if the mouth isn't already open.
@@ -647,7 +683,6 @@ export class GameplayScene {
     }
 
     this.tutorial.draw(deltaTime, this.isGameStarted);
-    
   }
 
   private handleStoneLetterDrawing() {
@@ -711,26 +746,55 @@ export class GameplayScene {
     this.handler.removeEventListener("touchend", this.handleTouchEnd, false);
   }
 
-  loadPuzzle = (isTimerEnded?) => {
+  /**
+ * Determines the next game flow after a puzzle event (solved or timed out).
+ * Decides whether to trigger a mini-game or proceed to loading the next puzzle,
+ * applying delays when needed to allow audio/animations to finish.
+ */
+  determineNextStep(isCorrect = false, isTimeOver = false) {
+    const currentLevel = this.counter + 1;
+    const loadPuzzleDelay = isCorrect ? 1500 : 3000;
+    if (currentLevel === this.levelForMinigame && !this.hasShownChest) {
+      this.hasShownChest = true;
+
+      // Publish event BEFORE starting the mini game
+      miniGameStateService.publish(
+        miniGameStateService.EVENTS.MINI_GAME_WILL_START,
+        { level: currentLevel }
+      );
+
+      // Run chest animation (mini game)
+      this.miniGameHandler.draw();
+      return;
+    } else {
+      //For incorrect answers only; Start loading the next puzzle with 2 seconds delay to let the audios play.
+      const delay = isCorrect || isTimeOver ? 0 : 2000;
+      setTimeout(() => {
+        this.loadPuzzle(isTimeOver, loadPuzzleDelay);
+      }, delay);
+    }
+  }
+
+  loadPuzzle = (isTimerEnded: boolean, loadPuzzleDelay: number) => {
     this.removeEventListeners();
 
     this.stonesCount = 1;
     const timerEnded = Boolean(isTimerEnded);
+    this.tutorial?.resetTutorialTimer();
     if (timerEnded) {
-      this.tutorial.hideTutorial();
       this.logPuzzleEndFirebaseEvent(false);
     }
     this.counter += 1; //increment Puzzle
     this.isGameStarted = false;
-    this.tutorial.resetTutorialTimer();
     // Reset the 6-second tutorial delay timer each time a new puzzle is loaded
-    this.tutorial.resetQuickStartTutorialDelay();
-    this.tutorial.hideTutorial(); // Turn off tutorial via loading the puzzle.
+    this.tutorial?.resetQuickStartTutorialDelay();
+    this.tutorial?.hideTutorial(); // Turn off tutorial via loading the puzzle.
+
     if (this.counter === this.levelData.puzzles.length) {
       const handleLevelEnd = () => {
-        this.levelIndicators.setIndicators(this.counter);
+        this.levelIndicators?.setIndicators(this.counter);
         this.logLevelEndFirebaseEvent();
-        GameScore.setGameLevelScore(this.levelData, this.score);
+        GameScore.setGameLevelScore(this.levelData, this.score, this.treasureChestScore);
 
         const levelEndData = {
           starCount: GameScore.calculateStarCount(this.score),
@@ -742,12 +806,12 @@ export class GameplayScene {
         gameStateService.publish(gameStateService.EVENTS.SWITCH_SCENE_EVENT, SCENE_NAME_LEVEL_END);
         this.monster.dispose(); //Adding the monster dispose here due to the scenario that this.monster is still needed when restart game level is played.
       };
-      
+
       if (timerEnded) {
         handleLevelEnd();
       } else {
         //Trigger the handleLevelEnd with a delay to let the audio play in puzzleHandler.ts before switching to level end screen.
-        setTimeout(handleLevelEnd, this.loadPuzzleDelay);
+        setTimeout(handleLevelEnd, loadPuzzleDelay);
       }
     } else {
       const loadPuzzleEvent = new CustomEvent(LOADPUZZLE, {
@@ -762,7 +826,7 @@ export class GameplayScene {
             this.timerTicking.startTimer(); // Start the timer for the new puzzle
           }
         },
-        timerEnded ? 0 : this.loadPuzzleDelay // added delay for switching to level end screen
+        timerEnded ? 0 : loadPuzzleDelay // added delay for switching to level end screen
       );
     }
   };
@@ -778,7 +842,6 @@ export class GameplayScene {
     this.removeEventListeners();
     this.isGameStarted = false;
     this.time = 0;
-    this.loadPuzzleDelay = 4500;
     // Ensure puzzleHandler is set up for new puzzle
     this.puzzleHandler.initialize(this.levelData, this.counter);
     this.pickedStone = null;
@@ -786,12 +849,12 @@ export class GameplayScene {
     this.addEventListeners();
     this.audioPlayer.stopAllAudios();
     this.startPuzzleTime();
-    this.tutorial.resetQuickStartTutorialDelay();
+    this.tutorial?.resetQuickStartTutorialDelay();
   }
 
   public dispose = () => {
     this.isDisposing = true;
-
+    this.treasureChestScore = 0;
     // Cleanup audio
     if (this.audioPlayer) {
       this.audioPlayer.stopAllAudios();
@@ -825,8 +888,11 @@ export class GameplayScene {
     }
 
     // Clear event listeners
+
     if (this.unsubscribeEvent) {
       this.unsubscribeEvent();
+      this.unsubscribeMiniGameEvent();
+      this.unsubscribeLoadGamePuzzle;
       this.unsubscribeEvent = null;
     }
 
@@ -888,12 +954,8 @@ export class GameplayScene {
 
     this.logPuzzleEndFirebaseEvent(isCorrect, puzzleType);
     this.dispatchStoneDropEvent(isCorrect);
-    this.tutorial.hideTutorial(); //  Turn off tutorial via user playing correctly
-    setTimeout(() => {
-      //Adjust the delay of 4500 (4.5 seconds) to 2500 (2.5 seconds) if the puzzle is incorrect.
-      this.loadPuzzleDelay = isCorrect ? 4500 : 3000;
-      this.loadPuzzle();
-    }, isCorrect ? 0 : 2000);
+    this.tutorial?.hideTutorial(); //  Turn off tutorial via user playing correctly
+    this.isCorrect = isCorrect;
   }
 
   private dispatchStoneDropEvent(isCorrect: boolean): void {
@@ -905,48 +967,41 @@ export class GameplayScene {
   }
 
   public logPuzzleEndFirebaseEvent(isCorrect: boolean, puzzleType?: string) {
-    let endTime = Date.now();
+    const endTime = Date.now();
     const droppedLetters = this.puzzleHandler.getWordPuzzleDroppedLetters();
-    const puzzleCompletedData: PuzzleCompletedEvent = {
-      cr_user_id: pseudoId,
-      ftm_language: lang,
-      profile_number: 0,
-      version_number: document.getElementById("version-info-id").innerHTML,
-      json_version_number: this.jsonVersionNumber,
-      success_or_failure: isCorrect ? "success" : "failure",
-      level_number: this.levelData.levelMeta.levelNumber,
-      puzzle_number: this.counter,
-      item_selected:
-        puzzleType == "Word"
-          ? droppedLetters == null ||
-            droppedLetters == undefined
-            ? "TIMEOUT"
-            : droppedLetters
-          : this.pickedStone == null || this.pickedStone == undefined
-            ? "TIMEOUT"
-            : this.pickedStone?.text,
-      target: this.stoneHandler.getCorrectTargetStone(),
-      foils: this.stoneHandler.getFoilStones(),
-      response_time: (endTime - this.puzzleTime) / 1000,
-    };
-    this.analyticsIntegration.sendPuzzleCompletedEvent(puzzleCompletedData);
+
+    this.analyticsIntegration.track(
+      AnalyticsEventType.PUZZLE_COMPLETED,
+      {
+        json_version_number: this.jsonVersionNumber,
+        success_or_failure: isCorrect ? "success" : "failure",
+        level_number: this.levelData.levelMeta.levelNumber,
+        puzzle_number: this.counter,
+        item_selected: puzzleType === "Word"
+          ? (droppedLetters ?? "TIMEOUT")
+          : (this.pickedStone?.text ?? "TIMEOUT"),
+        target: this.stoneHandler.getCorrectTargetStone(),
+        foils: Array.isArray(this.stoneHandler.getFoilStones())
+          ? this.stoneHandler.getFoilStones().join(',')
+          : this.stoneHandler.getFoilStones(),
+        response_time: (endTime - this.puzzleTime) / 1000,
+      }
+    );
   }
 
   public logLevelEndFirebaseEvent() {
-    let endTime = Date.now();
-    const levelCompletedData: LevelCompletedEvent = {
-      cr_user_id: pseudoId,
-      ftm_language: lang,
-      profile_number: 0,
-      version_number: document.getElementById("version-info-id").innerHTML,
-      json_version_number: this.jsonVersionNumber,
-      success_or_failure:
-        GameScore.calculateStarCount(this.score) >= 3 ? "success" : "failure",
-      number_of_successful_puzzles: this.score / 100,
-      level_number: this.levelData.levelMeta.levelNumber,
-      duration: (endTime - this.startTime) / 1000,
-    };
-    this.analyticsIntegration.sendLevelCompletedEvent(levelCompletedData);
+    const endTime = Date.now();
+
+    this.analyticsIntegration.track(
+      AnalyticsEventType.LEVEL_COMPLETED,
+      {
+        json_version_number: this.jsonVersionNumber,
+        success_or_failure: GameScore.calculateStarCount(this.score) >= 3 ? "success" : "failure",
+        number_of_successful_puzzles: this.score / 100,
+        level_number: this.levelData.levelMeta.levelNumber,
+        duration: (endTime - this.startTime) / 1000,
+      }
+    );
   }
 
   public startGameTime() {

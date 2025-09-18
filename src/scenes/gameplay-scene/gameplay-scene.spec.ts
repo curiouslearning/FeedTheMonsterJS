@@ -3,6 +3,7 @@ const mockInstance = {
   sendPuzzleCompletedEvent: jest.fn(),
   sendLevelCompletedEvent: jest.fn(),
   sendSessionEndEvent: jest.fn(),
+  track: jest.fn(), // ✅ Add the track method
   isAnalyticsReady: jest.fn().mockReturnValue(true)
 };
 
@@ -16,6 +17,7 @@ jest.mock("../../analytics/analytics-integration", () => ({
         sendPuzzleCompletedEvent: jest.fn(),
         sendLevelCompletedEvent: jest.fn(),
         sendSessionEndEvent: jest.fn(),
+        track: jest.fn(), // ✅ Add the track method here too
         isAnalyticsReady: jest.fn().mockReturnValue(true)
       };
       return Promise.resolve();
@@ -27,6 +29,7 @@ jest.mock("../../analytics/analytics-integration", () => ({
 import { GameplayScene } from './gameplay-scene';
 import gameStateService from '@gameStateService';
 import gameSettingsService from '@gameSettingsService';
+import miniGameStateService from '@miniGameStateService'
 import { SCENE_NAME_GAME_PLAY } from "@constants";
 import { AnalyticsIntegration } from '../../analytics/analytics-integration';
 
@@ -164,6 +167,7 @@ jest.mock('@components', () => {
 Object.defineProperty(HTMLCanvasElement.prototype, 'getContext', {
   value: jest.fn(() => ({
     fillRect: jest.fn(),
+    scale:jest.fn(),
     clearRect: jest.fn(),
     drawImage: jest.fn(),
     getImageData: jest.fn(),
@@ -183,7 +187,7 @@ jest.mock('@components', () => {
   (BackgroundHtmlGenerator as any).createBackgroundComponent = jest
     .fn()
     .mockReturnValue('summer');
-  
+
   const PhasesBackground = jest.fn().mockImplementation(() => ({
     generateBackground: jest.fn(),
   }));
@@ -298,6 +302,19 @@ jest.mock('@gameStateService', () => ({
   }
 }));
 
+
+jest.mock('@miniGameStateService', () => ({
+  __esModule: true,
+  default: {
+    subscribe: jest.fn(),
+    publish: jest.fn(),
+    EVENTS: {
+      IS_MINI_GAME_DONE: 'IS_MINI_GAME_DONE',
+    },
+    shouldShowMiniGame: jest.fn(),
+  }
+}));
+
 describe('GameplayScene with BasePopupComponent', () => {
   let gameplayScene: GameplayScene;
   let mockSwitchSceneToEnd: jest.Mock;
@@ -316,6 +333,7 @@ describe('GameplayScene with BasePopupComponent', () => {
       <div class="game-scene"></div>
       <div id="canvas"></div>
       <canvas id="rivecanvas"></canvas>
+      <canvas id="treasurecanvas"></canvas>
       <canvas id="game-control"></canvas>
       <div id="popup-root"></div>
       <div id="version-info-id">1.0.0</div>
@@ -397,7 +415,7 @@ describe('GameplayScene with BasePopupComponent', () => {
     const timerEnded = true; // Simulate timer has ended
 
     // Act
-    gameplayScene.loadPuzzle(timerEnded);
+    gameplayScene.loadPuzzle(timerEnded, 4500);
 
     // Force immediate execution of timers
     jest.runAllTimers();
@@ -408,7 +426,6 @@ describe('GameplayScene with BasePopupComponent', () => {
       gameStateService.EVENTS.SWITCH_SCENE_EVENT,
       expect.any(String)
     );
-
   });
 
   it('should call switchSceneToEnd after 4500ms when timerEnded is false or isFeedBackTriggered is true', () => {
@@ -418,7 +435,7 @@ describe('GameplayScene with BasePopupComponent', () => {
     const timerEnded = false; // Timer has not ended
 
     // Act
-    gameplayScene.loadPuzzle(timerEnded);
+    gameplayScene.loadPuzzle(timerEnded, 4500);
 
     // Assert: Ensure it is not called immediately
     expect(mockSwitchSceneToEnd).not.toHaveBeenCalled();
@@ -467,7 +484,7 @@ describe('GameplayScene with BasePopupComponent', () => {
     expect(gameplayScene.monster.triggerInput).toHaveBeenCalledWith('isChewing');
     expect(gameplayScene.monster.triggerInput).toHaveBeenCalledWith('isHappy');
   });
-  
+
   it('should call switchSceneToEnd after 4500ms when timerEnded is false and isFeedBackTriggered is false', () => {
     // Arrange
     gameplayScene.counter = 2;
@@ -475,7 +492,7 @@ describe('GameplayScene with BasePopupComponent', () => {
     const timerEnded = false; // Timer not ended
 
     // Act
-    gameplayScene.loadPuzzle(timerEnded);
+    gameplayScene.loadPuzzle(timerEnded, 4500);
 
     // Assert: Ensure no call before 4500ms
     jest.advanceTimersByTime(4499);
@@ -569,6 +586,9 @@ describe('GameplayScene with BasePopupComponent', () => {
       const tutorial = {
         dispose: jest.fn()
       }
+      const mockUnsubscribeMiniGameEvent = {
+        dispose: jest.fn()
+      }
 
       // Replace the actual components with mocks
       gameplayScene.stoneHandler = mockStoneHandler as any;
@@ -579,6 +599,7 @@ describe('GameplayScene with BasePopupComponent', () => {
       gameplayScene.promptText = mockPromptText as any;
       gameplayScene.pauseButton = mockPauseButton as any;
       gameplayScene.pausePopupComponent = mockPausePopup as any;
+      gameplayScene.unsubscribeMiniGameEvent = mockUnsubscribeMiniGameEvent as any
       gameplayScene.tutorial = {
         ...tutorial,
         resetQuickStartTutorialDelay: jest.fn(),

@@ -1,27 +1,74 @@
 import { Debugger, lang } from "@common";
 
+// === Types ===
+interface Prompt {
+  promptText: string;
+  promptAudio: string;
+}
+interface Puzzle {
+  segmentNumber: number;
+  prompt: Prompt;
+  foilStones: string[];
+  targetStones: string[];
+}
+
+interface LevelMeta {
+  promptFadeOut: number;
+  letterGroup: number;
+  levelNumber: number;
+  protoType: string;
+  levelType: string;
+}
+
+interface CurrentLevelInfo {
+  puzzles: Puzzle[];
+  levelMeta: LevelMeta;
+  levelNumber: number;
+}
 export class GameScore {
   public static currentlanguage: string = lang;
 
-  public static setGameLevelScore(currentLevelInfo, score) {
+  public static setGameLevelScore(
+    currentLevelInfo: CurrentLevelInfo,
+    score: number,
+    treasureChestMiniGameScore: number
+  ): void {
     let starsGained = this.calculateStarCount(score);
     let levelPlayedInfo = {
       levelName: currentLevelInfo.levelMeta.levelType,
       levelNumber: currentLevelInfo.levelMeta.levelNumber,
       score: score,
       starCount: starsGained,
+      treasureChestMiniGameScore,
     };
     let allGameLevelInfo = this.getAllGameLevelInfo();
     let index = allGameLevelInfo.findIndex(
       (level) => level.levelNumber === levelPlayedInfo.levelNumber
     );
 
+    //If there are data found in local storage, cross check the scores.
     if (index !== -1) {
-      // Update only if the new score is higher
-      if (levelPlayedInfo.score > allGameLevelInfo[index].score) {
+      //Check if the new scores are higher.
+      const isNewScoreHigher = score > allGameLevelInfo[index].score;
+      const isNewMiniGameScoreHigher = treasureChestMiniGameScore > allGameLevelInfo[index].treasureChestMiniGameScore;
+
+      //If new game score is higher.
+      if (isNewScoreHigher) {
+        if (!isNewMiniGameScoreHigher) {
+          //Update if ONLY NEW SCORE IS HiGHER and mini game score is the same.
+          const savedMiniGameScore = allGameLevelInfo[index].treasureChestMiniGameScore;
+          //Used the saved value of mini game score.
+          levelPlayedInfo.treasureChestMiniGameScore = savedMiniGameScore;
+        }
+        // Save the updated score with the preserved mini game score.
         allGameLevelInfo[index] = levelPlayedInfo;
-      }
+     } else if (!isNewScoreHigher && isNewMiniGameScoreHigher){
+        //If new game score IS NOT higher and ONLY the MINI GAME SCORE is higher.
+        //Update only the treasureChestMiniGameScore value.
+        allGameLevelInfo[index].treasureChestMiniGameScore = treasureChestMiniGameScore;
+     }
     } else {
+      // If the game level is newly cleared.
       allGameLevelInfo.push(levelPlayedInfo);
     }
 

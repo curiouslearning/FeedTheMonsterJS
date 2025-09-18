@@ -78,6 +78,10 @@ img {
   image-rendering: auto;
 }
 
+#treasurecanvas{
+  display: none;
+}
+
 #canvas {
   position: absolute;
   left: 50%;

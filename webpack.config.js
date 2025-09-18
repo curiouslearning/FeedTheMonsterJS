@@ -70,7 +70,9 @@ var config = {
       '@gamepuzzles': path.resolve(__dirname, 'src/gamepuzzles/'),
       '@gameStateService': path.resolve(__dirname, 'src/gameStateService/'),
       '@gameSettingsService': path.resolve(__dirname, 'src/gameSettingsService/'),
-      '@tutorials': path.resolve(__dirname, 'src/tutorials/')
+      '@tutorials': path.resolve(__dirname, 'src/tutorials/'),
+      '@miniGameStateService': path.resolve(__dirname, 'src/miniGame/miniGameStateService'),
+      '@miniGames': path.resolve(__dirname, 'src/miniGame/miniGames'),
     },
     extensions: ['.tsx', '.ts', '.js', '.json', '.css', '.sh', '.babelrc', '.eslintignore', '.gitignore', '.d'],
   },

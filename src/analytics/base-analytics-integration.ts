@@ -51,7 +51,6 @@ export class BaseAnalyticsIntegration {
             this.analyticsService.register('statsig', this.statsigStrategy);
 
             this.isInitialized = true;
-            console.log("Analytics service initialized successfully with Firebase and Statsig");
 
         } catch (error) {
             console.error("Error while initializing analytics:", error);
