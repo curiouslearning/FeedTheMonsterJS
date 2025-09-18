@@ -355,34 +355,39 @@ export class PromptText extends BaseHTML {
         const levelType = this.levelData?.levelMeta?.levelType;
 
         // Helper function to match activeLetter in RTL grapheme array
-        const matchActiveLetterRTL = (graphemes: string[], activeLetter: string): Array<string> => {
-            const result: Array<string> = [];
-            let i = 0;
-            while (i < graphemes.length) {
-                let matchLength = 0;
-                let joined = '';
-                // Nested for loop: tries all possible substrings starting at i to find a match for activeLetter
+        const matchActiveLetterRTL = (graphemes: string[], activeLetter: string): string[] => {
+        const result: string[] = [];
+        let i = 0;
+        let alreadyHighlighted = false;
+
+        while (i < graphemes.length) {
+            if (!alreadyHighlighted) {
+                // Try to find and highlight the activeLetter substring only if not highlighted yet
+                let joined = "";
+                let found = false;
                 for (let j = i; j < graphemes.length; j++) {
                     joined += graphemes[j];
-                    // +1 below: j - i + 1 gives the length of the matched substring (inclusive of both i and j)
                     if (joined === activeLetter) {
-                        matchLength = j - i + 1; // +1: because both i and j are included in the substring
+                        result.push(generateSpanMarkup(joined, STYLE_RED_PULSE));
+                        i = j + 1;
+                        found = true;
+                        alreadyHighlighted = true;
                         break;
                     }
-                    // stop early if joined.length > activeLetter.length
                     if (joined.length > activeLetter.length) break;
                 }
-                if (matchLength > 0) {
-                    result.push(generateSpanMarkup(joined, STYLE_RED_PULSE));
-                    i += matchLength;
-                } else {
+                if (!found) {
                     result.push(graphemes[i]);
                     i++;
                 }
+            } else {
+                // After the first highlight, just push remaining graphemes as is, no further matching
+                result.push(graphemes[i]);
+                i++;
             }
-            return result;
+        }
+        return result;
         };
-
         let wordCharArray;
         if (isRTL && levelType === "LetterInWord") {
             wordCharArray = matchActiveLetterRTL(graphemes, activeLetter);
