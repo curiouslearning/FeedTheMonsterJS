@@ -246,7 +246,7 @@ export class TreasureChestAnimation {
         this.updateStones();
         this.cleanupStones();
         this.maintainStones();
-        if (!this.chestAudioPlayed) {       // add a boolean flag to the class
+        if (!this.chestAudioPlayed) {     
           this.audioPlayer.playAudio(AUDIO_MINIGAME);
           this.chestAudioPlayed = true;
         }
