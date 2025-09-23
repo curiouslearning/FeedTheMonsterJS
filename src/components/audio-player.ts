@@ -95,6 +95,47 @@ export class AudioPlayer {
     }
   }
 
+  /**
+ * Stops the currently playing audio immediately (if any).
+ * Useful when you want to cut off playback before it completes.
+ */
+  stopAudio = (): void => {
+    // Stop single active sourceNode if it's playing
+    if (this.sourceNode) {
+      try {
+        this.sourceNode.stop();
+      } catch (err) {
+        console.warn("Audio already stopped:", err);
+      }
+      this.sourceNode.disconnect();
+      this.sourceNode = null;
+    }
+
+    // Also stop any queued/parallel sources (like prompt/game audios)
+    if (this.audioSourcs.length > 0) {
+      this.audioSourcs.forEach((src) => {
+        try {
+          src.stop();
+        } catch (err) {
+          console.warn("Audio already stopped:", err);
+        }
+        src.disconnect();
+      });
+      this.audioSourcs = [];
+    }
+
+    // Reset playback flags and queues
+    this.isPromptAudioPlaying = false;
+    this.audioQueue = [];
+
+    // Clear any pending timeout for debounced play
+    if (this.playAudioTimeoutId) {
+      clearTimeout(this.playAudioTimeoutId);
+      this.playAudioTimeoutId = null;
+    }
+  };
+
+
   playAudioQueue = (loop: boolean = false, ...fileUrl: string[]): void => {
     if (fileUrl.length > 0) {
       this.audioQueue = fileUrl;
@@ -103,7 +144,7 @@ export class AudioPlayer {
   };
 
 
-  playPromptAudio = (onEndedCallback:()=> void | null = null) => {
+  playPromptAudio = (onEndedCallback: () => void | null = null) => {
     if (this.promptAudioBuffer) {
       const sourceNode = this.audioContext.createBufferSource();
       sourceNode.buffer = this.promptAudioBuffer;
