@@ -895,7 +895,7 @@ export class GameplayScene {
     if (this.unsubscribeEvent) {
       this.unsubscribeEvent();
       this.unsubscribeMiniGameEvent();
-      this.unsubscribeLoadGamePuzzle;
+      this.unsubscribeLoadGamePuzzle();
       this.unsubscribeEvent = null;
     }
 
