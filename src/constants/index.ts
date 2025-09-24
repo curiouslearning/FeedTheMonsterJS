@@ -128,6 +128,7 @@ export const POPUP_BG_IMG = "./assets/images/popup_bg_v01.svg";
 export const CLOSED_CHEST = "./assets/images/closedchest.svg";
 export const OPEN_CHEST = "./assets/images/chest.svg";  
 export const STONE_BLUE = "./assets/images/stone_blue.svg";
+export const BURN_EFFECT_IMG = (ctr) => `./assets/images/stone_burn_export_${ctr}.png`
 
 
 //Background Group Images
