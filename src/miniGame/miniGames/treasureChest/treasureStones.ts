@@ -159,6 +159,7 @@ export default class TreasureStones {
         return true;
       }
     }
+    return false;
   }
 
   /**
