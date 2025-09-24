@@ -1,5 +1,5 @@
 import { AudioPlayer } from '@components/audio-player';
-import { AUDIO_MINIGAME, CLOSED_CHEST, OPEN_CHEST, STONE_BLUE } from '@constants';
+import { AUDIO_MINIGAME } from '@constants';
 import gameSettingsServiceInstance from '@gameSettingsService/index';
 import TreasureStones from './treasureStones';
 import TreasureChest from './treasureChest';
