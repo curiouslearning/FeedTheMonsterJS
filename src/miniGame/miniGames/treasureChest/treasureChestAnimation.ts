@@ -1,3 +1,5 @@
+import { AudioPlayer } from '@components/audio-player';
+import { AUDIO_MINIGAME, CLOSED_CHEST, OPEN_CHEST, STONE_BLUE } from '@constants';
 import gameSettingsServiceInstance from '@gameSettingsService/index';
 import TreasureStones from './treasureStones';
 import TreasureChest from './treasureChest';
@@ -34,6 +36,8 @@ export class TreasureChestAnimation {
   private state: TreasureChestState = TreasureChestState.FadeIn; // Current chest animation state
   private stateStartTime: number = 0; // Timestamp when current state started
   public dpr: number; // Device pixel ratio scaling
+  public audioPlayer: AudioPlayer;
+  private chestAudioPlayed: boolean = false;
 
   private treasureChest: TreasureChest; // Handles chest drawing
   private treasureStone: TreasureStones;  // Handles stone drawing & animations
@@ -70,6 +74,7 @@ export class TreasureChestAnimation {
     this.callback = callback;
 
     // Setup rendering context
+    this.audioPlayer = new AudioPlayer();
     const context = this.canvas.getContext("2d");
     if (!context) throw new Error("Canvas not supported");
     this.ctx = context;
@@ -130,6 +135,7 @@ export class TreasureChestAnimation {
 
   /** Stops animation, hides canvas, and cleans up listeners. */
   public hide() {
+    this.audioPlayer.stopAudio();
     this.canvas.style.display = "none";
     this.canvas.removeEventListener("click", this.handleClick);
     this.canvas.removeEventListener("touchstart", this.handleClick);
@@ -187,6 +193,10 @@ export class TreasureChestAnimation {
         this.ctx.globalAlpha = 1;
         this.treasureChest.drawOpenChest(this.width, this.height);
         this.treasureStone.stoneBurstAnimation(this.width, this.height);
+        if (!this.chestAudioPlayed) {
+          this.audioPlayer.playAudio(AUDIO_MINIGAME);
+          this.chestAudioPlayed = true;
+        }
         const elapsed = performance.now() - this.stateStartTime;
         if (elapsed >= 12000) { // Keep chest open for 12 seconds
           this.state = TreasureChestState.FadeOut;
