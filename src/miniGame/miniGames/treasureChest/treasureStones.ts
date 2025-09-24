@@ -27,7 +27,6 @@ type Stone = {
 export default class TreasureStones {
   private stoneImg: HTMLImageElement; // Base stone image (blue stone)
   private stones: Stone[] = []; // Collection of active stones
-  private burnImg: HTMLImageElement; // Placeholder for burn effect image
   private burnFrames: HTMLImageElement[] = []; // Preloaded burn animation frames
   private ctx: CanvasRenderingContext2D; // Canvas rendering context
   private frameDuration: number; //Frame duration.
@@ -39,7 +38,6 @@ export default class TreasureStones {
     this.stones = [];
     this.stoneImg = new Image();
     this.stoneImg.src = STONE_BLUE; // Default blue stone sprite
-    this.burnImg = new Image();
     this.frameDuration = 75;
     // Preload burn animation frames (4-frame sprite)
     for (let i = 1; i <= 4; i++) {
