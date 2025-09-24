@@ -99,7 +99,7 @@ export class AudioPlayer {
  * Stops the currently playing audio immediately (if any).
  * Useful when you want to cut off playback before it completes.
  */
-  stopAudio = (): void => {
+  public stopAudio = (): void => {
     // Stop single active sourceNode if it's playing
     if (this.sourceNode) {
       try {
