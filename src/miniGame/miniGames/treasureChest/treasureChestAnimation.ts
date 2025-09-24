@@ -1,4 +1,5 @@
-import { CLOSED_CHEST, OPEN_CHEST, STONE_BLUE } from '@constants';
+import { AudioPlayer } from '@components/audio-player';
+import { AUDIO_MINIGAME, CLOSED_CHEST, OPEN_CHEST, STONE_BLUE } from '@constants';
 import gameSettingsServiceInstance from '@gameSettingsService/index';
 
 enum TreasureChestState {
@@ -46,6 +47,8 @@ export class TreasureChestAnimation {
   private state: TreasureChestState = TreasureChestState.FadeIn;
   private stateStartTime: number = 0;
   public dpr: number;
+  public audioPlayer: AudioPlayer;
+  private chestAudioPlayed: boolean = false;
   constructor(
     private width: number,
     private height: number,
@@ -67,7 +70,7 @@ export class TreasureChestAnimation {
     this.canvas.addEventListener("touchstart", this.handleClick);
     this.lastSpawnTime = performance.now();
     this.callback = callback;
-
+    this.audioPlayer = new AudioPlayer();
     const context = this.canvas.getContext("2d");
     if (!context) throw new Error("Canvas not supported");
     this.ctx = context;
@@ -151,6 +154,7 @@ export class TreasureChestAnimation {
 
   /** Stops & hides */
   public hide() {
+    this.audioPlayer.stopAudio();
     this.canvas.style.display = "none";
     this.canvas.removeEventListener("click", this.handleClick);
     this.canvas.removeEventListener("touchstart", this.handleClick);
@@ -242,6 +246,11 @@ export class TreasureChestAnimation {
         this.updateStones();
         this.cleanupStones();
         this.maintainStones();
+        if (!this.chestAudioPlayed) {     
+          this.audioPlayer.playAudio(AUDIO_MINIGAME);
+          this.chestAudioPlayed = true;
+        }
+
         const elapsed = performance.now() - this.stateStartTime;
         if (elapsed >= 12000) { // 12s for chest open
           this.state = TreasureChestState.FadeOut;
