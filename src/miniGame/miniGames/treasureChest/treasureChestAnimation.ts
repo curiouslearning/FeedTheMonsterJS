@@ -1,5 +1,5 @@
 import gameSettingsServiceInstance from '@gameSettingsService/index';
-import TreasureStones from './treasure-stones';
+import TreasureStones from './treasureStones';
 import TreasureChest from './treasureChest';
 
 /**
@@ -24,7 +24,6 @@ export class TreasureChestAnimation {
   private ctx: CanvasRenderingContext2D; // 2D rendering context
   private animationFrameId: number | null = null; // requestAnimationFrame id for cancelling loop
   private isVisible: boolean = false; // Whether the animation is currently active
-  private shakeDuration: number = 1000; // Chest shaking duration (ms)
   private callback: () => void; // Callback triggered when a stone is clicked
   private lastTapTime = 0; // Used to prevent duplicate clicks on mobile
   private fadeInStart: number | null = null; // Fade-in start timestamp
@@ -178,7 +177,7 @@ export class TreasureChestAnimation {
           this.height
         );
         const elapsed = performance.now() - this.stateStartTime;
-        if (elapsed >= this.shakeDuration) {
+        if (elapsed >= this.treasureChest.shakeDuration) {
           this.state = TreasureChestState.OpenedChest;
           this.stateStartTime = performance.now();
         }

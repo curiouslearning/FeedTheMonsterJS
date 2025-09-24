@@ -9,7 +9,7 @@ export default class TreasureChest {
   private openChestImg: HTMLImageElement; // Image for open chest state
   private ctx: CanvasRenderingContext2D; // Canvas context used for drawing
   private lastSpawnTime: number; // Timestamp of the last chest spawn
-  private shakeDuration: number = 1000; // 1s; Default seconds of shaking animation.
+  public shakeDuration: number = 1000; // 1s; Default seconds of shaking animation.
 
   /**
    * @param ctx - Canvas rendering context to draw the chest
