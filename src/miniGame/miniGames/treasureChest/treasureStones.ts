@@ -53,8 +53,8 @@ export default class TreasureStones {
    * @param width - Canvas width
    * @param height - Canvas height
    */
-  public stoneBurstAnimation(width: number, height: number): void {
-    this.updateStones(width);
+  public stoneBurstAnimation(width: number, height: number, deltaTime): void {
+    this.updateStones(width, deltaTime);
     this.cleanupStones();
     this.maintainStones(width, height);
   }
@@ -122,10 +122,10 @@ export default class TreasureStones {
    * Also renders stones to the canvas.
    * @param width - Canvas width
    */
-  private updateStones(width: number): void {
+  private updateStones(width: number, deltaTime: number): void {
     for (const stone of this.stones) {
       if (!stone.active) continue;
-      stone.burning ? this.updateBurningStone(stone) : this.updateMovingStone(stone, width);
+      stone.burning ? this.updateBurningStone(stone) : this.updateMovingStone(stone, width, deltaTime);
       this.drawStone(stone);
     }
   }
@@ -176,13 +176,14 @@ export default class TreasureStones {
    * Updates position, lifetime, and opacity of a moving stone.
    * Marks stone inactive when it goes out of bounds or expires.
    */
-  private updateMovingStone(stone: Stone, width: number): void {
-    stone.x += stone.dx;
-    stone.y += stone.dy;
-    stone.lifetime--;
+  private updateMovingStone(stone: Stone, width: number, deltaTime: number): void {
+    
+    stone.x += stone.dx * deltaTime / 16.67; // Normalize to ~60fps
+    stone.y += stone.dy * deltaTime / 16.67;
+    stone.lifetime -= deltaTime / 16.67;
 
     // Gradually fade out near the end of lifetime
-    if (stone.lifetime < 60) stone.opacity -= 0.002;
+    if (stone.lifetime < 60) stone.opacity -= 0.002 * deltaTime / 16.67;
 
     // Deactivate if out of bounds or expired
     if (
