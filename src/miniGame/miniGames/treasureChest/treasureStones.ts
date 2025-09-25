@@ -53,7 +53,7 @@ export default class TreasureStones {
    * @param width - Canvas width
    * @param height - Canvas height
    */
-  public stoneBurstAnimation(width: number, height: number, deltaTime): void {
+  public stoneBurstAnimation(width: number, height: number, deltaTime: number): void {
     this.updateStones(width, deltaTime);
     this.cleanupStones();
     this.maintainStones(width, height);
@@ -177,7 +177,7 @@ export default class TreasureStones {
    * Marks stone inactive when it goes out of bounds or expires.
    */
   private updateMovingStone(stone: Stone, width: number, deltaTime: number): void {
-    const fpsNormalizer = deltaTime / 16.67; // Normalize to ~60fps
+    const fpsNormalizer: number = deltaTime / 16.67; // Normalize to ~60fps
     stone.x += stone.dx * fpsNormalizer;
     stone.y += stone.dy * fpsNormalizer;
     stone.lifetime -= fpsNormalizer;
