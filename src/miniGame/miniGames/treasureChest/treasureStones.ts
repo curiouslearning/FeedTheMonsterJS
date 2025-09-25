@@ -177,13 +177,13 @@ export default class TreasureStones {
    * Marks stone inactive when it goes out of bounds or expires.
    */
   private updateMovingStone(stone: Stone, width: number, deltaTime: number): void {
-    
-    stone.x += stone.dx * deltaTime / 16.67; // Normalize to ~60fps
-    stone.y += stone.dy * deltaTime / 16.67;
-    stone.lifetime -= deltaTime / 16.67;
+    const fpsNormalizer = deltaTime / 16.67; // Normalize to ~60fps
+    stone.x += stone.dx * fpsNormalizer;
+    stone.y += stone.dy * fpsNormalizer;
+    stone.lifetime -= fpsNormalizer;
 
     // Gradually fade out near the end of lifetime
-    if (stone.lifetime < 60) stone.opacity -= 0.002 * deltaTime / 16.67;
+    if (stone.lifetime < 60) stone.opacity -= 0.002 * fpsNormalizer;
 
     // Deactivate if out of bounds or expired
     if (
