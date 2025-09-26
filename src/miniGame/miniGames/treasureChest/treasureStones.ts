@@ -53,8 +53,8 @@ export default class TreasureStones {
    * @param width - Canvas width
    * @param height - Canvas height
    */
-  public stoneBurstAnimation(width: number, height: number): void {
-    this.updateStones(width);
+  public stoneBurstAnimation(width: number, height: number, deltaTime: number): void {
+    this.updateStones(width, deltaTime);
     this.cleanupStones();
     this.maintainStones(width, height);
   }
@@ -122,10 +122,10 @@ export default class TreasureStones {
    * Also renders stones to the canvas.
    * @param width - Canvas width
    */
-  private updateStones(width: number): void {
+  private updateStones(width: number, deltaTime: number): void {
     for (const stone of this.stones) {
       if (!stone.active) continue;
-      stone.burning ? this.updateBurningStone(stone) : this.updateMovingStone(stone, width);
+      stone.burning ? this.updateBurningStone(stone) : this.updateMovingStone(stone, width, deltaTime);
       this.drawStone(stone);
     }
   }
@@ -138,23 +138,28 @@ export default class TreasureStones {
    * @returns true if a stone was clicked and triggered
    */
   public onClickEvent(x: number, y: number): boolean {
-    for (const stone of this.stones) {
+    // iterate stones from top-most to bottom-most stone
+    for (let i = this.stones.length - 1; i >= 0; i--) {
+      const stone = this.stones[i];
       if (!stone.active) continue;
-
       // Check if click is inside stone bounds
       const dx = x - stone.x;
       const dy = y - stone.y;
+
       if (Math.sqrt(dx * dx + dy * dy) <= stone.size / 2) {
         // Freeze stone when clicked
         stone.dx = 0;
         stone.dy = 0;
-        if (stone.burning || !stone.active) {
-          continue;
-        }
+
+        if (stone.burning) return false;
         // Trigger burn sequence
         stone.burning = true;
         stone.burnStartTime = performance.now();
         stone.burnFrameIndex = 0;
+
+        // move this stone to top of draw order
+        this.stones.splice(i, 1);
+        this.stones.push(stone);
 
         return true;
       }
@@ -176,21 +181,22 @@ export default class TreasureStones {
    * Updates position, lifetime, and opacity of a moving stone.
    * Marks stone inactive when it goes out of bounds or expires.
    */
-  private updateMovingStone(stone: Stone, width: number): void {
-    stone.x += stone.dx;
-    stone.y += stone.dy;
-    stone.lifetime--;
+  private updateMovingStone(stone: Stone, width: number, deltaTime: number): void {
+    const fpsNormalizer: number = deltaTime / 16.67; // Normalize to ~60fps
+    stone.x += stone.dx * fpsNormalizer;
+    stone.y += stone.dy * fpsNormalizer;
+    stone.lifetime -= fpsNormalizer;
 
     // Gradually fade out near the end of lifetime
-    if (stone.lifetime < 60) stone.opacity -= 0.002;
+    if (stone.lifetime < 60) stone.opacity -= 0.002 * fpsNormalizer;
 
     // Deactivate if out of bounds or expired
     if (
-        stone.lifetime <= 0 ||
-        stone.y < 0 ||
-        stone.x < -stone.size ||
-        stone.x > width + stone.size
-      ) {
+      stone.lifetime <= 0 ||
+      stone.y < 0 ||
+      stone.x < -stone.size ||
+      stone.x > width + stone.size
+    ) {
       stone.active = false;
     }
   }

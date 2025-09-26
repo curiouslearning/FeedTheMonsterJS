@@ -30,6 +30,7 @@ declare const window: any;
 class App {
   private canvas: HTMLCanvasElement;
   private riveCanvas: HTMLCanvasElement;
+  private treasureCanvas: HTMLCanvasElement;
   private versionInfoElement: HTMLElement;
   private lang: string;
   private is_cached: Map<string, boolean>;
@@ -287,11 +288,14 @@ class App {
   private setupCanvas() {
     this.canvas = document.getElementById("canvas") as HTMLCanvasElement;
     this.riveCanvas = document.getElementById("rivecanvas") as HTMLCanvasElement;
+    this.treasureCanvas = document.getElementById("treasurecanvas") as HTMLCanvasElement;
     let gameWidth: number = Utils.getResponsiveCanvasWidth();
     this.canvas.height = window.innerHeight;
     this.canvas.width = gameWidth;
     this.riveCanvas.height = window.innerHeight;
     this.riveCanvas.width = gameWidth;
+    this.treasureCanvas.height = window.innerHeight;
+    this.treasureCanvas.width = gameWidth;
     this.background.style.width = `${gameWidth}px`;
   }
 

@@ -3,6 +3,7 @@ import { AUDIO_MINIGAME } from '@constants';
 import gameSettingsServiceInstance from '@gameSettingsService/index';
 import TreasureStones from './treasureStones';
 import TreasureChest from './treasureChest';
+import { Utils } from '@common';
 
 /**
  * Represents the different phases of the chest animation sequence.
@@ -38,6 +39,7 @@ export class TreasureChestAnimation {
   public dpr: number; // Device pixel ratio scaling
   public audioPlayer: AudioPlayer;
   private chestAudioPlayed: boolean = false;
+  private lastFrameTime: number = -1;
 
   private treasureChest: TreasureChest; // Handles chest drawing
   private treasureStone: TreasureStones;  // Handles stone drawing & animations
@@ -55,12 +57,19 @@ export class TreasureChestAnimation {
     // Scale canvas to device pixel ratio for crisp rendering
     this.canvas = document.getElementById("treasurecanvas") as HTMLCanvasElement;
     this.dpr = gameSettingsServiceInstance.getDevicePixelRatioValue();
+
+    //Get responsive width from utility
+    this.width = Utils.getResponsiveCanvasWidth();
+
+    // Applying DPR scaling
     this.canvas.width = this.width * this.dpr;
     this.canvas.height = this.height * this.dpr;
+
+    // Seting CSS size (logical resolution)
     this.canvas.style.width = `${this.width}px`;
     this.canvas.style.height = `${this.height}px`;
 
-    // Position overlay on top of game screen
+    // Positioning overlay on top of game screen
     this.canvas.style.position = "absolute";
     this.canvas.style.top = "0";
     this.canvas.style.left = "0";
@@ -153,6 +162,8 @@ export class TreasureChestAnimation {
   private loop = (time: number = 0) => {
     if (!this.isVisible) return;
 
+    const deltaTime = this.lastFrameTime < 0 ? 0 : time - this.lastFrameTime;
+    this.lastFrameTime = time;
     this.ctx.clearRect(0, 0, this.width, this.height);
     this.ctx.save();
     this.drawOverlay();
@@ -192,7 +203,7 @@ export class TreasureChestAnimation {
       case TreasureChestState.OpenedChest: {
         this.ctx.globalAlpha = 1;
         this.treasureChest.drawOpenChest(this.width, this.height);
-        this.treasureStone.stoneBurstAnimation(this.width, this.height);
+        this.treasureStone.stoneBurstAnimation(this.width, this.height, deltaTime);
         if (!this.chestAudioPlayed) {
           this.audioPlayer.playAudio(AUDIO_MINIGAME);
           this.chestAudioPlayed = true;
@@ -209,7 +220,7 @@ export class TreasureChestAnimation {
         const alpha = Math.max(0, 1 - elapsed / this.fadeOutDuration);
         this.ctx.globalAlpha = alpha;
         this.treasureChest.drawOpenChest(this.width, this.height);
-        this.treasureStone.stoneBurstAnimation(this.width, this.height);
+        this.treasureStone.stoneBurstAnimation(this.width, this.height, deltaTime);
         if (alpha === 0) {
           this.hide();
           this.onFadeComplete?.();
