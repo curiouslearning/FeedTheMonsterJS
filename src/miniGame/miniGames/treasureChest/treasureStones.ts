@@ -138,23 +138,28 @@ export default class TreasureStones {
    * @returns true if a stone was clicked and triggered
    */
   public onClickEvent(x: number, y: number): boolean {
-    for (const stone of this.stones) {
+    // iterate stones from top-most to bottom-most stone
+    for (let i = this.stones.length - 1; i >= 0; i--) {
+      const stone = this.stones[i];
       if (!stone.active) continue;
-
       // Check if click is inside stone bounds
       const dx = x - stone.x;
       const dy = y - stone.y;
+
       if (Math.sqrt(dx * dx + dy * dy) <= stone.size / 2) {
         // Freeze stone when clicked
         stone.dx = 0;
         stone.dy = 0;
-        if (stone.burning || !stone.active) {
-          continue;
-        }
+
+        if (stone.burning) return false;
         // Trigger burn sequence
         stone.burning = true;
         stone.burnStartTime = performance.now();
         stone.burnFrameIndex = 0;
+
+        // move this stone to top of draw order
+        this.stones.splice(i, 1);
+        this.stones.push(stone);
 
         return true;
       }
@@ -187,11 +192,11 @@ export default class TreasureStones {
 
     // Deactivate if out of bounds or expired
     if (
-        stone.lifetime <= 0 ||
-        stone.y < 0 ||
-        stone.x < -stone.size ||
-        stone.x > width + stone.size
-      ) {
+      stone.lifetime <= 0 ||
+      stone.y < 0 ||
+      stone.x < -stone.size ||
+      stone.x > width + stone.size
+    ) {
       stone.active = false;
     }
   }

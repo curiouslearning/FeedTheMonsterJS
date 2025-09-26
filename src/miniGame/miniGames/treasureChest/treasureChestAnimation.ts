@@ -3,6 +3,7 @@ import { AUDIO_MINIGAME } from '@constants';
 import gameSettingsServiceInstance from '@gameSettingsService/index';
 import TreasureStones from './treasureStones';
 import TreasureChest from './treasureChest';
+import { Utils } from '@common';
 
 /**
  * Represents the different phases of the chest animation sequence.
@@ -56,12 +57,19 @@ export class TreasureChestAnimation {
     // Scale canvas to device pixel ratio for crisp rendering
     this.canvas = document.getElementById("treasurecanvas") as HTMLCanvasElement;
     this.dpr = gameSettingsServiceInstance.getDevicePixelRatioValue();
+
+    //Get responsive width from utility
+    this.width = Utils.getResponsiveCanvasWidth();
+
+    // Applying DPR scaling
     this.canvas.width = this.width * this.dpr;
     this.canvas.height = this.height * this.dpr;
+
+    // Seting CSS size (logical resolution)
     this.canvas.style.width = `${this.width}px`;
     this.canvas.style.height = `${this.height}px`;
 
-    // Position overlay on top of game screen
+    // Positioning overlay on top of game screen
     this.canvas.style.position = "absolute";
     this.canvas.style.top = "0";
     this.canvas.style.left = "0";
