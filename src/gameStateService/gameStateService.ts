@@ -148,6 +148,11 @@ export class GameStateService extends PubSub {
         return this.data;
     }
 
+    public getDisplayStarCount(starCount: number): number {
+        // Cap star display based on the current configured max
+        return Math.min(starCount, GameScore['CURRENT_STAR_CAP']);
+    }
+
     setDefaultGameStateValues(data: DataModal) {
         /*Original game data from FeedTheMonster.ts.*/
         this.data = data;
@@ -264,7 +269,7 @@ export class GameStateService extends PubSub {
 
     getLevelEndSceneData() {
         return {
-            starCount: this.levelEndData.starCount,
+            starCount: this.getDisplayStarCount(this.levelEndData.starCount),
             currentLevel: this.levelEndData.currentLevel,
             isTimerEnded: this.levelEndData.isTimerEnded,
             data: this.data,

@@ -27,7 +27,8 @@ interface CurrentLevelInfo {
 }
 export class GameScore {
   public static currentlanguage: string = lang;
-
+  private static readonly MAX_STARS = 5; // maximum stars
+  private static readonly CURRENT_STAR_CAP = 3; // active cap
   public static setGameLevelScore(
     currentLevelInfo: CurrentLevelInfo,
     score: number,
@@ -62,11 +63,11 @@ export class GameScore {
         }
         // Save the updated score with the preserved mini game score.
         allGameLevelInfo[index] = levelPlayedInfo;
-     } else if (!isNewScoreHigher && isNewMiniGameScoreHigher){
+      } else if (!isNewScoreHigher && isNewMiniGameScoreHigher) {
         //If new game score IS NOT higher and ONLY the MINI GAME SCORE is higher.
         //Update only the treasureChestMiniGameScore value.
         allGameLevelInfo[index].treasureChestMiniGameScore = treasureChestMiniGameScore;
-     }
+      }
     } else {
       // If the game level is newly cleared.
       allGameLevelInfo.push(levelPlayedInfo);
@@ -97,21 +98,25 @@ export class GameScore {
 
   public static getTotalStarCount(): number {
     const starCount = localStorage.getItem(this.currentlanguage + "totalStarCount");
-    return starCount == undefined ? 0: parseInt(starCount);
+    return starCount == undefined ? 0 : parseInt(starCount);
   }
-  
+
   public static calculateStarCount(score: number): number {
-    switch (score) {
-      case 200:
-        return 1;
-      case 300:
-      case 400:
-        return 2;
-      case 500:
-        return 3;
-      default:
-        return 0;
+    let thresholds: number[];
+
+    if (this.MAX_STARS === 5) {
+      // New 5-star logic
+      thresholds = [100, 200, 300, 400, 500];
+    } else {
+      // Keep old 3-star logic
+      thresholds = [200, 300, 400, 500];
     }
+
+    // Count how many thresholds the score passes
+    let stars = thresholds.filter(t => score >= t).length;
+
+    // Cap stars based on current active max
+    return Math.min(stars, this.CURRENT_STAR_CAP);
   }
 
   public static getDatafromStorage() {
