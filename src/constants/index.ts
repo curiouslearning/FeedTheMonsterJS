@@ -59,9 +59,9 @@ export const AUDIO_URL_PRELOAD = [
   "./assets/audios/are-you-sure.mp3",
   "./assets/audios/monster_discovered_fanfare.mp3",
   "./assets/audios/monster_evolve.mp3",
-  "./assets/audios/miniGame.mp3"
+  "./assets/audios/treasure_miniGame.mp3"
 ];
-export const AUDIO_MINIGAME = "./assets/audios/miniGame.mp3";
+export const AUDIO_MINIGAME = "./assets/audios/treasure_miniGame.mp3";
 // Audios used during the Rive evolution animation.
 // The structure is designed to be easily scalable, allowing for the addition of more audio files as needed.
 export const EVOLUTION_AUDIOS = {
