@@ -25,10 +25,12 @@ interface CurrentLevelInfo {
   levelMeta: LevelMeta;
   levelNumber: number;
 }
+
+export const STAR_CONFIG = {
+    MAX_STARS: 5 // maximum stars
+};
 export class GameScore {
   public static currentlanguage: string = lang;
-  private static readonly MAX_STARS = 5; // maximum stars
-  private static readonly CURRENT_STAR_CAP = 3; // active cap
   public static setGameLevelScore(
     currentLevelInfo: CurrentLevelInfo,
     score: number,
@@ -102,21 +104,26 @@ export class GameScore {
   }
 
   public static calculateStarCount(score: number): number {
-    let thresholds: number[];
-
-    if (this.MAX_STARS === 5) {
-      // New 5-star logic
-      thresholds = [100, 200, 300, 400, 500];
+    if (STAR_CONFIG.MAX_STARS === 5) {
+      // 5-star logic
+      switch (true) {
+        case score >= 500: return 5;
+        case score >= 400: return 4;
+        case score >= 300: return 3;
+        case score >= 200: return 2;
+        case score >= 100: return 1;
+        default: return 0;
+      }
     } else {
-      // Keep old 3-star logic
-      thresholds = [200, 300, 400, 500];
+      // 3-star logic (old)
+      switch (true) {
+        case score === 500: return 3;
+        case score === 300 || score === 400: return 2;
+        case score === 200: return 1;
+        default: return 0;
+      }
     }
-
-    // Count how many thresholds the score passes
-    let stars = thresholds.filter(t => score >= t).length;
-
-    // Cap stars based on current active max
-    return Math.min(stars, this.CURRENT_STAR_CAP);
+    
   }
 
   public static getDatafromStorage() {

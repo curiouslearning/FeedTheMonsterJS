@@ -34,6 +34,7 @@ export class GameStateService extends PubSub {
     }
     public data: null | DataModal;
     public isGamePaused: boolean;
+    private static readonly DEFAULT_STAR_CAP = 5;
     public gamePlayData: null | {
         currentLevelData: {
             levelMeta: {
@@ -148,9 +149,17 @@ export class GameStateService extends PubSub {
         return this.data;
     }
 
-    public getDisplayStarCount(starCount: number): number {
-        // Cap star display based on the current configured max
-        return Math.min(starCount, GameScore['CURRENT_STAR_CAP']);
+    /** Centralized method to calculate displayed star count based on score */
+    public getDisplayStarCountFromScore(score: number): number {
+        const calculatedStars = GameScore.calculateStarCount(score);
+        return Math.min(calculatedStars, GameStateService.DEFAULT_STAR_CAP);
+    }
+
+    public getDisplayStarCount(starCount: number, score?: number): number {
+        if (score !== undefined) {
+            return this.getDisplayStarCountFromScore(score);
+        }
+        return Math.min(starCount, GameStateService.DEFAULT_STAR_CAP);
     }
 
     setDefaultGameStateValues(data: DataModal) {

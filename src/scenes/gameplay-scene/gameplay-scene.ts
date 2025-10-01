@@ -804,7 +804,6 @@ export class GameplayScene {
           currentLevel: this.levelNumber,
           isTimerEnded: timerEnded
         }
-         console.log(levelEndData.starCount, 'levelEndData');
 
         gameStateService.publish(gameStateService.EVENTS.LEVEL_END_DATA_EVENT, { levelEndData, data: this.data });
         gameStateService.publish(gameStateService.EVENTS.SWITCH_SCENE_EVENT, SCENE_NAME_LEVEL_END);
