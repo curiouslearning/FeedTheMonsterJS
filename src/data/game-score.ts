@@ -26,9 +26,6 @@ interface CurrentLevelInfo {
   levelNumber: number;
 }
 
-export const STAR_CONFIG = {
-    MAX_STARS: 5 // maximum stars
-};
 export class GameScore {
   public static currentlanguage: string = lang;
   public static setGameLevelScore(
@@ -104,26 +101,14 @@ export class GameScore {
   }
 
   public static calculateStarCount(score: number): number {
-    if (STAR_CONFIG.MAX_STARS === 5) {
-      // 5-star logic
-      switch (true) {
-        case score >= 500: return 5;
-        case score >= 400: return 4;
-        case score >= 300: return 3;
-        case score >= 200: return 2;
-        case score >= 100: return 1;
-        default: return 0;
-      }
-    } else {
-      // 3-star logic (old)
-      switch (true) {
-        case score === 500: return 3;
-        case score === 300 || score === 400: return 2;
-        case score === 200: return 1;
-        default: return 0;
-      }
+    switch (true) {
+      case score >= 500: return 5;
+      case score >= 400: return 4;
+      case score >= 300: return 3;
+      case score >= 200: return 2;
+      case score >= 100: return 1;
+      default: return 0;
     }
-    
   }
 
   public static getDatafromStorage() {
