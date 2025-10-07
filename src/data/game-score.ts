@@ -33,6 +33,8 @@ export class GameScore {
     score: number,
     treasureChestMiniGameScore: number
   ): void {
+    // Ensure data migration first
+    this.migrateOldScoresToNewStars();
     let starsGained = this.calculateStarCount(score);
     let levelPlayedInfo = {
       levelName: currentLevelInfo.levelMeta.levelType,
@@ -86,7 +88,7 @@ export class GameScore {
     return data ? JSON.parse(data) : [];
   }
 
-  private static updateTotalStarCount(): void {
+  public static updateTotalStarCount(): void {
     const allGameLevelInfo = this.getAllGameLevelInfo();
     const totalStarCount = allGameLevelInfo.reduce(
       (sum, level) => sum + level.starCount,
@@ -98,6 +100,31 @@ export class GameScore {
   public static getTotalStarCount(): number {
     const starCount = localStorage.getItem(this.currentlanguage + "totalStarCount");
     return starCount == undefined ? 0 : parseInt(starCount);
+  }
+
+  public static migrateOldScoresToNewStars(): void {
+    const allGameLevelInfo = this.getAllGameLevelInfo();
+    let isUpdated = false;
+
+    const updatedGameLevelInfo = allGameLevelInfo.map((level) => {
+      const recalculatedStars = this.calculateStarCount(level.score);
+      if (level.starCount !== recalculatedStars) {
+        // Only update starCoubt if there is a difference
+        level.starCount = recalculatedStars;
+        isUpdated = true;
+      }
+      return level;
+    });
+
+    // If any changes were made, persist updated data
+    if (isUpdated) {
+      localStorage.setItem(
+        this.currentlanguage + "gamePlayedInfo",
+        JSON.stringify(updatedGameLevelInfo)
+      );
+      this.updateTotalStarCount();
+    } else {
+    }
   }
 
   public static calculateStarCount(score: number): number {

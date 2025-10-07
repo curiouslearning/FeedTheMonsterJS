@@ -57,7 +57,7 @@ export class LevelSelectionScreen {
   private leftBtnY: number;
   private levelButtons: any
   public riveMonsterElement: HTMLCanvasElement;
-
+  private readonly MIN_STARS_TO_COMPLETE_LEVEL = 3;
   constructor() {
     const {
       canvasElem,
@@ -66,7 +66,7 @@ export class LevelSelectionScreen {
       context
     } = gameSettingsService.getCanvasSizeValues();
     this.canvas = canvasElem;
-    this.width =  canvasWidth > 1024 ? 500 : canvasWidth;
+    this.width = canvasWidth > 1024 ? 500 : canvasWidth;
     this.height = canvasHeight;
     this.context = context;
 
@@ -80,7 +80,7 @@ export class LevelSelectionScreen {
     this.analyticsIntegration = AnalyticsIntegration.getInstance();
     this.init();
     this.createLevelButtons();
-    this.gameLevelData = GameScore.getAllGameLevelInfo();
+    this.migrateOldStars();
     this.audioPlayer = new AudioPlayer();
     this.unlockLevelIndex = -1;
     this.previousPlayedLevelNumber =
@@ -116,6 +116,27 @@ export class LevelSelectionScreen {
     this.leftBtnY = 1.3;
   }
 
+  private migrateOldStars() {
+    this.gameLevelData = GameScore.getAllGameLevelInfo();
+    let updated = false;
+
+    this.gameLevelData.forEach(level => {
+      const newStars = GameScore.calculateStarCount(level.score);
+      if (level.starCount !== newStars) {
+        level.starCount = newStars;
+        updated = true;
+      }
+    });
+
+    if (updated) {
+      localStorage.setItem(
+        GameScore.currentlanguage + "gamePlayedInfo",
+        JSON.stringify(this.gameLevelData)
+      );
+      GameScore.updateTotalStarCount();
+    }
+  }
+
   private async init() {
     const data = await getData();
     this.majVersion = data.majversion;
@@ -142,7 +163,7 @@ export class LevelSelectionScreen {
 
     // Only take the positions we need for this page
     const positions = poss[0].slice(0, buttonsToCreate);
-    
+
     const levelsArr = positions.map((coordinates, index) => {
       return createLevelObject(
         coordinates[0],
@@ -157,7 +178,7 @@ export class LevelSelectionScreen {
       return new LevelBloonButton(
         this.canvas,
         this.context,
-        {...btnCoordinates}
+        { ...btnCoordinates }
       );
     });
   }
@@ -266,7 +287,7 @@ export class LevelSelectionScreen {
       }
     }
 
-    for(let btn of this.levelButtons) {
+    for (let btn of this.levelButtons) {
       btn.onClick(
         x,
         y,
@@ -292,7 +313,7 @@ export class LevelSelectionScreen {
    */
   private isLevelCompleted(levelNumber: number, gameLevelData: any[]): boolean {
     const levelInfo = gameLevelData.find(level => level.levelNumber === levelNumber);
-    return (levelInfo?.starCount || 0) >= 2;
+    return (levelInfo?.starCount || 0) >= this.MIN_STARS_TO_COMPLETE_LEVEL;
   }
 
   private drawLevel(levelBtn: any, gameLevelData: []) {
@@ -315,11 +336,11 @@ export class LevelSelectionScreen {
 
       Debugger.DebugMode
         ? this.context.fillText(
-            this.data.levels[currentLevelIndex - 1]
-              .levelMeta.levelType,
-            levelBtn.levelData.x + levelBtn.btnSize / 3.5,
-            levelBtn.levelData.y + levelBtn.btnSize / 1.3
-          )
+          this.data.levels[currentLevelIndex - 1]
+            .levelMeta.levelType,
+          levelBtn.levelData.x + levelBtn.btnSize / 3.5,
+          levelBtn.levelData.y + levelBtn.btnSize / 1.3
+        )
         : null;
     }
   }
@@ -372,14 +393,14 @@ export class LevelSelectionScreen {
 
   checkUnlockedLevel(gameLevelData) {
     if (gameLevelData.length != undefined) {
-        for (let game of gameLevelData) {
-          if (this.unlockLevelIndex < parseInt(game.levelNumber)) {
-            game.starCount >= 2
-              ? (this.unlockLevelIndex = parseInt(game.levelNumber))
-              : null;
-          }
+      for (let game of gameLevelData) {
+        if (this.unlockLevelIndex < parseInt(game.levelNumber)) {
+          game.starCount >= this.MIN_STARS_TO_COMPLETE_LEVEL
+            ? (this.unlockLevelIndex = parseInt(game.levelNumber))
+            : null;
         }
       }
+    }
   }
 
   private startGame(level_number: string | number) {
