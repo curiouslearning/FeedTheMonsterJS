@@ -21,6 +21,7 @@ import {
   BACK_BTN_IMG,
   AUDIO_INTRO,
   SCENE_NAME_GAME_PLAY,
+  MIN_STARS_TO_COMPLETE_LEVEL,
 } from "@constants";
 import { LevelBloonButton } from '@buttons';
 import gameStateService from '@gameStateService';
@@ -57,7 +58,7 @@ export class LevelSelectionScreen {
   private leftBtnY: number;
   private levelButtons: any
   public riveMonsterElement: HTMLCanvasElement;
-  private readonly MIN_STARS_TO_COMPLETE_LEVEL = 3;
+
   constructor() {
     const {
       canvasElem,
@@ -80,7 +81,7 @@ export class LevelSelectionScreen {
     this.analyticsIntegration = AnalyticsIntegration.getInstance();
     this.init();
     this.createLevelButtons();
-    this.migrateOldStars();
+    this.gameLevelData = GameScore.getAllGameLevelInfo();
     this.audioPlayer = new AudioPlayer();
     this.unlockLevelIndex = -1;
     this.previousPlayedLevelNumber =
@@ -114,27 +115,6 @@ export class LevelSelectionScreen {
     this.leftBtnSize = 10;
     this.leftBtnX = 10;
     this.leftBtnY = 1.3;
-  }
-
-  private migrateOldStars() {
-    this.gameLevelData = GameScore.getAllGameLevelInfo();
-    let updated = false;
-
-    this.gameLevelData.forEach(level => {
-      const newStars = GameScore.calculateStarCount(level.score);
-      if (level.starCount !== newStars) {
-        level.starCount = newStars;
-        updated = true;
-      }
-    });
-
-    if (updated) {
-      localStorage.setItem(
-        GameScore.currentlanguage + "gamePlayedInfo",
-        JSON.stringify(this.gameLevelData)
-      );
-      GameScore.updateTotalStarCount();
-    }
   }
 
   private async init() {
@@ -304,16 +284,16 @@ export class LevelSelectionScreen {
 
   /**
    * Checks if a level is considered completed based on star count.
-   * A level is completed when the player has earned 2 or more stars.
+   * A level is completed when the player has earned 3 or more stars.
    * Used to determine if the level button should show the pulse effect,
    * as incomplete levels need to draw player's attention.
    * @param levelNumber - The level to check completion status for
    * @param gameLevelData - Array of level data containing star counts
-   * @returns true if level has 2+ stars, false otherwise
+   * @returns true if level has 3+ stars, false otherwise
    */
-  private isLevelCompleted(levelNumber: number, gameLevelData: any[]): boolean {
+  private isLevelCompleted(levelNumber: number, gameLevelData: any[]): boolean {  
     const levelInfo = gameLevelData.find(level => level.levelNumber === levelNumber);
-    return (levelInfo?.starCount || 0) >= this.MIN_STARS_TO_COMPLETE_LEVEL;
+    return (levelInfo?.starCount || 0) >= MIN_STARS_TO_COMPLETE_LEVEL;
   }
 
   private drawLevel(levelBtn: any, gameLevelData: []) {
@@ -395,7 +375,7 @@ export class LevelSelectionScreen {
     if (gameLevelData.length != undefined) {
       for (let game of gameLevelData) {
         if (this.unlockLevelIndex < parseInt(game.levelNumber)) {
-          game.starCount >= this.MIN_STARS_TO_COMPLETE_LEVEL
+          game.starCount >= MIN_STARS_TO_COMPLETE_LEVEL
             ? (this.unlockLevelIndex = parseInt(game.levelNumber))
             : null;
         }

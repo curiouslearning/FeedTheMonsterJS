@@ -84,7 +84,7 @@ export class GameScore {
   }
 
   public static getAllGameLevelInfo(): any[] {
-    const data = localStorage.getItem(this.currentlanguage + "gamePlayedInfo");
+    const data = localStorage.getItem(this.currentlanguage + "gamePlayedInfo");  
     return data ? JSON.parse(data) : [];
   }
 
@@ -123,7 +123,6 @@ export class GameScore {
         JSON.stringify(updatedGameLevelInfo)
       );
       this.updateTotalStarCount();
-    } else {
     }
   }
 

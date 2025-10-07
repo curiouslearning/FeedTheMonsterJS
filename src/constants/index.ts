@@ -194,6 +194,9 @@ export const SCENE_NAME_LEVEL_END = "LevelEnd";
 //Levels
 export const SPECIAL_LEVELS = [5, 13, 20, 30, 42];
 
+// Minimum stars to complete level
+export const MIN_STARS_TO_COMPLETE_LEVEL = 3;
+
 //Evolving Phases Backgrounds
 export const PHASES_BG ={
   0: './assets/images/phaseBackground_1.webp',
