@@ -37,6 +37,7 @@ import {
   SCENE_NAME_LEVEL_SELECT,
   SCENE_NAME_GAME_PLAY,
   SCENE_NAME_GAME_PLAY_REPLAY,
+  SCENE_NAME_PROGRESS_LEVEL,
   SCENE_NAME_LEVEL_END,
   PreviousPlayedLevel,
   MONSTER_PHASES,
@@ -793,46 +794,67 @@ export class GameplayScene {
     this.tutorial?.resetQuickStartTutorialDelay();
     this.tutorial?.hideTutorial(); // Turn off tutorial via loading the puzzle.
 
+    /*
+      setTimeoutDelay:
+      -Adds a delay to properly create and load the next puzzle.
+      -Trigger the handleLevelEnd with a delay to let the audio play in puzzleHandler.ts before switching to level end screen. //Trigger the handleLevelEnd with a delay to let the audio play in puzzleHandler.ts before switching to level end screen.
+    */
+    const setTimeoutDelay = timerEnded ? 0 : loadPuzzleDelay;
+    let setTimeoutCallback = null;
+
     if (this.counter === this.levelData.puzzles.length) {
-      const handleLevelEnd = () => {
+      //Handle level end loading.
+      setTimeoutCallback = () => {
         this.levelIndicators?.setIndicators(this.counter);
         this.logLevelEndFirebaseEvent();
-        GameScore.setGameLevelScore(this.levelData, this.score, this.treasureChestScore);
-
+        const starsCount = GameScore.calculateStarCount(this.score);
         const levelEndData = {
-          starCount: GameScore.calculateStarCount(this.score),
+          starCount: starsCount,
           currentLevel: this.levelNumber,
-          isTimerEnded: timerEnded
+          isTimerEnded: timerEnded,
+          treasureChestScore: this.treasureChestScore,
+          score: this.score,
         }
-
-        gameStateService.publish(gameStateService.EVENTS.LEVEL_END_DATA_EVENT, { levelEndData, data: this.data });
-        gameStateService.publish(gameStateService.EVENTS.SWITCH_SCENE_EVENT, SCENE_NAME_LEVEL_END);
+        gameStateService.publish(
+          gameStateService.EVENTS.LEVEL_END_DATA_EVENT,
+          { levelEndData, data: this.data }
+        );
+        //Save to local storage.
+        GameScore.setGameLevelScore(
+          this.levelData,
+          this.score,
+          this.treasureChestScore
+        );
+        this.switchSceneAtGameEnd(starsCount, this.treasureChestScore);
         this.monster.dispose(); //Adding the monster dispose here due to the scenario that this.monster is still needed when restart game level is played.
       };
 
-      if (timerEnded) {
-        handleLevelEnd();
-      } else {
-        //Trigger the handleLevelEnd with a delay to let the audio play in puzzleHandler.ts before switching to level end screen.
-        setTimeout(handleLevelEnd, loadPuzzleDelay);
-      }
     } else {
       const loadPuzzleEvent = new CustomEvent(LOADPUZZLE, {
         detail: {
           counter: this.counter,
         },
       });
-      setTimeout(
-        () => {
-          if (!this.isDisposing) {
-            this.initNewPuzzle(loadPuzzleEvent);
-            this.timerTicking.startTimer(); // Start the timer for the new puzzle
-          }
-        },
-        timerEnded ? 0 : loadPuzzleDelay // added delay for switching to level end screen
-      );
+
+      setTimeoutCallback = () => {
+        if (!this.isDisposing) {
+          this.initNewPuzzle(loadPuzzleEvent);
+          this.timerTicking.startTimer(); // Start the timer for the new puzzle
+        }
+      }
     }
+
+    setTimeout(setTimeoutCallback, setTimeoutDelay);
   };
+
+  private switchSceneAtGameEnd(starsCount: number, treasureChestScore: number): void {
+    //If monster isn't phase 4 and the user has success scoring, show the progress level otherwise load straight to level-end scene.
+    const loadSceneName = this.monsterPhaseNumber < 3 && (starsCount >= 2 || treasureChestScore > 0)
+    ? SCENE_NAME_PROGRESS_LEVEL
+    : SCENE_NAME_LEVEL_END;
+    //Load the next scene.
+    gameStateService.publish(gameStateService.EVENTS.SWITCH_SCENE_EVENT, loadSceneName);
+  }
 
   private initNewPuzzle(loadPuzzleEvent) {
     // Dispose old monster first to prevent memory leaks

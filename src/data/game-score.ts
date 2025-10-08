@@ -25,6 +25,14 @@ interface CurrentLevelInfo {
   levelMeta: LevelMeta;
   levelNumber: number;
 }
+
+interface GameLevelInfo {
+  levelName: string;
+  levelNumber: number;
+  score: number;
+  starCount: number;
+  treasureChestMiniGameScore: number;
+}
 export class GameScore {
   public static currentlanguage: string = lang;
 
@@ -79,6 +87,14 @@ export class GameScore {
 
     // Update total star count dynamically
     this.updateTotalStarCount();
+  }
+
+  public static getGameLevelData(levelNumber: number): null | GameLevelInfo {
+    const allGameLevelInfo = this.getAllGameLevelInfo();
+    let index = allGameLevelInfo.findIndex(
+      (level) => level.levelNumber === levelNumber
+    );
+    return index > -1 ? allGameLevelInfo[index] : null;
   }
 
   public static getAllGameLevelInfo(): any[] {

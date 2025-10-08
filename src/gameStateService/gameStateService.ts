@@ -92,7 +92,17 @@ export class GameStateService extends PubSub {
     public levelEndData: null | {
         starCount: number,
         currentLevel: number,
-        isTimerEnded: boolean
+        isTimerEnded: boolean,
+        score: number,
+        treasureChestScore: number
+        previousLevelData: null | {
+            levelName: string;
+            levelNumber: number;
+            score: number;
+            starCount: number;
+            treasureChestMiniGameScore: number;
+        },
+        previousTotalStarCount: number;
     };
     public isLastLevel: boolean;
     public currentMonsterPhase: number;
@@ -257,16 +267,20 @@ export class GameStateService extends PubSub {
     }
 
     levelEndSceneData({ levelEndData, data }) {
-        this.levelEndData = { ...levelEndData };
+        const previousLevelData = GameScore.getGameLevelData(levelEndData.currentLevel);
+        const previousTotalStarCount = this.getSuccessStarsCount();
+        this.levelEndData = {
+            ...levelEndData,
+            previousLevelData,
+            previousTotalStarCount
+        };
         this.data = data;
         this.isLastLevel = levelEndData.currentLevel === data.levels[data.levels.length - 1].levelMeta.levelNumber;
     }
 
     getLevelEndSceneData() {
         return {
-            starCount: this.levelEndData.starCount,
-            currentLevel: this.levelEndData.currentLevel,
-            isTimerEnded: this.levelEndData.isTimerEnded,
+            ...this.levelEndData,
             data: this.data,
             monsterPhaseNumber: this.monsterPhaseNumber
         };
@@ -276,8 +290,18 @@ export class GameStateService extends PubSub {
         return GameScore.getTotalStarCount();
     }
 
+    /**
+     * Get the total stars count of levels with successful playthrough.
+     * @returns the sum of total star counts from successful levels only.
+     */
+    public getSuccessStarsCount(): number {
+        return GameScore.getAllGameLevelInfo().reduce(
+            (sum, level) => sum + (level.starCount >= 2 ? level.starCount : 0), 0
+        );
+    }
+
     public checkMonsterPhaseUpdation(): number {
-        const successStarCount = GameScore.getAllGameLevelInfo().reduce((sum, level) => sum + (level.starCount >= 2 ? level.starCount : 0), 0);
+        const successStarCount = this.getSuccessStarsCount();
         switch (true) {
             case successStarCount >= 38:
                 return 3; // Phase 4
