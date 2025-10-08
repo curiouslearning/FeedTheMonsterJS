@@ -25,14 +25,16 @@ interface CurrentLevelInfo {
   levelMeta: LevelMeta;
   levelNumber: number;
 }
+
 export class GameScore {
   public static currentlanguage: string = lang;
-
   public static setGameLevelScore(
     currentLevelInfo: CurrentLevelInfo,
     score: number,
     treasureChestMiniGameScore: number
   ): void {
+    // Ensure data migration first
+    this.migrateOldScoresToNewStars();
     let starsGained = this.calculateStarCount(score);
     let levelPlayedInfo = {
       levelName: currentLevelInfo.levelMeta.levelType,
@@ -62,11 +64,11 @@ export class GameScore {
         }
         // Save the updated score with the preserved mini game score.
         allGameLevelInfo[index] = levelPlayedInfo;
-     } else if (!isNewScoreHigher && isNewMiniGameScoreHigher){
+      } else if (!isNewScoreHigher && isNewMiniGameScoreHigher) {
         //If new game score IS NOT higher and ONLY the MINI GAME SCORE is higher.
         //Update only the treasureChestMiniGameScore value.
         allGameLevelInfo[index].treasureChestMiniGameScore = treasureChestMiniGameScore;
-     }
+      }
     } else {
       // If the game level is newly cleared.
       allGameLevelInfo.push(levelPlayedInfo);
@@ -82,11 +84,11 @@ export class GameScore {
   }
 
   public static getAllGameLevelInfo(): any[] {
-    const data = localStorage.getItem(this.currentlanguage + "gamePlayedInfo");
+    const data = localStorage.getItem(this.currentlanguage + "gamePlayedInfo");  
     return data ? JSON.parse(data) : [];
   }
 
-  private static updateTotalStarCount(): void {
+  public static updateTotalStarCount(): void {
     const allGameLevelInfo = this.getAllGameLevelInfo();
     const totalStarCount = allGameLevelInfo.reduce(
       (sum, level) => sum + level.starCount,
@@ -97,20 +99,41 @@ export class GameScore {
 
   public static getTotalStarCount(): number {
     const starCount = localStorage.getItem(this.currentlanguage + "totalStarCount");
-    return starCount == undefined ? 0: parseInt(starCount);
+    return starCount == undefined ? 0 : parseInt(starCount);
   }
-  
+
+  public static migrateOldScoresToNewStars(): void {
+    const allGameLevelInfo = this.getAllGameLevelInfo();
+    let isUpdated = false;
+
+    const updatedGameLevelInfo = allGameLevelInfo.map((level) => {
+      const recalculatedStars = this.calculateStarCount(level.score);
+      if (level.starCount !== recalculatedStars) {
+        // Only update starCoubt if there is a difference
+        level.starCount = recalculatedStars;
+        isUpdated = true;
+      }
+      return level;
+    });
+
+    // If any changes were made, persist updated data
+    if (isUpdated) {
+      localStorage.setItem(
+        this.currentlanguage + "gamePlayedInfo",
+        JSON.stringify(updatedGameLevelInfo)
+      );
+      this.updateTotalStarCount();
+    }
+  }
+
   public static calculateStarCount(score: number): number {
-    switch (score) {
-      case 200:
-        return 1;
-      case 300:
-      case 400:
-        return 2;
-      case 500:
-        return 3;
-      default:
-        return 0;
+    switch (true) {
+      case score >= 500: return 5;
+      case score >= 400: return 4;
+      case score >= 300: return 3;
+      case score >= 200: return 2;
+      case score >= 100: return 1;
+      default: return 0;
     }
   }
 

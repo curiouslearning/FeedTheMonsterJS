@@ -1,5 +1,5 @@
 import * as Sentry from "@sentry/browser";
-import { getData, DataModal, customFonts } from "@data";
+import { getData, DataModal, customFonts, GameScore } from "@data";
 import { SceneHandler } from "@sceneHandler/scene-handler";
 import { AUDIO_URL_PRELOAD, IsCached, PreviousPlayedLevel } from "@constants";
 import { Workbox } from "workbox-window";
@@ -108,7 +108,7 @@ class App {
       : PreviousPlayedLevel + this.lang;
 
     localStorage.setItem(storageKey, nextPlayableLevel.toString());
-
+    GameScore.migrateOldScoresToNewStars(); // Migrate old scores to new star counts
     if (this.is_cached.has(this.lang)) {
       this.handleCachedScenario(this.dataModal);
     }
