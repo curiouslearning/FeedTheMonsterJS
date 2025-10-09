@@ -91,7 +91,6 @@
   },
   "devDependencies": {
     "@capacitor/cli": "^4.4.0",
-    "@types/firebase": "^3.2.3",
     "@types/howler": "^2.2.7",
     "@types/jest": "^29.5.14",
     "@types/lodash-es": "^4.17.12",
