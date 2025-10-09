@@ -33,7 +33,6 @@
     "@release-it/conventional-changelog": "^8.0.1",
     "@rive-app/canvas": "^2.25.1",
     "@sentry/browser": "^7.47.0",
-    "@types/firebase": "^3.2.1",
     "@types/workbox-window": "^4.3.4",
     "axios": "^1.4.0",
     "copy-webpack-plugin": "^11.0.0",
@@ -92,6 +91,7 @@
   },
   "devDependencies": {
     "@capacitor/cli": "^4.4.0",
+    "@types/firebase": "^3.2.3",
     "@types/howler": "^2.2.7",
     "@types/jest": "^29.5.14",
     "@types/lodash-es": "^4.17.12",
