@@ -1,9 +1,9 @@
 import {
-  Debugger,
-  font,
+    Debugger,
+    font,
 } from "@common";
 import {
-  SPECIAL_LEVELS,
+    SPECIAL_LEVELS,
 } from "@constants";
 
 export default class LevelBloonButton {
@@ -47,7 +47,7 @@ export default class LevelBloonButton {
         this.textFontSize = (this.size) / 6;
     }
 
-    isSpecialLevel(index){
+    isSpecialLevel(index) {
         return SPECIAL_LEVELS.includes(index)
     };
 
@@ -104,26 +104,26 @@ export default class LevelBloonButton {
         const MaxShadowSize = 45;
         const MaxOpacity = 0.5;
         const BaseColorRgba = '255, 255, 255';
-      
+
         const animationProgress = (Date.now() % PulseDuration) / PulseDuration;
         const growPhase = animationProgress <= GrowPhaseThreshold;
-      
+
         const phaseDuration = growPhase ? GrowPhaseThreshold : (1 - GrowPhaseThreshold);
         const progress = growPhase ? animationProgress / GrowPhaseThreshold : (animationProgress - GrowPhaseThreshold) / phaseDuration;
-      
+
         const shadowSize = growPhase ? progress * BaseShadowSize : BaseShadowSize + progress * MaxShadowSize;
         const shadowOpacity = growPhase ? MaxOpacity * (1 - progress) : 0;
-      
+
         if (shadowOpacity <= 0) return;
-      
-        const { x: scaleX, y: scaleY, radius: scaleRadius } = this.levelData?.isSpecial 
-          ? { x: 3, y: 2.5, radius: 2.2 } 
-          : { x: 3.4, y: 3.8, radius: 3.2 };
-      
+
+        const { x: scaleX, y: scaleY, radius: scaleRadius } = this.levelData?.isSpecial
+            ? { x: 3, y: 2.5, radius: 2.2 }
+            : { x: 3.4, y: 3.8, radius: 3.2 };
+
         const centerX = this.posX + this.btnSize / scaleX;
         const centerY = this.posY + this.btnSize / scaleY;
         const radius = this.btnSize / scaleRadius + shadowSize;
-      
+
         this.context.save();
         this.context.beginPath();
         this.context.arc(centerX, centerY, radius, 0, 2 * Math.PI);
@@ -144,17 +144,17 @@ export default class LevelBloonButton {
         }
 
         if (gameLevelData.length && index + pageIndex <= totalGameLevels) {
-          for (let i = 0; i < gameLevelData.length; i++) {
-            if (
-              index - 1 + pageIndex ===
-              parseInt(gameLevelData[i].levelNumber)
-            ) {
-              this.checkStars(
-                gameLevelData[i].starCount
-              );
-              break;
+            for (let i = 0; i < gameLevelData.length; i++) {
+                if (
+                    index - 1 + pageIndex ===
+                    parseInt(gameLevelData[i].levelNumber)
+                ) {
+                    this.checkStars(
+                        gameLevelData[i].starCount
+                    );
+                    break;
+                }
             }
-          }
         }
     }
 
@@ -173,10 +173,12 @@ export default class LevelBloonButton {
         const posY = this.levelData.y;
         const size = this.size;
 
+        // 1st star (top-left)
         if (starCount >= 1) {
             this.drawStar(posX, posY - size * 0.01);
         }
 
+        // 2nd star (top-right)
         if (starCount > 1) {
             this.drawStar(
                 posX + size / 2.5,
@@ -184,10 +186,27 @@ export default class LevelBloonButton {
             );
         }
 
-        if (starCount === 3) {
+        // 3rd star (top-center)
+        if (starCount > 2) {
             this.drawStar(
-                posX + size  / 5,
-                posY - size *  0.1
+                posX + size / 5,
+                posY - size * 0.1
+            );
+        }
+
+        // 4th star (bottom-left, below 1st)
+        if (starCount > 3) {
+            this.drawStar(
+                posX - size / 15,
+                posY + size * 0.17
+            );
+        }
+
+        // 5th star (bottom-right, below 2nd)
+        if (starCount > 4) {
+            this.drawStar(
+                posX + size / 2.3,
+                posY + size * 0.17
             );
         }
     }
@@ -209,11 +228,11 @@ export default class LevelBloonButton {
         unlockLevelIndex: number,
         callBack
     ) {
-        const distance =  Math.sqrt(
-            (xClick -  this.levelData.x - this.radiusOffSet) *
-            (xClick -  this.levelData.x - this.radiusOffSet) +
-            (yClick -  this.levelData.y - this.radiusOffSet) *
-            (yClick -  this.levelData.y - this.radiusOffSet)
+        const distance = Math.sqrt(
+            (xClick - this.levelData.x - this.radiusOffSet) *
+            (xClick - this.levelData.x - this.radiusOffSet) +
+            (yClick - this.levelData.y - this.radiusOffSet) *
+            (yClick - this.levelData.y - this.radiusOffSet)
         )
         if (distance < 45) {
             if (Debugger.DebugMode || (
@@ -222,9 +241,9 @@ export default class LevelBloonButton {
                 this.btnSize = this.bloonSize - 4;
                 this.posX = this.originalPosX + 0.5;
                 this.posY = this.originalPosY + 1;
-                
+
                 callBack(this.levelData.index)
             }
-      }
+        }
     }
 }
