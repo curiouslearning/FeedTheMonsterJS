@@ -24,13 +24,16 @@ jobs:
 
       - name: Send to Slack
         run: |
-          # Build payload safely using jq to escape any special characters
+          # Escape the release notes properly for JSON
+          NOTES=$(echo "${{ steps.extract_release_notes.outputs.release_notes }}" | jq -Rs .)
+
+          # Build payload safely with jq
           payload=$(jq -n \
             --arg version "$version" \
-            --arg notes "${{ steps.extract_release_notes.outputs.release_notes }}" \
-            '{text: "New Release Notes:\nVersion: \($version)\n\($notes)"}')
+            --arg notes "$NOTES" \
+            '{text: "🎉 *New Release Published!*\n*Version:* \($version)\n\n*Release Notes:*\n\($notes)"}')
 
           # Send payload to Slack
-          curl -X POST -H "Content-type: application/json" --data "$payload" ${{ secrets.SLACK_WEBHOOK_URL }}
+          curl -X POST -H "Content-type: application/json" --data "$payload" "$SLACK_WEBHOOK_URL"
         env:
           SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
