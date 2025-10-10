@@ -25,9 +25,11 @@ jobs:
           
       - name: Send to Slack
         run: |
-          curl -X POST -H "Content-type: application/json" --data "{
-            \"text\": \"New Release Notes:\nVersion: ${{ steps.extract_version_number.outputs.version }}\n${{ steps.extract_release_notes.outputs.release_notes }}\"
-          }" ${{ secrets.SLACK_WEBHOOK_URL }}
+          payload=$(jq -n \
+            --arg version "${{ steps.extract_version_number.outputs.version }}" \
+            --arg notes "${{ steps.extract_release_notes.outputs.release_notes }}" \
+            '{text: "New Release Notes:\nVersion: \($version)\n\($notes)"}')
+          curl -X POST -H "Content-type: application/json" --data "$payload" ${{ secrets.SLACK_WEBHOOK_URL }}
         env:
           SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
 
