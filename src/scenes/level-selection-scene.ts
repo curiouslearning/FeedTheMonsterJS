@@ -21,6 +21,7 @@ import {
   BACK_BTN_IMG,
   AUDIO_INTRO,
   SCENE_NAME_GAME_PLAY,
+  MIN_STARS_TO_COMPLETE_LEVEL,
 } from "@constants";
 import { LevelBloonButton } from '@buttons';
 import gameStateService from '@gameStateService';
@@ -66,7 +67,7 @@ export class LevelSelectionScreen {
       context
     } = gameSettingsService.getCanvasSizeValues();
     this.canvas = canvasElem;
-    this.width =  canvasWidth > 1024 ? 500 : canvasWidth;
+    this.width = canvasWidth > 1024 ? 500 : canvasWidth;
     this.height = canvasHeight;
     this.context = context;
 
@@ -142,7 +143,7 @@ export class LevelSelectionScreen {
 
     // Only take the positions we need for this page
     const positions = poss[0].slice(0, buttonsToCreate);
-    
+
     const levelsArr = positions.map((coordinates, index) => {
       return createLevelObject(
         coordinates[0],
@@ -157,7 +158,7 @@ export class LevelSelectionScreen {
       return new LevelBloonButton(
         this.canvas,
         this.context,
-        {...btnCoordinates}
+        { ...btnCoordinates }
       );
     });
   }
@@ -266,7 +267,7 @@ export class LevelSelectionScreen {
       }
     }
 
-    for(let btn of this.levelButtons) {
+    for (let btn of this.levelButtons) {
       btn.onClick(
         x,
         y,
@@ -283,16 +284,16 @@ export class LevelSelectionScreen {
 
   /**
    * Checks if a level is considered completed based on star count.
-   * A level is completed when the player has earned 2 or more stars.
+   * A level is completed when the player has earned 3 or more stars.
    * Used to determine if the level button should show the pulse effect,
    * as incomplete levels need to draw player's attention.
    * @param levelNumber - The level to check completion status for
    * @param gameLevelData - Array of level data containing star counts
-   * @returns true if level has 2+ stars, false otherwise
+   * @returns true if level has 3+ stars, false otherwise
    */
-  private isLevelCompleted(levelNumber: number, gameLevelData: any[]): boolean {
+  private isLevelCompleted(levelNumber: number, gameLevelData: any[]): boolean {  
     const levelInfo = gameLevelData.find(level => level.levelNumber === levelNumber);
-    return (levelInfo?.starCount || 0) >= 2;
+    return (levelInfo?.starCount || 0) >= MIN_STARS_TO_COMPLETE_LEVEL;
   }
 
   private drawLevel(levelBtn: any, gameLevelData: []) {
@@ -315,11 +316,11 @@ export class LevelSelectionScreen {
 
       Debugger.DebugMode
         ? this.context.fillText(
-            this.data.levels[currentLevelIndex - 1]
-              .levelMeta.levelType,
-            levelBtn.levelData.x + levelBtn.btnSize / 3.5,
-            levelBtn.levelData.y + levelBtn.btnSize / 1.3
-          )
+          this.data.levels[currentLevelIndex - 1]
+            .levelMeta.levelType,
+          levelBtn.levelData.x + levelBtn.btnSize / 3.5,
+          levelBtn.levelData.y + levelBtn.btnSize / 1.3
+        )
         : null;
     }
   }
@@ -372,14 +373,14 @@ export class LevelSelectionScreen {
 
   checkUnlockedLevel(gameLevelData) {
     if (gameLevelData.length != undefined) {
-        for (let game of gameLevelData) {
-          if (this.unlockLevelIndex < parseInt(game.levelNumber)) {
-            game.starCount >= 2
-              ? (this.unlockLevelIndex = parseInt(game.levelNumber))
-              : null;
-          }
+      for (let game of gameLevelData) {
+        if (this.unlockLevelIndex < parseInt(game.levelNumber)) {
+          game.starCount >= MIN_STARS_TO_COMPLETE_LEVEL
+            ? (this.unlockLevelIndex = parseInt(game.levelNumber))
+            : null;
         }
       }
+    }
   }
 
   private startGame(level_number: string | number) {

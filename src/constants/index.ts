@@ -59,9 +59,9 @@ export const AUDIO_URL_PRELOAD = [
   "./assets/audios/are-you-sure.mp3",
   "./assets/audios/monster_discovered_fanfare.mp3",
   "./assets/audios/monster_evolve.mp3",
-  "./assets/audios/miniGame.mp3"
+  "./assets/audios/treasure_miniGame.mp3"
 ];
-export const AUDIO_MINIGAME = "./assets/audios/miniGame.mp3";
+export const AUDIO_MINIGAME = "./assets/audios/treasure_miniGame.mp3";
 // Audios used during the Rive evolution animation.
 // The structure is designed to be easily scalable, allowing for the addition of more audio files as needed.
 export const EVOLUTION_AUDIOS = {
@@ -193,6 +193,9 @@ export const SCENE_NAME_PROGRESS_LEVEL ='ProgressLevel';
 
 //Levels
 export const SPECIAL_LEVELS = [5, 13, 20, 30, 42];
+
+// Minimum stars to complete level
+export const MIN_STARS_TO_COMPLETE_LEVEL = 3;
 
 //Evolving Phases Backgrounds
 export const PHASES_BG ={
