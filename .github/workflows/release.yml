@@ -9,7 +9,6 @@ jobs:
     name: Send Release Notes to Slack
     runs-on: ubuntu-latest
     steps:
-          
       - name: Checkout Code
         uses: actions/checkout@v2
 
@@ -21,15 +20,17 @@ jobs:
         id: extract_version_number
         run: |
           version=$(jq -r '.version' package.json)
-          echo "::set-output name=version::$version"
-          
+          echo "version=$version" >> $GITHUB_ENV
+
       - name: Send to Slack
         run: |
+          # Build payload safely using jq to escape any special characters
           payload=$(jq -n \
-            --arg version "${{ steps.extract_version_number.outputs.version }}" \
+            --arg version "$version" \
             --arg notes "${{ steps.extract_release_notes.outputs.release_notes }}" \
             '{text: "New Release Notes:\nVersion: \($version)\n\($notes)"}')
+
+          # Send payload to Slack
           curl -X POST -H "Content-type: application/json" --data "$payload" ${{ secrets.SLACK_WEBHOOK_URL }}
         env:
           SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
-
