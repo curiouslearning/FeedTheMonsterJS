@@ -176,7 +176,7 @@ export const EVOL_MONSTER = [
   './assets/rive/ftm_monster_evolve2-3.riv',
   './assets/rive/ftm_monster_evolve3-4.riv'
 ];
-export const JAR_PROGRESSION = './assets/rive/jarprogression1_8.riv';
+export const JAR_PROGRESSION = './assets/rive/jarprogression1_8_updated.riv';
 export const CACHED_RIVE_WASM = './assets/rive/rive.wasm';
 
 export enum MonsterState {

@@ -1,6 +1,6 @@
 import { JAR_PROGRESSION, CACHED_RIVE_WASM } from '@constants';
 import { SCENE_NAME_LEVEL_END } from "@constants";
-import { Rive, Layout, Fit, Alignment, RuntimeLoader } from '@rive-app/canvas';
+import { Rive, Layout, Fit, Alignment, RuntimeLoader, StateMachineInput } from '@rive-app/canvas';
 import gameStateService from '@gameStateService';
 import gameSettingsService from '@gameSettingsService';
 RuntimeLoader.setWasmUrl(CACHED_RIVE_WASM);
@@ -18,9 +18,9 @@ export interface RiveMonsterComponentProps {
 }
 
 export class ProgressionScene {
+  private riveMonsterElement: HTMLCanvasElement;
   private riveInstance: Rive;
   private stateMachineName: string = "State Machine 1";
-  private inputStateName: string = "Fill Percent";
   private animations = {
     EMPTY: 'Empty',
     ONE_STAR: '1_stars',
@@ -36,9 +36,14 @@ export class ProgressionScene {
   private treasureChestScore: number = 0;
   private previousLevelStarEarned: number = 0;
   private targetStarCountMaxFill: number = 0;
+  private delayStateMachineInputs: number = 2500;
+  private delaySwitchToLevelend: number = 5000;
 
   constructor() {
+    const riveMonsterElement = gameSettingsService.getRiveCanvasValue();
+    this.riveMonsterElement = riveMonsterElement;
     this.initializeValues();
+    this.toggleCanvasBackground(true);
     this.initializeRive();
   }
 
@@ -57,12 +62,14 @@ export class ProgressionScene {
     this.targetStarCountMaxFill = this.getTargetStarCountForFill(monsterPhaseNumber);
   }
 
-  private initializeRive() {
-    const riveMonsterElement = gameSettingsService.getRiveCanvasValue();
+  private toggleCanvasBackground(isBlack: boolean): void {
+    this.riveMonsterElement.style.backgroundColor = isBlack ? '#000' : '';
+  }
 
+  private initializeRive(): void {
     const riveConfig: any = {
       src: JAR_PROGRESSION,
-      canvas: riveMonsterElement,
+      canvas: this.riveMonsterElement,
       autoplay: true,
       useOffscreenRenderer: true,
       layout: new Layout({
@@ -70,11 +77,11 @@ export class ProgressionScene {
         alignment: Alignment.Center,
         minX: 0,
         minY: 0,
-        maxX: riveMonsterElement.width,
-        maxY: riveMonsterElement.height,
+        maxX: this.riveMonsterElement.width,
+        maxY: this.riveMonsterElement.height,
       }),
+      stateMachines: [this.stateMachineName]
     };
-    riveConfig.stateMachines = [this.stateMachineName];
 
     this.riveInstance = new Rive({
       ...riveConfig,
@@ -84,52 +91,149 @@ export class ProgressionScene {
     });
   }
 
-  private riveOnLoadCallback() {
+  /**
+   * Get the state machine inputs defined in the rive file.
+   * @return { fillPercentState: StateMachineInput, scoreState: StateMachineInput }
+   */
+  private getStateInputs(): { fillPercentState: StateMachineInput, scoreState: StateMachineInput } {
+    const inputStateMachine_1 = "Fill Percent";
+    const inputStateMachine_2 = "Score";
     const inputs = this.riveInstance.stateMachineInputs(this.stateMachineName);
-    const stateMachineInputName = inputs.find(i => i.name === this.inputStateName); // does the filling and add star animation
+    const fillPercentState = inputs.find(i => i.name === inputStateMachine_1);
+    const scoreState = inputs.find(i => i.name === inputStateMachine_2);
 
-    //Set prefill value for jar.
-    this.playStateMachineInput(
-      stateMachineInputName,
+    return { fillPercentState, scoreState };
+  }
+
+  private riveOnLoadCallback() {
+    const inputMachines = this.getStateInputs();
+
+    // Compute how many new stars were earned compared to the previous level.
+    //If the currentLevelStarEarned is below passing, skip jar fill.
+    const newScoreEarned = this.currentLevelStarEarned > 3
+      ? (this.currentLevelStarEarned - this.previousLevelStarEarned)
+      : 0;
+
+    // Determine the jar’s previous fill percentage and the new target fill percentage.
+    const recentFillValue = this.getStarPercentage(
       this.previousTotalStarCount,
       this.targetStarCountMaxFill
     );
-    //Get the difference from the new score with the old score.
-    const newScoreEarned = (this.currentLevelStarEarned - this.previousLevelStarEarned);
-    let fillUpdate = 0;
 
-    if (newScoreEarned) {
-      //Get animation name based on overall total score.
-      const animationName = this.getAnimationName(this.currentLevelStarEarned + this.treasureChestScore);
-      this.playRiveAnimation(animationName);
-      fillUpdate = this.currentLevelStarEarned + this.treasureChestScore;
-    } else {
-      //If on treasure chest has an updated score.
-      this.playRiveAnimation(this.animations.BONUS_STAR);
-      fillUpdate = this.treasureChestScore;
+    const newFillValue = this.getStarPercentage(
+      this.previousTotalStarCount + newScoreEarned,
+      this.targetStarCountMaxFill
+    );
+
+    const shouldSetPrefillValue = recentFillValue > 0;
+
+    /**
+    * Tracks the cumulative delay time needed for all
+    * fill and score animations to finish playing.
+    *
+    * This ensures that the Level End scene transition
+    * only occurs *after* all Rive animations are complete.
+    */
+    let animationCompletionDelay = 0;
+
+    // If the jar was previously filled, prefill it to the last known value before animating.
+    if (shouldSetPrefillValue) {
+      this.playStateMachineInput({
+        inputMachines,
+        jarFillInputValue: recentFillValue,
+        scoreInputValue: 0
+      });
     }
 
-    //Animated the new filling after star score animation.
-    setTimeout(() => {
-      this.playStateMachineInput(
-        stateMachineInputName,
-        fillUpdate,
+    // Define helper to play a fill after a delay and track the latest timeout
+    const playFillAfterDelay = (
+      jarFillInputValue: number,
+      scoreInputValue: number,
+      delay: number
+    ) => {
+      setTimeout(() => {
+        this.playStateMachineInput({
+          inputMachines,
+          jarFillInputValue,
+          scoreInputValue,
+        });
+      }, delay);
+      animationCompletionDelay = Math.max(animationCompletionDelay, delay);
+    };
+
+    /**
+   * Delay the next state machine input update so the fill and score animations
+   * start in sync with Rive’s internal playback timing.
+   *
+   * The delay helps prevent race conditions where the fill animation would update
+   * too early—ensuring that star scoring and jar filling visually align.
+   */
+    if (newFillValue > 0) {
+      playFillAfterDelay(newFillValue, this.currentLevelStarEarned, this.delayStateMachineInputs);
+    }
+
+    //If there is a score for treasure Chest mini game.
+    if (this.treasureChestScore) {
+
+      const newFillWithMiniGameScore = this.getStarPercentage(
+        this.previousTotalStarCount + newScoreEarned + this.treasureChestScore,
         this.targetStarCountMaxFill
       );
-    }, 3000);
 
+      // Bonus delay (e.g., after the star animation)
+      const treasureDelay = this.delayStateMachineInputs + animationCompletionDelay;
+      playFillAfterDelay(newFillWithMiniGameScore, 6, treasureDelay);
+    }
+
+    // Schedule the animation cleanup and scene transition
+    this.scheduleSceneTransition(animationCompletionDelay);
+  }
+
+  /**
+   * Stops the current Rive animation and switches to the Level End scene
+   * after all animations have finished.
+   *
+   * Adds an additional delay (delaySwitchToLevelend) to ensure the
+   * jar and star animations fully complete before switching.
+   */
+  private scheduleSceneTransition(animationCompletionDelay: number): void {
     setTimeout(() => {
-      gameStateService.publish(gameStateService.EVENTS.SWITCH_SCENE_EVENT, SCENE_NAME_LEVEL_END);
-    }, 8000)
+      // stop the state machine before switching scenes
+      this.stopRive();
 
-    console.log({
-      currentLevelStarEarned: this.currentLevelStarEarned,
-      treasureChestScore: this.treasureChestScore,
-      inputs,
-      targetStarCountMaxFill: this.targetStarCountMaxFill,
-      newScoreEarned,
-      fillUpdate,
-    })
+      // Notify the scene handler to clean up this class and load the Level End scene.
+      gameStateService.publish(
+        gameStateService.EVENTS.SWITCH_SCENE_EVENT,
+        SCENE_NAME_LEVEL_END
+      );
+    }, animationCompletionDelay + this.delaySwitchToLevelend);
+  }
+
+  private playStateMachineInput({ inputMachines, jarFillInputValue, scoreInputValue } : {
+    inputMachines: {
+      fillPercentState: StateMachineInput,
+      scoreState: StateMachineInput
+    },
+    jarFillInputValue: number,
+    scoreInputValue: number
+  }): void {
+    const shouldAnimateStars = scoreInputValue > 0;
+
+    // If stars were earned, trigger the score-related animation first.
+    if (shouldAnimateStars) {
+      inputMachines.scoreState.value = scoreInputValue;
+      inputMachines.scoreState.fire();
+    }
+
+    /**
+     * The jar fill update is delayed slightly so it aligns visually with
+     * the score animation. Without this delay, the jar might fill too early,
+     * making the star-to-fill transition feel out of sync.
+     */
+    setTimeout(() => {
+      inputMachines.fillPercentState.value = jarFillInputValue;
+      inputMachines.fillPercentState.fire();
+    }, shouldAnimateStars ? this.delayStateMachineInputs : 0)
   }
 
   private getTargetStarCountForFill(monsterPhase): number {
@@ -146,33 +250,33 @@ export class ProgressionScene {
   }
 
   private getAnimationName(earedStarCount: number): string {
-    console.log({ earedStarCount })
+    const {
+      SIX_STARS ,
+      FIVE_STARS,
+      FOUR_STARS,
+      THREE_STARS,
+      TWO_STARS,
+      ONE_STAR,
+      EMPTY
+    } = this.animations;
+
     switch (earedStarCount) {
       case 6:
-        return this.animations.SIX_STARS;
+        return SIX_STARS;
       case 5:
-        return this.animations.FIVE_STARS;
+        return FIVE_STARS;
       case 4:
-        return this.animations.FOUR_STARS;
+        return FOUR_STARS;
       case 3:
-        return this.animations.THREE_STARS;
+        return THREE_STARS;
       case 2:
-        return this.animations.TWO_STARS;
+        return TWO_STARS;
       case 1:
-        return this.animations.ONE_STAR;
+        return ONE_STAR;
       case 0:
       default:
-        return this.animations.EMPTY;
+        return EMPTY;
     }
-  }
-
-  private playStateMachineInput(
-    stateMachineInput,
-    totalStarEarned,
-    targetStarCount
-  ): void {
-    stateMachineInput.value = this.getStarPercentage(totalStarEarned, targetStarCount);
-    stateMachineInput.fire();
   }
 
   private getStarPercentage(starsCount: number, targetStarCount: number): number {
@@ -185,17 +289,17 @@ export class ProgressionScene {
     this.riveInstance.play(animationName);
   }
 
-  public draw() {
-    //Default play animation.
-    this.riveInstance?.play(this.animations.EMPTY);
+  public draw(): void {
+    //No need to add draw but required as to how scene classes are structured.
   }
 
-  stopRive() {
+  private stopRive(): void {
     this.riveInstance?.stop();
   }
 
-  public dispose() {
+  public dispose(): void {
     if (!this.riveInstance) return;
+    this.toggleCanvasBackground(false);
     this.riveInstance?.cleanup();
   }
 };

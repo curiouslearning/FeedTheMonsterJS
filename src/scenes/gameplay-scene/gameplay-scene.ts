@@ -91,7 +91,7 @@ export class GameplayScene {
   analyticsIntegration: AnalyticsIntegration;
   startTime: number;
   puzzleTime: number;
-  isDisposing: boolean;
+  isDisposing: boolean = false;
   trailEffectHandler: TrailEffectsHandler;
   public riveMonsterElement: HTMLCanvasElement;
   public gameControl: HTMLCanvasElement;
@@ -134,7 +134,6 @@ export class GameplayScene {
     this.initializeProperties(gamePlayData);
     // UI element setup
     this.setupUIElements();
-    this.isDisposing = false;
     // Initialize additional game elements
     this.initializeGameComponents(gamePlayData);
     var previousPlayedLevel: string = this.levelData.levelMeta.levelNumber;
@@ -847,12 +846,28 @@ export class GameplayScene {
     setTimeout(setTimeoutCallback, setTimeoutDelay);
   };
 
+  /**
+   * Determines which scene to load at the end of a game round.
+   *
+   * If the monster is not at its final phase and the player achieved a
+   * successful result (either through stars or treasure chest score),
+   * the Progress Jar scene will be displayed. Otherwise, the flow
+   * proceeds directly to the Level End scene.
+   *
+   * @param starsCount The number of stars earned in the current level.
+   * @param treasureChestScore The score earned from the treasure chest mini-game.
+   */
   private switchSceneAtGameEnd(starsCount: number, treasureChestScore: number): void {
-    //If monster isn't phase 4 and the user has success scoring, show the progress level otherwise load straight to level-end scene.
-    const loadSceneName = this.monsterPhaseNumber < 3 && (starsCount >= 2 || treasureChestScore > 0)
+    const shouldDisplayProgressJar = gameStateService.shouldDisplayProgressJar(
+      starsCount,
+      treasureChestScore
+    );
+
+    const loadSceneName = shouldDisplayProgressJar
     ? SCENE_NAME_PROGRESS_LEVEL
     : SCENE_NAME_LEVEL_END;
-    //Load the next scene.
+    
+    // Signal the game state service to switch scenes.
     gameStateService.publish(gameStateService.EVENTS.SWITCH_SCENE_EVENT, loadSceneName);
   }
 
