@@ -97,7 +97,7 @@ export default class TimerTicking extends EventManager {
             if (timerDepletion <= 0 && !this.isMyTimerOver) {
                 this.isMyTimerOver = true;
                 this.applyRotation(false); 
-                this.callback(true);
+                this.callback(this.isMyTimerOver);
             }
         }
     }

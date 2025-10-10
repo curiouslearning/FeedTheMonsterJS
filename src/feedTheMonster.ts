@@ -3,7 +3,7 @@ import { getData, DataModal, customFonts } from "@data";
 import { SceneHandler } from "@sceneHandler/scene-handler";
 import { AUDIO_URL_PRELOAD, IsCached, PreviousPlayedLevel } from "@constants";
 import { Workbox } from "workbox-window";
-import { AnalyticsIntegration } from "./analytics/analytics-integration";
+import { AnalyticsIntegration, AnalyticsEventType } from "./analytics/analytics-integration";
 import {
   Utils,
   VISIBILITY_CHANGE,
@@ -30,6 +30,7 @@ declare const window: any;
 class App {
   private canvas: HTMLCanvasElement;
   private riveCanvas: HTMLCanvasElement;
+  private treasureCanvas: HTMLCanvasElement;
   private versionInfoElement: HTMLElement;
   private lang: string;
   private is_cached: Map<string, boolean>;
@@ -126,30 +127,23 @@ class App {
     });
   }
   private logDownloadPercentageComplete(percentage: number, timeDifferenceFromSessonStart: number) {
-    const downloadCompleteData = {
-      cr_user_id: pseudoId,
-      ftm_language: lang,
-      profile_number: 0,
-      version_number: this.versionInfoElement.innerHTML,
+    const eventData = {
       json_version_number: this.getJsonVersionNumber(),
       ms_since_session_start: timeDifferenceFromSessonStart,
     };
 
-    switch (percentage) {
-      case 25:
-        this.analyticsIntegration.sendDownload25PercentCompletedEvent(downloadCompleteData);
-        break;
-      case 50:
-        this.analyticsIntegration.sendDownload50PercentCompletedEvent(downloadCompleteData);
-        break;
-      case 75:
-        this.analyticsIntegration.sendDownload75PercentCompletedEvent(downloadCompleteData);
-        break;
-      case 100:
-        this.analyticsIntegration.sendDownloadCompletedEvent(downloadCompleteData);
-        break;
-      default:
-        console.warn(`Unsupported progress percentage: ${percentage}`);
+    const eventMap = {
+      25: AnalyticsEventType.DOWNLOAD_25,
+      50: AnalyticsEventType.DOWNLOAD_50,
+      75: AnalyticsEventType.DOWNLOAD_75,
+      100: AnalyticsEventType.DOWNLOAD_COMPLETED,
+    };
+
+    const eventType = eventMap[percentage];
+    if (eventType) {
+      this.analyticsIntegration.track(eventType, eventData);
+    } else {
+      console.warn(`Unsupported progress percentage: ${percentage}`);
     }
     if ((percentage === 25 && this.logged25) ||
       (percentage === 50 && this.logged50) ||
@@ -169,34 +163,25 @@ class App {
     }
     const daysSinceLast = lastTime ? lastTime / (1000 * 60 * 60 * 24) : 0;
     const roundedDaysSinceLast = parseFloat(daysSinceLast.toFixed(3));
-    const sessionStartData: SessionStart = {
-      cr_user_id: pseudoId,
-      ftm_language: lang,
-      profile_number: 0,
-      version_number: this.versionInfoElement.innerHTML,
-      json_version_number:
-        !!this.majVersion && !!this.minVersion
-          ? this.majVersion.toString() + "." + this.minVersion.toString()
-          : "",
-      days_since_last: roundedDaysSinceLast,
-    };
-    this.analyticsIntegration.sendSessionStartEvent(sessionStartData);
+    
+    this.analyticsIntegration.track(
+      AnalyticsEventType.SESSION_START,
+      {
+        json_version_number: this.getJsonVersionNumber(),
+        days_since_last: roundedDaysSinceLast,
+      }
+    );
   }
 
   private logSessionEndFirebaseEvent() {
-    const sessionEndData: SessionEnd = {
-      cr_user_id: pseudoId,
-      ftm_language: lang,
-      profile_number: 0,
-      version_number: this.versionInfoElement.innerHTML,
-      json_version_number:
-        !!this.majVersion && !!this.minVersion
-          ? this.majVersion.toString() + "." + this.minVersion.toString()
-          : "",
-      duration: (new Date().getTime() - this.startSessionTime) / 1000,
-    };
+    this.analyticsIntegration.track(
+      AnalyticsEventType.SESSION_END,
+      {
+        json_version_number: this.getJsonVersionNumber(),
+        duration: (new Date().getTime() - this.startSessionTime) / 1000,
+      }
+    );
     localStorage.setItem("lastSessionEndTime", new Date().getTime().toString());
-    this.analyticsIntegration.sendSessionEndEvent(sessionEndData);
   }
 
   private initializeCachedData(): Map<string, boolean> {
@@ -303,11 +288,14 @@ class App {
   private setupCanvas() {
     this.canvas = document.getElementById("canvas") as HTMLCanvasElement;
     this.riveCanvas = document.getElementById("rivecanvas") as HTMLCanvasElement;
+    this.treasureCanvas = document.getElementById("treasurecanvas") as HTMLCanvasElement;
     let gameWidth: number = Utils.getResponsiveCanvasWidth();
     this.canvas.height = window.innerHeight;
     this.canvas.width = gameWidth;
     this.riveCanvas.height = window.innerHeight;
     this.riveCanvas.width = gameWidth;
+    this.treasureCanvas.height = window.innerHeight;
+    this.treasureCanvas.width = gameWidth;
     this.background.style.width = `${gameWidth}px`;
   }
 
@@ -339,7 +327,7 @@ class App {
   }
 
   private updateVersionInfoElement(dataModal: DataModal): void {
-    const isDevOrTestEnv = this.is_cached.has(this.lang) && (Debugger.TestLink || Debugger.DevelopmentLink || Debugger.DebugMode);
+    const isDevOrTestEnv = this.is_cached.has(this.lang) && (Debugger.LocalLink || Debugger.TestLink || Debugger.DevelopmentLink || Debugger.DebugMode);
     
     // Update version info when in development/test environment
     if (isDevOrTestEnv) {

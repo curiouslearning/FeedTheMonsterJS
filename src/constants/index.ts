@@ -17,6 +17,7 @@ export const PhraseAudio = "phrase_audio";
 export const LevelEndAudio = "level_end_audio";
 export const UrlSubstring = "/feedthemonster";
 export const DevelopmentServer = "https://feedthemonsterdev.curiouscontent.org";
+export const LocalServer = "http://localhost:8080/";
 export const TestServer = "https://globallit-aws-s3-static-webapp-test-us-east-2.s3.us-west-2.amazonaws.com/feed-the-monster";
 export const StartScene1 = "StartScene1";
 export const LevelSelection1 = "LevelSelection1";
@@ -56,9 +57,11 @@ export const AUDIO_URL_PRELOAD = [
   "./assets/audios/Eat.mp3",
   "./assets/audios/PointsAdd.wav",
   "./assets/audios/are-you-sure.mp3",
-  './assets/audios/monster_discovered_fanfare.mp3',
-  './assets/audios/monster_evolve.mp3'
+  "./assets/audios/monster_discovered_fanfare.mp3",
+  "./assets/audios/monster_evolve.mp3",
+  "./assets/audios/treasure_miniGame.mp3"
 ];
+export const AUDIO_MINIGAME = "./assets/audios/treasure_miniGame.mp3";
 // Audios used during the Rive evolution animation.
 // The structure is designed to be easily scalable, allowing for the addition of more audio files as needed.
 export const EVOLUTION_AUDIOS = {
@@ -120,6 +123,13 @@ export const RETRY_BTN_IMG = "./assets/images/retry_btn.svg";
 export const CANCEL_BTN_IMG = "./assets/images/close_btn.svg";
 export const YES_BTN_IMG = "./assets/images/confirm_btn.svg";
 export const POPUP_BG_IMG = "./assets/images/popup_bg_v01.svg";
+
+//mini game images
+export const CLOSED_CHEST = "./assets/images/closedchest.svg";
+export const OPEN_CHEST = "./assets/images/chest.svg";  
+export const STONE_BLUE = "./assets/images/stone_blue.svg";
+export const BURN_EFFECT_IMG = (ctr) => `./assets/images/stone_burn_export_${ctr}.png`
+
 
 //Background Group Images
 // to be removed once background component is fully integrate - GAMEPLAY_BG_GROUP_IMGS, DEFAULT_BG_GROUP_IMGS, AUTUMN_BG_GROUP_IMGS, WINTER_BG_GROUP_IMGS

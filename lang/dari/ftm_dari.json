@@ -1,0 +1,3851 @@
+{
+  "title": "به هیولای خود غذا بدهید",
+  "RightToLeft": false,
+  "FeedbackTexts": [
+    "فوق العاده",
+    "خوب",
+    "عالی"
+  ],
+  "majversion": 3,
+  "minversion": 80,
+  "langname": "DARI",
+  "FeedbackAudios": [
+    "https://feedthemonster.curiouscontent.org/lang/dari/audios/fantastic.mp3",
+    " https://feedthemonster.curiouscontent.org/lang/dari/audios/great.mp3",
+    " https://feedthemonster.curiouscontent.org/lang/dari/audios/amazing.mp3"
+  ],
+  "OtherAudios": {
+    "Select your player": "https://feedthemonster.curiouscontent.org/lang/dari/audios/Select-your-player.mp3",
+    "Watch me grow": "https://feedthemonster.curiouscontent.org/lang/dari/audios/watch-me-grow.mp3",
+    "Are you sure": "https://feedthemonster.curiouscontent.org/lang/dari/audios/are-you-sure.mp3"
+  },
+  "Levels": [
+    {
+      "LevelMeta": {
+        "LevelNumber": 0,
+        "PromptType": "Visible",
+        "LevelType": "LetterOnly",
+        "csvType": "match",
+        "PromptFadeout": 0,
+        "LetterGroup": 1
+      },
+      "Puzzles": [
+        {
+          "SegmentNumber": 0,
+          "targetstones": [
+            {
+              "StoneText": "آ"
+            }
+          ],
+          "prompt": {
+            "PromptText": "آ",
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/dari/audios/آ.mp3"
+          },
+          "foilstones": [
+            {
+              "StoneText": "ت"
+            },
+            {
+              "StoneText": "آ"
+            }
+          ]
+        },
+        {
+          "SegmentNumber": 1,
+          "targetstones": [
+            {
+              "StoneText": "ا"
+            }
+          ],
+          "prompt": {
+            "PromptText": "ا",
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/dari/audios/ا.mp3"
+          },
+          "foilstones": [
+            {
+              "StoneText": "آ"
+            },
+            {
+              "StoneText": "ت"
+            }
+          ]
+        },
+        {
+          "SegmentNumber": 2,
+          "targetstones": [
+            {
+              "StoneText": "ب"
+            }
+          ],
+          "prompt": {
+            "PromptText": "ب",
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/dari/audios/ب.mp3"
+          },
+          "foilstones": [
+            {
+              "StoneText": "ب"
+            },
+            {
+              "StoneText": "ب"
+            }
+          ]
+        },
+        {
+          "SegmentNumber": 3,
+          "targetstones": [
+            {
+              "StoneText": "ت"
+            }
+          ],
+          "prompt": {
+            "PromptText": "ت",
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/dari/audios/ت.mp3"
+          },
+          "foilstones": [
+            {
+              "StoneText": "ب"
+            },
+            {
+              "StoneText": "ث"
+            }
+          ]
+        },
+        {
+          "SegmentNumber": 4,
+          "targetstones": [
+            {
+              "StoneText": "ث"
+            }
+          ],
+          "prompt": {
+            "PromptText": "ث",
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/dari/audios/ث.mp3"
+          },
+          "foilstones": [
+            {
+              "StoneText": "ث"
+            },
+            {
+              "StoneText": "ت"
+            },
+            {
+              "StoneText": "ت"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "LevelMeta": {
+        "LevelNumber": 1,
+        "PromptType": "Visible",
+        "LevelType": "LetterOnly",
+        "csvType": "match",
+        "PromptFadeout": 0,
+        "LetterGroup": 1
+      },
+      "Puzzles": [
+        {
+          "SegmentNumber": 0,
+          "targetstones": [
+            {
+              "StoneText": "آ"
+            }
+          ],
+          "prompt": {
+            "PromptText": "آ",
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/dari/audios/آ.mp3"
+          },
+          "foilstones": [
+            {
+              "StoneText": "ا"
+            },
+            {
+              "StoneText": "آ"
+            },
+            {
+              "StoneText": "ا"
+            }
+          ]
+        },
+        {
+          "SegmentNumber": 1,
+          "targetstones": [
+            {
+              "StoneText": "ا"
+            }
+          ],
+          "prompt": {
+            "PromptText": "ا",
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/dari/audios/ا.mp3"
+          },
+          "foilstones": [
+            {
+              "StoneText": "ث"
+            },
+            {
+              "StoneText": "ت"
+            },
+            {
+              "StoneText": "ب"
+            }
+          ]
+        },
+        {
+          "SegmentNumber": 2,
+          "targetstones": [
+            {
+              "StoneText": "ب"
+            }
+          ],
+          "prompt": {
+            "PromptText": "ب",
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/dari/audios/ب.mp3"
+          },
+          "foilstones": [
+            {
+              "StoneText": "ا"
+            },
+            {
+              "StoneText": "ث"
+            },
+            {
+              "StoneText": "ب"
+            }
+          ]
+        },
+        {
+          "SegmentNumber": 3,
+          "targetstones": [
+            {
+              "StoneText": "ت"
+            }
+          ],
+          "prompt": {
+            "PromptText": "ت",
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/dari/audios/ت.mp3"
+          },
+          "foilstones": [
+            {
+              "StoneText": "ت"
+            },
+            {
+              "StoneText": "ا"
+            },
+            {
+              "StoneText": "ب"
+            }
+          ]
+        },
+        {
+          "SegmentNumber": 4,
+          "targetstones": [
+            {
+              "StoneText": "ث"
+            }
+          ],
+          "prompt": {
+            "PromptText": "ث",
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/dari/audios/ث.mp3"
+          },
+          "foilstones": [
+            {
+              "StoneText": "ت"
+            },
+            {
+              "StoneText": "آ"
+            },
+            {
+              "StoneText": "ث"
+            },
+            {
+              "StoneText": "ا"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "LevelMeta": {
+        "LevelNumber": 2,
+        "PromptType": "Hidden",
+        "LevelType": "LetterOnly",
+        "csvType": "matchSound",
+        "PromptFadeout": 0,
+        "LetterGroup": 1
+      },
+      "Puzzles": [
+        {
+          "SegmentNumber": 0,
+          "targetstones": [
+            {
+              "StoneText": "آ"
+            }
+          ],
+          "prompt": {
+            "PromptText": "آ",
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/dari/audios/آ.mp3"
+          },
+          "foilstones": [
+            {
+              "StoneText": "ث"
+            },
+            {
+              "StoneText": "ا"
+            }
+          ]
+        },
+        {
+          "SegmentNumber": 1,
+          "targetstones": [
+            {
+              "StoneText": "ا"
+            }
+          ],
+          "prompt": {
+            "PromptText": "ا",
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/dari/audios/ا.mp3"
+          },
+          "foilstones": [
+            {
+              "StoneText": "ب"
+            },
+            {
+              "StoneText": "آ"
+            }
+          ]
+        },
+        {
+          "SegmentNumber": 2,
+          "targetstones": [
+            {
+              "StoneText": "ب"
+            }
+          ],
+          "prompt": {
+            "PromptText": "ب",
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/dari/audios/ب.mp3"
+          },
+          "foilstones": [
+            {
+              "StoneText": "ب"
+            },
+            {
+              "StoneText": "ا"
+            }
+          ]
+        },
+        {
+          "SegmentNumber": 3,
+          "targetstones": [
+            {
+              "StoneText": "ت"
+            }
+          ],
+          "prompt": {
+            "PromptText": "ت",
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/dari/audios/ت.mp3"
+          },
+          "foilstones": [
+            {
+              "StoneText": "ا"
+            },
+            {
+              "StoneText": "آ"
+            }
+          ]
+        },
+        {
+          "SegmentNumber": 4,
+          "targetstones": [
+            {
+              "StoneText": "ث"
+            }
+          ],
+          "prompt": {
+            "PromptText": "ث",
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/dari/audios/ث.mp3"
+          },
+          "foilstones": [
+            {
+              "StoneText": "ا"
+            },
+            {
+              "StoneText": "ا"
+            },
+            {
+              "StoneText": "ث"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "LevelMeta": {
+        "LevelNumber": 3,
+        "PromptType": "Visible",
+        "LevelType": "LetterInWord",
+        "csvType": "matchfirst",
+        "PromptFadeout": 0,
+        "LetterGroup": 2
+      },
+      "Puzzles": [
+        {
+          "SegmentNumber": 0,
+          "targetstones": [
+            {
+              "StoneText": "آ"
+            }
+          ],
+          "prompt": {
+            "PromptText": "آب",
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/dari/audios/آ.mp3"
+          },
+          "foilstones": [
+            {
+              "StoneText": "آ"
+            },
+            {
+              "StoneText": "آ"
+            }
+          ]
+        },
+        {
+          "SegmentNumber": 1,
+          "targetstones": [
+            {
+              "StoneText": "ا"
+            }
+          ],
+          "prompt": {
+            "PromptText": "ام",
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/dari/audios/ا.mp3"
+          },
+          "foilstones": [
+            {
+              "StoneText": "ب"
+            },
+            {
+              "StoneText": "آ"
+            }
+          ]
+        },
+        {
+          "SegmentNumber": 2,
+          "targetstones": [
+            {
+              "StoneText": "آ"
+            }
+          ],
+          "prompt": {
+            "PromptText": "آب",
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/dari/audios/آ.mp3"
+          },
+          "foilstones": [
+            {
+              "StoneText": "آ"
+            },
+            {
+              "StoneText": "تـ"
+            }
+          ]
+        },
+        {
+          "SegmentNumber": 3,
+          "targetstones": [
+            {
+              "StoneText": "تـ"
+            }
+          ],
+          "prompt": {
+            "PromptText": "تـبر",
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/dari/audios/تـ.mp3"
+          },
+          "foilstones": [
+            {
+              "StoneText": "ث"
+            },
+            {
+              "StoneText": "ب"
+            }
+          ]
+        },
+        {
+          "SegmentNumber": 4,
+          "targetstones": [
+            {
+              "StoneText": "ثـ"
+            }
+          ],
+          "prompt": {
+            "PromptText": "ثـمر",
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/dari/audios/ثـ.mp3"
+          },
+          "foilstones": [
+            {
+              "StoneText": "ثـ"
+            },
+            {
+              "StoneText": "آ"
+            },
+            {
+              "StoneText": "ث"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "LevelMeta": {
+        "LevelNumber": 4,
+        "PromptType": "Visible",
+        "LevelType": "LetterOnly",
+        "csvType": "match",
+        "PromptFadeout": 0,
+        "LetterGroup": 2
+      },
+      "Puzzles": [
+        {
+          "SegmentNumber": 0,
+          "targetstones": [
+            {
+              "StoneText": "پ"
+            }
+          ],
+          "prompt": {
+            "PromptText": "پ",
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/dari/audios/پ.mp3"
+          },
+          "foilstones": [
+            {
+              "StoneText": "چ"
+            },
+            {
+              "StoneText": "پ"
+            },
+            {
+              "StoneText": "ح"
+            }
+          ]
+        },
+        {
+          "SegmentNumber": 1,
+          "targetstones": [
+            {
+              "StoneText": "ج"
+            }
+          ],
+          "prompt": {
+            "PromptText": "ج",
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/dari/audios/ج.mp3"
+          },
+          "foilstones": [
+            {
+              "StoneText": "ا"
+            },
+            {
+              "StoneText": "خ"
+            },
+            {
+              "StoneText": "خ"
+            }
+          ]
+        },
+        {
+          "SegmentNumber": 2,
+          "targetstones": [
+            {
+              "StoneText": "چ"
+            }
+          ],
+          "prompt": {
+            "PromptText": "چ",
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/dari/audios/چ.mp3"
+          },
+          "foilstones": [
+            {
+              "StoneText": "چ"
+            },
+            {
+              "StoneText": "آ"
+            },
+            {
+              "StoneText": "ث"
+            }
+          ]
+        },
+        {
+          "SegmentNumber": 3,
+          "targetstones": [
+            {
+              "StoneText": "ح"
+            }
+          ],
+          "prompt": {
+            "PromptText": "ح",
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/dari/audios/ح.mp3"
+          },
+          "foilstones": [
+            {
+              "StoneText": "پ"
+            },
+            {
+              "StoneText": "خ"
+            },
+            {
+              "StoneText": "آ"
+            }
+          ]
+        },
+        {
+          "SegmentNumber": 4,
+          "targetstones": [
+            {
+              "StoneText": "خ"
+            }
+          ],
+          "prompt": {
+            "PromptText": "خ",
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/dari/audios/خ.mp3"
+          },
+          "foilstones": [
+            {
+              "StoneText": "چ"
+            },
+            {
+              "StoneText": "خ"
+            },
+            {
+              "StoneText": "ح"
+            },
+            {
+              "StoneText": "ج"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "LevelMeta": {
+        "LevelNumber": 5,
+        "PromptType": "Visible",
+        "LevelType": "LetterOnly",
+        "csvType": "match",
+        "PromptFadeout": 0,
+        "LetterGroup": 2
+      },
+      "Puzzles": [
+        {
+          "SegmentNumber": 0,
+          "targetstones": [
+            {
+              "StoneText": "پ"
+            }
+          ],
+          "prompt": {
+            "PromptText": "پ",
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/dari/audios/پ.mp3"
+          },
+          "foilstones": [
+            {
+              "StoneText": "ثـ"
+            },
+            {
+              "StoneText": "ثـ"
+            },
+            {
+              "StoneText": "ح"
+            }
+          ]
+        },
+        {
+          "SegmentNumber": 1,
+          "targetstones": [
+            {
+              "StoneText": "ج"
+            }
+          ],
+          "prompt": {
+            "PromptText": "ج",
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/dari/audios/ج.mp3"
+          },
+          "foilstones": [
+            {
+              "StoneText": "ج"
+            },
+            {
+              "StoneText": "ثـ"
+            },
+            {
+              "StoneText": "آ"
+            }
+          ]
+        },
+        {
+          "SegmentNumber": 2,
+          "targetstones": [
+            {
+              "StoneText": "چ"
+            }
+          ],
+          "prompt": {
+            "PromptText": "چ",
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/dari/audios/چ.mp3"
+          },
+          "foilstones": [
+            {
+              "StoneText": "آ"
+            },
+            {
+              "StoneText": "خ"
+            },
+            {
+              "StoneText": "ثـ"
+            }
+          ]
+        },
+        {
+          "SegmentNumber": 3,
+          "targetstones": [
+            {
+              "StoneText": "ح"
+            }
+          ],
+          "prompt": {
+            "PromptText": "ح",
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/dari/audios/ح.mp3"
+          },
+          "foilstones": [
+            {
+              "StoneText": "ج"
+            },
+            {
+              "StoneText": "خ"
+            },
+            {
+              "StoneText": "ا"
+            }
+          ]
+        },
+        {
+          "SegmentNumber": 4,
+          "targetstones": [
+            {
+              "StoneText": "خ"
+            }
+          ],
+          "prompt": {
+            "PromptText": "خ",
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/dari/audios/خ.mp3"
+          },
+          "foilstones": [
+            {
+              "StoneText": "تـ"
+            },
+            {
+              "StoneText": "تـ"
+            },
+            {
+              "StoneText": "ح"
+            },
+            {
+              "StoneText": "پ"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "LevelMeta": {
+        "LevelNumber": 6,
+        "PromptType": "Hidden",
+        "LevelType": "LetterOnly",
+        "csvType": "matchSound",
+        "PromptFadeout": 0,
+        "LetterGroup": 3
+      },
+      "Puzzles": [
+        {
+          "SegmentNumber": 0,
+          "targetstones": [
+            {
+              "StoneText": "پ"
+            }
+          ],
+          "prompt": {
+            "PromptText": "پ",
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/dari/audios/پ.mp3"
+          },
+          "foilstones": [
+            {
+              "StoneText": "آ"
+            },
+            {
+              "StoneText": "چ"
+            },
+            {
+              "StoneText": "ج"
+            }
+          ]
+        },
+        {
+          "SegmentNumber": 1,
+          "targetstones": [
+            {
+              "StoneText": "ج"
+            }
+          ],
+          "prompt": {
+            "PromptText": "ج",
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/dari/audios/ج.mp3"
+          },
+          "foilstones": [
+            {
+              "StoneText": "پ"
+            },
+            {
+              "StoneText": "چ"
+            },
+            {
+              "StoneText": "ج"
+            }
+          ]
+        },
+        {
+          "SegmentNumber": 2,
+          "targetstones": [
+            {
+              "StoneText": "چ"
+            }
+          ],
+          "prompt": {
+            "PromptText": "چ",
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/dari/audios/چ.mp3"
+          },
+          "foilstones": [
+            {
+              "StoneText": "ج"
+            },
+            {
+              "StoneText": "آ"
+            },
+            {
+              "StoneText": "چ"
+            }
+          ]
+        },
+        {
+          "SegmentNumber": 3,
+          "targetstones": [
+            {
+              "StoneText": "ح"
+            }
+          ],
+          "prompt": {
+            "PromptText": "ح",
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/dari/audios/ح.mp3"
+          },
+          "foilstones": [
+            {
+              "StoneText": "پ"
+            },
+            {
+              "StoneText": "ح"
+            },
+            {
+              "StoneText": "ح"
+            }
+          ]
+        },
+        {
+          "SegmentNumber": 4,
+          "targetstones": [
+            {
+              "StoneText": "خ"
+            }
+          ],
+          "prompt": {
+            "PromptText": "خ",
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/dari/audios/خ.mp3"
+          },
+          "foilstones": [
+            {
+              "StoneText": "ب"
+            },
+            {
+              "StoneText": "ج"
+            },
+            {
+              "StoneText": "ا"
+            },
+            {
+              "StoneText": "خ"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "LevelMeta": {
+        "LevelNumber": 7,
+        "PromptType": "Visible",
+        "LevelType": "LetterInWord",
+        "csvType": "matchfirst",
+        "PromptFadeout": 0,
+        "LetterGroup": 3
+      },
+      "Puzzles": [
+        {
+          "SegmentNumber": 0,
+          "targetstones": [
+            {
+              "StoneText": "آ"
+            }
+          ],
+          "prompt": {
+            "PromptText": "آب",
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/dari/audios/آ.mp3"
+          },
+          "foilstones": [
+            {
+              "StoneText": "ا"
+            },
+            {
+              "StoneText": "ج"
+            },
+            {
+              "StoneText": "پـ"
+            }
+          ]
+        },
+        {
+          "SegmentNumber": 1,
+          "targetstones": [
+            {
+              "StoneText": "ا"
+            }
+          ],
+          "prompt": {
+            "PromptText": "ام",
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/dari/audios/ا.mp3"
+          },
+          "foilstones": [
+            {
+              "StoneText": "پ"
+            },
+            {
+              "StoneText": "ث"
+            },
+            {
+              "StoneText": "ج"
+            }
+          ]
+        },
+        {
+          "SegmentNumber": 2,
+          "targetstones": [
+            {
+              "StoneText": "آ"
+            }
+          ],
+          "prompt": {
+            "PromptText": "آب",
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/dari/audios/آ.mp3"
+          },
+          "foilstones": [
+            {
+              "StoneText": "ت"
+            },
+            {
+              "StoneText": "ت"
+            },
+            {
+              "StoneText": "ث"
+            }
+          ]
+        },
+        {
+          "SegmentNumber": 3,
+          "targetstones": [
+            {
+              "StoneText": "تـ"
+            }
+          ],
+          "prompt": {
+            "PromptText": "تـبر",
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/dari/audios/تـ.mp3"
+          },
+          "foilstones": [
+            {
+              "StoneText": "آ"
+            },
+            {
+              "StoneText": "ت"
+            },
+            {
+              "StoneText": "پـ"
+            }
+          ]
+        },
+        {
+          "SegmentNumber": 4,
+          "targetstones": [
+            {
+              "StoneText": "پـ"
+            }
+          ],
+          "prompt": {
+            "PromptText": "پـر",
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/dari/audios/پـ.mp3"
+          },
+          "foilstones": [
+            {
+              "StoneText": "پـ"
+            },
+            {
+              "StoneText": "ا"
+            },
+            {
+              "StoneText": "آ"
+            },
+            {
+              "StoneText": "تـ"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "LevelMeta": {
+        "LevelNumber": 8,
+        "PromptType": "Visible",
+        "LevelType": "LetterInWord",
+        "csvType": "matchfirst",
+        "PromptFadeout": 0,
+        "LetterGroup": 3
+      },
+      "Puzzles": [
+        {
+          "SegmentNumber": 0,
+          "targetstones": [
+            {
+              "StoneText": "خـ"
+            }
+          ],
+          "prompt": {
+            "PromptText": "خـرس",
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/dari/audios/خـ.mp3"
+          },
+          "foilstones": [
+            {
+              "StoneText": "جـ"
+            },
+            {
+              "StoneText": "ث"
+            },
+            {
+              "StoneText": "چـ"
+            }
+          ]
+        },
+        {
+          "SegmentNumber": 1,
+          "targetstones": [
+            {
+              "StoneText": "چـ"
+            }
+          ],
+          "prompt": {
+            "PromptText": "چـای",
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/dari/audios/چـ.mp3"
+          },
+          "foilstones": [
+            {
+              "StoneText": "خـ"
+            },
+            {
+              "StoneText": "حـ"
+            },
+            {
+              "StoneText": "خـ"
+            }
+          ]
+        },
+        {
+          "SegmentNumber": 2,
+          "targetstones": [
+            {
+              "StoneText": "جـ"
+            }
+          ],
+          "prompt": {
+            "PromptText": "جـیب",
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/dari/audios/جـ.mp3"
+          },
+          "foilstones": [
+            {
+              "StoneText": "خـ"
+            },
+            {
+              "StoneText": "خـ"
+            },
+            {
+              "StoneText": "خـ"
+            }
+          ]
+        },
+        {
+          "SegmentNumber": 3,
+          "targetstones": [
+            {
+              "StoneText": "حـ"
+            }
+          ],
+          "prompt": {
+            "PromptText": "حـلقه",
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/dari/audios/حـ.mp3"
+          },
+          "foilstones": [
+            {
+              "StoneText": "جـ"
+            },
+            {
+              "StoneText": "ا"
+            },
+            {
+              "StoneText": "پ"
+            }
+          ]
+        },
+        {
+          "SegmentNumber": 4,
+          "targetstones": [
+            {
+              "StoneText": "ثـ"
+            }
+          ],
+          "prompt": {
+            "PromptText": "ثـمر",
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/dari/audios/ثـ.mp3"
+          },
+          "foilstones": [
+            {
+              "StoneText": "ث"
+            },
+            {
+              "StoneText": "ا"
+            },
+            {
+              "StoneText": "خـ"
+            },
+            {
+              "StoneText": "خـ"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "LevelMeta": {
+        "LevelNumber": 9,
+        "PromptType": "Visible",
+        "LevelType": "LetterOnly",
+        "csvType": "match",
+        "PromptFadeout": "4",
+        "LetterGroup": 3
+      },
+      "Puzzles": [
+        {
+          "SegmentNumber": 0,
+          "targetstones": [
+            {
+              "StoneText": "د"
+            }
+          ],
+          "prompt": {
+            "PromptText": "د",
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/dari/audios/د.mp3"
+          },
+          "foilstones": [
+            {
+              "StoneText": "د"
+            },
+            {
+              "StoneText": "ب"
+            },
+            {
+              "StoneText": "تـ"
+            }
+          ]
+        },
+        {
+          "SegmentNumber": 1,
+          "targetstones": [
+            {
+              "StoneText": "ذ"
+            }
+          ],
+          "prompt": {
+            "PromptText": "ذ",
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/dari/audios/ذ.mp3"
+          },
+          "foilstones": [
+            {
+              "StoneText": "د"
+            },
+            {
+              "StoneText": "ذ"
+            },
+            {
+              "StoneText": "د"
+            },
+            {
+              "StoneText": "ب"
+            }
+          ]
+        },
+        {
+          "SegmentNumber": 2,
+          "targetstones": [
+            {
+              "StoneText": "ر"
+            }
+          ],
+          "prompt": {
+            "PromptText": "ر",
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/dari/audios/ر.mp3"
+          },
+          "foilstones": [
+            {
+              "StoneText": "جـ"
+            },
+            {
+              "StoneText": "جـ"
+            },
+            {
+              "StoneText": "چـ"
+            }
+          ]
+        },
+        {
+          "SegmentNumber": 3,
+          "targetstones": [
+            {
+              "StoneText": "ز"
+            }
+          ],
+          "prompt": {
+            "PromptText": "ز",
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/dari/audios/ز.mp3"
+          },
+          "foilstones": [
+            {
+              "StoneText": "آ"
+            },
+            {
+              "StoneText": "ز"
+            },
+            {
+              "StoneText": "ثـ"
+            }
+          ]
+        },
+        {
+          "SegmentNumber": 4,
+          "targetstones": [
+            {
+              "StoneText": "ژ"
+            }
+          ],
+          "prompt": {
+            "PromptText": "ژ",
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/dari/audios/ژ.mp3"
+          },
+          "foilstones": [
+            {
+              "StoneText": "د"
+            },
+            {
+              "StoneText": "ذ"
+            },
+            {
+              "StoneText": "ث"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "LevelMeta": {
+        "LevelNumber": 10,
+        "PromptType": "Visible",
+        "LevelType": "LetterOnly",
+        "csvType": "match",
+        "PromptFadeout": 0,
+        "LetterGroup": 4
+      },
+      "Puzzles": [
+        {
+          "SegmentNumber": 0,
+          "targetstones": [
+            {
+              "StoneText": "د"
+            }
+          ],
+          "prompt": {
+            "PromptText": "د",
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/dari/audios/د.mp3"
+          },
+          "foilstones": [
+            {
+              "StoneText": "ت"
+            },
+            {
+              "StoneText": "ز"
+            },
+            {
+              "StoneText": "ر"
+            }
+          ]
+        },
+        {
+          "SegmentNumber": 1,
+          "targetstones": [
+            {
+              "StoneText": "ذ"
+            }
+          ],
+          "prompt": {
+            "PromptText": "ذ",
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/dari/audios/ذ.mp3"
+          },
+          "foilstones": [
+            {
+              "StoneText": "آ"
+            },
+            {
+              "StoneText": "ژ"
+            },
+            {
+              "StoneText": "آ"
+            }
+          ]
+        },
+        {
+          "SegmentNumber": 2,
+          "targetstones": [
+            {
+              "StoneText": "ر"
+            }
+          ],
+          "prompt": {
+            "PromptText": "ر",
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/dari/audios/ر.mp3"
+          },
+          "foilstones": [
+            {
+              "StoneText": "د"
+            },
+            {
+              "StoneText": "چـ"
+            },
+            {
+              "StoneText": "جـ"
+            }
+          ]
+        },
+        {
+          "SegmentNumber": 3,
+          "targetstones": [
+            {
+              "StoneText": "ز"
+            }
+          ],
+          "prompt": {
+            "PromptText": "ز",
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/dari/audios/ز.mp3"
+          },
+          "foilstones": [
+            {
+              "StoneText": "ذ"
+            },
+            {
+              "StoneText": "پـ"
+            },
+            {
+              "StoneText": "ذ"
+            },
+            {
+              "StoneText": "ذ"
+            }
+          ]
+        },
+        {
+          "SegmentNumber": 4,
+          "targetstones": [
+            {
+              "StoneText": "ژ"
+            }
+          ],
+          "prompt": {
+            "PromptText": "ژ",
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/dari/audios/ژ.mp3"
+          },
+          "foilstones": [
+            {
+              "StoneText": "ا"
+            },
+            {
+              "StoneText": "ذ"
+            },
+            {
+              "StoneText": "ا"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "LevelMeta": {
+        "LevelNumber": 11,
+        "PromptType": "Hidden",
+        "LevelType": "LetterOnly",
+        "csvType": "matchSound",
+        "PromptFadeout": 0,
+        "LetterGroup": 4
+      },
+      "Puzzles": [
+        {
+          "SegmentNumber": 0,
+          "targetstones": [
+            {
+              "StoneText": "د"
+            }
+          ],
+          "prompt": {
+            "PromptText": "د",
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/dari/audios/د.mp3"
+          },
+          "foilstones": [
+            {
+              "StoneText": "ز"
+            },
+            {
+              "StoneText": "ب"
+            },
+            {
+              "StoneText": "ج"
+            }
+          ]
+        },
+        {
+          "SegmentNumber": 1,
+          "targetstones": [
+            {
+              "StoneText": "ذ"
+            }
+          ],
+          "prompt": {
+            "PromptText": "ذ",
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/dari/audios/ذ.mp3"
+          },
+          "foilstones": [
+            {
+              "StoneText": "ب"
+            },
+            {
+              "StoneText": "ز"
+            },
+            {
+              "StoneText": "آ"
+            }
+          ]
+        },
+        {
+          "SegmentNumber": 2,
+          "targetstones": [
+            {
+              "StoneText": "ر"
+            }
+          ],
+          "prompt": {
+            "PromptText": "ر",
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/dari/audios/ر.mp3"
+          },
+          "foilstones": [
+            {
+              "StoneText": "ژ"
+            },
+            {
+              "StoneText": "چ"
+            },
+            {
+              "StoneText": "تـ"
+            }
+          ]
+        },
+        {
+          "SegmentNumber": 3,
+          "targetstones": [
+            {
+              "StoneText": "ز"
+            }
+          ],
+          "prompt": {
+            "PromptText": "ز",
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/dari/audios/ز.mp3"
+          },
+          "foilstones": [
+            {
+              "StoneText": "جـ"
+            },
+            {
+              "StoneText": "ز"
+            },
+            {
+              "StoneText": "چـ"
+            }
+          ]
+        },
+        {
+          "SegmentNumber": 4,
+          "targetstones": [
+            {
+              "StoneText": "ژ"
+            }
+          ],
+          "prompt": {
+            "PromptText": "ژ",
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/dari/audios/ژ.mp3"
+          },
+          "foilstones": [
+            {
+              "StoneText": "د"
+            },
+            {
+              "StoneText": "ذ"
+            },
+            {
+              "StoneText": "ج"
+            },
+            {
+              "StoneText": "تـ"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "LevelMeta": {
+        "LevelNumber": 12,
+        "PromptType": "Visible",
+        "LevelType": "LetterInWord",
+        "csvType": "matchfirst",
+        "PromptFadeout": 0,
+        "LetterGroup": 4
+      },
+      "Puzzles": [
+        {
+          "SegmentNumber": 0,
+          "targetstones": [
+            {
+              "StoneText": "ر"
+            }
+          ],
+          "prompt": {
+            "PromptText": "رنگ",
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/dari/audios/ر.mp3"
+          },
+          "foilstones": [
+            {
+              "StoneText": "ثـ"
+            },
+            {
+              "StoneText": "ح"
+            },
+            {
+              "StoneText": "ر"
+            }
+          ]
+        },
+        {
+          "SegmentNumber": 1,
+          "targetstones": [
+            {
+              "StoneText": "د"
+            }
+          ],
+          "prompt": {
+            "PromptText": "درس",
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/dari/audios/د.mp3"
+          },
+          "foilstones": [
+            {
+              "StoneText": "چـ"
+            },
+            {
+              "StoneText": "ت"
+            },
+            {
+              "StoneText": "حـ"
+            }
+          ]
+        },
+        {
+          "SegmentNumber": 2,
+          "targetstones": [
+            {
+              "StoneText": "ژ"
+            }
+          ],
+          "prompt": {
+            "PromptText": "ژاله",
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/dari/audios/ژ.mp3"
+          },
+          "foilstones": [
+            {
+              "StoneText": "ژ"
+            },
+            {
+              "StoneText": "چ"
+            },
+            {
+              "StoneText": "ثـ"
+            }
+          ]
+        },
+        {
+          "SegmentNumber": 3,
+          "targetstones": [
+            {
+              "StoneText": "ز"
+            }
+          ],
+          "prompt": {
+            "PromptText": "زرد",
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/dari/audios/ز.mp3"
+          },
+          "foilstones": [
+            {
+              "StoneText": "خـ"
+            },
+            {
+              "StoneText": "ذ"
+            },
+            {
+              "StoneText": "ز"
+            }
+          ]
+        },
+        {
+          "SegmentNumber": 4,
+          "targetstones": [
+            {
+              "StoneText": "ز"
+            }
+          ],
+          "prompt": {
+            "PromptText": "زنده",
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/dari/audios/ز.mp3"
+          },
+          "foilstones": [
+            {
+              "StoneText": "ب"
+            },
+            {
+              "StoneText": "حـ"
+            },
+            {
+              "StoneText": "آ"
+            },
+            {
+              "StoneText": "ز"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "LevelMeta": {
+        "LevelNumber": 13,
+        "PromptType": "Visible",
+        "LevelType": "LetterOnly",
+        "csvType": "match",
+        "PromptFadeout": "4",
+        "LetterGroup": 4
+      },
+      "Puzzles": [
+        {
+          "SegmentNumber": 0,
+          "targetstones": [
+            {
+              "StoneText": "س"
+            }
+          ],
+          "prompt": {
+            "PromptText": "س",
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/dari/audios/س.mp3"
+          },
+          "foilstones": [
+            {
+              "StoneText": "ر"
+            },
+            {
+              "StoneText": "ر"
+            },
+            {
+              "StoneText": "تـ"
+            }
+          ]
+        },
+        {
+          "SegmentNumber": 1,
+          "targetstones": [
+            {
+              "StoneText": "ش"
+            }
+          ],
+          "prompt": {
+            "PromptText": "ش",
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/dari/audios/ش.mp3"
+          },
+          "foilstones": [
+            {
+              "StoneText": "ض"
+            },
+            {
+              "StoneText": "خ"
+            },
+            {
+              "StoneText": "ح"
+            }
+          ]
+        },
+        {
+          "SegmentNumber": 2,
+          "targetstones": [
+            {
+              "StoneText": "ص"
+            }
+          ],
+          "prompt": {
+            "PromptText": "ص",
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/dari/audios/ص.mp3"
+          },
+          "foilstones": [
+            {
+              "StoneText": "س"
+            },
+            {
+              "StoneText": "چـ"
+            },
+            {
+              "StoneText": "ط"
+            }
+          ]
+        },
+        {
+          "SegmentNumber": 3,
+          "targetstones": [
+            {
+              "StoneText": "ض"
+            }
+          ],
+          "prompt": {
+            "PromptText": "ض",
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/dari/audios/ض.mp3"
+          },
+          "foilstones": [
+            {
+              "StoneText": "ج"
+            },
+            {
+              "StoneText": "ش"
+            },
+            {
+              "StoneText": "چـ"
+            }
+          ]
+        },
+        {
+          "SegmentNumber": 4,
+          "targetstones": [
+            {
+              "StoneText": "ط"
+            }
+          ],
+          "prompt": {
+            "PromptText": "ط",
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/dari/audios/ط.mp3"
+          },
+          "foilstones": [
+            {
+              "StoneText": "آ"
+            },
+            {
+              "StoneText": "ض"
+            },
+            {
+              "StoneText": "ا"
+            },
+            {
+              "StoneText": "س"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "LevelMeta": {
+        "LevelNumber": 14,
+        "PromptType": "Visible",
+        "LevelType": "LetterOnly",
+        "csvType": "match",
+        "PromptFadeout": 0,
+        "LetterGroup": 5
+      },
+      "Puzzles": [
+        {
+          "SegmentNumber": 0,
+          "targetstones": [
+            {
+              "StoneText": "س"
+            }
+          ],
+          "prompt": {
+            "PromptText": "س",
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/dari/audios/س.mp3"
+          },
+          "foilstones": [
+            {
+              "StoneText": "ت"
+            },
+            {
+              "StoneText": "آ"
+            }
+          ]
+        },
+        {
+          "SegmentNumber": 1,
+          "targetstones": [
+            {
+              "StoneText": "ش"
+            }
+          ],
+          "prompt": {
+            "PromptText": "ش",
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/dari/audios/ش.mp3"
+          },
+          "foilstones": [
+            {
+              "StoneText": "ش"
+            },
+            {
+              "StoneText": "ش"
+            }
+          ]
+        },
+        {
+          "SegmentNumber": 2,
+          "targetstones": [
+            {
+              "StoneText": "ص"
+            }
+          ],
+          "prompt": {
+            "PromptText": "ص",
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/dari/audios/ص.mp3"
+          },
+          "foilstones": [
+            {
+              "StoneText": "ض"
+            },
+            {
+              "StoneText": "آ"
+            }
+          ]
+        },
+        {
+          "SegmentNumber": 3,
+          "targetstones": [
+            {
+              "StoneText": "ض"
+            }
+          ],
+          "prompt": {
+            "PromptText": "ض",
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/dari/audios/ض.mp3"
+          },
+          "foilstones": [
+            {
+              "StoneText": "ژ"
+            },
+            {
+              "StoneText": "آ"
+            }
+          ]
+        },
+        {
+          "SegmentNumber": 4,
+          "targetstones": [
+            {
+              "StoneText": "ط"
+            }
+          ],
+          "prompt": {
+            "PromptText": "ط",
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/dari/audios/ط.mp3"
+          },
+          "foilstones": [
+            {
+              "StoneText": "ص"
+            },
+            {
+              "StoneText": "آ"
+            },
+            {
+              "StoneText": "ا"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "LevelMeta": {
+        "LevelNumber": 15,
+        "PromptType": "Hidden",
+        "LevelType": "LetterOnly",
+        "csvType": "matchSound",
+        "PromptFadeout": 0,
+        "LetterGroup": 5
+      },
+      "Puzzles": [
+        {
+          "SegmentNumber": 0,
+          "targetstones": [
+            {
+              "StoneText": "س"
+            }
+          ],
+          "prompt": {
+            "PromptText": "س",
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/dari/audios/س.mp3"
+          },
+          "foilstones": [
+            {
+              "StoneText": "ض"
+            },
+            {
+              "StoneText": "ط"
+            },
+            {
+              "StoneText": "ب"
+            }
+          ]
+        },
+        {
+          "SegmentNumber": 1,
+          "targetstones": [
+            {
+              "StoneText": "ش"
+            }
+          ],
+          "prompt": {
+            "PromptText": "ش",
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/dari/audios/ش.mp3"
+          },
+          "foilstones": [
+            {
+              "StoneText": "س"
+            },
+            {
+              "StoneText": "ر"
+            },
+            {
+              "StoneText": "س"
+            }
+          ]
+        },
+        {
+          "SegmentNumber": 2,
+          "targetstones": [
+            {
+              "StoneText": "ص"
+            }
+          ],
+          "prompt": {
+            "PromptText": "ص",
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/dari/audios/ص.mp3"
+          },
+          "foilstones": [
+            {
+              "StoneText": "تـ"
+            },
+            {
+              "StoneText": "آ"
+            },
+            {
+              "StoneText": "ب"
+            }
+          ]
+        },
+        {
+          "SegmentNumber": 3,
+          "targetstones": [
+            {
+              "StoneText": "ض"
+            }
+          ],
+          "prompt": {
+            "PromptText": "ض",
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/dari/audios/ض.mp3"
+          },
+          "foilstones": [
+            {
+              "StoneText": "ط"
+            },
+            {
+              "StoneText": "ج"
+            },
+            {
+              "StoneText": "چ"
+            }
+          ]
+        },
+        {
+          "SegmentNumber": 4,
+          "targetstones": [
+            {
+              "StoneText": "ط"
+            }
+          ],
+          "prompt": {
+            "PromptText": "ط",
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/dari/audios/ط.mp3"
+          },
+          "foilstones": [
+            {
+              "StoneText": "ط"
+            },
+            {
+              "StoneText": "ض"
+            },
+            {
+              "StoneText": "ض"
+            },
+            {
+              "StoneText": "ش"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "LevelMeta": {
+        "LevelNumber": 16,
+        "PromptType": "Visible",
+        "LevelType": "LetterInWord",
+        "csvType": "matchfirst",
+        "PromptFadeout": "4",
+        "LetterGroup": 5
+      },
+      "Puzzles": [
+        {
+          "SegmentNumber": 0,
+          "targetstones": [
+            {
+              "StoneText": "شـ"
+            }
+          ],
+          "prompt": {
+            "PromptText": "شـش",
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/dari/audios/شـ.mp3"
+          },
+          "foilstones": [
+            {
+              "StoneText": "آ"
+            },
+            {
+              "StoneText": "ب"
+            },
+            {
+              "StoneText": "چـ"
+            },
+            {
+              "StoneText": "ب"
+            },
+            {
+              "StoneText": "ر"
+            }
+          ]
+        },
+        {
+          "SegmentNumber": 1,
+          "targetstones": [
+            {
+              "StoneText": "صـ"
+            }
+          ],
+          "prompt": {
+            "PromptText": "صـبح",
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/dari/audios/صـ.mp3"
+          },
+          "foilstones": [
+            {
+              "StoneText": "ط"
+            },
+            {
+              "StoneText": "د"
+            },
+            {
+              "StoneText": "ز"
+            },
+            {
+              "StoneText": "ضـ"
+            }
+          ]
+        },
+        {
+          "SegmentNumber": 2,
+          "targetstones": [
+            {
+              "StoneText": "ضـ"
+            }
+          ],
+          "prompt": {
+            "PromptText": "ضـیافت",
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/dari/audios/ضـ.mp3"
+          },
+          "foilstones": [
+            {
+              "StoneText": "ضـ"
+            },
+            {
+              "StoneText": "د"
+            },
+            {
+              "StoneText": "آ"
+            }
+          ]
+        },
+        {
+          "SegmentNumber": 3,
+          "targetstones": [
+            {
+              "StoneText": "سـ"
+            }
+          ],
+          "prompt": {
+            "PromptText": "سـه",
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/dari/audios/سـ.mp3"
+          },
+          "foilstones": [
+            {
+              "StoneText": "سـ"
+            },
+            {
+              "StoneText": "صـ"
+            },
+            {
+              "StoneText": "ص"
+            },
+            {
+              "StoneText": "پ"
+            }
+          ]
+        },
+        {
+          "SegmentNumber": 4,
+          "targetstones": [
+            {
+              "StoneText": "سـ"
+            }
+          ],
+          "prompt": {
+            "PromptText": "سـعِی",
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/dari/audios/سـ.mp3"
+          },
+          "foilstones": [
+            {
+              "StoneText": "شـ"
+            },
+            {
+              "StoneText": "سـ"
+            },
+            {
+              "StoneText": "ذ"
+            },
+            {
+              "StoneText": "صـ"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "LevelMeta": {
+        "LevelNumber": 17,
+        "PromptType": "Visible",
+        "LevelType": "LetterOnly",
+        "csvType": "match",
+        "PromptFadeout": 0,
+        "LetterGroup": 6
+      },
+      "Puzzles": [
+        {
+          "SegmentNumber": 0,
+          "targetstones": [
+            {
+              "StoneText": "ط"
+            }
+          ],
+          "prompt": {
+            "PromptText": "ط",
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/dari/audios/ط.mp3"
+          },
+          "foilstones": [
+            {
+              "StoneText": "ط"
+            },
+            {
+              "StoneText": "تـ"
+            },
+            {
+              "StoneText": "سـ"
+            },
+            {
+              "StoneText": "جـ"
+            }
+          ]
+        },
+        {
+          "SegmentNumber": 1,
+          "targetstones": [
+            {
+              "StoneText": "ظ"
+            }
+          ],
+          "prompt": {
+            "PromptText": "ظ",
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/dari/audios/ظ.mp3"
+          },
+          "foilstones": [
+            {
+              "StoneText": "ظ"
+            },
+            {
+              "StoneText": "ف"
+            },
+            {
+              "StoneText": "غ"
+            },
+            {
+              "StoneText": "ژ"
+            }
+          ]
+        },
+        {
+          "SegmentNumber": 2,
+          "targetstones": [
+            {
+              "StoneText": "ع"
+            }
+          ],
+          "prompt": {
+            "PromptText": "ع",
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/dari/audios/ع.mp3"
+          },
+          "foilstones": [
+            {
+              "StoneText": "خ"
+            },
+            {
+              "StoneText": "ف"
+            },
+            {
+              "StoneText": "ع"
+            },
+            {
+              "StoneText": "ث"
+            }
+          ]
+        },
+        {
+          "SegmentNumber": 3,
+          "targetstones": [
+            {
+              "StoneText": "غ"
+            }
+          ],
+          "prompt": {
+            "PromptText": "غ",
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/dari/audios/غ.mp3"
+          },
+          "foilstones": [
+            {
+              "StoneText": "غ"
+            },
+            {
+              "StoneText": "ب"
+            },
+            {
+              "StoneText": "ج"
+            },
+            {
+              "StoneText": "ث"
+            }
+          ]
+        },
+        {
+          "SegmentNumber": 4,
+          "targetstones": [
+            {
+              "StoneText": "ف"
+            }
+          ],
+          "prompt": {
+            "PromptText": "ف",
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/dari/audios/ف.mp3"
+          },
+          "foilstones": [
+            {
+              "StoneText": "حـ"
+            },
+            {
+              "StoneText": "ثـ"
+            },
+            {
+              "StoneText": "ت"
+            },
+            {
+              "StoneText": "ص"
+            },
+            {
+              "StoneText": "غ"
+            },
+            {
+              "StoneText": "ظ"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "LevelMeta": {
+        "LevelNumber": 18,
+        "PromptType": "Visible",
+        "LevelType": "LetterOnly",
+        "csvType": "match",
+        "PromptFadeout": 0,
+        "LetterGroup": 6
+      },
+      "Puzzles": [
+        {
+          "SegmentNumber": 0,
+          "targetstones": [
+            {
+              "StoneText": "ط"
+            }
+          ],
+          "prompt": {
+            "PromptText": "ط",
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/dari/audios/ط.mp3"
+          },
+          "foilstones": [
+            {
+              "StoneText": "ص"
+            },
+            {
+              "StoneText": "صـ"
+            },
+            {
+              "StoneText": "ب"
+            },
+            {
+              "StoneText": "ظ"
+            }
+          ]
+        },
+        {
+          "SegmentNumber": 1,
+          "targetstones": [
+            {
+              "StoneText": "ظ"
+            }
+          ],
+          "prompt": {
+            "PromptText": "ظ",
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/dari/audios/ظ.mp3"
+          },
+          "foilstones": [
+            {
+              "StoneText": "جـ"
+            },
+            {
+              "StoneText": "ط"
+            },
+            {
+              "StoneText": "پ"
+            },
+            {
+              "StoneText": "غ"
+            }
+          ]
+        },
+        {
+          "SegmentNumber": 2,
+          "targetstones": [
+            {
+              "StoneText": "ع"
+            }
+          ],
+          "prompt": {
+            "PromptText": "ع",
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/dari/audios/ع.mp3"
+          },
+          "foilstones": [
+            {
+              "StoneText": "ع"
+            },
+            {
+              "StoneText": "چ"
+            },
+            {
+              "StoneText": "ج"
+            },
+            {
+              "StoneText": "ژ"
+            }
+          ]
+        },
+        {
+          "SegmentNumber": 3,
+          "targetstones": [
+            {
+              "StoneText": "غ"
+            }
+          ],
+          "prompt": {
+            "PromptText": "غ",
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/dari/audios/غ.mp3"
+          },
+          "foilstones": [
+            {
+              "StoneText": "شـ"
+            },
+            {
+              "StoneText": "د"
+            },
+            {
+              "StoneText": "شـ"
+            },
+            {
+              "StoneText": "ثـ"
+            }
+          ]
+        },
+        {
+          "SegmentNumber": 4,
+          "targetstones": [
+            {
+              "StoneText": "ف"
+            }
+          ],
+          "prompt": {
+            "PromptText": "ف",
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/dari/audios/ف.mp3"
+          },
+          "foilstones": [
+            {
+              "StoneText": "ذ"
+            },
+            {
+              "StoneText": "خ"
+            },
+            {
+              "StoneText": "حـ"
+            },
+            {
+              "StoneText": "ج"
+            },
+            {
+              "StoneText": "چ"
+            },
+            {
+              "StoneText": "ث"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "LevelMeta": {
+        "LevelNumber": 19,
+        "PromptType": "Hidden",
+        "LevelType": "LetterOnly",
+        "csvType": "matchSound",
+        "PromptFadeout": 0,
+        "LetterGroup": 6
+      },
+      "Puzzles": [
+        {
+          "SegmentNumber": 0,
+          "targetstones": [
+            {
+              "StoneText": "ط"
+            }
+          ],
+          "prompt": {
+            "PromptText": "ط",
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/dari/audios/ط.mp3"
+          },
+          "foilstones": [
+            {
+              "StoneText": "ث"
+            },
+            {
+              "StoneText": "ظ"
+            },
+            {
+              "StoneText": "ث"
+            },
+            {
+              "StoneText": "ح"
+            }
+          ]
+        },
+        {
+          "SegmentNumber": 1,
+          "targetstones": [
+            {
+              "StoneText": "ظ"
+            }
+          ],
+          "prompt": {
+            "PromptText": "ظ",
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/dari/audios/ظ.mp3"
+          },
+          "foilstones": [
+            {
+              "StoneText": "غ"
+            },
+            {
+              "StoneText": "سـ"
+            },
+            {
+              "StoneText": "ف"
+            },
+            {
+              "StoneText": "ع"
+            }
+          ]
+        },
+        {
+          "SegmentNumber": 2,
+          "targetstones": [
+            {
+              "StoneText": "ع"
+            }
+          ],
+          "prompt": {
+            "PromptText": "ع",
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/dari/audios/ع.mp3"
+          },
+          "foilstones": [
+            {
+              "StoneText": "ش"
+            },
+            {
+              "StoneText": "ط"
+            },
+            {
+              "StoneText": "غ"
+            },
+            {
+              "StoneText": "ف"
+            }
+          ]
+        },
+        {
+          "SegmentNumber": 3,
+          "targetstones": [
+            {
+              "StoneText": "غ"
+            }
+          ],
+          "prompt": {
+            "PromptText": "غ",
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/dari/audios/غ.mp3"
+          },
+          "foilstones": [
+            {
+              "StoneText": "ض"
+            },
+            {
+              "StoneText": "ع"
+            },
+            {
+              "StoneText": "ب"
+            },
+            {
+              "StoneText": "ا"
+            }
+          ]
+        },
+        {
+          "SegmentNumber": 4,
+          "targetstones": [
+            {
+              "StoneText": "ف"
+            }
+          ],
+          "prompt": {
+            "PromptText": "ف",
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/dari/audios/ف.mp3"
+          },
+          "foilstones": [
+            {
+              "StoneText": "خ"
+            },
+            {
+              "StoneText": "سـ"
+            },
+            {
+              "StoneText": "ت"
+            },
+            {
+              "StoneText": "تـ"
+            },
+            {
+              "StoneText": "ژ"
+            },
+            {
+              "StoneText": "ب"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "LevelMeta": {
+        "LevelNumber": 20,
+        "PromptType": "Visible",
+        "LevelType": "LetterInWord",
+        "csvType": "matchfirst",
+        "PromptFadeout": 0,
+        "LetterGroup": 6
+      },
+      "Puzzles": [
+        {
+          "SegmentNumber": 0,
+          "targetstones": [
+            {
+              "StoneText": "ط"
+            }
+          ],
+          "prompt": {
+            "PromptText": "طوطی",
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/dari/audios/ط.mp3"
+          },
+          "foilstones": [
+            {
+              "StoneText": "ظـ"
+            },
+            {
+              "StoneText": "خـ"
+            },
+            {
+              "StoneText": "عـ"
+            },
+            {
+              "StoneText": "چـ"
+            }
+          ]
+        },
+        {
+          "SegmentNumber": 1,
+          "targetstones": [
+            {
+              "StoneText": "عـ"
+            }
+          ],
+          "prompt": {
+            "PromptText": "عـسل",
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/dari/audios/عـ.mp3"
+          },
+          "foilstones": [
+            {
+              "StoneText": "آ"
+            },
+            {
+              "StoneText": "ش"
+            },
+            {
+              "StoneText": "ث"
+            },
+            {
+              "StoneText": "ظ"
+            }
+          ]
+        },
+        {
+          "SegmentNumber": 2,
+          "targetstones": [
+            {
+              "StoneText": "فـ"
+            }
+          ],
+          "prompt": {
+            "PromptText": "فـیل",
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/dari/audios/فـ.mp3"
+          },
+          "foilstones": [
+            {
+              "StoneText": "صـ"
+            },
+            {
+              "StoneText": "ط"
+            },
+            {
+              "StoneText": "خـ"
+            },
+            {
+              "StoneText": "آ"
+            }
+          ]
+        },
+        {
+          "SegmentNumber": 3,
+          "targetstones": [
+            {
+              "StoneText": "ظـ"
+            }
+          ],
+          "prompt": {
+            "PromptText": "ظـرف",
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/dari/audios/ظـ.mp3"
+          },
+          "foilstones": [
+            {
+              "StoneText": "پ"
+            },
+            {
+              "StoneText": "ع"
+            },
+            {
+              "StoneText": "عـ"
+            },
+            {
+              "StoneText": "حـ"
+            }
+          ]
+        },
+        {
+          "SegmentNumber": 4,
+          "targetstones": [
+            {
+              "StoneText": "غـ"
+            }
+          ],
+          "prompt": {
+            "PromptText": "غـار",
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/dari/audios/غـ.mp3"
+          },
+          "foilstones": [
+            {
+              "StoneText": "خـ"
+            },
+            {
+              "StoneText": "پـ"
+            },
+            {
+              "StoneText": "غـ"
+            },
+            {
+              "StoneText": "خـ"
+            },
+            {
+              "StoneText": "عـ"
+            },
+            {
+              "StoneText": "شـ"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "LevelMeta": {
+        "LevelNumber": 21,
+        "PromptType": "Visible",
+        "LevelType": "LetterOnly",
+        "csvType": "match",
+        "PromptFadeout": "4",
+        "LetterGroup": 6
+      },
+      "Puzzles": [
+        {
+          "SegmentNumber": 0,
+          "targetstones": [
+            {
+              "StoneText": "ق"
+            }
+          ],
+          "prompt": {
+            "PromptText": "ق",
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/dari/audios/ق.mp3"
+          },
+          "foilstones": [
+            {
+              "StoneText": "گ"
+            },
+            {
+              "StoneText": "ت"
+            },
+            {
+              "StoneText": "ک"
+            }
+          ]
+        },
+        {
+          "SegmentNumber": 1,
+          "targetstones": [
+            {
+              "StoneText": "ک"
+            }
+          ],
+          "prompt": {
+            "PromptText": "ک",
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/dari/audios/ک.mp3"
+          },
+          "foilstones": [
+            {
+              "StoneText": "پـ"
+            },
+            {
+              "StoneText": "ژ"
+            },
+            {
+              "StoneText": "ک"
+            }
+          ]
+        },
+        {
+          "SegmentNumber": 2,
+          "targetstones": [
+            {
+              "StoneText": "گ"
+            }
+          ],
+          "prompt": {
+            "PromptText": "گ",
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/dari/audios/گ.mp3"
+          },
+          "foilstones": [
+            {
+              "StoneText": "تـ"
+            },
+            {
+              "StoneText": "ت"
+            },
+            {
+              "StoneText": "ق"
+            }
+          ]
+        },
+        {
+          "SegmentNumber": 3,
+          "targetstones": [
+            {
+              "StoneText": "ل"
+            }
+          ],
+          "prompt": {
+            "PromptText": "ل",
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/dari/audios/ل.mp3"
+          },
+          "foilstones": [
+            {
+              "StoneText": "عـ"
+            },
+            {
+              "StoneText": "م"
+            },
+            {
+              "StoneText": "پ"
+            }
+          ]
+        },
+        {
+          "SegmentNumber": 4,
+          "targetstones": [
+            {
+              "StoneText": "م"
+            }
+          ],
+          "prompt": {
+            "PromptText": "م",
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/dari/audios/م.mp3"
+          },
+          "foilstones": [
+            {
+              "StoneText": "آ"
+            },
+            {
+              "StoneText": "غـ"
+            },
+            {
+              "StoneText": "م"
+            },
+            {
+              "StoneText": "ق"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "LevelMeta": {
+        "LevelNumber": 22,
+        "PromptType": "Visible",
+        "LevelType": "LetterOnly",
+        "csvType": "match",
+        "PromptFadeout": 0,
+        "LetterGroup": 7
+      },
+      "Puzzles": [
+        {
+          "SegmentNumber": 0,
+          "targetstones": [
+            {
+              "StoneText": "ق"
+            }
+          ],
+          "prompt": {
+            "PromptText": "ق",
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/dari/audios/ق.mp3"
+          },
+          "foilstones": [
+            {
+              "StoneText": "جـ"
+            },
+            {
+              "StoneText": "غـ"
+            },
+            {
+              "StoneText": "ذ"
+            }
+          ]
+        },
+        {
+          "SegmentNumber": 1,
+          "targetstones": [
+            {
+              "StoneText": "ک"
+            }
+          ],
+          "prompt": {
+            "PromptText": "ک",
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/dari/audios/ک.mp3"
+          },
+          "foilstones": [
+            {
+              "StoneText": "ل"
+            },
+            {
+              "StoneText": "ف"
+            },
+            {
+              "StoneText": "فـ"
+            }
+          ]
+        },
+        {
+          "SegmentNumber": 2,
+          "targetstones": [
+            {
+              "StoneText": "گ"
+            }
+          ],
+          "prompt": {
+            "PromptText": "گ",
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/dari/audios/گ.mp3"
+          },
+          "foilstones": [
+            {
+              "StoneText": "ف"
+            },
+            {
+              "StoneText": "ق"
+            },
+            {
+              "StoneText": "حـ"
+            }
+          ]
+        },
+        {
+          "SegmentNumber": 3,
+          "targetstones": [
+            {
+              "StoneText": "ل"
+            }
+          ],
+          "prompt": {
+            "PromptText": "ل",
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/dari/audios/ل.mp3"
+          },
+          "foilstones": [
+            {
+              "StoneText": "غ"
+            },
+            {
+              "StoneText": "ک"
+            },
+            {
+              "StoneText": "ل"
+            }
+          ]
+        },
+        {
+          "SegmentNumber": 4,
+          "targetstones": [
+            {
+              "StoneText": "م"
+            }
+          ],
+          "prompt": {
+            "PromptText": "م",
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/dari/audios/م.mp3"
+          },
+          "foilstones": [
+            {
+              "StoneText": "ز"
+            },
+            {
+              "StoneText": "ق"
+            },
+            {
+              "StoneText": "ج"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "LevelMeta": {
+        "LevelNumber": 23,
+        "PromptType": "Hidden",
+        "LevelType": "LetterOnly",
+        "csvType": "matchSound",
+        "PromptFadeout": 0,
+        "LetterGroup": 7
+      },
+      "Puzzles": [
+        {
+          "SegmentNumber": 0,
+          "targetstones": [
+            {
+              "StoneText": "ق"
+            }
+          ],
+          "prompt": {
+            "PromptText": "ق",
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/dari/audios/ق.mp3"
+          },
+          "foilstones": [
+            {
+              "StoneText": "ظـ"
+            },
+            {
+              "StoneText": "ط"
+            },
+            {
+              "StoneText": "پ"
+            }
+          ]
+        },
+        {
+          "SegmentNumber": 1,
+          "targetstones": [
+            {
+              "StoneText": "ک"
+            }
+          ],
+          "prompt": {
+            "PromptText": "ک",
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/dari/audios/ک.mp3"
+          },
+          "foilstones": [
+            {
+              "StoneText": "گ"
+            },
+            {
+              "StoneText": "گ"
+            },
+            {
+              "StoneText": "م"
+            }
+          ]
+        },
+        {
+          "SegmentNumber": 2,
+          "targetstones": [
+            {
+              "StoneText": "گ"
+            }
+          ],
+          "prompt": {
+            "PromptText": "گ",
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/dari/audios/گ.mp3"
+          },
+          "foilstones": [
+            {
+              "StoneText": "ژ"
+            },
+            {
+              "StoneText": "م"
+            },
+            {
+              "StoneText": "چـ"
+            },
+            {
+              "StoneText": "ص"
+            }
+          ]
+        },
+        {
+          "SegmentNumber": 3,
+          "targetstones": [
+            {
+              "StoneText": "ل"
+            }
+          ],
+          "prompt": {
+            "PromptText": "ل",
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/dari/audios/ل.mp3"
+          },
+          "foilstones": [
+            {
+              "StoneText": "ر"
+            },
+            {
+              "StoneText": "ک"
+            },
+            {
+              "StoneText": "ت"
+            }
+          ]
+        },
+        {
+          "SegmentNumber": 4,
+          "targetstones": [
+            {
+              "StoneText": "م"
+            }
+          ],
+          "prompt": {
+            "PromptText": "م",
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/dari/audios/م.mp3"
+          },
+          "foilstones": [
+            {
+              "StoneText": "ذ"
+            },
+            {
+              "StoneText": "گ"
+            },
+            {
+              "StoneText": "گ"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "LevelMeta": {
+        "LevelNumber": 24,
+        "PromptType": "Visible",
+        "LevelType": "LetterInWord",
+        "csvType": "matchfirst",
+        "PromptFadeout": 0,
+        "LetterGroup": 7
+      },
+      "Puzzles": [
+        {
+          "SegmentNumber": 0,
+          "targetstones": [
+            {
+              "StoneText": "قـ"
+            }
+          ],
+          "prompt": {
+            "PromptText": "قـصه",
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/dari/audios/قـ.mp3"
+          },
+          "foilstones": [
+            {
+              "StoneText": "س"
+            },
+            {
+              "StoneText": "ق"
+            },
+            {
+              "StoneText": "سـ"
+            }
+          ]
+        },
+        {
+          "SegmentNumber": 1,
+          "targetstones": [
+            {
+              "StoneText": "گـ"
+            }
+          ],
+          "prompt": {
+            "PromptText": "گـرگ",
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/dari/audios/گـ.mp3"
+          },
+          "foilstones": [
+            {
+              "StoneText": "قـ"
+            },
+            {
+              "StoneText": "صـ"
+            },
+            {
+              "StoneText": "سـ"
+            }
+          ]
+        },
+        {
+          "SegmentNumber": 2,
+          "targetstones": [
+            {
+              "StoneText": "ک"
+            }
+          ],
+          "prompt": {
+            "PromptText": "کتاب",
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/dari/audios/ک.mp3"
+          },
+          "foilstones": [
+            {
+              "StoneText": "حـ"
+            },
+            {
+              "StoneText": "ض"
+            },
+            {
+              "StoneText": "د"
+            }
+          ]
+        },
+        {
+          "SegmentNumber": 3,
+          "targetstones": [
+            {
+              "StoneText": "ظـ"
+            }
+          ],
+          "prompt": {
+            "PromptText": "ظـرف",
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/dari/audios/ظـ.mp3"
+          },
+          "foilstones": [
+            {
+              "StoneText": "آ"
+            },
+            {
+              "StoneText": "آ"
+            },
+            {
+              "StoneText": "ظـ"
+            }
+          ]
+        },
+        {
+          "SegmentNumber": 4,
+          "targetstones": [
+            {
+              "StoneText": "مـ"
+            }
+          ],
+          "prompt": {
+            "PromptText": "مـاما",
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/dari/audios/مـ.mp3"
+          },
+          "foilstones": [
+            {
+              "StoneText": "ف"
+            },
+            {
+              "StoneText": "ت"
+            },
+            {
+              "StoneText": "پ"
+            },
+            {
+              "StoneText": "پ"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "LevelMeta": {
+        "LevelNumber": 25,
+        "PromptType": "Visible",
+        "LevelType": "LetterOnly",
+        "csvType": "match",
+        "PromptFadeout": 0,
+        "LetterGroup": 7
+      },
+      "Puzzles": [
+        {
+          "SegmentNumber": 0,
+          "targetstones": [
+            {
+              "StoneText": "ن"
+            }
+          ],
+          "prompt": {
+            "PromptText": "ن",
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/dari/audios/ن.mp3"
+          },
+          "foilstones": [
+            {
+              "StoneText": "صـ"
+            },
+            {
+              "StoneText": "ذ"
+            },
+            {
+              "StoneText": "آ"
+            }
+          ]
+        },
+        {
+          "SegmentNumber": 1,
+          "targetstones": [
+            {
+              "StoneText": "و"
+            }
+          ],
+          "prompt": {
+            "PromptText": "و",
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/dari/audios/و.mp3"
+          },
+          "foilstones": [
+            {
+              "StoneText": "ت"
+            },
+            {
+              "StoneText": "ت"
+            },
+            {
+              "StoneText": "پـ"
+            }
+          ]
+        },
+        {
+          "SegmentNumber": 2,
+          "targetstones": [
+            {
+              "StoneText": "ه"
+            }
+          ],
+          "prompt": {
+            "PromptText": "ه",
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/dari/audios/ه.mp3"
+          },
+          "foilstones": [
+            {
+              "StoneText": "ی"
+            },
+            {
+              "StoneText": "ت"
+            },
+            {
+              "StoneText": "مـ"
+            },
+            {
+              "StoneText": "ل"
+            }
+          ]
+        },
+        {
+          "SegmentNumber": 3,
+          "targetstones": [
+            {
+              "StoneText": "ء"
+            }
+          ],
+          "prompt": {
+            "PromptText": "ء",
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/dari/audios/ء.mp3"
+          },
+          "foilstones": [
+            {
+              "StoneText": "ع"
+            },
+            {
+              "StoneText": "ض"
+            },
+            {
+              "StoneText": "س"
+            }
+          ]
+        },
+        {
+          "SegmentNumber": 4,
+          "targetstones": [
+            {
+              "StoneText": "ی"
+            }
+          ],
+          "prompt": {
+            "PromptText": "ی",
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/dari/audios/ی.mp3"
+          },
+          "foilstones": [
+            {
+              "StoneText": "گ"
+            },
+            {
+              "StoneText": "م"
+            },
+            {
+              "StoneText": "ظ"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "LevelMeta": {
+        "LevelNumber": 26,
+        "PromptType": "Visible",
+        "LevelType": "LetterOnly",
+        "csvType": "match",
+        "PromptFadeout": "4",
+        "LetterGroup": 7
+      },
+      "Puzzles": [
+        {
+          "SegmentNumber": 0,
+          "targetstones": [
+            {
+              "StoneText": "ن"
+            }
+          ],
+          "prompt": {
+            "PromptText": "ن",
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/dari/audios/ن.mp3"
+          },
+          "foilstones": [
+            {
+              "StoneText": "و"
+            },
+            {
+              "StoneText": "خـ"
+            },
+            {
+              "StoneText": "ه"
+            }
+          ]
+        },
+        {
+          "SegmentNumber": 1,
+          "targetstones": [
+            {
+              "StoneText": "و"
+            }
+          ],
+          "prompt": {
+            "PromptText": "و",
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/dari/audios/و.mp3"
+          },
+          "foilstones": [
+            {
+              "StoneText": "و"
+            },
+            {
+              "StoneText": "ه"
+            },
+            {
+              "StoneText": "ء"
+            }
+          ]
+        },
+        {
+          "SegmentNumber": 2,
+          "targetstones": [
+            {
+              "StoneText": "ه"
+            }
+          ],
+          "prompt": {
+            "PromptText": "ه",
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/dari/audios/ه.mp3"
+          },
+          "foilstones": [
+            {
+              "StoneText": "ظ"
+            },
+            {
+              "StoneText": "گ"
+            },
+            {
+              "StoneText": "ظـ"
+            },
+            {
+              "StoneText": "ف"
+            }
+          ]
+        },
+        {
+          "SegmentNumber": 3,
+          "targetstones": [
+            {
+              "StoneText": "ء"
+            }
+          ],
+          "prompt": {
+            "PromptText": "ء",
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/dari/audios/ء.mp3"
+          },
+          "foilstones": [
+            {
+              "StoneText": "ا"
+            },
+            {
+              "StoneText": "ن"
+            },
+            {
+              "StoneText": "قـ"
+            }
+          ]
+        },
+        {
+          "SegmentNumber": 4,
+          "targetstones": [
+            {
+              "StoneText": "ی"
+            }
+          ],
+          "prompt": {
+            "PromptText": "ی",
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/dari/audios/ی.mp3"
+          },
+          "foilstones": [
+            {
+              "StoneText": "ی"
+            },
+            {
+              "StoneText": "ی"
+            },
+            {
+              "StoneText": "و"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "LevelMeta": {
+        "LevelNumber": 27,
+        "PromptType": "Hidden",
+        "LevelType": "LetterOnly",
+        "csvType": "matchSound",
+        "PromptFadeout": 0,
+        "LetterGroup": 8
+      },
+      "Puzzles": [
+        {
+          "SegmentNumber": 0,
+          "targetstones": [
+            {
+              "StoneText": "ن"
+            }
+          ],
+          "prompt": {
+            "PromptText": "ن",
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/dari/audios/ن.mp3"
+          },
+          "foilstones": [
+            {
+              "StoneText": "ضـ"
+            },
+            {
+              "StoneText": "گ"
+            },
+            {
+              "StoneText": "گـ"
+            }
+          ]
+        },
+        {
+          "SegmentNumber": 1,
+          "targetstones": [
+            {
+              "StoneText": "و"
+            }
+          ],
+          "prompt": {
+            "PromptText": "و",
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/dari/audios/و.mp3"
+          },
+          "foilstones": [
+            {
+              "StoneText": "ه"
+            },
+            {
+              "StoneText": "ج"
+            },
+            {
+              "StoneText": "گـ"
+            }
+          ]
+        },
+        {
+          "SegmentNumber": 2,
+          "targetstones": [
+            {
+              "StoneText": "ه"
+            }
+          ],
+          "prompt": {
+            "PromptText": "ه",
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/dari/audios/ه.mp3"
+          },
+          "foilstones": [
+            {
+              "StoneText": "ج"
+            },
+            {
+              "StoneText": "چ"
+            },
+            {
+              "StoneText": "ج"
+            },
+            {
+              "StoneText": "ا"
+            }
+          ]
+        },
+        {
+          "SegmentNumber": 3,
+          "targetstones": [
+            {
+              "StoneText": "ء"
+            }
+          ],
+          "prompt": {
+            "PromptText": "ء",
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/dari/audios/ء.mp3"
+          },
+          "foilstones": [
+            {
+              "StoneText": "ز"
+            },
+            {
+              "StoneText": "ف"
+            },
+            {
+              "StoneText": "س"
+            }
+          ]
+        },
+        {
+          "SegmentNumber": 4,
+          "targetstones": [
+            {
+              "StoneText": "ی"
+            }
+          ],
+          "prompt": {
+            "PromptText": "ی",
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/dari/audios/ی.mp3"
+          },
+          "foilstones": [
+            {
+              "StoneText": "جـ"
+            },
+            {
+              "StoneText": "ء"
+            },
+            {
+              "StoneText": "ل"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "LevelMeta": {
+        "LevelNumber": 28,
+        "PromptType": "Visible",
+        "LevelType": "LetterInWord",
+        "csvType": "matchfirst",
+        "PromptFadeout": 0,
+        "LetterGroup": 8
+      },
+      "Puzzles": [
+        {
+          "SegmentNumber": 0,
+          "targetstones": [
+            {
+              "StoneText": "نـ"
+            }
+          ],
+          "prompt": {
+            "PromptText": "نـان",
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/dari/audios/نـ.mp3"
+          },
+          "foilstones": [
+            {
+              "StoneText": "ج"
+            },
+            {
+              "StoneText": "ف"
+            },
+            {
+              "StoneText": "ط"
+            },
+            {
+              "StoneText": "م"
+            },
+            {
+              "StoneText": "ت"
+            },
+            {
+              "StoneText": "ه"
+            }
+          ]
+        },
+        {
+          "SegmentNumber": 1,
+          "targetstones": [
+            {
+              "StoneText": "و"
+            }
+          ],
+          "prompt": {
+            "PromptText": "واحد",
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/dari/audios/و.mp3"
+          },
+          "foilstones": [
+            {
+              "StoneText": "پ"
+            },
+            {
+              "StoneText": "ثـ"
+            },
+            {
+              "StoneText": "صـ"
+            },
+            {
+              "StoneText": "جـ"
+            },
+            {
+              "StoneText": "د"
+            }
+          ]
+        },
+        {
+          "SegmentNumber": 2,
+          "targetstones": [
+            {
+              "StoneText": "یـ"
+            }
+          ],
+          "prompt": {
+            "PromptText": "یـخ",
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/dari/audios/یـ.mp3"
+          },
+          "foilstones": [
+            {
+              "StoneText": "نـ"
+            },
+            {
+              "StoneText": "یـ"
+            },
+            {
+              "StoneText": "ظ"
+            },
+            {
+              "StoneText": "ح"
+            },
+            {
+              "StoneText": "ا"
+            },
+            {
+              "StoneText": "هـ"
+            }
+          ]
+        },
+        {
+          "SegmentNumber": 3,
+          "targetstones": [
+            {
+              "StoneText": "هـ"
+            }
+          ],
+          "prompt": {
+            "PromptText": "هـوا",
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/dari/audios/هـ.mp3"
+          },
+          "foilstones": [
+            {
+              "StoneText": "تـ"
+            },
+            {
+              "StoneText": "و"
+            },
+            {
+              "StoneText": "صـ"
+            },
+            {
+              "StoneText": "نـ"
+            },
+            {
+              "StoneText": "سـ"
+            }
+          ]
+        },
+        {
+          "SegmentNumber": 4,
+          "targetstones": [
+            {
+              "StoneText": "ثـ"
+            }
+          ],
+          "prompt": {
+            "PromptText": "ثـمر",
+            "PromptAudio": "https://feedthemonster.curiouscontent.org/lang/dari/audios/ثـ.mp3"
+          },
+          "foilstones": [
+            {
+              "StoneText": "و"
+            },
+            {
+              "StoneText": "ش"
+            },
+            {
+              "StoneText": "خـ"
+            },
+            {
+              "StoneText": "و"
+            },
+            {
+              "StoneText": "ص"
+            },
+            {
+              "StoneText": "آ"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
