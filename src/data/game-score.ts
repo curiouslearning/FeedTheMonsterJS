@@ -26,7 +26,7 @@ interface CurrentLevelInfo {
   levelNumber: number;
 }
 
-interface GameLevelInfo {
+export interface GameLevelInfo {
   levelName: string;
   levelNumber: number;
   score: number;
@@ -90,12 +90,23 @@ export class GameScore {
     this.updateTotalStarCount();
   }
 
+  /**
+ * Retrieves the saved game level data for a specific level number.
+ *
+ * Looks up local storage for all recorded game level data,
+ * then returns the entry that matches the given `levelNumber`.
+ *
+ * @param levelNumber - The level number to retrieve data for.
+ * @returns The matching `GameLevelInfo` object if found, or `null` otherwise.
+ */
   public static getGameLevelData(levelNumber: number): null | GameLevelInfo {
-    const allGameLevelInfo = this.getAllGameLevelInfo();
-    let index = allGameLevelInfo.findIndex(
+    const allGameLevelsInfo = this.getAllGameLevelInfo();
+
+    const index = allGameLevelsInfo.findIndex(
       (level) => level.levelNumber === levelNumber
     );
-    return index > -1 ? allGameLevelInfo[index] : null;
+
+    return index > -1 ? allGameLevelsInfo[index] : null;
   }
 
   public static getAllGameLevelInfo(): any[] {

@@ -5,18 +5,6 @@ import gameStateService from '@gameStateService';
 import gameSettingsService from '@gameSettingsService';
 RuntimeLoader.setWasmUrl(CACHED_RIVE_WASM);
 
-export interface RiveMonsterComponentProps {
-  canvas: HTMLCanvasElement; // Canvas element where the animation will render
-  autoplay: boolean;
-  fit?: string; // Fit property (e.g contain, cover, etc.)
-  alignment?: string; // Alignment property (e.g topCenter, bottomLeft, etc.)
-  width?: number; // Optional width for the Rive animation
-  height?: number; // Optional height for the Rive animation
-  onLoad?: () => void; // Callback once Rive animation is loaded
-  gameCanvas?: HTMLCanvasElement; // Main canvas element
-  src?: string;
-}
-
 export class ProgressionScene {
   private riveMonsterElement: HTMLCanvasElement;
   private riveInstance: Rive;
@@ -38,6 +26,7 @@ export class ProgressionScene {
   private targetStarCountMaxFill: number = 0;
   private delayStateMachineInputs: number = 2500;
   private delaySwitchToLevelend: number = 5000;
+  private isPassingScore: boolean = false;
 
   constructor() {
     const riveMonsterElement = gameSettingsService.getRiveCanvasValue();
@@ -53,8 +42,11 @@ export class ProgressionScene {
       monsterPhaseNumber,
       treasureChestScore,
       previousLevelData,
-      previousTotalStarCount
+      previousTotalStarCount,
+      isPassingScore
     } = gameStateService.getLevelEndSceneData();
+
+    this.isPassingScore = isPassingScore;
     this.previousTotalStarCount = previousTotalStarCount;
     this.currentLevelStarEarned = starCount;
     this.treasureChestScore = treasureChestScore;
@@ -110,22 +102,21 @@ export class ProgressionScene {
 
     // Compute how many new stars were earned compared to the previous level.
     //If the currentLevelStarEarned is below passing, skip jar fill.
-    const newScoreEarned = this.currentLevelStarEarned > 3
+    const newScoreEarned = this.isPassingScore
       ? (this.currentLevelStarEarned - this.previousLevelStarEarned)
       : 0;
 
-    // Determine the jar’s previous fill percentage and the new target fill percentage.
+    // Determine the jar’s previous fill percentage.
     const recentFillValue = this.getStarPercentage(
       this.previousTotalStarCount,
       this.targetStarCountMaxFill
     );
 
+    // Determine the jar’s new target fill percentage.
     const newFillValue = this.getStarPercentage(
       this.previousTotalStarCount + newScoreEarned,
       this.targetStarCountMaxFill
     );
-
-    const shouldSetPrefillValue = recentFillValue > 0;
 
     /**
     * Tracks the cumulative delay time needed for all
@@ -136,15 +127,6 @@ export class ProgressionScene {
     */
     let animationCompletionDelay = 0;
 
-    // If the jar was previously filled, prefill it to the last known value before animating.
-    if (shouldSetPrefillValue) {
-      this.playStateMachineInput({
-        inputMachines,
-        jarFillInputValue: recentFillValue,
-        scoreInputValue: 0
-      });
-    }
-
     // Define helper to play a fill after a delay and track the latest timeout
     const playFillAfterDelay = (
       jarFillInputValue: number,
@@ -152,14 +134,20 @@ export class ProgressionScene {
       delay: number
     ) => {
       setTimeout(() => {
-        this.playStateMachineInput({
-          inputMachines,
-          jarFillInputValue,
-          scoreInputValue,
-        });
+        this.playStateMachineInput({ inputMachines, jarFillInputValue, scoreInputValue });
       }, delay);
+
       animationCompletionDelay = Math.max(animationCompletionDelay, delay);
     };
+
+    // If the jar was previously filled, prefill it to the last known value before animating.
+    if (recentFillValue > 0) {
+      this.playStateMachineInput({
+        inputMachines,
+        jarFillInputValue: recentFillValue,
+        scoreInputValue: 0
+      });
+    }
 
     /**
    * Delay the next state machine input update so the fill and score animations
@@ -169,12 +157,15 @@ export class ProgressionScene {
    * too early—ensuring that star scoring and jar filling visually align.
    */
     if (newFillValue > 0) {
-      playFillAfterDelay(newFillValue, this.currentLevelStarEarned, this.delayStateMachineInputs);
+      playFillAfterDelay(
+        newFillValue,
+        this.currentLevelStarEarned,
+        this.delayStateMachineInputs
+      );
     }
 
     //If there is a score for treasure Chest mini game.
     if (this.treasureChestScore) {
-
       const newFillWithMiniGameScore = this.getStarPercentage(
         this.previousTotalStarCount + newScoreEarned + this.treasureChestScore,
         this.targetStarCountMaxFill
@@ -236,7 +227,7 @@ export class ProgressionScene {
     }, shouldAnimateStars ? this.delayStateMachineInputs : 0)
   }
 
-  private getTargetStarCountForFill(monsterPhase): number {
+  private getTargetStarCountForFill(monsterPhase: number): number {
     //Returns the target star count for certain monster phase.
     switch (monsterPhase) {
       case 2:

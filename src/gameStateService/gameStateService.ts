@@ -1,5 +1,5 @@
 import { PubSub } from '../events/pub-sub-events';
-import { DataModal, GameScore } from "@data";
+import { DataModal, GameScore, GameLevelInfo } from "@data";
 import { getGameTypeName } from '@common';
 
 export interface hitboxRangeType {
@@ -13,24 +13,17 @@ export interface hitboxRangeType {
     }
 }
 
-interface PreviousLevelData {
-    levelName: string;
-    levelNumber: number;
-    score: number;
-    starCount: number;
-    treasureChestMiniGameScore: number;
-};
-
-interface GetLevelEndSceneData {
+interface LevelEndSceneData {
     starCount: number;
     currentLevel: number;
     isTimerEnded: boolean;
     score: number;
     treasureChestScore: number;
-    previousLevelData: PreviousLevelData | null;
+    previousLevelData: GameLevelInfo | null;
     previousTotalStarCount: number;
     data: DataModal | null;
     monsterPhaseNumber: number;
+    isPassingScore: boolean;
 }
 
 /*
@@ -109,20 +102,12 @@ export class GameStateService extends PubSub {
         fantastic: string,
         great: string
     };
-    public levelEndData: null | {
-        starCount: number,
-        currentLevel: number,
-        isTimerEnded: boolean,
-        score: number,
-        treasureChestScore: number
-        previousLevelData: null | PreviousLevelData,
-        previousTotalStarCount: number;
-    };
+    public levelEndData: null | LevelEndSceneData;
     public isLastLevel: boolean;
     public currentMonsterPhase: number;
     public tutorialOn: boolean = false;
     public hitboxRanges: null | hitboxRangeType;
-    private previousLevelData: null | PreviousLevelData = null;
+    private previousLevelData: null | GameLevelInfo = null;
 
     constructor() {
         super();
@@ -283,6 +268,12 @@ export class GameStateService extends PubSub {
         };
     }
 
+    private isScorePassing(starCount: number): boolean {
+        const passingScore = 3;
+
+        return starCount >= passingScore;
+    }
+
     /**
      * Sets up data required for the Level End and Progress Jar scenes.
      *
@@ -296,9 +287,11 @@ export class GameStateService extends PubSub {
         // Store the total number of stars collected so far (before this level’s rewards are applied).
         const previousTotalStarCount = this.getSuccessStarsCount();
 
+        const isPassingScore = this.isScorePassing(levelEndData.starCount);
         // Prepare the combined level-end data, including reference to the previous level’s data.
         this.levelEndData = {
             ...levelEndData,
+            isPassingScore,
             previousLevelData: this.previousLevelData,
             previousTotalStarCount
         };
@@ -320,7 +313,7 @@ export class GameStateService extends PubSub {
      *
      * @returns An object containing all data required to initialize the Level End and Progress Jar scenes.
      */
-    public getLevelEndSceneData(): GetLevelEndSceneData {
+    public getLevelEndSceneData(): LevelEndSceneData {
         return {
             ...this.levelEndData,
             data: this.data,
@@ -347,19 +340,13 @@ export class GameStateService extends PubSub {
     ): boolean {
         const isEvolutionNotMaxedOut = this.monsterPhaseNumber < 3;
         const isMiniGamePassing = currentTreasureChestScore > 0;
-        const isCurrentGameResultPassing = currentStarsCount >= 2;
+        const previousStarsCount = this.previousLevelData?.starCount ?? null;
 
-        let isScoreImproved = false;
+        const hasScoreImproved = this.previousLevelData != null
+            ? currentStarsCount > previousStarsCount
+            : this.isScorePassing(currentStarsCount);
 
-        //If there is a previous level data on record.
-        if (this.previousLevelData) {
-            const { starCount } = this.previousLevelData;
-            isScoreImproved = currentStarsCount > starCount;
-        } else {
-            isScoreImproved = isCurrentGameResultPassing;
-        }
-
-        return isEvolutionNotMaxedOut && (isScoreImproved || isMiniGamePassing);
+        return isEvolutionNotMaxedOut && (hasScoreImproved || isMiniGamePassing);
     }
 
     public getTotalStars() {
@@ -372,7 +359,14 @@ export class GameStateService extends PubSub {
      */
     public getSuccessStarsCount(): number {
         return GameScore.getAllGameLevelInfo().reduce(
-            (sum, level) => sum + (level.starCount >= 2 ? level.starCount : 0), 0
+            (sum, level) => {
+                const { starCount, treasureChestMiniGameScore } = level;
+
+                //Combine both game stars and mini game star.
+                const totalStars = starCount + treasureChestMiniGameScore;
+
+                return sum + (starCount >= 3 ? totalStars : 0)
+            }, 0
         );
     }
 
