@@ -97,6 +97,11 @@ export class ProgressionScene {
     return { fillPercentState, scoreState };
   }
 
+  /**
+   * Rive onLoad callback — invoked automatically when the Rive file finishes loading.
+   * Handles initialization of state machine inputs and orchestrates the jar fill
+   * and score animations once the Rive instance is ready.
+  */
   private riveOnLoadCallback() {
     const inputMachines = this.getStateInputs();
 
