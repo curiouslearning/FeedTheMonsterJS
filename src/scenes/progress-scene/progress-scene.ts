@@ -229,7 +229,7 @@ export class ProgressionScene {
     setTimeout(() => {
       inputMachines.fillPercentState.value = jarFillInputValue;
       inputMachines.fillPercentState.fire();
-    }, shouldAnimateStars ? this.delayStateMachineInputs : 0)
+    }, shouldAnimateStars ? this.delayStateMachineInputs : 0);
   }
 
   private getTargetStarCountForFill(monsterPhase: number): number {

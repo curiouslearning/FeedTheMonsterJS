@@ -365,7 +365,9 @@ export class GameStateService extends PubSub {
                 //Combine both game stars and mini game star.
                 const totalStars = starCount + treasureChestMiniGameScore;
 
-                return sum + (starCount >= 3 ? totalStars : 0)
+                return sum + (
+                    this.isScorePassing(starCount)
+                    ? totalStars : 0)
             }, 0
         );
     }
