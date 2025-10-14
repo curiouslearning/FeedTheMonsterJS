@@ -59,18 +59,23 @@ export class ProgressionScene {
   }
 
   private initializeRive(): void {
+    const canvasWidth = this.riveMonsterElement.width;
+    const canvasHeight = this.riveMonsterElement.height;
+    // We can increase or decrease the percent at which the min Y need to be set (0.25 = 25%)
+    const minY = canvasHeight * 0.25;
+    const maxY = canvasHeight;
     const riveConfig: any = {
       src: JAR_PROGRESSION,
       canvas: this.riveMonsterElement,
       autoplay: true,
       useOffscreenRenderer: true,
       layout: new Layout({
-        fit: Fit.Cover,
+        fit: Fit.Contain,
         alignment: Alignment.Center,
         minX: 0,
-        minY: 0,
-        maxX: this.riveMonsterElement.width,
-        maxY: this.riveMonsterElement.height,
+        minY,
+        maxX: canvasWidth,
+        maxY,
       }),
       stateMachines: [this.stateMachineName]
     };
@@ -205,7 +210,7 @@ export class ProgressionScene {
     }, animationCompletionDelay + this.delaySwitchToLevelend);
   }
 
-  private playStateMachineInput({ inputMachines, jarFillInputValue, scoreInputValue } : {
+  private playStateMachineInput({ inputMachines, jarFillInputValue, scoreInputValue }: {
     inputMachines: {
       fillPercentState: StateMachineInput,
       scoreState: StateMachineInput
@@ -247,7 +252,7 @@ export class ProgressionScene {
 
   private getAnimationName(earedStarCount: number): string {
     const {
-      SIX_STARS ,
+      SIX_STARS,
       FIVE_STARS,
       FOUR_STARS,
       THREE_STARS,
