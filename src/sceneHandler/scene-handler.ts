@@ -4,6 +4,7 @@ import {
   GameplayScene,
   LoadingScene,
   LevelEndScene,
+  ProgressionScene
 } from "@scenes";
 import { DataModal } from "@data";
 import { Debugger, lang, pseudoId } from "@common";
@@ -13,6 +14,7 @@ import {
   SCENE_NAME_GAME_PLAY,
   SCENE_NAME_GAME_PLAY_REPLAY,
   SCENE_NAME_LEVEL_END,
+  SCENE_NAME_PROGRESS_LEVEL,
   PWAInstallStatus,
   PreviousPlayedLevel,
 } from "@constants";
@@ -27,7 +29,7 @@ const featureFlagService = new FeatureFlagsService({
 export class SceneHandler {
   private activeScene: {
     loading?: null | LoadingScene,
-    scene?: null | StartScene | LevelSelectionScreen | GameplayScene | LevelEndScene
+    scene?: null | StartScene | LevelSelectionScreen | GameplayScene | LevelEndScene | ProgressionScene
   };
   public data: DataModal;
   public width: number;
@@ -141,7 +143,6 @@ export class SceneHandler {
     this.activeScene['scene'] = this.getScene(sceneName);
   }
 
-
   private getScene(sceneName) {
     switch (sceneName) {
       case SCENE_NAME_START:
@@ -151,6 +152,8 @@ export class SceneHandler {
       case SCENE_NAME_GAME_PLAY:
       case SCENE_NAME_GAME_PLAY_REPLAY:
         return new GameplayScene();
+      case SCENE_NAME_PROGRESS_LEVEL:
+        return new ProgressionScene();
       case SCENE_NAME_LEVEL_END:
         return new LevelEndScene();
     }

@@ -26,6 +26,13 @@ interface CurrentLevelInfo {
   levelNumber: number;
 }
 
+export interface GameLevelInfo {
+  levelName: string;
+  levelNumber: number;
+  score: number;
+  starCount: number;
+  treasureChestMiniGameScore: number;
+}
 export class GameScore {
   public static currentlanguage: string = lang;
   public static setGameLevelScore(
@@ -81,6 +88,25 @@ export class GameScore {
 
     // Update total star count dynamically
     this.updateTotalStarCount();
+  }
+
+  /**
+ * Retrieves the saved game level data for a specific level number.
+ *
+ * Looks up local storage for all recorded game level data,
+ * then returns the entry that matches the given `levelNumber`.
+ *
+ * @param levelNumber - The level number to retrieve data for.
+ * @returns The matching `GameLevelInfo` object if found, or `null` otherwise.
+ */
+  public static getGameLevelData(levelNumber: number): null | GameLevelInfo {
+    const allGameLevelsInfo = this.getAllGameLevelInfo();
+
+    const index = allGameLevelsInfo.findIndex(
+      (level) => level.levelNumber === levelNumber
+    );
+
+    return index > -1 ? allGameLevelsInfo[index] : null;
   }
 
   public static getAllGameLevelInfo(): any[] {

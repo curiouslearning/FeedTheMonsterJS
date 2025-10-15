@@ -115,8 +115,7 @@ export const PLAY_BTN_IMG = "./assets/images/Play_button.svg";
 export const PAUSE_BTN_IMG = "./assets/images/Pause_Button.svg";
 export const MAP_BTN_IMG = "./assets/images/map_btn.svg";
 export const MAP_ICON_IMG = "./assets/images/mapIcon.webp";
-export const MAP_ICON_SPECIAL_IMG =
-  "./assets/images/map_icon_monster_level_v01.webp";
+export const MAP_ICON_SPECIAL_IMG = "./assets/images/map_icon_monster_level_v01.webp";
 export const MAP_LOCK_IMG = "./assets/images/mapLock.webp";
 export const STAR_IMG = "./assets/images/star.webp";
 export const NEXT_BTN_IMG = "./assets/images/next_btn.svg";
@@ -179,7 +178,7 @@ export const EVOL_MONSTER = [
   './assets/rive/ftm_monster_evolve2-3.riv',
   './assets/rive/ftm_monster_evolve3-4.riv'
 ];
-
+export const JAR_PROGRESSION = './assets/rive/jarprogression1_8.riv';
 export const CACHED_RIVE_WASM = './assets/rive/rive.wasm';
 
 export enum MonsterState {
@@ -192,6 +191,7 @@ export const SCENE_NAME_LEVEL_SELECT = "LevelSelection";
 export const SCENE_NAME_GAME_PLAY = "GamePlay";
 export const SCENE_NAME_GAME_PLAY_REPLAY = "GamePlay_Replay";
 export const SCENE_NAME_LEVEL_END = "LevelEnd";
+export const SCENE_NAME_PROGRESS_LEVEL ='ProgressLevel';
 
 //Levels
 export const SPECIAL_LEVELS = [5, 13, 20, 30, 42];
@@ -206,3 +206,18 @@ export const PHASES_BG ={
   2: './assets/images/phaseBackground_3.webp',
   3: './assets/images/phaseBackground_4.webp',
 };
+
+//Event names to access EventType objects.
+export type EventNames = 'Load' | 'LoadError' | 'Play' | 'Pause' | 'Stop' | 'Loop' | 'Advance' | 'StateChange' | 'RiveEvent';
+
+export enum EventType {
+  Load = "load", // When Rive has successfully loaded in the Rive file
+  LoadError = "loaderror", // When Rive cannot load the Rive file
+  Play = "play", // When Rive plays an entity or resumes the render loop
+  Pause = "pause", // When Rive pauses the render loop and playing entity
+  Stop = "stop", // When Rive stops the render loop and playing entity
+  Loop = "loop", // (Singular animations only) When Rive loops an animation 
+  Advance = "advance", // When Rive advances the animation in a frame
+  StateChange = "statechange", // When a Rive state change is detected
+  RiveEvent = "riveevent", // When a Rive Event gets reported
+}

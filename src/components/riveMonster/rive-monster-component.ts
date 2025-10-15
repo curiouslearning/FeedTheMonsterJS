@@ -1,4 +1,4 @@
-import { MONSTER_PHASES, CACHED_RIVE_WASM } from '@constants';
+import { MONSTER_PHASES, CACHED_RIVE_WASM, EventType, EventNames } from '@constants';
 import { Rive, Layout, Fit, Alignment, RuntimeLoader } from '@rive-app/canvas';
 import gameSettingsService from '@gameSettingsService';
 import gameStateService from '@gameStateService';
@@ -16,21 +16,6 @@ export interface RiveMonsterComponentProps {
   src?: string;
   isEvolving?: boolean;
 }
-
-// Complete and exhaustive list of all possible Rive Event Types. Ensure this enum stays up-to-date for TypeScript type checking.
-export enum EventType {
-  Load = "load", // When Rive has successfully loaded in the Rive file
-  LoadError = "loaderror", // When Rive cannot load the Rive file
-  Play = "play", // When Rive plays an entity or resumes the render loop
-  Pause = "pause", // When Rive pauses the render loop and playing entity
-  Stop = "stop", // When Rive stops the render loop and playing entity
-  Loop = "loop", // (Singular animations only) When Rive loops an animation 
-  Advance = "advance", // When Rive advances the animation in a frame
-  StateChange = "statechange", // When a Rive state change is detected
-  RiveEvent = "riveevent", // When a Rive Event gets reported
-}
-//Event names to access EventType objects.
-type EventNames = 'Load' | 'LoadError' | 'Play' | 'Pause' | 'Stop' | 'Loop' | 'Advance' | 'StateChange' | 'RiveEvent';
 export class RiveMonsterComponent {
   private props: RiveMonsterComponentProps;
   private riveInstance: Rive;
