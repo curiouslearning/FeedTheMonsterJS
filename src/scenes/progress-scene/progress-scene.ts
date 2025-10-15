@@ -143,11 +143,13 @@ export class ProgressionScene {
       scoreInputValue: number,
       delay: number
     ) => {
+      const hasAnimateScore = scoreInputValue > 0;
+      const additionalDelay = hasAnimateScore ? this.delayStateMachineInputs : 0;
+      animationCompletionDelay = delay + additionalDelay;
+
       setTimeout(() => {
         this.playStateMachineInput({ inputMachines, jarFillInputValue, scoreInputValue });
       }, delay);
-
-      animationCompletionDelay = Math.max(animationCompletionDelay, delay);
     };
 
     // If the jar was previously filled, prefill it to the last known value before animating.
@@ -218,6 +220,7 @@ export class ProgressionScene {
     jarFillInputValue: number,
     scoreInputValue: number
   }): void {
+
     const shouldAnimateStars = scoreInputValue > 0;
 
     // If stars were earned, trigger the score-related animation first.
