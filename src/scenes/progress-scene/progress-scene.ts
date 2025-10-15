@@ -153,13 +153,12 @@ export class ProgressionScene {
     };
 
     // If the jar was previously filled, prefill it to the last known value before animating.
-    if (recentFillValue > 0) {
-      this.playStateMachineInput({
-        inputMachines,
-        jarFillInputValue: recentFillValue,
-        scoreInputValue: 0
-      });
-    }
+    // Otherwise a default 1 will be use to prevent StateMachine exceeded max iterations error as a score value is needed.
+    this.playStateMachineInput({
+      inputMachines,
+      jarFillInputValue: recentFillValue > 0 ? recentFillValue : 1,
+      scoreInputValue: 0
+    });
 
     /**
    * Delay the next state machine input update so the fill and score animations
@@ -224,9 +223,10 @@ export class ProgressionScene {
     const shouldAnimateStars = scoreInputValue > 0;
 
     // If stars were earned, trigger the score-related animation first.
+    inputMachines.scoreState.value = scoreInputValue; //set score value;
+
     if (shouldAnimateStars) {
-      inputMachines.scoreState.value = scoreInputValue;
-      inputMachines.scoreState.fire();
+      inputMachines.scoreState.fire(); //animate the score.
     }
 
     /**
