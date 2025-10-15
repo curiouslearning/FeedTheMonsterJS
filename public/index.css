@@ -463,25 +463,39 @@ img {
 
 .star1 {
   position: absolute;
-  left: 40px;
-  width: 70px;
-  bottom: 5px;
+  left: 3%;
+  width: 60px;
+  bottom: -50px;
 }
 
 .star2 {
-  width: 75px;
-  top: -10px;
+  position: absolute;
+  left: 20%;
+  width: 60px;
+  bottom: 0px;
+}
+
+.star3 {
+  width: 65px;
+  top: 20%;
   position: absolute;
   left: 0;
   right: 0;
   margin: auto;
 }
 
-.star3 {
+.star4 {
   position: absolute;
-  right: 35px;
-  width: 70px;
-  bottom: 5px;
+  right: 20%;
+  width: 60px;
+  bottom: 0px;
+}
+
+.star5 {
+  position: absolute;
+  right: 3%;
+  width: 60px;
+  bottom: -50px;
 }
 
 /* Dynamic Buttons */
