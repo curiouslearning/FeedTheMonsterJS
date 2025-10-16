@@ -26,7 +26,7 @@ export class ProgressionScene {
   private previousLevelStarEarned: number = 0;
   private targetStarCountMaxFill: number = 0;
   private delayStateMachineInputs: number = 2000;
-  private delaySwitchToLevelend: number = 4000;
+  private delaySwitchToLevelend: number = 3000;
   private isPassingScore: boolean = false;
 
   constructor() {
