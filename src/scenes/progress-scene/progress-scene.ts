@@ -3,6 +3,7 @@ import { SCENE_NAME_LEVEL_END } from "@constants";
 import { Rive, Layout, Fit, Alignment, RuntimeLoader, StateMachineInput } from '@rive-app/canvas';
 import gameStateService from '@gameStateService';
 import gameSettingsService from '@gameSettingsService';
+//For handling rive in offline mode.
 RuntimeLoader.setWasmUrl(CACHED_RIVE_WASM);
 
 export class ProgressionScene {
@@ -184,7 +185,15 @@ export class ProgressionScene {
 
       // Bonus delay (e.g., after the star animation)
       const treasureDelay = this.delayStateMachineInputs + animationCompletionDelay;
-      playFillAfterDelay(newFillWithMiniGameScore, 6, treasureDelay);
+      
+      //Score value to trigger bonus star in rive progress jar.
+      const bonusStarValue = 6;
+
+      playFillAfterDelay(
+        newFillWithMiniGameScore,
+        bonusStarValue,
+        treasureDelay
+      );
     }
 
     // Schedule the animation cleanup and scene transition
@@ -253,44 +262,10 @@ export class ProgressionScene {
     }
   }
 
-  private getAnimationName(earedStarCount: number): string {
-    const {
-      SIX_STARS,
-      FIVE_STARS,
-      FOUR_STARS,
-      THREE_STARS,
-      TWO_STARS,
-      ONE_STAR,
-      EMPTY
-    } = this.animations;
-
-    switch (earedStarCount) {
-      case 6:
-        return SIX_STARS;
-      case 5:
-        return FIVE_STARS;
-      case 4:
-        return FOUR_STARS;
-      case 3:
-        return THREE_STARS;
-      case 2:
-        return TWO_STARS;
-      case 1:
-        return ONE_STAR;
-      case 0:
-      default:
-        return EMPTY;
-    }
-  }
-
   private getStarPercentage(starsCount: number, targetStarCount: number): number {
     const maxJarFill = 63; //Hard cap on the rive file.
 
     return Math.round((starsCount / targetStarCount) * maxJarFill);
-  }
-
-  private playRiveAnimation(animationName): void {
-    this.riveInstance.play(animationName);
   }
 
   public draw(): void {

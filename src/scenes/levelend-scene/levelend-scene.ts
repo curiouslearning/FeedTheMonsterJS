@@ -14,6 +14,8 @@ import {
   AUDIO_CHEERING,
   AUDIO_MONSTER_DISCOVERED,
   MIN_STARS_TO_COMPLETE_LEVEL,
+  PIN_STAR_5,
+  PIN_STAR_4,
 } from '@constants';
 import gameStateService from '@gameStateService';
 import gameSettingsService from '@gameSettingsService';
@@ -169,6 +171,8 @@ export class LevelEndScene {
       PIN_STAR_1, // Path to star 1 image
       PIN_STAR_2, // Path to star 2 image
       PIN_STAR_3, // Path to star 3 image
+      PIN_STAR_4, // Path to star 4 image
+      PIN_STAR_5, // Path to star 5 image
     ];
 
     for (let i = 0; i < this.starCount; i++) {
