@@ -25,8 +25,8 @@ export class ProgressionScene {
   private treasureChestScore: number = 0;
   private previousLevelStarEarned: number = 0;
   private targetStarCountMaxFill: number = 0;
-  private delayStateMachineInputs: number = 2500;
-  private delaySwitchToLevelend: number = 5000;
+  private delayStateMachineInputs: number = 2000;
+  private delaySwitchToLevelend: number = 3000;
   private isPassingScore: boolean = false;
 
   constructor() {

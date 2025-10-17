@@ -343,7 +343,7 @@ export class GameStateService extends PubSub {
         const previousStarsCount = this.previousLevelData?.starCount ?? null;
 
         const hasScoreImproved = this.previousLevelData != null
-            ? currentStarsCount > previousStarsCount
+            ? currentStarsCount > previousStarsCount && this.isScorePassing(currentStarsCount)
             : this.isScorePassing(currentStarsCount);
 
         return isEvolutionNotMaxedOut && (hasScoreImproved || isMiniGamePassing);
