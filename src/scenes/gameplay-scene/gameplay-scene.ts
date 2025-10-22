@@ -878,6 +878,7 @@ export class GameplayScene {
     if (this.monster) {
       this.monster.dispose();
     }
+    this.isCorrect = false;
     this.timerStartSFXPlayed = false; // move this flag from loadpuzzle to initnewpuzzle to make sure when loading new puzzle, timer start sfx will set to false.
     this.stoneHandler.stonesHasLoaded = false;
     this.monster = this.initializeRiveMonster();
