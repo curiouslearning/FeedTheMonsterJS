@@ -1,4 +1,4 @@
-import { LevelIndicators } from '@components/level-indicator';
+import { LevelIndicators } from '@components/level-indicator/level-indicator';
 import LevelFieldComponent from '../level-field/level-field-component';
 
 jest.mock('../level-field/level-field-component', () => {
@@ -27,7 +27,7 @@ describe('Level Indicator Test', () => {
   describe('Level indicators during game play.', () => {
     it('it should update game level every on after load puzzle.', () => {
       //Mock the event for the game play event.
-      const mockEvent = new CustomEvent('loadpuzzle', { detail: { counter: 5 }});
+      const mockEvent = new CustomEvent('loadpuzzle', { detail: { counter: 5, levelSegmentResult: true }});
 
       //Pass the sample mock data from the mock event to simualte the game play behavior after playing the level.
       levelIndicator.handleLoadPuzzle(mockEvent);
