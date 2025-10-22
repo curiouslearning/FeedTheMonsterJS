@@ -263,7 +263,6 @@ export class GameplayScene {
       onClickCallback,
     );
     this.levelIndicators = new LevelIndicators();
-    this.levelIndicators.setIndicators(this.counter);
     this.monster = this.initializeRiveMonster();
 
     /*TO DO: The following code lines of this method should've been and can be handled within the tutorial class.
@@ -802,9 +801,11 @@ export class GameplayScene {
     let setTimeoutCallback = null;
 
     if (this.counter === this.levelData.puzzles.length) {
+      //Update the stars level indicator.
+      this.levelIndicators?.setIndicators(this.counter, this.isCorrect);
+
       //Handle level end loading.
       setTimeoutCallback = () => {
-        this.levelIndicators?.setIndicators(this.counter);
         this.logLevelEndFirebaseEvent();
         const starsCount = GameScore.calculateStarCount(this.score);
         const levelEndData = {
@@ -832,6 +833,7 @@ export class GameplayScene {
       const loadPuzzleEvent = new CustomEvent(LOADPUZZLE, {
         detail: {
           counter: this.counter,
+          levelSegmentResult: this.isCorrect
         },
       });
 
