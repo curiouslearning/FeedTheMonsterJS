@@ -66,7 +66,6 @@ export default class TreasureStones {
   private maintainStones(width: number, height: number) {
     const maxStones = Math.floor(Math.random() * (12 - 6 + 1)) + 6;
     while (this.stones.length < maxStones) {
-      console.log('maintainStones treasure')
       this.stones.push(this.spawnStone(width, height));
     }
   }

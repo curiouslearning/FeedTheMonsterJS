@@ -1,5 +1,5 @@
 import { PubSub } from '../events/pub-sub-events';
-import { DataModal, GameScore } from "@data";
+import { DataModal, GameScore, GameLevelInfo } from "@data";
 import { getGameTypeName } from '@common';
 
 export interface hitboxRangeType {
@@ -11,6 +11,19 @@ export interface hitboxRangeType {
         from: number,
         to: number
     }
+}
+
+interface LevelEndSceneData {
+    starCount: number;
+    currentLevel: number;
+    isTimerEnded: boolean;
+    score: number;
+    treasureChestScore: number;
+    previousLevelData: GameLevelInfo | null;
+    previousTotalStarCount: number;
+    data: DataModal | null;
+    monsterPhaseNumber: number;
+    isPassingScore: boolean;
 }
 
 /*
@@ -89,15 +102,12 @@ export class GameStateService extends PubSub {
         fantastic: string,
         great: string
     };
-    public levelEndData: null | {
-        starCount: number,
-        currentLevel: number,
-        isTimerEnded: boolean
-    };
+    public levelEndData: null | LevelEndSceneData;
     public isLastLevel: boolean;
     public currentMonsterPhase: number;
     public tutorialOn: boolean = false;
     public hitboxRanges: null | hitboxRangeType;
+    private previousLevelData: null | GameLevelInfo = null;
 
     constructor() {
         super();
@@ -138,6 +148,8 @@ export class GameStateService extends PubSub {
         //Updated gamePlayData comes from level-selection and level-end scene.
         this.gamePlayData = updatedGamePlayData;
         this.isGamePaused = false;
+        //Retrieve previous data for this game level.
+        this.previousLevelData = GameScore.getGameLevelData(updatedGamePlayData?.selectedLevelNumber);
     }
 
     private updateGamePauseActivity(isPaused: boolean) {
@@ -256,28 +268,112 @@ export class GameStateService extends PubSub {
         };
     }
 
-    levelEndSceneData({ levelEndData, data }) {
-        this.levelEndData = { ...levelEndData };
+    private isScorePassing(starCount: number): boolean {
+        const passingScore = 3;
+
+        return starCount >= passingScore;
+    }
+
+    /**
+     * Sets up data required for the Level End and Progress Jar scenes.
+     *
+     * This method:
+     * - Retrieves the total number of stars collected before this level’s completion.
+     * - Combines the current level end data with previous level data for reference.
+     * - Stores the global game data used by other scenes.
+     * - Determines whether the current level is the final level in the game.
+     */
+    levelEndSceneData({ levelEndData, data }): void {
+        // Store the total number of stars collected so far (before this level’s rewards are applied).
+        const previousTotalStarCount = this.getSuccessStarsCount();
+
+        const isPassingScore = this.isScorePassing(levelEndData.starCount);
+        // Prepare the combined level-end data, including reference to the previous level’s data.
+        this.levelEndData = {
+            ...levelEndData,
+            isPassingScore,
+            previousLevelData: this.previousLevelData,
+            previousTotalStarCount
+        };
+
+        // Store the global game data for reference (e.g., level list, progress, etc.).
         this.data = data;
+
+        // Check if the current level is the last level in the dataset.
         this.isLastLevel = levelEndData.currentLevel === data.levels[data.levels.length - 1].levelMeta.levelNumber;
     }
 
-    getLevelEndSceneData() {
+    /**
+     * Retrieves the prepared data for the Level End and Progress Jar scenes.
+     *
+     * This includes:
+     * - The combined level end data with previous level context.
+     * - The global game data reference used by both scenes.
+     * - The current monster phase number for progress and animation handling.
+     *
+     * @returns An object containing all data required to initialize the Level End and Progress Jar scenes.
+     */
+    public getLevelEndSceneData(): LevelEndSceneData {
         return {
-            starCount: this.levelEndData.starCount,
-            currentLevel: this.levelEndData.currentLevel,
-            isTimerEnded: this.levelEndData.isTimerEnded,
+            ...this.levelEndData,
             data: this.data,
             monsterPhaseNumber: this.monsterPhaseNumber
         };
+    }
+
+    /**
+     * Determines whether the Progress Jar scene should be displayed
+     * after a level or mini-game.
+     *
+     * The jar is shown if:
+     * - The monster has not yet reached its final evolution phase.
+     * - The player either improved their score compared to the previous level
+     *   or earned treasure chest points.
+     *
+     * @param currentStarsCount The number of stars earned in the current level.
+     * @param currentTreasureChestScore The treasure chest score earned, if any.
+     * @returns True if the Progress Jar should be displayed; false otherwise.
+     */
+    public shouldDisplayProgressJar(
+        currentStarsCount: number,
+        currentTreasureChestScore: number
+    ): boolean {
+        const isEvolutionNotMaxedOut = this.monsterPhaseNumber < 3;
+        const isMiniGamePassing = currentTreasureChestScore > 0;
+        const previousStarsCount = this.previousLevelData?.starCount ?? null;
+
+        const hasScoreImproved = this.previousLevelData != null
+            ? currentStarsCount > previousStarsCount && this.isScorePassing(currentStarsCount)
+            : this.isScorePassing(currentStarsCount);
+
+        return isEvolutionNotMaxedOut && (hasScoreImproved || isMiniGamePassing);
     }
 
     public getTotalStars() {
         return GameScore.getTotalStarCount();
     }
 
+    /**
+     * Get the total stars count of levels with successful playthrough.
+     * @returns the sum of total star counts from successful levels only.
+     */
+    public getSuccessStarsCount(): number {
+        return GameScore.getAllGameLevelInfo().reduce(
+            (sum, level) => {
+                const { starCount, treasureChestMiniGameScore } = level;
+
+                //Combine both game stars and mini game star.
+                const totalStars = starCount + treasureChestMiniGameScore;
+
+                return sum + (
+                    this.isScorePassing(starCount)
+                    ? totalStars : 0)
+            }, 0
+        );
+    }
+
     public checkMonsterPhaseUpdation(): number {
-        const successStarCount = GameScore.getAllGameLevelInfo().reduce((sum, level) => sum + (level.starCount >= 2 ? level.starCount : 0), 0);
+        const successStarCount = this.getSuccessStarsCount();
         switch (true) {
             case successStarCount >= 63:
                 return 3; // Phase 4
