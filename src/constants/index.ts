@@ -62,6 +62,8 @@ export const AUDIO_URL_PRELOAD = [
   "./assets/audios/treasure_miniGame.mp3"
 ];
 export const AUDIO_MINIGAME = "./assets/audios/treasure_miniGame.mp3";
+export const SURPRISE_BONUS_STAR = "./assets/audios/surprise-bonus-star.mp3";
+export const STONE_BURN = "./assets/audios/stone_burn.mp3";
 // Audios used during the Rive evolution animation.
 // The structure is designed to be easily scalable, allowing for the addition of more audio files as needed.
 export const EVOLUTION_AUDIOS = {
@@ -129,6 +131,7 @@ export const POPUP_BG_IMG = "./assets/images/popup_bg_v01.svg";
 export const CLOSED_CHEST = "./assets/images/closedchest.svg";
 export const OPEN_CHEST = "./assets/images/chest.svg";  
 export const STONE_BLUE = "./assets/images/stone_blue.svg";
+export const BLUE_STAR = "./assets/images/blue_star.svg";
 export const BURN_EFFECT_IMG = (ctr) => `./assets/images/stone_burn_export_${ctr}.png`
 
 

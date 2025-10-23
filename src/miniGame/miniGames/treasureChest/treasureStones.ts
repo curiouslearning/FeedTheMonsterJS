@@ -1,4 +1,5 @@
-import { STONE_BLUE, BURN_EFFECT_IMG } from '@constants';
+import { AudioPlayer } from '@components/audio-player';
+import { STONE_BLUE, BURN_EFFECT_IMG, STONE_BURN } from '@constants';
 
 /**
  * Type definition for a stone object that can be spawned,
@@ -30,6 +31,21 @@ export default class TreasureStones {
   private burnFrames: HTMLImageElement[] = []; // Preloaded burn animation frames
   private ctx: CanvasRenderingContext2D; // Canvas rendering context
   private frameDuration: number; //Frame duration.
+
+  private totalSpawned = 0;
+  private exitedCount = 0;
+  private hasEmitted60 = false;
+  public onStones60PercentExited?: () => void;
+  public onStoneCollected?: (collectedBefore60: boolean) => void;
+  public onBlueBonusReady?: () => void;
+
+  // tracking helpers
+  public totalToSpawn: number = 0; // set this when you initialize spawn count
+  public collectedCount: number = 0; // increment when player collects a stone
+  private blueBonusEmitted: boolean = false;
+  private blueBonusDeferred: boolean = false;
+  private isBurnAudioPlaying = false;
+  public audioPlayer: AudioPlayer = new AudioPlayer();
   /**
    * @param ctx - Canvas rendering context for drawing stones
    */
@@ -44,6 +60,42 @@ export default class TreasureStones {
       const burnImg = new Image();
       burnImg.src = BURN_EFFECT_IMG(i);
       this.burnFrames.push(burnImg);
+    }
+  }
+
+  // Call whenever a stone exits the screen
+  private handleStoneExited() {
+    this.exitedCount++;
+    this.logSpawnPercentAndMaybeTrigger();
+  }
+
+  // Call whenever player collects a stone
+  private handleStoneCollected(collectedBefore60: boolean = false) {
+    this.collectedCount++;
+    // notify external listener about collection timing
+    this.onStoneCollected?.(Boolean(collectedBefore60));
+    // If 60% already passed and player now reached 3+, decide here too
+    this.logSpawnPercentAndMaybeTrigger();
+  }
+
+  private logSpawnPercentAndMaybeTrigger() {
+    // determine a sensible total to calculate percent
+    const total = this.totalToSpawn || this.totalSpawned || 1;
+    if (this.blueBonusEmitted || total <= 0) return;
+
+    const percent = Math.round((this.exitedCount / total) * 100);
+
+    // when >=60% exited, decide whether to show star now or defer
+    if (percent >= 60 && !this.blueBonusEmitted) {
+      this.hasEmitted60 = true;
+      this.onStones60PercentExited?.();
+      if (this.collectedCount >= 3) {
+        this.blueBonusEmitted = true;
+        this.onBlueBonusReady?.();
+      } else {
+        this.blueBonusDeferred = true;
+        // store flag for later display on progression screen
+      }
     }
   }
 
@@ -105,7 +157,7 @@ export default class TreasureStones {
       img: this.stoneImg,
       size: 100,
     };
-
+    this.totalSpawned++;
     return stone;
   }
 
@@ -113,7 +165,16 @@ export default class TreasureStones {
    * Removes inactive stones from the list.
    */
   private cleanupStones(): void {
+    // collect removed stones so we can call handleStoneExited for each
+    const removedStones = this.stones.filter(st => !st.active);
     this.stones = this.stones.filter(stone => stone.active);
+    const removed = removedStones.length;
+    if (removed > 0) {
+      // Call exit handler for each removed stone so centralized logic runs
+      for (let i = 0; i < removed; i++) {
+        this.handleStoneExited();
+      }
+    }
   }
 
   /**
@@ -127,6 +188,15 @@ export default class TreasureStones {
       stone.burning ? this.updateBurningStone(stone) : this.updateMovingStone(stone, width, deltaTime);
       this.drawStone(stone);
     }
+  }
+
+  private playBurnAudio() {
+    if (this.isBurnAudioPlaying) return; // skips if one is already playing
+
+    this.isBurnAudioPlaying = true;
+    const audio = this.audioPlayer.playAudio(STONE_BURN, 1.0, () => {
+      this.isBurnAudioPlaying = false; // reset after audio completes
+    });
   }
 
   /**
@@ -155,6 +225,13 @@ export default class TreasureStones {
         stone.burning = true;
         stone.burnStartTime = performance.now();
         stone.burnFrameIndex = 0;
+
+        // Play burn SFX
+        this.playBurnAudio();
+
+        // Track collection timing via centralized handler so bonus logic runs
+        const collectedBefore60 = !this.hasEmitted60;
+        this.handleStoneCollected(collectedBefore60);
 
         // move this stone to top of draw order
         this.stones.splice(i, 1);

@@ -1,5 +1,5 @@
 import { AudioPlayer } from '@components/audio-player';
-import { AUDIO_MINIGAME } from '@constants';
+import { AUDIO_MINIGAME, BLUE_STAR, SURPRISE_BONUS_STAR } from '@constants';
 import gameSettingsServiceInstance from '@gameSettingsService/index';
 import TreasureStones from './treasureStones';
 import TreasureChest from './treasureChest';
@@ -12,6 +12,7 @@ enum TreasureChestState {
   FadeIn, // Chest fading into view
   ClosedChest, // Chest visible, shaking before opening
   OpenedChest, // Chest open, stones burst out
+  BlueBonusStar,
   FadeOut // Chest fading out of view
 }
 
@@ -38,11 +39,21 @@ export class TreasureChestAnimation {
   private stateStartTime: number = 0; // Timestamp when current state started
   public dpr: number; // Device pixel ratio scaling
   public audioPlayer: AudioPlayer;
+  private sfxPlayer: AudioPlayer;
   private chestAudioPlayed: boolean = false;
   private lastFrameTime: number = -1;
 
+  private showBonusStar: boolean = false; //  flag for showing Blue Bonus Star
+  private blueStarStartTime: number = 0;
+  private blueStarDuration: number = 2000; // total visible time (ms)
+  private blueStarFadeIn: number = 400;
+  private blueStarFadeOut: number = 400;
+  private blueStarSoundPlayed: boolean = false;
+
   private treasureChest: TreasureChest; // Handles chest drawing
   private treasureStone: TreasureStones;  // Handles stone drawing & animations
+  private blueStarImg: HTMLImageElement = new Image();
+  private blueStarVisible: boolean = false;
 
   /**
    * @param width - Canvas width in CSS pixels
@@ -57,6 +68,7 @@ export class TreasureChestAnimation {
     // Scale canvas to device pixel ratio for crisp rendering
     this.canvas = document.getElementById("treasurecanvas") as HTMLCanvasElement;
     this.dpr = gameSettingsServiceInstance.getDevicePixelRatioValue();
+    this.blueStarImg.src = BLUE_STAR;
 
     //Get responsive width from utility
     this.width = Utils.getResponsiveCanvasWidth();
@@ -84,6 +96,7 @@ export class TreasureChestAnimation {
 
     // Setup rendering context
     this.audioPlayer = new AudioPlayer();
+    this.sfxPlayer = new AudioPlayer();
     const context = this.canvas.getContext("2d");
     if (!context) throw new Error("Canvas not supported");
     this.ctx = context;
@@ -92,6 +105,14 @@ export class TreasureChestAnimation {
     // Initialize chest and stone managers
     this.treasureChest = new TreasureChest(this.ctx, performance.now());
     this.treasureStone = new TreasureStones(this.ctx);
+
+    // after initializing this.treasureStone
+    this.treasureStone.onBlueBonusReady = () => {
+      this.showBonusStar = true;
+      this.blueStarStartTime = performance.now();
+      this.blueStarSoundPlayed = false;
+    };
+
   }
 
   /**
@@ -131,6 +152,47 @@ export class TreasureChestAnimation {
     }
   };
 
+  /** Draws the Blue Bonus Star with smooth fade-in/out while game continues */
+  private drawBlueBonusStar(time: number) {
+    if (!this.showBonusStar || !this.blueStarImg.complete) return;
+
+    const elapsed = performance.now() - this.blueStarStartTime;
+
+    // Ensure duration resets properly when star first visible
+    if (elapsed < 50 && !this.blueStarSoundPlayed) {
+      // Play sound once when star becomes visible
+      if (!this.blueStarSoundPlayed) {
+        this.sfxPlayer.playAudio(SURPRISE_BONUS_STAR,1.0);
+        console.log('Played Blue Bonus Star sound');
+        this.blueStarSoundPlayed = true;
+      }
+    }
+
+    if (elapsed > this.blueStarDuration) {
+      this.showBonusStar = false;
+      return;
+    }
+    // Alpha fade in/out
+    let alpha = 1;
+    if (elapsed < this.blueStarFadeIn) {
+      alpha = elapsed / this.blueStarFadeIn;
+    } else if (elapsed > this.blueStarDuration - this.blueStarFadeOut) {
+      alpha = (this.blueStarDuration - elapsed) / this.blueStarFadeOut;
+    }
+
+    // Gentle pulse while visible
+    const pulse = 1 + 0.15 * Math.sin(elapsed / 150);
+    const size = 100 * pulse;
+    const x = this.width / 2 - size / 2;
+    const y = this.height / 2 - 150 - size / 2;
+
+    this.ctx.save();
+    this.ctx.globalAlpha = alpha;
+    this.ctx.drawImage(this.blueStarImg, x, y, size, size);
+    this.ctx.restore();
+  }
+
+
 
   /** Starts the animation and displays the canvas overlay. */
   public show(onComplete?: () => void) {
@@ -141,6 +203,27 @@ export class TreasureChestAnimation {
     this.stateStartTime = performance.now();
     this.loop();
   }
+
+  /** Blue Bonus Star Animation */
+  public showBlueBonusStar() {
+    const duration = 3000; // total duration of one visible cycle
+    const minInterval = 1000; // min time hidden
+    const maxInterval = 1000; // max time hidden
+
+    const toggleVisibility = () => {
+      if (!this.isVisible) return; // stop if chest hidden
+      this.blueStarVisible = !this.blueStarVisible;
+
+      // Schedule next toggle randomly
+      const nextDelay = this.blueStarVisible
+        ? duration // show duration
+        : Math.random() * (maxInterval - minInterval) + minInterval; // hide duration
+      setTimeout(toggleVisibility, nextDelay);
+    };
+
+    toggleVisibility(); // start toggling
+  };
+
 
   /** Stops animation, hides canvas, and cleans up listeners. */
   public hide() {
@@ -204,12 +287,55 @@ export class TreasureChestAnimation {
         this.ctx.globalAlpha = 1;
         this.treasureChest.drawOpenChest(this.width, this.height);
         this.treasureStone.stoneBurstAnimation(this.width, this.height, deltaTime);
+
         if (!this.chestAudioPlayed) {
-          this.audioPlayer.playAudio(AUDIO_MINIGAME);
+          this.audioPlayer.playAudio(AUDIO_MINIGAME,0.6);
           this.chestAudioPlayed = true;
         }
+
+        // Draw Blue Star (animated)
+        this.drawBlueBonusStar(time);
+
         const elapsed = performance.now() - this.stateStartTime;
-        if (elapsed >= 12000) { // Keep chest open for 12 seconds
+        if (elapsed >= 12000) {
+          this.state = TreasureChestState.FadeOut;
+          this.stateStartTime = performance.now();
+        }
+        break;
+      }
+     case TreasureChestState.BlueBonusStar: {
+        // Keep chest & stones updating while the blue star animation runs
+        this.ctx.globalAlpha = 1;
+        this.treasureChest.drawOpenChest(this.width, this.height);
+        this.treasureStone.stoneBurstAnimation(this.width, this.height, deltaTime);
+
+        const elapsed = performance.now() - this.stateStartTime;
+        const duration = 1500;
+        const progress = Math.min(elapsed / duration, 1);
+        const alpha = Math.sin(progress * Math.PI);
+
+        // Drawthe star image
+        if (this.blueStarImg.complete) {
+          const size = 120 + 60 * alpha; // slight pulse
+          const x = this.width / 2 - size / 2;
+          const y = this.height / 2 - 150 - size / 2;
+
+          this.ctx.save();
+          this.ctx.globalAlpha = alpha;
+          // soft glow for the star
+          this.ctx.shadowColor = 'rgba(0,150,255,0.9)';
+          this.ctx.shadowBlur = 30 * alpha;
+          this.ctx.drawImage(this.blueStarImg, x, y, size, size);
+          this.ctx.restore();
+        }
+
+        // play sound once
+        if (!this.blueStarSoundPlayed) {
+          this.sfxPlayer.playAudio(SURPRISE_BONUS_STAR,1.0);
+          this.blueStarSoundPlayed = true;
+        }
+
+        if (progress >= 1) {
           this.state = TreasureChestState.FadeOut;
           this.stateStartTime = performance.now();
         }
@@ -221,11 +347,15 @@ export class TreasureChestAnimation {
         this.ctx.globalAlpha = alpha;
         this.treasureChest.drawOpenChest(this.width, this.height);
         this.treasureStone.stoneBurstAnimation(this.width, this.height, deltaTime);
+
+        //Keep showing Blue Star if still active
+        this.drawBlueBonusStar(time);
+
         if (alpha === 0) {
           this.hide();
           this.onFadeComplete?.();
           this.onFadeComplete = undefined;
-          return; // Stop loop after fade-out
+          return;
         }
         break;
       }

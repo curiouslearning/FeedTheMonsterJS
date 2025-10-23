@@ -42,7 +42,9 @@ import {
   PreviousPlayedLevel,
   MONSTER_PHASES,
   AUDIO_PATH_POINTS_ADD,
-  AUDIO_MINIGAME
+  AUDIO_MINIGAME,
+  SURPRISE_BONUS_STAR,
+  STONE_BURN
 } from "@constants";
 import gameStateService from '@gameStateService';
 import gameSettingsService from '@gameSettingsService';
@@ -757,6 +759,8 @@ export class GameplayScene {
     const loadPuzzleDelay = isCorrect ? 1500 : 3000;
     
     if (currentLevel === this.levelForMinigame && !this.hasShownChest) {
+      this.audioPlayer.preloadGameAudio(SURPRISE_BONUS_STAR);
+      this.audioPlayer.preloadGameAudio(STONE_BURN);
       this.audioPlayer.preloadGameAudio(AUDIO_MINIGAME); // Preload mini game audio
       this.hasShownChest = true;
 
