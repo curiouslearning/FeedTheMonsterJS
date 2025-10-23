@@ -97,9 +97,9 @@ export const LEVEL_SELECTION_BACKGROUND = "./assets/images/map.webp";
 export const PROMPT_TEXT_BG = "./assets/images/Prompt_Text_BG.svg";
 export const PROMPT_PLAY_BUTTON = "./assets/images/promptPlayButton.webp";
 export const AUDIO_PLAY_BUTTON = "./assets/images/audio_icon.png"; //New audio button for audio puzzles.
-export const LEVEL_INDICATOR = "./assets/images/levels_v01.svg";
-export const BAR_EMPTY = "./assets/images/bar_empty_v01.svg";
-export const BAR_FULL = "./assets/images/bar_full_v01.svg";
+export const LEVEL_CONTAINER = "./assets/images/level-container.svg";
+export const STAR_FILLED = "./assets/images/star-filled.svg";
+export const STAR_EMPTY = "./assets/images/star-empty.svg";
 export const TIMER_EMPTY = "./assets/images/timer_emptynew.webp";
 export const ROTATING_CLOCK = "./assets/images/timer_new.svg";
 export const TUTORIAL_HAND = "./assets/images/tutorial_hand.webp";
@@ -126,6 +126,8 @@ export const RETRY_BTN_IMG = "./assets/images/retry_btn.svg";
 export const CANCEL_BTN_IMG = "./assets/images/close_btn.svg";
 export const YES_BTN_IMG = "./assets/images/confirm_btn.svg";
 export const POPUP_BG_IMG = "./assets/images/popup_bg_v01.svg";
+
+
 
 //mini game images
 export const CLOSED_CHEST = "./assets/images/closedchest.svg";
