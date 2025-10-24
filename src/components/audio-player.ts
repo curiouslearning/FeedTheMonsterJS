@@ -84,15 +84,28 @@ export class AudioPlayer {
     }
   }
 
-  playAudio(audioSrc: string) {
+  playAudio(audioSrc: string, volume: number = 1, onEnded?: () => void) {
     const audioBuffer: AudioBuffer = AudioPlayer.audioBuffers.get(audioSrc);
     if (audioBuffer) {
       const sourceNode = this.audioContext.createBufferSource();
+      const gainNode = this.audioContext.createGain();
       sourceNode.buffer = audioBuffer;
-      sourceNode.connect(this.audioContext.destination);
+      sourceNode.connect(gainNode);
+      gainNode.connect(this.audioContext.destination);
+
+      // handle end of playback
+      if (onEnded) {
+        sourceNode.onended = onEnded;
+      }
+
+      gainNode.gain.value = volume; // Set volume (1 = full, 0.5 = half, etc.)
+
       this.audioSourcs.push(sourceNode);
       sourceNode.start();
+
+      return sourceNode;
     }
+    return null;
   }
 
   /**
