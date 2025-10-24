@@ -34,9 +34,9 @@ export default class TreasureStones {
 
   private totalSpawned = 0;
   private exitedCount = 0;
-  private hasEmitted60 = false;
-  public onStones60PercentExited?: () => void;
-  public onStoneCollected?: (collectedBefore60: boolean) => void;
+  private hasEmittedThreshold = false;
+  public onStonesThresholdPercentExited?: () => void;
+  public onStoneCollected?: (collectedBeforeThreshold: boolean) => void;
   public onBlueBonusReady?: () => void;
 
   // tracking helpers
@@ -70,10 +70,10 @@ export default class TreasureStones {
   }
 
   // Call whenever player collects a stone
-  private handleStoneCollected(collectedBefore60: boolean = false) {
+  private handleStoneCollected(collectedBeforeThreshold: boolean = false) {
     this.collectedCount++;
     // notify external listener about collection timing
-    this.onStoneCollected?.(Boolean(collectedBefore60));
+    this.onStoneCollected?.(collectedBeforeThreshold);
     // If 60% already passed and player now reached 3+, decide here too
     this.logSpawnPercentAndMaybeTrigger();
   }
@@ -86,9 +86,10 @@ export default class TreasureStones {
     const percent = Math.round((this.exitedCount / total) * 100);
 
     // when >=60% exited, decide whether to show star now or defer
-    if (percent >= 60 && !this.blueBonusEmitted) {
-      this.hasEmitted60 = true;
-      this.onStones60PercentExited?.();
+    const bonusThreshold = 60;
+    if (percent >= bonusThreshold && !this.blueBonusEmitted) {
+      this.hasEmittedThreshold = true;
+      this.onStonesThresholdPercentExited?.();
       if (this.collectedCount >= 3) {
         this.blueBonusEmitted = true;
         this.onBlueBonusReady?.();
@@ -230,8 +231,8 @@ export default class TreasureStones {
         this.playBurnAudio();
 
         // Track collection timing via centralized handler so bonus logic runs
-        const collectedBefore60 = !this.hasEmitted60;
-        this.handleStoneCollected(collectedBefore60);
+        const collectedBeforeThreshold = !this.hasEmittedThreshold;
+        this.handleStoneCollected(collectedBeforeThreshold);
 
         // move this stone to top of draw order
         this.stones.splice(i, 1);

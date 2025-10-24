@@ -3,8 +3,8 @@ import TreasureStones from './treasureStones';
 
 export class TreasureChestMiniGame {
   private earnedStarCount: number;
-  private collectedBefore60: number = 0;  // Stones collected before 60% exit
-  private collectedAfter60: number = 0;   // Stones collected after 60% exit
+  private collectedBeforeThreshold: number = 0;  // Stones collected before Threshold% exit
+  private collectedAfterThreshold: number = 0;   // Stones collected after Threshold% exit
   private blueBonusPending: boolean = false;
   private miniGameEnded: boolean = false;
   /**
@@ -32,38 +32,41 @@ export class TreasureChestMiniGame {
     );
 
     // Initialize stones manager
-    const ctx = this.treasureAnimation['ctx']; // assuming canvas context
+    const ctx = this.treasureAnimation.getContext();
     this.treasureStones = new TreasureStones(ctx);
+
+    // Inject the stones manager into the animation so there's a single source of truth
+    this.treasureAnimation.setTreasureStones(this.treasureStones);
 
     // Hook events from TreasureStones
     this.treasureStones.onStoneCollected = this.onStoneCollected.bind(this);
-    this.treasureStones.onStones60PercentExited = this.onStones60Exited.bind(this);
+    this.treasureStones.onStonesThresholdPercentExited = this.onStonesThresholdExited.bind(this);
   }
 
   public tapStoneCallback() {
     this.collectedStones++;
   }
 
-   /** Track stone collection timing */
-  private onStoneCollected(collectedBefore60: boolean) {
-    if (collectedBefore60) this.collectedBefore60++;
-    else this.collectedAfter60++;
+  /** Track stone collection timing */
+  private onStoneCollected(collectedBeforeThreshold: boolean) {
+    collectedBeforeThreshold
+      ? this.collectedBeforeThreshold++
+      : this.collectedAfterThreshold++;
   }
-
   /** Triggered once 60% of stones have exited */
-  private onStones60Exited() {
-    if (this.collectedBefore60 >= 3) {
+  private onStonesThresholdExited() {
+    if (this.collectedBeforeThreshold >= 3) {
       // Player qualifies early → show Blue Bonus Star
       this.treasureAnimation.showBlueBonusStar();
-    } else if (this.collectedBefore60 + this.collectedAfter60 >= 3) {
+    } else if (this.collectedBeforeThreshold + this.collectedAfterThreshold >= 3) {
       // Player qualifies late → defer to Monster Progression
       this.blueBonusPending = true;
     }
   }
 
 
- private processStoneCollection() {
-    const totalCollected = this.collectedBefore60 + this.collectedAfter60;
+  private processStoneCollection() {
+    const totalCollected = this.collectedBeforeThreshold + this.collectedAfterThreshold;
     this.earnedStarCount = totalCollected >= 3 ? 1 : 0;
 
     if (this.blueBonusPending) {

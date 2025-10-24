@@ -12,7 +12,6 @@ enum TreasureChestState {
   FadeIn, // Chest fading into view
   ClosedChest, // Chest visible, shaking before opening
   OpenedChest, // Chest open, stones burst out
-  BlueBonusStar,
   FadeOut // Chest fading out of view
 }
 
@@ -116,6 +115,21 @@ export class TreasureChestAnimation {
   }
 
   /**
+ * Allows external code to inject an existing TreasureStones instance.
+ * Useful to avoid duplicate instances or to share the same manager.
+ */
+  public setTreasureStones(stones: TreasureStones) {
+    if (!stones) return;
+    this.treasureStone = stones;
+    // re-hook the callback on the injected instance
+    this.treasureStone.onBlueBonusReady = () => {
+      this.showBonusStar = true;
+      this.blueStarStartTime = performance.now();
+      this.blueStarSoundPlayed = false;
+    };
+  }
+
+  /**
    * Handles user input clicks/taps and checks if a stone was tapped.
    * Prevents duplicate events from touch devices (touchstart + synthetic click).
    */
@@ -152,6 +166,13 @@ export class TreasureChestAnimation {
     }
   };
 
+  /**
+  * Expose internal canvas context so caller can create TreasureStones with correct ctx.
+  */
+  public getContext(): CanvasRenderingContext2D {
+    return this.ctx;
+  }
+
   /** Draws the Blue Bonus Star with smooth fade-in/out while game continues */
   private drawBlueBonusStar(time: number) {
     if (!this.showBonusStar || !this.blueStarImg.complete) return;
@@ -161,11 +182,8 @@ export class TreasureChestAnimation {
     // Ensure duration resets properly when star first visible
     if (elapsed < 50 && !this.blueStarSoundPlayed) {
       // Play sound once when star becomes visible
-      if (!this.blueStarSoundPlayed) {
-        this.sfxPlayer.playAudio(SURPRISE_BONUS_STAR,1.0);
-        console.log('Played Blue Bonus Star sound');
-        this.blueStarSoundPlayed = true;
-      }
+      this.sfxPlayer.playAudio(SURPRISE_BONUS_STAR, 1.0);
+      this.blueStarSoundPlayed = true;
     }
 
     if (elapsed > this.blueStarDuration) {
@@ -289,7 +307,7 @@ export class TreasureChestAnimation {
         this.treasureStone.stoneBurstAnimation(this.width, this.height, deltaTime);
 
         if (!this.chestAudioPlayed) {
-          this.audioPlayer.playAudio(AUDIO_MINIGAME,0.6);
+          this.audioPlayer.playAudio(AUDIO_MINIGAME, 0.6);
           this.chestAudioPlayed = true;
         }
 
@@ -298,44 +316,6 @@ export class TreasureChestAnimation {
 
         const elapsed = performance.now() - this.stateStartTime;
         if (elapsed >= 12000) {
-          this.state = TreasureChestState.FadeOut;
-          this.stateStartTime = performance.now();
-        }
-        break;
-      }
-     case TreasureChestState.BlueBonusStar: {
-        // Keep chest & stones updating while the blue star animation runs
-        this.ctx.globalAlpha = 1;
-        this.treasureChest.drawOpenChest(this.width, this.height);
-        this.treasureStone.stoneBurstAnimation(this.width, this.height, deltaTime);
-
-        const elapsed = performance.now() - this.stateStartTime;
-        const duration = 1500;
-        const progress = Math.min(elapsed / duration, 1);
-        const alpha = Math.sin(progress * Math.PI);
-
-        // Drawthe star image
-        if (this.blueStarImg.complete) {
-          const size = 120 + 60 * alpha; // slight pulse
-          const x = this.width / 2 - size / 2;
-          const y = this.height / 2 - 150 - size / 2;
-
-          this.ctx.save();
-          this.ctx.globalAlpha = alpha;
-          // soft glow for the star
-          this.ctx.shadowColor = 'rgba(0,150,255,0.9)';
-          this.ctx.shadowBlur = 30 * alpha;
-          this.ctx.drawImage(this.blueStarImg, x, y, size, size);
-          this.ctx.restore();
-        }
-
-        // play sound once
-        if (!this.blueStarSoundPlayed) {
-          this.sfxPlayer.playAudio(SURPRISE_BONUS_STAR,1.0);
-          this.blueStarSoundPlayed = true;
-        }
-
-        if (progress >= 1) {
           this.state = TreasureChestState.FadeOut;
           this.stateStartTime = performance.now();
         }
