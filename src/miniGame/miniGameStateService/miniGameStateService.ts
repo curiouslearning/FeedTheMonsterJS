@@ -1,5 +1,7 @@
+import { AudioPlayer } from '@components/audio-player';
 import { PubSub } from '../../events/pub-sub-events';
 import { GameScore } from "@data";
+import { AUDIO_MINIGAME, STONE_BURN, SURPRISE_BONUS_STAR } from '@constants';
 
 type MiniGameMap = {
   [key: number]: { isMiniGameComplete: boolean };
@@ -9,6 +11,7 @@ export class MiniGameStateService extends PubSub {
     IS_MINI_GAME_DONE: string;
     MINI_GAME_WILL_START: string;
   }
+  public audioPlayer: AudioPlayer = new AudioPlayer();
 
   private treasureChestCompletedLevel: MiniGameMap;
 
@@ -39,6 +42,9 @@ export class MiniGameStateService extends PubSub {
     this.subscribe(this.EVENTS.MINI_GAME_WILL_START, ({ level }) => {
       // Add any logic to run when the mini game is about to start
       console.log(`Mini game will start at level ${level}`);
+      this.audioPlayer.preloadGameAudio(SURPRISE_BONUS_STAR);
+      this.audioPlayer.preloadGameAudio(STONE_BURN);
+      this.audioPlayer.preloadGameAudio(AUDIO_MINIGAME); // Preload mini game audio
     });
   }
 
