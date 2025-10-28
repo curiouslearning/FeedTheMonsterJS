@@ -170,6 +170,7 @@ export default class LevelBloonButton {
         }
 
         if (gameLevelData.length && index + pageIndex <= totalGameLevels) {
+
             for (let i = 0; i < gameLevelData.length; i++) {
                 if (
                     index - 1 + pageIndex ===
@@ -179,9 +180,13 @@ export default class LevelBloonButton {
                         this.isDone = true;
                     }
 
-                    this.checkStars(
-                        gameLevelData[i].starCount
-                    );
+                    //If score is not 0, render stars.
+                    if (gameLevelData[i].starCount) {
+                        this.checkStars(
+                            gameLevelData[i].starCount
+                        );
+                    }
+
                     break;
                 }
             }
