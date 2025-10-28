@@ -16,6 +16,7 @@ export default class LevelBloonButton {
         balloonImg: any;
         lockImg: any;
         starImg: any;
+        treasureChestOpened?: any;
     }
     public posX: number;
     public posY: number;
@@ -27,6 +28,7 @@ export default class LevelBloonButton {
     private btnSize: number;
     private lockSize: number;
     private textFontSize: number;
+    private isDone: boolean = false; //Flag for indicating this level is done.
 
     constructor(
         canvas,
@@ -41,19 +43,19 @@ export default class LevelBloonButton {
         this.originalPosY = this.posY;
         this.size = canvas.height / 5;
         this.radiusOffSet = canvas.height / 20;
-        this.bloonSize = this.isLevelSpecial(this.size);
+        this.bloonSize = this.setCorrectImageSize(this.size);
         this.btnSize = this.bloonSize;
         this.lockSize = canvas.height / 13;
         this.textFontSize = (this.size) / 6;
     }
 
     isSpecialLevel(index) {
-        return SPECIAL_LEVELS.includes(index)
+        return SPECIAL_LEVELS.includes(index);
     };
 
-    isLevelSpecial(size) {
+    setCorrectImageSize(size: number): number {
         return this.levelData?.isSpecial
-            ? size * 0.9
+            ? size / 1.5
             : size;
     }
 
@@ -63,23 +65,16 @@ export default class LevelBloonButton {
         gameLevelData,
         totalGameLevels
     ) {
+        const img = this.isDone ? this.levelData?.treasureChestOpened : this.levelData?.balloonImg;
         this.context.drawImage(
-            this.levelData?.balloonImg,
+            img,
             this.posX,
             this.posY,
             this.btnSize,
             this.btnSize
         );
 
-        this.context.fillStyle = "white";
-        this.context.font = this.textFontSize + `px ${font}, monospace`;
-        this.context.textAlign = "center";
-        this.context.fillText(
-            `${this.levelData.index + levelSelectionPageIndex}`,
-            this.levelData.x + this.size / 3.5,
-            this.levelData.y + this.size / 3
-        );
-        this.context.font = this.textFontSize - (this.size) / 30 + `px ${font}, monospace`;
+        this.drawNumberText(levelSelectionPageIndex);
 
         if (this.btnSize < this.bloonSize) {
             this.btnSize = this.btnSize + 0.50;
@@ -95,6 +90,37 @@ export default class LevelBloonButton {
             gameLevelData,
             totalGameLevels
         );
+    }
+
+    drawNumberText(levelSelectionPageIndex) {
+        const isSpecial = this.levelData?.isSpecial;
+        this.context.fillStyle = "white";
+        this.context.font = this.textFontSize + `px ${font}, monospace`;
+        this.context.textAlign = "center";
+
+        let X_POS = 0;
+        let Y_POS = 0;
+
+        if (isSpecial) {
+            X_POS = this.levelData.x + this.size / 3;
+
+            if (this.isDone) {
+                Y_POS = this.levelData.y + this.size / 1.73;
+            } else {
+                Y_POS = this.levelData.y + this.size / 1.8;
+            }
+        } else {
+            X_POS = this.levelData.x + this.size / 3.5;
+            Y_POS = this.levelData.y + this.size / 3
+        }
+
+        this.context.fillText(
+            `${this.levelData.index + levelSelectionPageIndex}`,
+            X_POS,
+            Y_POS
+        );
+
+        this.context.font = this.textFontSize - (this.size) / 30 + `px ${font}, monospace`;
     }
 
     applyPulseEffect() {
@@ -144,14 +170,23 @@ export default class LevelBloonButton {
         }
 
         if (gameLevelData.length && index + pageIndex <= totalGameLevels) {
+
             for (let i = 0; i < gameLevelData.length; i++) {
                 if (
                     index - 1 + pageIndex ===
                     parseInt(gameLevelData[i].levelNumber)
                 ) {
-                    this.checkStars(
-                        gameLevelData[i].starCount
-                    );
+                    if (this.levelData?.isSpecial) {
+                        this.isDone = true;
+                    }
+
+                    //If score is not 0, render stars.
+                    if (gameLevelData[i].starCount) {
+                        this.checkStars(
+                            gameLevelData[i].starCount
+                        );
+                    }
+
                     break;
                 }
             }
@@ -169,45 +204,81 @@ export default class LevelBloonButton {
     }
 
     checkStars(starCount) {
+        const isSpecial = this.levelData?.isSpecial;
         const posX = this.levelData.x;
         const posY = this.levelData.y;
         const size = this.size;
 
         // 1st star (top-left)
         if (starCount >= 1) {
-            this.drawStar(posX, posY - size * 0.01);
+            if (isSpecial) {
+                this.drawStar(
+                    posX,
+                    posY - size * 0.1
+                );
+            } else {
+                this.drawStar(posX, posY - size * 0.01);
+            }
         }
 
         // 2nd star (top-right)
         if (starCount > 1) {
-            this.drawStar(
-                posX + size / 2.5,
-                posY - size * 0.01
-            );
+            if (isSpecial) {
+                this.drawStar(
+                    posX + size / 2.2,
+                    posY - size * 0.1
+                );
+            } else {
+                this.drawStar(
+                    posX + size / 2.5,
+                    posY - size * 0.01
+                );
+            }
         }
 
         // 3rd star (top-center)
         if (starCount > 2) {
-            this.drawStar(
-                posX + size / 5,
-                posY - size * 0.1
-            );
+            if (isSpecial) {
+                this.drawStar(
+                    posX + size / 4,
+                    posY - size * 0.2
+                );
+            } else {
+                this.drawStar(
+                    posX + size / 5,
+                    posY - size * 0.1
+                );
+            }
         }
 
         // 4th star (bottom-left, below 1st)
         if (starCount > 3) {
-            this.drawStar(
-                posX - size / 15,
-                posY + size * 0.17
-            );
+            if (isSpecial) {
+                this.drawStar(
+                    posX - size / 8,
+                    posY + size * 0.13
+                );
+            } else {
+                this.drawStar(
+                    posX - size / 15,
+                    posY + size * 0.17
+                );
+            }
         }
 
         // 5th star (bottom-right, below 2nd)
         if (starCount > 4) {
-            this.drawStar(
-                posX + size / 2.3,
-                posY + size * 0.17
-            );
+            if (isSpecial) {
+                this.drawStar(
+                    posX + size / 1.7,
+                    posY + size * 0.13
+                );
+            } else {
+                this.drawStar(
+                    posX + size / 2.3,
+                    posY + size * 0.17
+                );
+            }
         }
     }
 
