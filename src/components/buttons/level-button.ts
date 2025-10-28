@@ -210,65 +210,75 @@ export default class LevelBloonButton {
         const size = this.size;
 
         // 1st star (top-left)
-        if (starCount >= 1 && isSpecial) {
-            this.drawStar(
-                posX,
-                posY - size * 0.1
-            );
-        } else {
-            this.drawStar(posX, posY - size * 0.01);
+        if (starCount >= 1) {
+            if (isSpecial) {
+                this.drawStar(
+                    posX,
+                    posY - size * 0.1
+                );
+            } else {
+                this.drawStar(posX, posY - size * 0.01);
+            }
         }
 
         // 2nd star (top-right)
-        if (starCount > 1 && isSpecial) {
-            this.drawStar(
-                posX + size / 2.2,
-                posY - size * 0.1
-            );
-        } else {
-            this.drawStar(
-                posX + size / 2.5,
-                posY - size * 0.01
-            );
+        if (starCount > 1) {
+            if (isSpecial) {
+                this.drawStar(
+                    posX + size / 2.2,
+                    posY - size * 0.1
+                );
+            } else {
+                this.drawStar(
+                    posX + size / 2.5,
+                    posY - size * 0.01
+                );
+            }
         }
 
         // 3rd star (top-center)
-        if (starCount > 2 && isSpecial) {
-            this.drawStar(
-                posX + size / 4,
-                posY - size * 0.2
-            );
-        } else {
-            this.drawStar(
-                posX + size / 5,
-                posY - size * 0.1
-            );
+        if (starCount > 2) {
+            if (isSpecial) {
+                this.drawStar(
+                    posX + size / 4,
+                    posY - size * 0.2
+                );
+            } else {
+                this.drawStar(
+                    posX + size / 5,
+                    posY - size * 0.1
+                );
+            }
         }
 
         // 4th star (bottom-left, below 1st)
-        if (starCount > 3 && isSpecial) {
-            this.drawStar(
-                posX - size / 8,
-                posY + size * 0.13
-            );
-        } else {
-            this.drawStar(
-                posX - size / 15,
-                posY + size * 0.17
-            );
+        if (starCount > 3) {
+            if (isSpecial) {
+                this.drawStar(
+                    posX - size / 8,
+                    posY + size * 0.13
+                );
+            } else {
+                this.drawStar(
+                    posX - size / 15,
+                    posY + size * 0.17
+                );
+            }
         }
 
         // 5th star (bottom-right, below 2nd)
-        if (starCount > 4 && isSpecial) {
-            this.drawStar(
-                posX + size / 1.7,
-                posY + size * 0.13
-            );
-        } else {
-            this.drawStar(
-                posX + size / 2.3,
-                posY + size * 0.17
-            );
+        if (starCount > 4) {
+            if (isSpecial) {
+                this.drawStar(
+                    posX + size / 1.7,
+                    posY + size * 0.13
+                );
+            } else {
+                this.drawStar(
+                    posX + size / 2.3,
+                    posY + size * 0.17
+                );
+            }
         }
     }
 
