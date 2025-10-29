@@ -122,7 +122,6 @@ export default class TreasureStones {
 
   private logSpawnPercentAndMaybeTrigger() {
     const percent = this.getElapsedPercent();
-    console.log(percent);
     
     // when >=60% exited, decide whether to show star now or defer
     const bonusThreshold = 60;
