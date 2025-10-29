@@ -307,6 +307,8 @@ export class TreasureChestAnimation {
         this.treasureStone.stoneBurstAnimation(this.width, this.height, deltaTime);
 
         if (!this.chestAudioPlayed) {
+          // Start timer once minigame actually starts
+          this.treasureStone.startTimer(12000); // 12 seconds total duration
           this.audioPlayer.playAudio(AUDIO_MINIGAME, 0.6);
           this.chestAudioPlayed = true;
         }
