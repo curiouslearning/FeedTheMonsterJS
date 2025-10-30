@@ -78,7 +78,7 @@ img {
   image-rendering: auto;
 }
 
-#treasurecanvas{
+#treasurecanvas {
   display: none;
   width: 100%;
   height: 100%;
@@ -672,24 +672,36 @@ img {
 
   .stars-container {
     top: 25%;
-    height: 125px;
+    height: 170px;
   }
 
   .star1 {
-    left: 15%;
+    left: 3%;
     width: 100px;
-    bottom: 0%;
+    bottom: -50px;
   }
 
   .star2 {
     width: 110px;
-    top: -50%;
+    bottom: 30px;
   }
 
   .star3 {
-    right: 13%;
+    right: 0;
+    width: 120px;
+    bottom: 130px;
+  }
+
+  .star4 {
+    right: 20%;
+    width: 110px;
+    bottom: 30px;
+  }
+
+  .star5 {
+    right: 3%;
     width: 100px;
-    bottom: 0%;
+    bottom: -50px;
   }
 
   .buttons-container {
@@ -771,25 +783,38 @@ img {
 
   .stars-container {
     top: 25%;
-    height: 125px;
+    height: 170px;
   }
 
   .star1 {
-    left: 15%;
+    left: 3%;
     width: 100px;
-    bottom: 0%;
+    bottom: -50px;
   }
 
   .star2 {
     width: 110px;
-    top: -50%;
+    bottom: 30px;
   }
 
   .star3 {
-    right: 13%;
-    width: 100px;
-    bottom: 0%;
+    right: 0;
+    width: 120px;
+    bottom: 130px;
   }
+
+  .star4 {
+    right: 20%;
+    width: 110px;
+    bottom: 30px;
+  }
+
+  .star5 {
+    right: 3%;
+    width: 100px;
+    bottom: -50px;
+  }
+
 
   .buttons-container {
     gap: 60px !important;
@@ -856,24 +881,36 @@ img {
 
   .stars-container {
     top: 25%;
-    height: 125px;
+    height: 170px;
   }
 
   .star1 {
-    left: 15%;
-    width: 130px;
-    bottom: 0%;
+    left: 3%;
+    width: 110px;
+    bottom: -50px;
   }
 
   .star2 {
-    width: 160px;
-    top: -100%;
+    width: 120px;
+    bottom: 30px;
   }
 
   .star3 {
-    right: 13%;
+    right: 0;
     width: 130px;
-    bottom: 0%;
+    bottom: 130px;
+  }
+
+  .star4 {
+    right: 20%;
+    width: 120px;
+    bottom: 30px;
+  }
+
+  .star5 {
+    right: 3%;
+    width: 110px;
+    bottom: -50px;
   }
 
   .buttons-container {
@@ -1011,14 +1048,31 @@ img {
   }
 
   .star1 {
-    width: 65px;
+    left: 3%;
+    width: 60px;
+    bottom: -50px;
   }
 
   .star2 {
-    width: 70px;
+    width: 60px;
+    bottom: 30px;
   }
 
   .star3 {
+    right: 0;
     width: 65px;
+    bottom: 130px;
+  }
+
+  .star4 {
+    right: 20%;
+    width: 60px;
+    bottom: 30px;
+  }
+
+  .star5 {
+    right: 3%;
+    width: 60px;
+    bottom: -50px;
   }
 }

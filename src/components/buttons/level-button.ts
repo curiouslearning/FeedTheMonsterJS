@@ -66,12 +66,16 @@ export default class LevelBloonButton {
         totalGameLevels
     ) {
         const img = this.isDone ? this.levelData?.treasureChestOpened : this.levelData?.balloonImg;
+        const scale = this.levelData?.isSpecial ? 0.9 : 1; // 90% smaller for special levels
+        const size = this.btnSize * scale;
+        const offsetX = this.posX + (this.btnSize - size) / 2;
+        const offsetY = this.posY + (this.btnSize - size) / 2;
         this.context.drawImage(
             img,
-            this.posX,
-            this.posY,
-            this.btnSize,
-            this.btnSize
+            offsetX,
+            offsetY,
+            size,
+            size
         );
 
         this.drawNumberText(levelSelectionPageIndex);
@@ -211,74 +215,42 @@ export default class LevelBloonButton {
 
         // 1st star (top-left)
         if (starCount >= 1) {
-            if (isSpecial) {
-                this.drawStar(
-                    posX,
-                    posY - size * 0.1
-                );
-            } else {
-                this.drawStar(posX, posY - size * 0.01);
-            }
+            this.drawStar(
+                posX,
+                posY - size * 0.01
+            );
         }
 
         // 2nd star (top-right)
         if (starCount > 1) {
-            if (isSpecial) {
-                this.drawStar(
-                    posX + size / 2.2,
-                    posY - size * 0.1
-                );
-            } else {
-                this.drawStar(
-                    posX + size / 2.5,
-                    posY - size * 0.01
-                );
-            }
+            this.drawStar(
+                posX + size / 2.5,
+                posY - size * 0.01
+            );
         }
 
         // 3rd star (top-center)
         if (starCount > 2) {
-            if (isSpecial) {
-                this.drawStar(
-                    posX + size / 4,
-                    posY - size * 0.2
-                );
-            } else {
-                this.drawStar(
-                    posX + size / 5,
-                    posY - size * 0.1
-                );
-            }
+            this.drawStar(
+                posX + size / 5,
+                posY - size * 0.1
+            );
         }
 
         // 4th star (bottom-left, below 1st)
         if (starCount > 3) {
-            if (isSpecial) {
-                this.drawStar(
-                    posX - size / 8,
-                    posY + size * 0.13
-                );
-            } else {
-                this.drawStar(
-                    posX - size / 15,
-                    posY + size * 0.17
-                );
-            }
+            this.drawStar(
+                posX - size / 15,
+                posY + size * 0.17
+            );
         }
 
         // 5th star (bottom-right, below 2nd)
         if (starCount > 4) {
-            if (isSpecial) {
-                this.drawStar(
-                    posX + size / 1.7,
-                    posY + size * 0.13
-                );
-            } else {
-                this.drawStar(
-                    posX + size / 2.3,
-                    posY + size * 0.17
-                );
-            }
+            this.drawStar(
+                posX + size / 2.3,
+                posY + size * 0.17
+            );
         }
     }
 
