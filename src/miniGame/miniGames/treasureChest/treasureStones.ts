@@ -31,11 +31,12 @@ export default class TreasureStones {
   private burnFrames: HTMLImageElement[] = []; // Preloaded burn animation frames
   private ctx: CanvasRenderingContext2D; // Canvas rendering context
   private frameDuration: number; //Frame duration.
-
+  private startTime: number = 0; // track when the minigame started
+  private totalDuration: number = 12000; // default duration in ms (can be updated externally)
   private totalSpawned = 0;
   private exitedCount = 0;
   private hasEmittedThreshold = false;
-  public onStonesThresholdPercentExited?: () => void;
+  public onThresholdTimeReached ?: () => void;
   public onStoneCollected?: (collectedBeforeThreshold: boolean) => void;
   public onBlueBonusReady?: () => void;
 
@@ -76,27 +77,73 @@ export default class TreasureStones {
     this.onStoneCollected?.(collectedBeforeThreshold);
     // If 60% already passed and player now reached 3+, decide here too
     this.logSpawnPercentAndMaybeTrigger();
+
+    // helper to check if bonus can be shown
+    if (this.shouldTriggerBonus()) {
+      this.triggerBlueBonus();
+    }
+  }
+
+  /**
+ * Determines if the blue bonus can be triggered based on collection and threshold progress.
+ */
+  private shouldTriggerBonus(): boolean {
+    if (this.blueBonusEmitted) return false;
+    if (!this.blueBonusDeferred) return false;
+    if (this.collectedCount < 3) return false;
+
+    const percent = this.getElapsedPercent();
+    const bonusCutoff = 90;
+
+    // Bonus only valid before or at 90% exit
+    return percent <= bonusCutoff;
+  }
+
+  /**
+   * Centralized logic to trigger the blue bonus star and audio.
+   */
+  private triggerBlueBonus(): void {
+    this.blueBonusEmitted = true;
+    this.onBlueBonusReady?.();
+  }
+
+  /** Call this when minigame starts */
+  public startTimer(totalDurationMs: number) {
+    this.startTime = performance.now();
+    this.totalDuration = totalDurationMs;
+  }
+
+  /** Returns elapsed time percent (0–100) */
+  private getElapsedPercent(): number {
+    if (!this.startTime) return 0;
+    const elapsed = performance.now() - this.startTime;
+    return Math.min((elapsed / this.totalDuration) * 100, 100);
   }
 
   private logSpawnPercentAndMaybeTrigger() {
-    // determine a sensible total to calculate percent
-    const total = this.totalToSpawn || this.totalSpawned || 1;
-    if (this.blueBonusEmitted || total <= 0) return;
-
-    const percent = Math.round((this.exitedCount / total) * 100);
-
+    const percent = this.getElapsedPercent();
+    
     // when >=60% exited, decide whether to show star now or defer
     const bonusThreshold = 60;
-    if (percent >= bonusThreshold && !this.blueBonusEmitted) {
+    const bonusCutoff = 90;
+
+    if (this.blueBonusEmitted) return;
+
+    // Trigger threshold event at 60%
+    if (!this.hasEmittedThreshold && percent >= bonusThreshold) {
       this.hasEmittedThreshold = true;
-      this.onStonesThresholdPercentExited?.();
-      if (this.collectedCount >= 3) {
-        this.blueBonusEmitted = true;
-        this.onBlueBonusReady?.();
-      } else {
-        this.blueBonusDeferred = true;
-        // store flag for later display on progression screen
+      this.onThresholdTimeReached?.();
+    }
+
+    // Between 60–75%, decide whether to trigger or defer
+    if (percent < bonusCutoff) {
+      if (this.hasEmittedThreshold) {
+        if (this.collectedCount >= 3) this.triggerBlueBonus();
+        else this.blueBonusDeferred = true;
       }
+    } else {
+      // After 90%, no deferred bonus
+      this.blueBonusDeferred = false;
     }
   }
 

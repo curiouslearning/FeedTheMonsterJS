@@ -40,7 +40,7 @@ export class TreasureChestMiniGame {
 
     // Hook events from TreasureStones
     this.treasureStones.onStoneCollected = this.onStoneCollected.bind(this);
-    this.treasureStones.onStonesThresholdPercentExited = this.onStonesThresholdExited.bind(this);
+    this.treasureStones.onThresholdTimeReached = this.onThresholdTimeReached.bind(this);
   }
 
   public tapStoneCallback() {
@@ -54,7 +54,7 @@ export class TreasureChestMiniGame {
       : this.collectedAfterThreshold++;
   }
   /** Triggered once 60% of stones have exited */
-  private onStonesThresholdExited() {
+  private onThresholdTimeReached() {
     if (this.collectedBeforeThreshold >= 3) {
       // Player qualifies early → show Blue Bonus Star
       this.treasureAnimation.showBlueBonusStar();
@@ -84,11 +84,10 @@ export class TreasureChestMiniGame {
   //Draw logic for treasure chest minigame. Called by mini game handler.
   public draw() {
     if (!this.miniGameStatus) {
+      const totalGameDuration = 12000; // 12 seconds total
+      this.treasureStones.startTimer(totalGameDuration);
       // Start the animation
       this.treasureAnimation.show(() => {
-        // Animation complete callback
-        console.log("Treasure Chest Animation Completed");
-
         //Convert collectedStones into a star after the treasure chest animation.
         this.processStoneCollection();
       });
@@ -102,5 +101,7 @@ export class TreasureChestMiniGame {
     this.collectedStones = 0;
     this.miniGameStatus = false;
     this.treasureAnimation.hide();
+    //Reset State
+    this.treasureStones = new TreasureStones(this.treasureAnimation.getContext());
   }
 }

@@ -15,48 +15,48 @@ export const getdefaultCloudBtnsPos = (canvas) => {
     //Note: For Width; Divide by lower number move to right, divide by greater number move to left.
     //For Height; Divide by lower number move to lower, divide by greater number move to upper.
     return [
-      [
         [
-            canvas.width / 10,
-            canvas.height / 10
+            [
+                canvas.width / 14,
+                canvas.height / 10
+            ],
+            [
+                canvas.width / 2.6,
+                canvas.height / 10
+            ],
+            [
+                canvas.width / 3 + canvas.width / 2.8,
+                canvas.height / 10,
+            ],
+            [
+                canvas.width / 14,
+                canvas.height / 3
+            ],
+            [
+                canvas.width / 2.6,
+                canvas.height / 3
+            ], // Position for 5, 15, 25 and so on
+            [
+                canvas.width / 3 + canvas.width / 2.8,
+                canvas.height / 3,
+            ],
+            [
+                canvas.width / 14,
+                canvas.height / 1.8
+            ],
+            [
+                canvas.width / 2.6,
+                canvas.height / 1.8
+            ],
+            [
+                canvas.width / 3 + canvas.width / 2.8,
+                canvas.height / 1.8,
+            ],
+            [
+                canvas.width / 2.6,
+                canvas.height / 1.3
+            ],
         ],
-        [
-            canvas.width / 2.5,
-            canvas.height / 10
-        ],
-        [
-          canvas.width / 3 + canvas.width / 2.8,
-          canvas.height / 10,
-        ],
-        [
-            canvas.width / 10,
-            canvas.height / 3
-        ],
-        [
-            canvas.width / 2.5,
-            canvas.height / 3
-        ], // Position for 5, 15, 25 and so on
-        [
-            canvas.width / 3 + canvas.width / 2.8,
-            canvas.height / 3,
-        ],
-        [
-            canvas.width / 10,
-            canvas.height / 1.8
-        ],
-        [
-            canvas.width / 2.5,
-            canvas.height / 1.8
-        ],
-        [
-          canvas.width / 3 + canvas.width / 2.8,
-          canvas.height / 1.8,
-        ],
-        [
-            canvas.width / 2.5,
-            canvas.height / 1.3
-        ],
-      ],
     ];
 }
 
@@ -83,7 +83,6 @@ export async function createLevelObject(
     // NOTE: This needs refactoring. There's currently no reliable way to validate
     // whether the level is completed, making it hard to determine which assets
     // should be used for the treasure chest.
-
     const obj = {
         x: xPos,
         y: yPos,
