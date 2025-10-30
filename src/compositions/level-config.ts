@@ -83,13 +83,11 @@ export async function createLevelObject(
     // NOTE: This needs refactoring. There's currently no reliable way to validate
     // whether the level is completed, making it hard to determine which assets
     // should be used for the treasure chest.
-    const scale = isSpecial ? 0.5 : 1; // Decrease special level size to 80%
     const obj = {
         x: xPos,
         y: yPos,
         index,
         isSpecial,
-        scale,
         ...images,
         balloonImg: isSpecial ? images?.specialBloonImg : images?.balloonImg,
         treasureChestOpened: images?.specialBloonDoneImg // placing the done asset here for now as quick way to access and use it.
