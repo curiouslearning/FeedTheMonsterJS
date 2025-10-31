@@ -41,7 +41,6 @@ export class MiniGameStateService extends PubSub {
 
     this.subscribe(this.EVENTS.MINI_GAME_WILL_START, ({ level }) => {
       // Add any logic to run when the mini game is about to start
-      console.log(`Mini game will start at level ${level}`);
       this.audioPlayer.preloadGameAudio(SURPRISE_BONUS_STAR);
       this.audioPlayer.preloadGameAudio(STONE_BURN);
       this.audioPlayer.preloadGameAudio(AUDIO_MINIGAME); // Preload mini game audio
