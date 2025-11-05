@@ -1,5 +1,5 @@
 import { EventManager } from "@events";
-import LevelFieldComponent from './level-field/level-field-component';
+import LevelFieldComponent from '../level-field/level-field-component';
 
 export class LevelIndicators extends EventManager{
     private levelBarIndicator: LevelFieldComponent;
@@ -11,14 +11,12 @@ export class LevelIndicators extends EventManager{
         })
         this.levelBarIndicator = new LevelFieldComponent();
     }
-    setIndicators(indicatorCount) {
-        this.levelBarIndicator.updateLevel(indicatorCount);
-    }
 
-    addDropStoneEvent() {
-        document.addEventListener('dropstone', (event) => {
-            this.setIndicators(2);
-        });
+    setIndicators(indicatorCount: number, levelSegmentResult: boolean): void {
+        //If levelSegmentResult passed, update the star to filled otherwise skip.
+        if (levelSegmentResult) {
+            this.levelBarIndicator.updateLevel(indicatorCount);
+        }
     }
 
     public dispose() {
@@ -30,6 +28,9 @@ export class LevelIndicators extends EventManager{
     }
 
     public handleLoadPuzzle(event) {
-        this.setIndicators(event.detail.counter);
+
+        const { counter, levelSegmentResult} = event.detail;
+
+        this.setIndicators(counter, levelSegmentResult);
     }
 }

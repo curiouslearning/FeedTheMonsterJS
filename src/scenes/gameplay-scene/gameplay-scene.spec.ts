@@ -299,6 +299,7 @@ jest.mock('@gameStateService', () => ({
     },
     getGameTypeList: jest.fn(),
     saveHitBoxRanges: jest.fn(),
+    shouldDisplayProgressJar:jest.fn()
   }
 }));
 

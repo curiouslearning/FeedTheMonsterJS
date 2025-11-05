@@ -13,6 +13,9 @@ import {
   MONSTER_PHASES,
   AUDIO_CHEERING,
   AUDIO_MONSTER_DISCOVERED,
+  MIN_STARS_TO_COMPLETE_LEVEL,
+  PIN_STAR_5,
+  PIN_STAR_4,
 } from '@constants';
 import gameStateService from '@gameStateService';
 import gameSettingsService from '@gameSettingsService';
@@ -108,7 +111,7 @@ export class LevelEndScene {
   }
 
   switchToReactionAnimation = () => {
-    if (this.starCount <= 1) {
+    if (this.starCount < MIN_STARS_TO_COMPLETE_LEVEL) {
       if (isDocumentVisible()) {
         this.audioPlayer.playAudio(AUDIO_LEVEL_LOSE);
       }
@@ -168,6 +171,8 @@ export class LevelEndScene {
       PIN_STAR_1, // Path to star 1 image
       PIN_STAR_2, // Path to star 2 image
       PIN_STAR_3, // Path to star 3 image
+      PIN_STAR_4, // Path to star 4 image
+      PIN_STAR_5, // Path to star 5 image
     ];
 
     for (let i = 0; i < this.starCount; i++) {
@@ -184,8 +189,8 @@ export class LevelEndScene {
         // Initialize Rive monster after the last star animation only if conditions are met
         if (i === this.starCount - 1) {
           this.evolutionTimeout = window.setTimeout(() => {
-            // Only initialize if current level stars >= 2
-            if (this.starCount >= 2) {
+            // Only initialize if current level stars >= 3 
+            if (this.starCount >= MIN_STARS_TO_COMPLETE_LEVEL) {
               this.callEvolutionAnimation();
             }
           }, 1000); // Wait another 1 second after last star appears
@@ -305,7 +310,7 @@ export class LevelEndScene {
     ];
 
     // Show Next Level button if passed and not last level
-    if (this.starCount >= 2 && !this.isLastLevel) {
+    if (this.starCount >= MIN_STARS_TO_COMPLETE_LEVEL && !this.isLastLevel) {
       buttonConfigs.push({
         ButtonClass: NextButtonHtml,
         id: 'levelend-next-btn',
@@ -314,7 +319,7 @@ export class LevelEndScene {
     }
 
     // Level 1 fail - replay only
-    if (this.currentLevel === 0 && this.starCount < 2) {
+    if (this.currentLevel === 0 && this.starCount < MIN_STARS_TO_COMPLETE_LEVEL) {
       buttonConfigs.push({
         ButtonClass: RetryButtonHtml,
         id: 'levelend-retry-btn',
@@ -332,7 +337,7 @@ export class LevelEndScene {
     }
 
     // Remove Replay if Level 1 passed
-    if (this.currentLevel === 0 && this.starCount >= 2) {
+    if (this.currentLevel === 0 && this.starCount >= MIN_STARS_TO_COMPLETE_LEVEL) {
       if (replayButton) replayButton.remove();
     }
 
@@ -375,7 +380,7 @@ export class LevelEndScene {
   pauseAudios = () => {
     if (isDocumentVisible()) {
       // Only play intro audio if not evolving monster and star count is sufficient
-      if (this.starCount >= 2 && !this.evolveMonster) {
+      if (this.starCount >= MIN_STARS_TO_COMPLETE_LEVEL && !this.evolveMonster) {
         this.audioPlayer.playAudio(AUDIO_INTRO);
       }
     } else {

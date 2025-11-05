@@ -11,7 +11,7 @@ import {
   Prompt,
   LevelMeta,
 } from "./data-modal";
-import { GameScore } from "./game-score";
+import { GameScore, GameLevelInfo } from "./game-score";
 import { languageFontMapping } from "./i18-font-mapping";
 import { customFonts } from "./custom-fonts";
 
@@ -31,5 +31,6 @@ export {
   GameScore,
   languageFontMapping,
   URL,
-  customFonts
+  customFonts,
+  GameLevelInfo
 };

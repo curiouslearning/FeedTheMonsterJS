@@ -37,11 +37,11 @@ import {
   SCENE_NAME_LEVEL_SELECT,
   SCENE_NAME_GAME_PLAY,
   SCENE_NAME_GAME_PLAY_REPLAY,
+  SCENE_NAME_PROGRESS_LEVEL,
   SCENE_NAME_LEVEL_END,
   PreviousPlayedLevel,
   MONSTER_PHASES,
   AUDIO_PATH_POINTS_ADD,
-  AUDIO_MINIGAME
 } from "@constants";
 import gameStateService from '@gameStateService';
 import gameSettingsService from '@gameSettingsService';
@@ -90,7 +90,7 @@ export class GameplayScene {
   analyticsIntegration: AnalyticsIntegration;
   startTime: number;
   puzzleTime: number;
-  isDisposing: boolean;
+  isDisposing: boolean = false;
   trailEffectHandler: TrailEffectsHandler;
   public riveMonsterElement: HTMLCanvasElement;
   public gameControl: HTMLCanvasElement;
@@ -133,7 +133,6 @@ export class GameplayScene {
     this.initializeProperties(gamePlayData);
     // UI element setup
     this.setupUIElements();
-    this.isDisposing = false;
     // Initialize additional game elements
     this.initializeGameComponents(gamePlayData);
     var previousPlayedLevel: string = this.levelData.levelMeta.levelNumber;
@@ -263,7 +262,6 @@ export class GameplayScene {
       onClickCallback,
     );
     this.levelIndicators = new LevelIndicators();
-    this.levelIndicators.setIndicators(this.counter);
     this.monster = this.initializeRiveMonster();
 
     /*TO DO: The following code lines of this method should've been and can be handled within the tutorial class.
@@ -757,7 +755,6 @@ export class GameplayScene {
     const loadPuzzleDelay = isCorrect ? 1500 : 3000;
     
     if (currentLevel === this.levelForMinigame && !this.hasShownChest) {
-      this.audioPlayer.preloadGameAudio(AUDIO_MINIGAME); // Preload mini game audio
       this.hasShownChest = true;
 
       // Publish event BEFORE starting the mini game
@@ -793,52 +790,93 @@ export class GameplayScene {
     this.tutorial?.resetQuickStartTutorialDelay();
     this.tutorial?.hideTutorial(); // Turn off tutorial via loading the puzzle.
 
+    /*
+      setTimeoutDelay:
+      -Adds a delay to properly create and load the next puzzle.
+      -Trigger the handleLevelEnd with a delay to let the audio play in puzzleHandler.ts before switching to level end screen. //Trigger the handleLevelEnd with a delay to let the audio play in puzzleHandler.ts before switching to level end screen.
+    */
+    const setTimeoutDelay = timerEnded ? 0 : loadPuzzleDelay;
+    let setTimeoutCallback = null;
+
     if (this.counter === this.levelData.puzzles.length) {
-      const handleLevelEnd = () => {
-        this.levelIndicators?.setIndicators(this.counter);
+      //Update the stars level indicator.
+      this.levelIndicators?.setIndicators(this.counter, this.isCorrect);
+
+      //Handle level end loading.
+      setTimeoutCallback = () => {
         this.logLevelEndFirebaseEvent();
-        GameScore.setGameLevelScore(this.levelData, this.score, this.treasureChestScore);
-
+        const starsCount = GameScore.calculateStarCount(this.score);
         const levelEndData = {
-          starCount: GameScore.calculateStarCount(this.score),
+          starCount: starsCount,
           currentLevel: this.levelNumber,
-          isTimerEnded: timerEnded
+          isTimerEnded: timerEnded,
+          treasureChestScore: this.treasureChestScore,
+          score: this.score,
         }
-
-        gameStateService.publish(gameStateService.EVENTS.LEVEL_END_DATA_EVENT, { levelEndData, data: this.data });
-        gameStateService.publish(gameStateService.EVENTS.SWITCH_SCENE_EVENT, SCENE_NAME_LEVEL_END);
+        gameStateService.publish(
+          gameStateService.EVENTS.LEVEL_END_DATA_EVENT,
+          { levelEndData, data: this.data }
+        );
+        //Save to local storage.
+        GameScore.setGameLevelScore(
+          this.levelData,
+          this.score,
+          this.treasureChestScore
+        );
+        this.switchSceneAtGameEnd(starsCount, this.treasureChestScore);
         this.monster.dispose(); //Adding the monster dispose here due to the scenario that this.monster is still needed when restart game level is played.
       };
 
-      if (timerEnded) {
-        handleLevelEnd();
-      } else {
-        //Trigger the handleLevelEnd with a delay to let the audio play in puzzleHandler.ts before switching to level end screen.
-        setTimeout(handleLevelEnd, loadPuzzleDelay);
-      }
     } else {
       const loadPuzzleEvent = new CustomEvent(LOADPUZZLE, {
         detail: {
           counter: this.counter,
+          levelSegmentResult: this.isCorrect
         },
       });
-      setTimeout(
-        () => {
-          if (!this.isDisposing) {
-            this.initNewPuzzle(loadPuzzleEvent);
-            this.timerTicking.startTimer(); // Start the timer for the new puzzle
-          }
-        },
-        timerEnded ? 0 : loadPuzzleDelay // added delay for switching to level end screen
-      );
+
+      setTimeoutCallback = () => {
+        if (!this.isDisposing) {
+          this.initNewPuzzle(loadPuzzleEvent);
+          this.timerTicking.startTimer(); // Start the timer for the new puzzle
+        }
+      }
     }
+
+    setTimeout(setTimeoutCallback, setTimeoutDelay);
   };
+
+  /**
+   * Determines which scene to load at the end of a game round.
+   *
+   * If the monster is not at its final phase and the player achieved a
+   * successful result (either through stars or treasure chest score),
+   * the Progress Jar scene will be displayed. Otherwise, the flow
+   * proceeds directly to the Level End scene.
+   *
+   * @param starsCount The number of stars earned in the current level.
+   * @param treasureChestScore The score earned from the treasure chest mini-game.
+   */
+  private switchSceneAtGameEnd(starsCount: number, treasureChestScore: number): void {
+    const shouldDisplayProgressJar = gameStateService.shouldDisplayProgressJar(
+      starsCount,
+      treasureChestScore
+    );
+
+    const loadSceneName = shouldDisplayProgressJar
+    ? SCENE_NAME_PROGRESS_LEVEL
+    : SCENE_NAME_LEVEL_END;
+    
+    // Signal the game state service to switch scenes.
+    gameStateService.publish(gameStateService.EVENTS.SWITCH_SCENE_EVENT, loadSceneName);
+  }
 
   private initNewPuzzle(loadPuzzleEvent) {
     // Dispose old monster first to prevent memory leaks
     if (this.monster) {
       this.monster.dispose();
     }
+    this.isCorrect = false;
     this.timerStartSFXPlayed = false; // move this flag from loadpuzzle to initnewpuzzle to make sure when loading new puzzle, timer start sfx will set to false.
     this.stoneHandler.stonesHasLoaded = false;
     this.monster = this.initializeRiveMonster();

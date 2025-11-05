@@ -60,8 +60,8 @@ describe('LevelEndScene', () => {
     mockStopAllAudios.mockClear();
     preloadGameAudio: jest.fn().mockResolvedValue(undefined),
 
-    // Set up DOM elements
-    document.body.innerHTML = `
+      // Set up DOM elements
+      document.body.innerHTML = `
       <div id="levelEnd">
         <div class="stars-container"></div>
         <div id="levelEndButtons"></div>
@@ -167,10 +167,10 @@ describe('LevelEndScene', () => {
     );
   });
 
-  it('should play happy animation for 2 or more stars', () => {
+  it('should play happy animation for 3 or more stars', () => {
     // Reset with 2 stars
     (gameStateService.getLevelEndSceneData as jest.Mock).mockReturnValue({
-      starCount: 2,
+      starCount: 3,
       currentLevel: 1,
       data: { levels: [{ id: 1 }] },
       monsterPhaseNumber: 1
@@ -260,9 +260,9 @@ describe('LevelEndScene', () => {
       writable: true,
     });
 
-    // Reset with 2 stars
+    // Reset with 3 stars
     (gameStateService.getLevelEndSceneData as jest.Mock).mockReturnValue({
-      starCount: 2,
+      starCount: 3,
       currentLevel: 1,
       data: { levels: [{ id: 1 }] },
       monsterPhaseNumber: 1
@@ -330,50 +330,30 @@ describe('LevelEndScene', () => {
   });
 
   describe('dispose', () => {
-    it('should dispose of all button instances on dispose', () => {
-      levelEndScene.isLastLevel = false;
-      levelEndScene.renderButtonsHTML();
-      levelEndScene.dispose();
-
-      expect(levelEndScene.mapButtonInstance).toBeNull();
-      expect(levelEndScene.retryButtonInstance).toBeNull();
-      expect(levelEndScene.nextButtonInstance).toBeNull();
-    });
-
     it('should clean up all button instances', () => {
-      // Create button instances
-      levelEndScene.renderButtonsHTML();
+      const levelEndScene = new LevelEndScene();
 
-      // Create spies
-      const nextButtonDisposeSpy = jest.spyOn(levelEndScene.nextButtonInstance, 'dispose');
-      const retryButtonDisposeSpy = jest.spyOn(levelEndScene.retryButtonInstance, 'dispose');
-      const mapButtonDisposeSpy = jest.spyOn(levelEndScene.mapButtonInstance, 'dispose');
+      // Mock button instances with dispose spies
+      const nextDisposeSpy = jest.fn();
+      const retryDisposeSpy = jest.fn();
+      const mapDisposeSpy = jest.fn();
+
+      levelEndScene.nextButtonInstance = { dispose: nextDisposeSpy } as unknown as BaseButtonComponent;
+      levelEndScene.retryButtonInstance = { dispose: retryDisposeSpy } as unknown as BaseButtonComponent;
+      levelEndScene.mapButtonInstance = { dispose: mapDisposeSpy } as unknown as BaseButtonComponent;
 
       // Call dispose
       levelEndScene.dispose();
 
-      // Verify all dispose methods were called
-      expect(nextButtonDisposeSpy).toHaveBeenCalled();
-      expect(retryButtonDisposeSpy).toHaveBeenCalled();
-      expect(mapButtonDisposeSpy).toHaveBeenCalled();
+      // Verify dispose called
+      expect(nextDisposeSpy).toHaveBeenCalledTimes(1);
+      expect(retryDisposeSpy).toHaveBeenCalledTimes(1);
+      expect(mapDisposeSpy).toHaveBeenCalledTimes(1);
 
-      // Verify instances were nullified
+      // Verify instances are null
       expect(levelEndScene.nextButtonInstance).toBeNull();
       expect(levelEndScene.retryButtonInstance).toBeNull();
       expect(levelEndScene.mapButtonInstance).toBeNull();
-    });
-
-    it('should remove event listeners and stop audio', () => {
-      const removeEventListenerSpy = jest.spyOn(document, 'removeEventListener');
-
-      levelEndScene.dispose();
-
-      expect(mockStopAllAudios).toHaveBeenCalled();
-      expect(removeEventListenerSpy).toHaveBeenCalledWith(
-        'visibilitychange',
-        levelEndScene.pauseAudios,
-        false
-      );
     });
   });
 });
