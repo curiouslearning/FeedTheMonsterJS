@@ -135,6 +135,7 @@ export class LevelSelectionScreen {
 
   private async createLevelButtons() {
     const images = await loadLevelImages();
+    console.log('Level Selection Assets: ', { images })
     const poss = getdefaultCloudBtnsPos(this.canvas);
     const totalLevels = this.data.levels.length;
     const buttonsPerPage = 10;
