@@ -364,9 +364,9 @@ export class GameStateService extends PubSub {
 
                 //Combine both game stars and mini game star.
                 const totalStars = starCount + treasureChestMiniGameScore;
-                console.log('treasureChestMiniGameScore: ')
-                console.table({ level, starCount, treasureChestMiniGameScore })
-                console.log(' ')
+                // console.log('treasureChestMiniGameScore: ')
+                // console.table({ level, starCount, treasureChestMiniGameScore })
+                // console.log(' ')
                 return sum + (
                     this.isScorePassing(starCount)
                     ? totalStars : 0)
@@ -376,7 +376,7 @@ export class GameStateService extends PubSub {
 
     public checkMonsterPhaseUpdation(): number {
         const successStarCount = this.getSuccessStarsCount();
-        console.log('Total Stars for Evolution ', successStarCount)
+        // console.log('Total Stars for Evolution ', successStarCount)
         switch (true) {
             case successStarCount >= 63:
                 return 3; // Phase 4

@@ -37,7 +37,7 @@ export default class LevelBloonButton {
     ) {
         this.context = context;
         this.levelData = levelData;
-        console.log('Level Button Level Data: ', this.levelData)
+        // console.log('Level Button Level Data: ', this.levelData)
         this.posX = this.levelData.x;
         this.posY = this.levelData.y;
         this.originalPosX = this.posX;
