@@ -24,16 +24,18 @@ jobs:
 
       - name: Send to Slack
         run: |
-          # Escape the release notes properly for JSON
-          NOTES=$(echo "${{ steps.extract_release_notes.outputs.release_notes }}" | jq -Rs .)
+          # Clean and format the release notes for Slack
+          NOTES=$(echo "${{ steps.extract_release_notes.outputs.release_notes }}" | sed 's/\\/\\\\/g' | sed 's/"/\\"/g')
+          
+          # Build JSON payload for Slack (use proper newlines and formatting)
+          payload=$(cat <<EOF
+          {
+            "text": ":tada: *New Release Published!*\n*Version:* ${version}\n\n*Release Notes:*\n${NOTES}"
+          }
+          EOF
+          )
 
-          # Build payload safely with jq
-          payload=$(jq -n \
-            --arg version "$version" \
-            --arg notes "$NOTES" \
-            '{text: "🎉 *New Release Published!*\n*Version:* \($version)\n\n*Release Notes:*\n\($notes)"}')
-
-          # Send payload to Slack
+          # Send the payload to Slack webhook
           curl -X POST -H "Content-type: application/json" --data "$payload" "$SLACK_WEBHOOK_URL"
         env:
           SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
