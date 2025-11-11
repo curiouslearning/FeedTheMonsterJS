@@ -4,8 +4,8 @@ import {
     MAP_LOCK_IMG,
     STAR_IMG,
     SPECIAL_LEVELS,
-    MAP_ICON_SPECIAL_LEVELS_DONE,
-    MAP_ICON_SPECIAL_LEVELS_ONGOING
+    TREASURE_CHEST_SPECIAL_LEVELS_ONGOING,
+    TREASURE_CHEST_SPECIAL_LEVELS_DONE
 } from "@constants";
 import { syncLoadingImages } from '@common';
 
@@ -64,8 +64,8 @@ export const loadLevelImages = () => {
     return syncLoadingImages(
         {
             balloonImg: MAP_ICON_IMG,
-            specialBloonImg: MAP_ICON_SPECIAL_LEVELS_ONGOING,
-            specialBloonDoneImg: MAP_ICON_SPECIAL_LEVELS_DONE,
+            treasureChestImg: TREASURE_CHEST_SPECIAL_LEVELS_ONGOING,
+            treasureChestDoneImg: TREASURE_CHEST_SPECIAL_LEVELS_DONE,
             lockImg: MAP_LOCK_IMG,
             starImg: STAR_IMG
         }
@@ -79,19 +79,15 @@ export async function createLevelObject(
     images,
 ) {
     const isSpecial = isSpecialLevel(index);
+    console.log({ images})
 
-    // NOTE: This needs refactoring. There's currently no reliable way to validate
-    // whether the level is completed, making it hard to determine which assets
-    // should be used for the treasure chest.
     const obj = {
         x: xPos,
         y: yPos,
         index,
         isSpecial,
         ...images,
-        balloonImg: isSpecial ? images?.specialBloonImg : images?.balloonImg,
-        treasureChestOpened: images?.specialBloonDoneImg // placing the done asset here for now as quick way to access and use it.
-    };
+    }
 
     return ({ ...obj });
 }
