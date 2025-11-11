@@ -135,7 +135,11 @@ export class LevelSelectionScreen {
 
   private async createLevelButtons() {
     const images = await loadLevelImages();
-    // console.log('Level Selection Assets: ', { images })
+    console.log('FTM Debugging - Level Selection Assets (balloonImg): ', images?.balloonImg);
+    console.log('FTM Debugging - Level Selection Assets (specialBloonImg): ', images?.specialBloonImg);
+    console.log('FTM Debugging - Level Selection Assets (specialBloonDoneImg): ', images?.specialBloonDoneImg);
+    console.log('FTM Debugging - Level Selection Assets (lockImg): ', images?.lockImg);
+    console.log('FTM Debugging - Level Selection Assets (starImg): ', images?.starImg);
     const poss = getdefaultCloudBtnsPos(this.canvas);
     const totalLevels = this.data.levels.length;
     const buttonsPerPage = 10;

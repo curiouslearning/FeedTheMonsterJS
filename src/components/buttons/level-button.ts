@@ -16,7 +16,8 @@ export default class LevelBloonButton {
         balloonImg: any;
         lockImg: any;
         starImg: any;
-        treasureChestOpened?: any;
+        treasureChestImg?: any;
+        treasureChestDoneImg?: any;
     }
     public posX: number;
     public posY: number;
@@ -37,7 +38,10 @@ export default class LevelBloonButton {
     ) {
         this.context = context;
         this.levelData = levelData;
-        // console.log('Level Button Level Data: ', this.levelData)
+        console.log('FTM Debugging - Level Button Level Data: ', this.levelData);
+        console.log('FTM Debugging - Level Button Level Data (balloonImg): ', this.levelData?.balloonImg?.currentSrc);
+        console.log('FTM Debugging - Level Button Level Data (treasureChestImg): ', this.levelData?.treasureChestImg?.currentSrc);
+        console.log('FTM Debugging - Level Button Level Data (treasureChestOpened): ', this.levelData?.treasureChestDoneImg?.currentSrc);
         this.posX = this.levelData.x;
         this.posY = this.levelData.y;
         this.originalPosX = this.posX;
@@ -60,13 +64,27 @@ export default class LevelBloonButton {
             : size;
     }
 
+    private setLevelImg() {
+
+        const {
+            treasureChestImg,
+            treasureChestDoneImg,
+            isSpecial,
+            balloonImg
+        } = this.levelData
+
+        const specialImg = this.isDone ? treasureChestDoneImg : treasureChestImg;
+
+        return isSpecial ? specialImg : balloonImg;
+    }
+
     draw(
         levelSelectionPageIndex,
         unlockLevelIndex,
         gameLevelData,
         totalGameLevels
     ) {
-        const img = this.isDone ? this.levelData?.treasureChestOpened : this.levelData?.balloonImg;
+        const img = this.setLevelImg();
         const scale = this.levelData?.isSpecial ? 0.9 : 1; // 90% smaller for special levels
         const size = this.btnSize * scale;
         const offsetX = this.posX + (this.btnSize - size) / 2;
