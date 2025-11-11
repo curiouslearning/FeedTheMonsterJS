@@ -19,7 +19,7 @@ export class PubSub {
 
     checkSubscribers() {
         //To Do - This will be remove after developing FM-285
-        // console.log('checkSubscribers ', this.subscribers)
+        console.log('checkSubscribers ', this.subscribers)
     }
 
     subscribe(event, listenerCallback) {
