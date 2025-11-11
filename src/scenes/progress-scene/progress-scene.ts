@@ -236,7 +236,6 @@ export class ProgressionScene {
       this.audioPlayer.playAudio(MATCHBOX, 1.0);
       const shineSound = isBonusStar ? SURPRISE_BONUS_STAR : SHINE;
       this.audioPlayer.playAudio(shineSound, 1.0);
-      console.log(`Played ${isBonusStar ? "Bonus Star" : "Shine"} audio`);
       inputMachines.scoreState.value = scoreInputValue;
       inputMachines.scoreState.fire(); //animate the score.
     }
@@ -248,13 +247,9 @@ export class ProgressionScene {
     if (shouldAnimateStars) {
       setTimeout(() => {
         this.audioPlayer.playAudio(SWOOSH, 1.0);
-        console.log("Played Swoosh audio (stars moving into jar)");
-
         inputMachines.fillPercentState.value = jarFillInputValue;
         inputMachines.fillPercentState.fire();
-
         this.audioPlayer.playAudio(JAR_FILLING, 1.0);
-        console.log("Played Jar Filling audio");
       }, this.delayStateMachineInputs);
     } else {
       // Handle initial fill only (no star animation)
