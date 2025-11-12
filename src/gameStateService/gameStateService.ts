@@ -364,8 +364,6 @@ export class GameStateService extends PubSub {
 
                 //Combine both game stars and mini game star.
                 const totalStars = starCount + treasureChestMiniGameScore;
-                console.table({ level, starCount, treasureChestMiniGameScore })
-                console.log(' ')
                 return sum + (
                     this.isScorePassing(starCount)
                     ? totalStars : 0)
