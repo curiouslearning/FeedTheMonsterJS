@@ -38,10 +38,6 @@ export default class LevelBloonButton {
     ) {
         this.context = context;
         this.levelData = levelData;
-        console.log('FTM Debugging - Level Button Level Data: ', this.levelData);
-        console.log('FTM Debugging - Level Button Level Data (balloonImg): ', this.levelData?.balloonImg?.currentSrc);
-        console.log('FTM Debugging - Level Button Level Data (treasureChestImg): ', this.levelData?.treasureChestImg?.currentSrc);
-        console.log('FTM Debugging - Level Button Level Data (treasureChestOpened): ', this.levelData?.treasureChestDoneImg?.currentSrc);
         this.posX = this.levelData.x;
         this.posY = this.levelData.y;
         this.originalPosX = this.posX;
