@@ -63,6 +63,10 @@ export const AUDIO_URL_PRELOAD = [
 ];
 export const AUDIO_MINIGAME = "./assets/audios/treasure_miniGame.mp3";
 export const SURPRISE_BONUS_STAR = "./assets/audios/surprise-bonus-star.mp3";
+export const MATCHBOX = "./assets/audios/matchbox.mp3";
+export const SHINE = "./assets/audios/shine.mp3";
+export const SWOOSH = "./assets/audios/swoosh.mp3";
+export const JAR_FILLING = "./assets/audios/jar_filling.mp3";
 export const STONE_BURN = "./assets/audios/stone_burn.mp3";
 // Audios used during the Rive evolution animation.
 // The structure is designed to be easily scalable, allowing for the addition of more audio files as needed.
@@ -117,8 +121,8 @@ export const PLAY_BTN_IMG = "./assets/images/Play_button.svg";
 export const PAUSE_BTN_IMG = "./assets/images/Pause_Button.svg";
 export const MAP_BTN_IMG = "./assets/images/map_btn.svg";
 export const MAP_ICON_IMG = "./assets/images/mapIcon.webp";
-export const MAP_ICON_SPECIAL_LEVELS_ONGOING = "./assets/images/Chest_Ongoing_Level.svg";
-export const MAP_ICON_SPECIAL_LEVELS_DONE = "./assets/images/Chest_Done_Level.svg";
+export const TREASURE_CHEST_SPECIAL_LEVELS_ONGOING = "./assets/images/Chest_Ongoing_Level.png";
+export const TREASURE_CHEST_SPECIAL_LEVELS_DONE = "./assets/images/Chest_Done_Level.png";
 export const MAP_LOCK_IMG = "./assets/images/mapLock.webp";
 export const STAR_IMG = "./assets/images/star.webp";
 export const NEXT_BTN_IMG = "./assets/images/next_btn.svg";
@@ -127,8 +131,6 @@ export const RETRY_BTN_IMG = "./assets/images/retry_btn.svg";
 export const CANCEL_BTN_IMG = "./assets/images/close_btn.svg";
 export const YES_BTN_IMG = "./assets/images/confirm_btn.svg";
 export const POPUP_BG_IMG = "./assets/images/popup_bg_v01.svg";
-
-
 
 //mini game images
 export const CLOSED_CHEST = "./assets/images/closedchest.svg";
