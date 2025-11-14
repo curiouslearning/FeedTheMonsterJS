@@ -1,5 +1,26 @@
 
 
+## [1.2.0](https://github.com/curiouslearning/FeedTheMonsterJS/compare/1.1.0...1.2.0) (2025-11-10)
+
+
+### Features
+
+* FM-615 UI update: Level selection star collection from 3 -> 5 ([#1826](https://github.com/curiouslearning/FeedTheMonsterJS/issues/1826)) ([7b02294](https://github.com/curiouslearning/FeedTheMonsterJS/commit/7b0229464df177dba5177f027b6a7153267e88d2))
+* FM-622 UI update: Level end star collection  3 -> 5 ([#1832](https://github.com/curiouslearning/FeedTheMonsterJS/issues/1832)) ([50bd1ff](https://github.com/curiouslearning/FeedTheMonsterJS/commit/50bd1ff2c293b081a2c31124a8feed1f09b14f16))
+* Implement Rive-based Progress Jar Animation for Monster Progression (FM-688) ([#1831](https://github.com/curiouslearning/FeedTheMonsterJS/issues/1831)) ([6a4877c](https://github.com/curiouslearning/FeedTheMonsterJS/commit/6a4877cb6c55cef10c12aae2ea09f104d3a941ac))
+* Revise puzzle progression into 5 star progression (FM-620) ([#1834](https://github.com/curiouslearning/FeedTheMonsterJS/issues/1834)) ([9171a76](https://github.com/curiouslearning/FeedTheMonsterJS/commit/9171a7616216bce3228877e12b40eee836f623d5))
+* Updated assets by replacing special egg with treasure chest (FM-682). ([#1838](https://github.com/curiouslearning/FeedTheMonsterJS/issues/1838)) ([c65d457](https://github.com/curiouslearning/FeedTheMonsterJS/commit/c65d45709e709f04d8b427fe9ec0b31fb6be3826))
+* Updated FM-736 logic  from 60% stone spawning to 60% game completion and 90% cuttoff for bonus star. ([#1842](https://github.com/curiouslearning/FeedTheMonsterJS/issues/1842)) ([5d9423f](https://github.com/curiouslearning/FeedTheMonsterJS/commit/5d9423f9819e36995451f11a4e0f735fe8165caa))
+* Updated logic for validating if progress jar should appear (FM-688) ([#1833](https://github.com/curiouslearning/FeedTheMonsterJS/issues/1833)) ([f645b8c](https://github.com/curiouslearning/FeedTheMonsterJS/commit/f645b8cb91b035e5b17664f2561ba87533638c9f))
+
+
+### Bug Fixes
+
+* deployment issue package update ([afed25c](https://github.com/curiouslearning/FeedTheMonsterJS/commit/afed25c3544b5762e038cfa1fa8b086f55d5fbc6))
+* Fixed stars always showing regardless of score count (FM-744) ([#1840](https://github.com/curiouslearning/FeedTheMonsterJS/issues/1840)) ([6115eaf](https://github.com/curiouslearning/FeedTheMonsterJS/commit/6115eaf1df8298d982b31bcc8865832982711b01))
+* FM-745 UI issues related to 5 star score in different screens ([#1843](https://github.com/curiouslearning/FeedTheMonsterJS/issues/1843)) ([d4b0da6](https://github.com/curiouslearning/FeedTheMonsterJS/commit/d4b0da6b3c2e2c79207a8ea98b50ac9660e47c11))
+* sync package-lock.json with package.json ([fd9f111](https://github.com/curiouslearning/FeedTheMonsterJS/commit/fd9f11132159eba35563c03a8cc35d6d336a9136))
+
 ## [1.1.0](https://github.com/curiouslearning/FeedTheMonsterJS/compare/1.0.44...1.1.0) (2025-10-10)
 
 
