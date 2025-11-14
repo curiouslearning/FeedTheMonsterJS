@@ -27,7 +27,7 @@ export class ProgressionScene {
   private treasureChestScore: number = 0;
   private previousLevelStarEarned: number = 0;
   private targetStarCountMaxFill: number = 0;
-  private delayStateMachineInputs: number = 2000;
+  private delayStateMachineInputs: number = 800;
   private delaySwitchToLevelend: number = 3000;
   private isPassingScore: boolean = false;
 
@@ -230,6 +230,7 @@ export class ProgressionScene {
     jarFillInputValue: number,
     scoreInputValue: number
   }): void {
+
     const isBonusStar = scoreInputValue === 6; // for the treasure chest bonus
     const shouldAnimateStars = scoreInputValue > 0;
     // If stars were earned, trigger the score-related animation first.
@@ -238,7 +239,8 @@ export class ProgressionScene {
       this.audioPlayer.playAudio(MATCHBOX, 1.0);
       const shineSound = isBonusStar ? SURPRISE_BONUS_STAR : SHINE;
       this.audioPlayer.playAudio(shineSound, 1.0);
-      inputMachines.scoreState.fire(); //animate the score.
+      inputMachines.scoreState.value = scoreInputValue;
+      inputMachines.scoreState.fire();
     }
 
     /**
