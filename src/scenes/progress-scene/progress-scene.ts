@@ -1,8 +1,9 @@
-import { JAR_PROGRESSION, CACHED_RIVE_WASM } from '@constants';
+import { JAR_PROGRESSION, CACHED_RIVE_WASM, MATCHBOX, SHINE, SWOOSH, JAR_FILLING, SURPRISE_BONUS_STAR } from '@constants';
 import { SCENE_NAME_LEVEL_END } from "@constants";
 import { Rive, Layout, Fit, Alignment, RuntimeLoader, StateMachineInput } from '@rive-app/canvas';
 import gameStateService from '@gameStateService';
 import gameSettingsService from '@gameSettingsService';
+import { AudioPlayer } from '@components/audio-player';
 //For handling rive in offline mode.
 RuntimeLoader.setWasmUrl(CACHED_RIVE_WASM);
 
@@ -10,6 +11,7 @@ export class ProgressionScene {
   private riveMonsterElement: HTMLCanvasElement;
   private riveInstance: Rive;
   private stateMachineName: string = "State Machine 1";
+  private audioPlayer = new AudioPlayer();
   private animations = {
     EMPTY: 'Empty',
     ONE_STAR: '1_stars',
@@ -185,7 +187,7 @@ export class ProgressionScene {
 
       // Bonus delay (e.g., after the star animation)
       const treasureDelay = this.delayStateMachineInputs + animationCompletionDelay;
-      
+
       //Score value to trigger bonus star in rive progress jar.
       const bonusStarValue = 6;
 
@@ -228,25 +230,33 @@ export class ProgressionScene {
     jarFillInputValue: number,
     scoreInputValue: number
   }): void {
-
+    const isBonusStar = scoreInputValue === 6; // for the treasure chest bonus
     const shouldAnimateStars = scoreInputValue > 0;
-
     // If stars were earned, trigger the score-related animation first.
     inputMachines.scoreState.value = scoreInputValue; //set score value;
-
     if (shouldAnimateStars) {
+      this.audioPlayer.playAudio(MATCHBOX, 1.0);
+      const shineSound = isBonusStar ? SURPRISE_BONUS_STAR : SHINE;
+      this.audioPlayer.playAudio(shineSound, 1.0);
       inputMachines.scoreState.fire(); //animate the score.
     }
 
     /**
-     * The jar fill update is delayed slightly so it aligns visually with
-     * the score animation. Without this delay, the jar might fill too early,
-     * making the star-to-fill transition feel out of sync.
+     * Delay the jar fill sound and swoosh only when the score changes.
+     * This prevents multiple triggers and keeps timing aligned with animation.
      */
-    setTimeout(() => {
+    if (shouldAnimateStars) {
+      setTimeout(() => {
+        this.audioPlayer.playAudio(SWOOSH, 1.0);
+        inputMachines.fillPercentState.value = jarFillInputValue;
+        inputMachines.fillPercentState.fire();
+        this.audioPlayer.playAudio(JAR_FILLING, 1.0);
+      }, this.delayStateMachineInputs);
+    } else {
+      // Handle initial fill only (no star animation)
       inputMachines.fillPercentState.value = jarFillInputValue;
       inputMachines.fillPercentState.fire();
-    }, shouldAnimateStars ? this.delayStateMachineInputs : 0);
+    }
   }
 
   private getTargetStarCountForFill(monsterPhase: number): number {

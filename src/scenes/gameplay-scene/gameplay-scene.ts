@@ -42,6 +42,11 @@ import {
   PreviousPlayedLevel,
   MONSTER_PHASES,
   AUDIO_PATH_POINTS_ADD,
+  JAR_FILLING,
+  MATCHBOX,
+  SHINE,
+  SWOOSH,
+  SURPRISE_BONUS_STAR,
 } from "@constants";
 import gameStateService from '@gameStateService';
 import gameSettingsService from '@gameSettingsService';
@@ -194,6 +199,11 @@ export class GameplayScene {
     this.setupMonsterPhaseBg();
     this.timerStartSFXPlayed = false;
     this.audioPlayer.preloadGameAudio(AUDIO_PATH_POINTS_ADD); // to preload the PointsAdd.wav
+    this.audioPlayer.preloadGameAudio(MATCHBOX);
+    this.audioPlayer.preloadGameAudio(SHINE);
+    this.audioPlayer.preloadGameAudio(SWOOSH);
+    this.audioPlayer.preloadGameAudio(JAR_FILLING);
+    this.audioPlayer.preloadGameAudio(SURPRISE_BONUS_STAR);
   }
 
   private initializeRiveMonster(): RiveMonsterComponent {
@@ -753,7 +763,7 @@ export class GameplayScene {
   determineNextStep(isCorrect = false, isTimeOver = false) {
     const currentLevel = this.counter + 1;
     const loadPuzzleDelay = isCorrect ? 1500 : 3000;
-    
+
     if (currentLevel === this.levelForMinigame && !this.hasShownChest) {
       this.hasShownChest = true;
 
@@ -864,9 +874,9 @@ export class GameplayScene {
     );
 
     const loadSceneName = shouldDisplayProgressJar
-    ? SCENE_NAME_PROGRESS_LEVEL
-    : SCENE_NAME_LEVEL_END;
-    
+      ? SCENE_NAME_PROGRESS_LEVEL
+      : SCENE_NAME_LEVEL_END;
+
     // Signal the game state service to switch scenes.
     gameStateService.publish(gameStateService.EVENTS.SWITCH_SCENE_EVENT, loadSceneName);
   }
