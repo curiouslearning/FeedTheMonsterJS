@@ -136,14 +136,11 @@ export class SceneHandler {
 
   private cleanupScene() {
     this.activeScene['scene'] && this.activeScene['scene']?.dispose();
-    console.log('FTM Debugging - Clean Up Scene: ', this.activeScene['scene']);
   }
 
   private gotoScene(sceneName: string) {
-    console.log('FTM Debugging - Scene Object (loading): ', this.activeScene['loading']);
     this.cleanupScene();
     this.activeScene['scene'] = this.getScene(sceneName);
-    console.log('FTM Debugging - Scene Object (scene): ', this.activeScene['scene']);
   }
 
   private getScene(sceneName) {

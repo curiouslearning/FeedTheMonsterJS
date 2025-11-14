@@ -132,8 +132,6 @@ export const CANCEL_BTN_IMG = "./assets/images/close_btn.svg";
 export const YES_BTN_IMG = "./assets/images/confirm_btn.svg";
 export const POPUP_BG_IMG = "./assets/images/popup_bg_v01.svg";
 
-
-
 //mini game images
 export const CLOSED_CHEST = "./assets/images/closedchest.svg";
 export const OPEN_CHEST = "./assets/images/chest.svg";  
