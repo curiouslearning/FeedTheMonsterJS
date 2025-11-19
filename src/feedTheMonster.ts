@@ -20,6 +20,8 @@ import {
 import { URL } from "@data";
 import './styles/main.scss';
 import { FeatureFlagsService } from '@curiouslearning/features';
+import { ContainerAppInterface } from './container-app-interface/container-app-interface';
+import gameStateServiceInstance from './gameStateService';
 
 const featureFlagService = new FeatureFlagsService({
   metaData: { userId: pseudoId }
@@ -112,6 +114,13 @@ class App {
     if (this.is_cached.has(this.lang)) {
       this.handleCachedScenario(this.dataModal);
     }
+
+    // POC
+    new ContainerAppInterface({
+      gameStateService: gameStateServiceInstance,
+      androidInterface: window['Android']
+    });
+    
     this.registerWorkbox();
   }
 
