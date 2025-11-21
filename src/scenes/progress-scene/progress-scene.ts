@@ -1,4 +1,4 @@
-import { JAR_PROGRESSION, CACHED_RIVE_WASM, MATCHBOX, SHINE, SWOOSH, JAR_FILLING, SURPRISE_BONUS_STAR } from '@constants';
+import { JAR_PROGRESSION, CACHED_RIVE_WASM, JAR_FILLING } from '@constants';
 import { SCENE_NAME_LEVEL_END } from "@constants";
 import { Rive, Layout, Fit, Alignment, RuntimeLoader, StateMachineInput } from '@rive-app/canvas';
 import gameStateService from '@gameStateService';
@@ -11,7 +11,6 @@ export class ProgressionScene {
   private riveMonsterElement: HTMLCanvasElement;
   private riveInstance: Rive;
   private stateMachineName: string = "State Machine 1";
-  private audioPlayer = new AudioPlayer();
   private animations = {
     EMPTY: 'Empty',
     ONE_STAR: '1_stars',
@@ -27,9 +26,10 @@ export class ProgressionScene {
   private treasureChestScore: number = 0;
   private previousLevelStarEarned: number = 0;
   private targetStarCountMaxFill: number = 0;
-  private delayStateMachineInputs: number = 800;
+  private delayStateMachineInputs: number = 2000;
   private delaySwitchToLevelend: number = 3000;
   private isPassingScore: boolean = false;
+  private audioPlayer = new AudioPlayer();
 
   constructor() {
     const riveMonsterElement = gameSettingsService.getRiveCanvasValue();
@@ -87,8 +87,27 @@ export class ProgressionScene {
       ...riveConfig,
       onLoad: () => {
         this.riveOnLoadCallback();
+      },
+
+      onStateChange: (event) => {
+        this.handleStateChange(event);
       }
     });
+  }
+
+  private handleStateChange(event: any) {
+    const stateName = event.data;
+
+    // When jar fill animation starts
+    if (stateName?.includes("Loop")) {
+      setTimeout(() => {
+        this.playJarFillSfx();
+      }, 3000);
+    }
+  }
+
+  private playJarFillSfx(): void {
+    this.audioPlayer.playAudio(JAR_FILLING, 1.0);
   }
 
   /**
@@ -231,33 +250,24 @@ export class ProgressionScene {
     scoreInputValue: number
   }): void {
 
-    const isBonusStar = scoreInputValue === 6; // for the treasure chest bonus
     const shouldAnimateStars = scoreInputValue > 0;
 
+    // If stars were earned, trigger the score-related animation first.
+    inputMachines.scoreState.value = scoreInputValue; //set score value;
+
     if (shouldAnimateStars) {
-      this.audioPlayer.playAudio(MATCHBOX, 1.0);
-      const shineSound = isBonusStar ? SURPRISE_BONUS_STAR : SHINE;
-      this.audioPlayer.playAudio(shineSound, 1.0);
-      inputMachines.scoreState.value = scoreInputValue;
-      inputMachines.scoreState.fire();
+      inputMachines.scoreState.fire(); //animate the score.
     }
 
     /**
-     * Delay the jar fill sound and swoosh only when the score changes.
-     * This prevents multiple triggers and keeps timing aligned with animation.
+     * The jar fill update is delayed slightly so it aligns visually with
+     * the score animation. Without this delay, the jar might fill too early,
+     * making the star-to-fill transition feel out of sync.
      */
-    if (shouldAnimateStars) {
-      setTimeout(() => {
-        this.audioPlayer.playAudio(SWOOSH, 1.0);
-        inputMachines.fillPercentState.value = jarFillInputValue;
-        inputMachines.fillPercentState.fire();
-        this.audioPlayer.playAudio(JAR_FILLING, 1.0);
-      }, this.delayStateMachineInputs);
-    } else {
-      // Handle initial fill only (no star animation)
+    setTimeout(() => {
       inputMachines.fillPercentState.value = jarFillInputValue;
       inputMachines.fillPercentState.fire();
-    }
+    }, shouldAnimateStars ? this.delayStateMachineInputs : 0);
   }
 
   private getTargetStarCountForFill(monsterPhase: number): number {
