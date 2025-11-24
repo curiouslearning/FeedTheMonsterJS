@@ -26,11 +26,15 @@ export class ProgressionScene {
   private treasureChestScore: number = 0;
   private previousLevelStarEarned: number = 0;
   private targetStarCountMaxFill: number = 0;
-  private delayStateMachineInputs: number = 700;
+  private delayStateMachineInputs: number = 800;
   private delaySwitchToLevelend: number = 3000;
   private isPassingScore: boolean = false;
   private audioPlayer = new AudioPlayer();
-
+  private isFirstInput = true;
+  private inputQueue: (() => void)[] = [];
+  private isProcessingQueue = false;
+  private previousJarFillValue = 0;
+  private animationSettleTime = 2000; // time for rive SM to finish (tweakable)
   constructor() {
     const riveMonsterElement = gameSettingsService.getRiveCanvasValue();
     this.riveMonsterElement = riveMonsterElement;
@@ -87,23 +91,8 @@ export class ProgressionScene {
       ...riveConfig,
       onLoad: () => {
         this.riveOnLoadCallback();
-      },
-
-      onStateChange: (event) => {
-        this.handleStateChange(event);
       }
     });
-  }
-
-  private handleStateChange(event: any) {
-    const stateName = event.data;
-
-    // When jar fill animation starts
-    if (stateName?.includes("Loop")) {
-      setTimeout(() => {
-        this.playJarFillSfx();
-      }, 3000);
-    }
   }
 
   private playJarFillSfx(): void {
@@ -250,24 +239,71 @@ export class ProgressionScene {
     scoreInputValue: number
   }): void {
 
-    const shouldAnimateStars = scoreInputValue > 0;
+    const isBonusStar = (scoreInputValue === 6);
 
-    // If stars were earned, trigger the score-related animation first.
-    inputMachines.scoreState.value = scoreInputValue; //set score value;
+    // Push a new task into queue
+    this.inputQueue.push(() => {
+      let startDelay = 0;
 
-    if (shouldAnimateStars) {
-      inputMachines.scoreState.fire(); //animate the score.
-    }
+      //First input only → apply delayStateMachineInputs
+      if (this.isFirstInput) {
+        startDelay = this.delayStateMachineInputs;
+        this.isFirstInput = false;
+      }
 
-    /**
-     * The jar fill update is delayed slightly so it aligns visually with
-     * the score animation. Without this delay, the jar might fill too early,
-     * making the star-to-fill transition feel out of sync.
-     */
+      // Bonus star must wait for previous animation fully
+      if (isBonusStar) {
+        startDelay = this.animationSettleTime;
+      }
+
+      setTimeout(() => {
+
+        // --- Update score ---
+        inputMachines.scoreState.value = scoreInputValue;
+        if (scoreInputValue > 0) {
+          inputMachines.scoreState.fire();
+        }
+
+        // --- Jar fill after short internal delay ---
+        const jarDelay = scoreInputValue > 0 ? this.delayStateMachineInputs : 0;
+
+        setTimeout(() => {
+          inputMachines.fillPercentState.value = jarFillInputValue;
+          inputMachines.fillPercentState.fire();
+
+          // Play SFX only if jarFillInputValue increased
+          if (jarFillInputValue > this.previousJarFillValue) {
+            setTimeout(() => this.playJarFillSfx(), 3000);
+          }
+
+          this.previousJarFillValue = jarFillInputValue;
+
+
+          // Wait for full SM settle before next queued input
+          setTimeout(() => {
+            this.processQueue();
+          }, this.animationSettleTime);
+
+        }, jarDelay);
+
+      }, startDelay);
+    });
+
+    this.processQueue();
+  }
+
+  private processQueue() {
+    if (this.isProcessingQueue) return;
+    if (this.inputQueue.length === 0) return;
+
+    this.isProcessingQueue = true;
+    const nextTask = this.inputQueue.shift();
+    nextTask();
+
+    // After the task starts, mark ready for next
     setTimeout(() => {
-      inputMachines.fillPercentState.value = jarFillInputValue;
-      inputMachines.fillPercentState.fire();
-    }, shouldAnimateStars ? this.delayStateMachineInputs : 0);
+      this.isProcessingQueue = false;
+    }, 50);
   }
 
   private getTargetStarCountForFill(monsterPhase: number): number {
