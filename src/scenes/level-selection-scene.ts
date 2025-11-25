@@ -70,7 +70,7 @@ export class LevelSelectionScreen {
     this.width = canvasWidth > 1024 ? 500 : canvasWidth;
     this.height = canvasHeight;
     this.context = context;
-
+    this.levelButtons = [];
     this.data = gameStateService.getFTMData();
     let self = this;
     this.levelsSectionCount =
@@ -79,9 +79,10 @@ export class LevelSelectionScreen {
         : Math.floor(self.data.levels.length / 10);
     this.levels = [];
     this.analyticsIntegration = AnalyticsIntegration.getInstance();
-    this.init();
-    this.createLevelButtons();
-    this.gameLevelData = GameScore.getAllGameLevelInfo();
+    this.init().then(async () => {
+      await this.createLevelButtons();
+      this.gameLevelData = GameScore.getAllGameLevelInfo();
+   });
     this.audioPlayer = new AudioPlayer();
     this.unlockLevelIndex = -1;
     this.previousPlayedLevelNumber =
