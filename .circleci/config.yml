@@ -57,6 +57,13 @@ jobs:
       - build-and-deploy:
           to: 's3://feedthemonster-development'
 
+  build-and-deploy-poc:
+    docker:
+      - image: cimg/python:3.13.2-node
+    steps:
+      - build-and-deploy:
+          to: 's3://globallit-aws-s3-us-east-2-dev-webapp/feed-the-monster-poc'
+
   build-and-deploy-test:
     docker:
       - image: cimg/python:3.13.2-node
@@ -96,6 +103,13 @@ workflows:
             branches:
               only:
                 - develop
+      - build-and-deploy-poc:
+          context:
+            - aws-context
+          filters:
+            branches:
+              only:
+                - /^.*poc-.*$/
       - build-and-deploy-test:
           context:
             - aws-context
