@@ -257,29 +257,13 @@ export class ProgressionScene {
       }
 
       setTimeout(() => {
+        this.handleScoreInput(inputMachines.scoreState, scoreInputValue);
 
-        // --- Update score ---
-        inputMachines.scoreState.value = scoreInputValue;
-        if (scoreInputValue > 0) {
-          inputMachines.scoreState.fire();
-        }
-
-        // --- Jar fill after short internal delay ---
         const jarDelay = scoreInputValue > 0 ? this.delayStateMachineInputs : 0;
 
         setTimeout(() => {
-          inputMachines.fillPercentState.value = jarFillInputValue;
-          inputMachines.fillPercentState.fire();
+          this.handleJarFill(inputMachines.fillPercentState, jarFillInputValue);
 
-          // Play SFX only if jarFillInputValue increased
-          if (jarFillInputValue > this.previousJarFillValue) {
-            setTimeout(() => this.playJarFillSfx(), 3000);
-          }
-
-          this.previousJarFillValue = jarFillInputValue;
-
-
-          // Wait for full SM settle before next queued input
           setTimeout(() => {
             this.processQueue();
           }, this.animationSettleTime);
@@ -290,6 +274,22 @@ export class ProgressionScene {
     });
 
     this.processQueue();
+  }
+
+  private handleScoreInput(scoreState: StateMachineInput, score: number) {
+    scoreState.value = score;
+    if (score > 0) scoreState.fire();
+  }
+
+  private handleJarFill(fillState: StateMachineInput, jarValue: number) {
+    fillState.value = jarValue;
+    fillState.fire();
+
+    if (jarValue > this.previousJarFillValue) {
+      setTimeout(() => this.playJarFillSfx(), 3000);
+    }
+
+    this.previousJarFillValue = jarValue;
   }
 
   private processQueue() {
