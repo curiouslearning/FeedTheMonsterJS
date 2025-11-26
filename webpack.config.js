@@ -86,6 +86,7 @@ var config = {
       patterns: [
         { from: "./public/index.html", to: "./" },
         { from: "./public/index.css", to: "./" },
+        { from: "./public/manifest.json", to: "./" }
         { from: "./public/assets", to: "./assets" },
         { from: "./lang", to: "./lang" },
       ],
