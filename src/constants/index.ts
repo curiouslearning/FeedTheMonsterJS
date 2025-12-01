@@ -26,10 +26,6 @@ export const EndScene1 = "EndScene1";
 export const FONT_BASE_PATH = './assets/fonts/';
 
 //Audio paths
-export const AUDIO_PATH_EATS = "./assets/audios/Eat.mp3";
-export const AUDIO_PATH_MONSTER_SPIT = "./assets/audios/MonsterSpit.mp3";
-export const AUDIO_PATH_MONSTER_DISSAPOINTED =
-  "./assets/audios/Disapointed-05.mp3";
 export const AUDIO_PATH_POINTS_ADD = "./assets/audios/PointsAdd.wav";
 export const AUDIO_PATH_CORRECT_STONE = "assets/audios/CorrectStoneFinal.mp3";
 export const AUDIO_PATH_CHEERING_FUNC = (randomNumber) =>
@@ -51,10 +47,6 @@ export const AUDIO_URL_PRELOAD = [
   "./assets/audios/LevelWinFanfare.mp3",
   "./assets/audios/LevelLoseFanfare.mp3",
   "./assets/audios/ButtonClick.mp3",
-  "./assets/audios/Monster Spits wrong stones-01.mp3",
-  "./assets/audios/Disapointed-05.mp3",
-  "./assets/audios/MonsterSpit.mp3",
-  "./assets/audios/Eat.mp3",
   "./assets/audios/PointsAdd.wav",
   "./assets/audios/are-you-sure.mp3",
   "./assets/audios/monster_discovered_fanfare.mp3",
