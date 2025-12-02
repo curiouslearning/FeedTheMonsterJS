@@ -24,7 +24,9 @@ export class ContainerAppInterface {
 
   private handleLeveEnd() {
     try {
-      this.androidInterface.logEvent(JSON.stringify(this.gameStateService.getLevelEndSceneData()));
+      const levelEndData = this.gameStateService.getLevelEndSceneData();
+      delete levelEndData.data;
+      this.androidInterface.logEvent(JSON.stringify(levelEndData));
     } catch (e) {
       console.error('Error: ContainerAppInterface.handleLevelEnd', e)
     }
