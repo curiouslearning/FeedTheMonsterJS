@@ -61,10 +61,6 @@ export const SWOOSH = "./assets/audios/swoosh.mp3";
 export const JAR_FILLING = "./assets/audios/jar_filling.mp3";
 export const STONE_BURN = "./assets/audios/stone_burn.mp3";
 // Audios used during the Rive evolution animation.
-// The structure is designed to be easily scalable, allowing for the addition of more audio files as needed.
-export const EVOLUTION_AUDIOS = {
-  EVOL_1: ['./assets/audios/star_whoosh_and_poof.mp3'],
-}
 
 // Evolution audio paths
 export const AUDIO_CHEERING = './assets/audios/Cheering-03.mp3';

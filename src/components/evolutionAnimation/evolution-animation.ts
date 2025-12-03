@@ -3,8 +3,7 @@ import { RiveMonsterComponent, RiveMonsterComponentProps } from '@components/riv
 import {
   EVOL_MONSTER,
   AUDIO_INTRO,
-  AUDIO_MONSTER_EVOLVE,
-  EVOLUTION_AUDIOS
+  AUDIO_MONSTER_EVOLVE
 } from '@constants';
 import gameStateService from '@gameStateService';
 import { AudioPlayer } from '@components/audio-player';
@@ -230,8 +229,6 @@ export class EvolutionAnimationComponent extends RiveMonsterComponent {
   }
 
   public startAnimation() {
-    //Call the logic that will handle the audio during the evolution animation.
-    this.playEvolutionSoundEffects();
 
     // Set gray class 900ms before fade-out
     this.fadeEffectTimeoutId = setTimeout(() => {
@@ -260,18 +257,6 @@ export class EvolutionAnimationComponent extends RiveMonsterComponent {
       // Clear the timeout ID since it has executed
       this.evolutionCompleteTimeoutId = null;
     }, this.EVOLUTION_ANIMATION_COMPLETE_DELAY) as unknown as number;
-  }
-
-  private playEvolutionSoundEffects() {
-    // The 'Play' event is triggered because we need to play an audio during the play animation of the Rive entity.
-    this.executeRiveAction('Play', () => {
-      this.evolutionSoundEffectsTimeoutId = setTimeout(() => {
-        // Only play if tab is visible
-        if (isDocumentVisible()) {
-          this.audioPlayer.playAudioQueue(false, EVOLUTION_AUDIOS.EVOL_1[0]);
-        }
-      }, 1000) as unknown as number;
-    });
   }
 
   public dispose() {
