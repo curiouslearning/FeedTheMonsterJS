@@ -3,305 +3,255 @@ import {
     font,
 } from "@common";
 import {
-    SPECIAL_LEVELS,
-} from "@constants";
+    MAP_LOCK_IMG,
+    STAR_IMG
+} from '@constants';
+import {
+    BaseButtonComponent,
+    ButtonOptions,
+} from '@components/buttons/base-button-component/base-button-component';
 
-export default class LevelBloonButton {
-    private context: CanvasRenderingContext2D;
-    private levelData: {
-        x: number;
-        y: number;
-        index: number;
-        isSpecial: boolean;
-        balloonImg: any;
-        lockImg: any;
-        starImg: any;
-        treasureChestImg?: any;
-        treasureChestDoneImg?: any;
-    }
-    public posX: number;
-    public posY: number;
-    private originalPosX: number;
-    private originalPosY: number;
-    private size: number;
-    private radiusOffSet: number;
-    private bloonSize: number;
-    private btnSize: number;
-    private lockSize: number;
-    private textFontSize: number;
-    private isDone: boolean = false; //Flag for indicating this level is done.
+const PULSING_EFFECT_STYLE = "pulsing";
+const SPECIAL_LEVELS_INDEX = 4;
+interface LevelButtonConfig {
+    index: number;
+    options: Partial<ButtonOptions>;
+    isNavBtn: boolean;
+    isCurrentLevel: boolean;
+    gameLevel: number;
+    isLevelLock: boolean;
+    starsCount: number;
+    isDebuggerOn: boolean;
+    levelTypeText: string;
+    callback: () => void;
+}
 
-    constructor(
-        canvas,
-        context,
-        levelData,
-    ) {
-        this.context = context;
-        this.levelData = levelData;
-        this.posX = this.levelData.x;
-        this.posY = this.levelData.y;
-        this.originalPosX = this.posX;
-        this.originalPosY = this.posY;
-        this.size = canvas.height / 5;
-        this.radiusOffSet = canvas.height / 20;
-        this.bloonSize = this.setCorrectImageSize(this.size);
-        this.btnSize = this.bloonSize;
-        this.lockSize = canvas.height / 13;
-        this.textFontSize = (this.size) / 6;
-    }
+export default class LevelSelectionButtons extends BaseButtonComponent {
+    public elementId: string; //CSS element ID.
+    public btnElementIndex: number; //Unique index number from the list of created level buttons.
+    public gameLevel: number; //Game level number.
+    public textIndex: number; //Index number for displaying.
+    public isGameDone: boolean = false;
+    private isButtonLock: boolean = false;
+    private btnSpan: HTMLSpanElement;
+    private textLevelType: HTMLSpanElement;
+    private btnImage: HTMLImageElement;
+    private isNavBtn: boolean = false;
+    private starsCount: number = 0;
+    private buttonImageId: string = '';
+    private onClickCallback: (gameLevel?: number) => void;
 
-    isSpecialLevel(index) {
-        return SPECIAL_LEVELS.includes(index);
-    };
-
-    setCorrectImageSize(size: number): number {
-        return this.levelData?.isSpecial
-            ? size / 1.5
-            : size;
-    }
-
-    private setLevelImg() {
-
-        const {
-            treasureChestImg,
-            treasureChestDoneImg,
-            isSpecial,
-            balloonImg
-        } = this.levelData
-
-        const specialImg = this.isDone ? treasureChestDoneImg : treasureChestImg;
-
-        return isSpecial ? specialImg : balloonImg;
-    }
-
-    draw(
-        levelSelectionPageIndex,
-        unlockLevelIndex,
-        gameLevelData,
-        totalGameLevels
-    ) {
-        const img = this.setLevelImg();
-        const scale = this.levelData?.isSpecial ? 0.9 : 1; // 90% smaller for special levels
-        const size = this.btnSize * scale;
-        const offsetX = this.posX + (this.btnSize - size) / 2;
-        const offsetY = this.posY + (this.btnSize - size) / 2;
-        this.context.drawImage(
-            img,
-            offsetX,
-            offsetY,
-            size,
-            size
+    constructor({
+        index,
+        options = {},
+        isNavBtn,
+        isCurrentLevel,
+        gameLevel,
+        isLevelLock,
+        starsCount,
+        isDebuggerOn = false,
+        levelTypeText = '',
+        callback
+    }: LevelButtonConfig) {
+        super({
+            id: options.id,
+            className: options.className,
+            imageSrc: options.imageSrc,
+            imageAlt: options.imageAlt,
+            targetId: options.targetId,
+            imageClass: options.imageClass,
+            imageID: options.imageID
+        });
+        this.elementId = options.id;
+        this.btnElementIndex = index;
+        this.isNavBtn = isNavBtn;
+        this.gameLevel = gameLevel;
+        this.isButtonLock = isLevelLock;
+        this.onClickCallback = callback;
+        this.starsCount = starsCount;
+        this.buttonImageId = options.imageID;
+        super.onClick(this.handleOnClick.bind(this));
+        this.renderGameBtnAssets(
+            isCurrentLevel,
+            starsCount,
+            isDebuggerOn,
+            levelTypeText
         );
+    }
 
-        this.drawNumberText(levelSelectionPageIndex);
+    private renderGameBtnAssets(
+        isCurrentLevel: boolean,
+        starsCount: number,
+        isDebuggerOn: boolean,
+        levelTypeText: string
+    ): void {
+        if (this.isNavBtn) return;
+        this.textIndex = this.gameLevel;
+        this.createTextSpan(this.gameLevel);
+        this.enablePulseEffect(isCurrentLevel);
+        this.createLockDisplay();
+        this.createStars(starsCount);
+        this.createLevelTypeText(isDebuggerOn, levelTypeText)
+    }
 
-        if (this.btnSize < this.bloonSize) {
-            this.btnSize = this.btnSize + 0.50;
-        } else {
-            this.btnSize = this.bloonSize;
-            this.posX = this.levelData.x;
-            this.posY = this.levelData.y;
+    private createLockDisplay(): void {
+        if (!this.isButtonLock) return;
+
+        this.btnImage = this.createImageElement(MAP_LOCK_IMG, 'btn-lock-img', 'btn-lock-img');
+
+        // Add the img element to the button
+        this.element.append(this.btnImage);
+    }
+
+    private createStars(starsCount: number):void {
+        if (this.isButtonLock && starsCount === 0) return;
+        for (let i = 0; i < starsCount; i++) {
+            const keyName = `star-${i}`;
+            const newStar = this.createImageElement(
+                STAR_IMG,
+                'level-stars',
+                'level-stars',
+                `star-${i}`
+            );
+
+            this[keyName] = newStar;
+
+            this.element.append(newStar);
+        }
+    }
+
+    private createImageElement(
+        src: string,
+        className: string,
+        alt: string = "",
+        id: string = ""
+    ): HTMLImageElement {
+        const image = document.createElement("img");
+        image.src = src;
+        image.alt = alt;
+        image.id = id;
+
+        if (className) {
+            image.classList.add(className);
         }
 
-        this.drawIcons(
-            levelSelectionPageIndex,
-            unlockLevelIndex,
-            gameLevelData,
-            totalGameLevels
-        );
+        return image;
     }
 
-    drawNumberText(levelSelectionPageIndex) {
-        const isSpecial = this.levelData?.isSpecial;
-        this.context.fillStyle = "white";
-        this.context.font = this.textFontSize + `px ${font}, monospace`;
-        this.context.textAlign = "center";
+    private handleOnClick(): void {
+        if (!this.isButtonLock) {
+            this.isNavBtn
+                ? this.onClickCallback()
+                : this.onClickCallback(this.gameLevel);
+        }
+    }
 
-        let X_POS = 0;
-        let Y_POS = 0;
+    private createLevelTypeText(isDebuggerOn: boolean = false, text: string): void {
+        if (!isDebuggerOn) return;
 
-        if (isSpecial) {
-            X_POS = this.levelData.x + this.size / 3;
+        this.textLevelType = document.createElement("span");
+        this.textLevelType.className = `level-type-text`;
+        this.textLevelType.textContent = text;
 
-            if (this.isDone) {
-                Y_POS = this.levelData.y + this.size / 1.73;
+        //Add text span to the button element.
+        this.element.append(this.textLevelType);
+    }
+
+    public updateLevelTypeText(updatedTextValue: string): void {
+        if (this.textLevelType) {
+            this.textLevelType.textContent = updatedTextValue;
+        }
+    }
+
+    private createTextSpan(text: number | string): void {
+        this.btnSpan = document.createElement("span");
+        this.btnSpan.className = this.btnElementIndex === SPECIAL_LEVELS_INDEX
+        ? 'special-btn-level-span'
+        : 'btn-level-span';
+        this.updateButtonSpanText(text);
+
+        //Add span to the button element.
+        this.element.append(this.btnSpan);
+    }
+
+    private updateButtonSpanText(textValue: number | string): void {
+        this.btnSpan.textContent = `${textValue}`;
+    }
+
+    public updateBtn(gameLevel: number, isBtnLock: boolean, newStarsCount: number): void {
+        this.updateBtnDisplay(true);
+        if (this.isNavBtn) return; //If the button is nav; Do not run this method.
+        this.gameLevel = gameLevel;
+        this.textIndex = gameLevel;
+        this.updateButtonSpanText(gameLevel);
+        this.updateLockDisplay(isBtnLock);
+        this.updateStarDisplay(newStarsCount);
+    }
+
+    private updateLockDisplay(isBtnLock: boolean): void {
+        this.isButtonLock = isBtnLock;
+        if (this.btnImage) {
+            this.btnImage.style.display = !isBtnLock ? 'none' : 'block';
+        } else if (!this.btnImage && isBtnLock) {
+            this.createLockDisplay();
+        }
+    }
+
+    public updateBtnDisplay(shouldShow: boolean): void {
+        this.element.style.display = shouldShow ? "block" : "none";
+    }
+
+    public enablePulseEffect(isCurrentLevel: boolean): void {
+        if (isCurrentLevel) {
+            this.element.classList.add(PULSING_EFFECT_STYLE);
+        } else {
+            this.element.classList.remove(PULSING_EFFECT_STYLE);
+        }
+    }
+
+    private updateStarDisplay(newStarsCount: number): void {
+        if (newStarsCount === 0 && this.starsCount === 0) return;
+        const oldStars = this.starsCount;
+        const maxStars = Math.max(oldStars, newStarsCount);
+
+        for (let i = 0; i < maxStars; i++) {
+            const keyName = `star-${i}`;
+            const starEl = this[keyName];
+
+            if ( i < newStarsCount) {
+                //star should be visible.
+                if (starEl) {
+                    //Already exists -> ensure visible.
+                    starEl.style.display = "block";
+                } else {
+                    //Create new star
+                    const newStar = this.createImageElement(
+                        STAR_IMG,
+                        'level-stars',
+                        'level-stars',
+                        keyName
+                    );
+
+                    this[keyName] = newStar;
+                    this.element.append(newStar);
+                }
             } else {
-                Y_POS = this.levelData.y + this.size / 1.8;
-            }
-        } else {
-            X_POS = this.levelData.x + this.size / 3.5;
-            Y_POS = this.levelData.y + this.size / 3
-        }
-
-        this.context.fillText(
-            `${this.levelData.index + levelSelectionPageIndex}`,
-            X_POS,
-            Y_POS
-        );
-
-        this.context.font = this.textFontSize - (this.size) / 30 + `px ${font}, monospace`;
-    }
-
-    applyPulseEffect() {
-        const PulseDuration = 1500;
-        const GrowPhaseThreshold = 0.7;
-        const BaseShadowSize = 15;
-        const MaxShadowSize = 45;
-        const MaxOpacity = 0.5;
-        const BaseColorRgba = '255, 255, 255';
-
-        const animationProgress = (Date.now() % PulseDuration) / PulseDuration;
-        const growPhase = animationProgress <= GrowPhaseThreshold;
-
-        const phaseDuration = growPhase ? GrowPhaseThreshold : (1 - GrowPhaseThreshold);
-        const progress = growPhase ? animationProgress / GrowPhaseThreshold : (animationProgress - GrowPhaseThreshold) / phaseDuration;
-
-        const shadowSize = growPhase ? progress * BaseShadowSize : BaseShadowSize + progress * MaxShadowSize;
-        const shadowOpacity = growPhase ? MaxOpacity * (1 - progress) : 0;
-
-        if (shadowOpacity <= 0) return;
-
-        const { x: scaleX, y: scaleY, radius: scaleRadius } = this.levelData?.isSpecial
-            ? { x: 3, y: 2.5, radius: 2.2 }
-            : { x: 3.4, y: 3.8, radius: 3.2 };
-
-        const centerX = this.posX + this.btnSize / scaleX;
-        const centerY = this.posY + this.btnSize / scaleY;
-        const radius = this.btnSize / scaleRadius + shadowSize;
-
-        this.context.save();
-        this.context.beginPath();
-        this.context.arc(centerX, centerY, radius, 0, 2 * Math.PI);
-        this.context.fillStyle = `rgba(${BaseColorRgba}, ${shadowOpacity})`;
-        this.context.fill();
-        this.context.restore();
-    }
-
-    drawIcons(
-        pageIndex,
-        unlockLevelIndex,
-        gameLevelData,
-        totalGameLevels
-    ) {
-        const index = this.levelData.index;
-        if (!Debugger.DebugMode) {
-            (index + pageIndex - 1 > unlockLevelIndex + 1) && this.drawLock();
-        }
-
-        if (gameLevelData.length && index + pageIndex <= totalGameLevels) {
-
-            for (let i = 0; i < gameLevelData.length; i++) {
-                if (
-                    index - 1 + pageIndex ===
-                    parseInt(gameLevelData[i].levelNumber)
-                ) {
-                    if (this.levelData?.isSpecial) {
-                        this.isDone = true;
-                    }
-
-                    //If score is not 0, render stars.
-                    if (gameLevelData[i].starCount) {
-                        this.checkStars(
-                            gameLevelData[i].starCount
-                        );
-                    }
-
-                    break;
+                // STAR SHOULD BE HIDDEN (or removed)
+                if (starEl) {
+                    starEl.style.display = "none";
                 }
             }
         }
+
+        //Update star count.
+        this.starsCount = newStarsCount;
     }
 
-    drawLock() {
-        this.context.drawImage(
-            this.levelData?.lockImg,
-            this.levelData.x,
-            this.levelData.y,
-            this.lockSize,
-            this.lockSize
-        );
-    }
-
-    checkStars(starCount) {
-        const isSpecial = this.levelData?.isSpecial;
-        const posX = this.levelData.x;
-        const posY = this.levelData.y;
-        const size = this.size;
-
-        // 1st star (top-left)
-        if (starCount >= 1) {
-            this.drawStar(
-                posX,
-                posY - size * 0.01
-            );
-        }
-
-        // 2nd star (top-right)
-        if (starCount > 1) {
-            this.drawStar(
-                posX + size / 2.5,
-                posY - size * 0.01
-            );
-        }
-
-        // 3rd star (top-center)
-        if (starCount > 2) {
-            this.drawStar(
-                posX + size / 5,
-                posY - size * 0.1
-            );
-        }
-
-        // 4th star (bottom-left, below 1st)
-        if (starCount > 3) {
-            this.drawStar(
-                posX - size / 15,
-                posY + size * 0.17
-            );
-        }
-
-        // 5th star (bottom-right, below 2nd)
-        if (starCount > 4) {
-            this.drawStar(
-                posX + size / 2.3,
-                posY + size * 0.17
-            );
+    public updateButtonImage(newImageSrc: string): void {
+        const image = document.getElementById(this.buttonImageId);
+        if (image && image instanceof HTMLImageElement) {
+            image.src = newImageSrc;
         }
     }
 
-    drawStar(posX, posY) {
-        this.context.drawImage(
-            this.levelData?.starImg,
-            posX,
-            posY,
-            this.size / 5,
-            this.size / 5
-        );
-    }
-
-    onClick(
-        xClick: number,
-        yClick: number,
-        levelSelectionPageIndex: number,
-        unlockLevelIndex: number,
-        callBack
-    ) {
-        const distance = Math.sqrt(
-            (xClick - this.levelData.x - this.radiusOffSet) *
-            (xClick - this.levelData.x - this.radiusOffSet) +
-            (yClick - this.levelData.y - this.radiusOffSet) *
-            (yClick - this.levelData.y - this.radiusOffSet)
-        )
-        if (distance < 45) {
-            if (Debugger.DebugMode || (
-                this.levelData.index + levelSelectionPageIndex <= unlockLevelIndex
-            )) {
-                this.btnSize = this.bloonSize - 4;
-                this.posX = this.originalPosX + 0.5;
-                this.posY = this.originalPosY + 1;
-
-                callBack(this.levelData.index)
-            }
-        }
-    }
 }
