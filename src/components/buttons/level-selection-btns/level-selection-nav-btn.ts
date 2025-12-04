@@ -26,17 +26,11 @@ export default class LevelSelectionNavButtons extends BaseButtonComponent {
             imageAlt: options.imageAlt,
             targetId: options.targetId,
             imageClass: options.imageClass,
-            imageID: options.imageID
+            imageID: options.imageID,
+            onClick: callback
         });
         this.elementId = options.id;
         this.btnElementIndex = index;
-        this.onClickCallback = callback;
-        super.onClick(this.handleOnClick.bind(this));
-
-    }
-
-    private handleOnClick(): void {
-        this.onClickCallback();
     }
 
     public updateBtnDisplay(shouldShow: boolean): void {
