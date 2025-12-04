@@ -1,8 +1,4 @@
 import {
-    Debugger,
-    font,
-} from "@common";
-import {
     MAP_LOCK_IMG,
     STAR_IMG
 } from '@constants';
@@ -13,10 +9,10 @@ import {
 
 const PULSING_EFFECT_STYLE = "pulsing";
 const SPECIAL_LEVELS_INDEX = 4;
+
 interface LevelButtonConfig {
     index: number;
     options: Partial<ButtonOptions>;
-    isNavBtn: boolean;
     isCurrentLevel: boolean;
     gameLevel: number;
     isLevelLock: boolean;
@@ -26,7 +22,7 @@ interface LevelButtonConfig {
     callback: () => void;
 }
 
-export default class LevelSelectionButtons extends BaseButtonComponent {
+export default class LevelSelectionLevelButtons extends BaseButtonComponent {
     public elementId: string; //CSS element ID.
     public btnElementIndex: number; //Unique index number from the list of created level buttons.
     public gameLevel: number; //Game level number.
@@ -36,7 +32,6 @@ export default class LevelSelectionButtons extends BaseButtonComponent {
     private btnSpan: HTMLSpanElement;
     private textLevelType: HTMLSpanElement;
     private btnImage: HTMLImageElement;
-    private isNavBtn: boolean = false;
     private starsCount: number = 0;
     private buttonImageId: string = '';
     private onClickCallback: (gameLevel?: number) => void;
@@ -44,7 +39,6 @@ export default class LevelSelectionButtons extends BaseButtonComponent {
     constructor({
         index,
         options = {},
-        isNavBtn,
         isCurrentLevel,
         gameLevel,
         isLevelLock,
@@ -64,7 +58,6 @@ export default class LevelSelectionButtons extends BaseButtonComponent {
         });
         this.elementId = options.id;
         this.btnElementIndex = index;
-        this.isNavBtn = isNavBtn;
         this.gameLevel = gameLevel;
         this.isButtonLock = isLevelLock;
         this.onClickCallback = callback;
@@ -85,7 +78,6 @@ export default class LevelSelectionButtons extends BaseButtonComponent {
         isDebuggerOn: boolean,
         levelTypeText: string
     ): void {
-        if (this.isNavBtn) return;
         this.textIndex = this.gameLevel;
         this.createTextSpan(this.gameLevel);
         this.enablePulseEffect(isCurrentLevel);
@@ -140,9 +132,7 @@ export default class LevelSelectionButtons extends BaseButtonComponent {
 
     private handleOnClick(): void {
         if (!this.isButtonLock) {
-            this.isNavBtn
-                ? this.onClickCallback()
-                : this.onClickCallback(this.gameLevel);
+            this.onClickCallback(this.gameLevel);
         }
     }
 
@@ -158,6 +148,7 @@ export default class LevelSelectionButtons extends BaseButtonComponent {
     }
 
     public updateLevelTypeText(updatedTextValue: string): void {
+        //Level type label for dev mode.
         if (this.textLevelType) {
             this.textLevelType.textContent = updatedTextValue;
         }
@@ -180,7 +171,6 @@ export default class LevelSelectionButtons extends BaseButtonComponent {
 
     public updateBtn(gameLevel: number, isBtnLock: boolean, newStarsCount: number): void {
         this.updateBtnDisplay(true);
-        if (this.isNavBtn) return; //If the button is nav; Do not run this method.
         this.gameLevel = gameLevel;
         this.textIndex = gameLevel;
         this.updateButtonSpanText(gameLevel);

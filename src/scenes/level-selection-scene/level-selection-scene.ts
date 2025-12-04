@@ -3,7 +3,6 @@ import {
   lang,
 } from "@common";
 import { levelSelectionController } from './level-selection-controller';
-
 import { getData, GameScore } from "@data";
 import { AnalyticsIntegration, AnalyticsEventType } from "../../analytics/analytics-integration";
 import {
@@ -33,11 +32,7 @@ export class LevelSelectionScreen {
           ? localStorage.getItem(PreviousPlayedLevel + lang + "Debug")
           : localStorage.getItem(PreviousPlayedLevel + lang)
       ) | 0;
-    console.log({ previousPlayedLevelNumber: this.previousPlayedLevelNumber,
-      gameLevelData: this.gameLevelData,
-      data: this.data,
-      debug: Debugger.DebugMode
-     })
+
     this.levelSelectionController = new levelSelectionController({
       id: "level-selection-container", //container id name.
       options: {
@@ -65,7 +60,6 @@ export class LevelSelectionScreen {
 
 
   private startGame(level_number: string | number) {
-    console.log({ level_number })
     const gamePlayData = {
       currentLevelData: {
         ...this.data.levels[level_number],

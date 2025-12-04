@@ -8,7 +8,7 @@ import {
   BACK_BTN_IMG,
   AUDIO_INTRO
  } from '@constants';
-import { LevelSelectionButtons } from '@buttons';
+import { LevelSelectionGameBtn, LevelSelectionNavBtn } from '@buttons';
 import { AudioPlayer } from "@components";
 
 const TOTAL_BUTTONS = 12;
@@ -299,10 +299,17 @@ export class levelSelectionController extends BaseHTML {
       const isSpecialLevel = index === SPECIAL_LEVELS_INDEX;
       const text = this.getLevelTypeName(gameLevel);
 
-      const newBtnElement: any = new LevelSelectionButtons({
+      //LevelSelectionNavBtn
+
+      const newBtnElement: any = this.isNavButton(index) ? 
+        new LevelSelectionNavBtn({
+          index,
+          options: this.getButtonOptions(index, isSpecialLevel, hasLevelBeenPlayed),
+          callback: this.setCallback(index),
+        })
+      : new LevelSelectionGameBtn({
         index,
         options: this.getButtonOptions(index, isSpecialLevel, hasLevelBeenPlayed),
-        isNavBtn: this.isNavButton(index),
         isCurrentLevel: this.isCurrentLevel(gameLevel),
         gameLevel,
         isLevelLock: this.isGameLocked(gameLevel, index),
@@ -326,7 +333,6 @@ export class levelSelectionController extends BaseHTML {
       col++;
     }
   }
-
 
   /** Helper to get button options */
   private getButtonOptions(index: number, isSpecialLevel: boolean, hasLevelBeenPlayed: boolean) {
@@ -386,7 +392,9 @@ export class levelSelectionController extends BaseHTML {
       };
 
       const gameLevel = this.getGameLevel(index);
+      const text = this.getLevelTypeName(gameLevel);
 
+      btn.updateLevelTypeText(text);
       //Hide excess game level buttons on page.
       if (gameLevel > this.totalGameLevels) {
         btn.updateBtnDisplay?.(false); //hide button
