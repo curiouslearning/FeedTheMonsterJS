@@ -20,10 +20,10 @@ const HTML_EVENT_ELEMENT_ID = "level-selection-grid";
 const SPECIAL_LEVELS_INDEX = 4;
 
 const levelSelectionContainer = ({ id }) => {
-  return `<div id=${id}
+  return `<div id="${id}"
     style="background-image: url(${LEVEL_SELECTION_BACKGROUND});"
   >
-    <div id=${HTML_EVENT_ELEMENT_ID}>
+    <div id="${HTML_EVENT_ELEMENT_ID}">
     </div>
   </div>`;
 };
