@@ -22,12 +22,11 @@ interface LevelButtonConfig {
     callback: () => void;
 }
 
-export default class LevelSelectionLevelButtons extends BaseButtonComponent {
+export default class LevelSelectionLevelButton extends BaseButtonComponent {
     public elementId: string; //CSS element ID.
     public btnElementIndex: number; //Unique index number from the list of created level buttons.
     public gameLevel: number; //Game level number.
     public textIndex: number; //Index number for displaying.
-    public isGameDone: boolean = false;
     private isButtonLock: boolean = false;
     private btnSpan: HTMLSpanElement;
     private textLevelType: HTMLSpanElement;
