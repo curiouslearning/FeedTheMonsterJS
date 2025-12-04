@@ -1,8 +1,5 @@
 import { AudioPlayer } from "@components";
 import {
-  AUDIO_PATH_EATS,
-  AUDIO_PATH_MONSTER_SPIT,
-  AUDIO_PATH_MONSTER_DISSAPOINTED,
   AUDIO_PATH_POINTS_ADD,
   AUDIO_PATH_CHEERING_FUNC,
   AUDIO_PATH_CORRECT_STONE
@@ -64,7 +61,6 @@ export default class FeedbackAudioHandler {
   private playPartialCorrectFeedbackSound(): void {
     this.audioPlayer.playAudioQueue(
       false,
-      AUDIO_PATH_EATS,
       AUDIO_PATH_CHEERING_FUNC(2)
     );
   }
@@ -73,17 +69,8 @@ export default class FeedbackAudioHandler {
    * Plays audio for an incorrect answer
    */
   private playIncorrectFeedbackSound(): void {
-    this.audioPlayer.playAudioQueue(
-      false,
-      AUDIO_PATH_EATS
-    );
 
     setTimeout(() => {
-      this.audioPlayer.playAudioQueue(
-        false,
-        AUDIO_PATH_MONSTER_SPIT,
-        Math.round(Math.random()) > 0 ? AUDIO_PATH_MONSTER_DISSAPOINTED : null
-      );
         this.audioEndCallback();
     }, 1700); // 1700ms is tailored to handleStoneDropEnd 1000 delay of isSpit animation
   }
@@ -100,7 +87,6 @@ export default class FeedbackAudioHandler {
         this.correctStoneAudio.play(),
         this.audioPlayer.playAudioQueue(
           false,
-          AUDIO_PATH_EATS,
           AUDIO_PATH_CHEERING_FUNC(randomNumber),
           AUDIO_PATH_POINTS_ADD,
           Utils.getConvertedDevProdURL(this.feedbackAudios[feedBackIndex])
