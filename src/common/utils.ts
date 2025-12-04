@@ -144,20 +144,6 @@ const createImg = async (image) => {
   });
 };
 
-export const syncLoadingImages = async (images: object) => {
-  const loadImgPromises = Object.keys(images).map(async (arrKey) => {
-    const img = await createImg(images[arrKey]);
-    return { [arrKey]: img };
-  });
-
-  const resolvedImage = await Promise.all(loadImgPromises);
-  const loadedImages = resolvedImage.reduce((accumulator, current) => {
-    return { ...accumulator, ...current };
-  }, {});
-
-  return loadedImages;
-};
-
 export function isClickInsideButton(
   xClick: number,
   yClick: number,

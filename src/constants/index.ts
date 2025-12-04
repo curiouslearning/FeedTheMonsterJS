@@ -108,9 +108,9 @@ export const CLOUD_8 = "./assets/images/cloud_03.png";
 export const PLAY_BTN_IMG = "./assets/images/Play_button.svg";
 export const PAUSE_BTN_IMG = "./assets/images/Pause_Button.svg";
 export const MAP_BTN_IMG = "./assets/images/map_btn.svg";
-export const MAP_ICON_IMG = "./assets/images/mapIcon.webp";
-export const TREASURE_CHEST_SPECIAL_LEVELS_ONGOING = "./assets/images/Chest_Ongoing_Level.png";
-export const TREASURE_CHEST_SPECIAL_LEVELS_DONE = "./assets/images/Chest_Done_Level.png";
+export const MAP_ICON_IMG = "./assets/images/mapIcon.png";
+export const TREASURE_CHEST_SPECIAL_LEVELS_ONGOING = "./assets/images/Chest_Ongoing_Level.svg";
+export const TREASURE_CHEST_SPECIAL_LEVELS_DONE = "./assets/images/Chest_Done_Level.svg";
 export const MAP_LOCK_IMG = "./assets/images/mapLock.webp";
 export const STAR_IMG = "./assets/images/star.webp";
 export const NEXT_BTN_IMG = "./assets/images/next_btn.svg";
@@ -189,8 +189,6 @@ export const SCENE_NAME_GAME_PLAY_REPLAY = "GamePlay_Replay";
 export const SCENE_NAME_LEVEL_END = "LevelEnd";
 export const SCENE_NAME_PROGRESS_LEVEL ='ProgressLevel';
 
-//Levels
-export const SPECIAL_LEVELS = [5, 13, 20, 30, 42];
 
 // Minimum stars to complete level
 export const MIN_STARS_TO_COMPLETE_LEVEL = 3;
