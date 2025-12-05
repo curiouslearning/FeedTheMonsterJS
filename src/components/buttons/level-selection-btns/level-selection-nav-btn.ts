@@ -12,7 +12,6 @@ interface LevelButtonConfig {
 export default class LevelSelectionNavButtons extends BaseButtonComponent {
     public elementId: string; //CSS element ID.
     public btnElementIndex: number; //Unique index number from the list of created level buttons.
-    private onClickCallback: (gameLevel?: number) => void;
 
     constructor({
         index,
