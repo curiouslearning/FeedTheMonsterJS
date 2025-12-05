@@ -15,6 +15,7 @@ module.exports = {
     // }
   },
   moduleNameMapper: {
+    '@buttons': "<rootDir>/src/components/buttons/",
     "@common/*": "<rootDir>/src/common/index.ts",
     "^@components(.*)$": ["<rootDir>/src/components$1"],
     "@constants/*": "<rootDir>/src/constants/index.ts",
