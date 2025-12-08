@@ -45,7 +45,7 @@ export class ProgressionScene {
     this.currentLevelStarEarned = starCount;
     this.treasureChestScore = treasureChestScore;
     this.previousLevelStarEarned = previousLevelData ? previousLevelData.starCount : 0; //previousLevelData is null set to 0.
-    this.targetStarCountMaxFill = this.getTargetStarCountForFill(monsterPhaseNumber);
+    this.targetStarCountMaxFill = gameStateService.getTargetStarCountForFill(monsterPhaseNumber);
 
     
 
@@ -87,19 +87,6 @@ export class ProgressionScene {
     this.jarAnimation.subscribe(this.jarAnimation.END_RIVE_EVENT, () => {
       this.scheduleSceneTransition();
     });
-  }
-
-  private getTargetStarCountForFill(monsterPhase: number): number {
-    //Returns the target star count for certain monster phase.
-    switch (monsterPhase) {
-      case 2:
-        return 63;
-      case 1:
-        return 38;
-      case 0:
-      default:
-        return 12;
-    }
   }
 
   private getStarPercentage(starsCount: number, targetStarCount: number): number {
