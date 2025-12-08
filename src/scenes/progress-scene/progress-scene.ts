@@ -81,9 +81,12 @@ export class ProgressionScene {
       this.previousJarFillValue,
       this.targetJarFillValue,
       this.bonusJarFillValue,
-      this.currentLevelStarEarned + this.treasureChestScore,
-      this.scheduleSceneTransition.bind(this)
+      this.currentLevelStarEarned + this.treasureChestScore
     );
+
+    this.jarAnimation.subscribe(this.jarAnimation.END_RIVE_EVENT, () => {
+      this.scheduleSceneTransition();
+    });
   }
 
   private getTargetStarCountForFill(monsterPhase: number): number {

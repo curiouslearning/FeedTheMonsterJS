@@ -1,16 +1,17 @@
 import { JAR_PROGRESSION, CACHED_RIVE_WASM } from '@constants';
+import { PubSub } from '../../events/pub-sub-events';
 import { Rive, Layout, Fit, Alignment, RuntimeLoader, StateMachineInput, EventType, RiveEventPayload } from '@rive-app/canvas';
 //For handling rive in offline mode.
 RuntimeLoader.setWasmUrl(CACHED_RIVE_WASM);
 
-export class JarRiveAnimation {
+export class JarRiveAnimation extends PubSub {
 
   private riveInstance: Rive;
   private stateMachineName: string = "State Machine 1";
 
-  private BONUS_RIVE_EVENT = "BonusFillEvent";
-  private END_RIVE_EVENT = "EndEvent";
-  private FILL_RIVE_EVENT = "StarFillEvent";
+  public readonly BONUS_RIVE_EVENT = "BonusFillEvent";
+  public readonly END_RIVE_EVENT = "EndEvent";
+  public readonly FILL_RIVE_EVENT = "StarFillEvent";
 
   private fillPercentStateInput: StateMachineInput;
   private scoreStateInput: StateMachineInput;
@@ -20,10 +21,11 @@ export class JarRiveAnimation {
     private readonly initialFillPercent: number,
     private readonly targetFillPercent: number,
     private readonly bonusFillPercent: number,
-    private readonly stars: number,
-    private readonly onRiveLoadComplete: () => void
+    private readonly stars: number
   ){
+    super();
     this.initializeRive(canvas);
+    this.initializeListeners();
   }
 
   private initializeRive(canvas: HTMLCanvasElement): void {
@@ -56,6 +58,11 @@ export class JarRiveAnimation {
     });
   }
 
+  private initializeListeners(): void {
+    this.subscribe(this.FILL_RIVE_EVENT, () => { this.setJarFill(this.targetFillPercent); });
+    this.subscribe(this.BONUS_RIVE_EVENT, () => { this.setJarFill(this.bonusFillPercent);});
+  }
+
   /**
    * Get the state machine inputs defined in the rive file.
    * @return { fillPercentState: StateMachineInput, scoreState: StateMachineInput }
@@ -85,20 +92,7 @@ export class JarRiveAnimation {
 
     this.riveInstance.on(EventType.RiveEvent, (event) => {
       const eventName = (event.data as RiveEventPayload).name;
-      switch(eventName) {
-        case this.END_RIVE_EVENT:
-          if(this.onRiveLoadComplete)
-          {
-            this.onRiveLoadComplete();
-          }
-          break;
-        case this.FILL_RIVE_EVENT:
-          this.setJarFill(this.targetFillPercent);
-          break;
-        case this.BONUS_RIVE_EVENT:
-          this.setJarFill(this.bonusFillPercent);
-          break;
-      }
+      this.publish(eventName, event.data);
     });
   }
 
