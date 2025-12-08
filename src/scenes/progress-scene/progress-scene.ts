@@ -8,7 +8,6 @@ import { JarRiveAnimation } from '../../components/jarRiveAnimation/jar-rive-ani
 RuntimeLoader.setWasmUrl(CACHED_RIVE_WASM);
 
 export class ProgressionScene {
-  public static readonly END_JAR_EVENT: string = "END_JAR_EVENT";
 
   private riveMonsterElement: HTMLCanvasElement;
   private jarAnimation: JarRiveAnimation;
@@ -28,15 +27,7 @@ export class ProgressionScene {
     this.initializeValues();
     this.toggleCanvasBackground(true);
     this.initializeRive();
-    this.initListeners();
     
-  }
-
-  private initListeners(): void {
-    gameStateService.subscribe(
-      ProgressionScene.END_JAR_EVENT,
-      this.scheduleSceneTransition.bind(this)
-    );
   }
 
   private initializeValues() {
@@ -90,7 +81,8 @@ export class ProgressionScene {
       this.previousJarFillValue,
       this.targetJarFillValue,
       this.bonusJarFillValue,
-      this.currentLevelStarEarned + this.treasureChestScore
+      this.currentLevelStarEarned + this.treasureChestScore,
+      this.scheduleSceneTransition.bind(this)
     );
   }
 

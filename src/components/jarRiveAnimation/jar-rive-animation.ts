@@ -1,7 +1,5 @@
 import { JAR_PROGRESSION, CACHED_RIVE_WASM } from '@constants';
 import { Rive, Layout, Fit, Alignment, RuntimeLoader, StateMachineInput, EventType, RiveEventPayload } from '@rive-app/canvas';
-import gameStateService from '@gameStateService';
-import { ProgressionScene } from '../../scenes/progress-scene/progress-scene';
 //For handling rive in offline mode.
 RuntimeLoader.setWasmUrl(CACHED_RIVE_WASM);
 
@@ -14,8 +12,6 @@ export class JarRiveAnimation {
   private END_RIVE_EVENT = "EndEvent";
   private FILL_RIVE_EVENT = "StarFillEvent";
 
-  private delaySwitchToLevelend: number = 1000;
-
   private fillPercentStateInput: StateMachineInput;
   private scoreStateInput: StateMachineInput;
 
@@ -24,7 +20,8 @@ export class JarRiveAnimation {
     private readonly initialFillPercent: number,
     private readonly targetFillPercent: number,
     private readonly bonusFillPercent: number,
-    private readonly stars: number
+    private readonly stars: number,
+    private readonly onRiveLoadComplete: () => void
   ){
     this.initializeRive(canvas);
   }
@@ -90,7 +87,10 @@ export class JarRiveAnimation {
       const eventName = (event.data as RiveEventPayload).name;
       switch(eventName) {
         case this.END_RIVE_EVENT:
-          gameStateService.publish(ProgressionScene.END_JAR_EVENT, {});
+          if(this.onRiveLoadComplete)
+          {
+            this.onRiveLoadComplete();
+          }
           break;
         case this.FILL_RIVE_EVENT:
           this.setJarFill(this.targetFillPercent);
