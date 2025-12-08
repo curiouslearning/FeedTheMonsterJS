@@ -374,14 +374,27 @@ export class GameStateService extends PubSub {
     public checkMonsterPhaseUpdation(): number {
         const successStarCount = this.getSuccessStarsCount();
         switch (true) {
-            case successStarCount >= 63:
+            case successStarCount >= this.getTargetStarCountForFill(2):
                 return 3; // Phase 4
-            case successStarCount >= 38:
+            case successStarCount >= this.getTargetStarCountForFill(1):
                 return 2; // Phase 3
-            case successStarCount >= 12:
+            case successStarCount >= this.getTargetStarCountForFill(0):
                 return 1; // Phase 2
             default:
                 return 0; // Phase 1 (default)
+        }
+    }
+
+    public getTargetStarCountForFill(monsterPhase: number): number {
+        //Returns the target star count for certain monster phase.
+        switch (monsterPhase) {
+            case 2:
+                return 63;
+            case 1:
+                return 38;
+            case 0:
+            default:
+                return 12;
         }
     }
 
