@@ -143,8 +143,8 @@ export class RiveMonsterComponent {
       }),
     };
 
+    riveConfig.stateMachines = [this.stateMachineName];
     if (!isEvolving) {
-      riveConfig.stateMachines = [this.stateMachineName];
       riveConfig.onLoad = () => this.handleLoad();
     }
 

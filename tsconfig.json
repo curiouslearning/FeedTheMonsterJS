@@ -55,8 +55,6 @@
       "@buttons": ["src/components/buttons"],
       "@popups/*": ["src/components/popups/*"],
       "@common": ["src/common"],
-      "@compositions/*": ["src/compositions/*"], // to be removed once background component has been fully integrated
-      "@compositions": ["src/compositions"], // to be removed once background component has been fully integrated
       "@constants": ["src/constants"],
       "@data/*": ["src/data/*"],
       "@data": ["src/data"],

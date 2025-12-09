@@ -1,5 +1,20 @@
 
 
+## [1.3.0](https://github.com/curiouslearning/FeedTheMonsterJS/compare/1.2.0...1.3.0) (2025-11-20)
+
+
+### Features
+
+* FM-621 SFX for bonus star ([#1856](https://github.com/curiouslearning/FeedTheMonsterJS/issues/1856)) ([e248af0](https://github.com/curiouslearning/FeedTheMonsterJS/commit/e248af02c40ec8e330c7eb1ef7210b56712e922f))
+
+
+### Bug Fixes
+
+* FM-621 Animation playing twice fixed ([4fa78fc](https://github.com/curiouslearning/FeedTheMonsterJS/commit/4fa78fccd4bb4b4c3a48bc1533dab0c314c9009d))
+* FM-621 Animation playing twice fixed ([#1859](https://github.com/curiouslearning/FeedTheMonsterJS/issues/1859)) ([53f1c5b](https://github.com/curiouslearning/FeedTheMonsterJS/commit/53f1c5bbd55a8a1be04e1cd808224bd02ce81448))
+* FM-621 bug fixes ([149191f](https://github.com/curiouslearning/FeedTheMonsterJS/commit/149191fef6147f1bc6a4ab80d573e325ecea009b))
+* Updated logs, variable naming and how asset is loaded (FM-748 and FM-749) ([#1855](https://github.com/curiouslearning/FeedTheMonsterJS/issues/1855)) ([1e65bb4](https://github.com/curiouslearning/FeedTheMonsterJS/commit/1e65bb4df0a602d4def076c5bff13a352273163b))
+
 ## [1.2.0](https://github.com/curiouslearning/FeedTheMonsterJS/compare/1.1.0...1.2.0) (2025-11-10)
 
 
