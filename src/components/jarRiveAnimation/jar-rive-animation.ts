@@ -111,6 +111,7 @@ export class JarRiveAnimation extends PubSub {
   }
 
   public dispose(): void {
+    this.unsubscribeAll();
     if (!this.riveInstance) return;
     this.riveInstance?.cleanup();
   }
