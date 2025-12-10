@@ -44,7 +44,7 @@ export class ProgressionScene {
     this.previousTotalStarCount = previousTotalStarCount;
     this.currentLevelStarEarned = starCount;
     this.treasureChestScore = treasureChestScore;
-    this.previousLevelStarEarned = previousLevelData ? previousLevelData.starCount : 0; //previousLevelData is null set to 0.
+    this.previousLevelStarEarned = previousLevelData && previousLevelData.starCount > 2 ? previousLevelData.starCount : 0; //previousLevelData is null set to 0.
     this.targetStarCountMaxFill = gameStateService.getTargetStarCountForFill(monsterPhaseNumber);
 
     
