@@ -224,7 +224,7 @@ class App {
   private async registerWorkbox(): Promise<void> {
     if ("serviceWorker" in navigator) {
       try {
-        const wb = new Workbox("./sw.js", {});
+        const wb = new Workbox("./sw.js?cache-bust=" + new Date().getTime(), {});
         await wb.register();
         await navigator.serviceWorker.ready;
 
