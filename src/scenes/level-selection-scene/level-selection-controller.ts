@@ -307,7 +307,7 @@ export class levelSelectionController extends BaseHTML {
       const gameLevel = this.getGameLevel(index);
       const { starsCount, hasLevelBeenPlayed } = this.getGameLevelScore(gameLevel);
       const isSpecialLevel = index === SPECIAL_LEVELS_INDEX;
-      const text = this.getLevelTypeName(gameLevel);
+      const levelTypeText = this.getLevelTypeName(gameLevel);
 
       const newBtnElement: any = this.isNavButton(index) ? 
         new LevelSelectionNavBtn({
@@ -323,7 +323,7 @@ export class levelSelectionController extends BaseHTML {
         isLevelLock: this.isGameLocked(gameLevel, index),
         starsCount,
         isDebuggerOn: this.isDebuggerOn,
-        levelTypeText: text,
+        levelTypeText,
         callback: this.setCallback(index),
       });
 
