@@ -85,6 +85,7 @@ export class levelSelectionController extends BaseHTML {
     this.isDebuggerOn = isDebuggerOn;
     this.gameLevels = gameLevels;
     this.addListeners();
+    this.updateNextPlayableLevel(); //Determine the current playable level.
     this.createLevelButtons();
     if (document.visibilityState === "visible") {
       this.audioPlayer.playAudio(AUDIO_INTRO);
@@ -246,10 +247,7 @@ export class levelSelectionController extends BaseHTML {
     return { starsCount, hasLevelBeenPlayed };
   }
 
-  private isNextPlayableLevel(currentGameLevel: number): boolean {
-    // Disable ripple effect for current level in dev mode.
-    if (this.isDebuggerOn) return false;
-
+  private updateNextPlayableLevel() {
     if (this.playedGameLevels?.length) {
       // Find highest played level
       let highestPrevLevel = 0;
@@ -273,6 +271,11 @@ export class levelSelectionController extends BaseHTML {
       // First level if no data exists
       this.nextPlayableLevel = 1;
     }
+  }
+
+  private nextLevelIsPlayable(currentGameLevel: number): boolean {
+    // Disable ripple effect for current level in dev mode.
+    if (this.isDebuggerOn) return false;
 
     return currentGameLevel === this.nextPlayableLevel;
   }
@@ -318,7 +321,7 @@ export class levelSelectionController extends BaseHTML {
       : new LevelSelectionGameBtn({
         index,
         options: this.getButtonOptions(index, isSpecialLevel, hasLevelBeenPlayed),
-        isCurrentLevel: this.isNextPlayableLevel(gameLevel),
+        isCurrentLevel: this.nextLevelIsPlayable(gameLevel),
         gameLevel,
         isLevelLock: this.isGameLocked(gameLevel, index),
         starsCount,
@@ -411,7 +414,7 @@ export class levelSelectionController extends BaseHTML {
       const { starsCount, hasLevelBeenPlayed } = this.getGameLevelScore(gameLevel);
 
       //Handle disabling and enabling of buttons based on previous levels played.
-      const isnextPlayableLevel = this.isNextPlayableLevel(gameLevel);
+      const isNextPlayableLevel = this.nextLevelIsPlayable(gameLevel);
       const isLock = this.isGameLocked(gameLevel, index);
 
       if (index === SPECIAL_LEVELS_INDEX) {
@@ -421,7 +424,7 @@ export class levelSelectionController extends BaseHTML {
           : TREASURE_CHEST_SPECIAL_LEVELS_ONGOING
         );
       }
-      btn.enablePulseEffect(isnextPlayableLevel);
+      btn.enablePulseEffect(isNextPlayableLevel);
       btn.updateBtn(gameLevel, isLock, starsCount);
     }
   }

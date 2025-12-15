@@ -60,13 +60,14 @@ describe('levelSelectionController', () => {
     expect(startGameCallback).toHaveBeenCalledWith(0);
   });
 
-  describe('isNextPlayableLevel', () => {
+  describe('nextLevelIsPlayable', () => {
     it('should return true for next level when previous level is passed', () => {
       controller.playedGameLevels = [
         { levelNumber: 0, starCount: 3 },
       ];
+      controller.updateNextPlayableLevel();
 
-      const result = controller.isNextPlayableLevel(2);
+      const result = controller.nextLevelIsPlayable(2);
       expect(result).toBe(true);
     });
 
@@ -74,8 +75,9 @@ describe('levelSelectionController', () => {
       controller.playedGameLevels = [
         { levelNumber: 0, starCount: 1 },
       ];
+      controller.updateNextPlayableLevel();
 
-      const result = controller.isNextPlayableLevel(1);
+      const result = controller.nextLevelIsPlayable(1);
       expect(result).toBe(true);
     });
 
@@ -83,15 +85,16 @@ describe('levelSelectionController', () => {
       controller.playedGameLevels = [
         { levelNumber: 0, starCount: 3 },
       ];
+      controller.updateNextPlayableLevel();
 
-      const result = controller.isNextPlayableLevel(3);
+      const result = controller.nextLevelIsPlayable(3);
       expect(result).toBe(false);
     });
 
     it('should always return false when debugger mode is on', () => {
       controller.isDebuggerOn = true;
 
-      const result = controller.isNextPlayableLevel(1);
+      const result = controller.nextLevelIsPlayable(1);
       expect(result).toBe(false);
     });
   });
@@ -105,6 +108,7 @@ describe('levelSelectionController', () => {
     controller.playedGameLevels = [
       { levelNumber: 0, starCount: 3 },
     ];
+    controller.updateNextPlayableLevel();
 
     const isLocked = controller.isGameLocked(3, 2);
     expect(isLocked).toBe(true);
