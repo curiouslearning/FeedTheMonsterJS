@@ -309,8 +309,6 @@ export class levelSelectionController extends BaseHTML {
       const isSpecialLevel = index === SPECIAL_LEVELS_INDEX;
       const text = this.getLevelTypeName(gameLevel);
 
-      //LevelSelectionNavBtn
-
       const newBtnElement: any = this.isNavButton(index) ? 
         new LevelSelectionNavBtn({
           index,
@@ -376,7 +374,7 @@ export class levelSelectionController extends BaseHTML {
 
     return btnIndex !== PREV_BTN
       && btnIndex !== NEXT_BTN
-      && this.nextPlayableLevel < actualLevelIndex;
+      && this.nextPlayableLevel < actualLevelIndex; //If level is greater than the current playable level.
   }
 
   private setStartForCurrentPage(): void {
