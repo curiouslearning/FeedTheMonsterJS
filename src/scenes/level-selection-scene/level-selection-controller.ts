@@ -40,7 +40,13 @@ interface LevelSelectionController {
 }
 
 export class levelSelectionController extends BaseHTML {
-  private playedGameLevels: any[] = [];
+  private playedGameLevels: {
+    levelName?: string,
+    levelNumber?: number,
+    score?: number,
+    starCount?: number,
+    treasureChestMiniGameScore?: number,
+  }[] = [];
   private audioPlayer: AudioPlayer;
   private btnList: { [key: string]: any } = {};
   private xDown: number;
@@ -50,8 +56,8 @@ export class levelSelectionController extends BaseHTML {
   private currentPage: number = 1;
   private totalPages: number = 1;
   private start: number = 1;
-  private totalGameLevels: number = 0;
-  private currentLevel: number = 1;
+  private maxGameLevels: number = 0;
+  private nextPlayableLevel: number = 1;
   private isDebuggerOn: boolean = false;
   private gameLevels: any[] = [];
 
@@ -73,12 +79,13 @@ export class levelSelectionController extends BaseHTML {
     this.playedGameLevels = playedGameLevels;
     this.audioPlayer = new AudioPlayer();
     this.startGameCallback = startGameCallback;
-    this.totalGameLevels = maxGameLevels;
+    this.maxGameLevels = maxGameLevels;
     this.totalPages = this.getTotalPages(maxGameLevels);
     this.currentPage = this.getOpeningPage(previousPlayedLevel, this.levelsPerPage);
     this.isDebuggerOn = isDebuggerOn;
     this.gameLevels = gameLevels;
     this.addListeners();
+    this.updateNextPlayableLevel(); //Determine the current playable level.
     this.createLevelButtons();
     if (document.visibilityState === "visible") {
       this.audioPlayer.playAudio(AUDIO_INTRO);
@@ -184,7 +191,7 @@ export class levelSelectionController extends BaseHTML {
 
   private getPageRange(page: number): { start: number, end: number } {
     const start = (page - 1) * this.levelsPerPage + 1;
-    const end = Math.min(start + this.levelsPerPage - 1, this.totalGameLevels);
+    const end = Math.min(start + this.levelsPerPage - 1, this.maxGameLevels);
     return { start, end };
   }
 
@@ -240,31 +247,37 @@ export class levelSelectionController extends BaseHTML {
     return { starsCount, hasLevelBeenPlayed };
   }
 
-  private isCurrentLevel(gameLevel: number): boolean {
-    // Disable ripple effect in dev mode
-    if (this.isDebuggerOn) return false;
-
+  private updateNextPlayableLevel() {
     if (this.playedGameLevels?.length) {
       // Find highest played level
       let highestPrevLevel = 0;
+      let isLevelFailed = false;
 
       for (const levelData of this.playedGameLevels) {
-        if (highestPrevLevel < levelData?.levelNumber) {
+
+        if (highestPrevLevel < levelData?.levelNumber || this.playedGameLevels.length === 1) {
           highestPrevLevel = levelData?.levelNumber;
+          isLevelFailed = levelData?.starCount < 3;
         }
       }
 
       // Convert to 1-based game level
       highestPrevLevel = highestPrevLevel + 1;
 
-      // Determine next playable level
-      this.currentLevel = highestPrevLevel + 1;
+      // Determine next playable level.
+      this.nextPlayableLevel = highestPrevLevel + (isLevelFailed ? 0 : 1);
+
     } else {
       // First level if no data exists
-      this.currentLevel = 1;
+      this.nextPlayableLevel = 1;
     }
+  }
 
-    return gameLevel === this.currentLevel;
+  private nextLevelIsPlayable(currentGameLevel: number): boolean {
+    // Disable ripple effect for current level in dev mode.
+    if (this.isDebuggerOn) return false;
+
+    return currentGameLevel === this.nextPlayableLevel;
   }
 
   private getLevelTypeName(gameLevel: number): string {
@@ -297,9 +310,7 @@ export class levelSelectionController extends BaseHTML {
       const gameLevel = this.getGameLevel(index);
       const { starsCount, hasLevelBeenPlayed } = this.getGameLevelScore(gameLevel);
       const isSpecialLevel = index === SPECIAL_LEVELS_INDEX;
-      const text = this.getLevelTypeName(gameLevel);
-
-      //LevelSelectionNavBtn
+      const levelTypeText = this.getLevelTypeName(gameLevel);
 
       const newBtnElement: any = this.isNavButton(index) ? 
         new LevelSelectionNavBtn({
@@ -310,12 +321,12 @@ export class levelSelectionController extends BaseHTML {
       : new LevelSelectionGameBtn({
         index,
         options: this.getButtonOptions(index, isSpecialLevel, hasLevelBeenPlayed),
-        isCurrentLevel: this.isCurrentLevel(gameLevel),
+        isCurrentLevel: this.nextLevelIsPlayable(gameLevel),
         gameLevel,
         isLevelLock: this.isGameLocked(gameLevel, index),
         starsCount,
         isDebuggerOn: this.isDebuggerOn,
-        levelTypeText: text,
+        levelTypeText,
         callback: this.setCallback(index),
       });
 
@@ -366,7 +377,7 @@ export class levelSelectionController extends BaseHTML {
 
     return btnIndex !== PREV_BTN
       && btnIndex !== NEXT_BTN
-      && this.currentLevel < actualLevelIndex;
+      && this.nextPlayableLevel < actualLevelIndex; //If level is greater than the current playable level.
   }
 
   private setStartForCurrentPage(): void {
@@ -396,14 +407,14 @@ export class levelSelectionController extends BaseHTML {
 
       btn.updateLevelTypeText(text);
       //Hide excess game level buttons on page.
-      if (gameLevel > this.totalGameLevels) {
+      if (gameLevel > this.maxGameLevels) {
         btn.updateBtnDisplay?.(false); //hide button
         continue;
       }
       const { starsCount, hasLevelBeenPlayed } = this.getGameLevelScore(gameLevel);
 
       //Handle disabling and enabling of buttons based on previous levels played.
-      const isCurrentLevel = this.isCurrentLevel(gameLevel);
+      const isNextPlayableLevel = this.nextLevelIsPlayable(gameLevel);
       const isLock = this.isGameLocked(gameLevel, index);
 
       if (index === SPECIAL_LEVELS_INDEX) {
@@ -413,7 +424,7 @@ export class levelSelectionController extends BaseHTML {
           : TREASURE_CHEST_SPECIAL_LEVELS_ONGOING
         );
       }
-      btn.enablePulseEffect(isCurrentLevel);
+      btn.enablePulseEffect(isNextPlayableLevel);
       btn.updateBtn(gameLevel, isLock, starsCount);
     }
   }
