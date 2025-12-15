@@ -57,7 +57,7 @@ export class levelSelectionController extends BaseHTML {
   private totalPages: number = 1;
   private start: number = 1;
   private maxGameLevels: number = 0;
-  private currentLevel: number = 1;
+  private nextPlayableLevel: number = 1;
   private isDebuggerOn: boolean = false;
   private gameLevels: any[] = [];
 
@@ -267,14 +267,14 @@ export class levelSelectionController extends BaseHTML {
       highestPrevLevel = highestPrevLevel + 1;
 
       // Determine next playable level.
-      this.currentLevel = highestPrevLevel + (isLevelFailed ? 0 : 1);
+      this.nextPlayableLevel = highestPrevLevel + (isLevelFailed ? 0 : 1);
 
     } else {
       // First level if no data exists
-      this.currentLevel = 1;
+      this.nextPlayableLevel = 1;
     }
 
-    return currentGameLevel === this.currentLevel;
+    return currentGameLevel === this.nextPlayableLevel;
   }
 
   private getLevelTypeName(gameLevel: number): string {
@@ -376,7 +376,7 @@ export class levelSelectionController extends BaseHTML {
 
     return btnIndex !== PREV_BTN
       && btnIndex !== NEXT_BTN
-      && this.currentLevel < actualLevelIndex;
+      && this.nextPlayableLevel < actualLevelIndex;
   }
 
   private setStartForCurrentPage(): void {
@@ -413,7 +413,7 @@ export class levelSelectionController extends BaseHTML {
       const { starsCount, hasLevelBeenPlayed } = this.getGameLevelScore(gameLevel);
 
       //Handle disabling and enabling of buttons based on previous levels played.
-      const isCurrentLevel = this.isNextPlayableLevel(gameLevel);
+      const isnextPlayableLevel = this.isNextPlayableLevel(gameLevel);
       const isLock = this.isGameLocked(gameLevel, index);
 
       if (index === SPECIAL_LEVELS_INDEX) {
@@ -423,7 +423,7 @@ export class levelSelectionController extends BaseHTML {
           : TREASURE_CHEST_SPECIAL_LEVELS_ONGOING
         );
       }
-      btn.enablePulseEffect(isCurrentLevel);
+      btn.enablePulseEffect(isnextPlayableLevel);
       btn.updateBtn(gameLevel, isLock, starsCount);
     }
   }
