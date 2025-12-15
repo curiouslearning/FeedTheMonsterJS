@@ -1,7 +1,6 @@
 import LevelSelectionLevelButton from './level-selection-level-btn';
-import { MAP_LOCK_IMG, STAR_IMG } from '@constants';
-import { BaseButtonComponent } from '@components/buttons/base-button-component/base-button-component';
 
+// Mock constants
 jest.mock('@constants', () => ({
   MAP_LOCK_IMG: 'mock-lock.png',
   STAR_IMG: 'mock-star.png',
@@ -77,13 +76,13 @@ describe('LevelSelectionLevelButton', () => {
     expect(stars.length).toBe(2);
     expect(stars[0].src).toContain('mock-star.png');
 
-    // Update stars using bracket cast
+    // Update stars
     (button as any).updateStarDisplay(1);
     expect((button as any)['starsCount']).toBe(1);
     expect((button as any)['star-1'].style.display).toBe('none');
   });
 
-  it('should call callback when clicked if not locked', () => {
+  it('should call callback when DOM button is clicked and not locked', () => {
     button = new LevelSelectionLevelButton({
       index: 3,
       options: { id: 'btn-3', className: 'level-btn', targetId: 'root' },
@@ -96,13 +95,29 @@ describe('LevelSelectionLevelButton', () => {
       callback: mockCallback,
     });
 
-    // Simulate click
-    (button as any).handleOnClick();
-    expect(mockCallback).toHaveBeenCalledWith(4);
-
-    // Locked button should not call callback
-    button.updateBtn(4, true, 0);
-    (button as any).handleOnClick();
+    // Real DOM click
+    button.getElement().click();
     expect(mockCallback).toHaveBeenCalledTimes(1);
+    expect(mockCallback).toHaveBeenCalledWith(4);
+  });
+
+  it('should NOT register click handler when button is locked', () => {
+    button = new LevelSelectionLevelButton({
+      index: 4,
+      options: { id: 'btn-4', className: 'level-btn', targetId: 'root' },
+      isCurrentLevel: false,
+      gameLevel: 5,
+      isLevelLock: true,
+      starsCount: 0,
+      isDebuggerOn: false,
+      levelTypeText: '',
+      callback: mockCallback,
+    });
+
+    // Attempt DOM click
+    button.getElement().click();
+
+    // Callback should never fire because super.onClick was never registered
+    expect(mockCallback).not.toHaveBeenCalled();
   });
 });
