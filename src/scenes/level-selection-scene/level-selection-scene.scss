@@ -254,6 +254,7 @@
     min-width: 120px !important;
     min-height: 120px !important;
   }
+
   .star {
     top: 25%;
   }
@@ -270,66 +271,6 @@
 
     span {
       font-size: 22px;
-    }
-  }
-
-  .star {
-    width: 45px;
-    height: 45px;
-    top: 15%;
-  }
-
-  .level-stars {
-    width: 50px;
-    height: 50px;
-  }
-
-  .btn-lock-img {
-    width: 70px !important;
-    height: 70px;
-  }
-
-  .s1 {
-    transform: rotate(-50deg) translateY(-70px) rotate(35deg); 
-  }
-
-  .s2 {
-    transform: rotate(-28deg) translateY(-105px) rotate(28deg);
-  }
-
-  .s3 {
-    transform: rotate(0deg) translateY(-120px);
-  }
-
-  .s4 {
-    transform: rotate(28deg) translateY(-105px) rotate(-28deg);
-  }
-
-  .s5 {
-    transform: rotate(50deg) translateY(-70px) rotate(-35deg);
-  }
-
-  .nav-btn {
-    min-width: 150px !important;
-    min-height: 150px !important;
-  }
-}
-
-/* =========================================================
-   DESKTOPS (≥1024px)
-   ========================================================= */
-
-@media (min-width: 1024px) {
-  #level-selection-container {
-    padding: 10% 0;
-  }
-
-  .level-buttons {
-    min-width: 220px;
-    min-height: 220px;
-
-    span {
-      font-size: 24px;
     }
   }
 
@@ -376,16 +317,77 @@
 }
 
 /* =========================================================
+   DESKTOPS (≥1024px)
+   ========================================================= */
+
+@media (min-width: 1024px) {
+  #level-selection-container {
+    padding: 10% 0;
+  }
+
+  .level-buttons {
+    min-width: 120px;
+    min-height: 120px;
+
+    span {
+      font-size: 18px;
+    }
+  }
+
+  .star {
+    width: 25px;
+    height: 25px;
+    top: 85%;
+  }
+
+  .btn-lock-img {
+    width: 55px !important;
+    height: 55px;
+  }
+
+  .nav-btn {
+    min-width: 120px !important;
+    min-height: 120px !important;
+  }
+
+    .s1 {
+    transform: rotate(-35deg) translateY(-75px) rotate(35deg);
+  }
+
+  .s2 {
+    transform: rotate(-20deg) translateY(-100px) rotate(20deg);
+  }
+
+  .s3 {
+    transform: rotate(0deg) translateY(-110px);
+  }
+
+  .s4 {
+    transform: rotate(20deg) translateY(-100px) rotate(-20deg);
+  }
+
+  .s5 {
+    transform: rotate(30deg) translateY(-75px) rotate(-35deg);
+  }
+
+  .nav-btn {
+    min-width: 90% !important;
+    min-height: 90px !important;
+  }
+
+}
+
+/* =========================================================
    LARGE DESKTOPS (≥1366px)
    ========================================================= */
 
 @media (min-width: 1366px) {
   .level-buttons {
-    min-width: 200px;
-    min-height: 200px;
+    min-width: 140px;
+    min-height: 140px;
 
     span {
-      font-size: 30px;
+      font-size: 24px;
     }
   }
 
@@ -395,9 +397,20 @@
   }
 
   .btn-lock-img {
-    width: 90px !important;
-    height: 90px;
+    width: 60px !important;
+    height: 60px;
   }
+
+  .star {
+    width: 35px;
+    height: 35px;
+    top: 50%;
+  }
+   .nav-btn {
+    min-width: 120px !important;
+    min-height: 120px !important;
+  }
+
 }
 
 /* =========================================================
@@ -406,11 +419,11 @@
 
 @media (min-width: 1600px) {
   .level-buttons {
-    min-width: 220px;
-    min-height: 220px;
+    min-width: 140px;
+    min-height: 140px;
 
     span {
-      font-size: 34px;
+      font-size: 24px;
     }
   }
 
