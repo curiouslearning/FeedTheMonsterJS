@@ -224,9 +224,10 @@ class App {
   private async registerWorkbox(): Promise<void> {
     if ("serviceWorker" in navigator) {
       try {
-        const wb = new Workbox("./sw.js?cache-bust=" + new Date().getTime(), {});
-        await wb.register();
+        const wb = new Workbox("./sw.js", {});
+        const registration = await wb.register();
         await navigator.serviceWorker.ready;
+        await registration.update();
 
         if (!this.is_cached.has(this.lang)) {
           this.channel.postMessage({ command: "Cache", data: this.lang });
