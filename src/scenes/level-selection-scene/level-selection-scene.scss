@@ -101,6 +101,49 @@
   transform: translate(-50%, -50%);
 }
 
+//For debugger text label
+.level-type-text {
+  width: 70%;
+  bottom: 0px;
+  right: 0px;
+  transform: translate(-25%, 75%);
+}
+
+.pulsing {
+
+  /* Multiple ripples */
+  &::before,
+  &::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 170%;
+    height: 170%;
+    border-radius: 50%;
+    transform: translate(-50%, -50%) scale(0);
+    background: rgba(255, 255, 255, 0.8);
+    z-index: -1;
+    animation: ripple 2s infinite;
+  }
+
+  @keyframes ripple {
+    0% {
+      transform: translate(-50%, -50%) scale(0);
+      opacity: 0.8;
+    }
+
+    100% {
+      transform: translate(-50%, -50%) scale(0.7);
+      opacity: 0;
+    }
+  }
+}
+
+.press-button:active {
+  transform: scale(0.95);
+}
+
 .special-levels-img {
   width: 85% !important;
   height: 85%;
@@ -350,7 +393,7 @@
     min-height: 120px !important;
   }
 
-    .s1 {
+  .s1 {
     transform: rotate(-35deg) translateY(-75px) rotate(35deg);
   }
 
@@ -406,7 +449,8 @@
     height: 35px;
     top: 50%;
   }
-   .nav-btn {
+
+  .nav-btn {
     min-width: 120px !important;
     min-height: 120px !important;
   }
