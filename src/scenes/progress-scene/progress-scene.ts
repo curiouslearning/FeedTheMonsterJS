@@ -82,7 +82,7 @@ export class ProgressionScene {
       this.targetJarFillValue,
       this.bonusJarFillValue,
       this.currentLevelStarEarned,
-      this.treasureChestScore == 1
+      this.treasureChestScore === 1
     );
 
     this.jarAnimation.subscribe(this.jarAnimation.END_RIVE_EVENT, () => {
