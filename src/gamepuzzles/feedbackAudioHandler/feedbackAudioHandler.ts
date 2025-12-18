@@ -2,7 +2,8 @@ import { AudioPlayer } from "@components";
 import {
   AUDIO_PATH_POINTS_ADD,
   AUDIO_PATH_CHEERING_FUNC,
-  AUDIO_PATH_CORRECT_STONE
+  AUDIO_PATH_CORRECT_STONE,
+  AUDIO_PATH_EATS
 } from '@constants';
 import { Utils } from '@common';
 import gameStateService from '@gameStateService';
@@ -61,6 +62,7 @@ export default class FeedbackAudioHandler {
   private playPartialCorrectFeedbackSound(): void {
     this.audioPlayer.playAudioQueue(
       false,
+      AUDIO_PATH_EATS,
       AUDIO_PATH_CHEERING_FUNC(2)
     );
   }

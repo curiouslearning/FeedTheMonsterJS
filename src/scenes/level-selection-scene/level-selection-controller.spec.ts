@@ -11,15 +11,17 @@ jest.mock("@components", () => ({
 
 describe('levelSelectionController', () => {
   let controller: any;
+  let startGameCallback: jest.Mock;
 
   beforeEach(() => {
-    // Create a root element for BaseHTML to render into
     document.body.innerHTML = `<div id="root"></div>`;
+
+    startGameCallback = jest.fn();
 
     controller = new levelSelectionController({
       id: 'test-id',
-      options: { selectors: { root: '#root' } }, // <-- correct BaseHtmlOptions
-      startGameCallback: jest.fn(),
+      options: { selectors: { root: '#root' } },
+      startGameCallback,
       maxGameLevels: 12,
       playedGameLevels: [{ levelNumber: 0, starCount: 3 }],
       previousPlayedLevel: 0,
@@ -28,8 +30,12 @@ describe('levelSelectionController', () => {
     });
   });
 
+  afterEach(() => {
+    controller.dispose?.();
+  });
+
   it('should initialize with correct total pages and current page', () => {
-    expect(controller.totalPages).toBe(2); // 12 / 10 levels per page => 2 pages
+    expect(controller.totalPages).toBe(2); // 12 / 10 => 2 pages
     expect(controller.currentPage).toBe(1);
   });
 
@@ -42,7 +48,7 @@ describe('levelSelectionController', () => {
 
     controller.goToNextPage();
     expect(controller.currentPage).toBe(2);
-    expect(spyUpdate).toHaveBeenCalled();
+    expect(spyUpdate).toHaveBeenCalledTimes(1);
 
     controller.goToPrevPage();
     expect(controller.currentPage).toBe(1);
@@ -50,12 +56,61 @@ describe('levelSelectionController', () => {
   });
 
   it('should call startGameCallback with 0-based index when level clicked', () => {
-    const mockCallback = jest.fn();
-    controller.startGameCallback = mockCallback;
-
-    // Simulate clicking a game level
     controller.handleGameLevelOnClick(1);
+    expect(startGameCallback).toHaveBeenCalledWith(0);
+  });
 
-    expect(mockCallback).toHaveBeenCalledWith(0); // 1-based level converted to 0-based
+  describe('nextLevelIsPlayable', () => {
+    it('should return true for next level when previous level is passed', () => {
+      controller.playedGameLevels = [
+        { levelNumber: 0, starCount: 3 },
+      ];
+      controller.updateNextPlayableLevel();
+
+      const result = controller.nextLevelIsPlayable(2);
+      expect(result).toBe(true);
+    });
+
+    it('should return true for same level when previous level is failed', () => {
+      controller.playedGameLevels = [
+        { levelNumber: 0, starCount: 1 },
+      ];
+      controller.updateNextPlayableLevel();
+
+      const result = controller.nextLevelIsPlayable(1);
+      expect(result).toBe(true);
+    });
+
+    it('should return false for other levels', () => {
+      controller.playedGameLevels = [
+        { levelNumber: 0, starCount: 3 },
+      ];
+      controller.updateNextPlayableLevel();
+
+      const result = controller.nextLevelIsPlayable(3);
+      expect(result).toBe(false);
+    });
+
+    it('should always return false when debugger mode is on', () => {
+      controller.isDebuggerOn = true;
+
+      const result = controller.nextLevelIsPlayable(1);
+      expect(result).toBe(false);
+    });
+  });
+
+  it('should correctly calculate opening page from previousPlayedLevel', () => {
+    const page = controller.getOpeningPage(11, 10);
+    expect(page).toBe(2);
+  });
+
+  it('should lock levels higher than current playable level', () => {
+    controller.playedGameLevels = [
+      { levelNumber: 0, starCount: 3 },
+    ];
+    controller.updateNextPlayableLevel();
+
+    const isLocked = controller.isGameLocked(3, 2);
+    expect(isLocked).toBe(true);
   });
 });

@@ -44,7 +44,7 @@ export class ProgressionScene {
     this.previousTotalStarCount = previousTotalStarCount;
     this.currentLevelStarEarned = starCount;
     this.treasureChestScore = treasureChestScore;
-    this.previousLevelStarEarned = previousLevelData ? previousLevelData.starCount : 0; //previousLevelData is null set to 0.
+    this.previousLevelStarEarned = previousLevelData && previousLevelData.starCount > 2 ? previousLevelData.starCount : 0; //previousLevelData is null set to 0.
     this.targetStarCountMaxFill = gameStateService.getTargetStarCountForFill(monsterPhaseNumber);
 
     
@@ -81,7 +81,8 @@ export class ProgressionScene {
       this.previousJarFillValue,
       this.targetJarFillValue,
       this.bonusJarFillValue,
-      this.currentLevelStarEarned + this.treasureChestScore
+      this.currentLevelStarEarned,
+      this.treasureChestScore === 1
     );
 
     this.jarAnimation.subscribe(this.jarAnimation.END_RIVE_EVENT, () => {

@@ -26,6 +26,7 @@ export const EndScene1 = "EndScene1";
 export const FONT_BASE_PATH = './assets/fonts/';
 
 //Audio paths
+export const AUDIO_PATH_EATS = "./assets/audios/Eat.mp3";
 export const AUDIO_PATH_POINTS_ADD = "./assets/audios/PointsAdd.wav";
 export const AUDIO_PATH_CORRECT_STONE = "assets/audios/CorrectStoneFinal.mp3";
 export const AUDIO_PATH_CHEERING_FUNC = (randomNumber) =>
@@ -109,8 +110,8 @@ export const PLAY_BTN_IMG = "./assets/images/Play_button.svg";
 export const PAUSE_BTN_IMG = "./assets/images/Pause_Button.svg";
 export const MAP_BTN_IMG = "./assets/images/map_btn.svg";
 export const MAP_ICON_IMG = "./assets/images/mapIcon.png";
-export const TREASURE_CHEST_SPECIAL_LEVELS_ONGOING = "./assets/images/Chest_Ongoing_Level.svg";
-export const TREASURE_CHEST_SPECIAL_LEVELS_DONE = "./assets/images/Chest_Done_Level.svg";
+export const TREASURE_CHEST_SPECIAL_LEVELS_ONGOING = "./assets/images/Chest_Ongoing_Level.png";
+export const TREASURE_CHEST_SPECIAL_LEVELS_DONE = "./assets/images/Chest_Done_Level.png";
 export const MAP_LOCK_IMG = "./assets/images/mapLock.webp";
 export const STAR_IMG = "./assets/images/star.webp";
 export const NEXT_BTN_IMG = "./assets/images/next_btn.svg";

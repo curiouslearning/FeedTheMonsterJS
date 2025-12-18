@@ -15,13 +15,15 @@ export class JarRiveAnimation extends PubSub {
 
   private fillPercentStateInput: StateMachineInput;
   private scoreStateInput: StateMachineInput;
+  private isBonusStateInput: StateMachineInput;
 
   constructor(
     canvas: HTMLCanvasElement, 
     private readonly initialFillPercent: number,
     private readonly targetFillPercent: number,
     private readonly bonusFillPercent: number,
-    private readonly stars: number
+    private readonly stars: number,
+    private readonly isBonus: boolean
   ){
     super();
     this.initializeRive(canvas);
@@ -70,11 +72,11 @@ export class JarRiveAnimation extends PubSub {
   private initStateInputs(): void {
     const inputStateMachine_1 = "Fill Percent";
     const inputStateMachine_2 = "Score";
+    const inputStateMachine_3 = "isBonus";
     const inputs = this.riveInstance.stateMachineInputs(this.stateMachineName);
-    const fillPercentState = inputs.find(i => i.name === inputStateMachine_1);
-    const scoreState = inputs.find(i => i.name === inputStateMachine_2);
-    this.fillPercentStateInput = fillPercentState;
-    this.scoreStateInput = scoreState;
+    this.fillPercentStateInput = inputs.find(i => i.name === inputStateMachine_1);
+    this.scoreStateInput = inputs.find(i => i.name === inputStateMachine_2);
+    this.isBonusStateInput = inputs.find(i => i.name === inputStateMachine_3);
   }
 
   /**
@@ -87,6 +89,7 @@ export class JarRiveAnimation extends PubSub {
     
     this.setScoreInput(this.stars);
     this.setJarFill(this.initialFillPercent);
+    this.setIsBonus(this.isBonus);
     
     this.riveInstance.play();
 
@@ -106,11 +109,17 @@ export class JarRiveAnimation extends PubSub {
     this.fillPercentStateInput.fire();
   }
 
+  public setIsBonus(isBonus: boolean) {
+    this.isBonusStateInput.value = isBonus;
+    this.isBonusStateInput.fire();
+  }
+
   public stopRive(): void {
     this.riveInstance?.stop();
   }
 
   public dispose(): void {
+    this.unsubscribeAll();
     if (!this.riveInstance) return;
     this.riveInstance?.cleanup();
   }
