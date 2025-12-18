@@ -1,39 +1,60 @@
-version: 1
+# yaml-language-server: $schema=https://coderabbit.ai/integrations/schema.v2.json
 
-# Enable/disable CodeRabbit globally
-enabled: true
+language: "en-US"
+early_access: false
 
-# Branch rules (reviews will run only on these)
-branches:
-  include:
-    - "develop"
-    - "test"
-  exclude:
-    - "docs/**"
-    - "dist/**"
-
-# PR review settings
 reviews:
+  # General review style & workflow
+  profile: "chill"                # or "assertive"
+  request_changes_workflow: true  # acts like "require_approval"
+  review_status: true
+  commit_status: true
+  fail_commit_status: true        # mark status as failure if CodeRabbit can't review
+
+  # Label behaviour (rough equivalent of "labels.enabled: true")
+  suggested_labels: true
+  auto_apply_labels: true         # actually apply suggested labels
+
+  # Limit which PRs get reviewed & what files matter
   auto_review:
-    enabled: true           # Automatically review new PRs
-    require_approval: true  # Block merge until review passes
-  labels:
-    enabled: true           # Add labels automatically
-  max_comments: 15          # Prevent overwhelming feedback
+    enabled: true                 # equivalent to your auto_review.enabled: true
+    drafts: false                 # don't review drafts (set true if you want)
+    # Base branches (other than default) that should be reviewed
+    base_branches:
+      - "develop"
+      - "test"
+      - "main"                    # can be omitted if it's already the default branch
 
-# Quality checks
-checks:
-  require_tests: true       # PR must include or update tests
-  require_lint: true        # Enforce linting rules
-  min_coverage: 70          # Require minimum test coverage %
+  # File/path-level filtering (replacement for branches.exclude + ignore)
+  # NOTE: patterns starting with "!" are excluded
+  path_filters:
+    - "!docs/**"
+    - "!dist/**"
+    - "!**/*.md"
+    - "!**/*.json"
+    - "!package-lock.json"
 
-# File exclusions (skip reviews for these)
-ignore:
-  - "**/*.md"
-  - "**/*.json"
-  - "package-lock.json"
+  # Pre-merge checks (replacement for your `checks:` block)
+  pre_merge_checks:
+    custom_checks:
+      - name: "Tests & lint & coverage"
+        mode: "warning"           # use "error" to block merge on failure
+        instructions: |
+          Verify that this pull request satisfies all of the following:
+          - Relevant automated tests are added or updated for the changes.
+          - Project linting passes (for example: `npm run lint`, `yarn lint`, or equivalent).
+          - Test coverage is at least 70% according to the project's coverage tooling.
+          If any of these conditions are not met, explain what is missing.
 
-# Notifications
-notifications:
-  slack: false
-  github: true
+    # Optional: PR title / description rules
+    title:
+      mode: "warning"
+      requirements: "Title should be concise, descriptive, and follow the team's naming convention."
+
+    description:
+      mode: "warning"
+      requirements: "Description should clearly explain the intent, approach, and any risks of the change."
+
+# Optional: Chat behaviour (independent of reviews)
+chat:
+  auto_reply: true
