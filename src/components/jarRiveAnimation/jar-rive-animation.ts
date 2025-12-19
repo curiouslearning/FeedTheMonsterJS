@@ -1,12 +1,24 @@
 import { JAR_PROGRESSION } from '@constants';
-import { StateMachineInput, Fit, Alignment } from '@rive-app/canvas';
+import { Fit, Alignment } from '@rive-app/canvas';
 import { RiveComponent, RiveComponentConfig } from '../riveComponent/rive-component';
+import { AudioPlayer } from '@components/audio-player';
 
 export class JarRiveAnimation extends RiveComponent {
 
   public readonly BONUS_RIVE_EVENT = "BonusFillEvent";
   public readonly END_RIVE_EVENT = "EndEvent";
   public readonly FILL_RIVE_EVENT = "StarFillEvent";
+  public readonly JAR_FILL_SFX_EVENT = "JarFillSFX";
+  public readonly BONUS_SFX_EVENT = "BonusSFX";
+  public readonly SWOOSH_SFX_EVENT = "SwooshSFX";
+  public readonly SHINE_SFX_EVENT = "ShineSFX";
+  public readonly MATCHBOX_SFX_EVENT = "MatchboxSFX";
+
+  public readonly BONUS_SFX_AUDIO = "./assets/audios/BonusSFX.mp3"
+  public readonly FILL_SFX_AUDIO = "./assets/audios/JarFillSFX.mp3"
+  public readonly SWOOSH_SFX_AUDIO = "./assets/audios/SwooshSFX.mp3"
+  public readonly SHINE_SFX_AUDIO = "./assets/audios/ShineSFX.mp3"
+  public readonly MATCHBOX_SFX_AUDIO = "./assets/audios/MatchboxSFX.mp3"
 
   private readonly INPUT_FILL_PERCENT = "Fill Percent";
   private readonly INPUT_SCORE = "Score";
@@ -21,7 +33,7 @@ export class JarRiveAnimation extends RiveComponent {
     private readonly isBonus: boolean
   ){
     super(canvas);
-
+    this.preloadAudioAssets();
     this.initializeListeners();
   }
 
@@ -44,10 +56,24 @@ export class JarRiveAnimation extends RiveComponent {
       stateMachine: "State Machine 1"
     };
   }
+  
+  private preloadAudioAssets(): void {
+    AudioPlayer.instance.preloadGameAudio(this.FILL_SFX_AUDIO);
+    AudioPlayer.instance.preloadGameAudio(this.BONUS_SFX_AUDIO);
+    AudioPlayer.instance.preloadGameAudio(this.SWOOSH_SFX_AUDIO);
+    AudioPlayer.instance.preloadGameAudio(this.SHINE_SFX_AUDIO);
+    AudioPlayer.instance.preloadGameAudio(this.MATCHBOX_SFX_AUDIO);
+  }
 
   private initializeListeners(): void {
+    
     this.subscribe(this.FILL_RIVE_EVENT, () => { this.setJarFill(this.targetFillPercent); });
     this.subscribe(this.BONUS_RIVE_EVENT, () => { this.setJarFill(this.bonusFillPercent);});
+    this.subscribe(this.JAR_FILL_SFX_EVENT, () => { AudioPlayer.instance.playAudio(this.FILL_SFX_AUDIO); });
+    this.subscribe(this.BONUS_SFX_EVENT, () => { AudioPlayer.instance.playAudio(this.BONUS_SFX_AUDIO); });
+    this.subscribe(this.SWOOSH_SFX_EVENT, () => { AudioPlayer.instance.playAudio(this.SWOOSH_SFX_AUDIO); });
+    this.subscribe(this.SHINE_SFX_EVENT, () => { AudioPlayer.instance.playAudio(this.SHINE_SFX_AUDIO); });
+    this.subscribe(this.MATCHBOX_SFX_EVENT, () => { AudioPlayer.instance.playAudio(this.MATCHBOX_SFX_AUDIO); });
   }
 
   /**
