@@ -5,20 +5,20 @@ import { AudioPlayer } from '@components/audio-player';
 
 export class JarRiveAnimation extends RiveComponent {
 
-  public readonly BONUS_RIVE_EVENT = "BonusFillEvent";
-  public readonly END_RIVE_EVENT = "EndEvent";
-  public readonly FILL_RIVE_EVENT = "StarFillEvent";
-  public readonly JAR_FILL_SFX_EVENT = "JarFillSFX";
-  public readonly BONUS_SFX_EVENT = "BonusSFX";
-  public readonly SWOOSH_SFX_EVENT = "SwooshSFX";
-  public readonly SHINE_SFX_EVENT = "ShineSFX";
-  public readonly MATCHBOX_SFX_EVENT = "MatchboxSFX";
+  public static readonly BONUS_RIVE_EVENT = "BonusFillEvent";
+  public static readonly END_RIVE_EVENT = "EndEvent";
+  public static readonly FILL_RIVE_EVENT = "StarFillEvent";
+  public static readonly JAR_FILL_SFX_EVENT = "JarFillSFX";
+  public static readonly BONUS_SFX_EVENT = "BonusSFX";
+  public static readonly SWOOSH_SFX_EVENT = "SwooshSFX";
+  public static readonly SHINE_SFX_EVENT = "ShineSFX";
+  public static readonly MATCHBOX_SFX_EVENT = "MatchboxSFX";
 
-  public readonly BONUS_SFX_AUDIO = "./assets/audios/BonusSFX.mp3"
-  public readonly FILL_SFX_AUDIO = "./assets/audios/JarFillSFX.mp3"
-  public readonly SWOOSH_SFX_AUDIO = "./assets/audios/SwooshSFX.mp3"
-  public readonly SHINE_SFX_AUDIO = "./assets/audios/ShineSFX.mp3"
-  public readonly MATCHBOX_SFX_AUDIO = "./assets/audios/MatchboxSFX.mp3"
+  public static readonly BONUS_SFX_AUDIO = "./assets/audios/jarprogression/BonusSFX.mp3"
+  public static readonly FILL_SFX_AUDIO = "./assets/audios/jarprogression/JarFillSFX.mp3"
+  public static readonly SWOOSH_SFX_AUDIO = "./assets/audios/jarprogression/SwooshSFX.mp3"
+  public static readonly SHINE_SFX_AUDIO = "./assets/audios/jarprogression/ShineSFX.mp3"
+  public static readonly MATCHBOX_SFX_AUDIO = "./assets/audios/jarprogression/MatchboxSFX.mp3"
 
   private readonly INPUT_FILL_PERCENT = "Fill Percent";
   private readonly INPUT_SCORE = "Score";
@@ -33,6 +33,7 @@ export class JarRiveAnimation extends RiveComponent {
     private readonly isBonus: boolean
   ){
     super(canvas);
+    this.init();
     this.preloadAudioAssets();
     this.initializeListeners();
   }
@@ -58,22 +59,22 @@ export class JarRiveAnimation extends RiveComponent {
   }
   
   private preloadAudioAssets(): void {
-    AudioPlayer.instance.preloadGameAudio(this.FILL_SFX_AUDIO);
-    AudioPlayer.instance.preloadGameAudio(this.BONUS_SFX_AUDIO);
-    AudioPlayer.instance.preloadGameAudio(this.SWOOSH_SFX_AUDIO);
-    AudioPlayer.instance.preloadGameAudio(this.SHINE_SFX_AUDIO);
-    AudioPlayer.instance.preloadGameAudio(this.MATCHBOX_SFX_AUDIO);
+    AudioPlayer.instance.preloadGameAudio(JarRiveAnimation.FILL_SFX_AUDIO);
+    AudioPlayer.instance.preloadGameAudio(JarRiveAnimation.BONUS_SFX_AUDIO);
+    AudioPlayer.instance.preloadGameAudio(JarRiveAnimation.SWOOSH_SFX_AUDIO);
+    AudioPlayer.instance.preloadGameAudio(JarRiveAnimation.SHINE_SFX_AUDIO);
+    AudioPlayer.instance.preloadGameAudio(JarRiveAnimation.MATCHBOX_SFX_AUDIO);
   }
 
   private initializeListeners(): void {
     
-    this.subscribe(this.FILL_RIVE_EVENT, () => { this.setJarFill(this.targetFillPercent); });
-    this.subscribe(this.BONUS_RIVE_EVENT, () => { this.setJarFill(this.bonusFillPercent);});
-    this.subscribe(this.JAR_FILL_SFX_EVENT, () => { AudioPlayer.instance.playAudio(this.FILL_SFX_AUDIO); });
-    this.subscribe(this.BONUS_SFX_EVENT, () => { AudioPlayer.instance.playAudio(this.BONUS_SFX_AUDIO); });
-    this.subscribe(this.SWOOSH_SFX_EVENT, () => { AudioPlayer.instance.playAudio(this.SWOOSH_SFX_AUDIO); });
-    this.subscribe(this.SHINE_SFX_EVENT, () => { AudioPlayer.instance.playAudio(this.SHINE_SFX_AUDIO); });
-    this.subscribe(this.MATCHBOX_SFX_EVENT, () => { AudioPlayer.instance.playAudio(this.MATCHBOX_SFX_AUDIO); });
+    this.subscribe(JarRiveAnimation.FILL_RIVE_EVENT, () => { this.setJarFill(this.targetFillPercent); });
+    this.subscribe(JarRiveAnimation.BONUS_RIVE_EVENT, () => { this.setJarFill(this.bonusFillPercent);});
+    this.subscribe(JarRiveAnimation.JAR_FILL_SFX_EVENT, () => { AudioPlayer.instance.playAudio(JarRiveAnimation.FILL_SFX_AUDIO); });
+    this.subscribe(JarRiveAnimation.BONUS_SFX_EVENT, () => { AudioPlayer.instance.playAudio(JarRiveAnimation.BONUS_SFX_AUDIO); });
+    this.subscribe(JarRiveAnimation.SWOOSH_SFX_EVENT, () => { AudioPlayer.instance.playAudio(JarRiveAnimation.SWOOSH_SFX_AUDIO); });
+    this.subscribe(JarRiveAnimation.SHINE_SFX_EVENT, () => { AudioPlayer.instance.playAudio(JarRiveAnimation.SHINE_SFX_AUDIO); });
+    this.subscribe(JarRiveAnimation.MATCHBOX_SFX_EVENT, () => { AudioPlayer.instance.playAudio(JarRiveAnimation.MATCHBOX_SFX_AUDIO); });
   }
 
   /**

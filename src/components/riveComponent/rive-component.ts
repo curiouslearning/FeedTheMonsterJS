@@ -25,6 +25,9 @@ export class RiveComponent extends PubSub {
 
   constructor(protected readonly canvas: HTMLCanvasElement) {
     super();
+  }
+
+  protected init(): void {
     this.config = this.createRiveConfig();
     this.initializeRive();
   }
