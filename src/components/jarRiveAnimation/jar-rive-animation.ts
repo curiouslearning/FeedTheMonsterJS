@@ -1,21 +1,16 @@
-import { JAR_PROGRESSION, CACHED_RIVE_WASM } from '@constants';
-import { PubSub } from '../../events/pub-sub-events';
-import { Rive, Layout, Fit, Alignment, RuntimeLoader, StateMachineInput, EventType, RiveEventPayload } from '@rive-app/canvas';
-//For handling rive in offline mode.
-RuntimeLoader.setWasmUrl(CACHED_RIVE_WASM);
+import { JAR_PROGRESSION } from '@constants';
+import { StateMachineInput, Fit, Alignment } from '@rive-app/canvas';
+import { RiveComponent, RiveComponentConfig } from '../riveComponent/rive-component';
 
-export class JarRiveAnimation extends PubSub {
-
-  private riveInstance: Rive;
-  private stateMachineName: string = "State Machine 1";
+export class JarRiveAnimation extends RiveComponent {
 
   public readonly BONUS_RIVE_EVENT = "BonusFillEvent";
   public readonly END_RIVE_EVENT = "EndEvent";
   public readonly FILL_RIVE_EVENT = "StarFillEvent";
 
-  private fillPercentStateInput: StateMachineInput;
-  private scoreStateInput: StateMachineInput;
-  private isBonusStateInput: StateMachineInput;
+  private readonly INPUT_FILL_PERCENT = "Fill Percent";
+  private readonly INPUT_SCORE = "Score";
+  private readonly INPUT_IS_BONUS = "isBonus";
 
   constructor(
     canvas: HTMLCanvasElement, 
@@ -25,39 +20,29 @@ export class JarRiveAnimation extends PubSub {
     private readonly stars: number,
     private readonly isBonus: boolean
   ){
-    super();
-    this.initializeRive(canvas);
+    super(canvas);
+
     this.initializeListeners();
   }
 
-  private initializeRive(canvas: HTMLCanvasElement): void {
-    const canvasWidth = canvas.width;
-    const canvasHeight = canvas.height;
+  protected override createRiveConfig(): RiveComponentConfig {
+    const canvasWidth = this.canvas.width;
+    const canvasHeight = this.canvas.height;
     // We can increase or decrease the percent at which the min Y need to be set (0.25 = 25%)
     const minY = canvasHeight * 0.25;
     const maxY = canvasHeight;
-    const riveConfig: any = {
+    return {
+      
       src: JAR_PROGRESSION,
-      canvas: canvas,
+      canvas: this.canvas,
       autoplay: false,
-      useOffscreenRenderer: true,
-      layout: new Layout({
-        fit: Fit.Contain,
-        alignment: Alignment.Center,
-        minX: 0,
-        minY,
-        maxX: canvasWidth,
-        maxY,
-      }),
-      stateMachines: [this.stateMachineName]
+      fit: Fit.Contain,
+      alignment: Alignment.Center,
+      minY: minY,
+      maxX: canvasWidth,
+      maxY: maxY,
+      stateMachine: "State Machine 1"
     };
-
-    this.riveInstance = new Rive({
-      ...riveConfig,
-      onLoad: () => {
-        this.riveOnLoadCallback();
-      }
-    });
   }
 
   private initializeListeners(): void {
@@ -66,61 +51,33 @@ export class JarRiveAnimation extends PubSub {
   }
 
   /**
-   * Get the state machine inputs defined in the rive file.
-   * @return { fillPercentState: StateMachineInput, scoreState: StateMachineInput }
-   */
-  private initStateInputs(): void {
-    const inputStateMachine_1 = "Fill Percent";
-    const inputStateMachine_2 = "Score";
-    const inputStateMachine_3 = "isBonus";
-    const inputs = this.riveInstance.stateMachineInputs(this.stateMachineName);
-    this.fillPercentStateInput = inputs.find(i => i.name === inputStateMachine_1);
-    this.scoreStateInput = inputs.find(i => i.name === inputStateMachine_2);
-    this.isBonusStateInput = inputs.find(i => i.name === inputStateMachine_3);
-  }
-
-  /**
    * Rive onLoad callback — invoked automatically when the Rive file finishes loading.
    * Handles initialization of state machine inputs and orchestrates the jar fill
    * and score animations once the Rive instance is ready.
   */
-  private riveOnLoadCallback() {
-    this.initStateInputs();
+  protected override riveOnLoadCallback() {
+    super.riveOnLoadCallback();
     
     this.setScoreInput(this.stars);
     this.setJarFill(this.initialFillPercent);
     this.setIsBonus(this.isBonus);
     
     this.riveInstance.play();
-
-    this.riveInstance.on(EventType.RiveEvent, (event) => {
-      const eventName = (event.data as RiveEventPayload).name;
-      this.publish(eventName, event.data);
-    });
   }
 
   public setScoreInput(score: number) {
-    this.scoreStateInput.value = score;
-    if (score > 0) this.scoreStateInput.fire();
+    this.setNumberInput(this.INPUT_SCORE, score);
   }
 
   public setJarFill(jarValue: number) {
-    this.fillPercentStateInput.value = jarValue;
-    this.fillPercentStateInput.fire();
+    this.setNumberInput(this.INPUT_FILL_PERCENT, jarValue);
   }
 
   public setIsBonus(isBonus: boolean) {
-    this.isBonusStateInput.value = isBonus;
-    this.isBonusStateInput.fire();
+    this.setBooleanInput(this.INPUT_IS_BONUS, isBonus);
   }
 
   public stopRive(): void {
-    this.riveInstance?.stop();
+    this.stop();
   }
-
-  public dispose(): void {
-    this.unsubscribeAll();
-    if (!this.riveInstance) return;
-    this.riveInstance?.cleanup();
-  }
-};
+}
