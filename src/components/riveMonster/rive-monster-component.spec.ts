@@ -27,6 +27,7 @@ jest.mock('@rive-app/canvas', () => {
         __esModule: true,
         play: jest.fn(),
         stop: jest.fn(),
+        on: jest.fn(),
         stateMachineInputs: jest.fn().mockImplementation((name) => {
           if (stateMachines) {
             return [
@@ -57,7 +58,8 @@ jest.mock('@rive-app/canvas', () => {
       alignment: 'Center'
     })),
     Fit: { Contain: 'Contain' },
-    Alignment: { Center: 'Center' }
+    Alignment: { Center: 'Center' },
+    EventType: { RiveEvent: 'RiveEvent' }
   };
 });
 
@@ -215,6 +217,16 @@ describe('RiveMonsterComponent', () => {
   });
 
   it('should cleanup previous instance when evolving', () => {
+    const previousMonster = new RiveMonsterComponent({
+      canvas,
+      autoplay: true,
+      isEvolving: true,
+      gameCanvas
+    });
+    
+
+    const initialInstance = previousMonster['riveInstance'];
+    previousMonster.dispose();
     const evolutionComponent = new RiveMonsterComponent({
       canvas,
       autoplay: true,
@@ -222,11 +234,7 @@ describe('RiveMonsterComponent', () => {
       gameCanvas
     });
 
-    const initialInstance = evolutionComponent['riveInstance'];
-
-    evolutionComponent.initializeRive();
-
-    expect(initialInstance.cleanupInstances).toHaveBeenCalled();
+    expect(initialInstance.cleanup).toHaveBeenCalled();
     expect(evolutionComponent['riveInstance']).toBeDefined();
     expect(evolutionComponent['riveInstance']).not.toBe(initialInstance);
   });

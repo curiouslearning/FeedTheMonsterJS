@@ -2,6 +2,7 @@ import { MONSTER_PHASES, CACHED_RIVE_WASM, EventType, EventNames } from '@consta
 import { Rive, Layout, Fit, Alignment, RuntimeLoader } from '@rive-app/canvas';
 import gameSettingsService from '@gameSettingsService';
 import gameStateService from '@gameStateService';
+import { RiveComponent, RiveComponentConfig } from '@components/riveComponent/rive-component';
 
 RuntimeLoader.setWasmUrl(CACHED_RIVE_WASM);
 export interface RiveMonsterComponentProps {
@@ -16,14 +17,9 @@ export interface RiveMonsterComponentProps {
   src?: string;
   isEvolving?: boolean;
 }
-export class RiveMonsterComponent {
-  private props: RiveMonsterComponentProps;
-  private riveInstance: Rive;
+export class RiveMonsterComponent extends RiveComponent {
   private phaseIndex: number = 0;
-  private stateMachineName: string = "State Machine 1"  // Define the state machine
-  public game: any;
-  public x: number;
-  public y: number;
+  protected stateMachineName: string = "State Machine 1"  // Define the state machine
   private hitboxRangeX: {
     from: number;
     to: number;
@@ -34,14 +30,6 @@ export class RiveMonsterComponent {
   };
   private scale: number;
   private minY: number;
-  constructor(props: RiveMonsterComponentProps) {
-    this.props = props;
-    this.scale = gameSettingsService.getDevicePixelRatioValue();
-    // add extra space above the monster in the Rive file this ensures proper animation, it will causes the monster to be placed at the bottom of the screen
-    this.setRiveMinYAdjustment();
-    this.initializeHitbox();
-    this.initializeRive();
-  }
 
   // Static readonly properties for all monster animations
   public static readonly Animations = {
@@ -56,6 +44,14 @@ export class RiveMonsterComponent {
     MOUTHCLOSED: "MouthClosed",
     HAPPY: "Happy",
   };
+
+  constructor(protected readonly props: RiveMonsterComponentProps) {
+    super(props.canvas);
+    this.init();
+    this.scale = gameSettingsService.getDevicePixelRatioValue();
+
+    this.initializeHitbox();
+  }
 
   private initializeHitbox() {
     const { canvas } = this.props;
@@ -115,83 +111,26 @@ export class RiveMonsterComponent {
     context.strokeRect(this.hitboxRangeX.from, this.hitboxRangeY.from, width, height);
   }
 
-  public initializeRive() {
+  protected override createRiveConfig(): RiveComponentConfig {
     const { canvas, isEvolving, src, autoplay } = this.props;
-
-    if (isEvolving && this.riveInstance) {
-      this.riveInstance.cleanupInstances();
-    }
-
-    const canvasWidth = canvas.width;
-    const canvasHeight = canvas.height;
+    const canvasWidth = this.canvas.width;
+    const canvasHeight = this.canvas.height;
     // We can increase or decrease the percent at which the min Y need to be set (0.25 = 25%)
     const minY = canvasHeight * 0.25;
     const maxY = canvasHeight;
-
-    const riveConfig: any = {
+    return {
+      
       src: src || MONSTER_PHASES[this.phaseIndex],
-      canvas,
-      autoplay,
-      useOffscreenRenderer: true,
-      layout: new Layout({
-        fit: Fit.Contain,
-        alignment: Alignment.Center,
-        minX: 0,
-        minY,
-        maxX: canvasWidth,
-        maxY,
-      }),
+      canvas: this.canvas,
+      autoplay: autoplay,
+      fit: Fit.Contain,
+      alignment: Alignment.Center,
+      minY: minY,
+      maxX: canvasWidth,
+      maxY: maxY,
+      stateMachine: this.stateMachineName,
+      onLoad: !isEvolving ? () => this.handleLoad() : undefined,
     };
-
-    riveConfig.stateMachines = [this.stateMachineName];
-    if (!isEvolving) {
-      riveConfig.onLoad = () => this.handleLoad();
-    }
-
-    this.riveInstance = new Rive(riveConfig);
-  }
-
-  /**
-   * This method adjusts the alignment of the Rive animation to the evolution
-   * background on different screen sizes, ensuring consistent positioning across devices.
-   */
-  private setRiveMinYAdjustment(): void {
-    const { width, height } = this.props.canvas
-    const scaledWidth = Math.round(width / this.scale); // (width multiplied by devicePixelRatio) / devicePixelRatio to get the original screen width.
-    const scaledHeight = Math.round(height / this.scale);  // (height multiplied by devicePixelRatio) / devicePixelRatio to get the original screen height.
-
-    // Default minY adjustment
-    let minY;
-    // Determine minY based on scaled width and height
-    if (scaledWidth >= 500) {
-      minY = scaledHeight / 14; // Adjusted from (height / 4) / 3.5 for clarity
-    } else if (scaledWidth <= 499 && scaledWidth >= 343 && scaledHeight >= 735) {
-      minY = scaledHeight / 2;
-    } else {
-      minY = scaledHeight / 4;
-    }
-
-
-    // Dynamic adjustment based on scaledHeight (5% of the height)
-    minY -= scaledHeight * 0.05;
-
-    // Store the calculated minY
-    this.minY = minY;
-  }
-
-  /**
-   * Used to add additional logic to any events happening in Rive.
-   *
-   * Params:
-   *  eventName = 'Load' | 'LoadError' | 'Play' | 'Pause' | 'Stop' | 'Loop' | 'Advance' | 'StateChange' | 'RiveEvent'
-   *  callback - callback for the method to calls for that event.
-   **/
-  public executeRiveAction(eventName: EventNames, callback) {
-    // Listens for the specified event on the `riveInstance` and triggers the provided callback when the event occurs.
-    // This allows custom logic to be executed in response to Rive events (e.g., Play, Load, etc.).
-    this.riveInstance.on(EventType[eventName], () => {
-      callback();
-    });
   }
 
   getInputs() {
@@ -272,14 +211,5 @@ The extra space above the monster in the Rive file ensures proper animation, but
 
   stopRiveMonster() {
     this.riveInstance?.stop();
-  }
-  private cleanupRiveInstance() {
-    this.riveInstance?.cleanup();
-    this.riveInstance = null;
-  }
-
-  public dispose() {
-    if (!this.riveInstance) return;
-    this.cleanupRiveInstance();
   }
 }
