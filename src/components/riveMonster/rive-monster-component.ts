@@ -3,6 +3,7 @@ import { Rive, Layout, Fit, Alignment, RuntimeLoader } from '@rive-app/canvas';
 import gameSettingsService from '@gameSettingsService';
 import gameStateService from '@gameStateService';
 import { RiveComponent, RiveComponentConfig } from '@components/riveComponent/rive-component';
+import { AudioPlayer } from '@components/audio-player';
 
 RuntimeLoader.setWasmUrl(CACHED_RIVE_WASM);
 export interface RiveMonsterComponentProps {
@@ -13,11 +14,19 @@ export interface RiveMonsterComponentProps {
   width?: number; // Optional width for the Rive animation
   height?: number; // Optional height for the Rive animation
   onLoad?: () => void; // Callback once Rive animation is loaded
-  gameCanvas?: HTMLCanvasElement; // Main canvas element
   src?: string;
   isEvolving?: boolean;
 }
 export class RiveMonsterComponent extends RiveComponent {
+
+  public static readonly DISAPPOINTED_SFX_EVENT = "DisappointedSFX";
+  public static readonly EAT_SFX_EVENT = "EatSFX";
+  public static readonly SPIT_SFX_EVENT = "MonsterSpitSFX";
+
+  public static readonly DISAPPOINTED_SFX_AUDIO = "./assets/audios/MonsterGameplay/Disappointed.mp3"
+  public static readonly EAT_SFX_AUDIO = "./assets/audios/MonsterGameplay/Eat.mp3"
+  public static readonly SPIT_SFX_AUDIO = "./assets/audios/MonsterGameplay/Spit.mp3"
+
   private phaseIndex: number = 0;
   protected stateMachineName: string = "State Machine 1"  // Define the state machine
   private hitboxRangeX: {
@@ -29,7 +38,6 @@ export class RiveMonsterComponent extends RiveComponent {
     to: number;
   };
   private scale: number;
-  private minY: number;
 
   // Static readonly properties for all monster animations
   public static readonly Animations = {
@@ -51,6 +59,21 @@ export class RiveMonsterComponent extends RiveComponent {
     this.scale = gameSettingsService.getDevicePixelRatioValue();
 
     this.initializeHitbox();
+    this.preloadAudioAssets();
+    this.initializeListeners();
+  }
+
+  private preloadAudioAssets(): void {
+    AudioPlayer.instance.preloadGameAudio(RiveMonsterComponent.DISAPPOINTED_SFX_AUDIO);
+    AudioPlayer.instance.preloadGameAudio(RiveMonsterComponent.EAT_SFX_AUDIO);
+    AudioPlayer.instance.preloadGameAudio(RiveMonsterComponent.SPIT_SFX_AUDIO);
+  }
+  
+  private initializeListeners(): void {
+    
+    this.subscribe(RiveMonsterComponent.DISAPPOINTED_SFX_EVENT, () => { AudioPlayer.instance.playAudio(RiveMonsterComponent.DISAPPOINTED_SFX_AUDIO); });
+    this.subscribe(RiveMonsterComponent.EAT_SFX_EVENT, () => { AudioPlayer.instance.playAudio(RiveMonsterComponent.EAT_SFX_AUDIO); });
+    this.subscribe(RiveMonsterComponent.SPIT_SFX_EVENT, () => { AudioPlayer.instance.playAudio(RiveMonsterComponent.SPIT_SFX_AUDIO); });
   }
 
   private initializeHitbox() {
@@ -112,7 +135,7 @@ export class RiveMonsterComponent extends RiveComponent {
   }
 
   protected override createRiveConfig(): RiveComponentConfig {
-    const { canvas, isEvolving, src, autoplay } = this.props;
+    const { isEvolving, src, autoplay } = this.props;
     const canvasWidth = this.canvas.width;
     const canvasHeight = this.canvas.height;
     // We can increase or decrease the percent at which the min Y need to be set (0.25 = 25%)

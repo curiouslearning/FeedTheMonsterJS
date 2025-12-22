@@ -112,8 +112,7 @@ describe('RiveMonsterComponent', () => {
 
     component = new RiveMonsterComponent({
       canvas,
-      autoplay: true,
-      gameCanvas
+      autoplay: true
     });
   });
 
@@ -126,7 +125,6 @@ describe('RiveMonsterComponent', () => {
     expect(component).toBeDefined();
     expect(component['riveInstance']).toBeDefined();
     expect(component['props'].canvas).toBe(canvas);
-    expect(component['props'].gameCanvas).toBe(gameCanvas);
   });
 
   it('should call Rive with correct parameters on instantiation', () => {
@@ -149,8 +147,7 @@ describe('RiveMonsterComponent', () => {
     new RiveMonsterComponent({
       canvas,
       autoplay: true,
-      onLoad: onLoadMock,
-      gameCanvas
+      onLoad: onLoadMock
     });
 
     jest.runAllTimers();
@@ -194,8 +191,7 @@ describe('RiveMonsterComponent', () => {
     const evolutionComponent = new RiveMonsterComponent({
       canvas,
       autoplay: true,
-      isEvolving: true,
-      gameCanvas
+      isEvolving: true
     });
 
     const inputs = evolutionComponent.getInputs();
@@ -220,8 +216,7 @@ describe('RiveMonsterComponent', () => {
     const previousMonster = new RiveMonsterComponent({
       canvas,
       autoplay: true,
-      isEvolving: true,
-      gameCanvas
+      isEvolving: true
     });
     
 
@@ -230,8 +225,7 @@ describe('RiveMonsterComponent', () => {
     const evolutionComponent = new RiveMonsterComponent({
       canvas,
       autoplay: true,
-      isEvolving: true,
-      gameCanvas
+      isEvolving: true
     });
 
     expect(initialInstance.cleanup).toHaveBeenCalled();
