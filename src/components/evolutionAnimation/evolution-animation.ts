@@ -25,6 +25,12 @@ const CANVAS_Z_INDEX_MAP = {
 
 export class EvolutionAnimationComponent extends RiveMonsterComponent {
   
+  public static readonly POOF_SFX_EVENT = "PoofSFX";
+  public static readonly SWOOSH_SFX_EVENT = "SwooshSFX";
+
+  public static readonly POOF_SFX_AUDIO = "./assets/audios/Evolution/Poof.mp3"
+  public static readonly SWOOSH_SFX_AUDIO = "./assets/audios/Evolution/Swoosh.mp3"
+
   static shouldInitialize(): boolean {
     const { monsterPhaseNumber } = gameStateService.getLevelEndSceneData();
     const newPhase = gameStateService.checkMonsterPhaseUpdation();
@@ -67,6 +73,17 @@ export class EvolutionAnimationComponent extends RiveMonsterComponent {
     this.preloadAudioFiles();
     
     this.startAnimation();
+  }
+
+  protected override preloadAudioAssets(): void {
+    AudioPlayer.instance.preloadGameAudio(EvolutionAnimationComponent.POOF_SFX_AUDIO);
+    AudioPlayer.instance.preloadGameAudio(EvolutionAnimationComponent.SWOOSH_SFX_AUDIO);
+  }
+  
+  protected override initializeListeners(): void {
+    
+    this.subscribe(EvolutionAnimationComponent.POOF_SFX_EVENT, () => { AudioPlayer.instance.playAudio(EvolutionAnimationComponent.POOF_SFX_AUDIO); });
+    this.subscribe(EvolutionAnimationComponent.SWOOSH_SFX_EVENT, () => { AudioPlayer.instance.playAudio(EvolutionAnimationComponent.SWOOSH_SFX_AUDIO); });
   }
 
   private initialize() {

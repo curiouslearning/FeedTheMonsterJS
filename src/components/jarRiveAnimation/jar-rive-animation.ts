@@ -14,12 +14,11 @@ export class JarRiveAnimation extends RiveComponent {
   public static readonly SHINE_SFX_EVENT = "ShineSFX";
   public static readonly MATCHBOX_SFX_EVENT = "MatchboxSFX";
 
-  public static readonly BONUS_SFX_AUDIO = "./assets/audios/jarprogression/BonusSFX.mp3"
-  public static readonly FILL_SFX_AUDIO = "./assets/audios/jarprogression/JarFillSFX.mp3"
-  public static readonly SWOOSH_SFX_AUDIO = "./assets/audios/jarprogression/SwooshSFX.mp3"
-  public static readonly SHINE_SFX_AUDIO = "./assets/audios/jarprogression/ShineSFX.mp3"
-  public static readonly MATCHBOX_SFX_AUDIO = "./assets/audios/jarprogression/MatchboxSFX.mp3"
-
+  public static readonly BONUS_SFX_AUDIO = "./assets/audios/JarProgression/BonusSFX.mp3"
+  public static readonly FILL_SFX_AUDIO = "./assets/audios/JarProgression/JarFillSFX.mp3"
+  public static readonly SWOOSH_SFX_AUDIO = "./assets/audios/JarProgression/SwooshSFX.mp3"
+  public static readonly SHINE_SFX_AUDIO = "./assets/audios/JarProgression/ShineSFX.mp3"
+  public static readonly MATCHBOX_SFX_AUDIO = "./assets/audios/JarProgression/MatchboxSFX.mp3"
   private readonly INPUT_FILL_PERCENT = "Fill Percent";
   private readonly INPUT_SCORE = "Score";
   private readonly INPUT_IS_BONUS = "isBonus";

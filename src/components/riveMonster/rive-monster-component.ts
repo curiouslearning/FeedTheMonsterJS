@@ -63,13 +63,13 @@ export class RiveMonsterComponent extends RiveComponent {
     this.initializeListeners();
   }
 
-  private preloadAudioAssets(): void {
+  protected preloadAudioAssets(): void {
     AudioPlayer.instance.preloadGameAudio(RiveMonsterComponent.DISAPPOINTED_SFX_AUDIO);
     AudioPlayer.instance.preloadGameAudio(RiveMonsterComponent.EAT_SFX_AUDIO);
     AudioPlayer.instance.preloadGameAudio(RiveMonsterComponent.SPIT_SFX_AUDIO);
   }
   
-  private initializeListeners(): void {
+  protected initializeListeners(): void {
     
     this.subscribe(RiveMonsterComponent.DISAPPOINTED_SFX_EVENT, () => { AudioPlayer.instance.playAudio(RiveMonsterComponent.DISAPPOINTED_SFX_AUDIO); });
     this.subscribe(RiveMonsterComponent.EAT_SFX_EVENT, () => { AudioPlayer.instance.playAudio(RiveMonsterComponent.EAT_SFX_AUDIO); });
