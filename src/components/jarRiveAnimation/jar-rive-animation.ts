@@ -1,21 +1,27 @@
-import { JAR_PROGRESSION, CACHED_RIVE_WASM } from '@constants';
-import { PubSub } from '../../events/pub-sub-events';
-import { Rive, Layout, Fit, Alignment, RuntimeLoader, StateMachineInput, EventType, RiveEventPayload } from '@rive-app/canvas';
-//For handling rive in offline mode.
-RuntimeLoader.setWasmUrl(CACHED_RIVE_WASM);
+import { JAR_PROGRESSION } from '@constants';
+import { Fit, Alignment } from '@rive-app/canvas';
+import { RiveComponent, RiveComponentConfig } from '../riveComponent/rive-component';
+import { AudioPlayer } from '@components/audio-player';
 
-export class JarRiveAnimation extends PubSub {
+export class JarRiveAnimation extends RiveComponent {
 
-  private riveInstance: Rive;
-  private stateMachineName: string = "State Machine 1";
+  public static readonly BONUS_RIVE_EVENT = "BonusFillEvent";
+  public static readonly END_RIVE_EVENT = "EndEvent";
+  public static readonly FILL_RIVE_EVENT = "StarFillEvent";
+  public static readonly JAR_FILL_SFX_EVENT = "JarFillSFX";
+  public static readonly BONUS_SFX_EVENT = "BonusSFX";
+  public static readonly SWOOSH_SFX_EVENT = "SwooshSFX";
+  public static readonly SHINE_SFX_EVENT = "ShineSFX";
+  public static readonly MATCHBOX_SFX_EVENT = "MatchboxSFX";
 
-  public readonly BONUS_RIVE_EVENT = "BonusFillEvent";
-  public readonly END_RIVE_EVENT = "EndEvent";
-  public readonly FILL_RIVE_EVENT = "StarFillEvent";
-
-  private fillPercentStateInput: StateMachineInput;
-  private scoreStateInput: StateMachineInput;
-  private isBonusStateInput: StateMachineInput;
+  public static readonly BONUS_SFX_AUDIO = "./assets/audios/JarProgression/BonusSFX.mp3"
+  public static readonly FILL_SFX_AUDIO = "./assets/audios/JarProgression/JarFillSFX.mp3"
+  public static readonly SWOOSH_SFX_AUDIO = "./assets/audios/JarProgression/SwooshSFX.mp3"
+  public static readonly SHINE_SFX_AUDIO = "./assets/audios/JarProgression/ShineSFX.mp3"
+  public static readonly MATCHBOX_SFX_AUDIO = "./assets/audios/JarProgression/MatchboxSFX.mp3"
+  private readonly INPUT_FILL_PERCENT = "Fill Percent";
+  private readonly INPUT_SCORE = "Score";
+  private readonly INPUT_IS_BONUS = "isBonus";
 
   constructor(
     canvas: HTMLCanvasElement, 
@@ -25,58 +31,49 @@ export class JarRiveAnimation extends PubSub {
     private readonly stars: number,
     private readonly isBonus: boolean
   ){
-    super();
-    this.initializeRive(canvas);
+    super(canvas);
+    this.init();
+    this.preloadAudioAssets();
     this.initializeListeners();
   }
 
-  private initializeRive(canvas: HTMLCanvasElement): void {
-    const canvasWidth = canvas.width;
-    const canvasHeight = canvas.height;
+  protected override createRiveConfig(): RiveComponentConfig {
+    const canvasWidth = this.canvas.width;
+    const canvasHeight = this.canvas.height;
     // We can increase or decrease the percent at which the min Y need to be set (0.25 = 25%)
     const minY = canvasHeight * 0.25;
     const maxY = canvasHeight;
-    const riveConfig: any = {
+    return {
+      
       src: JAR_PROGRESSION,
-      canvas: canvas,
+      canvas: this.canvas,
       autoplay: false,
-      useOffscreenRenderer: true,
-      layout: new Layout({
-        fit: Fit.Contain,
-        alignment: Alignment.Center,
-        minX: 0,
-        minY,
-        maxX: canvasWidth,
-        maxY,
-      }),
-      stateMachines: [this.stateMachineName]
+      fit: Fit.Contain,
+      alignment: Alignment.Center,
+      minY: minY,
+      maxX: canvasWidth,
+      maxY: maxY,
+      stateMachine: "State Machine 1"
     };
-
-    this.riveInstance = new Rive({
-      ...riveConfig,
-      onLoad: () => {
-        this.riveOnLoadCallback();
-      }
-    });
+  }
+  
+  private preloadAudioAssets(): void {
+    AudioPlayer.instance.preloadGameAudio(JarRiveAnimation.FILL_SFX_AUDIO);
+    AudioPlayer.instance.preloadGameAudio(JarRiveAnimation.BONUS_SFX_AUDIO);
+    AudioPlayer.instance.preloadGameAudio(JarRiveAnimation.SWOOSH_SFX_AUDIO);
+    AudioPlayer.instance.preloadGameAudio(JarRiveAnimation.SHINE_SFX_AUDIO);
+    AudioPlayer.instance.preloadGameAudio(JarRiveAnimation.MATCHBOX_SFX_AUDIO);
   }
 
   private initializeListeners(): void {
-    this.subscribe(this.FILL_RIVE_EVENT, () => { this.setJarFill(this.targetFillPercent); });
-    this.subscribe(this.BONUS_RIVE_EVENT, () => { this.setJarFill(this.bonusFillPercent);});
-  }
-
-  /**
-   * Get the state machine inputs defined in the rive file.
-   * @return { fillPercentState: StateMachineInput, scoreState: StateMachineInput }
-   */
-  private initStateInputs(): void {
-    const inputStateMachine_1 = "Fill Percent";
-    const inputStateMachine_2 = "Score";
-    const inputStateMachine_3 = "isBonus";
-    const inputs = this.riveInstance.stateMachineInputs(this.stateMachineName);
-    this.fillPercentStateInput = inputs.find(i => i.name === inputStateMachine_1);
-    this.scoreStateInput = inputs.find(i => i.name === inputStateMachine_2);
-    this.isBonusStateInput = inputs.find(i => i.name === inputStateMachine_3);
+    
+    this.subscribe(JarRiveAnimation.FILL_RIVE_EVENT, () => { this.setJarFill(this.targetFillPercent); });
+    this.subscribe(JarRiveAnimation.BONUS_RIVE_EVENT, () => { this.setJarFill(this.bonusFillPercent);});
+    this.subscribe(JarRiveAnimation.JAR_FILL_SFX_EVENT, () => { AudioPlayer.instance.playAudio(JarRiveAnimation.FILL_SFX_AUDIO); });
+    this.subscribe(JarRiveAnimation.BONUS_SFX_EVENT, () => { AudioPlayer.instance.playAudio(JarRiveAnimation.BONUS_SFX_AUDIO); });
+    this.subscribe(JarRiveAnimation.SWOOSH_SFX_EVENT, () => { AudioPlayer.instance.playAudio(JarRiveAnimation.SWOOSH_SFX_AUDIO); });
+    this.subscribe(JarRiveAnimation.SHINE_SFX_EVENT, () => { AudioPlayer.instance.playAudio(JarRiveAnimation.SHINE_SFX_AUDIO); });
+    this.subscribe(JarRiveAnimation.MATCHBOX_SFX_EVENT, () => { AudioPlayer.instance.playAudio(JarRiveAnimation.MATCHBOX_SFX_AUDIO); });
   }
 
   /**
@@ -84,43 +81,29 @@ export class JarRiveAnimation extends PubSub {
    * Handles initialization of state machine inputs and orchestrates the jar fill
    * and score animations once the Rive instance is ready.
   */
-  private riveOnLoadCallback() {
-    this.initStateInputs();
+  protected override riveOnLoadCallback() {
+    super.riveOnLoadCallback();
     
     this.setScoreInput(this.stars);
     this.setJarFill(this.initialFillPercent);
     this.setIsBonus(this.isBonus);
     
     this.riveInstance.play();
-
-    this.riveInstance.on(EventType.RiveEvent, (event) => {
-      const eventName = (event.data as RiveEventPayload).name;
-      this.publish(eventName, event.data);
-    });
   }
 
   public setScoreInput(score: number) {
-    this.scoreStateInput.value = score;
-    if (score > 0) this.scoreStateInput.fire();
+    this.setNumberInput(this.INPUT_SCORE, score);
   }
 
   public setJarFill(jarValue: number) {
-    this.fillPercentStateInput.value = jarValue;
-    this.fillPercentStateInput.fire();
+    this.setNumberInput(this.INPUT_FILL_PERCENT, jarValue);
   }
 
   public setIsBonus(isBonus: boolean) {
-    this.isBonusStateInput.value = isBonus;
-    this.isBonusStateInput.fire();
+    this.setBooleanInput(this.INPUT_IS_BONUS, isBonus);
   }
 
   public stopRive(): void {
-    this.riveInstance?.stop();
+    this.stop();
   }
-
-  public dispose(): void {
-    this.unsubscribeAll();
-    if (!this.riveInstance) return;
-    this.riveInstance?.cleanup();
-  }
-};
+}
