@@ -64,7 +64,7 @@ export default class LevelSelectionLevelButton extends BaseButtonComponent {
         this.onClickCallback = callback;
         this.starsCount = starsCount;
         this.buttonImageId = options.imageID;
-        !isLevelLock && super.onClick(this.handleOnClick.bind(this));
+        super.onClick(this.handleOnClick.bind(this));
         this.renderGameBtnAssets(
             isCurrentLevel,
             starsCount,
