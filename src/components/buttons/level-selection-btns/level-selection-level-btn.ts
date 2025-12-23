@@ -71,6 +71,7 @@ export default class LevelSelectionLevelButton extends BaseButtonComponent {
             isDebuggerOn,
             levelTypeText
         );
+        this.updateLockDisplay(isLevelLock);
     }
 
     private renderGameBtnAssets(
@@ -194,6 +195,14 @@ export default class LevelSelectionLevelButton extends BaseButtonComponent {
             this.btnImage.style.display = !isBtnLock ? 'none' : 'block';
         } else if (!this.btnImage && isBtnLock) {
             this.createLockDisplay();
+        }
+        // Disable button interactions for locked buttons
+        if (isBtnLock) {
+            this.element.setAttribute('disabled', 'true');
+            this.element.style.pointerEvents = 'none';
+        } else {
+            this.element.removeAttribute('disabled');
+            this.element.style.pointerEvents = 'auto';
         }
     }
 
