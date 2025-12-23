@@ -85,7 +85,7 @@ export class ProgressionScene {
       this.treasureChestScore === 1
     );
 
-    this.jarAnimation.subscribe(this.jarAnimation.END_RIVE_EVENT, () => {
+    this.jarAnimation.subscribe(JarRiveAnimation.END_RIVE_EVENT, () => {
       this.scheduleSceneTransition();
     });
   }

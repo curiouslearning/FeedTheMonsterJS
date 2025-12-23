@@ -85,7 +85,7 @@ describe('FeedbackAudioHandler', () => {
     // Check that the correct audio was played
     expect(feedbackAudioHandler['audioPlayer'].playAudioQueue).toHaveBeenCalledWith(
       false,
-      'eats.mp3',
+      './assets/audios/MonsterGameplay/Eat.mp3',
       'cheering2.mp3'
     );
   });

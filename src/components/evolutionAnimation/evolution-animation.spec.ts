@@ -2,13 +2,11 @@ import { EvolutionAnimationComponent } from './evolution-animation';
 import { RiveMonsterComponent } from '@components/riveMonster/rive-monster-component';
 import { EVOL_MONSTER } from '@constants';
 import * as CommonUtils from '@common';
+import { AudioPlayer } from '@components/audio-player';
 
 // Mock dependencies
 const mockDestroy = jest.fn();
 const mockDispose = jest.fn();
-const mockStopAllAudios = jest.fn();
-const mockPreloadGameAudio = jest.fn().mockResolvedValue(undefined);
-const mockPlayAudioQueue = jest.fn();
 
 // Mock gameStateService
 jest.mock('@gameStateService', () => ({
@@ -25,17 +23,6 @@ jest.mock('@components/baseHTML/base-html', () => ({
     destroy: mockDestroy,
     _init: jest.fn(),
     render: jest.fn()
-  }))
-}));
-
-// Mock AudioPlayer
-jest.mock('@components/audio-player', () => ({
-  AudioPlayer: jest.fn().mockImplementation(() => ({
-    stopAllAudios: mockStopAllAudios,
-    preloadGameAudio: mockPreloadGameAudio,
-    playAudioQueue: mockPlayAudioQueue,
-    playAudio: jest.fn(),
-    playButtonClickSound: jest.fn()
   }))
 }));
 
@@ -224,24 +211,20 @@ describe('EvolutionAnimationComponent', () => {
     // Mock isDocumentVisible to return true for this test
     jest.spyOn(CommonUtils, 'isDocumentVisible').mockReturnValue(true);
 
-    // Reset mock counters before test
-    const mockPlayAudio = jest.fn();
-    (evolutionAnimation as any).audioPlayer.playAudio = mockPlayAudio;
-
     // Call playEvolutionCompletionAudios directly
     evolutionAnimation['playEvolutionCompletionAudios']();
 
     // Check if stopAllAudios was called
-    expect(mockStopAllAudios).toHaveBeenCalled();
+    expect(AudioPlayer.instance.stopAllAudios).toHaveBeenCalled();
     
     // Check if playAudio was called once initially (for AUDIO_MONSTER_EVOLVE)
-    expect(mockPlayAudio).toHaveBeenCalledTimes(1);
+    expect(AudioPlayer.instance.playAudio).toHaveBeenCalledTimes(1);
     
     // Fast-forward time by 1 second
     jest.advanceTimersByTime(1000);
     
     // Check if playAudio was called again (for AUDIO_INTRO)
-    expect(mockPlayAudio).toHaveBeenCalledTimes(2);
+    expect(AudioPlayer.instance.playAudio).toHaveBeenCalledTimes(2);
     
     // Restore timers and mocks
     jest.useRealTimers();
@@ -277,7 +260,7 @@ describe('EvolutionAnimationComponent', () => {
     evolutionAnimation['pauseAudios']();
 
     // Check if stopAllAudios was called
-    expect(mockStopAllAudios).toHaveBeenCalled();
+    expect(AudioPlayer.instance.stopAllAudios).toHaveBeenCalled();
   });
 
   it('should not stop audios when document is visible', () => {
@@ -288,7 +271,7 @@ describe('EvolutionAnimationComponent', () => {
     });
 
     // Reset the mock to ensure clean state
-    mockStopAllAudios.mockClear();
+    (AudioPlayer.instance.stopAllAudios as jest.Mock).mockClear();
 
     // Mock isDocumentVisible to return true
     (CommonUtils.isDocumentVisible as jest.Mock).mockReturnValue(true);
@@ -297,6 +280,6 @@ describe('EvolutionAnimationComponent', () => {
     evolutionAnimation['pauseAudios']();
 
     // Check that stopAllAudios was not called
-    expect(mockStopAllAudios).not.toHaveBeenCalled();
+    expect(AudioPlayer.instance.stopAllAudios).not.toHaveBeenCalled();
   });
 });
