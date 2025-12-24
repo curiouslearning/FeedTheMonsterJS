@@ -292,7 +292,7 @@ export class LevelEndScene {
     // This is to ensure and dispose the buttons, audio and all the properties when leaving the levelend scene.added delay to ensure all animations are completed
     setTimeout(() => {
       this.dispose();
-    }, 2000);
+    }, 500);
   }
 
   renderButtonsHTML() {
