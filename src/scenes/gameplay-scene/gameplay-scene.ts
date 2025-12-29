@@ -56,6 +56,7 @@ import { RiveMonsterComponent } from '@components/riveMonster/rive-monster-compo
 import PuzzleHandler from "@gamepuzzles/puzzleHandler/puzzleHandler";
 import { DEFAULT_SELECTORS } from '@components/prompt-text/prompt-text';
 import { MiniGameHandler } from '@miniGames/miniGameHandler'
+import { GameplayInputManager } from './gameplay-input-manager';
 
 export class GameplayScene {
   public width: number;
@@ -102,16 +103,14 @@ export class GameplayScene {
   private unsubscribeEvent: () => void;
   public unsubscribeMiniGameEvent: () => void;
   public unsubscribeLoadGamePuzzle: () => void;
+  private eventListenersAdded: (() => void)[];
   public timeTicker: HTMLElement;
   isFeedBackTriggered: boolean;
   public monsterPhaseNumber: 0 | 1 | 2 | 3;
   private backgroundGenerator: PhasesBackground;
   private puzzleHandler: any;
   private timerStartSFXPlayed: boolean;
-  private isMonsterMouthOpen = false;
-  private lastClientX = 0;
-  private lastClientY = 0;
-  private animationFrameId: number | null = null;
+  public inputManager: GameplayInputManager;
   private hasShownChest: boolean = false;
   private miniGameHandler: MiniGameHandler;
   public isCorrect: boolean;
@@ -120,7 +119,7 @@ export class GameplayScene {
     { backToIdle: 350, isChewing: 0, isHappy: 1700, isSpit: 1500, isSad: 3000 }, // Phase 1
     { backToIdle: 350, isChewing: 0, isHappy: 1700, isSpit: 1000, isSad: 2500 }, // Phase 2
     { backToIdle: 350, isChewing: 0, isHappy: 1700, isSpit: 1300, isSad: 2600 }, // Phase 3
-    { backToIdle: 350, isChewing: 0, isHappy: 1700, isSpit: 100, isSad: 2500 }  // Phase 4
+    { backToIdle: 350, isChewing: 0, isHappy: 1700, isSpit: 1500, isSad: 3000 }  // Phase 4
   ];
   private levelForMinigame: number;
   private treasureChestScore: number;
@@ -147,12 +146,19 @@ export class GameplayScene {
         previousPlayedLevel
       )
       : localStorage.setItem(PreviousPlayedLevel + lang, previousPlayedLevel);
+    this.puzzleHandler = new PuzzleHandler(this.levelData, this.counter, gamePlayData.feedbackAudios);
+    this.inputManager = new GameplayInputManager(
+      this.canvas,
+      this.stoneHandler,
+      this.puzzleHandler,
+      this.monster
+    );
     this.addEventListeners();
     this.startGameTime();
     this.startPuzzleTime();
     this.analyticsIntegration = AnalyticsIntegration.getInstance();
     this.audioPlayer = new AudioPlayer();
-    this.puzzleHandler = new PuzzleHandler(this.levelData, this.counter, gamePlayData.feedbackAudios);
+    
     this.unsubscribeEvent = gameStateService.subscribe(
       gameStateService.EVENTS.GAME_PAUSE_STATUS_EVENT,
       (isPause: boolean) => {
@@ -212,7 +218,7 @@ export class GameplayScene {
       autoplay: true,
       fit: "contain",
       alignment: "bottomCenter",
-      src: MONSTER_PHASES[this.monsterPhaseNumber],
+      src: MONSTER_PHASES[3],
     });
   }
 
@@ -308,7 +314,7 @@ export class GameplayScene {
     this.jsonVersionNumber = gamePlayData.jsonVersionNumber;
     this.feedBackTexts = gamePlayData.feedBackTexts;
     this.data = gamePlayData.data;
-    this.monsterPhaseNumber = gamePlayData.monsterPhaseNumber;
+    this.monsterPhaseNumber = 3;
   }
 
   setupBg = () => {
@@ -347,322 +353,6 @@ export class GameplayScene {
       this.monster.triggerInput(animationName);
     }
   }
-
-  handleMouseUp = (event) => {
-    // Cancel any pending animation frame
-    if (this.animationFrameId !== null) {
-      cancelAnimationFrame(this.animationFrameId);
-      this.animationFrameId = null;
-    }
-
-    // Reset monster mouth state
-    this.isMonsterMouthOpen = false;
-
-    if (!this.pickedStone || this.pickedStone.frame <= 99) {
-      this.puzzleHandler.clearPickedUp();
-      return;
-    }
-
-    if (this.monster.checkHitboxDistance(event)) {
-      // Handle letter drop (success case)
-      const lettersCountRef = { value: this.stonesCount };
-      // const isMinigameLevel = this.counter + 1 === this.levelForMinigame;
-      const ctx = {
-        levelType: this.levelData.levelMeta.levelType,
-        pickedLetter: {
-          text: this.pickedStone.text,
-          frame: this.pickedStone.frame
-        },
-        targetLetterText: this.stoneHandler.getCorrectTargetStone(), // Pass only the data needed
-        handleLetterDropEnd: (isCorrect, puzzleType) => {
-          this.isFeedBackTriggered = isCorrect;
-          if (isCorrect) {
-            this.score += 100; //100 as static default value for adding score.
-          }
-          this.handleStoneDropEnd(isCorrect, puzzleType);
-        },
-        triggerMonsterAnimation: this.triggerMonsterAnimation.bind(this),
-        timerTicking: this.timerTicking,
-        lang,
-        lettersCountRef,
-        feedBackTexts: this.feedBackTexts,
-      };
-
-      this.puzzleHandler.createPuzzle(ctx);
-
-      // For Word puzzles, hide the letter immediately after dropping it into the monster
-      if (ctx.levelType === "Word" || ctx.levelType === "SoundWord") {
-        this.stoneHandler.hideStone(this.pickedStoneObject);
-      }
-      this.stonesCount = lettersCountRef.value;
-      this.trailEffectHandler.setGameHasStarted(false);
-    } else if (this.pickedStoneObject) {
-      // Handle letter drop (fail/miss case)
-      this.stoneHandler.resetStonePosition(
-        this.width,
-        this.pickedStone,
-        this.pickedStoneObject
-      );
-      this.triggerMonsterAnimation('isMouthClosed');
-      this.triggerMonsterAnimation('backToIdle');
-    }
-
-    // Clear stored coordinates
-    this.lastClientX = 0;
-    this.lastClientY = 0;
-
-    this.pickedStone = null;
-    this.puzzleHandler.clearPickedUp();
-  };
-
-  // Event to identify mouse moved down on the canvas
-  handleMouseDown = (event) => {
-    if (this.pickedStone && this.pickedStone.frame <= 99) {
-      return; // Prevent dragging if the letter is animating
-    }
-
-    let rect = this.canvas.getBoundingClientRect();
-    const x = event.clientX - rect.left;
-    const y = event.clientY - rect.top;
-
-    if (!this.puzzleHandler.checkIsWordPuzzle()) {
-      // Use stoneHandler's handlePickStoneUp for LetterOnly puzzles
-      const picked = this.stoneHandler.handlePickStoneUp(x, y);
-      if (picked) {
-        this.pickedStoneObject = picked;
-        this.pickedStone = picked;
-        this.stoneHandler.playDragAudioIfNecessary(picked);
-      }
-    } else {
-      this.setPickedUp(x, y);
-    }
-  };
-
-  setPickedUp(x, y) {
-    if (this.pickedStone && this.pickedStone.frame <= 99) {
-      return; // Prevent dragging if the letter is animating
-    }
-
-    const stoneLetter = this.stoneHandler.handlePickStoneUp(x, y);
-
-    if (stoneLetter) {
-      this.pickedStoneObject = stoneLetter;
-      this.pickedStone = stoneLetter;
-      this.stoneHandler.playDragAudioIfNecessary(stoneLetter);
-
-      if (this.levelData?.levelMeta?.levelType === 'Word') {
-        this.puzzleHandler.setPickUpLetter(
-          stoneLetter?.text,
-          stoneLetter?.foilStoneIndex
-        );
-      }
-    }
-  }
-
-  handleMouseMove = (event) => {
-    // Store the latest coordinates even if we don't process this event
-    this.lastClientX = event.clientX;
-    this.lastClientY = event.clientY;
-
-    // Early returns for invalid states
-    if (!this.pickedStone || this.pickedStone.frame <= 99) return; // Prevent dragging if the letter is animating
-
-    // Schedule the next animation frame if not already scheduled
-    this.requestDragUpdate();
-  };
-
-  /**
-   * Requests an animation frame for drag updates.
-   * Uses requestAnimationFrame for optimal performance and visual smoothness.
-   */
-  private requestDragUpdate() {
-    if (this.animationFrameId === null) {
-      this.animationFrameId = requestAnimationFrame(() => {
-        // Clear the ID first to allow scheduling of the next frame
-        this.animationFrameId = null;
-        // Use a small coordinator method to delegate to specialized handlers
-        this.dispatchDragUpdate(this.lastClientX, this.lastClientY);
-      });
-    }
-  };
-
-  /**
-   * Dispatches drag updates to the appropriate specialized processor based on puzzle type.
-   * Acts as a thin coordinator that routes to specialized processing methods.
-   * 
-   * @param clientX - The client X coordinate of the mouse/touch position
-   * @param clientY - The client Y coordinate of the mouse/touch position
-   */
-  private dispatchDragUpdate(clientX: number, clientY: number) {
-    // Disable quick start tutorial animation since user has started interacting
-    this.tutorial.shouldShowQuickStartTutorial = false;
-
-    // Determine which processing method to call based on puzzle type
-    if (!this.puzzleHandler.checkIsWordPuzzle()) {
-      this.processSimpleDragMovement(clientX, clientY);
-    } else {
-      this.processWordPuzzleDragMovement(clientX, clientY);
-    }
-  }
-
-  /**
-   * Processes simple drag movement for matchfirst puzzles (LetterOnly/LetterInWord).
-   * This is a streamlined path with direct coordinate updates and no hover detection.
-   * 
-   * @param clientX - The client X coordinate of the mouse/touch position
-   * @param clientY - The client Y coordinate of the mouse/touch position
-   */
-  private processSimpleDragMovement(clientX: number, clientY: number) {
-    // Direct coordinate update without complex hover detection
-    let newStoneCoordinates = this.stoneHandler.handleMovingStoneLetter(
-      this.pickedStone,
-      clientX,
-      clientY
-    );
-    this.pickedStone = newStoneCoordinates;
-
-    // Only trigger monster animation if not already open
-    if (!this.isMonsterMouthOpen) {
-      this.triggerMonsterAnimation('isMouthOpen');
-      this.isMonsterMouthOpen = true;
-    }
-  }
-
-  /**
-   * Processes complex drag movement for word puzzles with hover detection.
-   * Delegates to specialized methods for updating coordinates, checking hover, and handling letter pickup.
-   * 
-   * @param clientX - The client X coordinate of the mouse/touch position
-   * @param clientY - The client Y coordinate of the mouse/touch position
-   */
-  private processWordPuzzleDragMovement(clientX: number, clientY: number) {
-    // Update stone coordinates and get trail position
-    const { trailX, trailY } = this.updateDraggedStonePosition(clientX, clientY);
-
-    // Check for hovering over other stones
-    const newStoneLetter = this.checkStoneHovering(trailX, trailY);
-
-    // Handle letter pickup if hovering detected
-    if (newStoneLetter) {
-      this.handleLetterPickup(newStoneLetter);
-    }
-
-    // Ensure monster mouth is open during dragging
-    this.ensureMonsterMouthOpen();
-  }
-
-  /**
-   * Updates the position of the currently dragged stone.
-   * 
-   * @param clientX - The client X coordinate of the mouse/touch position
-   * @param clientY - The client Y coordinate of the mouse/touch position
-   * @returns Object containing trail X and Y coordinates for hover detection
-   */
-  private updateDraggedStonePosition(clientX: number, clientY: number): { trailX: number, trailY: number } {
-    const newStoneCoordinates = this.stoneHandler.handleMovingStoneLetter(
-      this.pickedStone,
-      clientX,
-      clientY
-    );
-    this.pickedStone = newStoneCoordinates;
-
-    return {
-      trailX: newStoneCoordinates.x,
-      trailY: newStoneCoordinates.y
-    };
-  }
-
-  /**
-   * Checks if the dragged stone is hovering over another stone.
-   * 
-   * @param trailX - The X coordinate of the dragged stone
-   * @param trailY - The Y coordinate of the dragged stone
-   * @returns The new stone letter object if hovering, otherwise null
-   */
-  private checkStoneHovering(trailX: number, trailY: number) {
-    return this.stoneHandler.handleHoveringToAnotherStone(
-      trailX,
-      trailY,
-      (foilStoneText, foilStoneIndex) => {
-        return this.puzzleHandler.handleCheckHoveredLetter(foilStoneText, foilStoneIndex);
-      }
-    );
-  }
-
-  /**
-   * Handles the letter pickup process when hovering over a valid stone.
-   * Updates puzzle state, resets original stone position, and replaces with new letter.
-   * 
-   * @param newStoneLetter - The new stone letter object to pick up
-   */
-  private handleLetterPickup(newStoneLetter: any) {
-    // Update puzzle state with the picked up letter
-    this.puzzleHandler.setPickUpLetter(
-      newStoneLetter.text,
-      newStoneLetter.foilStoneIndex
-    );
-
-    // Reset the original stone position
-    this.pickedStone = this.stoneHandler.resetStonePosition(
-      this.width,
-      this.pickedStone,
-      this.pickedStoneObject
-    );
-
-    // Replace with the new letter
-    this.pickedStoneObject = newStoneLetter;
-    this.pickedStone = newStoneLetter;
-  }
-
-  /**
-   * Ensures the monster mouth is open during dragging.
-   * Only triggers the animation if the mouth isn't already open.
-   */
-  private ensureMonsterMouthOpen() {
-    if (!this.isMonsterMouthOpen) {
-      this.triggerMonsterAnimation('isMouthOpen');
-      this.isMonsterMouthOpen = true;
-    }
-  }
-
-  handleMouseClick = (event) => {
-    let rect = this.canvas.getBoundingClientRect();
-    const x = event.clientX - rect.left;
-    const y = event.clientY - rect.top;
-
-    if (this.monster.onClick(x, y)) {
-      this.setGameToStart();
-      this.tutorial?.activeTutorial?.removeHandPointer();
-      gameStateService.publish(
-        gameStateService.EVENTS.GAME_HAS_STARTED,
-        true
-      ); //Send event that the game has started and stones will now be dropped.
-    }
-  };
-
-  // Event to identify touch on the canvas
-  handleTouchStart = (event) => {
-    if (this.pickedStone && this.pickedStone.frame <= 99) {
-      return; // Prevent dragging if the letter is animating
-    }
-    const touch = event.touches[0];
-    this.handleMouseDown({ clientX: touch.clientX, clientY: touch.clientY });
-  };
-
-  handleTouchMove = (event) => {
-    if (!this.pickedStone) return;
-    event.preventDefault(); // Prevent scrolling while dragging
-
-    // Convert touch event to mouse event format
-    const touch = event.touches[0];
-    // Store coordinates and let handleMouseMove handle the throttling
-    this.handleMouseMove({ clientX: touch.clientX, clientY: touch.clientY });
-  };
-
-  handleTouchEnd = (event) => {
-    const touch = event.changedTouches[0];
-    this.handleMouseUp({ clientX: touch.clientX, clientY: touch.clientY });
-  };
 
   private setGameToStart() {
     this.isGameStarted = true;
@@ -723,15 +413,80 @@ export class GameplayScene {
     }
   }
 
-  addEventListeners() {
-    this.handler.addEventListener(MOUSEUP, this.handleMouseUp, false);
-    this.handler.addEventListener(MOUSEMOVE, this.handleMouseMove, false);
-    this.handler.addEventListener(MOUSEDOWN, this.handleMouseDown, false);
-    this.handler.addEventListener(TOUCHSTART, this.handleTouchStart, false);
-    this.handler.addEventListener(TOUCHMOVE, this.handleTouchMove, false);
-    this.handler.addEventListener(TOUCHEND, this.handleTouchEnd, false);
-    this.handler.addEventListener(CLICK, this.handleMouseClick, false);
+  handleInputDragStart = () => {
+    this.tutorial.shouldShowQuickStartTutorial = false;
+  }
 
+  handleInputMonsterClick = () => {
+    this.setGameToStart();
+    this.tutorial?.activeTutorial?.removeHandPointer();
+    gameStateService.publish(
+      gameStateService.EVENTS.GAME_HAS_STARTED,
+      true
+    );
+  }
+
+  handleInputStoneDropOnTarget = (detail: any) => {
+    const { stone, stoneObject } = detail;
+    // Sync local state for potential uses in other methods (like analytics)
+    this.pickedStone = stone;
+    this.pickedStoneObject = stoneObject;
+
+    const lettersCountRef = { value: this.stonesCount };
+    const ctx = {
+      levelType: this.levelData.levelMeta.levelType,
+      pickedLetter: {
+        text: stone.text,
+        frame: stone.frame
+      },
+      targetLetterText: this.stoneHandler.getCorrectTargetStone(),
+      handleLetterDropEnd: (isCorrect, puzzleType) => {
+        this.isFeedBackTriggered = isCorrect;
+        if (isCorrect) {
+          this.score += 100;
+        }
+        this.handleStoneDropEnd(isCorrect, puzzleType);
+      },
+      triggerMonsterAnimation: this.triggerMonsterAnimation.bind(this),
+      timerTicking: this.timerTicking,
+      lang,
+      lettersCountRef,
+      feedBackTexts: this.feedBackTexts,
+    };
+
+    this.puzzleHandler.createPuzzle(ctx);
+
+    if (ctx.levelType === "Word" || ctx.levelType === "SoundWord") {
+      this.stoneHandler.hideStone(stoneObject);
+    }
+    this.stonesCount = lettersCountRef.value;
+    this.trailEffectHandler.setGameHasStarted(false);
+  }
+
+  handleInputStoneDropMissed = (detail: any) => {
+    const { stone, stoneObject } = detail;
+    this.stoneHandler.resetStonePosition(
+      this.width,
+      stone,
+      stoneObject
+    );
+    this.triggerMonsterAnimation('isMouthClosed');
+    this.triggerMonsterAnimation('backToIdle');
+  }
+
+  handleInputRequestAnimation = (detail: any) => {
+    this.triggerMonsterAnimation(detail.animationName);
+  }
+
+  private addEventListeners() {
+    this.inputManager.addEventListeners(this.handler);
+    this.eventListenersAdded = [];
+
+    this.addEventListener(GameplayInputManager.INPUT_DRAG_START, this.handleInputDragStart);
+    this.addEventListener(GameplayInputManager.INPUT_MONSTER_CLICK, this.handleInputMonsterClick);
+    this.addEventListener(GameplayInputManager.INPUT_STONE_DROP_ON_TARGET, this.handleInputStoneDropOnTarget);
+    this.addEventListener(GameplayInputManager.INPUT_STONE_DROP_MISSED, this.handleInputStoneDropMissed);
+    this.addEventListener(GameplayInputManager.INPUT_REQUEST_ANIMATION, this.handleInputRequestAnimation);
     document.addEventListener(
       VISIBILITY_CHANGE,
       this.handleVisibilityChange,
@@ -739,19 +494,23 @@ export class GameplayScene {
     );
   }
 
+  private addEventListener(eventName: string, callback: any): void {
+    this.eventListenersAdded.push(gameStateService.subscribe(eventName, callback));
+  }
+
   removeEventListeners() {
-    // Remove event listeners using the defined functions
-    this.handler.removeEventListener(CLICK, this.handleMouseClick, false);
-    this.handler.removeEventListener("mouseup", this.handleMouseUp, false);
-    this.handler.removeEventListener("mousemove", this.handleMouseMove, false);
-    this.handler.removeEventListener("mousedown", this.handleMouseDown, false);
-    this.handler.removeEventListener(
-      "touchstart",
-      this.handleTouchStart,
+    this.inputManager?.removeEventListeners(this.handler);
+
+    if (this.eventListenersAdded) {
+      this.eventListenersAdded.forEach(unsubscribe => unsubscribe());
+      this.eventListenersAdded = [];
+    }
+
+    document.removeEventListener(
+      VISIBILITY_CHANGE,
+      this.handleVisibilityChange,
       false
     );
-    this.handler.removeEventListener("touchmove", this.handleTouchMove, false);
-    this.handler.removeEventListener("touchend", this.handleTouchEnd, false);
   }
 
   /**
