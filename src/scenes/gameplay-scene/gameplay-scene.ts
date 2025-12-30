@@ -12,15 +12,8 @@ import {
 import TutorialHandler from '@tutorials';
 import {
   StoneConfig,
-  CLICK,
   LOADPUZZLE,
-  MOUSEDOWN,
-  MOUSEMOVE,
-  MOUSEUP,
   STONEDROP,
-  TOUCHEND,
-  TOUCHMOVE,
-  TOUCHSTART,
   VISIBILITY_CHANGE,
   Debugger,
   lang,
@@ -40,7 +33,6 @@ import {
   SCENE_NAME_PROGRESS_LEVEL,
   SCENE_NAME_LEVEL_END,
   PreviousPlayedLevel,
-  MONSTER_PHASES,
   AUDIO_PATH_POINTS_ADD,
   JAR_FILLING,
   MATCHBOX,
@@ -52,16 +44,16 @@ import gameStateService from '@gameStateService';
 import gameSettingsService from '@gameSettingsService';
 import miniGameStateService from '@miniGameStateService';
 import { PAUSE_POPUP_EVENT_DATA, PausePopupComponent } from '@components/popups/pause-popup/pause-popup-component';
-import { RiveMonsterComponent } from '@components/riveMonster/rive-monster-component';
 import PuzzleHandler from "@gamepuzzles/puzzleHandler/puzzleHandler";
 import { DEFAULT_SELECTORS } from '@components/prompt-text/prompt-text';
 import { MiniGameHandler } from '@miniGames/miniGameHandler'
 import { GameplayInputManager } from './gameplay-input-manager';
+import { MonsterController } from './monster-controller';
 
 export class GameplayScene {
   public width: number;
   public height: number;
-  public monster: RiveMonsterComponent;
+  public monsterController: MonsterController;
   public jsonVersionNumber: string;
   public canvas: HTMLCanvasElement;
   public levelData: any;
@@ -91,7 +83,6 @@ export class GameplayScene {
   public time: number = 0;
   public score: number = 0;
   private data: DataModal;
-  public triggerInputs: any;
   audioPlayer: AudioPlayer;
   analyticsIntegration: AnalyticsIntegration;
   startTime: number;
@@ -114,13 +105,6 @@ export class GameplayScene {
   private hasShownChest: boolean = false;
   private miniGameHandler: MiniGameHandler;
   public isCorrect: boolean;
-  // Define animation delays as an array where index 0 = phase 0, index 1 = phase 1, index 2 = phase 2
-  private animationDelays = [
-    { backToIdle: 350, isChewing: 0, isHappy: 1700, isSpit: 1500, isSad: 3000 }, // Phase 1
-    { backToIdle: 350, isChewing: 0, isHappy: 1700, isSpit: 1000, isSad: 2500 }, // Phase 2
-    { backToIdle: 350, isChewing: 0, isHappy: 1700, isSpit: 1300, isSad: 2600 }, // Phase 3
-    { backToIdle: 350, isChewing: 0, isHappy: 1700, isSpit: 1500, isSad: 3000 }  // Phase 4
-  ];
   private levelForMinigame: number;
   private treasureChestScore: number;
 
@@ -147,12 +131,16 @@ export class GameplayScene {
       )
       : localStorage.setItem(PreviousPlayedLevel + lang, previousPlayedLevel);
     this.puzzleHandler = new PuzzleHandler(this.levelData, this.counter, gamePlayData.feedbackAudios);
+    
+    this.monsterController = new MonsterController(this.riveMonsterElement, this.monsterPhaseNumber);
+
     this.inputManager = new GameplayInputManager(
       this.canvas,
       this.stoneHandler,
       this.puzzleHandler,
-      this.monster
+      this.monsterController
     );
+
     this.addEventListeners();
     this.startGameTime();
     this.startPuzzleTime();
@@ -212,16 +200,6 @@ export class GameplayScene {
     this.audioPlayer.preloadGameAudio(SURPRISE_BONUS_STAR);
   }
 
-  private initializeRiveMonster(): RiveMonsterComponent {
-    return new RiveMonsterComponent({
-      canvas: this.riveMonsterElement,
-      autoplay: true,
-      fit: "contain",
-      alignment: "bottomCenter",
-      src: MONSTER_PHASES[3],
-    });
-  }
-
   private initializeGameComponents(gamePlayData) {
     this.trailEffectHandler = new TrailEffectsHandler(this.canvas)
     this.pauseButton = new PauseButton();
@@ -277,7 +255,6 @@ export class GameplayScene {
       onClickCallback,
     );
     this.levelIndicators = new LevelIndicators();
-    this.monster = this.initializeRiveMonster();
 
     /*TO DO: The following code lines of this method should've been and can be handled within the tutorial class.
       we could have a method in the tutorial that accepts gamePlayData - tutorialOn, isTutorialCleared and levelData.
@@ -314,7 +291,7 @@ export class GameplayScene {
     this.jsonVersionNumber = gamePlayData.jsonVersionNumber;
     this.feedBackTexts = gamePlayData.feedBackTexts;
     this.data = gamePlayData.data;
-    this.monsterPhaseNumber = 3;
+    this.monsterPhaseNumber = gamePlayData.monsterPhaseNumber;
   }
 
   setupBg = () => {
@@ -333,7 +310,7 @@ export class GameplayScene {
     this.backgroundGenerator = new PhasesBackground();
 
     // Dynamically update the background based on the selected type
-    this.backgroundGenerator.generateBackground(this.monsterPhaseNumber);
+    this.backgroundGenerator.generateBackground(this.monsterController.currentPhase as any);
   }
 
   resumeGame = () => {
@@ -341,18 +318,6 @@ export class GameplayScene {
     // Resume the clock rotation when game is resumed
     this.timerTicking?.applyRotation(this.timerTicking?.startMyTimer && !this.timerTicking?.isStoneDropped);
   };
-
-  private triggerMonsterAnimation(animationName: string) {
-    const delay = this.animationDelays[this.monsterPhaseNumber]?.[animationName] ?? 0;
-
-    if (delay > 0) {
-      setTimeout(() => {
-        this.monster.triggerInput(animationName);
-      }, delay);
-    } else {
-      this.monster.triggerInput(animationName);
-    }
-  }
 
   private setGameToStart() {
     this.isGameStarted = true;
@@ -447,7 +412,7 @@ export class GameplayScene {
         }
         this.handleStoneDropEnd(isCorrect, puzzleType);
       },
-      triggerMonsterAnimation: this.triggerMonsterAnimation.bind(this),
+      triggerMonsterAnimation: (animationName) => this.monsterController.triggerMonsterAnimation(animationName),
       timerTicking: this.timerTicking,
       lang,
       lettersCountRef,
@@ -470,12 +435,12 @@ export class GameplayScene {
       stone,
       stoneObject
     );
-    this.triggerMonsterAnimation('isMouthClosed');
-    this.triggerMonsterAnimation('backToIdle');
+    this.monsterController.triggerMonsterAnimation('isMouthClosed');
+    this.monsterController.triggerMonsterAnimation('backToIdle');
   }
 
   handleInputRequestAnimation = (detail: any) => {
-    this.triggerMonsterAnimation(detail.animationName);
+    this.monsterController.triggerMonsterAnimation(detail.animationName);
   }
 
   private addEventListeners() {
@@ -592,7 +557,7 @@ export class GameplayScene {
           this.treasureChestScore
         );
         this.switchSceneAtGameEnd(starsCount, this.treasureChestScore);
-        this.monster.dispose(); //Adding the monster dispose here due to the scenario that this.monster is still needed when restart game level is played.
+        this.monsterController.dispose();
       };
 
     } else {
@@ -640,14 +605,10 @@ export class GameplayScene {
   }
 
   private initNewPuzzle(loadPuzzleEvent) {
-    // Dispose old monster first to prevent memory leaks
-    if (this.monster) {
-      this.monster.dispose();
-    }
+    this.monsterController.resetForNextPuzzle();
     this.isCorrect = false;
     this.timerStartSFXPlayed = false; // move this flag from loadpuzzle to initnewpuzzle to make sure when loading new puzzle, timer start sfx will set to false.
     this.stoneHandler.stonesHasLoaded = false;
-    this.monster = this.initializeRiveMonster();
     this.removeEventListeners();
     this.isGameStarted = false;
     this.time = 0;
@@ -671,9 +632,9 @@ export class GameplayScene {
     }
 
     // Dispose visual elements
-    if (this.monster) {
-      this.monster.dispose();
-      this.monster = null;
+    if (this.monsterController) {
+      this.monsterController.dispose();
+      this.monsterController = null;
     }
 
     if (this.stoneHandler) {
@@ -739,26 +700,10 @@ export class GameplayScene {
   }
 
   private handleStoneDropEnd(isCorrect, puzzleType: string | null = null) {
-    const triggerInputs = this.monster.getInputs();
-    const isHappy = triggerInputs.find(input => input.name === 'isHappy');
-    const isSpit = triggerInputs.find(input => input.name === 'isSpit');
-    const isSad = triggerInputs.find(input => input.name === 'isSad');
-    const isChewing = triggerInputs.find(input => input.name === 'isChewing');
-    if (!isChewing) {
-      console.error("Missing triggers for animations.");
-      return false;
-    }
-    if (!isHappy || !isSpit || !isSad) {
-      console.error("Missing triggers for animations.");
-      return false;
-    }
     if (isCorrect) {
-      this.triggerMonsterAnimation('isChewing');
-      this.triggerMonsterAnimation('isHappy');
+      this.monsterController.playSuccessAnimation();
     } else {
-      this.triggerMonsterAnimation('isChewing');
-      this.triggerMonsterAnimation('isSpit');
-      this.triggerMonsterAnimation('isSad');
+      this.monsterController.playFailureAnimation();
     }
 
     this.logPuzzleEndFirebaseEvent(isCorrect, puzzleType);

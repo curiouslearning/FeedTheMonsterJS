@@ -9,10 +9,9 @@ import {
     StoneConfig,
 } from "@common";
 import { StoneHandler } from "@components";
-import { RiveMonsterComponent } from "@components/riveMonster/rive-monster-component";
 import PuzzleHandler from "@gamepuzzles/puzzleHandler/puzzleHandler";
-import { GameStateService } from '@gameStateService/gameStateService';
 import gameStateService from '@gameStateService';
+import { MonsterController } from "./monster-controller";
 
 export class GameplayInputManager {
     // #region Event Names
@@ -37,7 +36,7 @@ export class GameplayInputManager {
         private canvas: HTMLCanvasElement,
         private stoneHandler: StoneHandler,
         private puzzleHandler: PuzzleHandler,
-        private monster: RiveMonsterComponent
+        private monsterController: MonsterController
     ) { }
 
     // #region Public Methods
@@ -95,7 +94,11 @@ export class GameplayInputManager {
             return;
         }
 
-        if (this.monster.checkHitboxDistance(event)) {
+        let rect = this.canvas.getBoundingClientRect();
+        const x = event.clientX - rect.left;
+        const y = event.clientY - rect.top;
+
+        if (this.monsterController.checkHitbox(x, y)) {
             this.dispatch(GameplayInputManager.INPUT_STONE_DROP_ON_TARGET, {
                 stone: this.pickedStone,
                 stoneObject: this.pickedStoneObject
@@ -145,7 +148,7 @@ export class GameplayInputManager {
         const x = event.clientX - rect.left;
         const y = event.clientY - rect.top;
 
-        if (this.monster.onClick(x, y)) {
+        if (this.monsterController.onClick(x, y)) {
             this.dispatch(GameplayInputManager.INPUT_MONSTER_CLICK, { x, y });
         }
     };

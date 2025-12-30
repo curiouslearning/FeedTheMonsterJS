@@ -29,14 +29,6 @@ export class RiveMonsterComponent extends RiveComponent {
 
   private phaseIndex: number = 0;
   protected stateMachineName: string = "State Machine 1"  // Define the state machine
-  private hitboxRangeX: {
-    from: number;
-    to: number;
-  };
-  private hitboxRangeY: {
-    from: number;
-    to: number;
-  };
   private scale: number;
 
   // Static readonly properties for all monster animations
@@ -58,7 +50,6 @@ export class RiveMonsterComponent extends RiveComponent {
     this.init();
     this.scale = gameSettingsService.getDevicePixelRatioValue();
 
-    this.initializeHitbox();
     this.preloadAudioAssets();
     this.initializeListeners();
   }
@@ -74,64 +65,6 @@ export class RiveMonsterComponent extends RiveComponent {
     this.subscribe(RiveMonsterComponent.DISAPPOINTED_SFX_EVENT, () => { AudioPlayer.instance.playAudio(RiveMonsterComponent.DISAPPOINTED_SFX_AUDIO); });
     this.subscribe(RiveMonsterComponent.EAT_SFX_EVENT, () => { AudioPlayer.instance.playAudio(RiveMonsterComponent.EAT_SFX_AUDIO); });
     this.subscribe(RiveMonsterComponent.SPIT_SFX_EVENT, () => { AudioPlayer.instance.playAudio(RiveMonsterComponent.SPIT_SFX_AUDIO); });
-  }
-
-  private initializeHitbox() {
-    const { canvas } = this.props;
-    const logicalCanvasWidth = canvas.width / this.scale;
-    const logicalCanvasHeight = canvas.height / this.scale;
-
-    const aspectRatio = window.innerWidth / window.innerHeight;
-
-    const breakpoints = [
-      { max: 0.4, bottomY: 0.78, height: 0.28 },
-      { max: 0.5, bottomY: 0.82, height: 0.32 },
-      { max: 0.6, bottomY: 0.85, height: 0.35 },
-      { max: 0.7, bottomY: 0.84, height: 0.36 },
-      { max: 0.8, bottomY: 0.88, height: 0.38 },
-    ];
-
-    const defaultValues = { bottomY: 0.90, height: 0.40 };
-
-    const { bottomY, height } = breakpoints.find(b => aspectRatio < b.max) || defaultValues;
-
-    const monsterBottomY = logicalCanvasHeight * bottomY;
-    const monsterHeight = logicalCanvasHeight * height;
-    const monsterTopY = monsterBottomY - monsterHeight;
-
-    const hitboxOffsetY = monsterHeight * 0.05;
-    const hitboxPaddingY = monsterHeight * 0.1;
-
-    this.hitboxRangeX = {
-      from: logicalCanvasWidth * 0.35,
-      to: logicalCanvasWidth * 0.65,
-    };
-
-    this.hitboxRangeY = {
-      from: monsterTopY + hitboxPaddingY + hitboxOffsetY,
-      to: monsterBottomY - hitboxPaddingY + hitboxOffsetY,
-    };
-
-    gameStateService.saveHitBoxRanges({ hitboxRangeX: this.hitboxRangeX, hitboxRangeY: this.hitboxRangeY });
-  }
-
-  /**
-   * Call this in a draw method in gameplay-scene. FOR TESTING ONLY.
-   * @param context 
-   */
-  public createHitboxOverlayForTesting(context: CanvasRenderingContext2D) {
-    // Calculate width and height
-    const width = this.hitboxRangeX.to - this.hitboxRangeX.from;
-    const height = this.hitboxRangeY.to - this.hitboxRangeY.from;
-
-    // Draw the rectangle
-    context.fillStyle = 'rgba(0, 128, 255, 0.5)';
-    context.fillRect(this.hitboxRangeX.from, this.hitboxRangeY.from, width, height);
-
-    // Optional: Draw border
-    context.strokeStyle = '#000';
-    context.lineWidth = 2;
-    context.strokeRect(this.hitboxRangeX.from, this.hitboxRangeY.from, width, height);
   }
 
   protected override createRiveConfig(): RiveComponentConfig {
@@ -207,29 +140,6 @@ The extra space above the monster in the Rive file ensures proper animation, but
 
   stop() {
     this.riveInstance?.stop();
-  }
-
-  checkHitboxDistance(event) {
-    const rect = this.props.canvas.getBoundingClientRect();
-    const x = event.clientX - rect.left;
-    const y = event.clientY - rect.top;
-
-    return this.validateRange(x, y);
-  }
-
-  private validateRange(x, y) {
-    const isWithinHitboxX =
-      x >= this.hitboxRangeX.from && x <= this.hitboxRangeX.to;
-    const isWithinHitboxY =
-      y >= this.hitboxRangeY.from && y <= this.hitboxRangeY.to;
-
-    return isWithinHitboxX && isWithinHitboxY;
-  }
-
-  // Example click handler
-  onClick(xClick: number, yClick: number): boolean {
-
-    return this.validateRange(xClick, yClick); // Explicitly return true or false
   }
 
   stopRiveMonster() {
