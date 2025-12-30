@@ -3,8 +3,7 @@ import { RiveMonsterComponent, RiveMonsterComponentProps } from '@components/riv
 import {
   EVOL_MONSTER,
   AUDIO_INTRO,
-  AUDIO_MONSTER_EVOLVE,
-  EVOLUTION_AUDIOS
+  AUDIO_MONSTER_EVOLVE
 } from '@constants';
 import gameStateService from '@gameStateService';
 import { AudioPlayer } from '@components/audio-player';
@@ -26,6 +25,12 @@ const CANVAS_Z_INDEX_MAP = {
 
 export class EvolutionAnimationComponent extends RiveMonsterComponent {
   
+  public static readonly POOF_SFX_EVENT = "PoofSFX";
+  public static readonly SWOOSH_SFX_EVENT = "SwooshSFX";
+
+  public static readonly POOF_SFX_AUDIO = "./assets/audios/Evolution/Poof.mp3"
+  public static readonly SWOOSH_SFX_AUDIO = "./assets/audios/Evolution/Swoosh.mp3"
+
   static shouldInitialize(): boolean {
     const { monsterPhaseNumber } = gameStateService.getLevelEndSceneData();
     const newPhase = gameStateService.checkMonsterPhaseUpdation();
@@ -37,7 +42,6 @@ export class EvolutionAnimationComponent extends RiveMonsterComponent {
   public evolveMonster: boolean;
   private readonly EVOLUTION_ANIMATION_COMPLETE_DELAY = 7500;
   private readonly EVOLUTION_ANIMATION_FADE_EFFECT_DELAY = 500;
-  private audioPlayer: AudioPlayer;
   private isPlayingIntroFromVisibilityChange: boolean = false;
   private evolutionCompleteTimeoutId: number | null = null;
   private fadeEffectTimeoutId: number | null = null;
@@ -60,7 +64,6 @@ export class EvolutionAnimationComponent extends RiveMonsterComponent {
     
     this.evolutionProps = props;
     this.monsterPhaseNumber = gameStateService.checkMonsterPhaseUpdation();
-    this.audioPlayer = new AudioPlayer();
     this.initialize();
     this.addEventListener();
     
@@ -68,6 +71,17 @@ export class EvolutionAnimationComponent extends RiveMonsterComponent {
     this.preloadAudioFiles();
     
     this.startAnimation();
+  }
+
+  protected override preloadAudioAssets(): void {
+    AudioPlayer.instance.preloadGameAudio(EvolutionAnimationComponent.POOF_SFX_AUDIO);
+    AudioPlayer.instance.preloadGameAudio(EvolutionAnimationComponent.SWOOSH_SFX_AUDIO);
+  }
+  
+  protected override initializeListeners(): void {
+    
+    this.subscribe(EvolutionAnimationComponent.POOF_SFX_EVENT, () => { AudioPlayer.instance.playAudio(EvolutionAnimationComponent.POOF_SFX_AUDIO); });
+    this.subscribe(EvolutionAnimationComponent.SWOOSH_SFX_EVENT, () => { AudioPlayer.instance.playAudio(EvolutionAnimationComponent.SWOOSH_SFX_AUDIO); });
   }
 
   private initialize() {
@@ -102,8 +116,8 @@ export class EvolutionAnimationComponent extends RiveMonsterComponent {
    */
   private pauseAudios() {
     // Only stop audios if the document is not visible
-    if (!isDocumentVisible() && this.audioPlayer) {
-      this.audioPlayer.stopAllAudios();
+    if (!isDocumentVisible() && AudioPlayer.instance) {
+      AudioPlayer.instance.stopAllAudios();
       this.isPlayingIntroFromVisibilityChange = false;
     }
   }
@@ -128,8 +142,8 @@ export class EvolutionAnimationComponent extends RiveMonsterComponent {
    */
   private preloadAudioFiles() {
     // Preload intro audio and evolution audio during initialization
-    this.audioPlayer.preloadGameAudio(AUDIO_INTRO);
-    this.audioPlayer.preloadGameAudio(AUDIO_MONSTER_EVOLVE);
+    AudioPlayer.instance.preloadGameAudio(AUDIO_INTRO);
+    AudioPlayer.instance.preloadGameAudio(AUDIO_MONSTER_EVOLVE);
   }
 
   /**
@@ -142,13 +156,13 @@ export class EvolutionAnimationComponent extends RiveMonsterComponent {
     // Play both audio files with a 1-second delay between them if the document is visible
     if (isDocumentVisible()) {
       // Play the first audio immediately
-      this.audioPlayer.playAudio(AUDIO_MONSTER_EVOLVE);
+      AudioPlayer.instance.playAudio(AUDIO_MONSTER_EVOLVE);
       
       // Play the second audio after a 1-second delay
       setTimeout(() => {
         // Double-check visibility before playing the delayed audio
         if (isDocumentVisible()) {
-          this.audioPlayer.playAudio(AUDIO_INTRO);
+          AudioPlayer.instance.playAudio(AUDIO_INTRO);
         }
       }, 1000);
     } else {
@@ -210,7 +224,7 @@ export class EvolutionAnimationComponent extends RiveMonsterComponent {
   // Play audio sequence after evolution animation completes
   private playEvolutionCompletionAudios() {
     // First stop any currently playing audio
-    this.audioPlayer.stopAllAudios();
+    AudioPlayer.instance.stopAllAudios();
 
     // Only proceed if the tab is visible to avoid unnecessary audio playback
     if (!isDocumentVisible()) {
@@ -218,20 +232,18 @@ export class EvolutionAnimationComponent extends RiveMonsterComponent {
     }
 
     // Play the first audio immediately
-    this.audioPlayer.playAudio(AUDIO_MONSTER_EVOLVE);
+    AudioPlayer.instance.playAudio(AUDIO_MONSTER_EVOLVE);
     
     // Play the second audio after a 1-second delay
     setTimeout(() => {
       // Double-check visibility before playing the delayed audio
       if (isDocumentVisible()) {
-        this.audioPlayer.playAudio(AUDIO_INTRO);
+        AudioPlayer.instance.playAudio(AUDIO_INTRO);
       }
     }, 1000);
   }
 
   public startAnimation() {
-    //Call the logic that will handle the audio during the evolution animation.
-    this.playEvolutionSoundEffects();
 
     // Set gray class 900ms before fade-out
     this.fadeEffectTimeoutId = setTimeout(() => {
@@ -262,18 +274,6 @@ export class EvolutionAnimationComponent extends RiveMonsterComponent {
     }, this.EVOLUTION_ANIMATION_COMPLETE_DELAY) as unknown as number;
   }
 
-  private playEvolutionSoundEffects() {
-    // The 'Play' event is triggered because we need to play an audio during the play animation of the Rive entity.
-    this.executeRiveAction('Play', () => {
-      this.evolutionSoundEffectsTimeoutId = setTimeout(() => {
-        // Only play if tab is visible
-        if (isDocumentVisible()) {
-          this.audioPlayer.playAudioQueue(false, EVOLUTION_AUDIOS.EVOL_1[0]);
-        }
-      }, 1000) as unknown as number;
-    });
-  }
-
   public dispose() {
     // Clear all timeouts first to prevent any pending operations
     this.clearAllTimeouts();
@@ -283,8 +283,8 @@ export class EvolutionAnimationComponent extends RiveMonsterComponent {
     }
 
     // Stop any playing audio before disposing
-    if (this.audioPlayer) {
-      this.audioPlayer.stopAllAudios();
+    if (AudioPlayer.instance) {
+      AudioPlayer.instance.stopAllAudios();
     }
 
     // Remove visibility change listener when dispose

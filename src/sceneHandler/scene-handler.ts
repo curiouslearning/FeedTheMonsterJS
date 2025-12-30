@@ -196,6 +196,7 @@ export class SceneHandler {
     if (this.activeScene['scene'] && !(
       this.activeScene['scene'] instanceof LevelEndScene
       || this.activeScene['scene'] instanceof StartScene
+      || this.activeScene['scene'] instanceof LevelSelectionScreen
     )) {
       this.activeScene['scene']?.draw(deltaTime);
     }

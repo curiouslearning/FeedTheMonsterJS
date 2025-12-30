@@ -2,7 +2,6 @@ import { StoneConfig } from "./stone-config/stone-config";
 import {
   Utils,
   loadImages,
-  syncLoadingImages,
   createRippleEffect,
   isClickInsideButton,
   isDocumentVisible,
@@ -29,7 +28,6 @@ export {
   StoneConfig,
   Utils,
   loadImages,
-  syncLoadingImages,
   createRippleEffect,
   Debugger,
   lang,

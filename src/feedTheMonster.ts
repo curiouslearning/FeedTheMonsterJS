@@ -225,8 +225,9 @@ class App {
     if ("serviceWorker" in navigator) {
       try {
         const wb = new Workbox("./sw.js", {});
-        await wb.register();
+        const registration = await wb.register();
         await navigator.serviceWorker.ready;
+        await registration.update();
 
         if (!this.is_cached.has(this.lang)) {
           this.channel.postMessage({ command: "Cache", data: this.lang });

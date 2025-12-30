@@ -1,0 +1,478 @@
+#level-selection-container {
+  position: absolute;
+  z-index: 5;
+  width: 100%;
+  height: 100%;
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  padding: 10% 0;
+}
+
+#level-selection-grid {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  grid-template-rows: repeat(4, 1fr);
+}
+
+.level-buttons {
+  place-self: center;
+  position: relative;
+  min-width: 100px;
+  min-height: 100px;
+  overflow: visible;
+
+  span {
+    position: absolute;
+    color: #fff;
+    font-size: 12px;
+  }
+}
+
+.level-selection-btn-img {
+  width: 75% !important;
+  height: 100%;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+.level-stars {
+  position: absolute;
+  width: 25px;
+  height: 25px;
+}
+
+.stars-arc {
+  position: absolute;
+  top: 45%;
+  left: 50%;
+  width: 100%;
+  height: 50px;
+  transform: translateX(-50%);
+  pointer-events: none;
+}
+
+.star {
+  position: absolute;
+  width: 25px;
+  height: 25px;
+  top: 50%;
+  left: 40%;
+  transform-origin: center bottom;
+}
+
+.s1 {
+  transform: rotate(-35deg) translateY(-65px) rotate(35deg);
+}
+
+.s2 {
+  transform: rotate(-18deg) translateY(-80px) rotate(18deg);
+}
+
+.s3 {
+  transform: rotate(0deg) translateY(-90px);
+}
+
+.s4 {
+  transform: rotate(18deg) translateY(-80px) rotate(-18deg);
+}
+
+.s5 {
+  transform: rotate(35deg) translateY(-65px) rotate(-35deg);
+}
+
+.btn-lock-img {
+  width: 30px !important;
+  height: 30px;
+  position: absolute;
+  top: 5%;
+  left: 5%;
+}
+
+.btn-level-span {
+  position: absolute;
+  top: 35%;
+  left: 48%;
+  transform: translate(-50%, -50%);
+}
+
+//For debugger text label
+.level-type-text {
+  width: 70%;
+  bottom: 0px;
+  right: 0px;
+  transform: translate(-25%, 75%);
+}
+
+.pulsing {
+
+  /* Multiple ripples */
+  &::before,
+  &::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 170%;
+    height: 170%;
+    border-radius: 50%;
+    transform: translate(-50%, -50%) scale(0);
+    background: rgba(255, 255, 255, 0.8);
+    z-index: -1;
+    animation: ripple 2s infinite;
+  }
+
+  @keyframes ripple {
+    0% {
+      transform: translate(-50%, -50%) scale(0);
+      opacity: 0.8;
+    }
+
+    100% {
+      transform: translate(-50%, -50%) scale(0.7);
+      opacity: 0;
+    }
+  }
+}
+
+.press-button:active {
+  transform: scale(0.95);
+}
+
+.special-levels-img {
+  width: 85% !important;
+  height: 85%;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+.level-buttons.special-levels .stars-arc {
+  top: 45%;
+}
+
+.special-btn-level-span {
+  top: 70%;
+  left: 48%;
+  transform: translate(-50%, -50%);
+}
+
+/* =========================================================
+   SMALL PHONES (≥321px)
+   ========================================================= */
+
+@media (min-width: 321px) {
+  .level-buttons {
+    min-width: 90px;
+    min-height: 90px;
+
+    span {
+      font-size: 14px;
+    }
+  }
+
+  .level-stars {
+    width: 30px;
+    height: 30px;
+  }
+
+  .btn-lock-img {
+    width: 35px !important;
+    height: 35px;
+  }
+}
+
+/* =========================================================
+   MEDIUM PHONES (≥341px)
+   ========================================================= */
+
+@media (min-width: 341px) {
+  .level-buttons {
+    min-width: 105px;
+    min-height: 105px;
+
+    span {
+      font-size: 15px;
+    }
+  }
+
+  .btn-lock-img {
+    width: 45px !important;
+    height: 45px;
+  }
+
+  #level-selection-container {
+    padding: 15% 0;
+  }
+}
+
+/* =========================================================
+   SEMI Large PHONES (≥381px)
+   ========================================================= */
+
+@media (min-width: 381px) {
+  .level-buttons {
+    min-width: 125px;
+    min-height: 125px;
+
+    span {
+      font-size: 16px;
+    }
+  }
+
+  .btn-lock-img {
+    width: 50px !important;
+    height: 50px;
+  }
+
+  #level-selection-container {
+    padding: 15% 0;
+  }
+
+  .star {
+    width: 30px;
+    height: 30px;
+    top: 35%;
+    left: 40%;
+  }
+
+  .s1 {
+    transform: rotate(-40deg) translateY(-70px) rotate(40deg);
+  }
+
+  .s2 {
+    transform: rotate(-20deg) translateY(-85px) rotate(20deg);
+  }
+
+  .s3 {
+    transform: rotate(0deg) translateY(-95px);
+  }
+
+  .s4 {
+    transform: rotate(20deg) translateY(-85px) rotate(-20deg);
+  }
+
+  .s5 {
+    transform: rotate(40deg) translateY(-70px) rotate(-40deg);
+  }
+
+  .nav-btn {
+    min-width: 105px !important;
+    min-height: 105px !important;
+  }
+
+}
+
+/* =========================================================
+   LARGE PHONES / SMALL TABLETS (≥481px)
+   ========================================================= */
+
+@media (min-width: 481px) {
+  .level-buttons {
+    min-width: 140px;
+    min-height: 140px;
+
+    span {
+      font-size: 18px;
+    }
+  }
+
+  .level-stars {
+    width: 40px;
+    height: 40px;
+  }
+
+  .btn-lock-img {
+    width: 55px !important;
+    height: 55px;
+  }
+
+  .nav-btn {
+    min-width: 120px !important;
+    min-height: 120px !important;
+  }
+
+  .star {
+    top: 25%;
+  }
+}
+
+/* =========================================================
+   TABLETS (≥700px)
+   ========================================================= */
+
+@media (min-width: 700px) {
+  .level-buttons {
+    min-width: 190px;
+    min-height: 190px;
+
+    span {
+      font-size: 22px;
+    }
+  }
+
+  .star {
+    width: 45px;
+    height: 45px;
+    top: 15%;
+  }
+
+  .level-stars {
+    width: 50px;
+    height: 50px;
+  }
+
+  .btn-lock-img {
+    width: 70px !important;
+    height: 70px;
+  }
+
+  .s1 {
+    transform: rotate(-50deg) translateY(-70px) rotate(35deg);
+  }
+
+  .s2 {
+    transform: rotate(-28deg) translateY(-105px) rotate(28deg);
+  }
+
+  .s3 {
+    transform: rotate(0deg) translateY(-120px);
+  }
+
+  .s4 {
+    transform: rotate(28deg) translateY(-105px) rotate(-28deg);
+  }
+
+  .s5 {
+    transform: rotate(50deg) translateY(-70px) rotate(-35deg);
+  }
+
+  .nav-btn {
+    min-width: 150px !important;
+    min-height: 150px !important;
+  }
+}
+
+/* =========================================================
+   DESKTOPS (≥1024px)
+   ========================================================= */
+
+@media (min-width: 1024px) {
+  #level-selection-container {
+    padding: 10% 0;
+  }
+
+  .level-buttons {
+    min-width: 120px;
+    min-height: 120px;
+
+    span {
+      font-size: 18px;
+    }
+  }
+
+  .star {
+    width: 25px;
+    height: 25px;
+    top: 85%;
+  }
+
+  .btn-lock-img {
+    width: 55px !important;
+    height: 55px;
+  }
+
+  .nav-btn {
+    min-width: 120px !important;
+    min-height: 120px !important;
+  }
+
+  .s1 {
+    transform: rotate(-35deg) translateY(-75px) rotate(35deg);
+  }
+
+  .s2 {
+    transform: rotate(-20deg) translateY(-100px) rotate(20deg);
+  }
+
+  .s3 {
+    transform: rotate(0deg) translateY(-110px);
+  }
+
+  .s4 {
+    transform: rotate(20deg) translateY(-100px) rotate(-20deg);
+  }
+
+  .s5 {
+    transform: rotate(30deg) translateY(-75px) rotate(-35deg);
+  }
+
+  .nav-btn {
+    min-width: 90% !important;
+    min-height: 90px !important;
+  }
+
+}
+
+/* =========================================================
+   LARGE DESKTOPS (≥1366px)
+   ========================================================= */
+
+@media (min-width: 1366px) {
+  .level-buttons {
+    min-width: 140px;
+    min-height: 140px;
+
+    span {
+      font-size: 24px;
+    }
+  }
+
+  .level-stars {
+    width: 70px;
+    height: 70px;
+  }
+
+  .btn-lock-img {
+    width: 60px !important;
+    height: 60px;
+  }
+
+  .star {
+    width: 35px;
+    height: 35px;
+    top: 50%;
+  }
+
+  .nav-btn {
+    min-width: 120px !important;
+    min-height: 120px !important;
+  }
+
+}
+
+/* =========================================================
+   EXTRA LARGE SCREENS (≥1600px)
+   ========================================================= */
+
+@media (min-width: 1600px) {
+  .level-buttons {
+    min-width: 140px;
+    min-height: 140px;
+
+    span {
+      font-size: 24px;
+    }
+  }
+
+  .level-stars {
+    width: 80px;
+    height: 80px;
+  }
+}

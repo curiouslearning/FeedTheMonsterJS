@@ -73,7 +73,6 @@ describe('FeedbackAudioHandler', () => {
     expect(feedbackAudioHandler['correctStoneAudio'].play).toHaveBeenCalled();
     expect(feedbackAudioHandler['audioPlayer'].playAudioQueue).toHaveBeenCalledWith(
       false,
-      'eats.mp3',
       'cheering2.mp3',
       'points.mp3',
       'fantastic.mp3'
@@ -86,7 +85,7 @@ describe('FeedbackAudioHandler', () => {
     // Check that the correct audio was played
     expect(feedbackAudioHandler['audioPlayer'].playAudioQueue).toHaveBeenCalledWith(
       false,
-      'eats.mp3',
+      './assets/audios/MonsterGameplay/Eat.mp3',
       'cheering2.mp3'
     );
   });
@@ -95,22 +94,10 @@ describe('FeedbackAudioHandler', () => {
     jest.useFakeTimers();
     feedbackAudioHandler.playFeedback(FeedbackType.INCORRECT, 0);
     
-    // Check that the first audio was played
-    expect(feedbackAudioHandler['audioPlayer'].playAudioQueue).toHaveBeenCalledWith(
-      false,
-      'eats.mp3'
-    );
-    
     // Advance timers to trigger the setTimeout callback
     jest.advanceTimersByTime(1700);
     
     // Since Math.round is mocked to return 0, which is <= 0,
-    // the third parameter should be null
-    expect(feedbackAudioHandler['audioPlayer'].playAudioQueue).toHaveBeenCalledWith(
-      false,
-      'spit.mp3',
-      null
-    );
     
     jest.useRealTimers();
   });

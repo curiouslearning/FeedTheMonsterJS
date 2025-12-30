@@ -26,10 +26,6 @@ export const EndScene1 = "EndScene1";
 export const FONT_BASE_PATH = './assets/fonts/';
 
 //Audio paths
-export const AUDIO_PATH_EATS = "./assets/audios/Eat.mp3";
-export const AUDIO_PATH_MONSTER_SPIT = "./assets/audios/MonsterSpit.mp3";
-export const AUDIO_PATH_MONSTER_DISSAPOINTED =
-  "./assets/audios/Disapointed-05.mp3";
 export const AUDIO_PATH_POINTS_ADD = "./assets/audios/PointsAdd.wav";
 export const AUDIO_PATH_CORRECT_STONE = "assets/audios/CorrectStoneFinal.mp3";
 export const AUDIO_PATH_CHEERING_FUNC = (randomNumber) =>
@@ -51,10 +47,6 @@ export const AUDIO_URL_PRELOAD = [
   "./assets/audios/LevelWinFanfare.mp3",
   "./assets/audios/LevelLoseFanfare.mp3",
   "./assets/audios/ButtonClick.mp3",
-  "./assets/audios/Monster Spits wrong stones-01.mp3",
-  "./assets/audios/Disapointed-05.mp3",
-  "./assets/audios/MonsterSpit.mp3",
-  "./assets/audios/Eat.mp3",
   "./assets/audios/PointsAdd.wav",
   "./assets/audios/are-you-sure.mp3",
   "./assets/audios/monster_discovered_fanfare.mp3",
@@ -69,10 +61,6 @@ export const SWOOSH = "./assets/audios/swoosh.mp3";
 export const JAR_FILLING = "./assets/audios/jar_filling.mp3";
 export const STONE_BURN = "./assets/audios/stone_burn.mp3";
 // Audios used during the Rive evolution animation.
-// The structure is designed to be easily scalable, allowing for the addition of more audio files as needed.
-export const EVOLUTION_AUDIOS = {
-  EVOL_1: ['./assets/audios/star_whoosh_and_poof.mp3'],
-}
 
 // Evolution audio paths
 export const AUDIO_CHEERING = './assets/audios/Cheering-03.mp3';
@@ -120,7 +108,7 @@ export const CLOUD_8 = "./assets/images/cloud_03.png";
 export const PLAY_BTN_IMG = "./assets/images/Play_button.svg";
 export const PAUSE_BTN_IMG = "./assets/images/Pause_Button.svg";
 export const MAP_BTN_IMG = "./assets/images/map_btn.svg";
-export const MAP_ICON_IMG = "./assets/images/mapIcon.webp";
+export const MAP_ICON_IMG = "./assets/images/mapIcon.png";
 export const TREASURE_CHEST_SPECIAL_LEVELS_ONGOING = "./assets/images/Chest_Ongoing_Level.png";
 export const TREASURE_CHEST_SPECIAL_LEVELS_DONE = "./assets/images/Chest_Done_Level.png";
 export const MAP_LOCK_IMG = "./assets/images/mapLock.webp";
@@ -201,8 +189,6 @@ export const SCENE_NAME_GAME_PLAY_REPLAY = "GamePlay_Replay";
 export const SCENE_NAME_LEVEL_END = "LevelEnd";
 export const SCENE_NAME_PROGRESS_LEVEL ='ProgressLevel';
 
-//Levels
-export const SPECIAL_LEVELS = [5, 13, 20, 30, 42];
 
 // Minimum stars to complete level
 export const MIN_STARS_TO_COMPLETE_LEVEL = 3;

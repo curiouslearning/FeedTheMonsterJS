@@ -2,6 +2,8 @@ import { Window } from "@common";
 import { AUDIO_PATH_BTN_CLICK } from "@constants";
 
 export class AudioPlayer {
+  public static instance: AudioPlayer;
+
   private audioContext: AudioContext | null;
   private sourceNode: AudioBufferSourceNode | null;
   private audioQueue: string[];
@@ -15,6 +17,9 @@ export class AudioPlayer {
   private isPromptAudioPlaying: boolean;
 
   constructor() {
+    if( AudioPlayer.instance )
+      return AudioPlayer.instance;
+    AudioPlayer.instance = this;
     this.audioContext = AudioContextManager.getAudioContext();
     this.sourceNode = null;
     this.audioQueue = [];
