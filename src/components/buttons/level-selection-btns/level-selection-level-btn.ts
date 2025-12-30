@@ -34,6 +34,8 @@ export default class LevelSelectionLevelButton extends BaseButtonComponent {
     private starsCount: number = 0;
     private buttonImageId: string = '';
     private onClickCallback: (gameLevel?: number) => void;
+    private starsArcContainer: HTMLDivElement;
+
 
     constructor({
         index,
@@ -69,6 +71,7 @@ export default class LevelSelectionLevelButton extends BaseButtonComponent {
             isDebuggerOn,
             levelTypeText
         );
+        this.updateLockDisplay(isLevelLock);
     }
 
     private renderGameBtnAssets(
@@ -94,20 +97,27 @@ export default class LevelSelectionLevelButton extends BaseButtonComponent {
         this.element.append(this.btnImage);
     }
 
-    private createStars(starsCount: number):void {
+    private createStars(starsCount: number): void {
         if (this.isButtonLock && starsCount === 0) return;
+
+        // Create arc container once
+        if (!this.starsArcContainer) {
+            this.starsArcContainer = document.createElement('div');
+            this.starsArcContainer.className = 'stars-arc';
+            this.element.append(this.starsArcContainer);
+        }
+
         for (let i = 0; i < starsCount; i++) {
             const keyName = `star-${i}`;
+
             const newStar = this.createImageElement(
                 STAR_IMG,
-                'level-stars',
-                'level-stars',
-                `star-${i}`
+                `star s${i + 1}`,
+                'level-stars'
             );
 
             this[keyName] = newStar;
-
-            this.element.append(newStar);
+            this.starsArcContainer.append(newStar);
         }
     }
 
@@ -123,7 +133,9 @@ export default class LevelSelectionLevelButton extends BaseButtonComponent {
         image.id = id;
 
         if (className) {
-            image.classList.add(className);
+            className.split(' ').forEach(cls => {
+                if (cls) image.classList.add(cls);
+            });
         }
 
         return image;
@@ -156,8 +168,8 @@ export default class LevelSelectionLevelButton extends BaseButtonComponent {
     private createTextSpan(text: number | string): void {
         this.btnSpan = document.createElement("span");
         this.btnSpan.className = this.btnElementIndex === SPECIAL_LEVELS_INDEX
-        ? 'special-btn-level-span'
-        : 'btn-level-span';
+            ? 'special-btn-level-span'
+            : 'btn-level-span';
         this.updateButtonSpanText(text);
 
         //Add span to the button element.
@@ -184,6 +196,14 @@ export default class LevelSelectionLevelButton extends BaseButtonComponent {
         } else if (!this.btnImage && isBtnLock) {
             this.createLockDisplay();
         }
+        // Disable button interactions for locked buttons
+        if (isBtnLock) {
+            this.element.setAttribute('disabled', 'true');
+            this.element.style.pointerEvents = 'none';
+        } else {
+            this.element.removeAttribute('disabled');
+            this.element.style.pointerEvents = 'auto';
+        }
     }
 
     public updateBtnDisplay(shouldShow: boolean): void {
@@ -199,40 +219,38 @@ export default class LevelSelectionLevelButton extends BaseButtonComponent {
     }
 
     private updateStarDisplay(newStarsCount: number): void {
-        if (newStarsCount === 0 && this.starsCount === 0) return;
-        const oldStars = this.starsCount;
-        const maxStars = Math.max(oldStars, newStarsCount);
+        if (!this.starsArcContainer && newStarsCount === 0) return;
+
+        if (!this.starsArcContainer) {
+            this.createStars(newStarsCount);
+            this.starsCount = newStarsCount;
+            return;
+        }
+
+        const maxStars = Math.max(this.starsCount, newStarsCount);
 
         for (let i = 0; i < maxStars; i++) {
             const keyName = `star-${i}`;
-            const starEl = this[keyName];
+            let starEl = this[keyName];
 
-            if ( i < newStarsCount) {
-                //star should be visible.
-                if (starEl) {
-                    //Already exists -> ensure visible.
-                    starEl.style.display = "block";
-                } else {
-                    //Create new star
-                    const newStar = this.createImageElement(
+            if (i < newStarsCount) {
+                if (!starEl) {
+                    starEl = this.createImageElement(
                         STAR_IMG,
-                        'level-stars',
-                        'level-stars',
-                        keyName
+                        `star s${i + 1}`,
+                        'level-stars'
                     );
-
-                    this[keyName] = newStar;
-                    this.element.append(newStar);
+                    this[keyName] = starEl;
+                    this.starsArcContainer.append(starEl);
                 }
+                starEl.style.display = 'block';
             } else {
-                // STAR SHOULD BE HIDDEN (or removed)
                 if (starEl) {
-                    starEl.style.display = "none";
+                    starEl.style.display = 'none';
                 }
             }
         }
 
-        //Update star count.
         this.starsCount = newStarsCount;
     }
 

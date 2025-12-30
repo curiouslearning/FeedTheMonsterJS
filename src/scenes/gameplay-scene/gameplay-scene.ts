@@ -104,7 +104,7 @@ export class GameplayScene {
   public unsubscribeLoadGamePuzzle: () => void;
   public timeTicker: HTMLElement;
   isFeedBackTriggered: boolean;
-  public monsterPhaseNumber: 0 | 1 | 2;
+  public monsterPhaseNumber: 0 | 1 | 2 | 3;
   private backgroundGenerator: PhasesBackground;
   private puzzleHandler: any;
   private timerStartSFXPlayed: boolean;
@@ -212,7 +212,6 @@ export class GameplayScene {
       autoplay: true,
       fit: "contain",
       alignment: "bottomCenter",
-      gameCanvas: this.canvas,
       src: MONSTER_PHASES[this.monsterPhaseNumber],
     });
   }

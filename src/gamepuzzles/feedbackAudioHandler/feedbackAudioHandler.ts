@@ -6,6 +6,7 @@ import {
 } from '@constants';
 import { Utils } from '@common';
 import gameStateService from '@gameStateService';
+import { RiveMonsterComponent } from '@components/riveMonster/rive-monster-component';
 
 /**
  * Feedback type enum for different feedback scenarios
@@ -61,6 +62,7 @@ export default class FeedbackAudioHandler {
   private playPartialCorrectFeedbackSound(): void {
     this.audioPlayer.playAudioQueue(
       false,
+      RiveMonsterComponent.EAT_SFX_AUDIO,
       AUDIO_PATH_CHEERING_FUNC(2)
     );
   }
