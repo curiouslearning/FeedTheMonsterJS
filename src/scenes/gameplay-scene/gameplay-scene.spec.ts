@@ -519,11 +519,13 @@ describe('GameplayScene with BasePopupComponent', () => {
       gameplayScene.stoneHandler = mockStoneHandler as any;
       gameplayScene.audioPlayer = mockAudioPlayer as any;
       gameplayScene.monsterController = mockMonsterController as any;
-      gameplayScene.trailEffectHandler = mockTrailEffectHandler as any;
-      gameplayScene.levelIndicators = mockLevelIndicators as any;
-      gameplayScene.promptText = mockPromptText as any;
-      gameplayScene.pauseButton = mockPauseButton as any;
-      gameplayScene.pausePopupComponent = mockPausePopup as any;
+      
+      // Mock UI Manager components
+      gameplayScene.uiManager.trailEffectHandler = mockTrailEffectHandler as any;
+      gameplayScene.uiManager.levelIndicators = mockLevelIndicators as any;
+      gameplayScene.uiManager.promptText = mockPromptText as any;
+      gameplayScene.uiManager.pauseButton = mockPauseButton as any;
+      gameplayScene.uiManager.pausePopupComponent = mockPausePopup as any;
       
       // Inject the function mocks
       gameplayScene.unsubscribeMiniGameEvent = mockUnsubscribeMiniGameEvent;
@@ -577,22 +579,19 @@ describe('GameplayScene with BasePopupComponent', () => {
     it('should handle pause popup events', () => {
       const mockEvent = { data: 'RESTART_LEVEL' };
 
-      // Mock the pause popup component
+      // Mock the pause popup component inside UI manager
       const mockPausePopup = {
         onClose: jest.fn()
       };
-      gameplayScene.pausePopupComponent = mockPausePopup as any;
+      gameplayScene.uiManager.pausePopupComponent = mockPausePopup as any;
 
       // Get the callback that would be registered
-      const onCloseCallback = (props: any) => {
-        if (props.data === 'RESTART_LEVEL') {
-          gameStateService.publish(gameStateService.EVENTS.GAMEPLAY_DATA_EVENT, {});
-          gameStateService.publish(gameStateService.EVENTS.SWITCH_SCENE_EVENT, SCENE_NAME_GAME_PLAY);
-        }
-      };
-
-      // Call the callback with the mock event
-      onCloseCallback(mockEvent);
+      // Since we refactored to use events, we need to verify the event handling logic
+      // In the new architecture, the UI manager publishes events, and the scene listens to them.
+      // So we can simulate the event being published or verify the scene's reaction.
+      
+      // However, for unit testing the scene's response to UI events:
+      gameplayScene.handleUiPopupRestart();
 
       expect(gameStateService.publish).toHaveBeenCalledWith(
         gameStateService.EVENTS.GAMEPLAY_DATA_EVENT,
@@ -628,10 +627,14 @@ describe('GameplayScene with BasePopupComponent', () => {
 
       (gameplayScene as any).isPauseButtonClicked = false;
       (gameplayScene as any).isGameStarted = true;
+      
+      // Mock UI Manager update
+      const mockUiUpdate = jest.fn();
+      gameplayScene.uiManager.update = mockUiUpdate;
 
       gameplayScene.draw(16);
 
-      expect(gameplayScene.timerTicking.update).toHaveBeenCalledWith(16);
+      expect(mockUiUpdate).toHaveBeenCalledWith(16, true, false, true);
     });
   });
 });

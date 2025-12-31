@@ -1,13 +1,8 @@
 import {
-  TimerTicking,
-  PromptText,
-  PauseButton,
-  LevelIndicators,
   StoneHandler,
   BackgroundHtmlGenerator,
   AudioPlayer,
   PhasesBackground,
-  TrailEffectsHandler,
 } from "@components";
 import TutorialHandler from '@tutorials';
 import {
@@ -43,31 +38,27 @@ import {
 import gameStateService from '@gameStateService';
 import gameSettingsService from '@gameSettingsService';
 import miniGameStateService from '@miniGameStateService';
-import { PAUSE_POPUP_EVENT_DATA, PausePopupComponent } from '@components/popups/pause-popup/pause-popup-component';
 import PuzzleHandler from "@gamepuzzles/puzzleHandler/puzzleHandler";
 import { DEFAULT_SELECTORS } from '@components/prompt-text/prompt-text';
 import { MiniGameHandler } from '@miniGames/miniGameHandler'
 import { GameplayInputManager } from './gameplay-input-manager';
 import { MonsterController } from './monster-controller';
+import { GameplayUIManager } from "./gameplay-ui-manager";
 
 export class GameplayScene {
   public width: number;
   public height: number;
   public monsterController: MonsterController;
+  public uiManager: GameplayUIManager;
   public jsonVersionNumber: string;
   public canvas: HTMLCanvasElement;
   public levelData: any;
-  public timerTicking: TimerTicking;
-  public promptText: PromptText;
-  public pauseButton: PauseButton;
   public tutorial: TutorialHandler;
   public id: string;
   public context: CanvasRenderingContext2D;
-  public levelIndicators: LevelIndicators;
   public stonesCount: number = 1;
   public pickedStone: StoneConfig;
   public puzzleStartTime: number;
-  pausePopupComponent: PausePopupComponent
   public feedBackTexts: any;
   public isPuzzleCompleted: boolean;
   public rightToLeft: boolean;
@@ -78,7 +69,6 @@ export class GameplayScene {
   pickedStoneObject: StoneConfig;
   isPauseButtonClicked: boolean;
   public background: any;
-  feedBackTextCanavsElement: HTMLCanvasElement;
   public isGameStarted: boolean = false;
   public time: number = 0;
   public score: number = 0;
@@ -88,14 +78,12 @@ export class GameplayScene {
   startTime: number;
   puzzleTime: number;
   isDisposing: boolean = false;
-  trailEffectHandler: TrailEffectsHandler;
   public riveMonsterElement: HTMLCanvasElement;
   public gameControl: HTMLCanvasElement;
   private unsubscribeEvent: () => void;
   public unsubscribeMiniGameEvent: () => void;
   public unsubscribeLoadGamePuzzle: () => void;
   private eventListenersAdded: (() => void)[];
-  public timeTicker: HTMLElement;
   isFeedBackTriggered: boolean;
   public monsterPhaseNumber: 0 | 1 | 2 | 3;
   private backgroundGenerator: PhasesBackground;
@@ -116,11 +104,17 @@ export class GameplayScene {
     });
     this.treasureChestScore = 0;
     this.miniGameHandler = new MiniGameHandler(gamePlayData.levelData.levelNumber);
-    this.pausePopupComponent = new PausePopupComponent();
     // Assign state properties based on game state
     this.initializeProperties(gamePlayData);
     // UI element setup
     this.setupUIElements();
+    this.uiManager = new GameplayUIManager(
+      this.context,
+      this.canvas,
+      this.width,
+      this.height,
+      gamePlayData
+    );
     // Initialize additional game elements
     this.initializeGameComponents(gamePlayData);
     var previousPlayedLevel: string = this.levelData.levelMeta.levelNumber;
@@ -151,7 +145,7 @@ export class GameplayScene {
       gameStateService.EVENTS.GAME_PAUSE_STATUS_EVENT,
       (isPause: boolean) => {
         this.isPauseButtonClicked = isPause;
-        if (isPause) this.pausePopupComponent.open();
+        if (isPause) this.uiManager.openPausePopup();
       }
     );
     this.unsubscribeLoadGamePuzzle = gameStateService.subscribe(
@@ -170,25 +164,6 @@ export class GameplayScene {
         //Load the next puzzle segment after mini game regardless if the user scored or not.
         this.loadPuzzle(false, 4500);
       });
-    this.pausePopupComponent.onClose((event) => {
-      const { data } = event;
-
-      switch (data) {
-        case PAUSE_POPUP_EVENT_DATA.RESTART_LEVEL:
-          gameStateService.publish(gameStateService.EVENTS.GAMEPLAY_DATA_EVENT, {
-            currentLevelData: this.levelData,
-            selectedLevelNumber: this.levelNumber,
-          });
-          gameStateService.publish(gameStateService.EVENTS.SWITCH_SCENE_EVENT, SCENE_NAME_GAME_PLAY_REPLAY);
-          break;
-        case PAUSE_POPUP_EVENT_DATA.SELECT_LEVEL:
-          gameStateService.publish(gameStateService.EVENTS.GAME_PAUSE_STATUS_EVENT, false);
-          gameStateService.publish(gameStateService.EVENTS.SWITCH_SCENE_EVENT, SCENE_NAME_LEVEL_SELECT)
-        default:
-          gameStateService.publish(gameStateService.EVENTS.GAME_PAUSE_STATUS_EVENT, false);
-          this.resumeGame();
-      }
-    });
     //this.setupBg(); //Temporary disabled to try evolution background.
     this.setupMonsterPhaseBg();
     this.timerStartSFXPlayed = false;
@@ -201,20 +176,6 @@ export class GameplayScene {
   }
 
   private initializeGameComponents(gamePlayData) {
-    this.trailEffectHandler = new TrailEffectsHandler(this.canvas)
-    this.pauseButton = new PauseButton();
-    this.pauseButton.onClick(() => {
-      gameStateService.publish(gameStateService.EVENTS.GAME_PAUSE_STATUS_EVENT, true);
-      this.pauseGamePlay();
-    });
-    this.timerTicking = new TimerTicking(
-      this.width,
-      this.height,
-      (isMyTimerOver: boolean) => {
-        //Callback triggered when timer ends.
-        this.determineNextStep(false, isMyTimerOver);
-      }
-    );
     this.stoneHandler = new StoneHandler(
       this.context,
       this.canvas,
@@ -228,33 +189,6 @@ export class GameplayScene {
       puzzleLevel: this.counter,
       shouldHaveTutorial: gamePlayData?.tutorialOn
     });
-
-    let onClickCallback;
-    /**
-     * Assign the onClickCallback ONLY for audio puzzle levels where the tutorial hand pointer should be shown.
-     * This callback is passed to the PromptText component and is triggered when the prompt is clicked.
-     * When invoked, it starts the tutorial hand animation and marks the quick start tutorial as ready.
-     * For non-audio puzzles or levels without the hand pointer tutorial, no callback is assigned.
-     */
-    //TO DO - This needs to be cleaned up. Utilize the game event feature rather than using nested call back approach.
-    if (this.tutorial.showHandPointerInAudioPuzzle(gamePlayData.levelData)) {
-      onClickCallback = () => {
-        this.tutorial.shouldShowQuickStartTutorial = true;
-        this.tutorial.quickStartTutorialReady = true;
-      };
-    }
-
-    this.promptText = new PromptText(
-      this.width,
-      this.levelData.puzzles[this.counter],
-      this.levelData,
-      this.rightToLeft,
-      'prompt-container',  // id parameter (string)
-      { selectors: DEFAULT_SELECTORS },  // options parameter
-      !gamePlayData?.isTutorialCleared && gamePlayData?.tutorialOn && this.counter === 0,// Has tutorial + uncleared tutorial and at segment 0.
-      onClickCallback,
-    );
-    this.levelIndicators = new LevelIndicators();
 
     /*TO DO: The following code lines of this method should've been and can be handled within the tutorial class.
       we could have a method in the tutorial that accepts gamePlayData - tutorialOn, isTutorialCleared and levelData.
@@ -314,15 +248,15 @@ export class GameplayScene {
   }
 
   resumeGame = () => {
-    this.addEventListeners();
+    // this.addEventListeners();
     // Resume the clock rotation when game is resumed
-    this.timerTicking?.applyRotation(this.timerTicking?.startMyTimer && !this.timerTicking?.isStoneDropped);
+    this.uiManager.applyTimerRotation(this.uiManager.timerTicking?.startMyTimer && !this.uiManager.timerTicking?.isStoneDropped);
   };
 
   private setGameToStart() {
     this.isGameStarted = true;
     this.time = 0;
-    this.trailEffectHandler.setGameHasStarted(true);
+    this.uiManager.setGameHasStarted(true);
   }
 
   draw(deltaTime: number) {
@@ -337,12 +271,21 @@ export class GameplayScene {
     });
     this.time = timeRef.value;
 
-    // Trail effects drawing 
-    this.trailEffectHandler?.draw();
+    const hasTutorial = this.tutorial.shouldShowQuickStartTutorial;
+    const shouldStartTimer = this.tutorial.updateTutorialTimer(deltaTime);
+    const canUpdateTimer = !hasTutorial || (shouldStartTimer && hasTutorial);
+
+    this.uiManager.update(deltaTime, this.isGameStarted, this.isPauseButtonClicked, canUpdateTimer);
+
     // Main game logic only starts after isGameStarted = true
     if (this.isGameStarted) {
       this.handleStoneLetterDrawing();
-      this.handleTimerUpdate(deltaTime);
+      
+      // Handle Timer Start SFX
+      if (canUpdateTimer && !this.timerStartSFXPlayed && deltaTime > 1 && deltaTime <= 100) {
+          this.audioPlayer.playAudio(AUDIO_PATH_POINTS_ADD);
+          this.timerStartSFXPlayed = true; 
+      }
     }
 
     this.tutorial.draw(deltaTime, this.isGameStarted);
@@ -358,23 +301,6 @@ export class GameplayScene {
       );
     } else {
       this.stoneHandler.draw();
-    }
-  }
-
-  private handleTimerUpdate(deltaTime: number) {
-    // Update timer only once animation is complete and game is not paused.
-    if (this.stoneHandler.stonesHasLoaded && !this.isPauseButtonClicked) {
-      const hasTutorial = this.tutorial.shouldShowQuickStartTutorial;
-      const shouldStartTimer = this.tutorial.updateTutorialTimer(deltaTime);
-      if (!hasTutorial || (shouldStartTimer && hasTutorial)) {
-        // After 12s, start timer updates
-        this.timerTicking.update(deltaTime);
-        // added delta time checking to ensure that the timer starts sfx will only trigger once at the beginning of the timer countdown.
-        if (!this.timerStartSFXPlayed && deltaTime > 1 && deltaTime <= 100) {
-          this.audioPlayer.playAudio(AUDIO_PATH_POINTS_ADD);
-          this.timerStartSFXPlayed = true; // This flag needed to ensure that the timer starts sfx will only trigger once.
-        }
-      }
     }
   }
 
@@ -413,7 +339,7 @@ export class GameplayScene {
         this.handleStoneDropEnd(isCorrect, puzzleType);
       },
       triggerMonsterAnimation: (animationName) => this.monsterController.triggerMonsterAnimation(animationName),
-      timerTicking: this.timerTicking,
+      timerTicking: this.uiManager.timerTicking,
       lang,
       lettersCountRef,
       feedBackTexts: this.feedBackTexts,
@@ -425,7 +351,7 @@ export class GameplayScene {
       this.stoneHandler.hideStone(stoneObject);
     }
     this.stonesCount = lettersCountRef.value;
-    this.trailEffectHandler.setGameHasStarted(false);
+    this.uiManager.setGameHasStarted(false);
   }
 
   handleInputStoneDropMissed = (detail: any) => {
@@ -443,6 +369,39 @@ export class GameplayScene {
     this.monsterController.triggerMonsterAnimation(detail.animationName);
   }
 
+  handleUiPauseClick = () => {
+    gameStateService.publish(gameStateService.EVENTS.GAME_PAUSE_STATUS_EVENT, true);
+    this.pauseGamePlay();
+  }
+
+  handleUiTimerEnded = (isMyTimerOver: boolean) => {
+    this.determineNextStep(false, isMyTimerOver);
+  }
+
+  handleUiPromptClick = () => {
+    this.tutorial.shouldShowQuickStartTutorial = true;
+    this.tutorial.quickStartTutorialReady = true;
+  }
+
+  handleUiPopupRestart = () => {
+    gameStateService.publish(gameStateService.EVENTS.GAMEPLAY_DATA_EVENT, {
+        currentLevelData: this.levelData,
+        selectedLevelNumber: this.levelNumber,
+    });
+    gameStateService.publish(gameStateService.EVENTS.SWITCH_SCENE_EVENT, SCENE_NAME_GAME_PLAY_REPLAY);
+  }
+
+  handleUiPopupSelectLevel = () => {
+    gameStateService.publish(gameStateService.EVENTS.GAME_PAUSE_STATUS_EVENT, false);
+    gameStateService.publish(gameStateService.EVENTS.SWITCH_SCENE_EVENT, SCENE_NAME_LEVEL_SELECT);
+  }
+
+  handleUiPopupResume = () => {
+    console.log("Resume");
+    gameStateService.publish(gameStateService.EVENTS.GAME_PAUSE_STATUS_EVENT, false);
+    this.resumeGame();
+  }
+
   private addEventListeners() {
     this.inputManager.addEventListeners(this.handler);
     this.eventListenersAdded = [];
@@ -452,6 +411,15 @@ export class GameplayScene {
     this.addEventListener(GameplayInputManager.INPUT_STONE_DROP_ON_TARGET, this.handleInputStoneDropOnTarget);
     this.addEventListener(GameplayInputManager.INPUT_STONE_DROP_MISSED, this.handleInputStoneDropMissed);
     this.addEventListener(GameplayInputManager.INPUT_REQUEST_ANIMATION, this.handleInputRequestAnimation);
+    
+    // UI Events
+    this.addEventListener(GameplayUIManager.UI_PAUSE_CLICK, this.handleUiPauseClick);
+    this.addEventListener(GameplayUIManager.UI_TIMER_ENDED, this.handleUiTimerEnded);
+    this.addEventListener(GameplayUIManager.UI_PROMPT_CLICK, this.handleUiPromptClick);
+    this.addEventListener(GameplayUIManager.UI_POPUP_RESTART, this.handleUiPopupRestart);
+    this.addEventListener(GameplayUIManager.UI_POPUP_SELECT_LEVEL, this.handleUiPopupSelectLevel);
+    this.addEventListener(GameplayUIManager.UI_POPUP_RESUME, this.handleUiPopupResume);
+
     document.addEventListener(
       VISIBILITY_CHANGE,
       this.handleVisibilityChange,
@@ -533,7 +501,7 @@ export class GameplayScene {
 
     if (this.counter === this.levelData.puzzles.length) {
       //Update the stars level indicator.
-      this.levelIndicators?.setIndicators(this.counter, this.isCorrect);
+      this.uiManager.updateStars(this.counter, this.isCorrect);
 
       //Handle level end loading.
       setTimeoutCallback = () => {
@@ -571,7 +539,7 @@ export class GameplayScene {
       setTimeoutCallback = () => {
         if (!this.isDisposing) {
           this.initNewPuzzle(loadPuzzleEvent);
-          this.timerTicking.startTimer(); // Start the timer for the new puzzle
+          this.uiManager.startTimer(); // Start the timer for the new puzzle
         }
       }
     }
@@ -642,14 +610,9 @@ export class GameplayScene {
       this.stoneHandler = null;
     }
 
-    // Clear timers
-    if (this.timerTicking) {
-      this.timerTicking.destroy();
-      this.timerTicking = null;
-    }
-
-    if (this.trailEffectHandler) {
-      this.trailEffectHandler.dispose();
+    if (this.uiManager) {
+      this.uiManager.dispose();
+      this.uiManager = null;
     }
 
     if (this.tutorial) {
@@ -672,27 +635,6 @@ export class GameplayScene {
       false
     );
     this.removeEventListeners();
-
-    // Clear other components
-    if (this.levelIndicators) {
-      this.levelIndicators.dispose();
-      this.levelIndicators = null;
-    }
-
-    if (this.promptText) {
-      this.promptText.dispose();
-      this.promptText = null;
-    }
-
-    if (this.pauseButton) {
-      this.pauseButton.dispose();
-      this.pauseButton = null;
-    }
-
-    if (this.pausePopupComponent) {
-      this.pausePopupComponent.destroy();
-      this.pausePopupComponent = null;
-    }
 
     // Clear game state
     this.pickedStone = null;
@@ -766,10 +708,9 @@ export class GameplayScene {
   }
 
   public pauseGamePlay = () => {
-    this.removeEventListeners();
     this.audioPlayer.stopAllAudios();
     // Stop the clock rotation when game is paused
-    this.timerTicking?.applyRotation(false);
+    this.uiManager.applyTimerRotation(false);
   };
 
   handleVisibilityChange = () => {
