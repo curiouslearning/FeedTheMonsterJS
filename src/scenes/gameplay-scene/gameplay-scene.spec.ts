@@ -27,6 +27,7 @@ jest.mock("../../analytics/analytics-integration", () => ({
 }));
 
 import { GameplayScene } from './gameplay-scene';
+import { GameplayFlowManager } from './gameplay-flow-manager';
 import gameStateService from '@gameStateService';
 import gameSettingsService from '@gameSettingsService';
 import miniGameStateService from '@miniGameStateService'
@@ -67,6 +68,7 @@ jest.mock('@tutorials', () => {
       showHandPointerInAudioPuzzle: jest.fn(() => false), // Can adjust return value per test
       hideTutorial: jest.fn(),
       resetTutorialTimer: jest.fn(),
+      resetQuickStartTutorialDelay: jest.fn(),
       draw: jest.fn(),
       // Add any other methods/properties your tests might access
     })),
@@ -169,6 +171,21 @@ jest.mock('@components/riveMonster/rive-monster-component', () => ({
   })),
 }));
 
+// Mock MonsterController
+jest.mock('./monster-controller', () => ({
+  MonsterController: jest.fn().mockImplementation(() => ({
+    dispose: jest.fn(),
+    playSuccessAnimation: jest.fn(),
+    playFailureAnimation: jest.fn(),
+    triggerMonsterAnimation: jest.fn(),
+    resetForNextPuzzle: jest.fn(),
+    getRiveInstance: jest.fn().mockReturnValue({}),
+    checkHitbox: jest.fn().mockReturnValue(false),
+    onClick: jest.fn().mockReturnValue(false),
+    get currentPhase() { return 3; }
+  })),
+}));
+
 // --- JSDOM Canvas Mock: Prevent Not Implemented Error ---
 Object.defineProperty(HTMLCanvasElement.prototype, 'getContext', {
   value: jest.fn(() => ({
@@ -205,7 +222,7 @@ jest.mock('@gameStateService', () => ({
   default: {
     isGamePaused: false,
     getGamePlaySceneDetails: jest.fn(),
-    subscribe: jest.fn(),
+    subscribe: jest.fn().mockReturnValue(() => {}),
     publish: jest.fn(),
     EVENTS: {
       GAME_PAUSE_STATUS_EVENT: 'GAME_PAUSE_STATUS_EVENT',
@@ -222,7 +239,7 @@ jest.mock('@gameStateService', () => ({
 jest.mock('@miniGameStateService', () => ({
   __esModule: true,
   default: {
-    subscribe: jest.fn(),
+    subscribe: jest.fn().mockReturnValue(() => {}),
     publish: jest.fn(),
     EVENTS: {
       IS_MINI_GAME_DONE: 'IS_MINI_GAME_DONE',
@@ -281,6 +298,9 @@ describe('GameplayScene with BasePopupComponent', () => {
       isTutorialCleared: false
     });
 
+    // Reset subscribe mock to return a function by default
+    (gameStateService.subscribe as jest.Mock).mockReset().mockReturnValue(() => {});
+
     (gameSettingsService.getCanvasSizeValues as jest.Mock).mockReturnValue({
       canvasElem: mockCanvas,
       canvasWidth: 800,
@@ -306,10 +326,7 @@ describe('GameplayScene with BasePopupComponent', () => {
 
     // Initialize GameplayScene
     gameplayScene = new GameplayScene();
-    gameplayScene.monster = {
-      triggerInput: jest.fn(),
-      dispose: jest.fn()
-    } as any;
+    
     // Patch tutorial mock to prevent TypeError in tests
     gameplayScene.tutorial = {
       ...gameplayScene.tutorial,
@@ -322,16 +339,21 @@ describe('GameplayScene with BasePopupComponent', () => {
   afterEach(() => {
     jest.clearAllMocks();
     document.body.innerHTML = '';
+    // Ensure any leftover listeners are removed to prevent side effects
+    if (gameplayScene) {
+      // Manually remove listener in case dispose() failed or wasn't called
+      document.removeEventListener('visibilitychange', gameplayScene.handleVisibilityChange, false);
+    }
   });
 
   it('should call switchSceneToEnd immediately (0ms) when timerEnded is true or !isFeedBackTriggered is true', () => {
     // Arrange
-    gameplayScene.counter = 2; // Last puzzle index
+    (gameplayScene.flowManager as any).currentPuzzleIndex = 2; // Last puzzle index
     gameplayScene.isFeedBackTriggered = false; // Feedback not triggered
     const timerEnded = true; // Simulate timer has ended
 
     // Act
-    gameplayScene.loadPuzzle(timerEnded, 4500);
+    (gameplayScene.flowManager as any).loadPuzzle(timerEnded, 4500);
 
     // Force immediate execution of timers
     jest.runAllTimers();
@@ -346,12 +368,12 @@ describe('GameplayScene with BasePopupComponent', () => {
 
   it('should call switchSceneToEnd after 4500ms when timerEnded is false or isFeedBackTriggered is true', () => {
     // Arrange
-    gameplayScene.counter = 2; // Last puzzle index
+    (gameplayScene.flowManager as any).currentPuzzleIndex = 2; // Last puzzle index
     gameplayScene.isFeedBackTriggered = true; // Feedback is triggered
     const timerEnded = false; // Timer has not ended
 
     // Act
-    gameplayScene.loadPuzzle(timerEnded, 4500);
+    (gameplayScene.flowManager as any).loadPuzzle(timerEnded, 4500);
 
     // Assert: Ensure it is not called immediately
     expect(mockSwitchSceneToEnd).not.toHaveBeenCalled();
@@ -367,48 +389,35 @@ describe('GameplayScene with BasePopupComponent', () => {
   });
 
   function triggerMonsterAnimation(animationName: string, delay: number = 0) {
-    if (delay > 0) {
-      setTimeout(() => {
-        gameplayScene.monster.triggerInput(animationName);
-      }, delay);
-    } else {
-      gameplayScene.monster.triggerInput(animationName);
-    }
+    gameplayScene.monsterController.triggerMonsterAnimation(animationName);
   }
 
   it('should trigger animations based on phase-specific delays', () => {
-    const animationDelays = [
-      { isChewing: 0, isHappy: 1500, isSpit: 1800, isSad: 3000 },
-      { isChewing: 0, isHappy: 1700, isSpit: 2000, isSad: 3200 },
-      { isChewing: 0, isHappy: 2000, isSpit: 2200, isSad: 3500 }
-    ];
-
-    const currentDelays = animationDelays[phaseIndex];
     const isCorrect = true;
 
     if (isCorrect) {
-      triggerMonsterAnimation('isChewing', currentDelays.isChewing);
-      triggerMonsterAnimation('isHappy', currentDelays.isHappy);
+      triggerMonsterAnimation('isChewing');
+      triggerMonsterAnimation('isHappy');
     } else {
-      triggerMonsterAnimation('isChewing', currentDelays.isChewing);
-      triggerMonsterAnimation('isSpit', currentDelays.isSpit);
-      triggerMonsterAnimation('isSad', currentDelays.isSad);
+      triggerMonsterAnimation('isChewing');
+      triggerMonsterAnimation('isSpit');
+      triggerMonsterAnimation('isSad');
     }
 
     jest.runAllTimers();
 
-    expect(gameplayScene.monster.triggerInput).toHaveBeenCalledWith('isChewing');
-    expect(gameplayScene.monster.triggerInput).toHaveBeenCalledWith('isHappy');
+    expect(gameplayScene.monsterController.triggerMonsterAnimation).toHaveBeenCalledWith('isChewing');
+    expect(gameplayScene.monsterController.triggerMonsterAnimation).toHaveBeenCalledWith('isHappy');
   });
 
   it('should call switchSceneToEnd after 4500ms when timerEnded is false and isFeedBackTriggered is false', () => {
     // Arrange
-    gameplayScene.counter = 2;
+    (gameplayScene.flowManager as any).currentPuzzleIndex = 2;
     gameplayScene.isFeedBackTriggered = false; // Feedback not triggered
     const timerEnded = false; // Timer not ended
 
     // Act
-    gameplayScene.loadPuzzle(timerEnded, 4500);
+    (gameplayScene.flowManager as any).loadPuzzle(timerEnded, 4500);
 
     // Assert: Ensure no call before 4500ms
     jest.advanceTimersByTime(4499);
@@ -478,10 +487,10 @@ describe('GameplayScene with BasePopupComponent', () => {
       const mockAudioPlayer = {
         stopAllAudios: jest.fn()
       };
-      const mockMonster = {
+      const mockMonsterController = {
         dispose: jest.fn(),
-        play: jest.fn(),
-        checkHitboxDistance: jest.fn(),
+        triggerMonsterAnimation: jest.fn(),
+        checkHitbox: jest.fn(),
         onClick: jest.fn()
       };
       const mockTrailEffectHandler = {
@@ -502,20 +511,29 @@ describe('GameplayScene with BasePopupComponent', () => {
       const tutorial = {
         dispose: jest.fn()
       }
-      const mockUnsubscribeMiniGameEvent = {
-        dispose: jest.fn()
-      }
+      
+      // Fix: Mock unsubscribe functions as FUNCTIONS, not objects
+      const mockUnsubscribeMiniGameEvent = jest.fn();
+      const mockUnsubscribeLoadGamePuzzle = jest.fn();
+      const mockUnsubscribeEvent = jest.fn();
 
       // Replace the actual components with mocks
       gameplayScene.stoneHandler = mockStoneHandler as any;
       gameplayScene.audioPlayer = mockAudioPlayer as any;
-      gameplayScene.monster = mockMonster as any;
-      gameplayScene.trailEffectHandler = mockTrailEffectHandler as any;
-      gameplayScene.levelIndicators = mockLevelIndicators as any;
-      gameplayScene.promptText = mockPromptText as any;
-      gameplayScene.pauseButton = mockPauseButton as any;
-      gameplayScene.pausePopupComponent = mockPausePopup as any;
-      gameplayScene.unsubscribeMiniGameEvent = mockUnsubscribeMiniGameEvent as any
+      gameplayScene.monsterController = mockMonsterController as any;
+      
+      // Mock UI Manager components
+      gameplayScene.uiManager.trailEffectHandler = mockTrailEffectHandler as any;
+      gameplayScene.uiManager.levelIndicators = mockLevelIndicators as any;
+      gameplayScene.uiManager.promptText = mockPromptText as any;
+      gameplayScene.uiManager.pauseButton = mockPauseButton as any;
+      gameplayScene.uiManager.pausePopupComponent = mockPausePopup as any;
+      
+      // Inject the function mocks
+      gameplayScene.unsubscribeMiniGameEvent = mockUnsubscribeMiniGameEvent;
+      gameplayScene.unsubscribeLoadGamePuzzle = mockUnsubscribeLoadGamePuzzle;
+      (gameplayScene as any).unsubscribeEvent = mockUnsubscribeEvent; // Access private property if needed
+
       gameplayScene.tutorial = {
         ...tutorial,
         resetQuickStartTutorialDelay: jest.fn(),
@@ -527,13 +545,18 @@ describe('GameplayScene with BasePopupComponent', () => {
       // Verify cleanup
       expect(mockStoneHandler.dispose).toHaveBeenCalled();
       expect(mockAudioPlayer.stopAllAudios).toHaveBeenCalled();
-      expect(mockMonster.dispose).toHaveBeenCalled();
+      expect(mockMonsterController.dispose).toHaveBeenCalled();
       expect(mockTrailEffectHandler.dispose).toHaveBeenCalled();
       expect(tutorial.dispose).toHaveBeenCalled();
       expect(mockLevelIndicators.dispose).toHaveBeenCalled();
       expect(mockPromptText.dispose).toHaveBeenCalled();
       expect(mockPauseButton.dispose).toHaveBeenCalled();
       expect(mockPausePopup.destroy).toHaveBeenCalled();
+      
+      // Verify subscription cleanup
+      expect(mockUnsubscribeMiniGameEvent).toHaveBeenCalled();
+      expect(mockUnsubscribeEvent).toHaveBeenCalled();
+      
       expect(gameplayScene.isDisposing).toBe(true);
     });
   });
@@ -558,22 +581,19 @@ describe('GameplayScene with BasePopupComponent', () => {
     it('should handle pause popup events', () => {
       const mockEvent = { data: 'RESTART_LEVEL' };
 
-      // Mock the pause popup component
+      // Mock the pause popup component inside UI manager
       const mockPausePopup = {
         onClose: jest.fn()
       };
-      gameplayScene.pausePopupComponent = mockPausePopup as any;
+      gameplayScene.uiManager.pausePopupComponent = mockPausePopup as any;
 
       // Get the callback that would be registered
-      const onCloseCallback = (props: any) => {
-        if (props.data === 'RESTART_LEVEL') {
-          gameStateService.publish(gameStateService.EVENTS.GAMEPLAY_DATA_EVENT, {});
-          gameStateService.publish(gameStateService.EVENTS.SWITCH_SCENE_EVENT, SCENE_NAME_GAME_PLAY);
-        }
-      };
-
-      // Call the callback with the mock event
-      onCloseCallback(mockEvent);
+      // Since we refactored to use events, we need to verify the event handling logic
+      // In the new architecture, the UI manager publishes events, and the scene listens to them.
+      // So we can simulate the event being published or verify the scene's reaction.
+      
+      // However, for unit testing the scene's response to UI events:
+      (gameplayScene as any).handleUiPopupRestart();
 
       expect(gameStateService.publish).toHaveBeenCalledWith(
         gameStateService.EVENTS.GAMEPLAY_DATA_EVENT,
@@ -609,10 +629,14 @@ describe('GameplayScene with BasePopupComponent', () => {
 
       (gameplayScene as any).isPauseButtonClicked = false;
       (gameplayScene as any).isGameStarted = true;
+      
+      // Mock UI Manager update
+      const mockUiUpdate = jest.fn();
+      gameplayScene.uiManager.update = mockUiUpdate;
 
       gameplayScene.draw(16);
 
-      expect(gameplayScene.timerTicking.update).toHaveBeenCalledWith(16);
+      expect(mockUiUpdate).toHaveBeenCalledWith(16, true, false, true);
     });
   });
 });
