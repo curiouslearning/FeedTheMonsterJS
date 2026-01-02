@@ -85,7 +85,6 @@ export class GameplayUIManager {
         // Setup popup listeners
         this.pausePopupComponent.onClose((event) => {
             const { data } = event;
-            console.log(event)
             switch (data) {
                 case PAUSE_POPUP_EVENT_DATA.RESTART_LEVEL:
                     gameStateService.publish(GameplayUIManager.UI_POPUP_RESTART, {});

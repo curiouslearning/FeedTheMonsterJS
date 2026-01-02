@@ -40,7 +40,7 @@ export class GameplayInputManager {
     ) { }
 
     // #region Public Methods
-    public addEventListeners(element: HTMLElement) {
+    public addEventListeners(element: HTMLElement): void {
         element.addEventListener(MOUSEUP, this.handleMouseUp, false);
         element.addEventListener(MOUSEMOVE, this.handleMouseMove, false);
         element.addEventListener(MOUSEDOWN, this.handleMouseDown, false);
@@ -50,7 +50,7 @@ export class GameplayInputManager {
         element.addEventListener(CLICK, this.handleMouseClick, false);
     }
 
-    public removeEventListeners(element: HTMLElement) {
+    public removeEventListeners(element: HTMLElement): void {
         element.removeEventListener(CLICK, this.handleMouseClick, false);
         element.removeEventListener(MOUSEUP, this.handleMouseUp, false);
         element.removeEventListener(MOUSEMOVE, this.handleMouseMove, false);
@@ -60,11 +60,11 @@ export class GameplayInputManager {
         element.removeEventListener(TOUCHEND, this.handleTouchEnd, false);
     }
 
-    public getPickedStone() {
+    public getPickedStone(): StoneConfig | null {
         return this.pickedStone;
     }
 
-    public resetDragState() {
+    public resetDragState(): void {
         this.pickedStone = null;
         this.pickedStoneObject = null;
         this.lastClientX = 0;
@@ -80,7 +80,7 @@ export class GameplayInputManager {
     // #endregion
 
     // #region Event Handlers
-    handleMouseUp = (event) => {
+    private handleMouseUp = (event: MouseEvent | any): void => {
         if (this.animationFrameId !== null) {
             cancelAnimationFrame(this.animationFrameId);
             this.animationFrameId = null;
@@ -111,9 +111,9 @@ export class GameplayInputManager {
         }
 
         this.resetDragState();
-    };
+    }
 
-    handleMouseDown = (event) => {
+    private handleMouseDown = (event: MouseEvent | any): void => {
         if (this.pickedStone && this.pickedStone.frame <= 99) {
             return;
         }
@@ -132,18 +132,18 @@ export class GameplayInputManager {
         } else {
             this.setPickedUp(x, y);
         }
-    };
+    }
 
-    handleMouseMove = (event) => {
+    private handleMouseMove = (event: MouseEvent | any): void => {
         this.lastClientX = event.clientX;
         this.lastClientY = event.clientY;
 
         if (!this.pickedStone || this.pickedStone.frame <= 99) return;
 
         this.requestDragUpdate();
-    };
+    }
 
-    handleMouseClick = (event) => {
+    private handleMouseClick = (event: MouseEvent): void => {
         let rect = this.canvas.getBoundingClientRect();
         const x = event.clientX - rect.left;
         const y = event.clientY - rect.top;
@@ -151,31 +151,31 @@ export class GameplayInputManager {
         if (this.monsterController.onClick(x, y)) {
             this.dispatch(GameplayInputManager.INPUT_MONSTER_CLICK, { x, y });
         }
-    };
+    }
 
-    handleTouchStart = (event) => {
+    private handleTouchStart = (event: TouchEvent): void => {
         if (this.pickedStone && this.pickedStone.frame <= 99) {
             return;
         }
         const touch = event.touches[0];
         this.handleMouseDown({ clientX: touch.clientX, clientY: touch.clientY });
-    };
+    }
 
-    handleTouchMove = (event) => {
+    private handleTouchMove = (event: TouchEvent): void => {
         if (!this.pickedStone) return;
         event.preventDefault();
         const touch = event.touches[0];
         this.handleMouseMove({ clientX: touch.clientX, clientY: touch.clientY });
-    };
+    }
 
-    handleTouchEnd = (event) => {
+    private handleTouchEnd = (event: TouchEvent): void => {
         const touch = event.changedTouches[0];
         this.handleMouseUp({ clientX: touch.clientX, clientY: touch.clientY });
-    };
+    }
     // #endregion
 
     // #region Drag & Physics Logic
-    private setPickedUp(x, y) {
+    private setPickedUp(x: number, y: number): void {
         if (this.pickedStone && this.pickedStone.frame <= 99) {
             return;
         }
@@ -196,16 +196,16 @@ export class GameplayInputManager {
         }
     }
 
-    private requestDragUpdate() {
+    private requestDragUpdate(): void {
         if (this.animationFrameId === null) {
             this.animationFrameId = requestAnimationFrame(() => {
                 this.animationFrameId = null;
                 this.dispatchDragUpdate(this.lastClientX, this.lastClientY);
             });
         }
-    };
+    }
 
-    private dispatchDragUpdate(clientX: number, clientY: number) {
+    private dispatchDragUpdate(clientX: number, clientY: number): void {
         if (!this.isDragging) {
             this.dispatch(GameplayInputManager.INPUT_DRAG_START);
             this.isDragging = true;
@@ -218,7 +218,7 @@ export class GameplayInputManager {
         }
     }
 
-    private processSimpleDragMovement(clientX: number, clientY: number) {
+    private processSimpleDragMovement(clientX: number, clientY: number): void {
         let newStoneCoordinates = this.stoneHandler.handleMovingStoneLetter(
             this.pickedStone,
             clientX,
@@ -234,7 +234,7 @@ export class GameplayInputManager {
         }
     }
 
-    private processWordPuzzleDragMovement(clientX: number, clientY: number) {
+    private processWordPuzzleDragMovement(clientX: number, clientY: number): void {
         const { trailX, trailY } = this.updateDraggedStonePosition(clientX, clientY);
         const newStoneLetter = this.checkStoneHovering(trailX, trailY);
 
@@ -259,7 +259,7 @@ export class GameplayInputManager {
         };
     }
 
-    private checkStoneHovering(trailX: number, trailY: number) {
+    private checkStoneHovering(trailX: number, trailY: number): any {
         return this.stoneHandler.handleHoveringToAnotherStone(
             trailX,
             trailY,
@@ -269,7 +269,7 @@ export class GameplayInputManager {
         );
     }
 
-    private handleLetterPickup(newStoneLetter: any) {
+    private handleLetterPickup(newStoneLetter: any): void {
         this.puzzleHandler.setPickUpLetter(
             newStoneLetter.text,
             newStoneLetter.foilStoneIndex
@@ -287,11 +287,11 @@ export class GameplayInputManager {
     // #endregion
 
     // #region Helper Methods
-    private dispatch(eventName: string, detail: any = {}) {
+    private dispatch(eventName: string, detail: any = {}): void {
         gameStateService.publish(eventName, detail);
     }
 
-    private ensureMonsterMouthOpen() {
+    private ensureMonsterMouthOpen(): void {
         if (!this.isMonsterMouthOpen) {
             this.dispatch(GameplayInputManager.INPUT_REQUEST_ANIMATION, { 
                 animationName: 'isMouthOpen' 

@@ -27,6 +27,7 @@ jest.mock("../../analytics/analytics-integration", () => ({
 }));
 
 import { GameplayScene } from './gameplay-scene';
+import { GameplayFlowManager } from './gameplay-flow-manager';
 import gameStateService from '@gameStateService';
 import gameSettingsService from '@gameSettingsService';
 import miniGameStateService from '@miniGameStateService'
@@ -67,6 +68,7 @@ jest.mock('@tutorials', () => {
       showHandPointerInAudioPuzzle: jest.fn(() => false), // Can adjust return value per test
       hideTutorial: jest.fn(),
       resetTutorialTimer: jest.fn(),
+      resetQuickStartTutorialDelay: jest.fn(),
       draw: jest.fn(),
       // Add any other methods/properties your tests might access
     })),
@@ -346,12 +348,12 @@ describe('GameplayScene with BasePopupComponent', () => {
 
   it('should call switchSceneToEnd immediately (0ms) when timerEnded is true or !isFeedBackTriggered is true', () => {
     // Arrange
-    gameplayScene.counter = 2; // Last puzzle index
+    (gameplayScene.flowManager as any).currentPuzzleIndex = 2; // Last puzzle index
     gameplayScene.isFeedBackTriggered = false; // Feedback not triggered
     const timerEnded = true; // Simulate timer has ended
 
     // Act
-    gameplayScene.loadPuzzle(timerEnded, 4500);
+    (gameplayScene.flowManager as any).loadPuzzle(timerEnded, 4500);
 
     // Force immediate execution of timers
     jest.runAllTimers();
@@ -366,12 +368,12 @@ describe('GameplayScene with BasePopupComponent', () => {
 
   it('should call switchSceneToEnd after 4500ms when timerEnded is false or isFeedBackTriggered is true', () => {
     // Arrange
-    gameplayScene.counter = 2; // Last puzzle index
+    (gameplayScene.flowManager as any).currentPuzzleIndex = 2; // Last puzzle index
     gameplayScene.isFeedBackTriggered = true; // Feedback is triggered
     const timerEnded = false; // Timer has not ended
 
     // Act
-    gameplayScene.loadPuzzle(timerEnded, 4500);
+    (gameplayScene.flowManager as any).loadPuzzle(timerEnded, 4500);
 
     // Assert: Ensure it is not called immediately
     expect(mockSwitchSceneToEnd).not.toHaveBeenCalled();
@@ -410,12 +412,12 @@ describe('GameplayScene with BasePopupComponent', () => {
 
   it('should call switchSceneToEnd after 4500ms when timerEnded is false and isFeedBackTriggered is false', () => {
     // Arrange
-    gameplayScene.counter = 2;
+    (gameplayScene.flowManager as any).currentPuzzleIndex = 2;
     gameplayScene.isFeedBackTriggered = false; // Feedback not triggered
     const timerEnded = false; // Timer not ended
 
     // Act
-    gameplayScene.loadPuzzle(timerEnded, 4500);
+    (gameplayScene.flowManager as any).loadPuzzle(timerEnded, 4500);
 
     // Assert: Ensure no call before 4500ms
     jest.advanceTimersByTime(4499);
@@ -591,7 +593,7 @@ describe('GameplayScene with BasePopupComponent', () => {
       // So we can simulate the event being published or verify the scene's reaction.
       
       // However, for unit testing the scene's response to UI events:
-      gameplayScene.handleUiPopupRestart();
+      (gameplayScene as any).handleUiPopupRestart();
 
       expect(gameStateService.publish).toHaveBeenCalledWith(
         gameStateService.EVENTS.GAMEPLAY_DATA_EVENT,
