@@ -440,7 +440,6 @@ export class GameplayScene {
   }
 
   private handleUiPopupResume(): void {
-    console.log("Resume");
     gameStateService.publish(gameStateService.EVENTS.GAME_PAUSE_STATUS_EVENT, false);
     this.resumeGame();
   }
