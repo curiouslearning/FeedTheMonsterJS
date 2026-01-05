@@ -88,7 +88,7 @@ export class GameplayInputManager {
 
         this.isMonsterMouthOpen = false;
 
-        if (!this.pickedStone || this.pickedStone.frame <= 99) {
+        if (!this.pickedStone || this.pickedStone.isAnimating) {
             this.puzzleHandler.clearPickedUp();
             this.isDragging = false;
             return;
@@ -114,7 +114,7 @@ export class GameplayInputManager {
     }
 
     private handleMouseDown = (event: MouseEvent | any): void => {
-        if (this.pickedStone && this.pickedStone.frame <= 99) {
+        if (this.pickedStone && this.pickedStone.isAnimating) {
             return;
         }
 
@@ -138,7 +138,7 @@ export class GameplayInputManager {
         this.lastClientX = event.clientX;
         this.lastClientY = event.clientY;
 
-        if (!this.pickedStone || this.pickedStone.frame <= 99) return;
+        if (!this.pickedStone || this.pickedStone.isAnimating) return;
 
         this.requestDragUpdate();
     }
@@ -154,7 +154,7 @@ export class GameplayInputManager {
     }
 
     private handleTouchStart = (event: TouchEvent): void => {
-        if (this.pickedStone && this.pickedStone.frame <= 99) {
+        if (this.pickedStone && this.pickedStone.isAnimating) {
             return;
         }
         const touch = event.touches[0];
@@ -176,7 +176,7 @@ export class GameplayInputManager {
 
     // #region Drag & Physics Logic
     private setPickedUp(x: number, y: number): void {
-        if (this.pickedStone && this.pickedStone.frame <= 99) {
+        if (this.pickedStone && this.pickedStone.isAnimating) {
             return;
         }
 

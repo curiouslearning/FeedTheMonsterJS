@@ -46,6 +46,10 @@ export class StoneConfig {
         this.animationStartTime = 0;
     }
 
+    public get isAnimating(): boolean {
+        return this.frame < 100;
+    }
+
     /**
      * Calculates the optimal image size and font size for the stone based on the canvas dimensions and scaling.
      */
