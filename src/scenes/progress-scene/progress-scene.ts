@@ -21,6 +21,7 @@ export class ProgressionScene {
   private previousJarFillValue: number = 0;
   private targetJarFillValue: number = 0;
   private bonusJarFillValue: number = 0;
+  private newScoreEarned: number = 0;
   constructor() {
     const riveMonsterElement = gameSettingsService.getRiveCanvasValue();
     this.riveMonsterElement = riveMonsterElement;
@@ -49,8 +50,8 @@ export class ProgressionScene {
 
     
 
-    const newScoreEarned = this.isPassingScore
-      ? (this.currentLevelStarEarned - this.previousLevelStarEarned)
+    this.newScoreEarned = this.isPassingScore
+      ? Math.max(this.currentLevelStarEarned - this.previousLevelStarEarned, 0)
       : 0;
 
     // Determine the jar’s previous fill percentage.
@@ -61,12 +62,12 @@ export class ProgressionScene {
 
     // Determine the jar’s new target fill percentage.
     this.targetJarFillValue = this.getStarPercentage(
-      this.previousTotalStarCount + newScoreEarned,
+      this.previousTotalStarCount + this.newScoreEarned,
       this.targetStarCountMaxFill
     );
 
     this.bonusJarFillValue = this.getStarPercentage(
-      this.previousTotalStarCount + newScoreEarned + this.treasureChestScore,
+      this.previousTotalStarCount + this.newScoreEarned + this.treasureChestScore,
       this.targetStarCountMaxFill
     );   
   }
@@ -81,7 +82,7 @@ export class ProgressionScene {
       this.previousJarFillValue,
       this.targetJarFillValue,
       this.bonusJarFillValue,
-      this.currentLevelStarEarned,
+      this.newScoreEarned > 0 ? this.currentLevelStarEarned : 0,
       this.treasureChestScore === 1
     );
 
