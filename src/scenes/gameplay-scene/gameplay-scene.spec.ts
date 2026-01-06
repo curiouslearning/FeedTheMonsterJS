@@ -513,8 +513,6 @@ describe('GameplayScene with BasePopupComponent', () => {
       }
       
       // Fix: Mock unsubscribe functions as FUNCTIONS, not objects
-      const mockUnsubscribeMiniGameEvent = jest.fn();
-      const mockUnsubscribeLoadGamePuzzle = jest.fn();
       const mockUnsubscribeEvent = jest.fn();
 
       // Replace the actual components with mocks
@@ -530,8 +528,6 @@ describe('GameplayScene with BasePopupComponent', () => {
       gameplayScene.uiManager.pausePopupComponent = mockPausePopup as any;
       
       // Inject the function mocks
-      gameplayScene.unsubscribeMiniGameEvent = mockUnsubscribeMiniGameEvent;
-      gameplayScene.unsubscribeLoadGamePuzzle = mockUnsubscribeLoadGamePuzzle;
       (gameplayScene as any).unsubscribeEvent = mockUnsubscribeEvent; // Access private property if needed
 
       gameplayScene.tutorial = {
@@ -554,7 +550,6 @@ describe('GameplayScene with BasePopupComponent', () => {
       expect(mockPausePopup.destroy).toHaveBeenCalled();
       
       // Verify subscription cleanup
-      expect(mockUnsubscribeMiniGameEvent).toHaveBeenCalled();
       expect(mockUnsubscribeEvent).toHaveBeenCalled();
       
       expect(gameplayScene.isDisposing).toBe(true);

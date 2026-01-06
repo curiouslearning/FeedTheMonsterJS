@@ -2,6 +2,7 @@ import { MONSTER_PHASES } from "@constants";
 import { RiveMonsterComponent } from '@components/riveMonster/rive-monster-component';
 import gameSettingsService from '@gameSettingsService';
 import gameStateService from '@gameStateService';
+import { GameplayInputManager } from "./gameplay-input-manager";
 
 export class MonsterController {
   // #region Properties
@@ -10,6 +11,7 @@ export class MonsterController {
   private scale: number;
   private hitboxRangeX: { from: number; to: number };
   private hitboxRangeY: { from: number; to: number };
+  private unsubscribeAnimationRequest: () => void;
 
   private animationDelays = [
     { backToIdle: 350, isChewing: 0, isHappy: 1700, isSpit: 1500, isSad: 3000 },
@@ -24,9 +26,19 @@ export class MonsterController {
     this.scale = gameSettingsService.getDevicePixelRatioValue();
     this.initMonster();
     this.initializeHitbox();
+    this.addEventListeners();
   }
 
   // #region Lifecycle
+  private addEventListeners() {
+    this.unsubscribeAnimationRequest = gameStateService.subscribe(
+      GameplayInputManager.INPUT_REQUEST_ANIMATION,
+      (detail: any) => {
+        this.triggerMonsterAnimation(detail.animationName);
+      }
+    );
+  }
+
   private initMonster() {
     if (this.monster) {
       this.monster.dispose();
@@ -48,6 +60,11 @@ export class MonsterController {
     if (this.monster) {
       this.monster.dispose();
       this.monster = null;
+    }
+
+    if (this.unsubscribeAnimationRequest) {
+      this.unsubscribeAnimationRequest();
+      this.unsubscribeAnimationRequest = null;
     }
   }
   // #endregion

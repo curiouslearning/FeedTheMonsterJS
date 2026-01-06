@@ -35,6 +35,7 @@ export class GameplayFlowManager {
     private hasShownChest: boolean = false;
     private levelForMinigame: number;
     private isDisposing: boolean = false;
+    private eventListeners: Function[] = [];
     // #endregion
 
     // #region Dependencies
@@ -81,6 +82,7 @@ export class GameplayFlowManager {
         
         this.startGameTime();
         this.startPuzzleTime();
+        this.addEventListeners();
     }
 
     // #region Public Flow Control
@@ -144,6 +146,41 @@ export class GameplayFlowManager {
          this.treasureChestScore = miniGameScore;
          // Load the next puzzle segment after mini game regardless if the user scored or not.
          this.loadPuzzle(false, 4500);
+    }
+    // #endregion
+
+    // #region Event Handlers
+    private addEventListeners() {
+        this.eventListeners.push(
+            gameStateService.subscribe(
+                GameplayUIManager.UI_TIMER_ENDED, 
+                this.handleUiTimerEnded.bind(this)
+            )
+        );
+        this.eventListeners.push(
+            gameStateService.subscribe(
+                gameStateService.EVENTS.LOAD_NEXT_GAME_PUZZLE, 
+                this.handleLoadNextGamePuzzle.bind(this)
+            )
+        );
+        this.eventListeners.push(
+            miniGameStateService.subscribe(
+                miniGameStateService.EVENTS.IS_MINI_GAME_DONE, 
+                this.handleMiniGameDoneEvent.bind(this)
+            )
+        );
+    }
+
+    private handleUiTimerEnded(isMyTimerOver: boolean): void {
+        this.determineNextStep(false, isMyTimerOver);
+    }
+
+    private handleLoadNextGamePuzzle(detail: any): void {
+        this.determineNextStep(detail?.isCorrect);
+    }
+
+    private handleMiniGameDoneEvent(detail: { miniGameScore: number }): void {
+        this.handleMiniGameDone(detail.miniGameScore);
     }
     // #endregion
 
@@ -317,6 +354,8 @@ export class GameplayFlowManager {
 
     public dispose(): void {
         this.isDisposing = true;
+        this.eventListeners.forEach(unsubscribe => unsubscribe());
+        this.eventListeners = [];
     }
     
     public get currentPuzzleIndexValue(): number {

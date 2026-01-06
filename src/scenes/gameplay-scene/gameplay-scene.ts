@@ -87,8 +87,6 @@ export class GameplayScene {
   
   // Event Management
   private unsubscribeEvent: () => void;
-  public unsubscribeMiniGameEvent: () => void;
-  public unsubscribeLoadGamePuzzle: () => void;
   private eventListenersAdded: (() => void)[];
   private boundHandleVisibilityChange: () => void;
   private boundHandleUiPopupRestart: () => void;
@@ -159,23 +157,7 @@ export class GameplayScene {
     this.addEventListeners();
     this.analyticsIntegration = AnalyticsIntegration.getInstance();
     
-    this.unsubscribeEvent = gameStateService.subscribe(
-      gameStateService.EVENTS.GAME_PAUSE_STATUS_EVENT,
-      (isPause: boolean) => {
-        this.isPauseButtonClicked = isPause;
-        if (isPause) this.uiManager.openPausePopup();
-      }
-    );
-    this.unsubscribeLoadGamePuzzle = gameStateService.subscribe(
-      gameStateService.EVENTS.LOAD_NEXT_GAME_PUZZLE,
-      (detail: any) => {
-        this.flowManager.determineNextStep(detail?.isCorrect);
-      });
-    this.unsubscribeMiniGameEvent = miniGameStateService.subscribe(
-      miniGameStateService.EVENTS.IS_MINI_GAME_DONE,
-      ({ miniGameScore }: { miniGameScore: number }) => {
-        this.flowManager.handleMiniGameDone(miniGameScore);
-      });
+    
     
     //this.setupBg(); //Temporary disabled to try evolution background.
     this.setupMonsterPhaseBg();
@@ -281,8 +263,6 @@ export class GameplayScene {
 
     if (this.unsubscribeEvent) {
       this.unsubscribeEvent();
-      this.unsubscribeMiniGameEvent();
-      this.unsubscribeLoadGamePuzzle();
       this.unsubscribeEvent = null;
     }
 
@@ -408,17 +388,9 @@ export class GameplayScene {
     this.monsterController.triggerMonsterAnimation('backToIdle');
   }
 
-  private handleInputRequestAnimation(detail: any): void {
-    this.monsterController.triggerMonsterAnimation(detail.animationName);
-  }
-
   private handleUiPauseClick(): void {
     gameStateService.publish(gameStateService.EVENTS.GAME_PAUSE_STATUS_EVENT, true);
     this.pauseGamePlay();
-  }
-
-  private handleUiTimerEnded(isMyTimerOver: boolean): void {
-    this.flowManager.determineNextStep(false, isMyTimerOver);
   }
 
   private handleUiPromptClick(): void {
@@ -446,14 +418,6 @@ export class GameplayScene {
 
   public handleVisibilityChange(): void {
     this.audioPlayer.stopAllAudios();
-    gameStateService.publish(gameStateService.EVENTS.GAME_PAUSE_STATUS_EVENT, true);
-    this.pauseGamePlay();
-  }
-
-  /**
-   * Handles the game pause event.
-   */
-  private handleGamePause(): void {
     gameStateService.publish(gameStateService.EVENTS.GAME_PAUSE_STATUS_EVENT, true);
     this.pauseGamePlay();
   }
@@ -500,15 +464,21 @@ export class GameplayScene {
     this.addEventListener(GameplayInputManager.INPUT_MONSTER_CLICK, this.handleInputMonsterClick.bind(this));
     this.addEventListener(GameplayInputManager.INPUT_STONE_DROP_ON_TARGET, this.handleInputStoneDropOnTarget.bind(this));
     this.addEventListener(GameplayInputManager.INPUT_STONE_DROP_MISSED, this.handleInputStoneDropMissed.bind(this));
-    this.addEventListener(GameplayInputManager.INPUT_REQUEST_ANIMATION, this.handleInputRequestAnimation.bind(this));
     
     // UI Events
     this.addEventListener(GameplayUIManager.UI_PAUSE_CLICK, this.handleUiPauseClick.bind(this));
-    this.addEventListener(GameplayUIManager.UI_TIMER_ENDED, this.handleUiTimerEnded.bind(this));
     this.addEventListener(GameplayUIManager.UI_PROMPT_CLICK, this.handleUiPromptClick.bind(this));
     this.addEventListener(GameplayUIManager.UI_POPUP_RESTART, this.boundHandleUiPopupRestart);
     this.addEventListener(GameplayUIManager.UI_POPUP_SELECT_LEVEL, this.handleUiPopupSelectLevel.bind(this));
     this.addEventListener(GameplayUIManager.UI_POPUP_RESUME, this.handleUiPopupResume.bind(this));
+
+    this.unsubscribeEvent = gameStateService.subscribe(
+      gameStateService.EVENTS.GAME_PAUSE_STATUS_EVENT,
+      (isPause: boolean) => {
+        this.isPauseButtonClicked = isPause;
+        if (isPause) this.uiManager.openPausePopup();
+      }
+    );
 
     document.addEventListener(
       VISIBILITY_CHANGE,
@@ -521,7 +491,7 @@ export class GameplayScene {
     this.eventListenersAdded.push(gameStateService.subscribe(eventName, callback));
   }
 
-  removeEventListeners() {
+  private removeEventListeners(): void {
     this.inputManager?.removeEventListeners(this.handler);
 
     if (this.eventListenersAdded) {
