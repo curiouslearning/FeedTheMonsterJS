@@ -37,8 +37,7 @@ import { GameplayInputManager } from './gameplay-input-manager';
 import { MonsterController } from './monster-controller';
 import { GameplayUIManager } from "./gameplay-ui-manager";
 import { GameplayFlowManager } from "./gameplay-flow-manager";
-import { FeatureFlagsService } from '@curiouslearning/features';
-import { MINIGAME_ENABLE } from '../../services/features/constants';
+
 export class GameplayScene {
   // #region Properties
   // Core Dependencies
@@ -91,7 +90,7 @@ export class GameplayScene {
   private eventListenersAdded: (() => void)[];
   private boundHandleVisibilityChange: () => void;
   private boundHandleUiPopupRestart: () => void;
-  public miniGameEnabled: boolean;
+
   // Legacy/Unused
   isFeedBackTriggered: boolean;
   // #endregion
@@ -152,18 +151,11 @@ export class GameplayScene {
       this.puzzleHandler,
       this.stoneHandler,
       this.miniGameHandler,
-      this.tutorial,
-      this.miniGameEnabled
+      this.tutorial
     );
 
     this.addEventListeners();
     this.analyticsIntegration = AnalyticsIntegration.getInstance();
-    
-    const featureFlagsService = new FeatureFlagsService({
-      metaData: { userID: pseudoId }
-    });
-    this.miniGameEnabled = featureFlagsService.isFeatureEnabled(MINIGAME_ENABLE);
-    console.log(this.miniGameEnabled);
     
     //this.setupBg(); //Temporary disabled to try evolution background.
     this.setupMonsterPhaseBg();

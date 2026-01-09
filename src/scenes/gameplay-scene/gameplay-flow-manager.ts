@@ -4,6 +4,7 @@ import {
     STONEDROP,
     Debugger,
     lang,
+    pseudoId,
 } from "@common";
 import {
     SCENE_NAME_LEVEL_SELECT,
@@ -22,7 +23,8 @@ import PuzzleHandler from "@gamepuzzles/puzzleHandler/puzzleHandler";
 import { StoneHandler, AudioPlayer } from "@components";
 import { MiniGameHandler } from '@miniGames/miniGameHandler';
 import TutorialHandler from '@tutorials';
-
+import { FeatureFlagsService } from '@curiouslearning/features';
+import { MINIGAME_ENABLE } from '../../services/features/constants';
 export class GameplayFlowManager {
 
     // #region State Properties
@@ -34,7 +36,7 @@ export class GameplayFlowManager {
     private isCorrect: boolean = false;
     private hasShownChest: boolean = false;
     private levelForMinigame: number;
-    private miniGameEnabled: boolean = false;
+    public miniGameEnabled : boolean = false;
     private isDisposing: boolean = false;
     private eventListeners: Function[] = [];
     // #endregion
@@ -61,8 +63,7 @@ export class GameplayFlowManager {
         puzzleHandler: PuzzleHandler,
         stoneHandler: StoneHandler,
         miniGameHandler: MiniGameHandler,
-        tutorial: TutorialHandler,
-        miniGameEnabled: boolean = false
+        tutorial: TutorialHandler
     ) {
         this.levelData = levelData;
         this.data = data;
@@ -73,16 +74,19 @@ export class GameplayFlowManager {
         this.stoneHandler = stoneHandler;
         this.miniGameHandler = miniGameHandler;
         this.tutorial = tutorial;
-        this.miniGameEnabled = miniGameEnabled;
-        
+        const featureFlagsService = new FeatureFlagsService({
+            metaData: { userID: pseudoId }
+        });
+        this.miniGameEnabled = featureFlagsService.isFeatureEnabled(MINIGAME_ENABLE);
+        console.log(this.miniGameEnabled);
         this.analyticsIntegration = AnalyticsIntegration.getInstance();
-        
+
         // Initialize Level logic
         this.levelForMinigame = miniGameStateService.shouldShowMiniGame({
             levelSegmentLength: this.levelData.puzzles.length,
             gameLevel: this.levelData.levelNumber
         });
-        
+
         this.startGameTime();
         this.startPuzzleTime();
         this.addEventListeners();
@@ -96,7 +100,7 @@ export class GameplayFlowManager {
      */
     public determineNextStep(isCorrect: boolean | null = null, isTimeOver: boolean = false): void {
         const currentLevel = this.currentPuzzleIndex + 1;
-        
+
         if (isCorrect !== null) {
             this.isCorrect = isCorrect;
         }
@@ -135,7 +139,7 @@ export class GameplayFlowManager {
 
         const puzzleType = this.levelData.levelMeta.levelType;
         this.logPuzzleEndFirebaseEvent(isCorrect, pickedStone, puzzleType);
-        
+
         // Dispatch event for other listeners (effects, etc)
         const dropStoneEvent = new CustomEvent(STONEDROP, {
             detail: { isCorrect: isCorrect },
@@ -146,9 +150,9 @@ export class GameplayFlowManager {
     }
 
     public handleMiniGameDone(miniGameScore: number): void {
-         this.treasureChestScore = miniGameScore;
-         // Load the next puzzle segment after mini game regardless if the user scored or not.
-         this.loadPuzzle(false, 4500);
+        this.treasureChestScore = miniGameScore;
+        // Load the next puzzle segment after mini game regardless if the user scored or not.
+        this.loadPuzzle(false, 4500);
     }
     // #endregion
 
@@ -156,19 +160,19 @@ export class GameplayFlowManager {
     private addEventListeners() {
         this.eventListeners.push(
             gameStateService.subscribe(
-                GameplayUIManager.UI_TIMER_ENDED, 
+                GameplayUIManager.UI_TIMER_ENDED,
                 this.handleUiTimerEnded.bind(this)
             )
         );
         this.eventListeners.push(
             gameStateService.subscribe(
-                gameStateService.EVENTS.LOAD_NEXT_GAME_PUZZLE, 
+                gameStateService.EVENTS.LOAD_NEXT_GAME_PUZZLE,
                 this.handleLoadNextGamePuzzle.bind(this)
             )
         );
         this.eventListeners.push(
             miniGameStateService.subscribe(
-                miniGameStateService.EVENTS.IS_MINI_GAME_DONE, 
+                miniGameStateService.EVENTS.IS_MINI_GAME_DONE,
                 this.handleMiniGameDoneEvent.bind(this)
             )
         );
@@ -191,13 +195,13 @@ export class GameplayFlowManager {
     private loadPuzzle(isTimerEnded: boolean, loadPuzzleDelay: number): void {
         const timerEnded = Boolean(isTimerEnded);
         this.tutorial?.resetTutorialTimer();
-        
+
         if (timerEnded) {
             this.logPuzzleEndFirebaseEvent(false, null, "TIMEOUT");
         }
 
         this.currentPuzzleIndex += 1;
-        
+
         // Reset the 6-second tutorial delay timer each time a new puzzle is loaded
         this.tutorial?.resetQuickStartTutorialDelay();
         this.tutorial?.hideTutorial(); // Turn off tutorial via loading the puzzle.
@@ -208,7 +212,7 @@ export class GameplayFlowManager {
           -Trigger the handleLevelEnd with a delay to let the audio play in puzzleHandler.ts before switching to level end screen.
         */
         const setTimeoutDelay = timerEnded ? 0 : loadPuzzleDelay;
-        
+
         if (this.currentPuzzleIndex === this.levelData.puzzles.length) {
             // Level Completed
             this.handleLevelCompletion(timerEnded, setTimeoutDelay);
@@ -269,16 +273,16 @@ export class GameplayFlowManager {
     private initNewPuzzle(loadPuzzleEvent: CustomEvent): void {
         this.monsterController.resetForNextPuzzle();
         this.isCorrect = false;
-        
+
         // Reset Times
         this.startPuzzleTime();
         this.tutorial?.resetQuickStartTutorialDelay();
 
         // Initialize Puzzle
         this.puzzleHandler.initialize(this.levelData, this.currentPuzzleIndex);
-        
+
         // Dispatch event so StoneHandler (listener) can redraw
-        document.dispatchEvent(loadPuzzleEvent); 
+        document.dispatchEvent(loadPuzzleEvent);
     }
 
     /**
@@ -312,8 +316,8 @@ export class GameplayFlowManager {
         const endTime = Date.now();
         const droppedLetters = this.puzzleHandler.getWordPuzzleDroppedLetters();
         const itemSelected = puzzleType === "Word"
-          ? (droppedLetters ?? "TIMEOUT")
-          : (pickedStone?.text ?? "TIMEOUT");
+            ? (droppedLetters ?? "TIMEOUT")
+            : (pickedStone?.text ?? "TIMEOUT");
 
         this.analyticsIntegration.track(
             AnalyticsEventType.PUZZLE_COMPLETED,
@@ -360,7 +364,7 @@ export class GameplayFlowManager {
         this.eventListeners.forEach(unsubscribe => unsubscribe());
         this.eventListeners = [];
     }
-    
+
     public get currentPuzzleIndexValue(): number {
         return this.currentPuzzleIndex;
     }
