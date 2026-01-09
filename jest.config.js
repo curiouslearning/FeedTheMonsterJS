@@ -28,7 +28,8 @@ module.exports = {
     "@tutorials/*": ["<rootDir>/src/tutorials/$1"],
     "^@miniGames(.*)$": ["<rootDir>/src/miniGame/miniGames/$1"],
     "^@miniGameStateService(.*)$": ["<rootDir>/src/miniGame/miniGameStateService/$1"],
-    "@curiouslearning/analytics": "<rootDir>/node_modules/@curiouslearning/analytics/dist/index.js"
+    "@curiouslearning/analytics": "<rootDir>/node_modules/@curiouslearning/analytics/dist/index.js",
+    "@curiouslearning/features": "<rootDir>/node_modules/@curiouslearning/features/dist/index.js"
   },
   roots: [
     "<rootDir>/src/"

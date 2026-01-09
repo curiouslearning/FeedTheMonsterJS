@@ -17,3 +17,9 @@ global.AudioContext = jest.fn().mockImplementation(() => ({
 }));
 
 jest.mock('@components/audio-player');
+
+jest.mock('@curiouslearning/features', () => ({
+  FeatureFlagsService: jest.fn().mockImplementation(() => ({
+    isFeatureEnabled: jest.fn().mockReturnValue(true),
+  })),
+}));

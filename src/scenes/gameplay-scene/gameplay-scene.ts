@@ -38,7 +38,7 @@ import { MonsterController } from './monster-controller';
 import { GameplayUIManager } from "./gameplay-ui-manager";
 import { GameplayFlowManager } from "./gameplay-flow-manager";
 import { FeatureFlagsService } from '@curiouslearning/features';
-import { MINIGAME_ENABLE } from 'src/services/features/constants';
+import { MINIGAME_ENABLE } from '../../services/features/constants';
 export class GameplayScene {
   // #region Properties
   // Core Dependencies
@@ -160,7 +160,7 @@ export class GameplayScene {
     this.analyticsIntegration = AnalyticsIntegration.getInstance();
     
     const featureFlagsService = new FeatureFlagsService({
-      metaData: { userID: 'is_mini_game' }
+      metaData: { userID: pseudoId }
     });
     this.miniGameEnabled = featureFlagsService.isFeatureEnabled(MINIGAME_ENABLE);
     console.log(this.miniGameEnabled);
