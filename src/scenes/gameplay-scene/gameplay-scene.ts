@@ -291,14 +291,16 @@ export class GameplayScene {
     });
     this.time = timeRef.value;
 
-    const hasTutorial = this.tutorial.shouldShowQuickStartTutorial;
-    const shouldStartTimer = this.tutorial.updateTutorialTimer(deltaTime);
-    const canUpdateTimer = !hasTutorial || (shouldStartTimer && hasTutorial);
-
-    this.uiManager.update(deltaTime, this.isGameStarted, this.isPauseButtonClicked, canUpdateTimer);
 
     // Main game logic only starts after isGameStarted = true
     if (this.isGameStarted) {
+      
+      const hasTutorial = this.tutorial.shouldShowQuickStartTutorial;
+      const shouldStartTimer = this.tutorial.updateTutorialTimer(deltaTime);
+      const canUpdateTimer = (!hasTutorial || (shouldStartTimer && hasTutorial)) && this.stoneHandler.stonesHasLoaded;
+
+      this.uiManager.update(deltaTime, this.isGameStarted, this.isPauseButtonClicked, canUpdateTimer);
+
       this.handleStoneLetterDrawing();
       
       // Handle Timer Start SFX
@@ -312,6 +314,7 @@ export class GameplayScene {
   }
 
   private setGameToStart() {
+    this.timerStartSFXPlayed = false;
     this.isGameStarted = true;
     this.time = 0;
     this.uiManager.setGameHasStarted(true);
@@ -421,6 +424,10 @@ export class GameplayScene {
     gameStateService.publish(gameStateService.EVENTS.GAME_PAUSE_STATUS_EVENT, true);
     this.pauseGamePlay();
   }
+
+  private handleNextPuzzleLoad(): void {
+    this.isGameStarted = false;
+  }
   // #endregion
 
   // #region Private Helpers
@@ -471,6 +478,8 @@ export class GameplayScene {
     this.addEventListener(GameplayUIManager.UI_POPUP_RESTART, this.boundHandleUiPopupRestart);
     this.addEventListener(GameplayUIManager.UI_POPUP_SELECT_LEVEL, this.handleUiPopupSelectLevel.bind(this));
     this.addEventListener(GameplayUIManager.UI_POPUP_RESUME, this.handleUiPopupResume.bind(this));
+
+    this.addEventListener(gameStateService.EVENTS.LOAD_NEXT_GAME_PUZZLE, this.handleNextPuzzleLoad.bind(this));
 
     this.unsubscribeEvent = gameStateService.subscribe(
       gameStateService.EVENTS.GAME_PAUSE_STATUS_EVENT,

@@ -82,7 +82,7 @@ export default class TutorialHandler {
           this.gameTypeName = gameTypeName; // Store for later use
 
           // Get the game level
-          const gameLevel = eventData.levelData.levelNumber;
+          const gameLevel = Number(eventData.levelData.levelNumber);
 
           // Only create tutorial if the game type hasn't been cleared yet
           if (!this.gameTypesList[gameTypeName]?.isCleared) {

@@ -90,6 +90,9 @@ export default class StoneHandler extends EventManager {
     // Clear existing stones first to prevent memory leaks.
     this.disposeStones();
 
+    // Reset loading state for new stones
+    this.stonesHasLoaded = false;
+
     //Get the static foil stones — an array of string characters.
     const foilStones = this.getFoilStones();
 
