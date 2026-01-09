@@ -34,6 +34,7 @@ export class GameplayFlowManager {
     private isCorrect: boolean = false;
     private hasShownChest: boolean = false;
     private levelForMinigame: number;
+    private miniGameEnabled: boolean = false;
     private isDisposing: boolean = false;
     private eventListeners: Function[] = [];
     // #endregion
@@ -60,7 +61,8 @@ export class GameplayFlowManager {
         puzzleHandler: PuzzleHandler,
         stoneHandler: StoneHandler,
         miniGameHandler: MiniGameHandler,
-        tutorial: TutorialHandler
+        tutorial: TutorialHandler,
+        miniGameEnabled: boolean = false
     ) {
         this.levelData = levelData;
         this.data = data;
@@ -71,6 +73,7 @@ export class GameplayFlowManager {
         this.stoneHandler = stoneHandler;
         this.miniGameHandler = miniGameHandler;
         this.tutorial = tutorial;
+        this.miniGameEnabled = miniGameEnabled;
         
         this.analyticsIntegration = AnalyticsIntegration.getInstance();
         
@@ -100,7 +103,7 @@ export class GameplayFlowManager {
 
         const loadPuzzleDelay = this.isCorrect ? 1500 : 3000;
 
-        if (currentLevel === this.levelForMinigame && !this.hasShownChest) {
+        if (currentLevel === this.levelForMinigame && !this.hasShownChest && this.miniGameEnabled) {
             this.hasShownChest = true;
 
             // Publish event BEFORE starting the mini game
