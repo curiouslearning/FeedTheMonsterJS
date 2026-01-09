@@ -33,6 +33,8 @@ import {
   PuzzleCompletedEvent,
 } from "../../analytics/analytics-event-interface";
 import { AnalyticsIntegration, AnalyticsEventType } from "../../analytics/analytics-integration";
+import { FeatureFlagsService } from '@curiouslearning/features';
+import { MINIGAME_ENABLE } from 'src/services/features/constants';
 import {
   SCENE_NAME_LEVEL_SELECT,
   SCENE_NAME_GAME_PLAY,
@@ -124,6 +126,7 @@ export class GameplayScene {
   ];
   private levelForMinigame: number;
   private treasureChestScore: number;
+  private miniGameEnabled: boolean;
 
   constructor() {
     const gamePlayData = gameStateService.getGamePlaySceneDetails();
@@ -132,6 +135,12 @@ export class GameplayScene {
       gameLevel: gamePlayData.levelData.levelNumber
     });
     this.treasureChestScore = 0;
+    const featureFlagsService = new FeatureFlagsService({
+      metaData: { userID: 'is_mini_game' }
+    });
+    this.miniGameEnabled = featureFlagsService.isFeatureEnabled(MINIGAME_ENABLE);
+    console.log(this.miniGameEnabled);
+    
     this.miniGameHandler = new MiniGameHandler(gamePlayData.levelData.levelNumber);
     this.pausePopupComponent = new PausePopupComponent();
     // Assign state properties based on game state
@@ -763,7 +772,7 @@ export class GameplayScene {
     const currentLevel = this.counter + 1;
     const loadPuzzleDelay = isCorrect ? 1500 : 3000;
 
-    if (currentLevel === this.levelForMinigame && !this.hasShownChest) {
+    if (currentLevel === this.levelForMinigame && !this.hasShownChest && this.miniGameEnabled) {
       this.hasShownChest = true;
 
       // Publish event BEFORE starting the mini game

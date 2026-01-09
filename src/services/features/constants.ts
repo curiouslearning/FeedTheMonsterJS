@@ -6,3 +6,4 @@
  * https://console.statsig.com/5lPgCbcrKd2jkN9s3INJJ6/gates/en-33
  */
 export const FEATURE_QUICK_START = 'en-33';
+export const MINIGAME_ENABLE = 'fm-796';
