@@ -56,7 +56,7 @@ export class LevelEndScene {
     this.data = data;
     this.audioPlayer = new AudioPlayer();
     this.starCount = starCount;
-    this.currentLevel = currentLevel;
+    this.currentLevel = Number(currentLevel);
     this.isLastLevel = isLastLevel;
     this.initializeRiveMonster(monsterPhaseNumber);
     this.toggleLevelEndBackground(true);
