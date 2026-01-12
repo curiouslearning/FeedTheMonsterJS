@@ -314,7 +314,6 @@ export class GameplayScene {
   }
 
   private setGameToStart() {
-    this.timerStartSFXPlayed = false;
     this.isGameStarted = true;
     this.time = 0;
     this.uiManager.setGameHasStarted(true);
@@ -428,6 +427,11 @@ export class GameplayScene {
   private handleNextPuzzleLoad(): void {
     this.isGameStarted = false;
   }
+
+  private handlePuzzleInit(): void {
+    this.timerStartSFXPlayed = false;
+
+  }
   // #endregion
 
   // #region Private Helpers
@@ -480,6 +484,7 @@ export class GameplayScene {
     this.addEventListener(GameplayUIManager.UI_POPUP_RESUME, this.handleUiPopupResume.bind(this));
 
     this.addEventListener(gameStateService.EVENTS.LOAD_NEXT_GAME_PUZZLE, this.handleNextPuzzleLoad.bind(this));
+    this.addEventListener(GameplayFlowManager.PUZZLE_INIT, this.handlePuzzleInit.bind(this));
 
     this.unsubscribeEvent = gameStateService.subscribe(
       gameStateService.EVENTS.GAME_PAUSE_STATUS_EVENT,
