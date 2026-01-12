@@ -25,6 +25,8 @@ import TutorialHandler from '@tutorials';
 
 export class GameplayFlowManager {
 
+    static readonly PUZZLE_INIT = 'puzzle_init';
+
     // #region State Properties
     private currentPuzzleIndex: number = 0;
     private score: number = 0;
@@ -275,6 +277,7 @@ export class GameplayFlowManager {
         this.puzzleHandler.initialize(this.levelData, this.currentPuzzleIndex);
         
         // Dispatch event so StoneHandler (listener) can redraw
+        gameStateService.publish(GameplayFlowManager.PUZZLE_INIT, {});
         document.dispatchEvent(loadPuzzleEvent); 
     }
 
