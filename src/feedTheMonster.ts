@@ -20,6 +20,7 @@ import {
 import { URL } from "@data";
 import './styles/main.scss';
 import { FeatureFlagsService } from '@curiouslearning/features';
+import gameStateService from "./gameStateService";
 
 const featureFlagService = new FeatureFlagsService({
   metaData: { userId: pseudoId }
@@ -317,8 +318,33 @@ class App {
   private globalInitialization(data: any) {
     globalThis.aboutCompany = data.aboutCompany;
     globalThis.descriptionText = data.descriptionText;
+      this.setupMonsterEvolutionStateAPI();
   }
+ private setupMonsterEvolutionStateAPI(): void {
+    // Feed The Monster (FTM)
+    // Using arrow function to preserve 'this' context and access module-level gameStateService
+    window.getMonsterEvolutionState = () => {
+      try {
+        const monsterPhase = gameStateService.checkMonsterPhaseUpdation();
+        const successStars = gameStateService.getSuccessStarsCount();
 
+        return {
+          app: "feed_the_monster",
+          monsterPhase: monsterPhase,
+          successStars: successStars,
+          timestamp: Date.now()
+        };
+      } catch (e) {
+        return {
+          app: "feed_the_monster",
+          monsterPhase: 0,
+          successStars: 0,
+          error: "STATE_NOT_READY",
+          timestamp: Date.now()
+        };
+      }
+    };
+  }
   private handleResize(dataModal: DataModal): void {
     if (this.is_cached.has(this.lang)) {
       this.updateVersionInfoElement(dataModal);
