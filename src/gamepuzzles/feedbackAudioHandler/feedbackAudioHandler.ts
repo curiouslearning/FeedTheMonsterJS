@@ -7,6 +7,7 @@ import {
 import { Utils } from '@common';
 import gameStateService from '@gameStateService';
 import { RiveMonsterComponent } from '@components/riveMonster/rive-monster-component';
+import scheduler from "../../services/scheduler";
 
 /**
  * Feedback type enum for different feedback scenarios
@@ -72,7 +73,7 @@ export default class FeedbackAudioHandler {
    */
   private playIncorrectFeedbackSound(): void {
 
-    setTimeout(() => {
+    scheduler.setTimeout(() => {
         this.audioEndCallback();
     }, 1700); // 1700ms is tailored to handleStoneDropEnd 1000 delay of isSpit animation
   }
@@ -94,11 +95,11 @@ export default class FeedbackAudioHandler {
           Utils.getConvertedDevProdURL(this.feedbackAudios[feedBackIndex])
         )
       ]);
-      setTimeout(() => {
+      scheduler.setTimeout(() => {
         this.audioEndCallback(); // Callback after audios finish playing
       }, 4000);
     } catch (error) {
-      setTimeout(() => {
+      scheduler.setTimeout(() => {
         this.audioEndCallback(); // Ensure callback is called even if audio fails
       }, 4000); 
       console.warn('Audio playback failed:', error);

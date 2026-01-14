@@ -4,6 +4,7 @@ import { AudioPlayer } from "@components";
 import { TIMER_EMPTY, ROTATING_CLOCK, AUDIO_TIMEOUT } from "@constants";
 import './timerHtml/timerHtml.scss';
 import TimerHTMLComponent from './timerHtml/timerHtml';
+import scheduler from "../services/scheduler";
 
 
 export default class TimerTicking extends EventManager {
@@ -53,7 +54,7 @@ export default class TimerTicking extends EventManager {
         this.timerHtmlComponent = new TimerHTMLComponent('timer-ticking');
         // Reference the container element for the "full timer" image
         // Verify and cache the DOM element after rendering
-        setTimeout(() => {
+        scheduler.setTimeout(() => {
             this.timerFullContainer = document.getElementById("timer-full-container");
             if (this.timerFullContainer) this.timerFullContainer.style.width = "100%";
         }, 0);

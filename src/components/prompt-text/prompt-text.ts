@@ -5,6 +5,8 @@ import { PROMPT_TEXT_BG, AUDIO_PLAY_BUTTON } from "@constants";
 import { BaseHTML, BaseHtmlOptions } from "../baseHTML/base-html";
 import './prompt-text.scss';
 import gameStateService from '@gameStateService';
+import scheduler from "../../services/scheduler";
+
 
 // Default selectors for the prompt text component
 export const DEFAULT_SELECTORS = {
@@ -93,6 +95,7 @@ export class PromptText extends BaseHTML {
     private onClickCallback?: () => void;
     private unsubscribeSubmittedLettersEvent: () => void;
     private unsubscribeHasGameStartedEvent: () => void;
+    private unsubscribeGamePauseEvent: () => void;
 
     /**
      * Initializes a new instance of the PromptText class.
@@ -172,6 +175,11 @@ export class PromptText extends BaseHTML {
                 }
             }
         )
+
+        this.unsubscribeGamePauseEvent = gameStateService.subscribe(
+            gameStateService.EVENTS.GAME_PAUSE_STATUS_EVENT,
+            (isPaused: boolean) => this.handleGamePause(isPaused)
+        );
     }
 
     private setPromptInitialAudioDelayValues(isTutorialOn: boolean = false) {
@@ -196,7 +204,7 @@ export class PromptText extends BaseHTML {
     }
 
     private runAfterInitialAudioDelay(delayMs: number, callback: () => void) {
-        setTimeout(callback, delayMs);
+        scheduler.setTimeout(callback, delayMs);
     }
 
     private schedulePromptAndPulseUpdate() {
@@ -502,7 +510,7 @@ export class PromptText extends BaseHTML {
     }
 
     private handleAutoPromptPlay() {
-        setTimeout(() => {
+        scheduler.setTimeout(() => {
             if (!this.isAutoPromptPlaying) {
                 this.audioPlayer.handlePlayPromptAudioClickEvent();
             }
@@ -529,6 +537,18 @@ export class PromptText extends BaseHTML {
         if (this.isSpellSoundMatch()) {
             this.promptSlotElement.style.display = 'hidden';
             this.promptSlotElement.innerHTML = "";
+        }
+    }
+
+    private handleGamePause(isPaused: boolean) {
+        if (!this.promptContainer) {
+            return;
+        }
+
+        if (isPaused) {
+            this.promptContainer.classList.add('paused');
+        } else {
+            this.promptContainer.classList.remove('paused');
         }
     }
 
@@ -560,6 +580,7 @@ export class PromptText extends BaseHTML {
         //unsubscribe to gameStateService event.
         this.unsubscribeSubmittedLettersEvent();
         this.unsubscribeHasGameStartedEvent();
+        this.unsubscribeGamePauseEvent();
         // Use BaseHTML's destroy method to remove the element
         super.destroy();
     }

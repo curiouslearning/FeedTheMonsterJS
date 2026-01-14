@@ -159,11 +159,11 @@ export default class StoneHandler extends EventManager {
    * Performance optimized draw loop
    * Only processes active stones and updates timer efficiently
    */
-  draw() {
+  draw(deltaTime: number) {
     if (this.foilStones.length === 0) return;
 
     for (const stone of this.foilStones) {
-      stone.draw();
+      stone.draw(deltaTime);
     }
 
     !this.stonesHasLoaded && this.areStonesReadyForPlay();
@@ -171,11 +171,13 @@ export default class StoneHandler extends EventManager {
 
   drawWordPuzzleLetters(
     shouldHideStoneChecker: (index: number) => boolean,
-    groupedLetters: {} | { [key: number]: string }
+    groupedLetters: {} | { [key: number]: string },
+    deltaTime: number
   ): void {
     for (let i = 0; i < this.foilStones.length; i++) {
       if (shouldHideStoneChecker(i)) {
         this.foilStones[i].draw(
+          deltaTime,
           Object.keys(groupedLetters).length > 1 && groupedLetters[i] !== undefined
         );
       }

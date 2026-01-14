@@ -76,19 +76,19 @@ describe('StoneConfig', () => {
       stoneConfig.initialize();
       stoneConfig['animationStartTime'] = 0;
       now = 0;
-      stoneConfig.draw();
+      stoneConfig.draw(0);
       expect(stoneConfig.getX()).toBe(0);
 
       // 25% through animation
       now = 250;
-      stoneConfig.draw();
+      stoneConfig.draw(0);
       stoneConfig.frame = 25; // Explicitly set frame to match elapsed time
       const expected25X = targetX * (1 - Math.cos(Math.PI * 0.25)) / 2;
       expect(stoneConfig.getX()).toBeCloseTo(expected25X, 0);
 
       // Complete animation
       now = 1000;
-      stoneConfig.draw();
+      stoneConfig.draw(0);
       stoneConfig.frame = 100; // Explicitly set frame for completion
       expect(stoneConfig.getX()).toBe(targetX);
     });
@@ -109,19 +109,19 @@ describe('StoneConfig', () => {
       stoneConfig.initialize();
       stoneConfig['animationStartTime'] = 0;
       now = 0;
-      stoneConfig.draw();
+      stoneConfig.draw(0);
       expect(stoneConfig.getY()).toBe(0);
 
       // 25% through animation
       now = 250;
-      stoneConfig.draw();
+      stoneConfig.draw(0);
       stoneConfig.frame = 25; // Explicitly set frame to match elapsed time
       const expected25Y = targetY * (1 - Math.cos(Math.PI * 0.25)) / 2;
       expect(stoneConfig.getY()).toBeCloseTo(expected25Y, 0);
 
       // Complete animation
       now = 1000;
-      stoneConfig.draw();
+      stoneConfig.draw(0);
       stoneConfig.frame = 100; // Explicitly set frame for completion
       expect(stoneConfig.getY()).toBe(targetY);
     });
@@ -137,7 +137,7 @@ describe('StoneConfig', () => {
       stoneConfig.initialize();
       stoneConfig['animationStartTime'] = 0;
       now = 0;
-      stoneConfig.draw();
+      stoneConfig.draw(0);
       expect(stoneConfig.getX()).toBe(0);
       expect(stoneConfig.getY()).toBe(0);
 
@@ -145,7 +145,7 @@ describe('StoneConfig', () => {
       const checkPoints = [0.25, 0.5, 0.75];
       checkPoints.forEach(progress => {
         now = progress * 1000;
-        stoneConfig.draw();
+        stoneConfig.draw(0);
         stoneConfig.frame = progress * 100; // Set frame to match progress
         
         const expectedX = targetX * (1 - Math.cos(Math.PI * progress)) / 2;
@@ -168,7 +168,7 @@ describe('StoneConfig', () => {
       const drawImageSpy = jest.spyOn(mockContext, 'drawImage');
       const fillTextSpy = jest.spyOn(mockContext, 'fillText');
       
-      stoneConfig.draw();
+      stoneConfig.draw(0);
       
       // Verify essential drawing operations
       expect(drawImageSpy).toHaveBeenCalledTimes(1);
@@ -196,32 +196,32 @@ describe('StoneConfig', () => {
       now = 0;
       
       // First draw to start animation
-      stoneConfig.draw();
+      stoneConfig.draw(0);
       stoneConfig.frame = 0;
       expect(stoneConfig.frame).toBe(0);
 
       // 25% through animation (250ms / 1000ms * 100 = 25)
       now = 250;
-      stoneConfig.draw();
+      stoneConfig.draw(0);
       // Manually set frame since we're mocking time
       stoneConfig.frame = Math.floor((now / 1000) * 100);
       expect(stoneConfig.frame).toBe(25);
 
       // 50% through animation
       now = 500;
-      stoneConfig.draw();
+      stoneConfig.draw(0);
       stoneConfig.frame = Math.floor((now / 1000) * 100);
       expect(stoneConfig.frame).toBe(50);
 
       // Complete animation
       now = 1000;
-      stoneConfig.draw();
+      stoneConfig.draw(0);
       stoneConfig.frame = 100;
       expect(stoneConfig.frame).toBe(100);
 
       // Past completion
       now = 1500;
-      stoneConfig.draw();
+      stoneConfig.draw(0);
       expect(stoneConfig.frame).toBe(100); // Should stay at 100
     });
 
@@ -231,25 +231,25 @@ describe('StoneConfig', () => {
       now = 0;
       
       // First draw to start animation
-      stoneConfig.draw();
+      stoneConfig.draw(0);
       stoneConfig.frame = 0;
       expect(stoneConfig.frame).toBe(0);
 
       // Near completion
       now = 990;
-      stoneConfig.draw();
+      stoneConfig.draw(0);
       stoneConfig.frame = Math.floor((now / 1000) * 100);
       expect(stoneConfig.frame).toBe(99);
 
       // Just past completion
       now = 1010;
-      stoneConfig.draw();
+      stoneConfig.draw(0);
       stoneConfig.frame = 100;
       expect(stoneConfig.frame).toBe(100);
 
       // Well past completion
       now = 2000;
-      stoneConfig.draw();
+      stoneConfig.draw(0);
       expect(stoneConfig.frame).toBe(100);
     });
   });
@@ -264,7 +264,7 @@ describe('StoneConfig', () => {
       const drawImageSpy = jest.spyOn(mockContext, 'drawImage');
       
       stoneConfig.dispose();
-      stoneConfig.draw();
+      stoneConfig.draw(0);
       
       expect(drawImageSpy).not.toHaveBeenCalled();
     });

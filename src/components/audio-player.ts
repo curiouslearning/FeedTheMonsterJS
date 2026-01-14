@@ -1,5 +1,7 @@
 import { Window } from "@common";
 import { AUDIO_PATH_BTN_CLICK } from "@constants";
+import scheduler from "../services/scheduler";
+
 
 export class AudioPlayer {
   public static instance: AudioPlayer;
@@ -211,7 +213,7 @@ export class AudioPlayer {
       }
 
       // Schedule the next audio play after current one ends
-      this.playAudioTimeoutId = setTimeout(() => {
+      this.playAudioTimeoutId = scheduler.setTimeout(() => {
         //Call playPromptAudio with a callback for onended method to call.
         this.playPromptAudio(() => {
           this.isPromptAudioPlaying = false;
@@ -245,6 +247,18 @@ export class AudioPlayer {
     });
     this.audioSourcs = [];
   };
+
+  pauseAllAudios = () => {
+    if( this.audioContext && this.audioContext.state === "running") {
+      this.audioContext.suspend();
+    }
+  }
+
+  resumeAllAudios = () => {
+    if( this.audioContext && this.audioContext.state === "suspended") {
+      this.audioContext.resume();
+    } 
+  }
 
   private playFetch = (index: number, loop: boolean) => {
     if (index >= this.audioQueue.length) {
