@@ -39,7 +39,7 @@ export class MonsterController {
     );
   }
 
-  private initMonster() {
+  private initMonster(): void {
     if (this.monster) {
       this.monster.dispose();
     }
@@ -52,11 +52,11 @@ export class MonsterController {
     });
   }
 
-  public resetForNextPuzzle() {
-    this.initMonster();
+  public resetForNextPuzzle(): void {
+    this.triggerMonsterAnimation('backToIdle');
   }
 
-  public dispose() {
+  public dispose(): void {
     if (this.monster) {
       this.monster.dispose();
       this.monster = null;
@@ -70,18 +70,18 @@ export class MonsterController {
   // #endregion
 
   // #region Animation API
-  public playSuccessAnimation() {
+  public playSuccessAnimation(): void {
     this.triggerMonsterAnimation('isChewing');
     this.triggerMonsterAnimation('isHappy');
   }
 
-  public playFailureAnimation() {
+  public playFailureAnimation(): void {
     this.triggerMonsterAnimation('isChewing');
     this.triggerMonsterAnimation('isSpit');
     this.triggerMonsterAnimation('isSad');
   }
 
-  public triggerMonsterAnimation(animationName: string) {
+  public triggerMonsterAnimation(animationName: string): void {
     const delay = this.animationDelays[this.monsterPhaseNumber]?.[animationName] ?? 0;
     if (delay > 0) {
       setTimeout(() => this.monster?.triggerInput(animationName), delay);
@@ -105,7 +105,7 @@ export class MonsterController {
    * Call this in a draw method in gameplay-scene. FOR TESTING ONLY.
    * @param context 
    */
-  public createHitboxOverlayForTesting(context: CanvasRenderingContext2D) {
+  public createHitboxOverlayForTesting(context: CanvasRenderingContext2D): void {
     const width = this.hitboxRangeX.to - this.hitboxRangeX.from;
     const height = this.hitboxRangeY.to - this.hitboxRangeY.from;
 
@@ -117,7 +117,7 @@ export class MonsterController {
     context.strokeRect(this.hitboxRangeX.from, this.hitboxRangeY.from, width, height);
   }
 
-  private initializeHitbox() {
+  private initializeHitbox(): void {
     const logicalCanvasWidth = this.riveCanvas.width / this.scale;
     const logicalCanvasHeight = this.riveCanvas.height / this.scale;
     const aspectRatio = window.innerWidth / window.innerHeight;
@@ -155,7 +155,7 @@ export class MonsterController {
   // #endregion
 
   // #region Getters
-  public getRiveInstance() {
+  public getRiveInstance(): RiveMonsterComponent | null {
     return this.monster;
   }
 
