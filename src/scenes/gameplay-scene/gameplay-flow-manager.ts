@@ -113,7 +113,7 @@ export class GameplayFlowManager {
             );
 
             // Run chest animation (mini game)
-            this.miniGameHandler.draw();
+            this.miniGameHandler.start();
             return;
         } else {
             // For incorrect answers only; Start loading the next puzzle with 2 seconds delay to let the audios play.

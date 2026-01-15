@@ -25,25 +25,21 @@ enum TreasureChestState {
 export class TreasureChestAnimation {
   private canvas: HTMLCanvasElement; // Canvas element used for drawing
   private ctx: CanvasRenderingContext2D; // 2D rendering context
-  private animationFrameId: number | null = null; // requestAnimationFrame id for cancelling loop
   private isVisible: boolean = false; // Whether the animation is currently active
   private callback: () => void; // Callback triggered when a stone is clicked
   private lastTapTime = 0; // Used to prevent duplicate clicks on mobile
-  private fadeInStart: number | null = null; // Fade-in start timestamp
-  private fadeOutStart: number | null = null; // Fade-out start timestamp
   private fadeInDuration = 300; // Fade-in time (ms)
   private fadeOutDuration = 400; // Fade-out time (ms)
   private onFadeComplete?: () => void; // Callback after fade-out completes
   private state: TreasureChestState = TreasureChestState.FadeIn; // Current chest animation state
-  private stateStartTime: number = 0; // Timestamp when current state started
+  private stateTimer: number = 0; // Accumulated time in current state
   public dpr: number; // Device pixel ratio scaling
   public audioPlayer: AudioPlayer;
   private sfxPlayer: AudioPlayer;
   private chestAudioPlayed: boolean = false;
-  private lastFrameTime: number = -1;
 
   private showBonusStar: boolean = false; //  flag for showing Blue Bonus Star
-  private blueStarStartTime: number = 0;
+  private blueStarTimer: number = 0;
   private blueStarDuration: number = 2000; // total visible time (ms)
   private blueStarFadeIn: number = 400;
   private blueStarFadeOut: number = 400;
@@ -55,8 +51,8 @@ export class TreasureChestAnimation {
   private blueStarVisible: boolean = false;
 
   /**
-   * @param width - Canvas width in CSS pixels
-   * @param height - Canvas height in CSS pixels
+   * @param width - Canvas width
+   * @param height - Canvas height
    * @param callback - Called when a stone is clicked
    */
   constructor(
@@ -102,13 +98,13 @@ export class TreasureChestAnimation {
     this.ctx.scale(this.dpr, this.dpr); // scale at init
 
     // Initialize chest and stone managers
-    this.treasureChest = new TreasureChest(this.ctx, performance.now());
+    this.treasureChest = new TreasureChest(this.ctx);
     this.treasureStone = new TreasureStones(this.ctx);
 
     // after initializing this.treasureStone
     this.treasureStone.onBlueBonusReady = () => {
       this.showBonusStar = true;
-      this.blueStarStartTime = performance.now();
+      this.blueStarTimer = 0;
       this.blueStarSoundPlayed = false;
     };
 
@@ -124,7 +120,7 @@ export class TreasureChestAnimation {
     // re-hook the callback on the injected instance
     this.treasureStone.onBlueBonusReady = () => {
       this.showBonusStar = true;
-      this.blueStarStartTime = performance.now();
+      this.blueStarTimer = 0;
       this.blueStarSoundPlayed = false;
     };
   }
@@ -174,10 +170,11 @@ export class TreasureChestAnimation {
   }
 
   /** Draws the Blue Bonus Star with smooth fade-in/out while game continues */
-  private drawBlueBonusStar(time: number) {
+  private drawBlueBonusStar(deltaTime: number) {
     if (!this.showBonusStar || !this.blueStarImg.complete) return;
 
-    const elapsed = performance.now() - this.blueStarStartTime;
+    this.blueStarTimer += deltaTime;
+    const elapsed = this.blueStarTimer;
 
     // Ensure duration resets properly when star first visible
     if (elapsed < 50 && !this.blueStarSoundPlayed) {
@@ -210,38 +207,21 @@ export class TreasureChestAnimation {
     this.ctx.restore();
   }
 
-
-
   /** Starts the animation and displays the canvas overlay. */
   public show(onComplete?: () => void) {
     this.canvas.style.display = "block";
     this.isVisible = true;
     this.onFadeComplete = onComplete;
     this.state = TreasureChestState.FadeIn;
-    this.stateStartTime = performance.now();
-    this.loop();
+    this.stateTimer = 0;
   }
 
   /** Blue Bonus Star Animation */
   public showBlueBonusStar() {
-    const duration = 3000; // total duration of one visible cycle
-    const minInterval = 1000; // min time hidden
-    const maxInterval = 1000; // max time hidden
-
-    const toggleVisibility = () => {
-      if (!this.isVisible) return; // stop if chest hidden
-      this.blueStarVisible = !this.blueStarVisible;
-
-      // Schedule next toggle randomly
-      const nextDelay = this.blueStarVisible
-        ? duration // show duration
-        : Math.random() * (maxInterval - minInterval) + minInterval; // hide duration
-      setTimeout(toggleVisibility, nextDelay);
-    };
-
-    toggleVisibility(); // start toggling
+     this.showBonusStar = true;
+     this.blueStarTimer = 0;
+     this.blueStarSoundPlayed = false;
   };
-
 
   /** Stops animation, hides canvas, and cleans up listeners. */
   public hide() {
@@ -250,54 +230,50 @@ export class TreasureChestAnimation {
     this.canvas.removeEventListener("click", this.handleClick);
     this.canvas.removeEventListener("touchstart", this.handleClick);
     this.isVisible = false;
-    if (this.animationFrameId) {
-      cancelAnimationFrame(this.animationFrameId);
-      this.animationFrameId = null;
-    }
   }
 
   /**
    * Main animation loop.
    * Runs via requestAnimationFrame while visible.
    */
-  private loop = (time: number = 0) => {
+  public draw(deltaTime: number) {
     if (!this.isVisible) return;
 
-    const deltaTime = this.lastFrameTime < 0 ? 0 : time - this.lastFrameTime;
-    this.lastFrameTime = time;
+    this.stateTimer += deltaTime;
+
     this.ctx.clearRect(0, 0, this.width, this.height);
     this.ctx.save();
     this.drawOverlay();
 
     switch (this.state) {
       case TreasureChestState.FadeIn: {
-        const elapsed = performance.now() - this.stateStartTime;
+        const elapsed = this.stateTimer;
         const alpha = Math.min(1, elapsed / this.fadeInDuration);
         this.ctx.globalAlpha = alpha;
         this.treasureChest.drawClosedChest(
-          time,
-          this.stateStartTime,
+          this.stateTimer,
+          0,
           this.width,
           this.height
         );
         if (alpha >= 1) {
           this.state = TreasureChestState.ClosedChest;
-          this.stateStartTime = performance.now();
+          this.stateTimer = 0;
         }
         break;
       }
       case TreasureChestState.ClosedChest: {
         this.ctx.globalAlpha = 1;
         this.treasureChest.drawClosedChest(
-          time,
-          this.stateStartTime,
+          this.stateTimer,
+          0,
           this.width,
           this.height
         );
-        const elapsed = performance.now() - this.stateStartTime;
+        const elapsed = this.stateTimer;
         if (elapsed >= this.treasureChest.shakeDuration) {
           this.state = TreasureChestState.OpenedChest;
-          this.stateStartTime = performance.now();
+          this.stateTimer = 0;
         }
         break;
       }
@@ -314,24 +290,24 @@ export class TreasureChestAnimation {
         }
 
         // Draw Blue Star (animated)
-        this.drawBlueBonusStar(time);
+        this.drawBlueBonusStar(deltaTime);
 
-        const elapsed = performance.now() - this.stateStartTime;
+        const elapsed = this.stateTimer;
         if (elapsed >= 12000) {
           this.state = TreasureChestState.FadeOut;
-          this.stateStartTime = performance.now();
+          this.stateTimer = 0;
         }
         break;
       }
       case TreasureChestState.FadeOut: {
-        const elapsed = performance.now() - this.stateStartTime;
+        const elapsed = this.stateTimer;
         const alpha = Math.max(0, 1 - elapsed / this.fadeOutDuration);
         this.ctx.globalAlpha = alpha;
         this.treasureChest.drawOpenChest(this.width, this.height);
         this.treasureStone.stoneBurstAnimation(this.width, this.height, deltaTime);
 
         //Keep showing Blue Star if still active
-        this.drawBlueBonusStar(time);
+        this.drawBlueBonusStar(deltaTime);
 
         if (alpha === 0) {
           this.hide();
@@ -344,45 +320,11 @@ export class TreasureChestAnimation {
     }
 
     this.ctx.restore();
-    this.animationFrameId = requestAnimationFrame(this.loop);
   };
-
-  /** Handles fade-in alpha calculation (unused alternative). */
-  private handleFadeIn(): boolean {
-    if (!this.fadeInStart) return false;
-
-    const elapsed = performance.now() - this.fadeInStart;
-    const alpha = Math.min(1, elapsed / this.fadeInDuration);
-
-    this.ctx.globalAlpha = alpha;
-
-    if (alpha >= 1) {
-      this.fadeInStart = null; // fade-in complete
-    }
-    return true;
-  }
-
-  /** Handles fade-out alpha calculation (unused alternative). */
-  private handleFadeOut(): boolean {
-    if (!this.fadeOutStart) return false;
-    const elapsed = performance.now() - this.fadeOutStart;
-    const alpha = Math.max(0, 1 - elapsed / this.fadeOutDuration);
-
-    this.ctx.globalAlpha = alpha;
-
-    if (alpha === 0) {
-      this.hide();
-      this.onFadeComplete?.();
-      this.onFadeComplete = undefined;
-      return true; // stop loop early
-    }
-    return true;
-  }
 
   /** Draws a semi-transparent black overlay behind chest/stones. */
   private drawOverlay() {
     this.ctx.fillStyle = "rgba(0,0,0,0.7)";
     this.ctx.fillRect(0, 0, this.width, this.height);
   }
-
 }

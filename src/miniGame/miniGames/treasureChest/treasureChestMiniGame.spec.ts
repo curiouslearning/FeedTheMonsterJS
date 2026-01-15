@@ -38,7 +38,7 @@ describe('Testing TreasureChestMiniGame.', () => {
     miniGame['collectedBeforeThreshold'] = 3;
 
     // Run draw to trigger animation
-    miniGame.draw();
+    miniGame.start();
 
     // After animation completes, processStoneCollection should run and call the callback
     expect(mockCallback).toHaveBeenCalledWith(1);

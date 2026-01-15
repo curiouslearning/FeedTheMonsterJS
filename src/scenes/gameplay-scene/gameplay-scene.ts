@@ -323,6 +323,7 @@ export class GameplayScene {
       }
     }
 
+    this.miniGameHandler.update(deltaTime);
     this.tutorial.draw(deltaTime, this.isGameStarted);
   }
 
