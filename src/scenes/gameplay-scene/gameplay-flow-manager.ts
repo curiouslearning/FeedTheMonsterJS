@@ -279,7 +279,6 @@ export class GameplayFlowManager {
         
         // Dispatch event so StoneHandler (listener) can redraw
         gameStateService.publish(GameplayFlowManager.PUZZLE_INIT, {});
-        //document.dispatchEvent(loadPuzzleEvent); 
 
         gameStateService.publish(LOADPUZZLE, loadPuzzleEvent);
     }

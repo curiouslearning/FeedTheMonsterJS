@@ -78,7 +78,7 @@ export class PromptText extends BaseHTML {
     public AUTO_PROMPT_INITIAL_DELAY_MS: number;
     private isAutoPromptPlaying: boolean = false;
     private isLevelHaveTutorial: boolean = false;
-    private pauseState: boolean =false;
+    private pauseState: boolean = false;
 
     // HTML elements for the prompt
     public promptContainer: HTMLDivElement;
@@ -203,7 +203,7 @@ export class PromptText extends BaseHTML {
             gameStateService.subscribe(
                 GAME_PAUSE_STATUS_EVENT,
                 (event) => {
-                    this.pauseState = event
+                    this.pauseState = event;
                 }
             )
         );

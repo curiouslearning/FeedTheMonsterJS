@@ -1,7 +1,7 @@
 import LevelFieldComponent from '../level-field/level-field-component';
 import gameStateService from '@gameStateService';
 
-export class LevelIndicators{
+export class LevelIndicators {
     private levelBarIndicator: LevelFieldComponent;
     private unsubscribeLoadPuzzleEvent: () => void;
 
