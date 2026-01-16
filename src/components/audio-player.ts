@@ -7,6 +7,7 @@ export class AudioPlayer {
   public static instance: AudioPlayer;
 
   private audioContext: AudioContext | null;
+  private nonPausableAudioContext: AudioContext | null;
   private sourceNode: AudioBufferSourceNode | null;
   private audioQueue: string[];
 
@@ -23,6 +24,7 @@ export class AudioPlayer {
       return AudioPlayer.instance;
     AudioPlayer.instance = this;
     this.audioContext = AudioContextManager.getAudioContext();
+    this.nonPausableAudioContext = AudioContextManager.getNonPausableAudioContext();
     this.sourceNode = null;
     this.audioQueue = [];
     this.clickSoundBuffer = null; // Initialize the clickSoundBuffer
@@ -31,30 +33,32 @@ export class AudioPlayer {
 
   }
 
+  playUIAudio(audioSrc: string, volume: number = 1, onEnded?: () => void) {
+    const audioBuffer: AudioBuffer = AudioPlayer.audioBuffers.get(audioSrc);
+    if (audioBuffer) {
+      const sourceNode = this.nonPausableAudioContext.createBufferSource();
+      const gainNode = this.nonPausableAudioContext.createGain();
+      sourceNode.buffer = audioBuffer;
+      sourceNode.connect(gainNode);
+      gainNode.connect(this.nonPausableAudioContext.destination);
+      // handle end of playback
+      if (onEnded) {
+        sourceNode.onended = onEnded;
+      }
+
+      gainNode.gain.value = volume; // Set volume (1 = full, 0.5 = half, etc.)
+
+      this.audioSourcs.push(sourceNode);
+      sourceNode.start();
+
+      return sourceNode;
+    }
+    return null;
+  }
+
   async playButtonClickSound() {
     const audioSrc: string = AUDIO_PATH_BTN_CLICK;
-
-    if (!this.isClickSoundLoaded) {
-      // Load and decode the audio on demand if it hasn't been loaded
-      try {
-        this.clickSoundBuffer = await this.loadAndDecodeAudio(audioSrc);
-        AudioPlayer.audioBuffers.set(audioSrc, this.clickSoundBuffer);
-        this.isClickSoundLoaded = true; // Set the flag to true after loading
-      } catch (error) {
-        console.error("Error loading or decoding click sound:", error);
-        return;
-      }
-    }
-
-    // Play the audio using the buffer if it exists
-    if (this.clickSoundBuffer) {
-      const sourceNode = this.audioContext!.createBufferSource();
-      sourceNode.buffer = this.clickSoundBuffer;
-      sourceNode.connect(this.audioContext!.destination);
-      sourceNode.start();
-    } else {
-      console.error("Click sound buffer is not available.");
-    }
+    this.playUIAudio(audioSrc);
   }
 
   private async loadAndDecodeAudio(audioSrc: string): Promise<AudioBuffer> {
@@ -295,11 +299,20 @@ export class AudioPlayer {
 
 class AudioContextManager {
   private static instance: AudioContext | null = null;
+  private static nonPausableAudioContext: AudioContext | null = null;
   static getAudioContext(): AudioContext {
     if (!AudioContextManager.instance) {
       AudioContextManager.instance = new (window.AudioContext ||
         (window as Window).webkitAudioContext)();
     }
     return AudioContextManager.instance;
+  }
+
+  static getNonPausableAudioContext(): AudioContext {
+    if (!AudioContextManager.nonPausableAudioContext) {
+      AudioContextManager.nonPausableAudioContext = new (window.AudioContext ||
+        (window as Window).webkitAudioContext)();
+    }
+    return AudioContextManager.nonPausableAudioContext;
   }
 }
