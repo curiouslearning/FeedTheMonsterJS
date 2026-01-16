@@ -580,7 +580,7 @@ export class PromptText extends BaseHTML {
      */
     public dispose() {
         document.removeEventListener(VISIBILITY_CHANGE, this.handleVisibilityChange, false);
-        unsubscribeAll(this.eventListeners); //unsubscribe to gameStateService event.
+        this.eventListeners = unsubscribeAll(this.eventListeners); //unsubscribe to gameStateService event.
         // Use BaseHTML's destroy method to remove the element
         super.destroy();
     }

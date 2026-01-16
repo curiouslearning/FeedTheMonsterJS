@@ -162,7 +162,7 @@ export default class TimerTicking {
     }
 
     public destroy(): void {
-        unsubscribeAll(this.eventListeners);
+        this.eventListeners = unsubscribeAll(this.eventListeners);
         this.stopTimer();
         this.timerHtmlComponent?.destroy();
     }

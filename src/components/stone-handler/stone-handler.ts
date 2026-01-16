@@ -1,4 +1,4 @@
-import { StoneConfig, VISIBILITY_CHANGE } from '@common'
+import { StoneConfig, VISIBILITY_CHANGE, unsubscribeAll } from '@common'
 import { AudioPlayer } from "@components";
 import {
   ASSETS_PATH_STONE_PINK_BG,
@@ -232,6 +232,7 @@ export default class StoneHandler {
   public dispose() {
     this.canvas.width = this.originalWidth;
     this.canvas.height = this.originalHeight;
+    this.eventListeners = unsubscribeAll(this.eventListeners);
     document.removeEventListener(
       VISIBILITY_CHANGE,
       this.handleVisibilityChange,

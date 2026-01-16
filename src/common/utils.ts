@@ -200,9 +200,9 @@ export const isGameTypeAudio = (protoType: string) => {
 }
 
 //Iterate and unsubscribe
-export const unsubscribeAll = (eventListeners: Function[] = []) : void => {
+export const unsubscribeAll = (eventListeners: Function[] = []) : [] => {
   eventListeners.forEach(unsubscribe => unsubscribe());
 
   //Clear the list.
-  eventListeners = [];
+  return [];
 }
