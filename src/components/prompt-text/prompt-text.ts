@@ -143,7 +143,6 @@ export class PromptText extends BaseHTML {
             GAME_HAS_STARTED,
             STONEDROP,
             LOADPUZZLE,
-            GAME_PAUSE_STATUS_EVENT
         } = gameStateService.EVENTS;
 
         // Subscribe to submitted letters count updates.
