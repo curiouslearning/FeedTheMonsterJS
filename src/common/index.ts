@@ -9,6 +9,7 @@ import {
   hideElement,
   getGameTypeName,
   isGameTypeAudio,
+  unsubscribeAll
 } from "./utils";
 import { Debugger, lang, font, pseudoId, Window, source, campaign_id } from "./global-variables";
 import {
@@ -52,4 +53,5 @@ export {
   hideElement,
   getGameTypeName,
   isGameTypeAudio,
+  unsubscribeAll
 };

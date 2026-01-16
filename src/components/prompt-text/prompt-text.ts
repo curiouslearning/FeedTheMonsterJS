@@ -1,5 +1,4 @@
-import { EventManager } from "@events";
-import { Utils, VISIBILITY_CHANGE, isGameTypeAudio } from "@common";
+import { Utils, VISIBILITY_CHANGE, isGameTypeAudio, unsubscribeAll } from "@common";
 import { AudioPlayer } from "@components";
 import { PROMPT_TEXT_BG, AUDIO_PLAY_BUTTON } from "@constants";
 import { BaseHTML, BaseHtmlOptions } from "../baseHTML/base-html";
@@ -90,12 +89,8 @@ export class PromptText extends BaseHTML {
     public promptPlayButtonElement: HTMLDivElement;
     public promptSlotElement: HTMLDivElement;
     public promptTextButtonContainer: HTMLDivElement;
-    private eventManager: EventManager;
-
     private onClickCallback?: () => void;
-    private unsubscribeSubmittedLettersEvent: () => void;
-    private unsubscribeHasGameStartedEvent: () => void;
-    private unsubscribeGamePauseEvent: () => void;
+    private eventListeners: Function[] = [];
 
     /**
      * Initializes a new instance of the PromptText class.
@@ -125,12 +120,6 @@ export class PromptText extends BaseHTML {
             })
         );
 
-        // Create event manager for handling events
-        this.eventManager = new EventManager({
-            stoneDropCallbackHandler: (event) => this.handleStoneDrop(event),
-            loadPuzzleCallbackHandler: (event) => this.handleLoadPuzzle(event)
-        });
-
         this.width = width;
         this.levelData = levelData;
         this.rightToLeft = rightToLeft;
@@ -146,39 +135,67 @@ export class PromptText extends BaseHTML {
         this.handleAutoPromptPlay();
         this.onClickCallback = onClickCallback;
         this.schedulePromptAndPulseUpdate();
+
+        this.addEventListeners();
+    }
+
+    private addEventListeners() {
         const {
             WORD_PUZZLE_SUBMITTED_LETTERS_COUNT,
-            GAME_HAS_STARTED
+            GAME_HAS_STARTED,
+            STONEDROP,
+            LOADPUZZLE,
         } = gameStateService.EVENTS;
 
         // Subscribe to submitted letters count updates.
         // droppedLetterCount represents the number of letters already solved,
         // so we assign it to currentActiveLetterIndex to reflect the next letter
         // that should be styled as active in the prompt display.
-        this.unsubscribeSubmittedLettersEvent = gameStateService.subscribe(
-           WORD_PUZZLE_SUBMITTED_LETTERS_COUNT,
-            (droppedLetterCount: number) => {
-                this.currentActiveLetterIndex = droppedLetterCount;
-                //Update the prompt text that reflects the next active letter.
-                if (this.isSpellSoundMatch()) {
-                    this.generatePromptSlots();
-                } else {
-                    this.generateTextMarkup();
+        this.eventListeners.push(
+            gameStateService.subscribe(
+                WORD_PUZZLE_SUBMITTED_LETTERS_COUNT,
+                (droppedLetterCount: number) => {
+                    this.currentActiveLetterIndex = droppedLetterCount;
+                    //Update the prompt text that reflects the next active letter.
+                    if (this.isSpellSoundMatch()) {
+                        this.generatePromptSlots();
+                    } else {
+                        this.generateTextMarkup();
+                    }
                 }
-            }
+            )
         );
 
-        this.unsubscribeHasGameStartedEvent = gameStateService.subscribe(
-            GAME_HAS_STARTED, (isGameStarted: boolean) => {
-                if (isGameStarted) {
-                    this.showSpellSlots();
+        //Subscription for game starting.
+        this.eventListeners.push(
+            gameStateService.subscribe(
+                GAME_HAS_STARTED,
+                (isGameStarted: boolean) => {
+                    if (isGameStarted) {
+                        this.showSpellSlots();
+                    }
                 }
-            }
-        )
+            )
+        );
 
-        this.unsubscribeGamePauseEvent = gameStateService.subscribe(
-            gameStateService.EVENTS.GAME_PAUSE_STATUS_EVENT,
-            (isPaused: boolean) => this.handleGamePause(isPaused)
+        //Add subscription to stone drop event.
+        this.eventListeners.push(
+            gameStateService.subscribe(
+                STONEDROP,
+                (event) => {
+                    this.handleStoneDrop(event);
+                }
+            )
+        );
+
+        //Add subscription to load puzzle event.
+        this.eventListeners.push(
+            gameStateService.subscribe(
+                LOADPUZZLE,
+                (event) => {
+                    this.handleLoadPuzzle(event);
+                }
+            )
         );
     }
 
@@ -576,11 +593,7 @@ export class PromptText extends BaseHTML {
      */
     public dispose() {
         document.removeEventListener(VISIBILITY_CHANGE, this.handleVisibilityChange, false);
-        this.eventManager.unregisterEventListener();
-        //unsubscribe to gameStateService event.
-        this.unsubscribeSubmittedLettersEvent();
-        this.unsubscribeHasGameStartedEvent();
-        this.unsubscribeGamePauseEvent();
+        this.eventListeners = unsubscribeAll(this.eventListeners); //unsubscribe to gameStateService event.
         // Use BaseHTML's destroy method to remove the element
         super.destroy();
     }

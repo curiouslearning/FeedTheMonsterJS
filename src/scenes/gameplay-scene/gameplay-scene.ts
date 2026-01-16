@@ -7,8 +7,6 @@ import {
 import TutorialHandler from '@tutorials';
 import {
   StoneConfig,
-  LOADPUZZLE,
-  STONEDROP,
   VISIBILITY_CHANGE,
   Debugger,
   lang,
