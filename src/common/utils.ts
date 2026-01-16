@@ -198,3 +198,8 @@ export const getGameTypeName = (protoType: string, levelType: string) => {
 export const isGameTypeAudio = (protoType: string) => {
   return protoType !== 'Visible';
 }
+
+//Iterate and unsubscribe
+export const unsubscribeAll = (eventListeners: Function[] = []) : void => {
+  eventListeners.forEach(unsubscribe => unsubscribe());
+}

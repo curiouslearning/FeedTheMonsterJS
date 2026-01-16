@@ -1,15 +1,18 @@
-import { EventManager } from "@events";
 import LevelFieldComponent from '../level-field/level-field-component';
+import gameStateService from '@gameStateService';
 
-export class LevelIndicators extends EventManager{
+export class LevelIndicators{
     private levelBarIndicator: LevelFieldComponent;
+    private unsubscribeLoadPuzzleEvent: () => void;
 
     constructor() {
-        super({
-            stoneDropCallbackHandler: (event) => this.handleStoneDrop(event),
-            loadPuzzleCallbackHandler: (event) => this.handleLoadPuzzle(event)
-        })
         this.levelBarIndicator = new LevelFieldComponent();
+        this.unsubscribeLoadPuzzleEvent = gameStateService.subscribe(
+            gameStateService.EVENTS.LOADPUZZLE,
+            (event) => {
+                this.handleLoadPuzzle(event);
+            }
+        )
     }
 
     setIndicators(indicatorCount: number, levelSegmentResult: boolean): void {
@@ -20,11 +23,8 @@ export class LevelIndicators extends EventManager{
     }
 
     public dispose() {
-        this.unregisterEventListener();
+        this.unsubscribeLoadPuzzleEvent();
         this.levelBarIndicator.destroy();
-    }
-
-    public handleStoneDrop(event) {
     }
 
     public handleLoadPuzzle(event) {
