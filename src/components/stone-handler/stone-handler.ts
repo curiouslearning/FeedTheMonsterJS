@@ -1,5 +1,4 @@
-import { StoneConfig, VISIBILITY_CHANGE } from '@common'
-import { EventManager } from "@events";
+import { StoneConfig, VISIBILITY_CHANGE, unsubscribeAll } from '@common'
 import { AudioPlayer } from "@components";
 import {
   ASSETS_PATH_STONE_PINK_BG,
@@ -12,7 +11,7 @@ import gameSettingsService from '@gameSettingsService';
  * StoneHandler is responsible for creating, drawing, and positioning stones.
  * It handles the UI aspects of stones but not their game logic.
  */
-export default class StoneHandler extends EventManager {
+export default class StoneHandler {
   private offsetCoordinateValue: number;
   public context: CanvasRenderingContext2D;
   public canvas: HTMLCanvasElement;
@@ -33,6 +32,7 @@ export default class StoneHandler extends EventManager {
   public originalHeight:any;
   public stonesHasLoaded: boolean = false;
   public activeStones: Array<StoneConfig> = new Array<StoneConfig>();
+  private eventListeners: Function[] = [];
 
   constructor(
     context: CanvasRenderingContext2D,
@@ -40,10 +40,6 @@ export default class StoneHandler extends EventManager {
     puzzleNumber: number,
     levelData,
   ) {
-    super({
-      stoneDropCallbackHandler: (event) => this.handleStoneDrop(event),
-      loadPuzzleCallbackHandler: (event) => this.handleLoadPuzzle(event),
-    });
     this.cleanup();
     this.offsetCoordinateValue = 32; //Default value used to offset stone coordinates.
     this.context = context;
@@ -65,6 +61,30 @@ export default class StoneHandler extends EventManager {
       VISIBILITY_CHANGE,
       this.handleVisibilityChange,
       false
+    );
+
+    this.addEventListeners();
+  }
+
+  private addEventListeners() {
+    //Add subscription to stone drop event.
+    this.eventListeners.push(
+      gameStateService.subscribe(
+        gameStateService.EVENTS.STONEDROP,
+        (event) => {
+          this.handleStoneDrop(event);
+        }
+      )
+    );
+
+    //Add subscription to load puzzle event.
+    this.eventListeners.push(
+      gameStateService.subscribe(
+        gameStateService.EVENTS.LOADPUZZLE,
+        (event) => {
+          this.handleLoadPuzzle(event);
+        }
+      )
     );
   }
 
@@ -212,12 +232,12 @@ export default class StoneHandler extends EventManager {
   public dispose() {
     this.canvas.width = this.originalWidth;
     this.canvas.height = this.originalHeight;
+    this.eventListeners = unsubscribeAll(this.eventListeners);
     document.removeEventListener(
       VISIBILITY_CHANGE,
       this.handleVisibilityChange,
       false
     );
-    this.unregisterEventListener();
   }
 
   public cleanup() {
