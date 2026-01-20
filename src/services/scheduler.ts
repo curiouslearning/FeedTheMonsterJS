@@ -12,9 +12,20 @@ type Timer = {
 
 let nextTimerId = 0;
 
+/**
+ * Custom scheduler for managing time-based events within the game loop.
+ * Unlike standard window.setTimeout/setInterval, this respects the game's 
+ * pause state and is driven by deltaTime from the main update loop.
+ */
 class Scheduler {
   private timers: Map<TimerId, Timer> = new Map();
 
+  /**
+   * Schedules a one-time callback after a specified delay.
+   * @param callback The function to execute.
+   * @param delay Delay in milliseconds.
+   * @returns A unique TimerId for clearing the timeout.
+   */
   setTimeout(callback: () => void, delay: number): TimerId {
     const id = nextTimerId++ as TimerId;
     this.timers.set(id, {
@@ -27,12 +38,22 @@ class Scheduler {
     return id;
   }
 
+  /**
+   * Cancels a previously scheduled timeout.
+   * @param id The ID of the timer to clear.
+   */
   clearTimeout(id: TimerId): void {
     if (id !== undefined && id !== null) {
       this.timers.delete(id);
     }
   }
 
+  /**
+   * Schedules a repeating callback at a specified interval.
+   * @param callback The function to execute.
+   * @param delay Interval in milliseconds.
+   * @returns A unique TimerId for clearing the interval.
+   */
   setInterval(callback: () => void, delay: number): TimerId {
     const id = nextTimerId++ as TimerId;
     this.timers.set(id, {
@@ -45,10 +66,19 @@ class Scheduler {
     return id;
   }
 
+  /**
+   * Cancels a previously scheduled interval.
+   * @param id The ID of the timer to clear.
+   */
   clearInterval(id: TimerId): void {
     this.clearTimeout(id);
   }
 
+  /**
+   * Updates all active timers by subtracting the provided delta time.
+   * Executed by the main game loop.
+   * @param delta The time elapsed since the last update in milliseconds.
+   */
   update(delta: number): void {
     for (const timer of this.timers.values()) {
       timer.remaining -= delta;
@@ -68,6 +98,9 @@ class Scheduler {
     }
   }
 
+  /**
+   * Clears all active timers and resets the scheduler state.
+   */
   destroy(): void {
     this.timers.clear();
   }
