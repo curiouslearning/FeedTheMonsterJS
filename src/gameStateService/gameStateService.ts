@@ -1,6 +1,10 @@
 import { PubSub } from '../events/pub-sub-events';
 import { DataModal, GameScore, GameLevelInfo } from "@data";
-import { getGameTypeName } from '@common';
+import {
+    getGameTypeName,
+    LOADPUZZLE,
+    STONEDROP
+} from '@common';
 
 export interface hitboxRangeType {
     hitboxRangeX: {
@@ -44,6 +48,8 @@ export class GameStateService extends PubSub {
         WORD_PUZZLE_SUBMITTED_LETTERS_COUNT: string;
         GAME_HAS_STARTED: string;
         LOAD_NEXT_GAME_PUZZLE: string;
+        LOADPUZZLE: string;
+        STONEDROP: string;
     }
     public data: null | DataModal;
     public isGamePaused: boolean;
@@ -120,7 +126,9 @@ export class GameStateService extends PubSub {
             CORRECT_STONE_POSITION: 'CORRECT_STONE_POSITION',  //Stone image, position and level data for tutorial.
             WORD_PUZZLE_SUBMITTED_LETTERS_COUNT: 'WORD_PUZZLE_SUBMITTED_LETTERS_COUNT',
             GAME_HAS_STARTED: "GAME_HAS_STARTED", //Indicates if the game has started/stones are already in placed.
-            LOAD_NEXT_GAME_PUZZLE: "LOAD_NEXT_GAME_PUZZLE" //Indicates to load the next game puzzle.
+            LOAD_NEXT_GAME_PUZZLE: "LOAD_NEXT_GAME_PUZZLE", //Indicates to load the next game puzzle.
+            STONEDROP,
+            LOADPUZZLE
         };
         this.data = null;
         /* Gameplay States */

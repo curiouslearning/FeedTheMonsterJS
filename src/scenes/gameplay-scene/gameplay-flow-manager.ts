@@ -25,6 +25,8 @@ import TutorialHandler from '@tutorials';
 
 export class GameplayFlowManager {
 
+    static readonly PUZZLE_INIT = 'puzzle_init';
+
     // #region State Properties
     private currentPuzzleIndex: number = 0;
     private score: number = 0;
@@ -134,10 +136,11 @@ export class GameplayFlowManager {
         this.logPuzzleEndFirebaseEvent(isCorrect, pickedStone, puzzleType);
         
         // Dispatch event for other listeners (effects, etc)
-        const dropStoneEvent = new CustomEvent(STONEDROP, {
-            detail: { isCorrect: isCorrect },
-        });
-        document.dispatchEvent(dropStoneEvent);
+        const dropStoneEvent = {
+            detail: { isCorrect: isCorrect }
+        };
+
+        gameStateService.publish(STONEDROP, dropStoneEvent);
 
         this.tutorial?.hideTutorial();
     }
@@ -248,12 +251,12 @@ export class GameplayFlowManager {
     }
 
     private scheduleNextPuzzle(delay: number): void {
-        const loadPuzzleEvent = new CustomEvent(LOADPUZZLE, {
+        const loadPuzzleEvent = {
             detail: {
                 counter: this.currentPuzzleIndex,
                 levelSegmentResult: this.isCorrect
-            },
-        });
+            }
+        }
 
         setTimeout(() => {
             if (!this.isDisposing) {
@@ -263,7 +266,7 @@ export class GameplayFlowManager {
         }, delay);
     }
 
-    private initNewPuzzle(loadPuzzleEvent: CustomEvent): void {
+    private initNewPuzzle(loadPuzzleEvent): void {
         this.monsterController.resetForNextPuzzle();
         this.isCorrect = false;
         
@@ -275,7 +278,9 @@ export class GameplayFlowManager {
         this.puzzleHandler.initialize(this.levelData, this.currentPuzzleIndex);
         
         // Dispatch event so StoneHandler (listener) can redraw
-        document.dispatchEvent(loadPuzzleEvent); 
+        gameStateService.publish(GameplayFlowManager.PUZZLE_INIT, {});
+
+        gameStateService.publish(LOADPUZZLE, loadPuzzleEvent);
     }
 
     /**
