@@ -574,7 +574,7 @@ describe('GameplayScene with BasePopupComponent', () => {
     it('should handle visibility change event', () => {
       const mockAudioPlayer = {
         stopAllAudios: jest.fn(),
-        pauseAllAudios: jest.fn() // ✅ Added pauseAllAudios
+        pauseAllAudios: jest.fn()
       };
       gameplayScene.audioPlayer = mockAudioPlayer as any;
 
@@ -598,7 +598,7 @@ describe('GameplayScene with BasePopupComponent', () => {
       // Mock the pause popup component inside UI manager
       const mockPausePopup = {
         onClose: jest.fn(),
-        destroy: jest.fn() // ✅ Added destroy
+        destroy: jest.fn()
       };
       gameplayScene.uiManager.pausePopupComponent = mockPausePopup as any;
 
@@ -634,7 +634,7 @@ describe('GameplayScene with BasePopupComponent', () => {
         stonesHasLoaded: true,
         stones: [mockStone],
         draw: jest.fn(), // stubbed to avoid internal errors
-        dispose: jest.fn(), // ✅ Added dispose
+        dispose: jest.fn(),
       };
 
       // Ensure stoneHandler.drawWordPuzzleLetters exists if it's called
@@ -644,7 +644,7 @@ describe('GameplayScene with BasePopupComponent', () => {
         handleTutorialAndGameStart: jest.fn(),
         draw: jest.fn(),
         updateTutorialTimer: jest.fn(), // <-- This is the key addition!
-        dispose: jest.fn(), // Added dispose
+        dispose: jest.fn(),
       };
 
       (gameplayScene as any).isPauseButtonClicked = false;
