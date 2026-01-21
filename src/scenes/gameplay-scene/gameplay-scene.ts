@@ -408,7 +408,6 @@ export class GameplayScene {
   }
 
   private handleUiPopupSelectLevel(): void {
-    gameStateService.publish(gameStateService.EVENTS.GAME_PAUSE_STATUS_EVENT, false);
     gameStateService.publish(gameStateService.EVENTS.SWITCH_SCENE_EVENT, SCENE_NAME_LEVEL_SELECT);
   }
 
