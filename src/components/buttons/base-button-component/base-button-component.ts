@@ -4,6 +4,8 @@ export interface ButtonOptions {
   id: string;
   className?: string;
   onClick?: () => void;
+  imageClass?: string;
+  imageID?: string;
   imageSrc?: string;
   imageAlt?: string;
   targetId?: string;
@@ -36,7 +38,6 @@ export class BaseButtonComponent {
   public onClick(callback: () => void): void {
     this.clickListener = (event: Event) => {
       event.preventDefault();
-      
       if (this.element.hasAttribute('disabled')) {
         // If the button is disabled, do nothing
         return;
@@ -65,11 +66,13 @@ export class BaseButtonComponent {
     className = '',
     imageSrc,
     imageAlt = 'Button Image',
+    imageClass = '',
+    imageID = ''
   }: ButtonOptions): HTMLElement {
     const wrapper = document.createElement('div');
     wrapper.innerHTML = `
       <button id="${id}" class="dynamic-button ${className}">
-        ${imageSrc ? `<img src="${imageSrc}" alt="${imageAlt}" class="button-image" />` : ''}
+        ${imageSrc ? `<img id="${imageID}" src="${imageSrc}" alt="${imageAlt}" class="button-image ${imageClass}" />` : ''}
       </button>
     `;
     return wrapper.firstElementChild as HTMLElement;

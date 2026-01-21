@@ -1,5 +1,6 @@
-import { LevelIndicators } from '@components/level-indicator';
+import { LevelIndicators } from '@components/level-indicator/level-indicator';
 import LevelFieldComponent from '../level-field/level-field-component';
+import gameStateService from '@gameStateService';
 
 jest.mock('../level-field/level-field-component', () => {
   return jest.fn().mockImplementation(() => ({
@@ -8,44 +9,71 @@ jest.mock('../level-field/level-field-component', () => {
   }));
 });
 
-describe('Level Indicator Test', () => {
-  let levelIndicator;
-  let mockLevelFieldComponent;
+jest.mock('@gameStateService', () => ({
+  EVENTS: {
+    LOADPUZZLE: 'LOADPUZZLE'
+  },
+  subscribe: jest.fn()
+}));
+
+describe('LevelIndicators', () => {
+  let levelIndicator: LevelIndicators;
+  let mockLevelFieldComponent: jest.Mocked<LevelFieldComponent>;
+  let subscribeCallback: Function;
+  let unsubscribeMock: jest.Mock;
 
   beforeEach(() => {
+    unsubscribeMock = jest.fn();
+
+    (gameStateService.subscribe as jest.Mock).mockImplementation(
+      (_event, callback) => {
+        subscribeCallback = callback;
+        return unsubscribeMock;
+      }
+    );
+
     levelIndicator = new LevelIndicators();
-    mockLevelFieldComponent = new LevelFieldComponent();
-
-    //Create mock LevelFieldComponent instance for levelIndicator.
-    levelIndicator.levelBarIndicator = mockLevelFieldComponent;
-
-    //Mock and spy on drop events during game play.
-    jest.spyOn(levelIndicator, 'handleStoneDrop');
-    jest.spyOn(levelIndicator, 'handleLoadPuzzle');
+    mockLevelFieldComponent = levelIndicator['levelBarIndicator'] as jest.Mocked<LevelFieldComponent>;
   });
 
-  describe('Level indicators during game play.', () => {
-    it('it should update game level every on after load puzzle.', () => {
-      //Mock the event for the game play event.
-      const mockEvent = new CustomEvent('loadpuzzle', { detail: { counter: 5 }});
+  afterEach(() => {
+    jest.clearAllMocks();
+  });
 
-      //Pass the sample mock data from the mock event to simualte the game play behavior after playing the level.
-      levelIndicator.handleLoadPuzzle(mockEvent);
+  describe('LOADPUZZLE subscription behavior', () => {
+    it('should update level when LOADPUZZLE event is published', () => {
+      const mockEventData = {
+        detail: {
+          counter: 5,
+          levelSegmentResult: true
+        }
+      };
 
-      // Ensure handleLoadPuzzle was called with the event
-      expect(levelIndicator.handleLoadPuzzle).toHaveBeenCalledWith(mockEvent);
+      // Simulate PubSub event
+      subscribeCallback(mockEventData);
 
-      // Ensure updateLevel was called with the counter value (5)
       expect(mockLevelFieldComponent.updateLevel).toHaveBeenCalledWith(5);
+    });
+
+    it('should NOT update level if levelSegmentResult is false', () => {
+      const mockEventData = {
+        detail: {
+          counter: 5,
+          levelSegmentResult: false
+        }
+      };
+
+      subscribeCallback(mockEventData);
+
+      expect(mockLevelFieldComponent.updateLevel).not.toHaveBeenCalled();
     });
   });
 
-  describe('Level indicators during clean up', () => {
-    it('should destroy the level field component ', () => {
-      //Call the dispose for level indicator.
+  describe('cleanup behavior', () => {
+    it('should unsubscribe from LOADPUZZLE and destroy level indicator', () => {
       levelIndicator.dispose();
 
-      // Verify that the destroy method was called
+      expect(unsubscribeMock).toHaveBeenCalled();
       expect(mockLevelFieldComponent.destroy).toHaveBeenCalled();
     });
   });

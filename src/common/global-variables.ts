@@ -1,6 +1,6 @@
 const urlParams = new URLSearchParams(window.location.search);
 
-import { DevelopmentServer, TestServer } from "@constants";
+import { DevelopmentServer, LocalServer, TestServer } from "@constants";
 import { Utils } from "@common";
 
 export var pseudoId = urlParams.get("cr_user_id");
@@ -12,6 +12,9 @@ export var lang =
 
 export const font = Utils.getLanguageSpecificFont(lang);
 export const Debugger = {
+  LocalLink: window.location.href.includes(LocalServer)
+    ? true
+    : false,
   DevelopmentLink: window.location.href.includes(DevelopmentServer)
     ? true
     : false,

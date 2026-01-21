@@ -17,6 +17,7 @@ export const PhraseAudio = "phrase_audio";
 export const LevelEndAudio = "level_end_audio";
 export const UrlSubstring = "/feedthemonster";
 export const DevelopmentServer = "https://feedthemonsterdev.curiouscontent.org";
+export const LocalServer = "http://localhost:8080/";
 export const TestServer = "https://globallit-aws-s3-static-webapp-test-us-east-2.s3.us-west-2.amazonaws.com/feed-the-monster";
 export const StartScene1 = "StartScene1";
 export const LevelSelection1 = "LevelSelection1";
@@ -25,10 +26,6 @@ export const EndScene1 = "EndScene1";
 export const FONT_BASE_PATH = './assets/fonts/';
 
 //Audio paths
-export const AUDIO_PATH_EATS = "./assets/audios/Eat.mp3";
-export const AUDIO_PATH_MONSTER_SPIT = "./assets/audios/MonsterSpit.mp3";
-export const AUDIO_PATH_MONSTER_DISSAPOINTED =
-  "./assets/audios/Disapointed-05.mp3";
 export const AUDIO_PATH_POINTS_ADD = "./assets/audios/PointsAdd.wav";
 export const AUDIO_PATH_CORRECT_STONE = "assets/audios/CorrectStoneFinal.mp3";
 export const AUDIO_PATH_CHEERING_FUNC = (randomNumber) =>
@@ -50,20 +47,20 @@ export const AUDIO_URL_PRELOAD = [
   "./assets/audios/LevelWinFanfare.mp3",
   "./assets/audios/LevelLoseFanfare.mp3",
   "./assets/audios/ButtonClick.mp3",
-  "./assets/audios/Monster Spits wrong stones-01.mp3",
-  "./assets/audios/Disapointed-05.mp3",
-  "./assets/audios/MonsterSpit.mp3",
-  "./assets/audios/Eat.mp3",
   "./assets/audios/PointsAdd.wav",
   "./assets/audios/are-you-sure.mp3",
-  './assets/audios/monster_discovered_fanfare.mp3',
-  './assets/audios/monster_evolve.mp3'
+  "./assets/audios/monster_discovered_fanfare.mp3",
+  "./assets/audios/monster_evolve.mp3",
+  "./assets/audios/treasure_miniGame.mp3"
 ];
+export const AUDIO_MINIGAME = "./assets/audios/treasure_miniGame.mp3";
+export const SURPRISE_BONUS_STAR = "./assets/audios/surprise-bonus-star.mp3";
+export const MATCHBOX = "./assets/audios/matchbox.mp3";
+export const SHINE = "./assets/audios/shine.mp3";
+export const SWOOSH = "./assets/audios/swoosh.mp3";
+export const JAR_FILLING = "./assets/audios/jar_filling.mp3";
+export const STONE_BURN = "./assets/audios/stone_burn.mp3";
 // Audios used during the Rive evolution animation.
-// The structure is designed to be easily scalable, allowing for the addition of more audio files as needed.
-export const EVOLUTION_AUDIOS = {
-  EVOL_1: ['./assets/audios/star_whoosh_and_poof.mp3'],
-}
 
 // Evolution audio paths
 export const AUDIO_CHEERING = './assets/audios/Cheering-03.mp3';
@@ -92,16 +89,18 @@ export const LEVEL_SELECTION_BACKGROUND = "./assets/images/map.webp";
 export const PROMPT_TEXT_BG = "./assets/images/Prompt_Text_BG.svg";
 export const PROMPT_PLAY_BUTTON = "./assets/images/promptPlayButton.webp";
 export const AUDIO_PLAY_BUTTON = "./assets/images/audio_icon.png"; //New audio button for audio puzzles.
-export const LEVEL_INDICATOR = "./assets/images/levels_v01.svg";
-export const BAR_EMPTY = "./assets/images/bar_empty_v01.svg";
-export const BAR_FULL = "./assets/images/bar_full_v01.svg";
+export const LEVEL_CONTAINER = "./assets/images/level-container.svg";
+export const STAR_FILLED = "./assets/images/star-filled.svg";
+export const STAR_EMPTY = "./assets/images/star-empty.svg";
 export const TIMER_EMPTY = "./assets/images/timer_emptynew.webp";
 export const ROTATING_CLOCK = "./assets/images/timer_new.svg";
 export const TUTORIAL_HAND = "./assets/images/tutorial_hand.webp";
 export const WIN_BG = "./assets/images/WIN_screen_bg.webp";
 export const PIN_STAR_1 = "./assets/images/pinStar1.svg";
-export const PIN_STAR_2 = "./assets/images/pinStar2.svg";
+export const PIN_STAR_2 = "./assets/images/pinStar1.svg";
 export const PIN_STAR_3 = "./assets/images/pinStar3.svg";
+export const PIN_STAR_4 = "./assets/images/pinStar2.svg";
+export const PIN_STAR_5 = "./assets/images/pinStar2.svg";
 export const CLOUD_6 = "./assets/images/cloud_01.png";
 export const CLOUD_7 = "./assets/images/cloud_02.png";
 export const CLOUD_8 = "./assets/images/cloud_03.png";
@@ -109,9 +108,9 @@ export const CLOUD_8 = "./assets/images/cloud_03.png";
 export const PLAY_BTN_IMG = "./assets/images/Play_button.svg";
 export const PAUSE_BTN_IMG = "./assets/images/Pause_Button.svg";
 export const MAP_BTN_IMG = "./assets/images/map_btn.svg";
-export const MAP_ICON_IMG = "./assets/images/mapIcon.webp";
-export const MAP_ICON_SPECIAL_IMG =
-  "./assets/images/map_icon_monster_level_v01.webp";
+export const MAP_ICON_IMG = "./assets/images/mapIcon.png";
+export const TREASURE_CHEST_SPECIAL_LEVELS_ONGOING = "./assets/images/Chest_Ongoing_Level.png";
+export const TREASURE_CHEST_SPECIAL_LEVELS_DONE = "./assets/images/Chest_Done_Level.png";
 export const MAP_LOCK_IMG = "./assets/images/mapLock.webp";
 export const STAR_IMG = "./assets/images/star.webp";
 export const NEXT_BTN_IMG = "./assets/images/next_btn.svg";
@@ -120,6 +119,14 @@ export const RETRY_BTN_IMG = "./assets/images/retry_btn.svg";
 export const CANCEL_BTN_IMG = "./assets/images/close_btn.svg";
 export const YES_BTN_IMG = "./assets/images/confirm_btn.svg";
 export const POPUP_BG_IMG = "./assets/images/popup_bg_v01.svg";
+
+//mini game images
+export const CLOSED_CHEST = "./assets/images/closedchest.svg";
+export const OPEN_CHEST = "./assets/images/chest.svg";  
+export const STONE_BLUE = "./assets/images/stone_blue.svg";
+export const BLUE_STAR = "./assets/images/blue_star.svg";
+export const BURN_EFFECT_IMG = (ctr) => `./assets/images/stone_burn_export_${ctr}.png`
+
 
 //Background Group Images
 // to be removed once background component is fully integrate - GAMEPLAY_BG_GROUP_IMGS, DEFAULT_BG_GROUP_IMGS, AUTUMN_BG_GROUP_IMGS, WINTER_BG_GROUP_IMGS
@@ -167,7 +174,7 @@ export const EVOL_MONSTER = [
   './assets/rive/ftm_monster_evolve2-3.riv',
   './assets/rive/ftm_monster_evolve3-4.riv'
 ];
-
+export const JAR_PROGRESSION = './assets/rive/jarprogression1_8.riv';
 export const CACHED_RIVE_WASM = './assets/rive/rive.wasm';
 
 export enum MonsterState {
@@ -180,9 +187,11 @@ export const SCENE_NAME_LEVEL_SELECT = "LevelSelection";
 export const SCENE_NAME_GAME_PLAY = "GamePlay";
 export const SCENE_NAME_GAME_PLAY_REPLAY = "GamePlay_Replay";
 export const SCENE_NAME_LEVEL_END = "LevelEnd";
+export const SCENE_NAME_PROGRESS_LEVEL ='ProgressLevel';
 
-//Levels
-export const SPECIAL_LEVELS = [5, 13, 20, 30, 42];
+
+// Minimum stars to complete level
+export const MIN_STARS_TO_COMPLETE_LEVEL = 3;
 
 //Evolving Phases Backgrounds
 export const PHASES_BG ={
@@ -191,3 +200,18 @@ export const PHASES_BG ={
   2: './assets/images/phaseBackground_3.webp',
   3: './assets/images/phaseBackground_4.webp',
 };
+
+//Event names to access EventType objects.
+export type EventNames = 'Load' | 'LoadError' | 'Play' | 'Pause' | 'Stop' | 'Loop' | 'Advance' | 'StateChange' | 'RiveEvent';
+
+export enum EventType {
+  Load = "load", // When Rive has successfully loaded in the Rive file
+  LoadError = "loaderror", // When Rive cannot load the Rive file
+  Play = "play", // When Rive plays an entity or resumes the render loop
+  Pause = "pause", // When Rive pauses the render loop and playing entity
+  Stop = "stop", // When Rive stops the render loop and playing entity
+  Loop = "loop", // (Singular animations only) When Rive loops an animation 
+  Advance = "advance", // When Rive advances the animation in a frame
+  StateChange = "statechange", // When a Rive state change is detected
+  RiveEvent = "riveevent", // When a Rive Event gets reported
+}

@@ -3,9 +3,9 @@ import {
   BaseHTML
 } from '../baseHTML/base-html';
 import {
-  BAR_EMPTY,
-  BAR_FULL,
-  LEVEL_INDICATOR
+  LEVEL_CONTAINER,
+  STAR_FILLED,
+  STAR_EMPTY
 } from "@constants";
 import './level-field-component.scss';
 
@@ -17,11 +17,13 @@ export const DEFAULT_SELECTORS = {
 
 export const LEVEL_FIELD_LAYOUT = (id: string) => {
   return (`
-    <div id="${id}" class="level_content-wrapper">
-        <img class="level-background" src="${LEVEL_INDICATOR}"/>
+    <div id="${id}" class="level-content-bg">
+      <div class="level_content-wrapper"
+      style="background-image: url(${LEVEL_CONTAINER});">
         <div class="bar-level-wrapper">
-           ${Array(5).fill(`<img class="bar-level" src="${BAR_EMPTY}" alt="bar" />`).join('')}
+           ${Array(5).fill(`<img class="bar-level" src="${STAR_EMPTY}" alt="bar" />`).join('')}
         </div>
+      </div>
     </div>
   `);
 }
@@ -47,7 +49,7 @@ export default class LevelFieldComponent extends BaseHTML {
     const barsEl = this.getElements(bars);
 
     if (barsEl.length && barsEl[barIndex]) {
-      barsEl[barIndex].src = BAR_FULL;
+      barsEl[barIndex].src = STAR_FILLED;
     }
   }
 }

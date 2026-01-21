@@ -44,6 +44,10 @@ export class PubSub {
         delete this.subscribers[event][listenerId];
     }
 
+    unsubscribeAll() {
+        this.subscribers = {};
+    }
+
     publish(event, data) {
         if(!this.subscribers[event]) return;
 

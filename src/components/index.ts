@@ -1,5 +1,5 @@
 import PauseButton from "./buttons/pause-button/pause-button";
-import { LevelIndicators } from "./level-indicator";
+import { LevelIndicators } from "./level-indicator/level-indicator";
 import { PromptText } from "./prompt-text/prompt-text";
 import StoneHandler from "./stone-handler/stone-handler";
 import { BackgroundHtmlGenerator } from "./background/background";

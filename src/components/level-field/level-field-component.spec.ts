@@ -1,9 +1,6 @@
 import LevelFieldComponent from './level-field-component';
 import { DEFAULT_SELECTORS } from './level-field-component';
-import {
-  BAR_EMPTY,
-  BAR_FULL,
-} from "@constants";
+import { STAR_FILLED, STAR_EMPTY } from "@constants";
 
 describe('Level Field Component ', () => {
   let testLevelField;
@@ -23,7 +20,7 @@ describe('Level Field Component ', () => {
       const barsEl = document.querySelectorAll(bars);
 
       barsEl.forEach((imgEl: any) => {
-        const barImg = BAR_EMPTY.replace('./','');
+        const barImg = STAR_EMPTY.replace('./','');
         expect(imgEl?.src).toContain(`${localPath}${barImg}`);
       });
     });
@@ -35,7 +32,7 @@ describe('Level Field Component ', () => {
       const barsEl = document.querySelectorAll(bars);
       let updateImgCtr = 0;
       barsEl.forEach((imgEl: any, index) => {
-        if (imgEl?.src.includes(BAR_FULL.replace('./', ''))) {
+        if (imgEl?.src.includes(STAR_FILLED.replace('./', ''))) {
           updateImgCtr++
         }
       });
@@ -51,7 +48,7 @@ describe('Level Field Component ', () => {
       const barsEl = document.querySelectorAll(bars);
       let updateImgCtr = 0;
       barsEl.forEach((imgEl: any, index) => {
-        if (imgEl?.src.includes(BAR_FULL.replace('./', ''))) {
+        if (imgEl?.src.includes(STAR_FILLED.replace('./', ''))) {
           updateImgCtr++
         }
       });

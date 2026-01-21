@@ -1,12 +1,12 @@
 import { loadImages } from "@common";
-import { EventManager } from "@events";
 import { AudioPlayer } from "@components";
 import { TIMER_EMPTY, ROTATING_CLOCK, AUDIO_TIMEOUT } from "@constants";
 import './timerHtml/timerHtml.scss';
 import TimerHTMLComponent from './timerHtml/timerHtml';
+import gameStateService from '@gameStateService';
+import { unsubscribeAll } from '@common';
 
-
-export default class TimerTicking extends EventManager {
+export default class TimerTicking {
     public width: number;
     public height: number;
     public timerWidth: number;
@@ -29,12 +29,9 @@ export default class TimerTicking extends EventManager {
     // Additional properties for HTML manipulation
     public timerFullContainer: HTMLElement | null = null;
     public timerHtmlComponent: TimerHTMLComponent;
+    private eventListeners: Function[] = [];
 
     constructor(width: number, height: number, callback: Function) {
-        super({
-            stoneDropCallbackHandler: (event) => this.handleStoneDrop(event),
-            loadPuzzleCallbackHandler: (event) => this.handleLoadPuzzle(event)
-        })
         this.width = width;
         this.height = height;
         this.widthToClear = this.width / 3.4;
@@ -64,6 +61,30 @@ export default class TimerTicking extends EventManager {
 
         // Cache the reference after rendering
         this.timerFullContainer = this.getTimerFullContainer();
+        this.addEventListeners();
+    }
+
+    private addEventListeners() {
+        const { STONEDROP, LOADPUZZLE } = gameStateService.EVENTS;
+        //Add subscription to stone drop event.
+        this.eventListeners.push(
+            gameStateService.subscribe(
+                STONEDROP,
+                (event) => {
+                    this.handleStoneDrop(event);
+                }
+            )
+        );
+
+        //Add subscription to load puzzle event.
+        this.eventListeners.push(
+            gameStateService.subscribe(
+                LOADPUZZLE,
+                (event) => {
+                    this.handleLoadPuzzle(event);
+                }
+            )
+        );
     }
 
     startTimer() {
@@ -97,7 +118,7 @@ export default class TimerTicking extends EventManager {
             if (timerDepletion <= 0 && !this.isMyTimerOver) {
                 this.isMyTimerOver = true;
                 this.applyRotation(false); 
-                this.callback(true);
+                this.callback(this.isMyTimerOver);
             }
         }
     }
@@ -141,6 +162,7 @@ export default class TimerTicking extends EventManager {
     }
 
     public destroy(): void {
+        this.eventListeners = unsubscribeAll(this.eventListeners);
         this.stopTimer();
         this.timerHtmlComponent?.destroy();
     }

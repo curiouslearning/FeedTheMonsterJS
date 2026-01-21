@@ -59,7 +59,6 @@ var config = {
       '@buttons': path.resolve(__dirname, 'src/components/buttons/'),
       '@popups': path.resolve(__dirname, 'src/components/popups/'),
       '@common': path.resolve(__dirname, 'src/common/'),
-      '@compositions': path.resolve(__dirname, 'src/compositions/'), // to be removed once background component has been fully integrated
       '@constants': path.resolve(__dirname, 'src/constants/'),
       '@data': path.resolve(__dirname, 'src/data/'),
       '@interfaces': path.resolve(__dirname, 'src/interfaces/'),
@@ -70,7 +69,9 @@ var config = {
       '@gamepuzzles': path.resolve(__dirname, 'src/gamepuzzles/'),
       '@gameStateService': path.resolve(__dirname, 'src/gameStateService/'),
       '@gameSettingsService': path.resolve(__dirname, 'src/gameSettingsService/'),
-      '@tutorials': path.resolve(__dirname, 'src/tutorials/')
+      '@tutorials': path.resolve(__dirname, 'src/tutorials/'),
+      '@miniGameStateService': path.resolve(__dirname, 'src/miniGame/miniGameStateService'),
+      '@miniGames': path.resolve(__dirname, 'src/miniGame/miniGames'),
     },
     extensions: ['.tsx', '.ts', '.js', '.json', '.css', '.sh', '.babelrc', '.eslintignore', '.gitignore', '.d'],
   },

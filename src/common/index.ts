@@ -2,7 +2,6 @@ import { StoneConfig } from "./stone-config/stone-config";
 import {
   Utils,
   loadImages,
-  syncLoadingImages,
   createRippleEffect,
   isClickInsideButton,
   isDocumentVisible,
@@ -10,6 +9,7 @@ import {
   hideElement,
   getGameTypeName,
   isGameTypeAudio,
+  unsubscribeAll
 } from "./utils";
 import { Debugger, lang, font, pseudoId, Window, source, campaign_id } from "./global-variables";
 import {
@@ -29,7 +29,6 @@ export {
   StoneConfig,
   Utils,
   loadImages,
-  syncLoadingImages,
   createRippleEffect,
   Debugger,
   lang,
@@ -54,4 +53,5 @@ export {
   hideElement,
   getGameTypeName,
   isGameTypeAudio,
+  unsubscribeAll
 };

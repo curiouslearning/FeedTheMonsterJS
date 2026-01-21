@@ -4,8 +4,8 @@ import { PHASES_BG } from '@constants';
 interface BackgroundAssets {
   placeholder: string;
 }
-// 0 = Egg monster state | 1 = Hatched monster state | 2 = grown up monster state
-type PhaseNumber = 0 | 1 | 2;
+// 0 = Egg monster state | 1 = Hatched monster state | 2 = grown up monster state | 3 = final monster state
+type PhaseNumber = 0 | 1 | 2 | 3;
 
 export class PhasesBackground extends BaseBackgroundComponent {
   constructor() {

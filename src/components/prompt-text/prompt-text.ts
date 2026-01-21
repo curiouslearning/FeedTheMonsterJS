@@ -1,5 +1,4 @@
-import { EventManager } from "@events";
-import { Utils, VISIBILITY_CHANGE, isGameTypeAudio } from "@common";
+import { Utils, VISIBILITY_CHANGE, isGameTypeAudio, unsubscribeAll } from "@common";
 import { AudioPlayer } from "@components";
 import { PROMPT_TEXT_BG, AUDIO_PLAY_BUTTON } from "@constants";
 import { BaseHTML, BaseHtmlOptions } from "../baseHTML/base-html";
@@ -64,6 +63,9 @@ export const PROMPT_TEXT_LAYOUT = (
  */
 export class PromptText extends BaseHTML {
     // ...
+    static STYLE_RED_PULSE = 'text-red-pulse-letter';
+    static STYLE_RED = 'text-red';
+    static STYLE_BLACK = 'text-black';
     public width: number;
     public levelData: any;
     public currentPromptText: string;
@@ -84,11 +86,9 @@ export class PromptText extends BaseHTML {
     public promptTextElement: HTMLDivElement;
     public promptPlayButtonElement: HTMLDivElement;
     public promptSlotElement: HTMLDivElement;
-    private eventManager: EventManager;
-
+    public promptTextButtonContainer: HTMLDivElement;
     private onClickCallback?: () => void;
-    private unsubscribeSubmittedLettersEvent: () => void;
-    private unsubscribeHasGameStartedEvent: () => void;
+    private eventListeners: Function[] = [];
 
     /**
      * Initializes a new instance of the PromptText class.
@@ -118,12 +118,6 @@ export class PromptText extends BaseHTML {
             })
         );
 
-        // Create event manager for handling events
-        this.eventManager = new EventManager({
-            stoneDropCallbackHandler: (event) => this.handleStoneDrop(event),
-            loadPuzzleCallbackHandler: (event) => this.handleLoadPuzzle(event)
-        });
-
         this.width = width;
         this.levelData = levelData;
         this.rightToLeft = rightToLeft;
@@ -139,35 +133,68 @@ export class PromptText extends BaseHTML {
         this.handleAutoPromptPlay();
         this.onClickCallback = onClickCallback;
         this.schedulePromptAndPulseUpdate();
+
+        this.addEventListeners();
+    }
+
+    private addEventListeners() {
         const {
             WORD_PUZZLE_SUBMITTED_LETTERS_COUNT,
-            GAME_HAS_STARTED
+            GAME_HAS_STARTED,
+            STONEDROP,
+            LOADPUZZLE,
         } = gameStateService.EVENTS;
 
         // Subscribe to submitted letters count updates.
         // droppedLetterCount represents the number of letters already solved,
         // so we assign it to currentActiveLetterIndex to reflect the next letter
         // that should be styled as active in the prompt display.
-        this.unsubscribeSubmittedLettersEvent = gameStateService.subscribe(
-           WORD_PUZZLE_SUBMITTED_LETTERS_COUNT,
-            (droppedLetterCount: number) => {
-                this.currentActiveLetterIndex = droppedLetterCount;
-                //Update the prompt text that reflects the next active letter.
-                if (this.isSpellSoundMatch()) {
-                    this.generatePromptSlots();
-                } else {
-                    this.generateTextMarkup();
+        this.eventListeners.push(
+            gameStateService.subscribe(
+                WORD_PUZZLE_SUBMITTED_LETTERS_COUNT,
+                (droppedLetterCount: number) => {
+                    this.currentActiveLetterIndex = droppedLetterCount;
+                    //Update the prompt text that reflects the next active letter.
+                    if (this.isSpellSoundMatch()) {
+                        this.generatePromptSlots();
+                    } else {
+                        this.generateTextMarkup();
+                    }
                 }
-            }
+            )
         );
 
-        this.unsubscribeHasGameStartedEvent = gameStateService.subscribe(
-            GAME_HAS_STARTED, (isGameStarted: boolean) => {
-                if (isGameStarted) {
-                    this.showSpellSlots();
+        //Subscription for game starting.
+        this.eventListeners.push(
+            gameStateService.subscribe(
+                GAME_HAS_STARTED,
+                (isGameStarted: boolean) => {
+                    if (isGameStarted) {
+                        this.showSpellSlots();
+                    }
                 }
-            }
-        )
+            )
+        );
+
+        //Add subscription to stone drop event.
+        this.eventListeners.push(
+            gameStateService.subscribe(
+                STONEDROP,
+                (event) => {
+                    this.handleStoneDrop(event);
+                }
+            )
+        );
+
+        //Add subscription to load puzzle event.
+        this.eventListeners.push(
+            gameStateService.subscribe(
+                LOADPUZZLE,
+                (event) => {
+                    this.handleLoadPuzzle(event);
+                }
+            )
+        );
     }
 
     private setPromptInitialAudioDelayValues(isTutorialOn: boolean = false) {
@@ -226,10 +253,14 @@ export class PromptText extends BaseHTML {
         this.promptTextElement = this.promptContainer.querySelector('#prompt-text') as HTMLDivElement;
         this.promptPlayButtonElement = this.promptContainer.querySelector('#prompt-play-button') as HTMLDivElement;
         this.promptSlotElement = this.promptContainer.querySelector('#prompt-slots') as HTMLDivElement;
+        this.promptTextButtonContainer = this.promptContainer.querySelector('#prompt-text-button-container') as HTMLDivElement;
 
         if (this.isSpellSoundMatch()) {
-            //Add custom style for prompt bubble for Spell Word Audio puzzle.
             this.promptBubbleImg.classList.add('prompt-bubble-spell-audio');
+            /*Only during spell sound match; Set height from 74% to 100% so that
+            prompt-button-slots-wrapper would be properly be centered.
+            */
+            this.promptTextButtonContainer.style.height = '100%';
         }
 
         // Update event listeners to include the callback
@@ -281,11 +312,16 @@ export class PromptText extends BaseHTML {
         if (!this.promptSlotElement) return;
 
         this.promptSlotElement.innerHTML = ""; // Clear any previous slots
+        const isLargeWord = this.targetStones.length > 4;
 
         //Create slots based on number of target letters.
         [...this.targetStones].forEach((letter, index) => {
             const slot: any = document.createElement("div");
             slot.classList.add("slot");
+            if (isLargeWord) {
+                slot.style.fontSize = "20px";
+                slot.style.minWidth = "15px";
+            }
 
             //If index of the char is less than the active letter index. It means letter should be revealed.
             if (index < this.currentActiveLetterIndex) {
@@ -335,19 +371,63 @@ export class PromptText extends BaseHTML {
 
         const isRTL = Utils.isRTLText(promptWord) // Get direction of the language
 
-        const wordCharArray = graphemes.map(
-            (letter, index) => {
-                let styleClass: string | null = null;
+        // Use class-level style constants
+        const STYLE_RED_PULSE = PromptText.STYLE_RED_PULSE;
+        const STYLE_RED = PromptText.STYLE_RED;
+        const STYLE_BLACK = PromptText.STYLE_BLACK;
+        const levelType = this.levelData?.levelMeta?.levelType;
 
-                if (letter === activeLetter && index === activeLetterIndex) {
-                    styleClass = 'text-red-pulse-letter';
-                } else if (isSpellingPuzzle) {
-                    styleClass = activeLetterIndex < index ? 'text-red' : "text-black";
+        // Helper function to match activeLetter in RTL grapheme array
+        const matchActiveLetterRTL = (graphemes: string[], activeLetter: string): string[] => {
+        const result: string[] = [];
+        let i = 0;
+        let alreadyHighlighted = false;
+
+        while (i < graphemes.length) {
+            if (!alreadyHighlighted) {
+                // Try to find and highlight the activeLetter substring only if not highlighted yet
+                let joined = "";
+                let found = false;
+                for (let j = i; j < graphemes.length; j++) {
+                    joined += graphemes[j];
+                    if (joined === activeLetter) {
+                        result.push(generateSpanMarkup(joined, STYLE_RED_PULSE));
+                        i = j + 1;
+                        found = true;
+                        alreadyHighlighted = true;
+                        break;
+                    }
+                    if (joined.length > activeLetter.length) break;
                 }
-
-                //If styleClass is null, generate letter only text. But for any word puzzle or target letter generate span markup.
-                return styleClass ? generateSpanMarkup(letter, styleClass) : letter;
-            });
+                if (!found) {
+                    result.push(graphemes[i]);
+                    i++;
+                }
+            } else {
+                // After the first highlight, just push remaining graphemes as is, no further matching
+                result.push(graphemes[i]);
+                i++;
+            }
+        }
+        return result;
+        };
+        let wordCharArray;
+        if (isRTL && levelType === "LetterInWord") {
+            wordCharArray = matchActiveLetterRTL(graphemes, activeLetter);
+        } else {
+            // Original logic for other cases
+            wordCharArray = graphemes.map(
+                (letter, index) => {
+                    let styleClass: string | null = null;
+                    if (letter === activeLetter && index === activeLetterIndex) {
+                        styleClass = STYLE_RED_PULSE;
+                    } else if (isSpellingPuzzle) {
+                        styleClass = activeLetterIndex < index ? STYLE_RED : STYLE_BLACK;
+                    }
+                    return styleClass ? generateSpanMarkup(letter, styleClass) : letter;
+                }
+            );
+        }
         const wordTextMarkup = wordCharArray.join('');
         // Wrap with a direction-aware container depending on the text direction.
         return `<span dir="${isRTL ? 'rtl' : 'ltr'}">${wordTextMarkup}</span>`;
@@ -414,7 +494,6 @@ export class PromptText extends BaseHTML {
             if (cssDirection === 'ltr' && levelType === "LetterInWord") {
                 wrapper.style.letterSpacing = '4px'; // Specific tweak for LTR LetterInWord
             }
-
             wrapper.innerHTML = this.createWordText({
                 promptWord: this.currentPromptText,
                 activeLetter: targetLetterText,
@@ -459,8 +538,7 @@ export class PromptText extends BaseHTML {
         this.runAfterInitialAudioDelay(
             6000, //6 seconds to sync the rendering when the stone letter drops.
             () => {
-                this.promptSlotElement.style.display = 'flex';
-                this.generatePromptSlots();
+                this.showSpellSlots();
             }
         )
     }
@@ -501,10 +579,7 @@ export class PromptText extends BaseHTML {
      */
     public dispose() {
         document.removeEventListener(VISIBILITY_CHANGE, this.handleVisibilityChange, false);
-        this.eventManager.unregisterEventListener();
-        //unsubscribe to gameStateService event.
-        this.unsubscribeSubmittedLettersEvent();
-        this.unsubscribeHasGameStartedEvent();
+        this.eventListeners = unsubscribeAll(this.eventListeners); //unsubscribe to gameStateService event.
         // Use BaseHTML's destroy method to remove the element
         super.destroy();
     }
@@ -515,7 +590,7 @@ export class PromptText extends BaseHTML {
      */
     calculateFont(): number {
         const size = this.width * 0.65 / this.currentPromptText.length;
-        return size > 35 || this.currentPromptText.length > 4 ? 25 : size;
+        return size > 35 || this.currentPromptText.length > 5 ? 19 : size;
     }
 
     /**
