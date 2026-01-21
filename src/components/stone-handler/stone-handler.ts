@@ -57,11 +57,6 @@ export default class StoneHandler {
       this.createStones(this.stonebg);
     };
     this.audioPlayer = new AudioPlayer();
-    document.addEventListener(
-      VISIBILITY_CHANGE,
-      this.handleVisibilityChange,
-      false
-    );
 
     this.addEventListeners();
   }
@@ -235,19 +230,11 @@ export default class StoneHandler {
     this.canvas.width = this.originalWidth;
     this.canvas.height = this.originalHeight;
     this.eventListeners = unsubscribeAll(this.eventListeners);
-    document.removeEventListener(
-      VISIBILITY_CHANGE,
-      this.handleVisibilityChange,
-      false
-    );
   }
 
   public cleanup() {
     // Clean up audio resources
     this.disposeStones();
-
-    // Remove event listeners
-    document.removeEventListener(VISIBILITY_CHANGE, this.handleVisibilityChange);
   }
 
   public getCorrectTargetStone(): string {
@@ -291,10 +278,6 @@ export default class StoneHandler {
     }
     this.foilStones = [];
   }
-
-  handleVisibilityChange = () => {
-    this.audioPlayer.stopAllAudios();
-  };
 
   /**
    * Performance optimization: Parallel audio playback

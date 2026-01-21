@@ -614,9 +614,5 @@ export class PromptText extends BaseHTML {
     handleVisibilityChange = () => {
         const isVisible = document.visibilityState === "visible";
         this.isAppForeground = isVisible;
-
-        if (!isVisible) {
-            this.audioPlayer.stopAllAudios();
-        }
     }
 }
