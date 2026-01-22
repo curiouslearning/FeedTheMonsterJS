@@ -128,7 +128,7 @@ export default class TimerTicking {
         const element = document.getElementById("rotating-clock");
         if (!element) return;
 
-        if (condition) {
+        if (condition && !this.isStoneDropped && !this.isMyTimerOver) {
             // Resume rotation - use CSS animation-play-state for seamless resumption
             element.style.animationPlayState = "running";
             if (!element.style.animation || element.style.animation === "none") {
@@ -138,8 +138,6 @@ export default class TimerTicking {
             // Pause rotation - use CSS animation-play-state for seamless pausing
             if (element.style.animation && element.style.animation !== "none") {
                 element.style.animationPlayState = "paused";
-            } else {
-                element.style.animation = "none";
             }
         }
     }

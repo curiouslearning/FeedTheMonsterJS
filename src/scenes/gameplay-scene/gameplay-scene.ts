@@ -336,7 +336,6 @@ export class GameplayScene {
     this.isPaused = false;
     this.audioPlayer.resumeAllAudios();
     // Resume the clock rotation when game is resumed
-    this.uiManager.applyTimerRotation(this.uiManager.timerTicking?.startMyTimer && !this.uiManager.timerTicking?.isStoneDropped);
     this.monsterController.resume();
   }
 
