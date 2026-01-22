@@ -290,6 +290,14 @@ export default class StoneHandler {
     this.foilStones = [];
   }
 
+  /**
+   * Public method to hide all active stones
+   * Used when interrupting normal game flow (e.g., when mini-game starts)
+   */
+  public clearAllStones() {
+    this.disposeStones();
+  }
+
   handleVisibilityChange = () => {
     this.audioPlayer.stopAllAudios();
   };

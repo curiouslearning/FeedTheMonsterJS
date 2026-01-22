@@ -460,6 +460,10 @@ export class GameplayScene {
     this.backgroundGenerator.generateBackground(this.monsterController.currentPhase as any);
   }
 
+  private handleUITimerEnded(): void {
+    this.inputManager.resetDragState();
+  }
+
   private handleStoneLetterDrawing() {
     if (this.puzzleHandler.checkIsWordPuzzle()) {
       this.stoneHandler.drawWordPuzzleLetters(
@@ -488,6 +492,7 @@ export class GameplayScene {
     this.addEventListener(GameplayUIManager.UI_POPUP_RESTART, this.boundHandleUiPopupRestart);
     this.addEventListener(GameplayUIManager.UI_POPUP_SELECT_LEVEL, this.handleUiPopupSelectLevel.bind(this));
     this.addEventListener(GameplayUIManager.UI_POPUP_RESUME, this.handleUiPopupResume.bind(this));
+    this.addEventListener(GameplayUIManager.UI_TIMER_ENDED, this.handleUITimerEnded.bind(this));
 
     this.addEventListener(gameStateService.EVENTS.LOAD_NEXT_GAME_PUZZLE, this.handleNextPuzzleLoad.bind(this));
     this.addEventListener(GameplayFlowManager.PUZZLE_INIT, this.handlePuzzleInit.bind(this));
@@ -496,7 +501,11 @@ export class GameplayScene {
     this.eventListenersAdded.push(
       miniGameStateService.subscribe(
         miniGameStateService.EVENTS.MINI_GAME_WILL_START,
-        () => { this.isActiveMiniGame = true; }
+        () => {
+          this.isActiveMiniGame = true;
+          // Hides stones from completed puzzle to prevent unwanted interactions during mini-game
+          this.stoneHandler.clearAllStones();
+        }
       )
     );
     this.eventListenersAdded.push(
