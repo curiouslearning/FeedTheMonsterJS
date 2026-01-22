@@ -86,11 +86,12 @@ export class PausePopupComponent extends BasePopupComponent {
   handleConfirmClose(confirmClickEvent: PopupClickEvent, pauseData: any) {
     if (confirmClickEvent.data) {
       // If the confirmation was "yes", call the base handler
-      super.handleClick(pauseData);
+      super.handleClick(pauseData, 0); //Pause event will still resume, the 0 value closes the prompt.
+    } else {
+      // If the confirmation was "no", call the base handler with false data
+      super.handleClick(false, 0);
     }
 
-    // If the confirmation was "no", call the base handler with false data
-    super.handleClick(false, 0);
   }
 
   /**

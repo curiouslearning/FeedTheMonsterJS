@@ -155,7 +155,7 @@ export class GameStateService extends PubSub {
     private gameStateGamePlayDataListener(updatedGamePlayData) {
         //Updated gamePlayData comes from level-selection and level-end scene.
         this.gamePlayData = updatedGamePlayData;
-        this.isGamePaused = false;
+        this.isGamePaused = false; //Reset the game state pause before game play starts.
         //Retrieve previous data for this game level.
         this.previousLevelData = GameScore.getGameLevelData(updatedGamePlayData?.selectedLevelNumber);
     }
