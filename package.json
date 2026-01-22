@@ -90,7 +90,7 @@
   },
   "devDependencies": {
     "@capacitor/cli": "^4.4.0",
-    "@playwright/test": "^1.54.2",
+    "@playwright/test": "^1.57.0",
     "@types/howler": "^2.2.7",
     "@types/jest": "^29.5.14",
     "@types/lodash-es": "^4.17.12",

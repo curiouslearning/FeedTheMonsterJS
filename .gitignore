@@ -20,3 +20,6 @@ __mocks__
 /playwright-report/
 /blob-report/
 /playwright/.cache/
+
+# Playwright
+/playwright/.auth/
