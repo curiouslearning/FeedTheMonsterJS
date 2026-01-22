@@ -3,7 +3,7 @@ import { AUDIO_TIMEOUT } from '@constants';
 import TimerTicking from '../timer-ticking';
 import TimerHTMLComponent from './timerHtml';
 import { AudioPlayer } from '@components';
-import scheduler from '../../services/scheduler';
+import scheduler from '@services/scheduler';
 
 // Mock dependencies
 jest.mock('./timerHtml', () => {

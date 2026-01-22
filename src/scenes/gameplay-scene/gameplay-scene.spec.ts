@@ -33,7 +33,7 @@ import gameSettingsService from '@gameSettingsService';
 import miniGameStateService from '@miniGameStateService'
 import { SCENE_NAME_GAME_PLAY } from "@constants";
 import { AnalyticsIntegration } from '../../analytics/analytics-integration';
-import scheduler from '../../services/scheduler';
+import scheduler from '@services/scheduler';
 
 // --- IMPORTANT: All mocks must be defined BEFORE imports to ensure proper isolation ---
 // Mock Rive (prevents any real Rive/WebGL code from running in Jest)
