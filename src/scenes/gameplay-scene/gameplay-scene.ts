@@ -496,7 +496,11 @@ export class GameplayScene {
     this.eventListenersAdded.push(
       miniGameStateService.subscribe(
         miniGameStateService.EVENTS.MINI_GAME_WILL_START,
-        () => { this.isActiveMiniGame = true; }
+        () => {
+          this.isActiveMiniGame = true;
+          // Hides stones from completed puzzle to prevent unwanted interactions during mini-game
+          this.stoneHandler.clearAllStones();
+        }
       )
     );
     this.eventListenersAdded.push(
