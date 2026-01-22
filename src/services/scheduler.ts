@@ -16,6 +16,7 @@ let nextTimerId = 0;
  * Custom scheduler for managing time-based events within the game loop.
  * Unlike standard window.setTimeout/setInterval, this respects the game's 
  * pause state and is driven by deltaTime from the main update loop.
+ * TODO: When migrated to Core Modules, integrate with the Core Scheduler.
  */
 class Scheduler {
   private timers: Map<TimerId, Timer> = new Map();
@@ -42,7 +43,7 @@ class Scheduler {
    * Cancels a previously scheduled timeout.
    * @param id The ID of the timer to clear.
    */
-  clearTimeout(id: TimerId): void {
+  cancelTimeout(id: TimerId): void {
     if (id !== undefined && id !== null) {
       this.timers.delete(id);
     }
@@ -67,14 +68,6 @@ class Scheduler {
   }
 
   /**
-   * Cancels a previously scheduled interval.
-   * @param id The ID of the timer to clear.
-   */
-  clearInterval(id: TimerId): void {
-    this.clearTimeout(id);
-  }
-
-  /**
    * Updates all active timers by subtracting the provided delta time.
    * Executed by the main game loop.
    * @param delta The time elapsed since the last update in milliseconds.
@@ -92,7 +85,7 @@ class Scheduler {
         if (timer.loop) {
           timer.remaining += timer.delay;
         } else {
-          this.timers.delete(timer.id);
+          this.cancelTimeout(timer.id);
         }
       }
     }

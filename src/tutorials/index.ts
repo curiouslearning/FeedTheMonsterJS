@@ -324,7 +324,7 @@ export default class TutorialHandler {
   public resetQuickStartTutorialDelay() {
     // Always clear any previous timer to avoid overlap
     if (this.quickStartTutorialTimerId !== null) {
-      scheduler.clearTimeout(this.quickStartTutorialTimerId);
+      scheduler.cancelTimeout(this.quickStartTutorialTimerId);
       this.quickStartTutorialTimerId = null;
     }
     this.quickStartTutorialReady = false;
