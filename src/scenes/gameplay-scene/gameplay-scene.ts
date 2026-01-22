@@ -435,7 +435,6 @@ export class GameplayScene {
   }
 
   public handleVisibilityChange(): void {
-    // this.audioPlayer.stopAllAudios();
     gameStateService.publish(gameStateService.EVENTS.GAME_PAUSE_STATUS_EVENT, true);
     this.pauseGamePlay();
   }
