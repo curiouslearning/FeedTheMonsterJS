@@ -82,6 +82,7 @@ export class GameplayScene {
   private miniGameHandler: MiniGameHandler;
   private backgroundGenerator: PhasesBackground;
   private timerStartSFXPlayed: boolean;
+  private isActiveMiniGame: boolean = false;
   public isDisposing: boolean = false;
   
   // Event Management
@@ -426,7 +427,6 @@ export class GameplayScene {
   }
 
   private handleUiPopupSelectLevel(): void {
-    gameStateService.publish(gameStateService.EVENTS.GAME_PAUSE_STATUS_EVENT, false);
     gameStateService.publish(gameStateService.EVENTS.SWITCH_SCENE_EVENT, SCENE_NAME_LEVEL_SELECT);
   }
 
@@ -447,7 +447,15 @@ export class GameplayScene {
 
   private handlePuzzleInit(): void {
     this.timerStartSFXPlayed = false;
-
+    // Only reset drag and monster state if mini-game is not currently active
+    // This prevents interrupting the mini-game flow
+    if (!this.isActiveMiniGame) {
+      // Reset drag state when a new puzzle is initialized
+      this.inputManager.resetDragState();
+      // Reset monster animation state to close mouth and return to idle
+      this.monsterController.triggerMonsterAnimation('isMouthClosed');
+      this.monsterController.triggerMonsterAnimation('backToIdle');
+    }
   }
   // #endregion
 
@@ -503,6 +511,20 @@ export class GameplayScene {
 
     this.addEventListener(gameStateService.EVENTS.LOAD_NEXT_GAME_PUZZLE, this.handleNextPuzzleLoad.bind(this));
     this.addEventListener(GameplayFlowManager.PUZZLE_INIT, this.handlePuzzleInit.bind(this));
+
+    // Track mini-game state
+    this.eventListenersAdded.push(
+      miniGameStateService.subscribe(
+        miniGameStateService.EVENTS.MINI_GAME_WILL_START,
+        () => { this.isActiveMiniGame = true; }
+      )
+    );
+    this.eventListenersAdded.push(
+      miniGameStateService.subscribe(
+        miniGameStateService.EVENTS.IS_MINI_GAME_DONE,
+        () => { this.isActiveMiniGame = false; }
+      )
+    );
 
     this.unsubscribeEvent = gameStateService.subscribe(
       gameStateService.EVENTS.GAME_PAUSE_STATUS_EVENT,
