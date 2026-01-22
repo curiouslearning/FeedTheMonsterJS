@@ -40,7 +40,7 @@ class Scheduler {
   }
 
   /**
-   * Cancels a previously scheduled timeout.
+   * Cancels a previously scheduled timeout or interval.
    * @param id The ID of the timer to clear.
    */
   cancelTimeout(id: TimerId): void {
