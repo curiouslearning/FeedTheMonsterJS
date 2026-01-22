@@ -7,7 +7,7 @@ import {
 import { Utils } from '@common';
 import gameStateService from '@gameStateService';
 import { RiveMonsterComponent } from '@components/riveMonster/rive-monster-component';
-import scheduler from "../../services/scheduler";
+import scheduler from "@services/scheduler";
 
 /**
  * Feedback type enum for different feedback scenarios

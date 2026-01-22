@@ -3,7 +3,7 @@ import { AudioPlayer } from "@components";
 import { TIMER_EMPTY, ROTATING_CLOCK, AUDIO_TIMEOUT } from "@constants";
 import './timerHtml/timerHtml.scss';
 import TimerHTMLComponent from './timerHtml/timerHtml';
-import scheduler from "../services/scheduler";
+import scheduler from "@services/scheduler";
 import gameStateService from '@gameStateService';
 import { unsubscribeAll } from '@common';
 

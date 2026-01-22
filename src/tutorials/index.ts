@@ -4,7 +4,7 @@ import WordPuzzleTutorial from './WordPuzzleTutorial/WordPuzzleTutorial';
 import AudioPuzzleTutorial from './AudioPuzzleTutorial/AudioPuzzleTutorial';
 import gameStateService from '@gameStateService';
 import { getGameTypeName, isGameTypeAudio } from '@common';
-import scheduler, { TimerId } from '../services/scheduler';
+import scheduler, { TimerId } from '@services/scheduler';
 
 type TutorialInitParams = {
   context: CanvasRenderingContext2D;

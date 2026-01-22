@@ -1,6 +1,6 @@
 import { Window } from "@common";
 import { AUDIO_PATH_BTN_CLICK } from "@constants";
-import scheduler from "../services/scheduler";
+import scheduler from "@services/scheduler";
 
 
 export class AudioPlayer {

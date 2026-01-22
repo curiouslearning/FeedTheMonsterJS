@@ -3,7 +3,7 @@ import { RiveMonsterComponent } from '@components/riveMonster/rive-monster-compo
 import gameSettingsService from '@gameSettingsService';
 import gameStateService from '@gameStateService';
 import { GameplayInputManager } from "./gameplay-input-manager";
-import scheduler from "../../services/scheduler";
+import scheduler from "@services/scheduler";
 
 export class MonsterController {
   // #region Properties

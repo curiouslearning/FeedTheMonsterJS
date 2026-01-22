@@ -22,7 +22,7 @@ import PuzzleHandler from "@gamepuzzles/puzzleHandler/puzzleHandler";
 import { StoneHandler, AudioPlayer } from "@components";
 import { MiniGameHandler } from '@miniGames/miniGameHandler';
 import TutorialHandler from '@tutorials';
-import scheduler from "../../services/scheduler";
+import scheduler from "@services/scheduler";
 
 export class GameplayFlowManager {
 

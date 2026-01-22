@@ -3,7 +3,7 @@ import WordPuzzleLogic from '../wordPuzzleLogic/wordPuzzleLogic';
 import { FeedbackTextEffects } from '@components/feedback-text';
 import { FeedbackAudioHandler, FeedbackType } from '@gamepuzzles';
 import gameStateService from '@gameStateService';
-import scheduler from "../../services/scheduler";
+import scheduler from "@services/scheduler";
 
 
 /**

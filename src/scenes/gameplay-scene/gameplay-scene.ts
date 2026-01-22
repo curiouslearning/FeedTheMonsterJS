@@ -35,7 +35,7 @@ import { GameplayInputManager } from './gameplay-input-manager';
 import { MonsterController } from './monster-controller';
 import { GameplayUIManager } from "./gameplay-ui-manager";
 import { GameplayFlowManager } from "./gameplay-flow-manager";
-import scheduler from "../../services/scheduler";
+import scheduler from "@services/scheduler";
 
 export class GameplayScene {
   // #region Properties

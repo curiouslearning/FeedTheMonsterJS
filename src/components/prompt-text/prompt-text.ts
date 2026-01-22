@@ -4,7 +4,7 @@ import { PROMPT_TEXT_BG, AUDIO_PLAY_BUTTON } from "@constants";
 import { BaseHTML, BaseHtmlOptions } from "../baseHTML/base-html";
 import './prompt-text.scss';
 import gameStateService from '@gameStateService';
-import scheduler from "../../services/scheduler";
+import scheduler from "@services/scheduler";
 
 
 // Default selectors for the prompt text component
