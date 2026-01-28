@@ -283,7 +283,6 @@ export class GameplayScene {
 
   // #region Game Loop
   draw(deltaTime: number) {
-    const timeRef = { value: this.time };
     if (!this.isPaused) {
       scheduler.update(deltaTime);
     }
@@ -291,6 +290,7 @@ export class GameplayScene {
     {
       deltaTime = 0;
     }
+    const timeRef = { value: this.time };
     this.tutorial?.handleTutorialAndGameStart({
       deltaTime,
       isGameStarted: this.isGameStarted,
