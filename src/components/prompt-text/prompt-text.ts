@@ -145,6 +145,7 @@ export class PromptText extends BaseHTML {
             GAME_HAS_STARTED,
             STONEDROP,
             LOADPUZZLE,
+            GAME_PAUSE_STATUS_EVENT
         } = gameStateService.EVENTS;
 
         // Subscribe to submitted letters count updates.
@@ -194,6 +195,16 @@ export class PromptText extends BaseHTML {
                 LOADPUZZLE,
                 (event) => {
                     this.handleLoadPuzzle(event);
+                }
+            )
+        );
+
+        //Subscription for game starting.
+        this.eventListeners.push(
+            gameStateService.subscribe(
+                GAME_PAUSE_STATUS_EVENT,
+                (isPaused: boolean) => {
+                        this.handleGamePause(isPaused);
                 }
             )
         );
