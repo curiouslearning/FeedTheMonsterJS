@@ -53,7 +53,6 @@ export default class TreasureChest {
     
     // If TreasureChestAnimation passes `stateTimer` as `time`, then `elapsed` is just `time`.
     
-    const elapsed = time; 
     let scale = 1;
     let rotation = 0;
     
