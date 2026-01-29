@@ -48,7 +48,7 @@ export class AudioPlayer {
    */
   playUIAudio(audioSrc: string, volume: number = 1, onEnded?: () => void) {
     const audioBuffer: AudioBuffer = AudioPlayer.audioBuffers.get(audioSrc);
-    if (audioBuffer) {
+    if (audioBuffer && this.nonPausableAudioContext) {
       const sourceNode = this.nonPausableAudioContext.createBufferSource();
       const gainNode = this.nonPausableAudioContext.createGain();
       sourceNode.buffer = audioBuffer;
