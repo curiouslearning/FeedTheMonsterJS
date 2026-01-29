@@ -57,11 +57,12 @@ class Scheduler {
    */
   setInterval(callback: () => void, delay: number): TimerId {
     const id = nextTimerId++ as TimerId;
+    const safeDelay = Math.max(1, delay); // Minimum 1ms to prevent runaway intervals
     this.timers.set(id, {
       id,
       callback,
-      delay,
-      remaining: delay,
+      delay: safeDelay,
+      remaining: safeDelay,
       loop: true,
     });
     return id;
