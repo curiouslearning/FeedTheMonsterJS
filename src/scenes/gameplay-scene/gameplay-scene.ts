@@ -395,8 +395,10 @@ export class GameplayScene {
   }
 
   private handleUiPromptClick(): void {
-    this.tutorial.shouldShowQuickStartTutorial = true;
-    this.tutorial.quickStartTutorialReady = true;
+    if (this.tutorial.showHandPointerInAudioPuzzle(this.levelData)) {
+      this.tutorial.shouldShowQuickStartTutorial = true;
+      this.tutorial.quickStartTutorialReady = true;
+    }
   }
 
   private handleUiPopupRestart(): void {
