@@ -1,6 +1,5 @@
 import { PromptText, DEFAULT_SELECTORS } from './prompt-text';
 import { AudioPlayer } from '@components';
-import { EventManager } from '@events';
 import gameStateService from '@gameStateService';
 
 jest.mock('@components', () => ({
@@ -8,12 +7,6 @@ jest.mock('@components', () => ({
     preloadPromptAudio: jest.fn(),
     handlePlayPromptAudioClickEvent: jest.fn(),
     stopAllAudios: jest.fn()
-  }))
-}));
-
-jest.mock('@events', () => ({
-  EventManager: jest.fn().mockImplementation(() => ({
-    unregisterEventListener: jest.fn()
   }))
 }));
 
