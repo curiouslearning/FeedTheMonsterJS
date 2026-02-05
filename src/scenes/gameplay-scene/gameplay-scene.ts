@@ -413,8 +413,10 @@ export class GameplayScene {
   }
 
   private handleUiPromptClick(): void {
-    this.tutorial.shouldShowQuickStartTutorial = true;
-    this.tutorial.quickStartTutorialReady = true;
+    if (this.tutorial.showHandPointerInAudioPuzzle(this.levelData)) {
+      this.tutorial.shouldShowQuickStartTutorial = true;
+      this.tutorial.quickStartTutorialReady = true;
+    }
   }
 
   private handleUiPopupRestart(): void {
@@ -439,12 +441,10 @@ export class GameplayScene {
     this.pauseGamePlay();
   }
 
-  private handleNextPuzzleLoad(): void {
-    this.isGameStarted = false;
-  }
-
   private handlePuzzleInit(): void {
     this.timerStartSFXPlayed = false;
+    this.time = 0;
+    this.isGameStarted = false;
     // Only reset drag and monster state if mini-game is not currently active
     // This prevents interrupting the mini-game flow
     if (!this.isActiveMiniGame) {
@@ -477,6 +477,10 @@ export class GameplayScene {
     this.backgroundGenerator.generateBackground(this.monsterController.currentPhase as any);
   }
 
+  private handleUITimerEnded(): void {
+    this.inputManager.resetDragState();
+  }
+
   private handleStoneLetterDrawing(deltaTime: number) {
     if (this.puzzleHandler.checkIsWordPuzzle()) {
       this.stoneHandler.drawWordPuzzleLetters(
@@ -506,15 +510,19 @@ export class GameplayScene {
     this.addEventListener(GameplayUIManager.UI_POPUP_RESTART, this.boundHandleUiPopupRestart);
     this.addEventListener(GameplayUIManager.UI_POPUP_SELECT_LEVEL, this.handleUiPopupSelectLevel.bind(this));
     this.addEventListener(GameplayUIManager.UI_POPUP_RESUME, this.handleUiPopupResume.bind(this));
+    this.addEventListener(GameplayUIManager.UI_TIMER_ENDED, this.handleUITimerEnded.bind(this));
 
-    this.addEventListener(gameStateService.EVENTS.LOAD_NEXT_GAME_PUZZLE, this.handleNextPuzzleLoad.bind(this));
     this.addEventListener(GameplayFlowManager.PUZZLE_INIT, this.handlePuzzleInit.bind(this));
 
     // Track mini-game state
     this.eventListenersAdded.push(
       miniGameStateService.subscribe(
         miniGameStateService.EVENTS.MINI_GAME_WILL_START,
-        () => { this.isActiveMiniGame = true; }
+        () => {
+          this.isActiveMiniGame = true;
+          // Hides stones from completed puzzle to prevent unwanted interactions during mini-game
+          this.stoneHandler.clearAllStones();
+        }
       )
     );
     this.eventListenersAdded.push(

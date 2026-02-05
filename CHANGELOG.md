@@ -1,5 +1,21 @@
 
 
+## [1.3.1](https://github.com/curiouslearning/FeedTheMonsterJS/compare/1.3.0...1.3.1) (2025-12-30)
+
+
+### Bug Fixes
+
+*  FM-798 Intro audio cut off after navigating from level-end to level selection screen. ([#1881](https://github.com/curiouslearning/FeedTheMonsterJS/issues/1881)) ([0fe5cd3](https://github.com/curiouslearning/FeedTheMonsterJS/commit/0fe5cd3f2359d6a8f7bedfc5dbee87acdaef3e38))
+* added success level check on stars to collect from previous level ([#1869](https://github.com/curiouslearning/FeedTheMonsterJS/issues/1869)) ([ee8d930](https://github.com/curiouslearning/FeedTheMonsterJS/commit/ee8d9305b057608aeedf6096e543f9210ce6eea9))
+* always download the latest sw.js [FM-749] ([#1870](https://github.com/curiouslearning/FeedTheMonsterJS/issues/1870)) ([0d178ac](https://github.com/curiouslearning/FeedTheMonsterJS/commit/0d178ace14c10c2c19cde5d7c1ea7cbc9f4eed88))
+* Delay before progress jar ([21870b8](https://github.com/curiouslearning/FeedTheMonsterJS/commit/21870b8d0b44cfa6754e6cc35080980cd41447d8))
+* Feedback resolved for FM-760 and fixes to level selection getting stuck issue ([#1863](https://github.com/curiouslearning/FeedTheMonsterJS/issues/1863)) ([544d692](https://github.com/curiouslearning/FeedTheMonsterJS/commit/544d6920b5152f9dc6e9359406423d418512cb67))
+* Fixed buttons and levels proceeding when previous level is failed, and used png asset instead of svg for treasure chest (FM-788 & FM-787). ([#1871](https://github.com/curiouslearning/FeedTheMonsterJS/issues/1871)) ([7655895](https://github.com/curiouslearning/FeedTheMonsterJS/commit/765589541796ad2716b5b0e8eac2015cc1b84455))
+* FM-760 Fixed the issue due to delay animation was not completely visible ([d7c3cdf](https://github.com/curiouslearning/FeedTheMonsterJS/commit/d7c3cdf7f6e28346b6209795dafe96dd4eac0a2c))
+* FM-760 SFX Delay issues fixed ([#1862](https://github.com/curiouslearning/FeedTheMonsterJS/issues/1862)) ([87fbb77](https://github.com/curiouslearning/FeedTheMonsterJS/commit/87fbb775206181e0b5783de1017c60a384e64d9e))
+* FM-786 Fixed Responsiveness issue in the Level icon icons and star scores in Level selection screen. ([#1872](https://github.com/curiouslearning/FeedTheMonsterJS/issues/1872)) ([17070a9](https://github.com/curiouslearning/FeedTheMonsterJS/commit/17070a967fecbbac58a306cfaf2536d02736ca97))
+* FM-797 Fixed Unlocked Levels Not Clickable Until Level 1 Is Reopened After completing 10 level ([#1879](https://github.com/curiouslearning/FeedTheMonsterJS/issues/1879)) ([451c604](https://github.com/curiouslearning/FeedTheMonsterJS/commit/451c6042637922dd2115bcbdb03384f9297a8b20))
+
 ## [1.3.0](https://github.com/curiouslearning/FeedTheMonsterJS/compare/1.2.0...1.3.0) (2025-11-20)
 
 

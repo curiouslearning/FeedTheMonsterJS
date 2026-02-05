@@ -149,7 +149,8 @@ export class GameplayFlowManager {
     public handleMiniGameDone(miniGameScore: number): void {
          this.treasureChestScore = miniGameScore;
          // Load the next puzzle segment after mini game regardless if the user scored or not.
-         this.loadPuzzle(false, 4500);
+         // Reduced delay from 4500ms to 1500ms for faster gameplay flow after mini-game completion
+         this.loadPuzzle(false, 1500);
     }
     // #endregion
 
