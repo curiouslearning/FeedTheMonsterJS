@@ -309,7 +309,7 @@ export class TreasureChestAnimation {
         //Keep showing Blue Star if still active
         this.drawBlueBonusStar(deltaTime);
 
-        if (alpha === 0) {
+        if (alpha <= 0) {
           this.hide();
           this.onFadeComplete?.();
           this.onFadeComplete = undefined;

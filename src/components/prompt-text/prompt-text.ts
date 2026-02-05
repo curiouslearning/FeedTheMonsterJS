@@ -199,7 +199,7 @@ export class PromptText extends BaseHTML {
             )
         );
 
-        //Subscription for game starting.
+        //Subscription for game pause.
         this.eventListeners.push(
             gameStateService.subscribe(
                 GAME_PAUSE_STATUS_EVENT,

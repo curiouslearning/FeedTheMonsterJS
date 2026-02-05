@@ -95,7 +95,7 @@ export class GameplayScene {
   isFeedBackTriggered: boolean;
   // #endregion
 
-  private isPaused: boolean;
+  private isPaused: boolean = false;
 
   // #region Constructor
   constructor() {
@@ -334,17 +334,17 @@ export class GameplayScene {
 
   public resumeGame(): void {
     this.isPaused = false;
-    this.audioPlayer.resumeAllAudios();
+    this.audioPlayer?.resumeAllAudios();
     // Resume the clock rotation when game is resumed
-    this.monsterController.resume();
+    this.monsterController?.resume();
   }
 
   public pauseGamePlay(): void {
     this.isPaused = true;
-    this.audioPlayer.pauseAllAudios();
+    this.audioPlayer?.pauseAllAudios();
     // Stop the clock rotation when game is paused
     this.uiManager.applyTimerRotation(false);
-    this.monsterController.pause();
+    this.monsterController?.pause();
   }
   // #endregion
 
