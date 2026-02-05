@@ -4,6 +4,9 @@ const isDev = (nodeEnv !== 'production');
 const CopyPlugin = require("copy-webpack-plugin");
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const TerserPlugin = require('terser-webpack-plugin');
+const HtmlWebpackPlugin = require('html-webpack-plugin');
+const { container: { ModuleFederationPlugin } } = require('webpack');
+const { InjectManifest } = require('workbox-webpack-plugin');
 // const ESLintPlugin = require('eslint-webpack-plugin');
 
 // const eslintConfig = require('./.eslintrc.json');
@@ -23,10 +26,10 @@ var config = {
       overlay: true,
     },
     compress: false,
-    port: 8080
+    port: 8081
   },
   experiments: {
-    asyncWebAssembly: true 
+    asyncWebAssembly: true
   },
   module: {
     rules: [
@@ -52,6 +55,7 @@ var config = {
   output: {
     path: path.resolve(__dirname, './build'),
     filename: 'feedTheMonster.js',
+    publicPath: "auto",
   },
   resolve: {
     alias: {
@@ -76,6 +80,16 @@ var config = {
     extensions: ['.tsx', '.ts', '.js', '.json', '.css', '.sh', '.babelrc', '.eslintignore', '.gitignore', '.d'],
   },
   plugins: [
+    new ModuleFederationPlugin({
+      name: "feedthemonsterjs",
+      remotes: {
+        "assessment_survey_js": "assessment_survey_js@http://127.0.0.1:8080/remoteEntry.js",
+      },
+      shared: {},
+    }),
+    new HtmlWebpackPlugin({
+      template: "./public/index.html",
+    }),
     // new CompressionPlugin({
     //   test: /\.(js|css|html|svg|mp3|ttf|jpe?g|png)$/, // File types to compress
     //   threshold: 8192, // Minimum size (in bytes) for a file to be compressed
@@ -83,12 +97,21 @@ var config = {
     // }),
     new CopyPlugin({
       patterns: [
-        { from: "./public/index.html", to: "./" },
         { from: "./public/index.css", to: "./" },
         { from: "./public/assets", to: "./assets" },
+        { from: "./public/manifest.json", to: "./" },
         { from: "./lang", to: "./lang" },
       ],
     }),
+    // Only inject service worker manifest in production to avoid watch mode warnings
+    ...(isDev ? [] : [
+      new InjectManifest({
+        swSrc: "./src/sw-src.js",
+        swDest: "sw.js",
+        maximumFileSizeToCacheInBytes: 10 * 1024 * 1024,
+        exclude: [/lang\//],
+      }),
+    ]),
 
     // TODO: fix lint issues first
     // lint can be tested by running `npm run lint`

@@ -46,6 +46,9 @@ export class StartScene {
   private hasRiveLoaded: boolean = false;
   private titleElement: BaseHTML;
   private backgroundGenerator: BackgroundHtmlGenerator;
+  private assessmentOverlayElement: HTMLElement | null = null;
+  private assessmentContainer: HTMLElement | null = null;
+  private assessmentRemote: any = null;
 
   constructor() {
     this.data = gameStateService.getFTMData();
@@ -96,6 +99,7 @@ export class StartScene {
     this.handler = document.getElementById('start-scene-click-area') as HTMLBodyElement;
     this.devToggle();
     this.createPlayButton();
+    this.createAssessmentButton();
     window.addEventListener("beforeinstallprompt", this.handlerInstallPrompt);
     this.setupBg();
     this.titleTextElement = document.getElementById("title");
@@ -170,6 +174,107 @@ export class StartScene {
     this.handler.addEventListener("click", this.handleMouseClick, false);
   }
 
+  private createAssessmentContainer(): HTMLElement {
+    const container = document.createElement('div');
+    container.id = 'assessment-container';
+
+    Object.assign(container.style, {
+      position: 'absolute',
+      inset: '0',
+      zIndex: '10',
+      background: '#000',
+    });
+
+    const closeBtn = document.createElement('button');
+    closeBtn.innerText = 'Close';
+    closeBtn.id = 'close-assessment-btn';
+    Object.assign(closeBtn.style, {
+      position: 'absolute',
+      top: '12px',
+      right: '12px',
+      zIndex: '10000',
+      padding: '8px 16px',
+      background: '#fff',
+      border: '2px solid #333',
+      borderRadius: '4px',
+      cursor: 'pointer',
+      fontSize: '14px',
+      fontWeight: 'bold',
+    });
+
+    closeBtn.onclick = () => this.closeAssessment();
+
+    container.appendChild(closeBtn);
+
+    // Attach to StartScene root (NOT document.body)
+    document.getElementById('background')?.appendChild(container);
+
+    this.assessmentContainer = container;
+    return container;
+  }
+
+
+
+  /** Adds a second button to open the assessment app as a federated module. */
+  createAssessmentButton() {
+    const container = document.getElementById('title-and-play-button');
+    if (!container) return;
+
+    // Check if button already exists to prevent duplicates
+    if (document.getElementById('open-assessment-btn')) {
+      console.log('Assessment button already exists, skipping creation');
+      return;
+    }
+
+    const btn = document.createElement('button');
+    btn.id = 'open-assessment-btn';
+    btn.className = 'open-assessment-btn';
+    btn.innerText = 'Open Assessment';
+    btn.style.marginLeft = '8px';
+    btn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      console.log('Open Assessment button clicked');
+      this.openAssessment();
+    });
+
+    container.appendChild(btn);
+  }
+
+  private async openAssessment() {
+    if (this.assessmentContainer) return;
+
+    const container = this.createAssessmentContainer();
+
+    try {
+      const remote = await import('assessment_survey_js/App');
+      const mod = remote.default ?? remote;
+
+      if (typeof mod.mount !== 'function') {
+        throw new Error('mount() not found on assessment remote');
+      }
+
+      console.log('Assessment Module:', mod);
+      console.log('Mounting assessment with baseUrl: http://127.0.0.1:8080/');
+      mod.mount(container, { baseUrl: "http://127.0.0.1:8080/" });
+      this.assessmentRemote = mod;
+    } catch (err) {
+      console.error('Failed to open assessment', err);
+      this.closeAssessment();
+    }
+  }
+
+  private closeAssessment() {
+    if (!this.assessmentContainer) return;
+
+    if (this.assessmentRemote?.unmount) {
+      this.assessmentRemote.unmount();
+    }
+
+    this.assessmentContainer.remove();
+    this.assessmentContainer = null;
+    this.assessmentRemote = null;
+  }
+
   handleMouseClick = (event) => {
     event.preventDefault();
     /** Keeping this for now, but we can remove it if we want in the future.
@@ -206,6 +311,8 @@ export class StartScene {
       this.handlerInstallPrompt,
       false
     );
+    // Ensure any assessment overlay is cleaned up
+    // this.closeAssessmentOverlay();
     this.riveMonsterElement.style.zIndex = "-1"; //Originally in LevelSelectionConstructor, moving it here so no need to have Rive logic in that scene.
     this.riveMonster.dispose();
     this.backgroundGenerator && this.backgroundGenerator.clearBackgroundContent();
@@ -218,8 +325,8 @@ export class StartScene {
   };
 
   private logTappedStartFirebaseEvent() {
-    const jsonVersionNumber = !!this.data.majVersion && !!this.data.minVersion 
-      ? `${this.data.majVersion}.${this.data.minVersion}` 
+    const jsonVersionNumber = !!this.data.majVersion && !!this.data.minVersion
+      ? `${this.data.majVersion}.${this.data.minVersion}`
       : "";
 
     AnalyticsIntegration.getInstance().track(

@@ -47,3 +47,21 @@
     margin-top: 5%;
   }
 }
+
+/* Styles for the injected assessment button */
+#title-and-play-button .open-assessment-btn {
+  display: inline-block;
+  margin-left: 8px;
+  background: #f8b618;
+  color: #1a1a1a;
+  padding: 10px 14px;
+  border-radius: 10px;
+  font-weight: 700;
+  z-index: 999;
+  position: relative;
+}
+
+#assessment-container {
+  display: flex;
+  flex-direction: column;
+}
