@@ -39,19 +39,6 @@ export default class TreasureChest {
     const chestW = 250, chestH = 230;
     const chestX = width / 2 - chestW / 2;
     const chestY = height - chestH - 20;
-
-    // Pulse/rotate chest if just spawned (< 1s old)
-    // For pulse, we use the time since state started (which is passed as time, if stateTimer is passed)
-    // Wait, drawClosedChest is called with (time, stateStartTime).
-    // In TreasureChestAnimation, we will pass (stateTimer, 0) effectively if we want relative time.
-    
-    // Let's assume 'time' passed here is the accumulated state timer. 
-    // The previous code used `elapsed = time - lastSpawnTime`. 
-    // Since we want the pulse to happen at the start of the interaction/animation, 
-    // and `TreasureChestAnimation` handles states, we can assume `time` IS the elapsed time in the current state 
-    // OR `time` is the total elapsed time of the minigame.
-    
-    // If TreasureChestAnimation passes `stateTimer` as `time`, then `elapsed` is just `time`.
     
     let scale = 1;
     let rotation = 0;
