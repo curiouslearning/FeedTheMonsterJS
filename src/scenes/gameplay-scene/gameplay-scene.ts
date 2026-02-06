@@ -335,7 +335,6 @@ export class GameplayScene {
   public resumeGame(): void {
     this.isPaused = false;
     this.audioPlayer?.resumeAllAudios();
-    // Resume the clock rotation when game is resumed
     this.monsterController?.resume();
   }
 
