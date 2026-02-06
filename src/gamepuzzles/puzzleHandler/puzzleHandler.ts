@@ -3,6 +3,8 @@ import WordPuzzleLogic from '../wordPuzzleLogic/wordPuzzleLogic';
 import { FeedbackTextEffects } from '@components/feedback-text';
 import { FeedbackAudioHandler, FeedbackType } from '@gamepuzzles';
 import gameStateService from '@gameStateService';
+import scheduler from "@services/scheduler";
+
 
 /**
  * Context object for creating a puzzle/handling a letter drop.
@@ -273,7 +275,7 @@ export default class PuzzleHandler {
 
     // Hide feedback text after audio finishes
     const totalAudioDuration = 4500; // Approximate duration of feedback audio
-    setTimeout(() => {
+    scheduler.setTimeout(() => {
       this.feedbackTextEffects.hideText();
     }, totalAudioDuration);
   }

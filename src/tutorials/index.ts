@@ -4,6 +4,7 @@ import WordPuzzleTutorial from './WordPuzzleTutorial/WordPuzzleTutorial';
 import AudioPuzzleTutorial from './AudioPuzzleTutorial/AudioPuzzleTutorial';
 import gameStateService from '@gameStateService';
 import { getGameTypeName, isGameTypeAudio } from '@common';
+import scheduler, { TimerId } from '@services/scheduler';
 
 type TutorialInitParams = {
   context: CanvasRenderingContext2D;
@@ -13,7 +14,7 @@ type TutorialInitParams = {
   shouldHaveTutorial?: boolean;
 };
 export default class TutorialHandler {
-  private quickStartTutorialTimerId: ReturnType<typeof setTimeout> | null = null;
+  private quickStartTutorialTimerId: TimerId | null = null;
   public quickStartTutorialReady: boolean = false;
   public shouldShowQuickStartTutorial: boolean = false; // Set externally as needed
   private width: number;
@@ -323,13 +324,13 @@ export default class TutorialHandler {
   public resetQuickStartTutorialDelay() {
     // Always clear any previous timer to avoid overlap
     if (this.quickStartTutorialTimerId !== null) {
-      clearTimeout(this.quickStartTutorialTimerId);
+      scheduler.cancelTimeout(this.quickStartTutorialTimerId);
       this.quickStartTutorialTimerId = null;
     }
     this.quickStartTutorialReady = false;
     // Only start the timer if the tutorial should be shown
     if (this.shouldShowQuickStartTutorial) {
-      this.quickStartTutorialTimerId = setTimeout(() => {
+      this.quickStartTutorialTimerId = scheduler.setTimeout(() => {
         this.quickStartTutorialReady = true;
       }, 6000); // 6 seconds
     }

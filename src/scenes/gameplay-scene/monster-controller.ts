@@ -3,6 +3,7 @@ import { RiveMonsterComponent } from '@components/riveMonster/rive-monster-compo
 import gameSettingsService from '@gameSettingsService';
 import gameStateService from '@gameStateService';
 import { GameplayInputManager } from "./gameplay-input-manager";
+import scheduler from "@services/scheduler";
 
 export class MonsterController {
   // #region Properties
@@ -84,10 +85,18 @@ export class MonsterController {
   public triggerMonsterAnimation(animationName: string): void {
     const delay = this.animationDelays[this.monsterPhaseNumber]?.[animationName] ?? 0;
     if (delay > 0) {
-      setTimeout(() => this.monster?.triggerInput(animationName), delay);
+      scheduler.setTimeout(() => this.monster?.triggerInput(animationName), delay);
     } else {
       this.monster?.triggerInput(animationName);
     }
+  }
+
+  public pause(): void {
+    this.monster?.pause();
+  }
+
+  public resume(): void {
+    this.monster?.resume();
   }
   // #endregion
 

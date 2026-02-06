@@ -22,6 +22,8 @@ import gameStateService from '@gameStateService';
 import gameSettingsService from '@gameSettingsService';
 import { FeatureFlagsService} from '@curiouslearning/features';
 import { FEATURE_QUICK_START } from '../services/features/constants';
+import scheduler from "@services/scheduler";
+import { AudioPlayer } from '@components';
 
 const featureFlagService = new FeatureFlagsService({
   metaData: { userId: pseudoId }
@@ -136,6 +138,8 @@ export class SceneHandler {
 
   private cleanupScene() {
     this.activeScene['scene'] && this.activeScene['scene']?.dispose();
+    AudioPlayer.instance.resumeAllAudios();
+    scheduler.destroy();
   }
 
   private gotoScene(sceneName: string) {

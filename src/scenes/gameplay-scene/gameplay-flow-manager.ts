@@ -22,6 +22,7 @@ import PuzzleHandler from "@gamepuzzles/puzzleHandler/puzzleHandler";
 import { StoneHandler, AudioPlayer } from "@components";
 import { MiniGameHandler } from '@miniGames/miniGameHandler';
 import TutorialHandler from '@tutorials';
+import scheduler from "@services/scheduler";
 
 export class GameplayFlowManager {
 
@@ -112,12 +113,12 @@ export class GameplayFlowManager {
             );
 
             // Run chest animation (mini game)
-            this.miniGameHandler.draw();
+            this.miniGameHandler.start();
             return;
         } else {
             // For incorrect answers only; Start loading the next puzzle with 2 seconds delay to let the audios play.
             const delay = this.isCorrect || isTimeOver ? 0 : 2000;
-            setTimeout(() => {
+            scheduler.setTimeout(() => {
                 this.loadPuzzle(isTimeOver, loadPuzzleDelay);
             }, delay);
         }
@@ -223,7 +224,7 @@ export class GameplayFlowManager {
         // Update the stars level indicator.
         this.uiManager.updateStars(this.currentPuzzleIndex, this.isCorrect);
 
-        setTimeout(() => {
+        scheduler.setTimeout(() => {
             this.logLevelEndFirebaseEvent();
             const starsCount = GameScore.calculateStarCount(this.score);
             const levelEndData = {
@@ -259,7 +260,7 @@ export class GameplayFlowManager {
             }
         }
 
-        setTimeout(() => {
+        scheduler.setTimeout(() => {
             if (!this.isDisposing) {
                 this.initNewPuzzle(loadPuzzleEvent);
                 this.uiManager.startTimer(); // Start the timer for the new puzzle
