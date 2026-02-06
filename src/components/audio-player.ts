@@ -56,7 +56,12 @@ export class AudioPlayer {
       gainNode.connect(this.nonPausableAudioContext.destination);
       // handle end of playback
       if (onEnded) {
-        sourceNode.onended = onEnded;
+        sourceNode.onended = () => {
+          this.removeSourceNode(sourceNode);
+          onEnded();
+        };
+      } else {
+        sourceNode.onended = () => this.removeSourceNode(sourceNode);
       }
 
       gainNode.gain.value = volume; // Set volume (1 = full, 0.5 = half, etc.)
@@ -142,7 +147,12 @@ export class AudioPlayer {
 
       // handle end of playback
       if (onEnded) {
-        sourceNode.onended = onEnded;
+        sourceNode.onended = () => {
+          this.removeSourceNode(sourceNode);
+          onEnded();
+        };
+      } else {
+        sourceNode.onended = () => this.removeSourceNode(sourceNode);
       }
 
       gainNode.gain.value = volume; // Set volume (1 = full, 0.5 = half, etc.)
@@ -219,11 +229,30 @@ export class AudioPlayer {
       this.audioSourcs.push(sourceNode);
 
       // Set up a callback that fires when the audio playback ends.
-      sourceNode.onended = onEndedCallback;
+      if (onEndedCallback) {
+        sourceNode.onended = () => {
+          this.removeSourceNode(sourceNode);
+          onEndedCallback();
+        };
+      } else {
+        sourceNode.onended = () => this.removeSourceNode(sourceNode);
+      }
       //Start the audio play.
       sourceNode.start();
     }
   };
+
+  private removeSourceNode(node: AudioBufferSourceNode): void {
+    const index = this.audioSourcs.indexOf(node);
+    if (index > -1) {
+      try {
+        node.disconnect();
+      } catch (error) {
+        console.warn("Failed to disconnect audio source:", error);
+      }
+      this.audioSourcs.splice(index, 1);
+    }
+  }
 
 
   /**
@@ -306,7 +335,9 @@ export class AudioPlayer {
    */
   pauseAllAudios = () => {
     if( this.audioContext && this.audioContext.state === "running") {
-      this.audioContext.suspend();
+      this.audioContext.suspend().catch((error) => {
+        console.warn("Failed to suspend audio context:", error);
+      });
     }
   }
 
@@ -315,7 +346,9 @@ export class AudioPlayer {
    */
   resumeAllAudios = () => {
     if( this.audioContext && this.audioContext.state === "suspended") {
-      this.audioContext.resume();
+      this.audioContext.resume().catch((error) => {
+        console.warn("Failed to resume audio context:", error);
+      });
     } 
   }
 
