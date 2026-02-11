@@ -70,6 +70,7 @@ var config = {
       '@gameStateService': path.resolve(__dirname, 'src/gameStateService/'),
       '@gameSettingsService': path.resolve(__dirname, 'src/gameSettingsService/'),
       '@tutorials': path.resolve(__dirname, 'src/tutorials/'),
+      '@services': path.resolve(__dirname, 'src/services/'),
       '@miniGameStateService': path.resolve(__dirname, 'src/miniGame/miniGameStateService'),
       '@miniGames': path.resolve(__dirname, 'src/miniGame/miniGames'),
     },

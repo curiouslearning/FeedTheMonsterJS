@@ -57,11 +57,6 @@ export default class StoneHandler {
       this.createStones(this.stonebg);
     };
     this.audioPlayer = new AudioPlayer();
-    document.addEventListener(
-      VISIBILITY_CHANGE,
-      this.handleVisibilityChange,
-      false
-    );
 
     this.addEventListeners();
   }
@@ -179,11 +174,11 @@ export default class StoneHandler {
    * Performance optimized draw loop
    * Only processes active stones and updates timer efficiently
    */
-  draw() {
+  draw(deltaTime: number) {
     if (this.foilStones.length === 0) return;
 
     for (const stone of this.foilStones) {
-      stone.draw();
+      stone.draw(deltaTime);
     }
 
     !this.stonesHasLoaded && this.areStonesReadyForPlay();
@@ -191,11 +186,13 @@ export default class StoneHandler {
 
   drawWordPuzzleLetters(
     shouldHideStoneChecker: (index: number) => boolean,
-    groupedLetters: {} | { [key: number]: string }
+    groupedLetters: {} | { [key: number]: string },
+    deltaTime: number
   ): void {
     for (let i = 0; i < this.foilStones.length; i++) {
       if (shouldHideStoneChecker(i)) {
         this.foilStones[i].draw(
+          deltaTime,
           Object.keys(groupedLetters).length > 1 && groupedLetters[i] !== undefined
         );
       }
@@ -233,19 +230,11 @@ export default class StoneHandler {
     this.canvas.width = this.originalWidth;
     this.canvas.height = this.originalHeight;
     this.eventListeners = unsubscribeAll(this.eventListeners);
-    document.removeEventListener(
-      VISIBILITY_CHANGE,
-      this.handleVisibilityChange,
-      false
-    );
   }
 
   public cleanup() {
     // Clean up audio resources
     this.disposeStones();
-
-    // Remove event listeners
-    document.removeEventListener(VISIBILITY_CHANGE, this.handleVisibilityChange);
   }
 
   public getCorrectTargetStone(): string {
@@ -290,6 +279,7 @@ export default class StoneHandler {
     this.foilStones = [];
   }
 
+
   /**
    * Public method to hide all active stones
    * Used when interrupting normal game flow (e.g., when mini-game starts)
@@ -297,10 +287,6 @@ export default class StoneHandler {
   public clearAllStones() {
     this.disposeStones();
   }
-
-  handleVisibilityChange = () => {
-    this.audioPlayer.stopAllAudios();
-  };
 
   /**
    * Performance optimization: Parallel audio playback

@@ -3,6 +3,7 @@ import { AUDIO_TIMEOUT } from '@constants';
 import TimerTicking from '../timer-ticking';
 import TimerHTMLComponent from './timerHtml';
 import { AudioPlayer } from '@components';
+import scheduler from '@services/scheduler';
 
 // Mock dependencies
 jest.mock('./timerHtml', () => {
@@ -41,11 +42,12 @@ describe('TimerTicking', () => {
   afterEach(() => {
     jest.clearAllMocks();
     document.body.innerHTML = ''; // Clean up DOM
+    scheduler.destroy();
   });
 
-  test('should initialize TimerHTMLComponent and set timerFullContainer', async () => {
-    // Wait for the asynchronous code inside the constructor to finish
-    await new Promise((resolve) => setTimeout(resolve, 0)); // Wait for the setTimeout to execute
+  test('should initialize TimerHTMLComponent and set timerFullContainer', () => {
+    // Trigger scheduler to run the setTimeout callback
+    scheduler.update(1);
 
     expect(TimerHTMLComponent).toHaveBeenCalledWith('timer-ticking');
     expect(timerTicking.timerFullContainer).not.toBeNull();
@@ -53,6 +55,7 @@ describe('TimerTicking', () => {
   });
 
   test('should start the timer and reset width', () => {
+    scheduler.update(1); // Ensure initialization
     const spyReadyTimer = jest.spyOn(timerTicking, 'readyTimer');
     timerTicking.startTimer();
 
@@ -63,6 +66,7 @@ describe('TimerTicking', () => {
   });
 
   test('should update the timer and reduce the width', () => {
+    scheduler.update(1); // Ensure initialization
     const deltaTime = 16; // Simulate a frame duration
     timerTicking.startTimer();
     timerTicking.update(deltaTime);
@@ -72,6 +76,7 @@ describe('TimerTicking', () => {
   });
 
   test('should call callback, update timer width, and play audio when timer is nearly depleted and over', () => {
+    scheduler.update(1); // Ensure initialization
     const deltaTime = 20000; // Simulate a large frame duration to deplete the timer
     timerTicking.startTimer(); // Start the timer
 
@@ -102,9 +107,8 @@ describe('TimerTicking', () => {
     }
 });
 
-  test('should handle stone drop and stop timer updates', async () => {
-    // Wait for the constructor code to execute
-    await new Promise((resolve) => setTimeout(resolve, 0));
+  test('should handle stone drop and stop timer updates', () => {
+    scheduler.update(1); // Ensure initialization
 
     // Start the timer
     timerTicking.startTimer();

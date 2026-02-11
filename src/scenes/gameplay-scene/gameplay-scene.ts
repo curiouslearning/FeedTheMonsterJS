@@ -35,6 +35,7 @@ import { GameplayInputManager } from './gameplay-input-manager';
 import { MonsterController } from './monster-controller';
 import { GameplayUIManager } from "./gameplay-ui-manager";
 import { GameplayFlowManager } from "./gameplay-flow-manager";
+import scheduler from "@services/scheduler";
 
 export class GameplayScene {
   // #region Properties
@@ -93,6 +94,8 @@ export class GameplayScene {
   // Legacy/Unused
   isFeedBackTriggered: boolean;
   // #endregion
+
+  private isPaused: boolean = false;
 
   // #region Constructor
   constructor() {
@@ -258,6 +261,11 @@ export class GameplayScene {
         this.flowManager = null;
     }
 
+    if(this.puzzleHandler) {
+      this.puzzleHandler.dispose();
+      this.puzzleHandler = null;
+    }
+
     // Clear event listeners
 
     if (this.unsubscribeEvent) {
@@ -280,6 +288,13 @@ export class GameplayScene {
 
   // #region Game Loop
   draw(deltaTime: number) {
+    if (!this.isPaused) {
+      scheduler.update(deltaTime);
+    }
+    else
+    {
+      deltaTime = 0;
+    }
     const timeRef = { value: this.time };
     this.tutorial?.handleTutorialAndGameStart({
       deltaTime,
@@ -290,6 +305,9 @@ export class GameplayScene {
     });
     this.time = timeRef.value;
 
+    
+    
+    
 
     // Main game logic only starts after isGameStarted = true
     if (this.isGameStarted) {
@@ -300,7 +318,7 @@ export class GameplayScene {
 
       this.uiManager.update(deltaTime, this.isGameStarted, this.isPauseButtonClicked, canUpdateTimer);
 
-      this.handleStoneLetterDrawing();
+      this.handleStoneLetterDrawing(deltaTime);
       
       // Handle Timer Start SFX
       if (canUpdateTimer && !this.timerStartSFXPlayed && deltaTime > 1 && deltaTime <= 100) {
@@ -309,6 +327,7 @@ export class GameplayScene {
       }
     }
 
+    this.miniGameHandler.update(deltaTime);
     this.tutorial.draw(deltaTime, this.isGameStarted);
   }
 
@@ -319,14 +338,17 @@ export class GameplayScene {
   }
 
   public resumeGame(): void {
-    // Resume the clock rotation when game is resumed
-    this.uiManager.applyTimerRotation(this.uiManager.timerTicking?.startMyTimer && !this.uiManager.timerTicking?.isStoneDropped);
+    this.isPaused = false;
+    this.audioPlayer?.resumeAllAudios();
+    this.monsterController?.resume();
   }
 
   public pauseGamePlay(): void {
-    this.audioPlayer.stopAllAudios();
+    this.isPaused = true;
+    this.audioPlayer?.pauseAllAudios();
     // Stop the clock rotation when game is paused
     this.uiManager.applyTimerRotation(false);
+    this.monsterController?.pause();
   }
   // #endregion
 
@@ -419,7 +441,6 @@ export class GameplayScene {
   }
 
   public handleVisibilityChange(): void {
-    this.audioPlayer.stopAllAudios();
     gameStateService.publish(gameStateService.EVENTS.GAME_PAUSE_STATUS_EVENT, true);
     this.pauseGamePlay();
   }
@@ -464,16 +485,17 @@ export class GameplayScene {
     this.inputManager.resetDragState();
   }
 
-  private handleStoneLetterDrawing() {
+  private handleStoneLetterDrawing(deltaTime: number) {
     if (this.puzzleHandler.checkIsWordPuzzle()) {
       this.stoneHandler.drawWordPuzzleLetters(
         (foilStoneIndex) => {
           return this.puzzleHandler.validateShouldHideLetter(foilStoneIndex);
         },
-        this.puzzleHandler.getWordPuzzleGroupedObj()
+        this.puzzleHandler.getWordPuzzleGroupedObj(),
+        deltaTime
       );
     } else {
-      this.stoneHandler.draw();
+      this.stoneHandler.draw(deltaTime);
     }
   }
 

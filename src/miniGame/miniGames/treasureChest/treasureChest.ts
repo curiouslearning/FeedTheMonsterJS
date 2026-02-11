@@ -8,16 +8,13 @@ export default class TreasureChest {
   private closedChestImg: HTMLImageElement; // Image for closed chest state
   private openChestImg: HTMLImageElement; // Image for open chest state
   private ctx: CanvasRenderingContext2D; // Canvas context used for drawing
-  private lastSpawnTime: number; // Timestamp of the last chest spawn
   public shakeDuration: number = 1000; // 1s; Default seconds of shaking animation.
 
   /**
    * @param ctx - Canvas rendering context to draw the chest
-   * @param lastSpawnTime - The time when the chest was spawned (used for animations)
    */
-  constructor(ctx: CanvasRenderingContext2D, lastSpawnTime: number) {
+  constructor(ctx: CanvasRenderingContext2D) {
     this.ctx = ctx;
-    this.lastSpawnTime = lastSpawnTime;
     // Load chest images
     this.closedChestImg = new Image();
     this.closedChestImg.src = CLOSED_CHEST; // Path to closed chest asset
@@ -42,16 +39,10 @@ export default class TreasureChest {
     const chestW = 250, chestH = 230;
     const chestX = width / 2 - chestW / 2;
     const chestY = height - chestH - 20;
-
-    // Pulse/rotate chest if just spawned (< 1s old)
-    const elapsed = time - this.lastSpawnTime;
+    
     let scale = 1;
     let rotation = 0;
-    if (elapsed < 1000) {
-      scale = 1 + Math.sin((elapsed / 1000) * Math.PI * 4) * 0.05;
-      rotation = Math.sin((elapsed / 1000) * Math.PI * 6) * 0.1;
-    }
-
+    
     this.ctx.save();
     this.ctx.translate(chestX + chestW / 2, chestY + chestH / 2);
     this.ctx.rotate(rotation);
@@ -78,8 +69,8 @@ export default class TreasureChest {
   /**
    * Calculates horizontal shake offset based on elapsed animation time.
    * Produces a left-right jitter effect for a limited duration.
-   * @param now - Current timestamp
-   * @param stateStartTime - Timestamp when chest entered shaking state
+   * @param now - Current timestamp (stateTimer)
+   * @param stateStartTime - Timestamp when chest entered shaking state (0 in relative mode)
    * @returns number - Offset in pixels to apply
    */
   private getShakeOffset(now: number, stateStartTime: number): number {

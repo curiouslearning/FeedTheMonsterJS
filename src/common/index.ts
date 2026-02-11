@@ -12,6 +12,7 @@ import {
   unsubscribeAll
 } from "./utils";
 import { loadAssessment } from "./assessment-loader";
+import { TimeoutRegistry } from "./timeout-registry";
 import { Debugger, lang, font, pseudoId, Window, source, campaign_id } from "./global-variables";
 import {
   CLICK,
@@ -55,5 +56,6 @@ export {
   getGameTypeName,
   isGameTypeAudio,
   unsubscribeAll,
-  loadAssessment
+  loadAssessment,
+  TimeoutRegistry
 };

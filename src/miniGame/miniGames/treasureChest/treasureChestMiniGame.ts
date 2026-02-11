@@ -82,7 +82,7 @@ export class TreasureChestMiniGame {
 
 
   //Draw logic for treasure chest minigame. Called by mini game handler.
-  public draw() {
+  public start() {
     if (!this.miniGameStatus) {
       const totalGameDuration = 12000; // 12 seconds total
       this.treasureStones.startTimer(totalGameDuration);
@@ -92,7 +92,10 @@ export class TreasureChestMiniGame {
         this.processStoneCollection();
       });
     }
+  }
 
+  public update(deltaTime: number) {
+    this.treasureAnimation.draw(deltaTime);
   }
 
   //Called before moving to level-end scene. This is handled and used by mini game handler.

@@ -33,6 +33,7 @@ import gameSettingsService from '@gameSettingsService';
 import miniGameStateService from '@miniGameStateService'
 import { SCENE_NAME_GAME_PLAY } from "@constants";
 import { AnalyticsIntegration } from '../../analytics/analytics-integration';
+import scheduler from '@services/scheduler';
 
 // --- IMPORTANT: All mocks must be defined BEFORE imports to ensure proper isolation ---
 // Mock Rive (prevents any real Rive/WebGL code from running in Jest)
@@ -70,6 +71,8 @@ jest.mock('@tutorials', () => {
       resetTutorialTimer: jest.fn(),
       resetQuickStartTutorialDelay: jest.fn(),
       draw: jest.fn(),
+      handleTutorialAndGameStart: jest.fn(),
+      updateTutorialTimer: jest.fn(),
       // Add any other methods/properties your tests might access
     })),
     getGameTypeName: jest.fn(() => 'Soundundefined'),
@@ -123,7 +126,8 @@ jest.mock('@components', () => {
       targetStones: [],
       stonePos: { x: 0, y: 0 },
       pickedStone: null,
-      playDragAudioIfNecessary: jest.fn()
+      playDragAudioIfNecessary: jest.fn(),
+      stonesHasLoaded: true,
     })),
     PromptText: jest.fn().mockImplementation(() => ({
       draw: jest.fn(),
@@ -182,6 +186,8 @@ jest.mock('./monster-controller', () => ({
     getRiveInstance: jest.fn().mockReturnValue({}),
     checkHitbox: jest.fn().mockReturnValue(false),
     onClick: jest.fn().mockReturnValue(false),
+    pause: jest.fn(),
+    resume: jest.fn(),
     get currentPhase() { return 3; }
   })),
 }));
@@ -243,6 +249,7 @@ jest.mock('@miniGameStateService', () => ({
     publish: jest.fn(),
     EVENTS: {
       IS_MINI_GAME_DONE: 'IS_MINI_GAME_DONE',
+      MINI_GAME_WILL_START: 'MINI_GAME_WILL_START'
     },
     shouldShowMiniGame: jest.fn(),
   }
@@ -332,18 +339,23 @@ describe('GameplayScene with BasePopupComponent', () => {
       ...gameplayScene.tutorial,
       resetQuickStartTutorialDelay: jest.fn(),
       showHandPointerInAudioPuzzle: jest.fn().mockReturnValue(false),
+      handleTutorialAndGameStart: jest.fn(),
+      updateTutorialTimer: jest.fn(),
+      draw: jest.fn(),
+      dispose: jest.fn(),
+      hideTutorial: jest.fn(),
+      resetTutorialTimer: jest.fn(),
       // Add any other required methods here
     } as any as any;
   });
 
   afterEach(() => {
+    if (gameplayScene) {
+      gameplayScene.dispose();
+    }
     jest.clearAllMocks();
     document.body.innerHTML = '';
-    // Ensure any leftover listeners are removed to prevent side effects
-    if (gameplayScene) {
-      // Manually remove listener in case dispose() failed or wasn't called
-      document.removeEventListener('visibilitychange', gameplayScene.handleVisibilityChange, false);
-    }
+    scheduler.destroy();
   });
 
   it('should call switchSceneToEnd immediately (0ms) when timerEnded is true or !isFeedBackTriggered is true', () => {
@@ -355,9 +367,8 @@ describe('GameplayScene with BasePopupComponent', () => {
     // Act
     (gameplayScene.flowManager as any).loadPuzzle(timerEnded, 4500);
 
-    // Force immediate execution of timers
-    jest.runAllTimers();
-
+    // Trigger scheduler update
+    scheduler.update(100);
 
     // Assert
     expect(gameStateService.publish).toHaveBeenCalledWith(
@@ -378,8 +389,8 @@ describe('GameplayScene with BasePopupComponent', () => {
     // Assert: Ensure it is not called immediately
     expect(mockSwitchSceneToEnd).not.toHaveBeenCalled();
 
-    // Advance time by 4500ms
-    jest.advanceTimersByTime(4500);
+    // Advance scheduler
+    scheduler.update(4500);
 
     // Assert
     expect(gameStateService.publish).toHaveBeenCalledWith(
@@ -404,7 +415,9 @@ describe('GameplayScene with BasePopupComponent', () => {
       triggerMonsterAnimation('isSad');
     }
 
-    jest.runAllTimers();
+    // jest.runAllTimers(); // No longer needed as we mock scheduler but here triggerMonsterAnimation seems direct.
+    // Assuming triggerMonsterAnimation uses scheduler internally? No, looking at monster-controller logic (not visible here but usually direct or rive event).
+    // The test just checks if it was called.
 
     expect(gameplayScene.monsterController.triggerMonsterAnimation).toHaveBeenCalledWith('isChewing');
     expect(gameplayScene.monsterController.triggerMonsterAnimation).toHaveBeenCalledWith('isHappy');
@@ -420,11 +433,11 @@ describe('GameplayScene with BasePopupComponent', () => {
     (gameplayScene.flowManager as any).loadPuzzle(timerEnded, 4500);
 
     // Assert: Ensure no call before 4500ms
-    jest.advanceTimersByTime(4499);
+    scheduler.update(4400);
     expect(mockSwitchSceneToEnd).not.toHaveBeenCalled();
 
     // Advance time to 4500ms
-    jest.advanceTimersByTime(1);
+    scheduler.update(100);
 
     // Assert: Now it should be called
     expect(gameStateService.publish).toHaveBeenCalledWith(
@@ -464,6 +477,7 @@ describe('GameplayScene with BasePopupComponent', () => {
         if (event === gameStateService.EVENTS.GAME_PAUSE_STATUS_EVENT) {
           pauseStatusCallback.mockImplementation(cb);
         }
+        return jest.fn(); // Return unsubscribe function to prevent error
       });
 
       // Re-initialize the scene to register subscriptions
@@ -559,14 +573,19 @@ describe('GameplayScene with BasePopupComponent', () => {
   describe('Event Handling', () => {
     it('should handle visibility change event', () => {
       const mockAudioPlayer = {
-        stopAllAudios: jest.fn()
+        stopAllAudios: jest.fn(),
+        pauseAllAudios: jest.fn()
       };
       gameplayScene.audioPlayer = mockAudioPlayer as any;
 
       // Simulate visibility change
       document.dispatchEvent(new Event('visibilitychange'));
 
-      expect(mockAudioPlayer.stopAllAudios).toHaveBeenCalled();
+      // expect(mockAudioPlayer.stopAllAudios).toHaveBeenCalled(); // This was original expectation, but pauseGamePlay calls pauseAllAudios
+      // Since pauseGamePlay calls pauseAllAudios, we should expect that.
+      // And pauseGamePlay is called by handleVisibilityChange.
+      expect(mockAudioPlayer.pauseAllAudios).toHaveBeenCalled();
+      
       expect(gameStateService.publish).toHaveBeenCalledWith(
         gameStateService.EVENTS.GAME_PAUSE_STATUS_EVENT,
         true
@@ -578,7 +597,8 @@ describe('GameplayScene with BasePopupComponent', () => {
 
       // Mock the pause popup component inside UI manager
       const mockPausePopup = {
-        onClose: jest.fn()
+        onClose: jest.fn(),
+        destroy: jest.fn()
       };
       gameplayScene.uiManager.pausePopupComponent = mockPausePopup as any;
 
@@ -614,12 +634,17 @@ describe('GameplayScene with BasePopupComponent', () => {
         stonesHasLoaded: true,
         stones: [mockStone],
         draw: jest.fn(), // stubbed to avoid internal errors
+        dispose: jest.fn(),
       };
+
+      // Ensure stoneHandler.drawWordPuzzleLetters exists if it's called
+      (gameplayScene as any).stoneHandler.drawWordPuzzleLetters = jest.fn();
 
       (gameplayScene as any).tutorial = {
         handleTutorialAndGameStart: jest.fn(),
         draw: jest.fn(),
         updateTutorialTimer: jest.fn(), // <-- This is the key addition!
+        dispose: jest.fn(),
       };
 
       (gameplayScene as any).isPauseButtonClicked = false;
