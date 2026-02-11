@@ -261,6 +261,11 @@ export class GameplayScene {
         this.flowManager = null;
     }
 
+    if(this.puzzleHandler) {
+      this.puzzleHandler.dispose();
+      this.puzzleHandler = null;
+    }
+
     // Clear event listeners
 
     if (this.unsubscribeEvent) {
