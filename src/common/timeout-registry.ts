@@ -21,7 +21,9 @@ export class TimeoutRegistry {
   }
 
   cancelAll(): void {
-    this.timeouts.forEach((timerId) => scheduler.cancelTimeout(timerId));
+    for (const timerId of this.timeouts) {
+      scheduler.cancelTimeout(timerId);
+    }
     this.timeouts.clear();
   }
 }
