@@ -1,6 +1,6 @@
-import { Window } from "@common";
+import { TimeoutRegistry, Window } from "@common";
 import { AUDIO_PATH_BTN_CLICK } from "@constants";
-import scheduler from "@services/scheduler";
+import { TimerId } from "@services/scheduler";
 
 
 /**
@@ -21,8 +21,9 @@ export class AudioPlayer {
   private static audioBuffers: Map<string, AudioBuffer> = new Map();
   public audioSourcs: Array<AudioBufferSourceNode> = [];
   private isClickSoundLoaded: boolean;
-  private playAudioTimeoutId: any;
+  private playAudioTimeoutId: TimerId | null;
   private isPromptAudioPlaying: boolean;
+  private timeoutRegistry: TimeoutRegistry = new TimeoutRegistry();
 
   constructor() {
     if( AudioPlayer.instance )
@@ -35,6 +36,7 @@ export class AudioPlayer {
     this.clickSoundBuffer = null; // Initialize the clickSoundBuffer
     this.isClickSoundLoaded = false; // Initialize as false
     this.isPromptAudioPlaying = false;
+    this.playAudioTimeoutId = null;
 
   }
 
@@ -285,11 +287,12 @@ export class AudioPlayer {
 
       if (this.playAudioTimeoutId) {
         this.isPromptAudioPlaying = true;
-        clearTimeout(this.playAudioTimeoutId);
+        this.timeoutRegistry.cancel(this.playAudioTimeoutId);
+        this.playAudioTimeoutId = null;
       }
 
       // Schedule the next audio play after current one ends
-      this.playAudioTimeoutId = scheduler.setTimeout(() => {
+      this.playAudioTimeoutId = this.timeoutRegistry.setTimeout(() => {
         //Call playPromptAudio with a callback for onended method to call.
         this.playPromptAudio(() => {
           this.isPromptAudioPlaying = false;

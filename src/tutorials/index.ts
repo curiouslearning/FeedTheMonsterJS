@@ -3,8 +3,8 @@ import MatchLetterPuzzleTutorial from './MatchLetterPuzzleTutorial/MatchLetterPu
 import WordPuzzleTutorial from './WordPuzzleTutorial/WordPuzzleTutorial';
 import AudioPuzzleTutorial from './AudioPuzzleTutorial/AudioPuzzleTutorial';
 import gameStateService from '@gameStateService';
-import { getGameTypeName, isGameTypeAudio } from '@common';
-import scheduler, { TimerId } from '@services/scheduler';
+import { getGameTypeName, isGameTypeAudio, TimeoutRegistry } from '@common';
+import { TimerId } from '@services/scheduler';
 
 type TutorialInitParams = {
   context: CanvasRenderingContext2D;
@@ -15,6 +15,7 @@ type TutorialInitParams = {
 };
 export default class TutorialHandler {
   private quickStartTutorialTimerId: TimerId | null = null;
+  private timeoutRegistry: TimeoutRegistry = new TimeoutRegistry();
   public quickStartTutorialReady: boolean = false;
   public shouldShowQuickStartTutorial: boolean = false; // Set externally as needed
   private width: number;
@@ -270,6 +271,7 @@ export default class TutorialHandler {
 
   dispose() {
     //Clear canvas tutorials and reset values;
+    this.timeoutRegistry.cancelAll();
     if (this.hasEstablishedSubscriptions) {
       this.activeTutorial?.dispose();
       this.isGameOnPause = false;
@@ -324,13 +326,13 @@ export default class TutorialHandler {
   public resetQuickStartTutorialDelay() {
     // Always clear any previous timer to avoid overlap
     if (this.quickStartTutorialTimerId !== null) {
-      scheduler.cancelTimeout(this.quickStartTutorialTimerId);
+      this.timeoutRegistry.cancel(this.quickStartTutorialTimerId);
       this.quickStartTutorialTimerId = null;
     }
     this.quickStartTutorialReady = false;
     // Only start the timer if the tutorial should be shown
     if (this.shouldShowQuickStartTutorial) {
-      this.quickStartTutorialTimerId = scheduler.setTimeout(() => {
+      this.quickStartTutorialTimerId = this.timeoutRegistry.setTimeout(() => {
         this.quickStartTutorialReady = true;
       }, 6000); // 6 seconds
     }

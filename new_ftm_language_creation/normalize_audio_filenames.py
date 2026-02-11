@@ -1,5 +1,8 @@
+import argparse
 import os
+import sys
 import unicodedata
+from pathlib import Path
 
 def normalize_unicode(text):
     """Normalize Unicode strings to NFC form (composed characters)"""
@@ -61,6 +64,10 @@ def normalize_audio_filenames(language, root_folder):
     
     for actual_filename in actual_files:
         normalized_filename = normalize_unicode(actual_filename)
+
+        # Only normalize files expected by the JSON list.
+        if normalized_filename not in expected_normalized:
+            continue
         
         # Check if normalization changed the filename
         if actual_filename != normalized_filename:
@@ -85,11 +92,23 @@ def normalize_audio_filenames(language, root_folder):
         print(f"\nTotal files renamed: {renamed_count}")
 
 if __name__ == "__main__":
-    root_folder = r"C:\CuriousLearning\FeedTheMonsterJS\lang"
-    
+    parser = argparse.ArgumentParser(description="Normalize audio filenames to NFC.")
+    parser.add_argument(
+        "--root-folder",
+        help="Path to the lang folder. Defaults to ../lang relative to this script.",
+    )
+    args = parser.parse_args()
+
+    default_root = Path(__file__).resolve().parents[1] / "lang"
+    root_folder = Path(args.root_folder).resolve() if args.root_folder else default_root
+
+    if not root_folder.exists() or not root_folder.is_dir():
+        print(f"Lang folder does not exist: {root_folder}")
+        sys.exit(1)
+
     language = input("Enter the language: ")
-    
+
     print(f"\nNormalizing audio filenames for: {language}")
     print("-" * 50)
-    normalize_audio_filenames(language, root_folder)
+    normalize_audio_filenames(language, str(root_folder))
     print("\nDone!")

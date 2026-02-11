@@ -138,7 +138,7 @@ export class SceneHandler {
 
   private cleanupScene() {
     this.activeScene['scene'] && this.activeScene['scene']?.dispose();
-    AudioPlayer.instance.resumeAllAudios();
+    AudioPlayer.instance?.resumeAllAudios();
     scheduler.destroy();
   }
 
