@@ -4,6 +4,7 @@ import {
     STONEDROP,
     Debugger,
     lang,
+    TimeoutRegistry,
 } from "@common";
 import {
     SCENE_NAME_LEVEL_SELECT,
@@ -22,7 +23,6 @@ import PuzzleHandler from "@gamepuzzles/puzzleHandler/puzzleHandler";
 import { StoneHandler, AudioPlayer } from "@components";
 import { MiniGameHandler } from '@miniGames/miniGameHandler';
 import TutorialHandler from '@tutorials';
-import scheduler from "@services/scheduler";
 
 export class GameplayFlowManager {
 
@@ -52,6 +52,7 @@ export class GameplayFlowManager {
     private miniGameHandler: MiniGameHandler;
     private tutorial: TutorialHandler;
     private analyticsIntegration: AnalyticsIntegration;
+    private timeoutRegistry: TimeoutRegistry = new TimeoutRegistry();
     // #endregion
 
     constructor(
@@ -118,7 +119,7 @@ export class GameplayFlowManager {
         } else {
             // For incorrect answers only; Start loading the next puzzle with 2 seconds delay to let the audios play.
             const delay = this.isCorrect || isTimeOver ? 0 : 2000;
-            scheduler.setTimeout(() => {
+            this.timeoutRegistry.setTimeout(() => {
                 this.loadPuzzle(isTimeOver, loadPuzzleDelay);
             }, delay);
         }
@@ -224,7 +225,7 @@ export class GameplayFlowManager {
         // Update the stars level indicator.
         this.uiManager.updateStars(this.currentPuzzleIndex, this.isCorrect);
 
-        scheduler.setTimeout(() => {
+        this.timeoutRegistry.setTimeout(() => {
             this.logLevelEndFirebaseEvent();
             const starsCount = GameScore.calculateStarCount(this.score);
             const levelEndData = {
@@ -260,7 +261,7 @@ export class GameplayFlowManager {
             }
         }
 
-        scheduler.setTimeout(() => {
+        this.timeoutRegistry.setTimeout(() => {
             if (!this.isDisposing) {
                 this.initNewPuzzle(loadPuzzleEvent);
                 this.uiManager.startTimer(); // Start the timer for the new puzzle
@@ -363,6 +364,7 @@ export class GameplayFlowManager {
         this.isDisposing = true;
         this.eventListeners.forEach(unsubscribe => unsubscribe());
         this.eventListeners = [];
+        this.timeoutRegistry.cancelAll();
     }
     
     public get currentPuzzleIndexValue(): number {

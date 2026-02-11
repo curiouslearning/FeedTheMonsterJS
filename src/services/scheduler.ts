@@ -74,7 +74,9 @@ class Scheduler {
    * @param delta The time elapsed since the last update in milliseconds.
    */
   update(delta: number): void {
-    for (const timer of this.timers.values()) {
+    const snapshot = [...this.timers.values()];
+    for (const timer of snapshot) {
+      if (!this.timers.has(timer.id)) continue; // already cancelled
       timer.remaining -= delta;
       if (timer.remaining <= 0) {
         try {

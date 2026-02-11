@@ -4,7 +4,7 @@ import { PROMPT_TEXT_BG, AUDIO_PLAY_BUTTON } from "@constants";
 import { BaseHTML, BaseHtmlOptions } from "../baseHTML/base-html";
 import './prompt-text.scss';
 import gameStateService from '@gameStateService';
-import scheduler from "@services/scheduler";
+import { TimeoutRegistry } from "@common";
 
 
 // Default selectors for the prompt text component
@@ -79,6 +79,7 @@ export class PromptText extends BaseHTML {
     public isAppForeground: boolean = true;
     public AUTO_PROMPT_INITIAL_DELAY_MS: number;
     private isAutoPromptPlaying: boolean = false;
+    private timeoutRegistry: TimeoutRegistry = new TimeoutRegistry();
     private isLevelHaveTutorial: boolean = false;
 
     // HTML elements for the prompt
@@ -232,7 +233,7 @@ export class PromptText extends BaseHTML {
     }
 
     private runAfterInitialAudioDelay(delayMs: number, callback: () => void) {
-        scheduler.setTimeout(callback, delayMs);
+        this.timeoutRegistry.setTimeout(callback, delayMs);
     }
 
     private schedulePromptAndPulseUpdate() {
@@ -538,12 +539,11 @@ export class PromptText extends BaseHTML {
     }
 
     private handleAutoPromptPlay() {
-        scheduler.setTimeout(() => {
+        this.runAfterInitialAudioDelay(this.AUTO_PROMPT_INITIAL_DELAY_MS, () => {
             if (!this.isAutoPromptPlaying) {
                 this.audioPlayer.handlePlayPromptAudioClickEvent();
             }
-
-        }, this.AUTO_PROMPT_INITIAL_DELAY_MS);
+        });
     }
 
     private resetSpellSoundSlots() {
@@ -605,6 +605,7 @@ export class PromptText extends BaseHTML {
     public dispose() {
         document.removeEventListener(VISIBILITY_CHANGE, this.handleVisibilityChange, false);
         this.eventListeners = unsubscribeAll(this.eventListeners); //unsubscribe to gameStateService event.
+        this.timeoutRegistry.cancelAll();
         // Use BaseHTML's destroy method to remove the element
         super.destroy();
     }

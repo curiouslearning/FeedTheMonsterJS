@@ -1,9 +1,9 @@
 import LetterPuzzleLogic from '../letterPuzzleLogic/letterPuzzleLogic';
 import WordPuzzleLogic from '../wordPuzzleLogic/wordPuzzleLogic';
 import { FeedbackTextEffects } from '@components/feedback-text';
+import { TimeoutRegistry } from '@common';
 import { FeedbackAudioHandler, FeedbackType } from '@gamepuzzles';
 import gameStateService from '@gameStateService';
-import scheduler from "@services/scheduler";
 
 
 /**
@@ -34,6 +34,7 @@ export default class PuzzleHandler {
   private letterPuzzleLogic: LetterPuzzleLogic | null = null;
   private feedbackAudioHandler: FeedbackAudioHandler;
   private feedbackTextEffects: FeedbackTextEffects
+  private timeoutRegistry: TimeoutRegistry = new TimeoutRegistry();
 
   constructor(levelData: any, counter: number = 0, feedbackAudios?: any) {
     // Initialize feedback audio handler if audio resources are provided
@@ -275,7 +276,7 @@ export default class PuzzleHandler {
 
     // Hide feedback text after audio finishes
     const totalAudioDuration = 4500; // Approximate duration of feedback audio
-    scheduler.setTimeout(() => {
+    this.timeoutRegistry.setTimeout(() => {
       this.feedbackTextEffects.hideText();
     }, totalAudioDuration);
   }
@@ -299,5 +300,6 @@ export default class PuzzleHandler {
     if(this.feedbackTextEffects) {
       this.feedbackTextEffects.hideText();
     }
+    this.timeoutRegistry.cancelAll();
   }
 }

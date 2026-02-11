@@ -4,10 +4,9 @@ import {
   AUDIO_PATH_CHEERING_FUNC,
   AUDIO_PATH_CORRECT_STONE
 } from '@constants';
-import { Utils } from '@common';
+import { TimeoutRegistry, Utils } from '@common';
 import gameStateService from '@gameStateService';
 import { RiveMonsterComponent } from '@components/riveMonster/rive-monster-component';
-import scheduler from "@services/scheduler";
 
 /**
  * Feedback type enum for different feedback scenarios
@@ -26,6 +25,7 @@ export default class FeedbackAudioHandler {
   private audioPlayer: AudioPlayer;
   private feedbackAudios: string[];
   private correctStoneAudio: HTMLAudioElement;
+  private timeoutRegistry: TimeoutRegistry = new TimeoutRegistry();
 
   constructor(feedbackAudios: any) {
     this.audioPlayer = new AudioPlayer();
@@ -72,8 +72,7 @@ export default class FeedbackAudioHandler {
    * Plays audio for an incorrect answer
    */
   private playIncorrectFeedbackSound(): void {
-
-    scheduler.setTimeout(() => {
+    this.timeoutRegistry.setTimeout(() => {
         this.audioEndCallback();
     }, 1700); // 1700ms is tailored to handleStoneDropEnd 1000 delay of isSpit animation
   }
@@ -95,11 +94,11 @@ export default class FeedbackAudioHandler {
           Utils.getConvertedDevProdURL(this.feedbackAudios[feedBackIndex])
         )
       ]);
-      scheduler.setTimeout(() => {
+      this.timeoutRegistry.setTimeout(() => {
         this.audioEndCallback(); // Callback after audios finish playing
       }, 4000);
     } catch (error) {
-      scheduler.setTimeout(() => {
+      this.timeoutRegistry.setTimeout(() => {
         this.audioEndCallback(); // Ensure callback is called even if audio fails
       }, 4000); 
       console.warn('Audio playback failed:', error);
@@ -134,6 +133,7 @@ export default class FeedbackAudioHandler {
    */
   public dispose(): void {
     this.audioPlayer.stopAllAudios();
+    this.timeoutRegistry.cancelAll();
     if (this.correctStoneAudio) {
       this.correctStoneAudio.pause();
       this.correctStoneAudio.src = '';
