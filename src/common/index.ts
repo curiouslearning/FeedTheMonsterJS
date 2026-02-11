@@ -11,6 +11,7 @@ import {
   isGameTypeAudio,
   unsubscribeAll
 } from "./utils";
+import { loadAssessment } from "./assessment-loader";
 import { Debugger, lang, font, pseudoId, Window, source, campaign_id } from "./global-variables";
 import {
   CLICK,
@@ -53,5 +54,6 @@ export {
   hideElement,
   getGameTypeName,
   isGameTypeAudio,
-  unsubscribeAll
+  unsubscribeAll,
+  loadAssessment
 };

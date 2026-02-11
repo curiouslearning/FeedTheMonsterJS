@@ -26,7 +26,7 @@ var config = {
     port: 8080
   },
   experiments: {
-    asyncWebAssembly: true 
+    asyncWebAssembly: true
   },
   module: {
     rules: [
@@ -87,6 +87,7 @@ var config = {
         { from: "./public/index.css", to: "./" },
         { from: "./public/assets", to: "./assets" },
         { from: "./lang", to: "./lang" },
+        { from: "./public/assessment-webcomponent.js", to: "./" },
       ],
     }),
 

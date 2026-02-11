@@ -105,9 +105,18 @@ export class LevelEndScene {
         this.renderButtonsHTML();
         this.buttonsContainer.style.display = 'flex';
       }, this.EVOLUTION_ANIMATION_DELAY);
-    } else {
       this.renderButtonsHTML();
     }
+
+    // Temporary button for testing assessment
+    const testBtn = document.createElement('button');
+    testBtn.innerText = 'Test Assessment';
+    testBtn.style.position = 'absolute';
+    testBtn.style.top = '10px';
+    testBtn.style.right = '10px';
+    testBtn.style.zIndex = '9999';
+    testBtn.onclick = () => this.triggerAssessment();
+    document.body.appendChild(testBtn);
   }
 
   switchToReactionAnimation = () => {
@@ -427,4 +436,34 @@ export class LevelEndScene {
     // this is to ensure that the button elements will clear out the buttons container
     this.buttonsContainer.innerHTML = '';
   };
+
+  private async triggerAssessment() {
+    // Check if assessment is already loaded
+    if (!document.querySelector('assessment-app')) {
+      const { loadAssessment } = await import('../../common/assessment-loader');
+      await loadAssessment('./assessment-webcomponent.js');
+    }
+
+    const assessmentContainer = document.createElement('div');
+    assessmentContainer.id = 'assessment-container';
+    assessmentContainer.style.position = 'absolute';
+    assessmentContainer.style.top = '0';
+    assessmentContainer.style.left = '0';
+    assessmentContainer.style.width = '100%';
+    assessmentContainer.style.height = '100%';
+    assessmentContainer.style.zIndex = '9999';
+    assessmentContainer.style.backgroundColor = 'rgba(0,0,0,0.8)'; // Semi-transparent background
+
+    const assessmentApp = document.createElement('assessment-app');
+    assessmentApp.setAttribute('data-url', 'data/english/assessment_data.json'); // Example data URL
+    assessmentApp.setAttribute('base-url', '.'); // Or appropriate base URL
+
+    assessmentContainer.appendChild(assessmentApp);
+    document.body.appendChild(assessmentContainer);
+
+    assessmentApp.addEventListener('assessment-closed', () => {
+      assessmentContainer.remove();
+      // Resume game logic if needed
+    });
+  }
 }
