@@ -296,5 +296,8 @@ export default class PuzzleHandler {
     if (this.feedbackAudioHandler) {
       this.feedbackAudioHandler.dispose();
     }
+    if(this.feedbackTextEffects) {
+      this.feedbackTextEffects.hideText();
+    }
   }
 }
