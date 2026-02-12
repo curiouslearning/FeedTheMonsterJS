@@ -16,6 +16,15 @@
     justify-content: center;
     align-items: center;
   }
+
+  // When the container has the 'paused' class, pause all child animations
+  &.paused {
+    .floating-pulse,
+    .pulsing,
+    .text-red-pulse-letter {
+      animation-play-state: paused !important;
+    }
+  }
 }
 
 .prompt-center-responsive {

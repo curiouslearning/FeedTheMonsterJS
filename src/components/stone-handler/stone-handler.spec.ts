@@ -147,7 +147,7 @@ describe('StoneHandler - Latest Optimizations', () => {
       ];
       stoneHandler.foilStones = mockStones as any[];
 
-      stoneHandler.draw();
+      stoneHandler.draw(0);
       //If the last stone is still below 100 frame, it means the stones hasn't fully loaded yet.
       expect(stoneHandler.stonesHasLoaded).toEqual(false);
     });
@@ -159,11 +159,11 @@ describe('StoneHandler - Latest Optimizations', () => {
       ];
       stoneHandler.foilStones = mockStones as any[];
 
-      stoneHandler.draw();
+      stoneHandler.draw(0);
 
       // Update second stone to complete animation
       mockStones[1].frame = 100;
-      stoneHandler.draw();
+      stoneHandler.draw(0);
 
     });
 
