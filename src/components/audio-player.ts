@@ -223,7 +223,7 @@ export class AudioPlayer {
    * Plays the currently preloaded prompt audio.
    * @param onEndedCallback - Optional callback to execute when playback finishes.
    */
-  playPromptAudio = (onEndedCallback: () => void | null = null) => {
+  playPromptAudio = (onEndedCallback: (() => void) | null = null) => {
     if (this.promptAudioBuffer) {
       const sourceNode = this.audioContext.createBufferSource();
       sourceNode.buffer = this.promptAudioBuffer;
