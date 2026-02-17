@@ -2,6 +2,8 @@
 import { AudioPlayer, BackgroundHtmlGenerator } from "@components";
 import { PlayButtonHtml } from '@components/buttons';
 import { BaseButtonComponent } from '@components/buttons/base-button-component/base-button-component';
+import AssessmentButton from '@components/buttons/assessment-button/assessment-button';
+import { AssessmentLoader } from '@components/assessment/assessment-element';
 import { BaseHTML } from '@components/baseHTML/base-html';
 import { RiveMonsterComponent } from "@components/riveMonster/rive-monster-component";
 import { DataModal } from "@data";
@@ -29,6 +31,8 @@ export class StartScene {
   public riveMonsterElement: HTMLCanvasElement;
   public buttonContext: CanvasRenderingContext2D;
   public playButton: BaseButtonComponent;
+  public assessmentButton: BaseButtonComponent;
+  private assessmentLoader: AssessmentLoader;
   public images: Object;
   public loadedImages: any;
   public imagesLoaded: boolean = false;
@@ -96,6 +100,7 @@ export class StartScene {
     this.handler = document.getElementById('start-scene-click-area') as HTMLBodyElement;
     this.devToggle();
     this.createPlayButton();
+    this.createAssessmentButton();
     window.addEventListener("beforeinstallprompt", this.handlerInstallPrompt);
     this.setupBg();
     this.titleTextElement = document.getElementById("title");
@@ -170,6 +175,25 @@ export class StartScene {
     this.handler.addEventListener("click", this.handleMouseClick, false);
   }
 
+  createAssessmentButton() {
+    this.assessmentButton = new AssessmentButton({ targetId: 'title-and-play-button' });
+    this.assessmentLoader = new AssessmentLoader();
+
+    this.assessmentButton.onClick(() => {
+      this.audioPlayer.playButtonClickSound();
+      // Open assessment with local bundled data
+      // You can change the data file based on your needs
+      // Available files in assessment-data directory:
+      // - hindi-lettersounds.json
+      // - bangla-lettersounds.json
+      // - french-lettersounds.json
+      // - etc.
+      this.assessmentLoader.open('', 'hindi-lettersounds.json', './').catch(error => {
+        console.error('Failed to open assessment:', error);
+      });
+    });
+  }
+
   handleMouseClick = (event) => {
     event.preventDefault();
     /** Keeping this for now, but we can remove it if we want in the future.
@@ -199,6 +223,10 @@ export class StartScene {
     this.playButton.dispose();
     this.playButton.destroy();
     this.playButton = null;
+    this.assessmentButton?.dispose();
+    this.assessmentButton?.destroy();
+    this.assessmentButton = null;
+    this.assessmentLoader?.close();
     this.onClickArea.destroy();
     this.titleElement.destroy();
     window.removeEventListener(
@@ -218,8 +246,8 @@ export class StartScene {
   };
 
   private logTappedStartFirebaseEvent() {
-    const jsonVersionNumber = !!this.data.majVersion && !!this.data.minVersion 
-      ? `${this.data.majVersion}.${this.data.minVersion}` 
+    const jsonVersionNumber = !!this.data.majVersion && !!this.data.minVersion
+      ? `${this.data.majVersion}.${this.data.minVersion}`
       : "";
 
     AnalyticsIntegration.getInstance().track(

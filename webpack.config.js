@@ -88,7 +88,12 @@ var config = {
         { from: "./public/index.css", to: "./" },
         { from: "./public/assets", to: "./assets" },
         { from: "./lang", to: "./lang" },
-        { from: "./public/assessment-webcomponent.js", to: "./" },
+        // Assessment web component and assets
+        { from: "../assessment-survey-js/dist/assessment-webcomponent.js", to: "./" },
+        { from: "../assessment-survey-js/data", to: "./assessment-data" },
+        { from: "../assessment-survey-js/audio", to: "./assessment-audio" },
+        { from: "../assessment-survey-js/img", to: "./assessment-img" },
+        { from: "../assessment-survey-js/css", to: "./assessment-css" },
       ],
     }),
 
