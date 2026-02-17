@@ -59,19 +59,30 @@ export default class WordPuzzleTutorial extends TutorialComponent {
     stonePositions: Array<StoneConfig>,
     droppedHistory: {} | { [key:number]: string }
   ): number {
-    // 1. Find the next letter in the word that hasn't been used yet
+    // 1. Determine the next letter index based on droppedHistory
     const nextIndex = Object.keys(droppedHistory).length;
     const nextChar = word[nextIndex];
 
-    // 2. Find the first unused array entry with that letter
+    // 2. Find the first unused stone that matches the next letter
     for (let stoneArrIndex = 0; stoneArrIndex < stonePositions.length; stoneArrIndex++) {
       if (stonePositions[stoneArrIndex].text === nextChar && !(stoneArrIndex in droppedHistory)) {
-
-        //Returns the array index of the next letter.
+        // Returns the array index of the next letter
         return stoneArrIndex;
       }
     }
+
+    /**
+     * NOTE: This should almost never happen. If reached, it indicates:
+     * - The wrong parameters were submitted, or
+     * - The word and stonePositions list are misaligned.
+     * 
+     * To keep the tutorial running safely, we return a default stone index (0).
+     * This prevents runtime crashes, but the underlying level configuration is likely invalid.
+     */
+    return 0; // safe default fallback
   }
+
+
 
   /**
    * Updates the animation frame specific to WordPuzzleTutorial
@@ -113,7 +124,7 @@ export default class WordPuzzleTutorial extends TutorialComponent {
     }
   }
 
-  public initializeStoneAnimation(foilStoneObj: any): void {
+  public initializeStoneAnimation(foilStoneObj: StoneConfig): void {
     //Pause the tutorial guide animation.
     this.pauseWordTutorialRendering = true;
 
