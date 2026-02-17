@@ -1,62 +1,70 @@
 import WordPuzzleTutorial from './WordPuzzleTutorial';
 import gameStateService from '@gameStateService';
+import { StoneConfig } from '@common';;
 
-describe('WordPuzzleTutorial', () => {
+describe('WordPuzzleTutorial.getNextLetterIndex', () => {
+  const context = {} as CanvasRenderingContext2D;
+  const stoneImg = {} as CanvasImageSource;
+
+  const stonePositions = [
+    { text: 'A' },
+    { text: 'P' },
+    { text: 'P' },
+    { text: 'L' },
+    { text: 'E' }
+  ] as any;
+
   let tutorial: WordPuzzleTutorial;
-  const mockContext = {} as CanvasRenderingContext2D;
-  const dummyStoneImg = new Image();
-  const stonePositions = [[10, 10], [20, 20], [30, 30]];
-  const levelData = {
-    puzzles: [
-      {
-        targetStones: ['A', 'B', 'C'],
-        foilStones: ['A', 'B', 'C']
-      }
-    ]
-  };
-
-  let capturedCallback: (count: number) => void;
 
   beforeEach(() => {
-    // Mock the gameStateService.subscribe function
-    jest.spyOn(gameStateService, 'subscribe').mockImplementation((event, cb) => {
-      if (event === gameStateService.EVENTS.WORD_PUZZLE_SUBMITTED_LETTERS_COUNT) {
-        capturedCallback = cb;
-      }
-      return jest.fn(); // return dummy unsubscribe
-    });
-
+    // Mock getHitBoxRanges so updateTargetStonePositions in constructor doesn't crash
     jest.spyOn(gameStateService, 'getHitBoxRanges').mockReturnValue({
       hitboxRangeX: { from: 100, to: 200 },
       hitboxRangeY: { from: 300, to: 400 }
     });
 
     tutorial = new WordPuzzleTutorial({
-      context: mockContext,
-      width: 300,
-      height: 300,
-      stoneImg: dummyStoneImg,
+      context,
+      width: 1080,
+      height: 1920,
+      stoneImg,
       stonePositions,
-      levelData
-    });
-
-    jest.spyOn(tutorial as any, 'updateTargetStonePositions').mockReturnValue({
-      animateImagePosVal: { x: 0, y: 0, dx: 1, dy: 1, absdx: 1, absdy: 1 },
-      startX: 0,
-      startY: 0,
-      endX: 100,
-      endY: 100,
-      monsterStoneDifference: 100
+      targetText: 'APPLE'
     });
   });
 
-  it('should reinitialize animation on WORD_PUZZLE_SUBMITTED_LETTERS_COUNT event', () => {
-    const spy = jest.spyOn(tutorial as any, 'initializeStoneAnimation');
+  it('returns first letter index when droppedHistory is empty', () => {
+    const index = (tutorial as any).getNextLetterIndex(
+      'APPLE',
+      stonePositions,
+      {}
+    );
 
-    // Simulate event trigger
-    capturedCallback(4); // 4 % 3 = 1
+    expect(index).toBe(0);
+  });
 
-    expect((tutorial as any).currentStoneIndex).toBe(1);
-    expect(spy).toHaveBeenCalledWith(1);
+  it('returns second P when one P is already dropped', () => {
+    const index = (tutorial as any).getNextLetterIndex(
+      'APPLE',
+      stonePositions,
+      { 1: 'P' }
+    );
+
+    expect(index).toBe(2);
+  });
+
+  it('returns last letter when previous letters are dropped', () => {
+    const index = (tutorial as any).getNextLetterIndex(
+      'APPLE',
+      stonePositions,
+      {
+        0: 'A',
+        1: 'P',
+        2: 'P',
+        3: 'L'
+      }
+    );
+
+    expect(index).toBe(4);
   });
 });

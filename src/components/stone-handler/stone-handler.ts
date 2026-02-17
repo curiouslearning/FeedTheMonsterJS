@@ -122,6 +122,8 @@ export default class StoneHandler {
 
     //Check if the level type is Word/Spelling; Used for flagging condition for publishing data to tutorial.
     const isWordPuzzle = this.levelData?.levelMeta?.levelType === 'Word';
+    const isTutorialSection = this.currentPuzzleData.segmentNumber === 0; //If Game level is at first segment.
+    let tutorialCorrectLetterAns = null;
 
     // Create a stone for each character in the foilStones array,
     // using a corresponding randomized position from the shuffled positions array.
@@ -141,33 +143,35 @@ export default class StoneHandler {
 
       // Initialize stone with its configuration.
       stone.initialize();
-
-      // Publish the correct stone's data for use in the tutorial (only at segment 0).
-      // This provides the exact coordinates, image, and level data to the tutorial system.
+      
+      //For letter puzzle tutorial
       if (
-        this.currentPuzzleData.segmentNumber === 0 &&
-        (
-          /* If isWordPuzzle is true, publish data to tutorial at last loop iteration.
-            Otherwise if the current index is the correct stone for non-word or spelling puzzle type.
-          */
-          isWordPuzzle && i === foilStones.length - 1 ||
-          foilStones[i] == this.correctTargetStone
-        )
+        isTutorialSection &&
+        !isWordPuzzle &&
+        foilStones[i] == this.correctTargetStone
       ) {
-        gameStateService.publish(gameStateService.EVENTS.CORRECT_STONE_POSITION, {
-          stonePosVal: positions[i], //single stone position for non word puzzles.
-          allStonePosVal: positions, //all stone positions.
-          img, //stone image as tutorial needs a copy of the image for rendering.
-          levelData: this.levelData
-        });
+        tutorialCorrectLetterAns = stone;
       }
 
       //Store the generated stone instance.
       this.foilStones.push(stone);
     }
-
+    
     //Filter only active (non-disposed) stones to track for rendering or interaction.
     this.activeStones = this.foilStones.filter(stone => stone && !stone.isDisposed);
+  
+    if (isTutorialSection) {
+      
+      const activeTutorialFoilStones = isWordPuzzle ? this.activeStones : [tutorialCorrectLetterAns];
+
+      gameStateService.publish(gameStateService.EVENTS.CORRECT_STONE_POSITION, {
+        isWordPuzzle,
+        activeTutorialFoilStones,
+        img, //stone image as tutorial needs a copy of the image for rendering.
+        levelData: this.levelData,
+        targetText: this.correctTargetStone, //correct target letter or word. 
+      });
+    }
   }
 
   /**

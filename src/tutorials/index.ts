@@ -3,7 +3,7 @@ import MatchLetterPuzzleTutorial from './MatchLetterPuzzleTutorial/MatchLetterPu
 import WordPuzzleTutorial from './WordPuzzleTutorial/WordPuzzleTutorial';
 import AudioPuzzleTutorial from './AudioPuzzleTutorial/AudioPuzzleTutorial';
 import gameStateService from '@gameStateService';
-import { getGameTypeName, isGameTypeAudio, TimeoutRegistry } from '@common';
+import { getGameTypeName, isGameTypeAudio, TimeoutRegistry, StoneConfig } from '@common';
 import { TimerId } from '@services/scheduler';
 
 type TutorialInitParams = {
@@ -69,34 +69,43 @@ export default class TutorialHandler {
       this.unsubscribeStoneCreationEvent = gameStateService.subscribe(
         gameStateService.EVENTS.CORRECT_STONE_POSITION,
         (eventData: {
-          stonePosVal: number[], //single stone position for non-word puzzles.
-          allStonePosVal: number[][], //all stone positions.
+          isWordPuzzle: boolean,
+          activeTutorialFoilStones: Array<StoneConfig>,
+          targetText: string,
           img: any,
           levelData: any
         }) => {
-          this.isWordPuzzle = eventData.levelData?.levelMeta?.levelType === 'Word';
-
+          const {
+            isWordPuzzle, 
+            targetText,
+            levelData,
+            img,
+            activeTutorialFoilStones
+          } = eventData;
           // Get game type from level data
           const gameTypeName = getGameTypeName(
-            eventData.levelData.levelMeta.protoType,
-            eventData.levelData.levelMeta.levelType
+            levelData.levelMeta.protoType,
+            levelData.levelMeta.levelType
           );
           this.gameTypeName = gameTypeName; // Store for later use
 
           // Get the game level
-          const gameLevel = Number(eventData.levelData.levelNumber);
+          const gameLevel = Number(levelData.levelNumber);
 
           // Only create tutorial if the game type hasn't been cleared yet
           if (!this.gameTypesList[gameTypeName]?.isCleared) {
+
             //If this.isWordPuzzle is true, use the allStonePosVal; Otherwise use the stone poition value for non-word/spelling game types.
-            const stonePosVal = this.isWordPuzzle ? eventData.allStonePosVal : eventData.stonePosVal
+            const stonePosVal: any = isWordPuzzle 
+            ? activeTutorialFoilStones 
+            : this.getLetterCoordinates(activeTutorialFoilStones[0]); //Pass the first and single element of arr.
 
             this.activeTutorial = this.createTutorialInstance({
               gameLevel,
               stonePosVal,
-              img: eventData.img,
+              img,
               gameTypeName,
-              levelData: eventData.levelData
+              targetText
             });
           }
         }
@@ -115,6 +124,12 @@ export default class TutorialHandler {
           gameStateService.setClearedTutorial(this.gameTypeName);
       });
     }
+  }
+
+  private getLetterCoordinates(foilStone: StoneConfig): number[] {
+    const { x, y } = foilStone;
+
+    return [x, y];
   }
 
   /**
@@ -181,13 +196,20 @@ export default class TutorialHandler {
     this.tutorialElapsedTime = 0;
   }
 
-  private createTutorialInstance({ gameLevel, stonePosVal, img, gameTypeName, levelData = null }: {
+  private createTutorialInstance({
+    gameLevel,
+    stonePosVal,
+    img,
+    gameTypeName,
+    targetText
+  }: {
     gameLevel: number,
-    stonePosVal: number[] | number[][],
-    img: CanvasImageSource,
+    stonePosVal: number[] | Array<StoneConfig>,
+    img: any,
     gameTypeName: string,
-    levelData?: any
-  }) {
+    targetText: string
+  }
+) {
     // Create quick start tutorial
     this.quickTutorial = new QuickStartTutorial({ context: this.context });
     // Only create tutorial if this is the correct level for this game type
@@ -221,12 +243,12 @@ export default class TutorialHandler {
           width: this.width,
           height: this.height,
           stoneImg: img,
-          stonePositions: stonePosVal as number[][],
-          levelData: levelData
+          stonePositions: stonePosVal as Array<StoneConfig>,
+          targetText
         });
       }
 
-      //Add more if conditions here for new tutorial instances.
+      //Note: Add more if conditions here for new tutorial instances.
     }
 
     return null;
