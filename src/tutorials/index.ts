@@ -75,6 +75,9 @@ export default class TutorialHandler {
           img: any,
           levelData: any
         }) => {
+          // Quick return if no stones available — prevents creating invalid tutorial
+          if (!eventData?.activeTutorialFoilStones || eventData?.activeTutorialFoilStones.length === 0) return;
+
           const {
             isWordPuzzle, 
             targetText,
@@ -82,6 +85,7 @@ export default class TutorialHandler {
             img,
             activeTutorialFoilStones
           } = eventData;
+          
           // Get game type from level data
           const gameTypeName = getGameTypeName(
             levelData.levelMeta.protoType,

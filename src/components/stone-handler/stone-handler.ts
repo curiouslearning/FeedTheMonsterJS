@@ -144,12 +144,17 @@ export default class StoneHandler {
       // Initialize stone with its configuration.
       stone.initialize();
       
-      //For letter puzzle tutorial
+      
+      // NOTE: foilStones[i] is guaranteed to match this.correctTargetStone exactly once
+      // in the first segment (segmentNumber === 0). This is a core game-level invariant —
+      // the correct target stone must exist for the game and tutorial to function properly. 
+      // If no match occurs here, the level data is invalid, and the game logic itself would fail.
       if (
         isTutorialSection &&
         !isWordPuzzle &&
-        foilStones[i] == this.correctTargetStone
+        foilStones[i] === this.correctTargetStone
       ) {
+        //For letter puzzle tutorial
         tutorialCorrectLetterAns = stone;
       }
 
@@ -161,8 +166,9 @@ export default class StoneHandler {
     this.activeStones = this.foilStones.filter(stone => stone && !stone.isDisposed);
   
     if (isTutorialSection) {
-      
-      const activeTutorialFoilStones = isWordPuzzle ? this.activeStones : [tutorialCorrectLetterAns];
+      // Always use an array; empty if no correct stone found.
+      const activeTutorialLetterStone = tutorialCorrectLetterAns ? [tutorialCorrectLetterAns] : [];
+      const activeTutorialFoilStones = isWordPuzzle ? this.activeStones : activeTutorialLetterStone;
 
       gameStateService.publish(gameStateService.EVENTS.CORRECT_STONE_POSITION, {
         isWordPuzzle,
