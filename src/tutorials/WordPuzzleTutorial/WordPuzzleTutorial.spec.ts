@@ -1,6 +1,5 @@
 import WordPuzzleTutorial from './WordPuzzleTutorial';
 import gameStateService from '@gameStateService';
-import { StoneConfig } from '@common';;
 
 describe('WordPuzzleTutorial.getNextLetterIndex', () => {
   const context = {} as CanvasRenderingContext2D;
