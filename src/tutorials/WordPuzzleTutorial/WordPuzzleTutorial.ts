@@ -157,5 +157,8 @@ export default class WordPuzzleTutorial extends TutorialComponent {
     this.nextLetterIndex = 0;
     this.pauseWordTutorialRendering = false;
     this.unsubscribeSubmittedLettersCountHandler();
+
+    //Call the base class dispose to remove hand pointer.
+    super.dispose();
   }
 }
