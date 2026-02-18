@@ -44,14 +44,18 @@ export default class WordPuzzleTutorial extends TutorialComponent {
 
     this.unsubscribeSubmittedLettersCountHandler = gameStateService.subscribe(
       gameStateService.EVENTS.WORD_PUZZLE_SUBMITTED_LETTERS_COUNT,
-      ({ droppedHistory } : {
-        droppedHistory: { [key: number]: string }
-      }) => {
-        //Get the index of the next stone letter from stonePositions array.
-        this.nextLetterIndex = this.getNextLetterIndex(targetText, this.stonePositions, droppedHistory);
-        this.initializeStoneAnimation(this.stonePositions[this.nextLetterIndex]);
+      (eventData) => {
+        this.handleNextWordLetter(eventData);
       }
     )
+  }
+
+  private handleNextWordLetter({ droppedHistory } : {
+    droppedHistory: { [key: number]: string }
+  }): void {
+    //Get the index of the next stone letter from stonePositions array.
+    this.nextLetterIndex = this.getNextLetterIndex(this.targetText, this.stonePositions, droppedHistory);
+    this.initializeStoneAnimation(this.stonePositions[this.nextLetterIndex]);
   }
 
   private getNextLetterIndex(

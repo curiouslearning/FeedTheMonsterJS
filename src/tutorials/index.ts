@@ -69,6 +69,8 @@ export default class TutorialHandler {
       this.unsubscribeStoneCreationEvent = gameStateService.subscribe(
         gameStateService.EVENTS.CORRECT_STONE_POSITION,
         (eventData) => {
+          // NOTE: This handler is invoked only once at the start of gameplay
+          // when the CORRECT_STONE_POSITION event is initially emitted.
           this.handleTutorialCreationOnCorrectStone(eventData);
         }
       );
