@@ -454,9 +454,9 @@ export class LevelEndScene {
     assessmentContainer.style.zIndex = '9999';
     assessmentContainer.style.backgroundColor = 'rgba(0,0,0,0.8)'; // Semi-transparent background
 
-    const assessmentApp = document.createElement('assessment-app');
-    assessmentApp.setAttribute('data-url', 'data/english/assessment_data.json'); // Example data URL
-    assessmentApp.setAttribute('base-url', '.'); // Or appropriate base URL
+    const assessmentApp = document.createElement('assessment-survey');
+    assessmentApp.setAttribute('data-url', 'english/assessment_data'); // Data key (without /data/ prefix or .json)
+    assessmentApp.setAttribute('base-path', '.'); // Base path for assets
 
     assessmentContainer.appendChild(assessmentApp);
     document.body.appendChild(assessmentContainer);

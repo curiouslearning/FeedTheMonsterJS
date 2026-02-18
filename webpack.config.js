@@ -90,7 +90,8 @@ var config = {
         { from: "./lang", to: "./lang" },
         // Assessment web component and assets
         { from: "../assessment-survey-js/dist/assessment-webcomponent.js", to: "./" },
-        { from: "../assessment-survey-js/data", to: "./assessment-data" },
+        // Copy assessment survey JSON files into the standard build `data/` folder
+        { from: "../assessment-survey-js/data", to: "./data" },
         { from: "../assessment-survey-js/audio", to: "./assessment-audio" },
         { from: "../assessment-survey-js/img", to: "./assessment-img" },
         { from: "../assessment-survey-js/css", to: "./assessment-css" },
