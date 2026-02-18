@@ -68,50 +68,8 @@ export default class TutorialHandler {
 
       this.unsubscribeStoneCreationEvent = gameStateService.subscribe(
         gameStateService.EVENTS.CORRECT_STONE_POSITION,
-        (eventData: {
-          isWordPuzzle: boolean,
-          activeTutorialFoilStones: Array<StoneConfig>,
-          targetText: string,
-          img: any,
-          levelData: any
-        }) => {
-          // Quick return if no stones available — prevents creating invalid tutorial
-          if (!eventData?.activeTutorialFoilStones || eventData?.activeTutorialFoilStones.length === 0) return;
-
-          const {
-            isWordPuzzle, 
-            targetText,
-            levelData,
-            img,
-            activeTutorialFoilStones
-          } = eventData;
-          
-          // Get game type from level data
-          const gameTypeName = getGameTypeName(
-            levelData.levelMeta.protoType,
-            levelData.levelMeta.levelType
-          );
-          this.gameTypeName = gameTypeName; // Store for later use
-
-          // Get the game level
-          const gameLevel = Number(levelData.levelNumber);
-
-          // Only create tutorial if the game type hasn't been cleared yet
-          if (!this.gameTypesList[gameTypeName]?.isCleared) {
-
-            //If this.isWordPuzzle is true, use the allStonePosVal; Otherwise use the stone poition value for non-word/spelling game types.
-            const stonePosVal: any = isWordPuzzle 
-            ? activeTutorialFoilStones 
-            : this.getLetterCoordinates(activeTutorialFoilStones[0]); //Pass the first and single element of arr.
-
-            this.activeTutorial = this.createTutorialInstance({
-              gameLevel,
-              stonePosVal,
-              img,
-              gameTypeName,
-              targetText
-            });
-          }
+        (eventData) => {
+          this.handleTutorialCreationOnCorrectStone(eventData);
         }
       );
 
@@ -134,6 +92,52 @@ export default class TutorialHandler {
     const { x, y } = foilStone;
 
     return [x, y];
+  }
+
+  private handleTutorialCreationOnCorrectStone(eventData: {
+    isWordPuzzle: boolean,
+    activeTutorialFoilStones: Array<StoneConfig>,
+    targetText: string,
+    img: any,
+    levelData: any
+  }): void {
+    // Quick return if no stones available — prevents creating invalid tutorial
+    if (!eventData?.activeTutorialFoilStones || eventData?.activeTutorialFoilStones.length === 0) return;
+    
+    const {
+      isWordPuzzle, 
+      targetText,
+      levelData,
+      img,
+      activeTutorialFoilStones
+    } = eventData;
+          
+    // Get game type from level data
+    const gameTypeName = getGameTypeName(
+      levelData.levelMeta.protoType,
+      levelData.levelMeta.levelType
+    );
+    this.gameTypeName = gameTypeName; // Store for later use
+
+    // Get the game level
+    const gameLevel = Number(levelData.levelNumber);
+
+    // Only create tutorial if the game type hasn't been cleared yet
+    if (!this.gameTypesList[gameTypeName]?.isCleared) {
+
+      //If this.isWordPuzzle is true, use the allStonePosVal; Otherwise use the stone poition value for non-word/spelling game types.
+      const stonePosVal: any = isWordPuzzle 
+        ? activeTutorialFoilStones 
+        : this.getLetterCoordinates(activeTutorialFoilStones[0]); //Pass the first and single element of arr.
+
+      this.activeTutorial = this.createTutorialInstance({
+        gameLevel,
+        stonePosVal,
+        img,
+        gameTypeName,
+        targetText
+      });
+    }
   }
 
   /**
