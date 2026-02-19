@@ -156,8 +156,10 @@ export class PromptText extends BaseHTML {
         this.eventListeners.push(
             gameStateService.subscribe(
                 WORD_PUZZLE_SUBMITTED_LETTERS_COUNT,
-                (droppedLetterCount: number) => {
-                    this.currentActiveLetterIndex = droppedLetterCount;
+                ({ droppedLettersCount } : {
+                    droppedLettersCount: number
+                }) => {
+                    this.currentActiveLetterIndex = droppedLettersCount;
                     //Update the prompt text that reflects the next active letter.
                     if (this.isSpellSoundMatch()) {
                         this.generatePromptSlots();

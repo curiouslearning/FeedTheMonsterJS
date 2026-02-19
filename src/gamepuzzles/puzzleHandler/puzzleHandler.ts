@@ -147,7 +147,10 @@ export default class PuzzleHandler {
 
       gameStateService.publish(
         gameStateService.EVENTS.WORD_PUZZLE_SUBMITTED_LETTERS_COUNT,
-        droppedLettersCount
+        {
+          droppedLettersCount, //Used for prompt highlight display text logic.
+          droppedHistory //Used for word puzzle tutorial.
+        }
       );
 
       ctx.lettersCountRef.value++;
