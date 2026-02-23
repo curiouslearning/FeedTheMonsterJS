@@ -20,14 +20,16 @@ import {
 } from "@constants";
 import gameStateService from '@gameStateService';
 import gameSettingsService from '@gameSettingsService';
-import { FeatureFlagsService} from '@curiouslearning/features';
+import { FeatureFlagsService } from '@curiouslearning/features';
 import { FEATURE_QUICK_START } from '../services/features/constants';
 import scheduler from "@services/scheduler";
+import assessmentSurveyManager from '@services/assessment-survey-manager';
 import { AudioPlayer } from '@components';
 
 const featureFlagService = new FeatureFlagsService({
   metaData: { userId: pseudoId }
 });
+
 export class SceneHandler {
   private activeScene: {
     loading?: null | LoadingScene,
@@ -109,6 +111,12 @@ export class SceneHandler {
   }
 
   private handleSwitchScene(sceneName: string) {
+    if (sceneName === SCENE_NAME_LEVEL_SELECT) {
+      assessmentSurveyManager.openForTesting();
+    } else {
+      assessmentSurveyManager.close();
+    }
+
     if (sceneName !== SCENE_NAME_LEVEL_END) {
       //No Cloud loading scene for TRANSITIONING TO level-end scene.
       this.activeScene['loading'].toggleLoadingScreen(true);

@@ -29,6 +29,17 @@ channel.addEventListener("message", async function (event) {
     caches.delete(workbox.core.cacheNames.precache + event.data.data);
     await getCacheName(event.data.data);
   }
+  if (event.data.command === "CacheAssessmentLanguage") {
+    const dataKey = event.data.data;
+    const ok = await cacheAssessmentLanguage(dataKey);
+    await channel.postMessage({
+      msg: "AssessmentLanguageCached",
+      data: {
+        dataKey,
+        ok,
+      },
+    });
+  }
 });
 
 self.registration.addEventListener("updatefound", function (e) {
@@ -259,6 +270,75 @@ async function cacheFeedBackAudio(feedBackAudios, language) {
     }));
   } catch (e) {
     console.log('Could not open cache:', e);
+  }
+}
+
+function normalizeAssessmentAudioName(data, itemName) {
+  const quizName = (data?.quizName || '').toLowerCase();
+  if (quizName.includes('luganda') || quizName.includes('west african english')) {
+    return itemName.toLowerCase().trim();
+  }
+  return itemName.trim();
+}
+
+async function cacheAssessmentLanguage(dataKey) {
+  if (!dataKey) {
+    return false;
+  }
+
+  const cacheName = `assessment-${dataKey}`;
+  const dataUrl = `/assessment-survey/data/${dataKey}.json`;
+
+  try {
+    const response = await fetch(dataUrl, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    });
+
+    if (!response.ok) {
+      console.warn('Could not fetch assessment data key:', dataKey);
+      return;
+    }
+
+    const data = await response.json();
+    const urlsToCache = new Set();
+    urlsToCache.add(dataUrl);
+
+    if (Array.isArray(data?.buckets)) {
+      for (const bucket of data.buckets) {
+        if (!Array.isArray(bucket?.items)) {
+          continue;
+        }
+
+        for (const item of bucket.items) {
+          const itemName = normalizeAssessmentAudioName(data, item?.itemName || '');
+          if (!itemName) {
+            continue;
+          }
+          urlsToCache.add(`/assessment-survey/audio/${dataKey}/${itemName}.mp3`);
+        }
+      }
+    }
+
+    urlsToCache.add(`/assessment-survey/audio/${dataKey}/answer_feedback.mp3`);
+
+    const cache = await caches.open(cacheName);
+    const cacheResults = await Promise.all([...urlsToCache].map(async (url) => {
+      try {
+        await cache.add(url);
+        return true;
+      } catch (error) {
+        console.warn('Failed to cache assessment asset:', url);
+        return false;
+      }
+    }));
+
+    return cacheResults.every(Boolean);
+  } catch (error) {
+    console.error('Assessment language caching failed:', error);
+    return false;
   }
 }
 

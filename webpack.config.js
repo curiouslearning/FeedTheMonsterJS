@@ -52,6 +52,7 @@ var config = {
   output: {
     path: path.resolve(__dirname, './build'),
     filename: 'feedTheMonster.js',
+    clean: true,
   },
   resolve: {
     alias: {
@@ -88,6 +89,11 @@ var config = {
         { from: "./public/index.css", to: "./" },
         { from: "./public/assets", to: "./assets" },
         { from: "./lang", to: "./lang" },
+        { from: "./node_modules/@curiouslearning/assessment-survey/css", to: "./assessment-survey/css" },
+        { from: "./node_modules/@curiouslearning/assessment-survey/img", to: "./assessment-survey/img" },
+        { from: "./node_modules/@curiouslearning/assessment-survey/animation", to: "./assessment-survey/animation" },
+        { from: "./node_modules/@curiouslearning/assessment-survey/data", to: "./assessment-survey/data" },
+        { from: "./node_modules/@curiouslearning/assessment-survey/audio", to: "./assessment-survey/audio" },
       ],
     }),
 

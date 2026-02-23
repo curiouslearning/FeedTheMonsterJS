@@ -20,6 +20,7 @@ import {
 import { URL } from "@data";
 import './styles/main.scss';
 import { FeatureFlagsService } from '@curiouslearning/features';
+import assessmentSurveyManager from '@services/assessment-survey-manager';
 import gameStateService from "./gameStateService";
 
 const featureFlagService = new FeatureFlagsService({
@@ -229,6 +230,8 @@ class App {
         const registration = await wb.register();
         await navigator.serviceWorker.ready;
         await registration.update();
+
+        await assessmentSurveyManager.warmupAssessmentLanguageCache();
 
         if (!this.is_cached.has(this.lang)) {
           this.channel.postMessage({ command: "Cache", data: this.lang });
