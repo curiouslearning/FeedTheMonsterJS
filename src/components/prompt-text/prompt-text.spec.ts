@@ -142,6 +142,7 @@ describe('generateTextMarkup', () => {
   describe('generatePromptSlots', () => {
     it('should generate underscore slots after GAME_HAS_STARTED event', () => {
       jest.useFakeTimers(); // ✅ use fake timers
+      jest.clearAllMocks();
       promptText = new PromptText(
         500,
         puzzleDataMock,

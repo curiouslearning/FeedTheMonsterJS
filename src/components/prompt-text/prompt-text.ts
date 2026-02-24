@@ -4,6 +4,8 @@ import { PROMPT_TEXT_BG, AUDIO_PLAY_BUTTON } from "@constants";
 import { BaseHTML, BaseHtmlOptions } from "../baseHTML/base-html";
 import './prompt-text.scss';
 import gameStateService from '@gameStateService';
+import { TimeoutRegistry } from "@common";
+
 
 // Default selectors for the prompt text component
 export const DEFAULT_SELECTORS = {
@@ -77,6 +79,7 @@ export class PromptText extends BaseHTML {
     public isAppForeground: boolean = true;
     public AUTO_PROMPT_INITIAL_DELAY_MS: number;
     private isAutoPromptPlaying: boolean = false;
+    private timeoutRegistry: TimeoutRegistry = new TimeoutRegistry();
     private isLevelHaveTutorial: boolean = false;
 
     // HTML elements for the prompt
@@ -143,6 +146,7 @@ export class PromptText extends BaseHTML {
             GAME_HAS_STARTED,
             STONEDROP,
             LOADPUZZLE,
+            GAME_PAUSE_STATUS_EVENT
         } = gameStateService.EVENTS;
 
         // Subscribe to submitted letters count updates.
@@ -152,8 +156,10 @@ export class PromptText extends BaseHTML {
         this.eventListeners.push(
             gameStateService.subscribe(
                 WORD_PUZZLE_SUBMITTED_LETTERS_COUNT,
-                (droppedLetterCount: number) => {
-                    this.currentActiveLetterIndex = droppedLetterCount;
+                ({ droppedLettersCount } : {
+                    droppedLettersCount: number
+                }) => {
+                    this.currentActiveLetterIndex = droppedLettersCount;
                     //Update the prompt text that reflects the next active letter.
                     if (this.isSpellSoundMatch()) {
                         this.generatePromptSlots();
@@ -195,6 +201,16 @@ export class PromptText extends BaseHTML {
                 }
             )
         );
+
+        //Subscription for game pause.
+        this.eventListeners.push(
+            gameStateService.subscribe(
+                GAME_PAUSE_STATUS_EVENT,
+                (isPaused: boolean) => {
+                        this.handleGamePause(isPaused);
+                }
+            )
+        );
     }
 
     private setPromptInitialAudioDelayValues(isTutorialOn: boolean = false) {
@@ -219,7 +235,7 @@ export class PromptText extends BaseHTML {
     }
 
     private runAfterInitialAudioDelay(delayMs: number, callback: () => void) {
-        setTimeout(callback, delayMs);
+        this.timeoutRegistry.setTimeout(callback, delayMs);
     }
 
     private schedulePromptAndPulseUpdate() {
@@ -525,12 +541,11 @@ export class PromptText extends BaseHTML {
     }
 
     private handleAutoPromptPlay() {
-        setTimeout(() => {
+        this.runAfterInitialAudioDelay(this.AUTO_PROMPT_INITIAL_DELAY_MS, () => {
             if (!this.isAutoPromptPlaying) {
                 this.audioPlayer.handlePlayPromptAudioClickEvent();
             }
-
-        }, this.AUTO_PROMPT_INITIAL_DELAY_MS);
+        });
     }
 
     private resetSpellSoundSlots() {
@@ -552,6 +567,18 @@ export class PromptText extends BaseHTML {
         if (this.isSpellSoundMatch()) {
             this.promptSlotElement.style.display = 'hidden';
             this.promptSlotElement.innerHTML = "";
+        }
+    }
+
+    private handleGamePause(isPaused: boolean) {
+        if (!this.promptContainer) {
+            return;
+        }
+
+        if (isPaused) {
+            this.promptContainer.classList.add('paused');
+        } else {
+            this.promptContainer.classList.remove('paused');
         }
     }
 
@@ -580,6 +607,7 @@ export class PromptText extends BaseHTML {
     public dispose() {
         document.removeEventListener(VISIBILITY_CHANGE, this.handleVisibilityChange, false);
         this.eventListeners = unsubscribeAll(this.eventListeners); //unsubscribe to gameStateService event.
+        this.timeoutRegistry.cancelAll();
         // Use BaseHTML's destroy method to remove the element
         super.destroy();
     }
@@ -600,9 +628,5 @@ export class PromptText extends BaseHTML {
     handleVisibilityChange = () => {
         const isVisible = document.visibilityState === "visible";
         this.isAppForeground = isVisible;
-
-        if (!isVisible) {
-            this.audioPlayer.stopAllAudios();
-        }
     }
 }

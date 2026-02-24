@@ -40,7 +40,7 @@ export class PausePopupComponent extends BasePopupComponent {
 
     this.openConfirm = debounce(() => {
       this.confirmPopup.open();
-      this.audioPlayer.playAudio(AUDIO_ARE_YOU_SURE);
+      this.audioPlayer.playUIAudio(AUDIO_ARE_YOU_SURE);
     }, 300);
   }
 
