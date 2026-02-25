@@ -3,7 +3,7 @@ import MatchLetterPuzzleTutorial from './MatchLetterPuzzleTutorial/MatchLetterPu
 import WordPuzzleTutorial from './WordPuzzleTutorial/WordPuzzleTutorial';
 import AudioPuzzleTutorial from './AudioPuzzleTutorial/AudioPuzzleTutorial';
 import gameStateService from '@gameStateService';
-import { getGameTypeName, isGameTypeAudio, TimeoutRegistry } from '@common';
+import { getGameTypeName, isGameTypeAudio, TimeoutRegistry, StoneConfig } from '@common';
 import { TimerId } from '@services/scheduler';
 
 type TutorialInitParams = {
@@ -68,37 +68,10 @@ export default class TutorialHandler {
 
       this.unsubscribeStoneCreationEvent = gameStateService.subscribe(
         gameStateService.EVENTS.CORRECT_STONE_POSITION,
-        (eventData: {
-          stonePosVal: number[], //single stone position for non-word puzzles.
-          allStonePosVal: number[][], //all stone positions.
-          img: any,
-          levelData: any
-        }) => {
-          this.isWordPuzzle = eventData.levelData?.levelMeta?.levelType === 'Word';
-
-          // Get game type from level data
-          const gameTypeName = getGameTypeName(
-            eventData.levelData.levelMeta.protoType,
-            eventData.levelData.levelMeta.levelType
-          );
-          this.gameTypeName = gameTypeName; // Store for later use
-
-          // Get the game level
-          const gameLevel = Number(eventData.levelData.levelNumber);
-
-          // Only create tutorial if the game type hasn't been cleared yet
-          if (!this.gameTypesList[gameTypeName]?.isCleared) {
-            //If this.isWordPuzzle is true, use the allStonePosVal; Otherwise use the stone poition value for non-word/spelling game types.
-            const stonePosVal = this.isWordPuzzle ? eventData.allStonePosVal : eventData.stonePosVal
-
-            this.activeTutorial = this.createTutorialInstance({
-              gameLevel,
-              stonePosVal,
-              img: eventData.img,
-              gameTypeName,
-              levelData: eventData.levelData
-            });
-          }
+        (eventData) => {
+          // NOTE: This handler is invoked only once at the start of gameplay
+          // when the CORRECT_STONE_POSITION event is initially emitted.
+          this.handleTutorialCreationOnCorrectStone(eventData);
         }
       );
 
@@ -113,6 +86,58 @@ export default class TutorialHandler {
         gameStateService.EVENTS.LEVEL_END_DATA_EVENT, (data) => {
           //Marked the tutorial as cleared so it won't show up again after clearing it.
           gameStateService.setClearedTutorial(this.gameTypeName);
+      });
+    }
+  }
+
+  private getLetterCoordinates(foilStone: StoneConfig): number[] {
+    const { x, y } = foilStone;
+
+    return [x, y];
+  }
+
+  private handleTutorialCreationOnCorrectStone(eventData: {
+    isWordPuzzle: boolean,
+    activeTutorialFoilStones: Array<StoneConfig>,
+    targetText: string,
+    img: any,
+    levelData: any
+  }): void {
+    // Quick return if no stones available — prevents creating invalid tutorial
+    if (!eventData?.activeTutorialFoilStones || eventData?.activeTutorialFoilStones.length === 0) return;
+    
+    const {
+      isWordPuzzle, 
+      targetText,
+      levelData,
+      img,
+      activeTutorialFoilStones
+    } = eventData;
+          
+    // Get game type from level data
+    const gameTypeName = getGameTypeName(
+      levelData.levelMeta.protoType,
+      levelData.levelMeta.levelType
+    );
+    this.gameTypeName = gameTypeName; // Store for later use
+
+    // Get the game level
+    const gameLevel = Number(levelData.levelNumber);
+
+    // Only create tutorial if the game type hasn't been cleared yet
+    if (!this.gameTypesList[gameTypeName]?.isCleared) {
+
+      //If this.isWordPuzzle is true, use the allStonePosVal; Otherwise use the stone poition value for non-word/spelling game types.
+      const stonePosVal: any = isWordPuzzle 
+        ? activeTutorialFoilStones 
+        : this.getLetterCoordinates(activeTutorialFoilStones[0]); //Pass the first and single element of arr.
+
+      this.activeTutorial = this.createTutorialInstance({
+        gameLevel,
+        stonePosVal,
+        img,
+        gameTypeName,
+        targetText
       });
     }
   }
@@ -181,13 +206,20 @@ export default class TutorialHandler {
     this.tutorialElapsedTime = 0;
   }
 
-  private createTutorialInstance({ gameLevel, stonePosVal, img, gameTypeName, levelData = null }: {
+  private createTutorialInstance({
+    gameLevel,
+    stonePosVal,
+    img,
+    gameTypeName,
+    targetText
+  }: {
     gameLevel: number,
-    stonePosVal: number[] | number[][],
-    img: CanvasImageSource,
+    stonePosVal: number[] | Array<StoneConfig>,
+    img: any,
     gameTypeName: string,
-    levelData?: any
-  }) {
+    targetText: string
+  }
+) {
     // Create quick start tutorial
     this.quickTutorial = new QuickStartTutorial({ context: this.context });
     // Only create tutorial if this is the correct level for this game type
@@ -221,12 +253,12 @@ export default class TutorialHandler {
           width: this.width,
           height: this.height,
           stoneImg: img,
-          stonePositions: stonePosVal as number[][],
-          levelData: levelData
+          stonePositions: stonePosVal as Array<StoneConfig>,
+          targetText
         });
       }
 
-      //Add more if conditions here for new tutorial instances.
+      //Note: Add more if conditions here for new tutorial instances.
     }
 
     return null;
