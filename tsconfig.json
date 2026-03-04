@@ -69,6 +69,7 @@
       "@gameSettingsService/*": ["src/gameSettingsService/*"],
       "@gameSettingsService": ["src/gameSettingsService"],
       "@tutorials": ["src/tutorials"],
+      "@assessment/*": ["src/assessment/*"],
       "@services/*": ["src/services/*"],
       "@miniGameStateService": ["src/miniGame/miniGameStateService"],
       "@miniGameStateService/*": ["src/miniGame/miniGameStateService/*"],

@@ -20,12 +20,12 @@ import {
 import { URL } from "@data";
 import './styles/main.scss';
 import { FeatureFlagsService } from '@curiouslearning/features';
-import assessmentSurveyManager from '@services/assessment-survey-manager';
 import gameStateService from "./gameStateService";
 
 const featureFlagService = new FeatureFlagsService({
   metaData: { userId: pseudoId }
 });
+import assessmentSurveyManager from '@assessment/assessment-survey-manager';
 
 declare const window: any;
 

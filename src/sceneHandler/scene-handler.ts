@@ -23,7 +23,7 @@ import gameSettingsService from '@gameSettingsService';
 import { FeatureFlagsService } from '@curiouslearning/features';
 import { FEATURE_QUICK_START } from '../services/features/constants';
 import scheduler from "@services/scheduler";
-import assessmentSurveyManager from '@services/assessment-survey-manager';
+import assessmentSurveyManager from '@assessment/assessment-survey-manager';
 import { AudioPlayer } from '@components';
 
 const featureFlagService = new FeatureFlagsService({
@@ -112,7 +112,7 @@ export class SceneHandler {
 
   private handleSwitchScene(sceneName: string) {
     if (sceneName === SCENE_NAME_LEVEL_SELECT) {
-      assessmentSurveyManager.openForTesting();
+      assessmentSurveyManager.open();
     } else {
       assessmentSurveyManager.close();
     }
