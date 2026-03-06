@@ -1,7 +1,6 @@
 export interface AssessmentPlayerElementOptions {
   playerTag: string;
   dataKey: string;
-  skipLoadingScreen: boolean;
   onLoaded?: () => void;
   onCompleted?: () => void;
   onClosed?: () => void;
@@ -23,13 +22,8 @@ export function createAssessmentPlayerElement(options: AssessmentPlayerElementOp
   playerElement.setAttribute('user-id', 'ftm-web-user');
   playerElement.setAttribute('user-source', 'feed-the-monster-web');
   playerElement.setAttribute('asset-base-url', '/assessment-survey');
-  playerElement.setAttribute('enable-service-worker', 'false');
-  playerElement.setAttribute('enable-unity-bridge', 'false');
-  playerElement.setAttribute('enable-android-summary', 'false');
-  playerElement.setAttribute('enable-parent-post-message', 'false');
+  playerElement.setAttribute('embed-mode', 'true');
   playerElement.setAttribute('host-theme', 'ftm-dim');
-  playerElement.setAttribute('skip-loading-screen', String(options.skipLoadingScreen));
-
   if (options.onLoaded) {
     playerElement.addEventListener('loaded', options.onLoaded);
   }

@@ -114,7 +114,6 @@ describe('AssessmentSurveyManager', () => {
     expect(overlay?.style.position).toBe('absolute');
     expect(overlay?.style.width).toBe('100%');
     expect(playerElement?.getAttribute('data-key')).toBe('west-african-english-words');
-    expect(playerElement?.getAttribute('skip-loading-screen')).toBe('false');
     expect(MockBroadcastChannel.postMessageCalls).toBe(1);
   });
 
@@ -132,7 +131,7 @@ describe('AssessmentSurveyManager', () => {
     expect(playerElement?.getAttribute('data-key')).toBe('zulu-lettersounds');
   });
 
-  it('should use warmed key and skip loading screen on open', async () => {
+  it('should use warmed key and avoid duplicate cache requests on open', async () => {
     setHeadResponseMap({
       '/assessment-survey/data/zulu-lettersounds.json': true,
     });
@@ -143,9 +142,6 @@ describe('AssessmentSurveyManager', () => {
 
     await manager.open('zulu-lettersounds');
 
-    const playerElement = document.querySelector('assessment-survey-player');
-
-    expect(playerElement?.getAttribute('skip-loading-screen')).toBe('true');
     expect(MockBroadcastChannel.postMessageCalls).toBe(1);
   });
 

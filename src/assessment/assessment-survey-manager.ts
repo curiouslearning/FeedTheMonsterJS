@@ -46,7 +46,6 @@ export class AssessmentSurveyManager {
     const playerElement = createAssessmentPlayerElement({
       playerTag: this.playerTag,
       dataKey: resolvedDataKey,
-      skipLoadingScreen,
       onLoaded: () => {
         console.log('[assessment-survey] loaded');
       },
