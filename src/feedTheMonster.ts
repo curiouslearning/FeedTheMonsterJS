@@ -19,12 +19,8 @@ import {
 } from "./analytics/analytics-event-interface";
 import { URL } from "@data";
 import './styles/main.scss';
-import { FeatureFlagsService } from '@curiouslearning/features';
+import { featureFlagsService } from '@curiouslearning/features';
 import gameStateService from "./gameStateService";
-
-const featureFlagService = new FeatureFlagsService({
-  metaData: { userId: pseudoId }
-});
 import assessmentSurveyManager from '@assessment/assessment-survey-manager';
 
 declare const window: any;
@@ -90,7 +86,11 @@ class App {
     await this.loadAndCacheFont(font, `./assets/fonts/${font}.ttf`);
     await this.loadTitleFeedbackCustomFont();
     await this.preloadGameAudios();
-    await featureFlagService.initialize();
+    featureFlagsService.init({
+      user: { userID: pseudoId, locale: this.lang },
+    });
+    await featureFlagsService.initialize();
+
     this.handleLoadingScreen();
     this.setupCanvas();
     const data = await getData();

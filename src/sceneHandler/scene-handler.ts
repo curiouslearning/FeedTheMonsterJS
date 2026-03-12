@@ -20,15 +20,11 @@ import {
 } from "@constants";
 import gameStateService from '@gameStateService';
 import gameSettingsService from '@gameSettingsService';
-import { FeatureFlagsService } from '@curiouslearning/features';
+import { featureFlagsService } from '@curiouslearning/features';
 import { FEATURE_QUICK_START } from '../services/features/constants';
 import scheduler from "@services/scheduler";
 import assessmentSurveyManager from '@assessment/assessment-survey-manager';
 import { AudioPlayer } from '@components';
-
-const featureFlagService = new FeatureFlagsService({
-  metaData: { userId: pseudoId }
-});
 
 export class SceneHandler {
   private activeScene: {
@@ -88,11 +84,13 @@ export class SceneHandler {
     this.gotoScene(SCENE_NAME_START);
 
     gameStateService.subscribe(gameStateService.EVENTS.START_GAME, (data) => {
-      if (featureFlagService.isFeatureEnabled(FEATURE_QUICK_START)) {
+      if (featureFlagsService.isFeatureEnabled(FEATURE_QUICK_START)) {
         // recreate data needed for gameplay scene
         const level = localStorage.getItem(PreviousPlayedLevel + lang) || 0;
 
         const data = gameStateService.data;
+
+        
         // TODO: this should really be in the gameplay state. Maybe create a LevelState that is managed by gameplaystate.
         const gamePlayData = {
           currentLevelData: {
