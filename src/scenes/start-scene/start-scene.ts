@@ -49,6 +49,9 @@ export class StartScene {
   private assessmentOverlayElement: HTMLElement | null = null;
   private assessmentContainer: HTMLElement | null = null;
   private assessmentRemote: any = null;
+  private assessmentControlContainer: HTMLElement | null = null;
+  private openAssessmentButton: HTMLButtonElement | null = null;
+  private closeAssessmentButton: HTMLButtonElement | null = null;
 
   constructor() {
     this.data = gameStateService.getFTMData();
@@ -185,27 +188,6 @@ export class StartScene {
       background: '#000',
     });
 
-    const closeBtn = document.createElement('button');
-    closeBtn.innerText = 'Close';
-    closeBtn.id = 'close-assessment-btn';
-    Object.assign(closeBtn.style, {
-      position: 'absolute',
-      top: '12px',
-      right: '12px',
-      zIndex: '10000',
-      padding: '8px 16px',
-      background: '#fff',
-      border: '2px solid #333',
-      borderRadius: '4px',
-      cursor: 'pointer',
-      fontSize: '14px',
-      fontWeight: 'bold',
-    });
-
-    closeBtn.onclick = () => this.closeAssessment();
-
-    container.appendChild(closeBtn);
-
     // Attach to StartScene root (NOT document.body)
     document.getElementById('background')?.appendChild(container);
 
@@ -217,33 +199,52 @@ export class StartScene {
 
   /** Adds a second button to open the assessment app as a federated module. */
   createAssessmentButton() {
-    const container = document.getElementById('title-and-play-button');
-    if (!container) return;
+    const background = document.getElementById('background');
+    if (!background) return;
 
     // Check if button already exists to prevent duplicates
-    if (document.getElementById('open-assessment-btn')) {
+    if (document.getElementById('assessment-controls')) {
       console.log('Assessment button already exists, skipping creation');
       return;
     }
 
-    const btn = document.createElement('button');
-    btn.id = 'open-assessment-btn';
-    btn.className = 'open-assessment-btn';
-    btn.innerText = 'Open Assessment';
-    btn.style.marginLeft = '8px';
-    btn.addEventListener('click', (e) => {
+    const controls = document.createElement('div');
+    controls.id = 'assessment-controls';
+
+    const openBtn = document.createElement('button');
+    openBtn.id = 'open-assessment-btn';
+    openBtn.className = 'assessment-toggle-btn open-assessment-btn';
+    openBtn.innerText = 'Open Assessment';
+    openBtn.addEventListener('click', (e) => {
       e.stopPropagation();
       console.log('Open Assessment button clicked');
       this.openAssessment();
     });
 
-    container.appendChild(btn);
+    const closeBtn = document.createElement('button');
+    closeBtn.id = 'close-assessment-btn';
+    closeBtn.className = 'assessment-toggle-btn close-assessment-btn';
+    closeBtn.innerText = 'Close Assessment';
+    closeBtn.style.display = 'none';
+    closeBtn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      this.closeAssessment();
+    });
+
+    controls.appendChild(openBtn);
+    controls.appendChild(closeBtn);
+    background.appendChild(controls);
+
+    this.assessmentControlContainer = controls;
+    this.openAssessmentButton = openBtn;
+    this.closeAssessmentButton = closeBtn;
   }
 
   private async openAssessment() {
     if (this.assessmentContainer) return;
 
     const container = this.createAssessmentContainer();
+    this.showAssessmentCloseButton();
 
     try {
       const remote = await import('assessment_survey_js/App');
@@ -253,13 +254,38 @@ export class StartScene {
         throw new Error('mount() not found on assessment remote');
       }
 
+      const baseUrl = this.getAssessmentBaseUrl();
       console.log('Assessment Module:', mod);
-      console.log('Mounting assessment with baseUrl: http://127.0.0.1:8080/');
-      mod.mount(container, { baseUrl: "http://127.0.0.1:8080/" });
+      console.log('Mounting assessment with baseUrl:', baseUrl);
+      mod.mount(container, { baseUrl });
       this.assessmentRemote = mod;
     } catch (err) {
       console.error('Failed to open assessment', err);
       this.closeAssessment();
+    }
+  }
+
+  private getAssessmentBaseUrl(): string {
+    const configuredBaseUrl = (window as any).__ASSESSMENT_BASE_URL__;
+    if (typeof configuredBaseUrl === 'string' && configuredBaseUrl.trim().length > 0) {
+      return configuredBaseUrl.endsWith('/') ? configuredBaseUrl : `${configuredBaseUrl}/`;
+    }
+
+    const configuredRemoteUrl = (window as any).__ASSESSMENT_REMOTE_URL__;
+    const remoteUrl =
+      typeof configuredRemoteUrl === 'string' && configuredRemoteUrl.trim().length > 0
+        ? configuredRemoteUrl
+        : new URL('./assessment-survey-js/remoteEntry.js', window.location.href).toString();
+
+    try {
+      const parsedRemoteUrl = new URL(remoteUrl, window.location.href);
+      const remotePathWithoutFile = parsedRemoteUrl.pathname.replace(/remoteEntry\.js$/i, '');
+      parsedRemoteUrl.pathname = remotePathWithoutFile.endsWith('/') ? remotePathWithoutFile : `${remotePathWithoutFile}/`;
+      parsedRemoteUrl.search = '';
+      parsedRemoteUrl.hash = '';
+      return parsedRemoteUrl.toString();
+    } catch (e) {
+      return new URL('./assessment-survey-js/', window.location.href).toString();
     }
   }
 
@@ -273,6 +299,25 @@ export class StartScene {
     this.assessmentContainer.remove();
     this.assessmentContainer = null;
     this.assessmentRemote = null;
+    this.showAssessmentOpenButton();
+  }
+
+  private showAssessmentCloseButton() {
+    if (this.openAssessmentButton) {
+      this.openAssessmentButton.style.display = 'none';
+    }
+    if (this.closeAssessmentButton) {
+      this.closeAssessmentButton.style.display = 'inline-flex';
+    }
+  }
+
+  private showAssessmentOpenButton() {
+    if (this.openAssessmentButton) {
+      this.openAssessmentButton.style.display = 'inline-flex';
+    }
+    if (this.closeAssessmentButton) {
+      this.closeAssessmentButton.style.display = 'none';
+    }
   }
 
   handleMouseClick = (event) => {
@@ -316,6 +361,10 @@ export class StartScene {
     this.riveMonsterElement.style.zIndex = "-1"; //Originally in LevelSelectionConstructor, moving it here so no need to have Rive logic in that scene.
     this.riveMonster.dispose();
     this.backgroundGenerator && this.backgroundGenerator.clearBackgroundContent();
+    this.assessmentControlContainer?.remove();
+    this.assessmentControlContainer = null;
+    this.openAssessmentButton = null;
+    this.closeAssessmentButton = null;
   }
 
   handlerInstallPrompt = (event) => {

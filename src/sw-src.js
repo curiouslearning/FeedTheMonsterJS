@@ -3,10 +3,11 @@ importScripts(
 );
 workbox.precaching.precacheAndRoute(self.__WB_MANIFEST, {
   ignoreURLParametersMatching: [/^cr_/],
-  exclude: [/^lang\//],
 });
 var number = 0;
 var version = 1.26;
+const ASSESSMENT_RUNTIME_CACHE = "assessment-runtime-cache";
+const FTM_RUNTIME_CACHE = "ftm-runtime-cache";
 // self.addEventListener('activate', function(e) {
 //     console.log("activated");
 //
@@ -57,6 +58,11 @@ async function preloadAdditionalAssets() {
     "/assets/rive/youngmonster.riv",
     "/assets/rive/adultmonster.riv",
     "/assets/rive/rive.wasm",
+    "/assessment-survey-js/remoteEntry.js",
+    "/assessment-survey-js/bundle.js",
+    "/assessment-survey-js/css/style.css",
+    "/assessment-survey-js/img/loadingImg.gif",
+    "/assessment-survey-js/audio/Correct.wav",
   ];
   const cache = await caches.open("dynamic-cache");
 
@@ -264,20 +270,64 @@ async function cacheFeedBackAudio(feedBackAudios, language) {
 
 
 self.addEventListener("fetch", function (event) {
-  const requestUrl = new URL(event.request.url);
-  if (requestUrl.searchParams.has('cache-bust')) {
-    return event.respondWith(fetch(event.request));
+  if (event.request.method !== "GET") {
+    return;
   }
+
+  const requestUrl = new URL(event.request.url);
+
+  // Runtime-cache assessment microfrontend assets to support offline mode
+  // after the first successful online load.
+  if (requestUrl.pathname.includes("/assessment-survey-js/") && event.request.method === "GET") {
+    event.respondWith(
+      caches.open(ASSESSMENT_RUNTIME_CACHE).then(async (cache) => {
+        const cachedResponse = await cache.match(event.request);
+        if (cachedResponse) {
+          return cachedResponse;
+        }
+
+        try {
+          const networkResponse = await fetch(event.request);
+          if (networkResponse && networkResponse.ok) {
+            cache.put(event.request, networkResponse.clone());
+          }
+          return networkResponse;
+        } catch (error) {
+          return new Response('Assessment asset unavailable offline', { status: 503 });
+        }
+      })
+    );
+    return;
+  }
+
   event.respondWith(
-    caches.match(event.request).then(function (response) {
+    caches.match(event.request, { ignoreSearch: true }).then(async function (response) {
       if (response) {
         return response;
       }
 
-      return fetch(event.request).catch(function () {
+      try {
+        const networkResponse = await fetch(event.request);
+
+        // Store same-origin GET assets during normal play so they are available offline later.
+        if (networkResponse && networkResponse.ok && requestUrl.origin === self.location.origin) {
+          const runtimeCache = await caches.open(FTM_RUNTIME_CACHE);
+          runtimeCache.put(event.request, networkResponse.clone());
+        }
+
+        return networkResponse;
+      } catch (error) {
+        // Offline navigation fallback so app shell still opens.
+        if (event.request.mode === "navigate") {
+          const appShell = await caches.match("/index.html", { ignoreSearch: true });
+          if (appShell) {
+            return appShell;
+          }
+        }
+
         // If the fetch fails (like when offline), return a fallback response
         return new Response('Network unavailable in sw', { status: 503 });
-      });;
+      }
     })
   );
 });

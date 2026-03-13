@@ -14,6 +14,33 @@ const { InjectManifest } = require('workbox-webpack-plugin');
 // const CompressionPlugin = require('compression-webpack-plugin');
 
 const mode = isDev ? 'development' : 'production';
+const assessmentRemoteUrlFallback = './assessment-survey-js/remoteEntry.js';
+const assessmentRemoteUrlFromEnv = process.env.ASSESSMENT_REMOTE_URL || '';
+const assessmentRemote = `promise new Promise((resolve, reject) => {
+  const remoteGlobal = 'assessment_survey_js';
+  const configuredUrl = window.__ASSESSMENT_REMOTE_URL__ || '${assessmentRemoteUrlFromEnv}';
+  const remoteUrl = configuredUrl || new URL('${assessmentRemoteUrlFallback}', window.location.href).toString();
+
+  if (window[remoteGlobal]) {
+    return resolve(window[remoteGlobal]);
+  }
+
+  const existingScript = document.querySelector('script[data-assessment-remote="true"]');
+  if (existingScript) {
+    existingScript.addEventListener('load', () => resolve(window[remoteGlobal]));
+    existingScript.addEventListener('error', () => reject(new Error('Failed to load ' + remoteUrl)));
+    return;
+  }
+
+  const script = document.createElement('script');
+  script.src = remoteUrl;
+  script.type = 'text/javascript';
+  script.async = true;
+  script.dataset.assessmentRemote = 'true';
+  script.onload = () => resolve(window[remoteGlobal]);
+  script.onerror = () => reject(new Error('Failed to load ' + remoteUrl));
+  document.head.appendChild(script);
+})`;
 
 var config = {
   mode,
@@ -84,7 +111,7 @@ var config = {
     new ModuleFederationPlugin({
       name: "feedthemonsterjs",
       remotes: {
-        "assessment_survey_js": "assessment_survey_js@http://127.0.0.1:8080/remoteEntry.js",
+        "assessment_survey_js": assessmentRemote,
       },
       shared: {},
     }),
@@ -102,17 +129,18 @@ var config = {
         { from: "./public/assets", to: "./assets" },
         { from: "./public/manifest.json", to: "./" },
         { from: "./lang", to: "./lang" },
+        {
+          from: "../assessment-survey-js/dist",
+          to: "./assessment-survey-js",
+          noErrorOnMissing: true,
+        },
       ],
     }),
-    // Only inject service worker manifest in production to avoid watch mode warnings
-    ...(isDev ? [] : [
-      new InjectManifest({
-        swSrc: "./src/sw-src.js",
-        swDest: "sw.js",
-        maximumFileSizeToCacheInBytes: 10 * 1024 * 1024,
-        exclude: [/lang\//],
-      }),
-    ]),
+    new InjectManifest({
+      swSrc: "./src/sw-src.js",
+      swDest: "sw.js",
+      maximumFileSizeToCacheInBytes: 10 * 1024 * 1024,
+    }),
 
     // TODO: fix lint issues first
     // lint can be tested by running `npm run lint`

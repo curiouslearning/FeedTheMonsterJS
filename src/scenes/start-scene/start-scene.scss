@@ -1,16 +1,21 @@
 #title-and-play-button {
   position: absolute;
   width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  padding-top: 8%;
 }
 
 #title {
-  width: 100%;
+  width: 90%;
   font-family: Atma-SemiBold, sans-serif;
   z-index: 4;
   position: relative;
-  margin-top: 15%;
+  margin-top: 12px;
   text-align: center;
-  padding: 15px 10px 0;
+  padding: 0 10px;
   font-size: 8vw;
   color: #f8b618;
   text-shadow:
@@ -27,38 +32,57 @@
   -webkit-box-orient: vertical;
   overflow: hidden;
   word-wrap: break-word;
+  order: 2;
 
   &.title-long {
     font-size: 6.5vw;
-    margin-top: 18%;
+    margin-top: 12px;
     padding: 10px;
   }
+}
+
+#play-button {
+  order: 1;
 }
 
 // Media Queries
 @media (min-width: 501px) and (max-width: 768px) {
   #title {
-    margin-top: 5%;
+    margin-top: 12px;
   }
 }
 
 @media (min-width: 769px) and (max-width: 992px) {
   #title {
-    margin-top: 5%;
+    margin-top: 12px;
   }
 }
 
-/* Styles for the injected assessment button */
-#title-and-play-button .open-assessment-btn {
-  display: inline-block;
-  margin-left: 8px;
+/* Bottom-right control (above version info) for assessment open/close */
+#assessment-controls {
+  position: absolute;
+  right: 12px;
+  bottom: 48px;
+  z-index: 12;
+  display: flex;
+  gap: 8px;
+}
+
+#assessment-controls .assessment-toggle-btn {
+  border: 2px solid #1a1a1a;
+  border-radius: 10px;
   background: #f8b618;
   color: #1a1a1a;
-  padding: 10px 14px;
-  border-radius: 10px;
+  padding: 8px 12px;
   font-weight: 700;
-  z-index: 999;
-  position: relative;
+  cursor: pointer;
+  min-height: 40px;
+  align-items: center;
+  justify-content: center;
+}
+
+#assessment-controls .close-assessment-btn {
+  background: #ffffff;
 }
 
 #assessment-container {
