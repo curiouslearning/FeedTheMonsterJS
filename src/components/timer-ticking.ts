@@ -1,4 +1,4 @@
-import { loadImages } from "@common";
+import { loadImages, TimeoutRegistry } from "@common";
 import { AudioPlayer } from "@components";
 import { TIMER_EMPTY, ROTATING_CLOCK, AUDIO_TIMEOUT } from "@constants";
 import './timerHtml/timerHtml.scss';
@@ -30,6 +30,7 @@ export default class TimerTicking {
     public timerFullContainer: HTMLElement | null = null;
     public timerHtmlComponent: TimerHTMLComponent;
     private eventListeners: Function[] = [];
+    private timeoutRegistry: TimeoutRegistry = new TimeoutRegistry();
 
     constructor(width: number, height: number, callback: Function) {
         this.width = width;
@@ -50,7 +51,7 @@ export default class TimerTicking {
         this.timerHtmlComponent = new TimerHTMLComponent('timer-ticking');
         // Reference the container element for the "full timer" image
         // Verify and cache the DOM element after rendering
-        setTimeout(() => {
+        this.timeoutRegistry.setTimeout(() => {
             this.timerFullContainer = document.getElementById("timer-full-container");
             if (this.timerFullContainer) this.timerFullContainer.style.width = "100%";
         }, 0);
@@ -127,7 +128,7 @@ export default class TimerTicking {
         const element = document.getElementById("rotating-clock");
         if (!element) return;
 
-        if (condition) {
+        if (condition && !this.isStoneDropped && !this.isMyTimerOver) {
             // Resume rotation - use CSS animation-play-state for seamless resumption
             element.style.animationPlayState = "running";
             if (!element.style.animation || element.style.animation === "none") {
@@ -137,8 +138,6 @@ export default class TimerTicking {
             // Pause rotation - use CSS animation-play-state for seamless pausing
             if (element.style.animation && element.style.animation !== "none") {
                 element.style.animationPlayState = "paused";
-            } else {
-                element.style.animation = "none";
             }
         }
     }
@@ -164,6 +163,7 @@ export default class TimerTicking {
     public destroy(): void {
         this.eventListeners = unsubscribeAll(this.eventListeners);
         this.stopTimer();
+        this.timeoutRegistry.cancelAll();
         this.timerHtmlComponent?.destroy();
     }
 }

@@ -1,5 +1,23 @@
 
 
+## [1.4.0](https://github.com/curiouslearning/FeedTheMonsterJS/compare/1.3.1...1.4.0) (2026-02-02)
+
+
+### Features
+
+* resetting back to idle after playing a puzzle ([#1890](https://github.com/curiouslearning/FeedTheMonsterJS/issues/1890)) ([8c16d55](https://github.com/curiouslearning/FeedTheMonsterJS/commit/8c16d557d0f8cb66bf0d65f768e2bfc1fdffc6bc))
+
+
+### Bug Fixes
+
+* fix for pressing the prompt when the tutorial has been finished from that level (FM-826) ([572ccf3](https://github.com/curiouslearning/FeedTheMonsterJS/commit/572ccf3a3cfaeb8a85745bdb22eb71c3bc14b367))
+* fix for resetting the time on non tutorial levels ([b579e27](https://github.com/curiouslearning/FeedTheMonsterJS/commit/b579e278330a2f27387e2f206ba3c517386a297b))
+* Fixed FM-816 Stones Become Non-Interactive After Dropping/ hovering When Timer Expires. ([#1893](https://github.com/curiouslearning/FeedTheMonsterJS/issues/1893)) ([e83a3aa](https://github.com/curiouslearning/FeedTheMonsterJS/commit/e83a3aa370d8626167b1ec0b0c6a2acdaae2c868))
+* Fixed Unintended Unpause When Selecting Retry or Level Selection (FM-812). ([#1895](https://github.com/curiouslearning/FeedTheMonsterJS/issues/1895)) ([a404d6d](https://github.com/curiouslearning/FeedTheMonsterJS/commit/a404d6d0d058edd0e5a6a3bcab79786b2ac3f363))
+* FM-818 Stones From Previous Puzzle Remain Interactive After Mini-Game Trigger on Timer End. ([#1896](https://github.com/curiouslearning/FeedTheMonsterJS/issues/1896)) ([5c1a97f](https://github.com/curiouslearning/FeedTheMonsterJS/commit/5c1a97f6bfb1c449f3df8c11d76ef3ac400f325e))
+* Setting up monster evolution api! ([#1889](https://github.com/curiouslearning/FeedTheMonsterJS/issues/1889)) ([df90f9e](https://github.com/curiouslearning/FeedTheMonsterJS/commit/df90f9ef646e95be0a5f8ad91ea9b66c89be5ea8))
+* show bonus star only if the normal stars are same or lower ([23fd74a](https://github.com/curiouslearning/FeedTheMonsterJS/commit/23fd74a4e86d908b5665a6440b5b2a979488f65b))
+
 ## [1.3.1](https://github.com/curiouslearning/FeedTheMonsterJS/compare/1.3.0...1.3.1) (2025-12-30)
 
 
