@@ -7,12 +7,12 @@
     "عالی"
   ],
   "majversion": 3,
-  "minversion": 80,
+  "minversion": 95,
   "langname": "DARI",
   "FeedbackAudios": [
     "https://feedthemonster.curiouscontent.org/lang/dari/audios/fantastic.mp3",
-    " https://feedthemonster.curiouscontent.org/lang/dari/audios/great.mp3",
-    " https://feedthemonster.curiouscontent.org/lang/dari/audios/amazing.mp3"
+    "https://feedthemonster.curiouscontent.org/lang/dari/audios/great.mp3",
+    "https://feedthemonster.curiouscontent.org/lang/dari/audios/amazing.mp3"
   ],
   "OtherAudios": {
     "Select your player": "https://feedthemonster.curiouscontent.org/lang/dari/audios/Select-your-player.mp3",
@@ -43,10 +43,10 @@
           },
           "foilstones": [
             {
-              "StoneText": "ت"
+              "StoneText": "ث"
             },
             {
-              "StoneText": "آ"
+              "StoneText": "ت"
             }
           ]
         },
@@ -63,10 +63,10 @@
           },
           "foilstones": [
             {
-              "StoneText": "آ"
+              "StoneText": "ت"
             },
             {
-              "StoneText": "ت"
+              "StoneText": "ب"
             }
           ]
         },
@@ -83,10 +83,10 @@
           },
           "foilstones": [
             {
-              "StoneText": "ب"
+              "StoneText": "ا"
             },
             {
-              "StoneText": "ب"
+              "StoneText": "آ"
             }
           ]
         },
@@ -106,7 +106,7 @@
               "StoneText": "ب"
             },
             {
-              "StoneText": "ث"
+              "StoneText": "ا"
             }
           ]
         },
@@ -158,7 +158,7 @@
           },
           "foilstones": [
             {
-              "StoneText": "ا"
+              "StoneText": "ت"
             },
             {
               "StoneText": "آ"
@@ -181,10 +181,10 @@
           },
           "foilstones": [
             {
-              "StoneText": "ث"
+              "StoneText": "ت"
             },
             {
-              "StoneText": "ت"
+              "StoneText": "آ"
             },
             {
               "StoneText": "ب"
@@ -204,13 +204,13 @@
           },
           "foilstones": [
             {
+              "StoneText": "آ"
+            },
+            {
               "StoneText": "ا"
             },
             {
-              "StoneText": "ث"
-            },
-            {
-              "StoneText": "ب"
+              "StoneText": "ا"
             }
           ]
         },
@@ -230,7 +230,7 @@
               "StoneText": "ت"
             },
             {
-              "StoneText": "ا"
+              "StoneText": "ب"
             },
             {
               "StoneText": "ب"
@@ -253,13 +253,13 @@
               "StoneText": "ت"
             },
             {
-              "StoneText": "آ"
+              "StoneText": "ب"
             },
             {
-              "StoneText": "ث"
+              "StoneText": "ب"
             },
             {
-              "StoneText": "ا"
+              "StoneText": "ت"
             }
           ]
         }
@@ -288,10 +288,10 @@
           },
           "foilstones": [
             {
-              "StoneText": "ث"
+              "StoneText": "ت"
             },
             {
-              "StoneText": "ا"
+              "StoneText": "ب"
             }
           ]
         },
@@ -308,10 +308,10 @@
           },
           "foilstones": [
             {
-              "StoneText": "ب"
+              "StoneText": "آ"
             },
             {
-              "StoneText": "آ"
+              "StoneText": "ث"
             }
           ]
         },
@@ -331,7 +331,7 @@
               "StoneText": "ب"
             },
             {
-              "StoneText": "ا"
+              "StoneText": "آ"
             }
           ]
         },
@@ -348,7 +348,7 @@
           },
           "foilstones": [
             {
-              "StoneText": "ا"
+              "StoneText": "ب"
             },
             {
               "StoneText": "آ"
@@ -368,13 +368,13 @@
           },
           "foilstones": [
             {
-              "StoneText": "ا"
-            },
-            {
-              "StoneText": "ا"
-            },
-            {
               "StoneText": "ث"
+            },
+            {
+              "StoneText": "ا"
+            },
+            {
+              "StoneText": "ت"
             }
           ]
         }
@@ -403,10 +403,10 @@
           },
           "foilstones": [
             {
-              "StoneText": "آ"
+              "StoneText": "ب"
             },
             {
-              "StoneText": "آ"
+              "StoneText": "آ"
             }
           ]
         },
@@ -423,10 +423,10 @@
           },
           "foilstones": [
             {
-              "StoneText": "ب"
+              "StoneText": "تـ"
             },
             {
-              "StoneText": "آ"
+              "StoneText": "ا"
             }
           ]
         },
@@ -443,10 +443,10 @@
           },
           "foilstones": [
             {
-              "StoneText": "آ"
+              "StoneText": "تـ"
             },
             {
-              "StoneText": "تـ"
+              "StoneText": "آ"
             }
           ]
         },
@@ -463,10 +463,10 @@
           },
           "foilstones": [
             {
-              "StoneText": "ث"
+              "StoneText": "ثـ"
             },
             {
-              "StoneText": "ب"
+              "StoneText": "تـ"
             }
           ]
         },
@@ -483,13 +483,13 @@
           },
           "foilstones": [
             {
-              "StoneText": "ثـ"
-            },
-            {
               "StoneText": "آ"
             },
             {
-              "StoneText": "ث"
+              "StoneText": "ا"
+            },
+            {
+              "StoneText": "تـ"
             }
           ]
         }
@@ -518,13 +518,13 @@
           },
           "foilstones": [
             {
-              "StoneText": "چ"
+              "StoneText": "ت"
             },
             {
               "StoneText": "پ"
             },
             {
-              "StoneText": "ح"
+              "StoneText": "پ"
             }
           ]
         },
@@ -541,13 +541,13 @@
           },
           "foilstones": [
             {
-              "StoneText": "ا"
-            },
-            {
               "StoneText": "خ"
             },
             {
-              "StoneText": "خ"
+              "StoneText": "ثـ"
+            },
+            {
+              "StoneText": "چ"
             }
           ]
         },
@@ -567,10 +567,10 @@
               "StoneText": "چ"
             },
             {
-              "StoneText": "آ"
+              "StoneText": "ح"
             },
             {
-              "StoneText": "ث"
+              "StoneText": "پ"
             }
           ]
         },
@@ -587,13 +587,13 @@
           },
           "foilstones": [
             {
-              "StoneText": "پ"
-            },
-            {
               "StoneText": "خ"
             },
             {
-              "StoneText": "آ"
+              "StoneText": "ت"
+            },
+            {
+              "StoneText": "آ"
             }
           ]
         },
@@ -610,13 +610,13 @@
           },
           "foilstones": [
             {
-              "StoneText": "چ"
-            },
-            {
-              "StoneText": "خ"
+              "StoneText": "ج"
             },
             {
               "StoneText": "ح"
+            },
+            {
+              "StoneText": "خ"
             },
             {
               "StoneText": "ج"
@@ -648,13 +648,13 @@
           },
           "foilstones": [
             {
-              "StoneText": "ثـ"
+              "StoneText": "ث"
             },
             {
-              "StoneText": "ثـ"
+              "StoneText": "پ"
             },
             {
-              "StoneText": "ح"
+              "StoneText": "ب"
             }
           ]
         },
@@ -671,13 +671,13 @@
           },
           "foilstones": [
             {
-              "StoneText": "ج"
+              "StoneText": "چ"
             },
             {
-              "StoneText": "ثـ"
+              "StoneText": "پ"
             },
             {
-              "StoneText": "آ"
+              "StoneText": "تـ"
             }
           ]
         },
@@ -694,13 +694,13 @@
           },
           "foilstones": [
             {
-              "StoneText": "آ"
+              "StoneText": "چ"
             },
             {
               "StoneText": "خ"
             },
             {
-              "StoneText": "ثـ"
+              "StoneText": "آ"
             }
           ]
         },
@@ -717,13 +717,13 @@
           },
           "foilstones": [
             {
-              "StoneText": "ج"
+              "StoneText": "چ"
             },
             {
-              "StoneText": "خ"
+              "StoneText": "چ"
             },
             {
-              "StoneText": "ا"
+              "StoneText": "چ"
             }
           ]
         },
@@ -740,16 +740,16 @@
           },
           "foilstones": [
             {
-              "StoneText": "تـ"
+              "StoneText": "چ"
             },
             {
-              "StoneText": "تـ"
+              "StoneText": "ثـ"
             },
             {
-              "StoneText": "ح"
+              "StoneText": "چ"
             },
             {
-              "StoneText": "پ"
+              "StoneText": "ج"
             }
           ]
         }
@@ -781,7 +781,7 @@
               "StoneText": "آ"
             },
             {
-              "StoneText": "چ"
+              "StoneText": "ث"
             },
             {
               "StoneText": "ج"
@@ -801,13 +801,13 @@
           },
           "foilstones": [
             {
-              "StoneText": "پ"
+              "StoneText": "ثـ"
             },
             {
-              "StoneText": "چ"
+              "StoneText": "ح"
             },
             {
-              "StoneText": "ج"
+              "StoneText": "ح"
             }
           ]
         },
@@ -827,7 +827,7 @@
               "StoneText": "ج"
             },
             {
-              "StoneText": "آ"
+              "StoneText": "چ"
             },
             {
               "StoneText": "چ"
@@ -850,10 +850,10 @@
               "StoneText": "پ"
             },
             {
-              "StoneText": "ح"
+              "StoneText": "پ"
             },
             {
-              "StoneText": "ح"
+              "StoneText": "آ"
             }
           ]
         },
@@ -870,16 +870,16 @@
           },
           "foilstones": [
             {
+              "StoneText": "ثـ"
+            },
+            {
+              "StoneText": "چ"
+            },
+            {
+              "StoneText": "ث"
+            },
+            {
               "StoneText": "ب"
-            },
-            {
-              "StoneText": "ج"
-            },
-            {
-              "StoneText": "ا"
-            },
-            {
-              "StoneText": "خ"
             }
           ]
         }
@@ -908,13 +908,13 @@
           },
           "foilstones": [
             {
+              "StoneText": "تـ"
+            },
+            {
+              "StoneText": "چ"
+            },
+            {
               "StoneText": "ا"
-            },
-            {
-              "StoneText": "ج"
-            },
-            {
-              "StoneText": "پـ"
             }
           ]
         },
@@ -931,13 +931,13 @@
           },
           "foilstones": [
             {
-              "StoneText": "پ"
+              "StoneText": "ا"
             },
             {
-              "StoneText": "ث"
+              "StoneText": "ثـ"
             },
             {
-              "StoneText": "ج"
+              "StoneText": "ا"
             }
           ]
         },
@@ -954,13 +954,13 @@
           },
           "foilstones": [
             {
-              "StoneText": "ت"
+              "StoneText": "چ"
             },
             {
-              "StoneText": "ت"
+              "StoneText": "پـ"
             },
             {
-              "StoneText": "ث"
+              "StoneText": "ا"
             }
           ]
         },
@@ -977,13 +977,13 @@
           },
           "foilstones": [
             {
+              "StoneText": "خ"
+            },
+            {
               "StoneText": "آ"
             },
             {
-              "StoneText": "ت"
-            },
-            {
-              "StoneText": "پـ"
+              "StoneText": "ا"
             }
           ]
         },
@@ -1000,16 +1000,16 @@
           },
           "foilstones": [
             {
-              "StoneText": "پـ"
-            },
-            {
-              "StoneText": "ا"
-            },
-            {
               "StoneText": "آ"
             },
             {
-              "StoneText": "تـ"
+              "StoneText": "آ"
+            },
+            {
+              "StoneText": "ج"
+            },
+            {
+              "StoneText": "ح"
             }
           ]
         }
@@ -1038,13 +1038,13 @@
           },
           "foilstones": [
             {
-              "StoneText": "جـ"
+              "StoneText": "ثـ"
             },
             {
-              "StoneText": "ث"
+              "StoneText": "چ"
             },
             {
-              "StoneText": "چـ"
+              "StoneText": "ج"
             }
           ]
         },
@@ -1061,10 +1061,10 @@
           },
           "foilstones": [
             {
-              "StoneText": "خـ"
+              "StoneText": "ثـ"
             },
             {
-              "StoneText": "حـ"
+              "StoneText": "جـ"
             },
             {
               "StoneText": "خـ"
@@ -1084,13 +1084,13 @@
           },
           "foilstones": [
             {
-              "StoneText": "خـ"
+              "StoneText": "جـ"
             },
             {
-              "StoneText": "خـ"
+              "StoneText": "چ"
             },
             {
-              "StoneText": "خـ"
+              "StoneText": "ثـ"
             }
           ]
         },
@@ -1107,13 +1107,13 @@
           },
           "foilstones": [
             {
-              "StoneText": "جـ"
+              "StoneText": "ج"
             },
             {
               "StoneText": "ا"
             },
             {
-              "StoneText": "پ"
+              "StoneText": "خـ"
             }
           ]
         },
@@ -1130,16 +1130,16 @@
           },
           "foilstones": [
             {
-              "StoneText": "ث"
+              "StoneText": "خ"
             },
             {
-              "StoneText": "ا"
+              "StoneText": "خ"
             },
             {
-              "StoneText": "خـ"
+              "StoneText": "آ"
             },
             {
-              "StoneText": "خـ"
+              "StoneText": "جـ"
             }
           ]
         }
@@ -1168,13 +1168,13 @@
           },
           "foilstones": [
             {
+              "StoneText": "خـ"
+            },
+            {
               "StoneText": "د"
             },
             {
-              "StoneText": "ب"
-            },
-            {
-              "StoneText": "تـ"
+              "StoneText": "خـ"
             }
           ]
         },
@@ -1191,16 +1191,16 @@
           },
           "foilstones": [
             {
+              "StoneText": "تـ"
+            },
+            {
               "StoneText": "د"
             },
             {
               "StoneText": "ذ"
             },
             {
-              "StoneText": "د"
-            },
-            {
-              "StoneText": "ب"
+              "StoneText": "چـ"
             }
           ]
         },
@@ -1217,13 +1217,13 @@
           },
           "foilstones": [
             {
-              "StoneText": "جـ"
+              "StoneText": "خـ"
             },
             {
-              "StoneText": "جـ"
+              "StoneText": "ذ"
             },
             {
-              "StoneText": "چـ"
+              "StoneText": "ح"
             }
           ]
         },
@@ -1240,13 +1240,13 @@
           },
           "foilstones": [
             {
-              "StoneText": "آ"
+              "StoneText": "پ"
+            },
+            {
+              "StoneText": "ژ"
             },
             {
               "StoneText": "ز"
-            },
-            {
-              "StoneText": "ثـ"
             }
           ]
         },
@@ -1266,10 +1266,10 @@
               "StoneText": "د"
             },
             {
-              "StoneText": "ذ"
+              "StoneText": "ر"
             },
             {
-              "StoneText": "ث"
+              "StoneText": "ر"
             }
           ]
         }
@@ -1298,13 +1298,13 @@
           },
           "foilstones": [
             {
-              "StoneText": "ت"
+              "StoneText": "پ"
             },
             {
-              "StoneText": "ز"
+              "StoneText": "ژ"
             },
             {
-              "StoneText": "ر"
+              "StoneText": "ب"
             }
           ]
         },
@@ -1321,13 +1321,13 @@
           },
           "foilstones": [
             {
-              "StoneText": "آ"
+              "StoneText": "ح"
             },
             {
-              "StoneText": "ژ"
+              "StoneText": "ذ"
             },
             {
-              "StoneText": "آ"
+              "StoneText": "ز"
             }
           ]
         },
@@ -1344,13 +1344,13 @@
           },
           "foilstones": [
             {
-              "StoneText": "د"
+              "StoneText": "چ"
             },
             {
-              "StoneText": "چـ"
+              "StoneText": "ر"
             },
             {
-              "StoneText": "جـ"
+              "StoneText": "آ"
             }
           ]
         },
@@ -1367,16 +1367,16 @@
           },
           "foilstones": [
             {
-              "StoneText": "ذ"
+              "StoneText": "تـ"
             },
             {
-              "StoneText": "پـ"
+              "StoneText": "ح"
             },
             {
-              "StoneText": "ذ"
+              "StoneText": "چ"
             },
             {
-              "StoneText": "ذ"
+              "StoneText": "ا"
             }
           ]
         },
@@ -1393,13 +1393,13 @@
           },
           "foilstones": [
             {
-              "StoneText": "ا"
+              "StoneText": "ح"
             },
             {
-              "StoneText": "ذ"
+              "StoneText": "ب"
             },
             {
-              "StoneText": "ا"
+              "StoneText": "ژ"
             }
           ]
         }
@@ -1428,13 +1428,13 @@
           },
           "foilstones": [
             {
-              "StoneText": "ز"
+              "StoneText": "ثـ"
             },
             {
-              "StoneText": "ب"
+              "StoneText": "ثـ"
             },
             {
-              "StoneText": "ج"
+              "StoneText": "پ"
             }
           ]
         },
@@ -1451,13 +1451,13 @@
           },
           "foilstones": [
             {
-              "StoneText": "ب"
-            },
-            {
               "StoneText": "ز"
             },
             {
-              "StoneText": "آ"
+              "StoneText": "د"
+            },
+            {
+              "StoneText": "خ"
             }
           ]
         },
@@ -1474,13 +1474,13 @@
           },
           "foilstones": [
             {
-              "StoneText": "ژ"
+              "StoneText": "د"
             },
             {
-              "StoneText": "چ"
+              "StoneText": "ذ"
             },
             {
-              "StoneText": "تـ"
+              "StoneText": "آ"
             }
           ]
         },
@@ -1497,13 +1497,13 @@
           },
           "foilstones": [
             {
+              "StoneText": "ژ"
+            },
+            {
+              "StoneText": "پ"
+            },
+            {
               "StoneText": "جـ"
-            },
-            {
-              "StoneText": "ز"
-            },
-            {
-              "StoneText": "چـ"
             }
           ]
         },
@@ -1520,16 +1520,16 @@
           },
           "foilstones": [
             {
-              "StoneText": "د"
+              "StoneText": "آ"
             },
             {
-              "StoneText": "ذ"
+              "StoneText": "خ"
             },
             {
-              "StoneText": "ج"
+              "StoneText": "چ"
             },
             {
-              "StoneText": "تـ"
+              "StoneText": "چـ"
             }
           ]
         }
@@ -1558,13 +1558,13 @@
           },
           "foilstones": [
             {
-              "StoneText": "ثـ"
+              "StoneText": "ز"
             },
             {
-              "StoneText": "ح"
+              "StoneText": "ژ"
             },
             {
-              "StoneText": "ر"
+              "StoneText": "ز"
             }
           ]
         },
@@ -1581,13 +1581,13 @@
           },
           "foilstones": [
             {
-              "StoneText": "چـ"
+              "StoneText": "ز"
             },
             {
-              "StoneText": "ت"
+              "StoneText": "ز"
             },
             {
-              "StoneText": "حـ"
+              "StoneText": "ث"
             }
           ]
         },
@@ -1604,13 +1604,13 @@
           },
           "foilstones": [
             {
-              "StoneText": "ژ"
-            },
-            {
               "StoneText": "چ"
             },
             {
               "StoneText": "ثـ"
+            },
+            {
+              "StoneText": "ب"
             }
           ]
         },
@@ -1627,13 +1627,13 @@
           },
           "foilstones": [
             {
-              "StoneText": "خـ"
-            },
-            {
-              "StoneText": "ذ"
+              "StoneText": "جـ"
             },
             {
               "StoneText": "ز"
+            },
+            {
+              "StoneText": "ثـ"
             }
           ]
         },
@@ -1650,16 +1650,16 @@
           },
           "foilstones": [
             {
-              "StoneText": "ب"
+              "StoneText": "ثـ"
             },
             {
-              "StoneText": "حـ"
+              "StoneText": "د"
             },
             {
-              "StoneText": "آ"
+              "StoneText": "پ"
             },
             {
-              "StoneText": "ز"
+              "StoneText": "ح"
             }
           ]
         }
@@ -1688,13 +1688,13 @@
           },
           "foilstones": [
             {
-              "StoneText": "ر"
+              "StoneText": "ص"
             },
             {
-              "StoneText": "ر"
+              "StoneText": "ص"
             },
             {
-              "StoneText": "تـ"
+              "StoneText": "چـ"
             }
           ]
         },
@@ -1711,13 +1711,13 @@
           },
           "foilstones": [
             {
-              "StoneText": "ض"
-            },
-            {
-              "StoneText": "خ"
+              "StoneText": "تـ"
             },
             {
               "StoneText": "ح"
+            },
+            {
+              "StoneText": "ر"
             }
           ]
         },
@@ -1734,13 +1734,13 @@
           },
           "foilstones": [
             {
+              "StoneText": "ص"
+            },
+            {
               "StoneText": "س"
             },
             {
-              "StoneText": "چـ"
-            },
-            {
-              "StoneText": "ط"
+              "StoneText": "ثـ"
             }
           ]
         },
@@ -1757,13 +1757,13 @@
           },
           "foilstones": [
             {
-              "StoneText": "ج"
+              "StoneText": "جـ"
             },
             {
-              "StoneText": "ش"
+              "StoneText": "آ"
             },
             {
-              "StoneText": "چـ"
+              "StoneText": "ح"
             }
           ]
         },
@@ -1780,16 +1780,16 @@
           },
           "foilstones": [
             {
-              "StoneText": "آ"
+              "StoneText": "ش"
             },
             {
-              "StoneText": "ض"
+              "StoneText": "ذ"
             },
             {
-              "StoneText": "ا"
+              "StoneText": "ص"
             },
             {
-              "StoneText": "س"
+              "StoneText": "ش"
             }
           ]
         }
@@ -1821,7 +1821,7 @@
               "StoneText": "ت"
             },
             {
-              "StoneText": "آ"
+              "StoneText": "ز"
             }
           ]
         },
@@ -1838,10 +1838,10 @@
           },
           "foilstones": [
             {
-              "StoneText": "ش"
+              "StoneText": "س"
             },
             {
-              "StoneText": "ش"
+              "StoneText": "حـ"
             }
           ]
         },
@@ -1858,10 +1858,10 @@
           },
           "foilstones": [
             {
-              "StoneText": "ض"
+              "StoneText": "ژ"
             },
             {
-              "StoneText": "آ"
+              "StoneText": "ا"
             }
           ]
         },
@@ -1878,10 +1878,10 @@
           },
           "foilstones": [
             {
-              "StoneText": "ژ"
+              "StoneText": "آ"
             },
             {
-              "StoneText": "آ"
+              "StoneText": "ض"
             }
           ]
         },
@@ -1898,13 +1898,13 @@
           },
           "foilstones": [
             {
-              "StoneText": "ص"
+              "StoneText": "خ"
             },
             {
-              "StoneText": "آ"
+              "StoneText": "آ"
             },
             {
-              "StoneText": "ا"
+              "StoneText": "ثـ"
             }
           ]
         }
@@ -1933,13 +1933,13 @@
           },
           "foilstones": [
             {
-              "StoneText": "ض"
+              "StoneText": "خـ"
             },
             {
-              "StoneText": "ط"
+              "StoneText": "خ"
             },
             {
-              "StoneText": "ب"
+              "StoneText": "پ"
             }
           ]
         },
@@ -1956,13 +1956,13 @@
           },
           "foilstones": [
             {
-              "StoneText": "س"
+              "StoneText": "ز"
             },
             {
-              "StoneText": "ر"
+              "StoneText": "ت"
             },
             {
-              "StoneText": "س"
+              "StoneText": "تـ"
             }
           ]
         },
@@ -1979,13 +1979,13 @@
           },
           "foilstones": [
             {
-              "StoneText": "تـ"
+              "StoneText": "س"
             },
             {
-              "StoneText": "آ"
+              "StoneText": "ط"
             },
             {
-              "StoneText": "ب"
+              "StoneText": "ط"
             }
           ]
         },
@@ -2002,13 +2002,13 @@
           },
           "foilstones": [
             {
+              "StoneText": "ز"
+            },
+            {
+              "StoneText": "ص"
+            },
+            {
               "StoneText": "ط"
-            },
-            {
-              "StoneText": "ج"
-            },
-            {
-              "StoneText": "چ"
             }
           ]
         },
@@ -2025,16 +2025,16 @@
           },
           "foilstones": [
             {
-              "StoneText": "ط"
+              "StoneText": "جـ"
             },
             {
               "StoneText": "ض"
             },
             {
-              "StoneText": "ض"
+              "StoneText": "ز"
             },
             {
-              "StoneText": "ش"
+              "StoneText": "ص"
             }
           ]
         }
@@ -2063,19 +2063,19 @@
           },
           "foilstones": [
             {
-              "StoneText": "آ"
+              "StoneText": "خـ"
+            },
+            {
+              "StoneText": "سـ"
+            },
+            {
+              "StoneText": "س"
             },
             {
               "StoneText": "ب"
             },
             {
-              "StoneText": "چـ"
-            },
-            {
-              "StoneText": "ب"
-            },
-            {
-              "StoneText": "ر"
+              "StoneText": "ج"
             }
           ]
         },
@@ -2092,16 +2092,16 @@
           },
           "foilstones": [
             {
-              "StoneText": "ط"
+              "StoneText": "ب"
             },
             {
-              "StoneText": "د"
+              "StoneText": "شـ"
             },
             {
-              "StoneText": "ز"
+              "StoneText": "ذ"
             },
             {
-              "StoneText": "ضـ"
+              "StoneText": "س"
             }
           ]
         },
@@ -2121,10 +2121,10 @@
               "StoneText": "ضـ"
             },
             {
-              "StoneText": "د"
+              "StoneText": "ش"
             },
             {
-              "StoneText": "آ"
+              "StoneText": "د"
             }
           ]
         },
@@ -2141,16 +2141,16 @@
           },
           "foilstones": [
             {
-              "StoneText": "سـ"
+              "StoneText": "ثـ"
             },
             {
-              "StoneText": "صـ"
+              "StoneText": "ط"
             },
             {
-              "StoneText": "ص"
+              "StoneText": "ب"
             },
             {
-              "StoneText": "پ"
+              "StoneText": "شـ"
             }
           ]
         },
@@ -2167,16 +2167,16 @@
           },
           "foilstones": [
             {
-              "StoneText": "شـ"
+              "StoneText": "ح"
             },
             {
-              "StoneText": "سـ"
+              "StoneText": "ح"
             },
             {
-              "StoneText": "ذ"
+              "StoneText": "ث"
             },
             {
-              "StoneText": "صـ"
+              "StoneText": "ثـ"
             }
           ]
         }
@@ -2205,16 +2205,16 @@
           },
           "foilstones": [
             {
+              "StoneText": "ثـ"
+            },
+            {
+              "StoneText": "غ"
+            },
+            {
+              "StoneText": "پـ"
+            },
+            {
               "StoneText": "ط"
-            },
-            {
-              "StoneText": "تـ"
-            },
-            {
-              "StoneText": "سـ"
-            },
-            {
-              "StoneText": "جـ"
             }
           ]
         },
@@ -2237,10 +2237,10 @@
               "StoneText": "ف"
             },
             {
-              "StoneText": "غ"
+              "StoneText": "صـ"
             },
             {
-              "StoneText": "ژ"
+              "StoneText": "خـ"
             }
           ]
         },
@@ -2257,16 +2257,16 @@
           },
           "foilstones": [
             {
-              "StoneText": "خ"
-            },
-            {
               "StoneText": "ف"
             },
             {
-              "StoneText": "ع"
+              "StoneText": "صـ"
             },
             {
-              "StoneText": "ث"
+              "StoneText": "ز"
+            },
+            {
+              "StoneText": "ب"
             }
           ]
         },
@@ -2283,16 +2283,16 @@
           },
           "foilstones": [
             {
-              "StoneText": "غ"
+              "StoneText": "صـ"
             },
             {
-              "StoneText": "ب"
+              "StoneText": "ت"
             },
             {
-              "StoneText": "ج"
+              "StoneText": "ض"
             },
             {
-              "StoneText": "ث"
+              "StoneText": "ش"
             }
           ]
         },
@@ -2309,22 +2309,22 @@
           },
           "foilstones": [
             {
-              "StoneText": "حـ"
+              "StoneText": "ا"
+            },
+            {
+              "StoneText": "ضـ"
             },
             {
               "StoneText": "ثـ"
             },
             {
-              "StoneText": "ت"
+              "StoneText": "ح"
             },
             {
-              "StoneText": "ص"
+              "StoneText": "ا"
             },
             {
-              "StoneText": "غ"
-            },
-            {
-              "StoneText": "ظ"
+              "StoneText": "ط"
             }
           ]
         }
@@ -2353,16 +2353,16 @@
           },
           "foilstones": [
             {
-              "StoneText": "ص"
+              "StoneText": "ث"
             },
             {
               "StoneText": "صـ"
             },
             {
-              "StoneText": "ب"
+              "StoneText": "ع"
             },
             {
-              "StoneText": "ظ"
+              "StoneText": "چـ"
             }
           ]
         },
@@ -2379,16 +2379,16 @@
           },
           "foilstones": [
             {
-              "StoneText": "جـ"
+              "StoneText": "ظ"
             },
             {
-              "StoneText": "ط"
+              "StoneText": "آ"
             },
             {
-              "StoneText": "پ"
+              "StoneText": "ش"
             },
             {
-              "StoneText": "غ"
+              "StoneText": "ع"
             }
           ]
         },
@@ -2405,16 +2405,16 @@
           },
           "foilstones": [
             {
-              "StoneText": "ع"
+              "StoneText": "ثـ"
             },
             {
-              "StoneText": "چ"
+              "StoneText": "غ"
             },
             {
-              "StoneText": "ج"
+              "StoneText": "ص"
             },
             {
-              "StoneText": "ژ"
+              "StoneText": "ص"
             }
           ]
         },
@@ -2431,16 +2431,16 @@
           },
           "foilstones": [
             {
-              "StoneText": "شـ"
+              "StoneText": "ث"
             },
             {
-              "StoneText": "د"
+              "StoneText": "خـ"
             },
             {
-              "StoneText": "شـ"
+              "StoneText": "آ"
             },
             {
-              "StoneText": "ثـ"
+              "StoneText": "خ"
             }
           ]
         },
@@ -2457,22 +2457,22 @@
           },
           "foilstones": [
             {
-              "StoneText": "ذ"
+              "StoneText": "ژ"
             },
             {
-              "StoneText": "خ"
+              "StoneText": "جـ"
             },
             {
-              "StoneText": "حـ"
+              "StoneText": "ف"
             },
             {
-              "StoneText": "ج"
+              "StoneText": "آ"
             },
             {
-              "StoneText": "چ"
+              "StoneText": "غ"
             },
             {
-              "StoneText": "ث"
+              "StoneText": "ض"
             }
           ]
         }
@@ -2501,16 +2501,16 @@
           },
           "foilstones": [
             {
-              "StoneText": "ث"
+              "StoneText": "ف"
             },
             {
-              "StoneText": "ظ"
+              "StoneText": "ط"
             },
             {
-              "StoneText": "ث"
+              "StoneText": "ط"
             },
             {
-              "StoneText": "ح"
+              "StoneText": "د"
             }
           ]
         },
@@ -2527,16 +2527,16 @@
           },
           "foilstones": [
             {
-              "StoneText": "غ"
+              "StoneText": "ت"
             },
             {
-              "StoneText": "سـ"
+              "StoneText": "چ"
             },
             {
-              "StoneText": "ف"
+              "StoneText": "س"
             },
             {
-              "StoneText": "ع"
+              "StoneText": "پـ"
             }
           ]
         },
@@ -2553,16 +2553,16 @@
           },
           "foilstones": [
             {
-              "StoneText": "ش"
+              "StoneText": "سـ"
             },
             {
               "StoneText": "ط"
             },
             {
-              "StoneText": "غ"
+              "StoneText": "تـ"
             },
             {
-              "StoneText": "ف"
+              "StoneText": "آ"
             }
           ]
         },
@@ -2579,16 +2579,16 @@
           },
           "foilstones": [
             {
-              "StoneText": "ض"
+              "StoneText": "ش"
             },
             {
-              "StoneText": "ع"
+              "StoneText": "ف"
             },
             {
-              "StoneText": "ب"
+              "StoneText": "سـ"
             },
             {
-              "StoneText": "ا"
+              "StoneText": "ط"
             }
           ]
         },
@@ -2605,22 +2605,22 @@
           },
           "foilstones": [
             {
-              "StoneText": "خ"
+              "StoneText": "ب"
             },
             {
-              "StoneText": "سـ"
+              "StoneText": "ف"
             },
             {
-              "StoneText": "ت"
+              "StoneText": "شـ"
             },
             {
-              "StoneText": "تـ"
-            },
-            {
-              "StoneText": "ژ"
+              "StoneText": "ض"
             },
             {
               "StoneText": "ب"
+            },
+            {
+              "StoneText": "ا"
             }
           ]
         }
@@ -2649,16 +2649,16 @@
           },
           "foilstones": [
             {
-              "StoneText": "ظـ"
+              "StoneText": "ج"
             },
             {
-              "StoneText": "خـ"
+              "StoneText": "ذ"
             },
             {
-              "StoneText": "عـ"
+              "StoneText": "ظ"
             },
             {
-              "StoneText": "چـ"
+              "StoneText": "ا"
             }
           ]
         },
@@ -2675,16 +2675,16 @@
           },
           "foilstones": [
             {
-              "StoneText": "آ"
+              "StoneText": "غـ"
             },
             {
-              "StoneText": "ش"
+              "StoneText": "ضـ"
             },
             {
-              "StoneText": "ث"
+              "StoneText": "ظـ"
             },
             {
-              "StoneText": "ظ"
+              "StoneText": "ح"
             }
           ]
         },
@@ -2701,16 +2701,16 @@
           },
           "foilstones": [
             {
-              "StoneText": "صـ"
+              "StoneText": "ب"
             },
             {
-              "StoneText": "ط"
+              "StoneText": "فـ"
             },
             {
-              "StoneText": "خـ"
+              "StoneText": "چـ"
             },
             {
-              "StoneText": "آ"
+              "StoneText": "فـ"
             }
           ]
         },
@@ -2727,16 +2727,16 @@
           },
           "foilstones": [
             {
-              "StoneText": "پ"
+              "StoneText": "ض"
             },
             {
-              "StoneText": "ع"
+              "StoneText": "د"
             },
             {
-              "StoneText": "عـ"
+              "StoneText": "چـ"
             },
             {
-              "StoneText": "حـ"
+              "StoneText": "غـ"
             }
           ]
         },
@@ -2753,22 +2753,22 @@
           },
           "foilstones": [
             {
-              "StoneText": "خـ"
-            },
-            {
-              "StoneText": "پـ"
-            },
-            {
               "StoneText": "غـ"
             },
             {
-              "StoneText": "خـ"
+              "StoneText": "ط"
             },
             {
-              "StoneText": "عـ"
+              "StoneText": "ف"
             },
             {
-              "StoneText": "شـ"
+              "StoneText": "سـ"
+            },
+            {
+              "StoneText": "ا"
+            },
+            {
+              "StoneText": "ظـ"
             }
           ]
         }
@@ -2797,13 +2797,13 @@
           },
           "foilstones": [
             {
-              "StoneText": "گ"
+              "StoneText": "ب"
             },
             {
-              "StoneText": "ت"
+              "StoneText": "پ"
             },
             {
-              "StoneText": "ک"
+              "StoneText": "س"
             }
           ]
         },
@@ -2820,13 +2820,13 @@
           },
           "foilstones": [
             {
-              "StoneText": "پـ"
+              "StoneText": "ز"
             },
             {
-              "StoneText": "ژ"
+              "StoneText": "ق"
             },
             {
-              "StoneText": "ک"
+              "StoneText": "چ"
             }
           ]
         },
@@ -2843,13 +2843,13 @@
           },
           "foilstones": [
             {
-              "StoneText": "تـ"
+              "StoneText": "ک"
             },
             {
-              "StoneText": "ت"
+              "StoneText": "سـ"
             },
             {
-              "StoneText": "ق"
+              "StoneText": "م"
             }
           ]
         },
@@ -2866,13 +2866,13 @@
           },
           "foilstones": [
             {
-              "StoneText": "عـ"
+              "StoneText": "خ"
             },
             {
               "StoneText": "م"
             },
             {
-              "StoneText": "پ"
+              "StoneText": "ا"
             }
           ]
         },
@@ -2889,16 +2889,16 @@
           },
           "foilstones": [
             {
-              "StoneText": "آ"
+              "StoneText": "چـ"
             },
             {
-              "StoneText": "غـ"
+              "StoneText": "ج"
             },
             {
-              "StoneText": "م"
+              "StoneText": "عـ"
             },
             {
-              "StoneText": "ق"
+              "StoneText": "فـ"
             }
           ]
         }
@@ -2927,13 +2927,13 @@
           },
           "foilstones": [
             {
-              "StoneText": "جـ"
+              "StoneText": "ث"
             },
             {
-              "StoneText": "غـ"
+              "StoneText": "چ"
             },
             {
-              "StoneText": "ذ"
+              "StoneText": "د"
             }
           ]
         },
@@ -2950,13 +2950,13 @@
           },
           "foilstones": [
             {
-              "StoneText": "ل"
+              "StoneText": "شـ"
             },
             {
-              "StoneText": "ف"
+              "StoneText": "ب"
             },
             {
-              "StoneText": "فـ"
+              "StoneText": "ک"
             }
           ]
         },
@@ -2973,13 +2973,13 @@
           },
           "foilstones": [
             {
-              "StoneText": "ف"
+              "StoneText": "ک"
             },
             {
-              "StoneText": "ق"
+              "StoneText": "گ"
             },
             {
-              "StoneText": "حـ"
+              "StoneText": "چ"
             }
           ]
         },
@@ -2996,13 +2996,13 @@
           },
           "foilstones": [
             {
-              "StoneText": "غ"
+              "StoneText": "گ"
             },
             {
-              "StoneText": "ک"
+              "StoneText": "فـ"
             },
             {
-              "StoneText": "ل"
+              "StoneText": "ظـ"
             }
           ]
         },
@@ -3019,13 +3019,13 @@
           },
           "foilstones": [
             {
-              "StoneText": "ز"
+              "StoneText": "آ"
+            },
+            {
+              "StoneText": "ظ"
             },
             {
               "StoneText": "ق"
-            },
-            {
-              "StoneText": "ج"
             }
           ]
         }
@@ -3054,13 +3054,13 @@
           },
           "foilstones": [
             {
-              "StoneText": "ظـ"
+              "StoneText": "ک"
             },
             {
-              "StoneText": "ط"
+              "StoneText": "تـ"
             },
             {
-              "StoneText": "پ"
+              "StoneText": "ض"
             }
           ]
         },
@@ -3077,13 +3077,13 @@
           },
           "foilstones": [
             {
-              "StoneText": "گ"
+              "StoneText": "خـ"
             },
             {
-              "StoneText": "گ"
+              "StoneText": "ز"
             },
             {
-              "StoneText": "م"
+              "StoneText": "ک"
             }
           ]
         },
@@ -3100,16 +3100,16 @@
           },
           "foilstones": [
             {
-              "StoneText": "ژ"
+              "StoneText": "گ"
             },
             {
-              "StoneText": "م"
+              "StoneText": "آ"
             },
             {
               "StoneText": "چـ"
             },
             {
-              "StoneText": "ص"
+              "StoneText": "ط"
             }
           ]
         },
@@ -3126,13 +3126,13 @@
           },
           "foilstones": [
             {
-              "StoneText": "ر"
+              "StoneText": "ع"
             },
             {
               "StoneText": "ک"
             },
             {
-              "StoneText": "ت"
+              "StoneText": "ط"
             }
           ]
         },
@@ -3149,10 +3149,10 @@
           },
           "foilstones": [
             {
-              "StoneText": "ذ"
+              "StoneText": "ا"
             },
             {
-              "StoneText": "گ"
+              "StoneText": "م"
             },
             {
               "StoneText": "گ"
@@ -3184,13 +3184,13 @@
           },
           "foilstones": [
             {
-              "StoneText": "س"
+              "StoneText": "ا"
+            },
+            {
+              "StoneText": "ظـ"
             },
             {
               "StoneText": "ق"
-            },
-            {
-              "StoneText": "سـ"
             }
           ]
         },
@@ -3207,13 +3207,13 @@
           },
           "foilstones": [
             {
+              "StoneText": "فـ"
+            },
+            {
+              "StoneText": "غ"
+            },
+            {
               "StoneText": "قـ"
-            },
-            {
-              "StoneText": "صـ"
-            },
-            {
-              "StoneText": "سـ"
             }
           ]
         },
@@ -3230,13 +3230,13 @@
           },
           "foilstones": [
             {
-              "StoneText": "حـ"
+              "StoneText": "ک"
             },
             {
-              "StoneText": "ض"
+              "StoneText": "ک"
             },
             {
-              "StoneText": "د"
+              "StoneText": "ک"
             }
           ]
         },
@@ -3253,13 +3253,13 @@
           },
           "foilstones": [
             {
-              "StoneText": "آ"
+              "StoneText": "ک"
             },
             {
-              "StoneText": "آ"
+              "StoneText": "ک"
             },
             {
-              "StoneText": "ظـ"
+              "StoneText": "ل"
             }
           ]
         },
@@ -3276,16 +3276,16 @@
           },
           "foilstones": [
             {
-              "StoneText": "ف"
+              "StoneText": "تـ"
             },
             {
-              "StoneText": "ت"
+              "StoneText": "ق"
             },
             {
-              "StoneText": "پ"
+              "StoneText": "شـ"
             },
             {
-              "StoneText": "پ"
+              "StoneText": "حـ"
             }
           ]
         }
@@ -3314,13 +3314,13 @@
           },
           "foilstones": [
             {
-              "StoneText": "صـ"
+              "StoneText": "ء"
             },
             {
-              "StoneText": "ذ"
+              "StoneText": "م"
             },
             {
-              "StoneText": "آ"
+              "StoneText": "و"
             }
           ]
         },
@@ -3337,13 +3337,13 @@
           },
           "foilstones": [
             {
-              "StoneText": "ت"
+              "StoneText": "ص"
             },
             {
-              "StoneText": "ت"
+              "StoneText": "ز"
             },
             {
-              "StoneText": "پـ"
+              "StoneText": "ف"
             }
           ]
         },
@@ -3360,16 +3360,16 @@
           },
           "foilstones": [
             {
-              "StoneText": "ی"
+              "StoneText": "س"
             },
             {
-              "StoneText": "ت"
+              "StoneText": "خـ"
             },
             {
-              "StoneText": "مـ"
+              "StoneText": "جـ"
             },
             {
-              "StoneText": "ل"
+              "StoneText": "پـ"
             }
           ]
         },
@@ -3386,13 +3386,13 @@
           },
           "foilstones": [
             {
-              "StoneText": "ع"
+              "StoneText": "چ"
             },
             {
-              "StoneText": "ض"
+              "StoneText": "ی"
             },
             {
-              "StoneText": "س"
+              "StoneText": "ث"
             }
           ]
         },
@@ -3409,13 +3409,13 @@
           },
           "foilstones": [
             {
-              "StoneText": "گ"
+              "StoneText": "ف"
             },
             {
-              "StoneText": "م"
+              "StoneText": "گـ"
             },
             {
-              "StoneText": "ظ"
+              "StoneText": "و"
             }
           ]
         }
@@ -3444,13 +3444,13 @@
           },
           "foilstones": [
             {
-              "StoneText": "و"
+              "StoneText": "ژ"
             },
             {
-              "StoneText": "خـ"
+              "StoneText": "غـ"
             },
             {
-              "StoneText": "ه"
+              "StoneText": "ص"
             }
           ]
         },
@@ -3467,13 +3467,13 @@
           },
           "foilstones": [
             {
-              "StoneText": "و"
+              "StoneText": "ع"
             },
             {
-              "StoneText": "ه"
+              "StoneText": "ح"
             },
             {
-              "StoneText": "ء"
+              "StoneText": "ی"
             }
           ]
         },
@@ -3490,16 +3490,16 @@
           },
           "foilstones": [
             {
-              "StoneText": "ظ"
-            },
-            {
-              "StoneText": "گ"
-            },
-            {
               "StoneText": "ظـ"
             },
             {
-              "StoneText": "ف"
+              "StoneText": "ظ"
+            },
+            {
+              "StoneText": "جـ"
+            },
+            {
+              "StoneText": "عـ"
             }
           ]
         },
@@ -3516,13 +3516,13 @@
           },
           "foilstones": [
             {
-              "StoneText": "ا"
+              "StoneText": "آ"
             },
             {
-              "StoneText": "ن"
+              "StoneText": "و"
             },
             {
-              "StoneText": "قـ"
+              "StoneText": "ء"
             }
           ]
         },
@@ -3539,13 +3539,13 @@
           },
           "foilstones": [
             {
-              "StoneText": "ی"
+              "StoneText": "ظ"
             },
             {
-              "StoneText": "ی"
+              "StoneText": "ضـ"
             },
             {
-              "StoneText": "و"
+              "StoneText": "ظـ"
             }
           ]
         }
@@ -3574,13 +3574,13 @@
           },
           "foilstones": [
             {
-              "StoneText": "ضـ"
+              "StoneText": "د"
             },
             {
-              "StoneText": "گ"
+              "StoneText": "ء"
             },
             {
-              "StoneText": "گـ"
+              "StoneText": "ز"
             }
           ]
         },
@@ -3597,13 +3597,13 @@
           },
           "foilstones": [
             {
-              "StoneText": "ه"
+              "StoneText": "ب"
             },
             {
-              "StoneText": "ج"
+              "StoneText": "ت"
             },
             {
-              "StoneText": "گـ"
+              "StoneText": "ظـ"
             }
           ]
         },
@@ -3620,16 +3620,16 @@
           },
           "foilstones": [
             {
-              "StoneText": "ج"
-            },
-            {
-              "StoneText": "چ"
-            },
-            {
-              "StoneText": "ج"
+              "StoneText": "ش"
             },
             {
               "StoneText": "ا"
+            },
+            {
+              "StoneText": "ش"
+            },
+            {
+              "StoneText": "ذ"
             }
           ]
         },
@@ -3646,13 +3646,13 @@
           },
           "foilstones": [
             {
-              "StoneText": "ز"
+              "StoneText": "چ"
             },
             {
-              "StoneText": "ف"
+              "StoneText": "ش"
             },
             {
-              "StoneText": "س"
+              "StoneText": "ص"
             }
           ]
         },
@@ -3669,13 +3669,13 @@
           },
           "foilstones": [
             {
-              "StoneText": "جـ"
+              "StoneText": "مـ"
             },
             {
-              "StoneText": "ء"
+              "StoneText": "و"
             },
             {
-              "StoneText": "ل"
+              "StoneText": "چ"
             }
           ]
         }
@@ -3704,22 +3704,22 @@
           },
           "foilstones": [
             {
-              "StoneText": "ج"
+              "StoneText": "یـ"
             },
             {
-              "StoneText": "ف"
+              "StoneText": "ک"
             },
             {
-              "StoneText": "ط"
+              "StoneText": "گ"
             },
             {
-              "StoneText": "م"
+              "StoneText": "چـ"
             },
             {
-              "StoneText": "ت"
+              "StoneText": "ذ"
             },
             {
-              "StoneText": "ه"
+              "StoneText": "ظ"
             }
           ]
         },
@@ -3736,19 +3736,19 @@
           },
           "foilstones": [
             {
-              "StoneText": "پ"
+              "StoneText": "هـ"
             },
             {
-              "StoneText": "ثـ"
+              "StoneText": "ل"
             },
             {
-              "StoneText": "صـ"
+              "StoneText": "ش"
             },
             {
-              "StoneText": "جـ"
+              "StoneText": "و"
             },
             {
-              "StoneText": "د"
+              "StoneText": "چـ"
             }
           ]
         },
@@ -3765,22 +3765,22 @@
           },
           "foilstones": [
             {
-              "StoneText": "نـ"
-            },
-            {
-              "StoneText": "یـ"
-            },
-            {
-              "StoneText": "ظ"
-            },
-            {
-              "StoneText": "ح"
-            },
-            {
-              "StoneText": "ا"
-            },
-            {
               "StoneText": "هـ"
+            },
+            {
+              "StoneText": "غـ"
+            },
+            {
+              "StoneText": "خـ"
+            },
+            {
+              "StoneText": "ط"
+            },
+            {
+              "StoneText": "ج"
+            },
+            {
+              "StoneText": "ک"
             }
           ]
         },
@@ -3797,19 +3797,19 @@
           },
           "foilstones": [
             {
-              "StoneText": "تـ"
-            },
-            {
-              "StoneText": "و"
-            },
-            {
               "StoneText": "صـ"
             },
             {
-              "StoneText": "نـ"
+              "StoneText": "ثـ"
             },
             {
-              "StoneText": "سـ"
+              "StoneText": "ثـ"
+            },
+            {
+              "StoneText": "ص"
+            },
+            {
+              "StoneText": "ژ"
             }
           ]
         },
@@ -3826,22 +3826,22 @@
           },
           "foilstones": [
             {
-              "StoneText": "و"
+              "StoneText": "نـ"
             },
             {
-              "StoneText": "ش"
+              "StoneText": "ح"
             },
             {
-              "StoneText": "خـ"
+              "StoneText": "ط"
             },
             {
-              "StoneText": "و"
+              "StoneText": "تـ"
             },
             {
-              "StoneText": "ص"
+              "StoneText": "نـ"
             },
             {
-              "StoneText": "آ"
+              "StoneText": "حـ"
             }
           ]
         }
