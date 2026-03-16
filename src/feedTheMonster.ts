@@ -22,6 +22,7 @@ import './styles/main.scss';
 import { featureFlagsService } from '@curiouslearning/features';
 import gameStateService from "./gameStateService";
 import assessmentSurveyManager from '@assessment/assessment-survey-manager';
+import { AssessmentLevelConfig } from '@assessment/config/assessment-level-config';
 
 declare const window: any;
 
@@ -231,7 +232,8 @@ class App {
         await navigator.serviceWorker.ready;
         await registration.update();
 
-        await assessmentSurveyManager.warmupAssessmentLanguageCache();
+        const configuredAssessmentTypes = this.getConfiguredAssessmentTypesForWarmup();
+        await assessmentSurveyManager.warmupAssessmentLanguageCaches(configuredAssessmentTypes);
 
         if (!this.is_cached.has(this.lang)) {
           this.channel.postMessage({ command: "Cache", data: this.lang });
@@ -288,6 +290,25 @@ class App {
         console.error(`Failed to register service worker: ${error}`);
       }
     }
+  }
+
+  private getConfiguredAssessmentTypesForWarmup(): string[] {
+    const totalLevels = Array.isArray(this.dataModal?.levels)
+      ? this.dataModal.levels.length
+      : 0;
+
+    if (totalLevels < 1) {
+      return [];
+    }
+
+    const assessmentLevelConfig = new AssessmentLevelConfig();
+    const targetAssessments = assessmentLevelConfig.getTargetAssessments(totalLevels, true);
+
+    return [...new Set(
+      targetAssessments
+        .map((targetAssessment) => targetAssessment.assessmentType)
+        .filter((assessmentType) => Boolean(assessmentType))
+    )];
   }
 
   private setupCanvas() {

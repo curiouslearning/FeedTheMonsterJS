@@ -104,7 +104,7 @@ describe('AssessmentSurveyManager', () => {
       '/assessment-survey/data/west-african-english-words.json': true,
     });
 
-    await manager.open();
+    await manager.open({});
 
     const overlay = document.getElementById('assessment-survey-overlay');
     const playerElement = overlay?.querySelector('assessment-survey-player');
@@ -123,12 +123,27 @@ describe('AssessmentSurveyManager', () => {
       '/assessment-survey/data/zulu-lettersounds.json': true,
     });
 
-    await manager.open('missing-data-key');
+    await manager.open({ dataKey: 'missing-data-key' });
 
     const overlay = document.getElementById('assessment-survey-overlay');
     const playerElement = overlay?.querySelector('assessment-survey-player');
 
     expect(playerElement?.getAttribute('data-key')).toBe('zulu-lettersounds');
+  });
+
+  it('should resolve assessment type input into language-scoped data key', async () => {
+    window.history.pushState({}, '', '/?cr_lang=englishwestafrican');
+
+    setHeadResponseMap({
+      '/assessment-survey/data/west-african-english-sightwords.json': true,
+    });
+
+    await manager.open({ dataKey: 'sightwords' });
+
+    const overlay = document.getElementById('assessment-survey-overlay');
+    const playerElement = overlay?.querySelector('assessment-survey-player');
+
+    expect(playerElement?.getAttribute('data-key')).toBe('west-african-english-sightwords');
   });
 
   it('should use warmed key and avoid duplicate cache requests on open', async () => {
@@ -140,9 +155,31 @@ describe('AssessmentSurveyManager', () => {
 
     expect(MockBroadcastChannel.postMessageCalls).toBe(1);
 
-    await manager.open('zulu-lettersounds');
+    await manager.open({ dataKey: 'zulu-lettersounds' });
 
     expect(MockBroadcastChannel.postMessageCalls).toBe(1);
+  });
+
+  it('should warm multiple assessment types and dedupe cache requests', async () => {
+    window.history.pushState({}, '', '/?cr_lang=englishwestafrican');
+
+    setHeadResponseMap({
+      '/assessment-survey/data/west-african-english-lettersounds.json': true,
+      '/assessment-survey/data/west-african-english-sightwords.json': true,
+    });
+
+    await manager.warmupAssessmentLanguageCaches([
+      'lettersounds',
+      'sightwords',
+      'lettersounds',
+    ]);
+
+    expect(MockBroadcastChannel.postMessageCalls).toBe(2);
+
+    await manager.open({ dataKey: 'lettersounds' });
+    await manager.open({ dataKey: 'sightwords' });
+
+    expect(MockBroadcastChannel.postMessageCalls).toBe(2);
   });
 
   it('should close and clear overlay when close button is clicked', async () => {
@@ -150,7 +187,7 @@ describe('AssessmentSurveyManager', () => {
       '/assessment-survey/data/zulu-lettersounds.json': true,
     });
 
-    await manager.open('zulu-lettersounds');
+    await manager.open({ dataKey: 'zulu-lettersounds' });
 
     const overlay = document.getElementById('assessment-survey-overlay');
     const closeButton = document.getElementById('assessment-survey-close-button') as HTMLButtonElement;
@@ -166,7 +203,7 @@ describe('AssessmentSurveyManager', () => {
       '/assessment-survey/data/zulu-lettersounds.json': true,
     });
 
-    await manager.open('zulu-lettersounds');
+    await manager.open({ dataKey: 'zulu-lettersounds' });
 
     const overlay = document.getElementById('assessment-survey-overlay');
     const playerElement = overlay?.querySelector('assessment-survey-player');
@@ -175,5 +212,34 @@ describe('AssessmentSurveyManager', () => {
 
     expect(overlay?.style.display).toBe('none');
     expect(overlay?.innerHTML).toBe('');
+  });
+
+  it('should forward lifecycle callbacks and invoke onClosed once', async () => {
+    setHeadResponseMap({
+      '/assessment-survey/data/zulu-lettersounds.json': true,
+    });
+
+    const onLoaded = jest.fn();
+    const onCompleted = jest.fn();
+    const onClosed = jest.fn();
+
+    await manager.open({
+      dataKey: 'zulu-lettersounds',
+      onLoaded,
+      onCompleted,
+      onClosed,
+    });
+
+    const overlay = document.getElementById('assessment-survey-overlay');
+    const playerElement = overlay?.querySelector('assessment-survey-player');
+
+    playerElement?.dispatchEvent(new CustomEvent('loaded'));
+    playerElement?.dispatchEvent(new CustomEvent('completed'));
+    playerElement?.dispatchEvent(new CustomEvent('closed'));
+    playerElement?.dispatchEvent(new CustomEvent('closed'));
+
+    expect(onLoaded).toHaveBeenCalledTimes(1);
+    expect(onCompleted).toHaveBeenCalledTimes(1);
+    expect(onClosed).toHaveBeenCalledTimes(1);
   });
 });

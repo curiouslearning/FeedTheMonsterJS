@@ -7,7 +7,7 @@ import {
   ProgressionScene
 } from "@scenes";
 import { DataModal } from "@data";
-import { Debugger, lang, pseudoId } from "@common";
+import { Debugger, lang } from "@common";
 import {
   SCENE_NAME_START,
   SCENE_NAME_LEVEL_SELECT,
@@ -109,11 +109,7 @@ export class SceneHandler {
   }
 
   private handleSwitchScene(sceneName: string) {
-    if (sceneName === SCENE_NAME_LEVEL_SELECT) {
-      assessmentSurveyManager.open();
-    } else {
-      assessmentSurveyManager.close();
-    }
+    
 
     if (sceneName !== SCENE_NAME_LEVEL_END) {
       //No Cloud loading scene for TRANSITIONING TO level-end scene.
