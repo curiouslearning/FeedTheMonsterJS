@@ -11,6 +11,32 @@ function normalizeLanguage(language: string): string {
   return languageAliasMap[normalizedLanguage] || normalizedLanguage;
 }
 
+function normalizeAssessmentType(assessmentType: string): string {
+  const normalizedAssessmentType = (assessmentType || '').trim().toLowerCase();
+  return normalizedAssessmentType || 'lettersounds';
+}
+
+function buildLanguageScopedDataKey(language: string, assessmentType: string): string {
+  const normalizedLanguage = normalizeLanguage(language);
+  if (!normalizedLanguage) {
+    return DEFAULT_ASSESSMENT_DATA_KEY;
+  }
+
+  return `${normalizedLanguage}-${normalizeAssessmentType(assessmentType)}`;
+}
+
+function deriveLanguageFromSearch(search: string): string {
+  const urlParams = new URLSearchParams(search);
+  return urlParams.get('cr_lang') || '';
+}
+
+export function mapAssessmentTypeToDataKey(
+  assessmentType: string,
+  search: string = window.location.search
+): string {
+  return buildLanguageScopedDataKey(deriveLanguageFromSearch(search), assessmentType);
+}
+
 export function deriveAssessmentDataKeyFromUrl(search: string): string {
   const urlParams = new URLSearchParams(search);
 
@@ -20,14 +46,9 @@ export function deriveAssessmentDataKeyFromUrl(search: string): string {
   }
 
   const languageFromUrl = urlParams.get('cr_lang') || '';
-  const normalizedLanguage = normalizeLanguage(languageFromUrl);
-  const assessmentType = (urlParams.get('assessment_type') || 'lettersounds').trim().toLowerCase();
+  const assessmentType = urlParams.get('assessment_type') || 'lettersounds';
 
-  if (!normalizedLanguage) {
-    return DEFAULT_ASSESSMENT_DATA_KEY;
-  }
-
-  return `${normalizedLanguage}-${assessmentType}`;
+  return buildLanguageScopedDataKey(languageFromUrl, assessmentType);
 }
 
 export async function hasAssessmentData(dataKey: string): Promise<boolean> {
@@ -47,7 +68,12 @@ export async function resolveAssessmentDataKey(
   inputDataKey?: string,
   search: string = window.location.search
 ): Promise<string> {
-  const dataKeyToCheck = inputDataKey || deriveAssessmentDataKeyFromUrl(search);
+  const resolvedInputDataKey = (inputDataKey || '').trim();
+  const dataKeyToCheck = resolvedInputDataKey
+    ? (resolvedInputDataKey.includes('-')
+      ? resolvedInputDataKey
+      : mapAssessmentTypeToDataKey(resolvedInputDataKey, search))
+    : deriveAssessmentDataKeyFromUrl(search);
 
   if (await hasAssessmentData(dataKeyToCheck)) {
     return dataKeyToCheck;

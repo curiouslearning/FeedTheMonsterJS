@@ -7,6 +7,13 @@ import {
   createAssessmentPlayerElement,
 } from './ui/assessment-player-element';
 
+export interface AssessmentSurveyOpenOptions {
+  dataKey?: string;
+  onLoaded?: () => void;
+  onCompleted?: () => void;
+  onClosed?: () => void;
+}
+
 export class AssessmentSurveyManager {
   private readonly overlayId = 'assessment-survey-overlay';
   private readonly closeButtonId = 'assessment-survey-close-button';
@@ -23,16 +30,45 @@ export class AssessmentSurveyManager {
     return this.assessmentCacheClient.requestAssessmentLanguageCache(dataKey);
   }
 
-  public async warmupAssessmentLanguageCache(dataKey?: string): Promise<void> {
+  private async warmupResolvedDataKey(dataKey?: string): Promise<void> {
     const resolvedDataKey = await this.resolveAssessmentDataKey(dataKey);
+
+    if (this.warmedDataKeys.has(resolvedDataKey)) {
+      return;
+    }
+
     const isCached = await this.requestAssessmentLanguageCache(resolvedDataKey);
     if (isCached) {
       this.warmedDataKeys.add(resolvedDataKey);
     }
   }
 
-  public async open(dataKey?: string): Promise<void> {
-    const resolvedDataKey = await this.resolveAssessmentDataKey(dataKey);
+  public async warmupAssessmentLanguageCache(dataKey?: string): Promise<void> {
+    await this.warmupResolvedDataKey(dataKey);
+  }
+
+  public async warmupAssessmentLanguageCaches(dataKeys?: string[]): Promise<void> {
+    if (!Array.isArray(dataKeys) || dataKeys.length < 1) {
+      await this.warmupResolvedDataKey();
+      return;
+    }
+
+    const uniqueDataKeys = [...new Set(
+      dataKeys
+        .map((dataKey) => dataKey?.trim())
+        .filter((dataKey) => Boolean(dataKey))
+    )] as string[];
+
+    if (uniqueDataKeys.length < 1) {
+      await this.warmupResolvedDataKey();
+      return;
+    }
+
+    await Promise.all(uniqueDataKeys.map((dataKey) => this.warmupResolvedDataKey(dataKey)));
+  }
+
+  public async open(options: AssessmentSurveyOpenOptions): Promise<void> {
+    const resolvedDataKey = await this.resolveAssessmentDataKey(options.dataKey);
     const skipLoadingScreen = this.warmedDataKeys.has(resolvedDataKey);
 
     if (!skipLoadingScreen) {
@@ -43,24 +79,37 @@ export class AssessmentSurveyManager {
       });
     }
 
+    let hasClosed = false;
+    const handleClose = () => {
+      if (hasClosed) {
+        return;
+      }
+
+      hasClosed = true;
+      this.close();
+      options.onClosed?.();
+    };
+
     const playerElement = createAssessmentPlayerElement({
       playerTag: this.playerTag,
       dataKey: resolvedDataKey,
       onLoaded: () => {
         console.log('[assessment-survey] loaded');
+        options.onLoaded?.();
       },
       onCompleted: () => {
         console.log('[assessment-survey] completed');
+        options.onCompleted?.();
       },
       onClosed: () => {
-        this.close();
+        handleClose();
       },
     });
 
     const closeButton = createAssessmentCloseButton({
       closeButtonId: this.closeButtonId,
       onClose: () => {
-        this.close();
+        handleClose();
       },
     });
 

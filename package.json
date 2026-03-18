@@ -29,7 +29,7 @@
     "@capacitor/core": "^4.4.0",
     "@curiouslearning/analytics": "^1.3.0",
     "@curiouslearning/assessment-survey": "file:../assessment-survey-js",
-    "@curiouslearning/features": "^1.2.5",
+    "@curiouslearning/features": "^1.3.0",
     "@octokit/rest": "^20.0.1",
     "@release-it/conventional-changelog": "^8.0.1",
     "@rive-app/canvas": "^2.25.1",
