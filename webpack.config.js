@@ -93,7 +93,7 @@ var config = {
         { from: "./node_modules/@curiouslearning/assessment-survey/public/css", to: "./assessment-survey/css" },
         { from: "./node_modules/@curiouslearning/assessment-survey/public/assets/img", to: "./assessment-survey/img" },
         { from: "./node_modules/@curiouslearning/assessment-survey/public/assets/animation", to: "./assessment-survey/animation" },
-        { from: "./node_modules/@curiouslearning/assessment-survey/data", to: "./assessment-survey/data" },
+        { from: "./node_modules/@curiouslearning/assessment-survey/public/data", to: "./assessment-survey/data" },
         { from: "./node_modules/@curiouslearning/assessment-survey/public/assets/audio", to: "./assessment-survey/audio" },
       ],
     }),
