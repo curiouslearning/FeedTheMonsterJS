@@ -22,6 +22,7 @@ export function createAssessmentPlayerElement(options: AssessmentPlayerElementOp
   playerElement.setAttribute('user-id', 'ftm-web-user');
   playerElement.setAttribute('user-source', 'feed-the-monster-web');
   playerElement.setAttribute('asset-base-url', '/assessment-survey');
+  playerElement.setAttribute('data-base-url', '/assessment-survey');
   playerElement.setAttribute('embed-mode', 'true');
   playerElement.setAttribute('host-theme', 'ftm-dim');
   if (options.onLoaded) {
