@@ -348,6 +348,40 @@ self.addEventListener("fetch", function (event) {
   if (requestUrl.searchParams.has('cache-bust')) {
     return event.respondWith(fetch(event.request));
   }
+
+  // The assessment package requests /data/*.json. Keep assets under
+  // /assessment-survey and map those data requests here.
+  if (
+    requestUrl.origin === self.location.origin &&
+    requestUrl.pathname.startsWith('/data/') &&
+    requestUrl.pathname.endsWith('.json') &&
+    (event.request.method === 'GET' || event.request.method === 'HEAD')
+  ) {
+    const aliasedRequest = new Request(`/assessment-survey${requestUrl.pathname}${requestUrl.search}`, {
+      method: event.request.method,
+      headers: event.request.headers,
+      mode: event.request.mode,
+      credentials: event.request.credentials,
+      cache: event.request.cache,
+      redirect: event.request.redirect,
+      referrer: event.request.referrer,
+      referrerPolicy: event.request.referrerPolicy,
+      integrity: event.request.integrity,
+    });
+
+    return event.respondWith(
+      caches.match(aliasedRequest).then(function (response) {
+        if (response) {
+          return response;
+        }
+
+        return fetch(aliasedRequest).catch(function () {
+          return new Response('Network unavailable in sw', { status: 503 });
+        });
+      })
+    );
+  }
+
   event.respondWith(
     caches.match(event.request).then(function (response) {
       if (response) {
