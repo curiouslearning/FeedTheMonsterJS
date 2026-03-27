@@ -1,6 +1,10 @@
+import '@curiouslearning/assessment-survey/register';
+import { AssessmentSurveyPlayerElement, AnalyticsConfig } from '@curiouslearning/assessment-survey';
+
 export interface AssessmentPlayerElementOptions {
   playerTag: string;
   dataKey: string;
+  analyticsConfig?: AnalyticsConfig;
   onLoaded?: () => void;
   onCompleted?: () => void;
   onClosed?: () => void;
@@ -11,9 +15,8 @@ export interface AssessmentCloseButtonOptions {
   onClose: () => void;
 }
 
-export function createAssessmentPlayerElement(options: AssessmentPlayerElementOptions): HTMLElement {
-  const playerElement = document.createElement(options.playerTag);
-
+export function createAssessmentPlayerElement(options: AssessmentPlayerElementOptions): AssessmentSurveyPlayerElement {
+  const playerElement = document.createElement(options.playerTag) as AssessmentSurveyPlayerElement;
   playerElement.style.display = 'block';
   playerElement.style.width = '100%';
   playerElement.style.height = '100%';
@@ -25,6 +28,11 @@ export function createAssessmentPlayerElement(options: AssessmentPlayerElementOp
   playerElement.setAttribute('data-base-url', '/assessment-survey');
   playerElement.setAttribute('embed-mode', 'true');
   playerElement.setAttribute('host-theme', 'ftm-dim');
+
+  if (options.analyticsConfig) {
+    playerElement.setAnalyticsConfig(options.analyticsConfig);
+  }
+
   if (options.onLoaded) {
     playerElement.addEventListener('loaded', options.onLoaded);
   }
