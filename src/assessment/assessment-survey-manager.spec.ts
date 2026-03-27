@@ -1,4 +1,3 @@
-jest.mock('@curiouslearning/assessment-survey/register', () => ({}));
 import { AssessmentSurveyManager } from './assessment-survey-manager';
 type MessageHandler = (event: MessageEvent) => void;
 declare global {

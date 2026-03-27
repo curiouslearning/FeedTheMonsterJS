@@ -32,8 +32,8 @@ module.exports = {
     "^@miniGameStateService(.*)$": ["<rootDir>/src/miniGame/miniGameStateService/$1"],
     "@curiouslearning/analytics": "<rootDir>/node_modules/@curiouslearning/analytics/dist/index.js",
     "@curiouslearning/features": "<rootDir>/node_modules/@curiouslearning/features/dist/index.js",
-    "@curiouslearning/assessment-survey/register": "<rootDir>/node_modules/@curiouslearning/assessment-survey/lib/register-web-component.js",
-"@curiouslearning/assessment-survey": "<rootDir>/node_modules/@curiouslearning/assessment-survey/lib/index.js",
+    "@curiouslearning/assessment-survey/register": "<rootDir>/__mocks__/default-mock.js",
+    "@curiouslearning/assessment-survey": "<rootDir>/node_modules/@curiouslearning/assessment-survey/lib/index.js",
   },
   roots: [
     "<rootDir>/src/"
