@@ -1,9 +1,11 @@
 jest.mock('@curiouslearning/assessment-survey/register', () => ({}));
-
 import { AssessmentSurveyManager } from './assessment-survey-manager';
-
 type MessageHandler = (event: MessageEvent) => void;
-
+declare global {
+  interface HTMLElement {
+    setAnalyticsConfig: (config: any) => void;
+  }
+}
 class MockBroadcastChannel {
   public static postMessageCalls = 0;
   public static responseOk = true;
@@ -88,14 +90,18 @@ describe('AssessmentSurveyManager', () => {
     fetchMock = jest.fn();
     (global as any).fetch = fetchMock;
 
+    // mock setAnalyticsConfig on HTMLElement since custom element is not registered in jsdom
+    HTMLElement.prototype.setAnalyticsConfig = jest.fn();
+
     MockBroadcastChannel.reset();
     manager = new AssessmentSurveyManager();
   });
 
   afterEach(() => {
-    manager.close();
-    jest.clearAllMocks();
-  });
+  manager.close();
+  jest.clearAllMocks();
+  delete HTMLElement.prototype.setAnalyticsConfig;
+});
 
   it('should derive data key from URL alias and render inside .game-scene', async () => {
     window.history.pushState({}, '', '/?cr_lang=englishwestafrican&assessment_type=words');
