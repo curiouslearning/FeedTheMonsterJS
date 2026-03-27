@@ -67,6 +67,23 @@ export class AssessmentSurveyManager {
     await Promise.all(uniqueDataKeys.map((dataKey) => this.warmupResolvedDataKey(dataKey)));
   }
 
+  private resolveAnalyticsConfig() {
+    const config = {
+      apiKey: process.env.FIREBASE_API_KEY,
+      authDomain: process.env.FIREBASE_AUTH_DOMAIN,
+      databaseURL: process.env.FIREBASE_DATABASE_URL,
+      projectId: process.env.FIREBASE_PROJECT_ID,
+      storageBucket: process.env.FIREBASE_STORAGE_BUCKET,
+      messagingSenderId: process.env.FIREBASE_MESSAGING_SENDER_ID,
+      appId: process.env.FIREBASE_APP_ID,
+      measurementId: process.env.FIREBASE_MEASUREMENT_ID,
+    };
+
+    const isValidConfig = Object.values(config).every(Boolean);
+
+    return isValidConfig ? config : undefined;
+  }
+
   public async open(options: AssessmentSurveyOpenOptions): Promise<void> {
     const resolvedDataKey = await this.resolveAssessmentDataKey(options.dataKey);
     const skipLoadingScreen = this.warmedDataKeys.has(resolvedDataKey);
@@ -104,16 +121,7 @@ export class AssessmentSurveyManager {
       onClosed: () => {
         handleClose();
       },
-      analyticsConfig: {
-        apiKey: process.env.FIREBASE_API_KEY,
-        authDomain: process.env.FIREBASE_AUTH_DOMAIN,
-        databaseURL: process.env.FIREBASE_DATABASE_URL,
-        projectId: process.env.FIREBASE_PROJECT_ID,
-        storageBucket: process.env.FIREBASE_STORAGE_BUCKET,
-        messagingSenderId: process.env.FIREBASE_MESSAGING_SENDER_ID,
-        appId: process.env.FIREBASE_APP_ID,
-        measurementId: process.env.FIREBASE_MEASUREMENT_ID,
-      }
+      analyticsConfig: this.resolveAnalyticsConfig(),
     });
 
     const closeButton = createAssessmentCloseButton({
