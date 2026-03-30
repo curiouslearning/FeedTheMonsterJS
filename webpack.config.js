@@ -1,4 +1,5 @@
 const path = require('path');
+const { exec } = require('child_process');
 const nodeEnv = process.env.NODE_ENV || 'development';
 const isDev = (nodeEnv !== 'production');
 const CopyPlugin = require("copy-webpack-plugin");
@@ -12,6 +13,54 @@ require('dotenv').config();
 
 // const CompressionPlugin = require('compression-webpack-plugin');
 
+class WorkboxInjectOnDevBuildPlugin {
+  constructor() {
+    this.running = false;
+    this.pending = false;
+  }
+
+  apply(compiler) {
+    compiler.hooks.done.tap('WorkboxInjectOnDevBuildPlugin', (stats) => {
+      if (stats.hasErrors()) {
+        return;
+      }
+      this.runInject();
+    });
+  }
+
+  runInject() {
+    if (this.running) {
+      this.pending = true;
+      return;
+    }
+
+    this.running = true;
+    const injectCommand = process.platform === 'win32'
+      ? 'npx.cmd workbox injectManifest'
+      : 'npx workbox injectManifest';
+
+    exec(injectCommand, (error, stdout, stderr) => {
+      this.running = false;
+
+      if (stdout) {
+        process.stdout.write(stdout);
+      }
+      if (stderr) {
+        process.stderr.write(stderr);
+      }
+
+      if (error) {
+        console.error(`[workbox] injectManifest failed: ${error.message}`);
+      }
+
+      if (this.pending) {
+        this.pending = false;
+        this.runInject();
+      }
+    });
+  }
+}
+
 const mode = isDev ? 'development' : 'production';
 
 var config = {
@@ -20,6 +69,9 @@ var config = {
   devServer: {
     static: {
       directory: path.join(__dirname, 'build'),
+    },
+    devMiddleware: {
+      writeToDisk: true,
     },
     client: {
       overlay: true,
@@ -90,6 +142,7 @@ var config = {
       patterns: [
         { from: "./public/index.html", to: "./" },
         { from: "./public/index.css", to: "./" },
+        { from: "./public/manifest.json", to: "./" },
         { from: "./public/assets", to: "./assets" },
         { from: "./lang", to: "./lang" },
         { from: "./node_modules/@curiouslearning/assessment-survey/public/css", to: "./assessment-survey/css" },
@@ -117,6 +170,7 @@ var config = {
     //   // TODO: set this to isDev once we fix all the lint errors.
     //   failOnError: false
     // })
+    ...(isDev ? [new WorkboxInjectOnDevBuildPlugin()] : []),
   ],
   optimization: {
     minimize: true,

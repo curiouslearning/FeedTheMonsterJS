@@ -6,7 +6,7 @@
   "scripts": {
     "release": "release-it",
     "wb:inject": "workbox injectManifest",
-    "dev": "webpack serve -c webpack.config.js && npm run wb:inject",
+    "dev": "webpack serve -c webpack.config.js",
     "build": "cross-env NODE_ENV=production webpack -c webpack.config.js --mode=production && npm run wb:inject",
     "lint": "eslint -c ./.eslintrc.json src",
     "clean": "eslint clean",
