@@ -1,4 +1,5 @@
 import '@curiouslearning/assessment-survey/register';
+import { AnalyticsConfig } from '@curiouslearning/assessment-survey';
 import { resolveAssessmentDataKey } from './assessment-data-key';
 import { AssessmentCacheClient } from './assessment-cache-client';
 import { AssessmentOverlay } from './ui/assessment-overlay';
@@ -67,7 +68,7 @@ export class AssessmentSurveyManager {
     await Promise.all(uniqueDataKeys.map((dataKey) => this.warmupResolvedDataKey(dataKey)));
   }
 
-  private resolveAnalyticsConfig() {
+  private resolveAnalyticsConfig(): AnalyticsConfig | undefined {
     const config = {
       apiKey: process.env.FIREBASE_API_KEY,
       authDomain: process.env.FIREBASE_AUTH_DOMAIN,
