@@ -394,6 +394,10 @@ class App {
     if (toggleBtn) {
       toggleBtn.style.display = (isDevOrTestEnv) ? "block" : "none";
     }
+    const devAssessmentBtn = document.getElementById("dev-assessment-btn");
+    if (devAssessmentBtn) {
+      devAssessmentBtn.style.display = (isDevOrTestEnv && Debugger.DebugMode) ? "block" : "none";
+    }
   }
 
   private reinitializeSceneHandler(dataModal: DataModal): void {

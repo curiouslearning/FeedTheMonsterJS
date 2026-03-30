@@ -218,6 +218,22 @@ img {
   display: none;
 }
 
+#dev-assessment-btn {
+  position: absolute;
+  left: calc(30% + 90px);
+  top: 5px;
+  height: 40px;
+  padding: 0 12px;
+  border-radius: 20px;
+  border: none;
+  background-color: #2196f3;
+  color: #fff;
+  font-size: 14px;
+  cursor: pointer;
+  outline: none;
+  z-index: 9;
+}
+
 .feedback-text {
   font-family: 'Atma-SemiBold', system-ui;
   font-size: 10vw;
