@@ -5,6 +5,29 @@ declare global {
     setAnalyticsConfig: (config: any) => void;
   }
 }
+
+const FIREBASE_ENV_KEYS = [
+  'FIREBASE_API_KEY',
+  'FIREBASE_AUTH_DOMAIN',
+  'FIREBASE_DATABASE_URL',
+  'FIREBASE_PROJECT_ID',
+  'FIREBASE_STORAGE_BUCKET',
+  'FIREBASE_MESSAGING_SENDER_ID',
+  'FIREBASE_APP_ID',
+  'FIREBASE_MEASUREMENT_ID',
+] as const;
+
+const snapshotFirebaseEnv = () =>
+  Object.fromEntries(FIREBASE_ENV_KEYS.map((k) => [k, process.env[k]]));
+
+const restoreFirebaseEnv = (snapshot: Record<string, string | undefined>) => {
+  for (const key of FIREBASE_ENV_KEYS) {
+    const value = snapshot[key];
+    if (value === undefined) delete process.env[key];
+    else process.env[key] = value;
+  }
+};
+
 class MockBroadcastChannel {
   public static postMessageCalls = 0;
   public static responseOk = true;
@@ -249,16 +272,18 @@ describe('AssessmentSurveyManager', () => {
   });
 
   it('should forward analytics config to player element when env vars are set', async () => {
-    process.env.FIREBASE_API_KEY = 'test-api-key';
-    process.env.FIREBASE_AUTH_DOMAIN = 'test-auth-domain';
-    process.env.FIREBASE_DATABASE_URL = 'test-database-url';
-    process.env.FIREBASE_PROJECT_ID = 'test-project-id';
-    process.env.FIREBASE_STORAGE_BUCKET = 'test-storage-bucket';
-    process.env.FIREBASE_MESSAGING_SENDER_ID = 'test-messaging-sender-id';
-    process.env.FIREBASE_APP_ID = 'test-app-id';
-    process.env.FIREBASE_MEASUREMENT_ID = 'test-measurement-id';
+    const envSnapshot = snapshotFirebaseEnv();
 
     try {
+      process.env.FIREBASE_API_KEY = 'test-api-key';
+      process.env.FIREBASE_AUTH_DOMAIN = 'test-auth-domain';
+      process.env.FIREBASE_DATABASE_URL = 'test-database-url';
+      process.env.FIREBASE_PROJECT_ID = 'test-project-id';
+      process.env.FIREBASE_STORAGE_BUCKET = 'test-storage-bucket';
+      process.env.FIREBASE_MESSAGING_SENDER_ID = 'test-messaging-sender-id';
+      process.env.FIREBASE_APP_ID = 'test-app-id';
+      process.env.FIREBASE_MEASUREMENT_ID = 'test-measurement-id';
+
       setHeadResponseMap({
         '/assessment-survey/data/zulu-lettersounds.json': true,
       });
@@ -279,18 +304,14 @@ describe('AssessmentSurveyManager', () => {
         measurementId: 'test-measurement-id',
       });
     } finally {
-      delete process.env.FIREBASE_API_KEY;
-      delete process.env.FIREBASE_AUTH_DOMAIN;
-      delete process.env.FIREBASE_DATABASE_URL;
-      delete process.env.FIREBASE_PROJECT_ID;
-      delete process.env.FIREBASE_STORAGE_BUCKET;
-      delete process.env.FIREBASE_MESSAGING_SENDER_ID;
-      delete process.env.FIREBASE_APP_ID;
-      delete process.env.FIREBASE_MEASUREMENT_ID;
+      restoreFirebaseEnv(envSnapshot);
     }
   });
 
   it('should not forward analytics config when env vars are missing', async () => {
+    const envSnapshot = snapshotFirebaseEnv();
+    for (const key of FIREBASE_ENV_KEYS) delete process.env[key];
+
     setHeadResponseMap({
       '/assessment-survey/data/zulu-lettersounds.json': true,
     });
@@ -301,5 +322,6 @@ describe('AssessmentSurveyManager', () => {
     const playerElement = overlay?.querySelector('assessment-survey-player') as HTMLElement;
 
     expect(playerElement?.setAnalyticsConfig).not.toHaveBeenCalled();
+    restoreFirebaseEnv(envSnapshot);
   });
 });
