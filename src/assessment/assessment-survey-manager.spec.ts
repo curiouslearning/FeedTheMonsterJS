@@ -11,7 +11,7 @@ class MockBroadcastChannel {
 
   private handlers: MessageHandler[] = [];
 
-  constructor(public readonly name: string) {}
+  constructor(public readonly name: string) { }
 
   public addEventListener(type: string, handler: MessageHandler): void {
     if (type === 'message') {
@@ -97,10 +97,10 @@ describe('AssessmentSurveyManager', () => {
   });
 
   afterEach(() => {
-  manager.close();
-  jest.clearAllMocks();
-  delete HTMLElement.prototype.setAnalyticsConfig;
-});
+    manager.close();
+    jest.clearAllMocks();
+    delete HTMLElement.prototype.setAnalyticsConfig;
+  });
 
   it('should derive data key from URL alias and render inside .game-scene', async () => {
     window.history.pushState({}, '', '/?cr_lang=englishwestafrican&assessment_type=words');
@@ -258,35 +258,36 @@ describe('AssessmentSurveyManager', () => {
     process.env.FIREBASE_APP_ID = 'test-app-id';
     process.env.FIREBASE_MEASUREMENT_ID = 'test-measurement-id';
 
-    setHeadResponseMap({
-      '/assessment-survey/data/zulu-lettersounds.json': true,
-    });
+    try {
+      setHeadResponseMap({
+        '/assessment-survey/data/zulu-lettersounds.json': true,
+      });
 
-    await manager.open({ dataKey: 'zulu-lettersounds' });
+      await manager.open({ dataKey: 'zulu-lettersounds' });
 
-    const overlay = document.getElementById('assessment-survey-overlay');
-    const playerElement = overlay?.querySelector('assessment-survey-player') as HTMLElement;
+      const overlay = document.getElementById('assessment-survey-overlay');
+      const playerElement = overlay?.querySelector('assessment-survey-player') as HTMLElement;
 
-    expect(playerElement?.setAnalyticsConfig).toHaveBeenCalledWith({
-      apiKey: 'test-api-key',
-      authDomain: 'test-auth-domain',
-      databaseURL: 'test-database-url',
-      projectId: 'test-project-id',
-      storageBucket: 'test-storage-bucket',
-      messagingSenderId: 'test-messaging-sender-id',
-      appId: 'test-app-id',
-      measurementId: 'test-measurement-id',
-    });
-
-    // cleanup
-    delete process.env.FIREBASE_API_KEY;
-    delete process.env.FIREBASE_AUTH_DOMAIN;
-    delete process.env.FIREBASE_DATABASE_URL;
-    delete process.env.FIREBASE_PROJECT_ID;
-    delete process.env.FIREBASE_STORAGE_BUCKET;
-    delete process.env.FIREBASE_MESSAGING_SENDER_ID;
-    delete process.env.FIREBASE_APP_ID;
-    delete process.env.FIREBASE_MEASUREMENT_ID;
+      expect(playerElement?.setAnalyticsConfig).toHaveBeenCalledWith({
+        apiKey: 'test-api-key',
+        authDomain: 'test-auth-domain',
+        databaseURL: 'test-database-url',
+        projectId: 'test-project-id',
+        storageBucket: 'test-storage-bucket',
+        messagingSenderId: 'test-messaging-sender-id',
+        appId: 'test-app-id',
+        measurementId: 'test-measurement-id',
+      });
+    } finally {
+      delete process.env.FIREBASE_API_KEY;
+      delete process.env.FIREBASE_AUTH_DOMAIN;
+      delete process.env.FIREBASE_DATABASE_URL;
+      delete process.env.FIREBASE_PROJECT_ID;
+      delete process.env.FIREBASE_STORAGE_BUCKET;
+      delete process.env.FIREBASE_MESSAGING_SENDER_ID;
+      delete process.env.FIREBASE_APP_ID;
+      delete process.env.FIREBASE_MEASUREMENT_ID;
+    }
   });
 
   it('should not forward analytics config when env vars are missing', async () => {
