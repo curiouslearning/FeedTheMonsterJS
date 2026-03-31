@@ -144,10 +144,12 @@ export class StartScene {
   devToggle = () => {
     this.toggleBtn.addEventListener("click", () => {
       toggleDebugMode(this.toggleBtn);
-      this.devAssessmentBtn.style.display = this.toggleBtn.classList.contains("on") ? "block" : "none";
+      if (this.devAssessmentBtn) {
+        this.devAssessmentBtn.style.display = this.toggleBtn.classList.contains("on") ? "block" : "none";
+      }
     });
 
-    this.devAssessmentBtn.addEventListener("click", () => {
+    this.devAssessmentBtn?.addEventListener("click", () => {
       const config = new AssessmentLevelConfig();
       const parsed = config.refreshConfig();
       const firstAssessmentType = parsed.assessments[0]?.assessmentType;
