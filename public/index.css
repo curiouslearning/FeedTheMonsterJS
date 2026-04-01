@@ -219,6 +219,7 @@ img {
 }
 
 #dev-assessment-btn {
+  display: none;
   position: absolute;
   left: calc(30% + 90px);
   top: 5px;
