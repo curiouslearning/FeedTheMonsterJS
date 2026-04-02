@@ -29,6 +29,17 @@ channel.addEventListener("message", async function (event) {
     caches.delete(workbox.core.cacheNames.precache + event.data.data);
     await getCacheName(event.data.data);
   }
+  if (event.data.command === "CacheAssessmentLanguage") {
+    const dataKey = event.data.data;
+    const ok = await cacheAssessmentLanguage(dataKey);
+    await channel.postMessage({
+      msg: "AssessmentLanguageCached",
+      data: {
+        dataKey,
+        ok,
+      },
+    });
+  }
 });
 
 self.registration.addEventListener("updatefound", function (e) {
@@ -262,12 +273,115 @@ async function cacheFeedBackAudio(feedBackAudios, language) {
   }
 }
 
+function normalizeAssessmentAudioName(data, itemName) {
+  const quizName = (data?.quizName || '').toLowerCase();
+  if (quizName.includes('luganda') || quizName.includes('west african english')) {
+    return itemName.toLowerCase().trim();
+  }
+  return itemName.trim();
+}
+
+async function cacheAssessmentLanguage(dataKey) {
+  if (!dataKey) {
+    return false;
+  }
+
+  const cacheName = `assessment-${dataKey}`;
+  const dataUrl = `/assessment-survey/data/${dataKey}.json`;
+
+  try {
+    const response = await fetch(dataUrl, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    });
+
+    if (!response.ok) {
+      console.warn('Could not fetch assessment data key:', dataKey);
+      return;
+    }
+
+    const data = await response.json();
+    const urlsToCache = new Set();
+    urlsToCache.add(dataUrl);
+
+    if (Array.isArray(data?.buckets)) {
+      for (const bucket of data.buckets) {
+        if (!Array.isArray(bucket?.items)) {
+          continue;
+        }
+
+        for (const item of bucket.items) {
+          const itemName = normalizeAssessmentAudioName(data, item?.itemName || '');
+          if (!itemName) {
+            continue;
+          }
+          urlsToCache.add(`/assessment-survey/audio/${dataKey}/${itemName}.mp3`);
+        }
+      }
+    }
+
+    urlsToCache.add(`/assessment-survey/audio/${dataKey}/answer_feedback.mp3`);
+
+    const cache = await caches.open(cacheName);
+    const cacheResults = await Promise.all([...urlsToCache].map(async (url) => {
+      try {
+        await cache.add(url);
+        return true;
+      } catch (error) {
+        console.warn('Failed to cache assessment asset:', url);
+        return false;
+      }
+    }));
+
+    return cacheResults.every(Boolean);
+  } catch (error) {
+    console.error('Assessment language caching failed:', error);
+    return false;
+  }
+}
+
 
 self.addEventListener("fetch", function (event) {
   const requestUrl = new URL(event.request.url);
   if (requestUrl.searchParams.has('cache-bust')) {
     return event.respondWith(fetch(event.request));
   }
+
+  // The assessment package requests /data/*.json. Keep assets under
+  // /assessment-survey and map those data requests here.
+  if (
+    requestUrl.origin === self.location.origin &&
+    requestUrl.pathname.startsWith('/data/') &&
+    requestUrl.pathname.endsWith('.json') &&
+    (event.request.method === 'GET' || event.request.method === 'HEAD')
+  ) {
+    const aliasedRequest = new Request(`/assessment-survey${requestUrl.pathname}${requestUrl.search}`, {
+      method: event.request.method,
+      headers: event.request.headers,
+      mode: event.request.mode,
+      credentials: event.request.credentials,
+      cache: event.request.cache,
+      redirect: event.request.redirect,
+      referrer: event.request.referrer,
+      referrerPolicy: event.request.referrerPolicy,
+      integrity: event.request.integrity,
+    });
+
+    return event.respondWith(
+      caches.match(aliasedRequest).then(function (response) {
+        if (response) {
+          return response;
+        }
+
+        return fetch(aliasedRequest).catch(function () {
+          return new Response('Network unavailable in sw', { status: 503 });
+        });
+      })
+    );
+  }
+
   event.respondWith(
     caches.match(event.request).then(function (response) {
       if (response) {

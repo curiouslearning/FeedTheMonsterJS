@@ -26,10 +26,14 @@ module.exports = {
     "^@gamepuzzles(.*)$": "<rootDir>/src/gamepuzzles$1",
     "@gameSettingsService/*":  ["<rootDir>/src/gameSettingsService/$1"],
     "@tutorials/*": ["<rootDir>/src/tutorials/$1"],
+    "@assessment/(.*)": "<rootDir>/src/assessment/$1",
     "@services/(.*)": "<rootDir>/src/services/$1",
     "^@miniGames(.*)$": ["<rootDir>/src/miniGame/miniGames/$1"],
     "^@miniGameStateService(.*)$": ["<rootDir>/src/miniGame/miniGameStateService/$1"],
-    "@curiouslearning/analytics": "<rootDir>/node_modules/@curiouslearning/analytics/dist/index.js"
+    "@curiouslearning/analytics": "<rootDir>/node_modules/@curiouslearning/analytics/dist/index.js",
+    "@curiouslearning/features": "<rootDir>/node_modules/@curiouslearning/features/dist/index.js",
+    "@curiouslearning/assessment-survey/register": "<rootDir>/__mocks__/default-mock.js",
+    "@curiouslearning/assessment-survey": "<rootDir>/node_modules/@curiouslearning/assessment-survey/lib/index.js",
   },
   roots: [
     "<rootDir>/src/"

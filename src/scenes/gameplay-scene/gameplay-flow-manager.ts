@@ -17,6 +17,8 @@ import { GameScore, DataModal } from "@data";
 import { AnalyticsIntegration, AnalyticsEventType } from "../../analytics/analytics-integration";
 import gameStateService from '@gameStateService';
 import miniGameStateService from '@miniGameStateService';
+import assessmentSurveyManager from '@assessment/assessment-survey-manager';
+import { AssessmentFlowCoordinator } from '@assessment/assessment-flow-coordinator';
 import { MonsterController } from "./monster-controller";
 import { GameplayUIManager } from "./gameplay-ui-manager";
 import PuzzleHandler from "@gamepuzzles/puzzleHandler/puzzleHandler";
@@ -37,6 +39,7 @@ export class GameplayFlowManager {
     private isCorrect: boolean = false;
     private hasShownChest: boolean = false;
     private levelForMinigame: number;
+    private isAssessmentInProgress: boolean = false;
     private isDisposing: boolean = false;
     private eventListeners: Function[] = [];
     // #endregion
@@ -52,6 +55,7 @@ export class GameplayFlowManager {
     private miniGameHandler: MiniGameHandler;
     private tutorial: TutorialHandler;
     private analyticsIntegration: AnalyticsIntegration;
+    private assessmentFlowCoordinator: AssessmentFlowCoordinator;
     private timeoutRegistry: TimeoutRegistry = new TimeoutRegistry();
     // #endregion
 
@@ -77,11 +81,29 @@ export class GameplayFlowManager {
         this.tutorial = tutorial;
         
         this.analyticsIntegration = AnalyticsIntegration.getInstance();
+
+        const currentLevelIndex = this.resolveCurrentLevelIndex();
         
         // Initialize Level logic
         this.levelForMinigame = miniGameStateService.shouldShowMiniGame({
             levelSegmentLength: this.levelData.puzzles.length,
-            gameLevel: this.levelData.levelNumber
+            gameLevel: currentLevelIndex
+        });
+
+        const totalLevels = Array.isArray(this.data?.levels) ? this.data.levels.length : 0;
+        this.assessmentFlowCoordinator = new AssessmentFlowCoordinator({
+            currentLevelIndex,
+            totalLevels,
+            puzzleCount: this.levelData.puzzles.length,
+            miniGamePuzzleSegment: this.levelForMinigame,
+        });
+
+        console.log('[assessment-debug] gameplay level gate', {
+            currentLevelIndex,
+            configuredAssessmentLevels: this.assessmentFlowCoordinator.getConfiguredAssessmentLevelIndexes(),
+            assessmentTypeForCurrentLevel: this.assessmentFlowCoordinator.getAssessmentTypeForCurrentLevel(),
+            isAssessmentEligible: this.assessmentFlowCoordinator.isAssessmentEligibleForCurrentLevel(),
+            assessmentPuzzleTrigger: this.assessmentFlowCoordinator.getAssessmentPuzzleTrigger(),
         });
         
         this.startGameTime();
@@ -96,7 +118,7 @@ export class GameplayFlowManager {
      * applying delays when needed to allow audio/animations to finish.
      */
     public determineNextStep(isCorrect: boolean | null = null, isTimeOver: boolean = false): void {
-        const currentLevel = this.currentPuzzleIndex + 1;
+        const currentPuzzleSegment = this.currentPuzzleIndex + 1;
         
         if (isCorrect !== null) {
             this.isCorrect = isCorrect;
@@ -104,25 +126,77 @@ export class GameplayFlowManager {
 
         const loadPuzzleDelay = this.isCorrect ? 1500 : 3000;
 
-        if (currentLevel === this.levelForMinigame && !this.hasShownChest) {
+        if (this.assessmentFlowCoordinator.shouldStartAssessmentAtPuzzle(currentPuzzleSegment)) {
+            this.startAssessmentFlow(() => {
+                this.continueAfterPuzzleStep(currentPuzzleSegment, isTimeOver, loadPuzzleDelay);
+            });
+            return;
+        }
+
+        this.continueAfterPuzzleStep(currentPuzzleSegment, isTimeOver, loadPuzzleDelay);
+    }
+
+    private continueAfterPuzzleStep(
+        currentPuzzleSegment: number,
+        isTimeOver: boolean,
+        loadPuzzleDelay: number
+    ): void {
+        if (currentPuzzleSegment === this.levelForMinigame && !this.hasShownChest) {
             this.hasShownChest = true;
 
             // Publish event BEFORE starting the mini game
             miniGameStateService.publish(
                 miniGameStateService.EVENTS.MINI_GAME_WILL_START,
-                { level: currentLevel }
+                { level: currentPuzzleSegment }
             );
 
             // Run chest animation (mini game)
             this.miniGameHandler.start();
             return;
-        } else {
-            // For incorrect answers only; Start loading the next puzzle with 2 seconds delay to let the audios play.
-            const delay = this.isCorrect || isTimeOver ? 0 : 2000;
-            this.timeoutRegistry.setTimeout(() => {
-                this.loadPuzzle(isTimeOver, loadPuzzleDelay);
-            }, delay);
         }
+
+        // For incorrect answers only; Start loading the next puzzle with 2 seconds delay to let the audios play.
+        const delay = this.isCorrect || isTimeOver ? 0 : 2000;
+        this.timeoutRegistry.setTimeout(() => {
+            this.loadPuzzle(isTimeOver, loadPuzzleDelay);
+        }, delay);
+    }
+
+    private startAssessmentFlow(onCloseResume: () => void): void {
+        if (this.isAssessmentInProgress) {
+            return;
+        }
+
+        this.isAssessmentInProgress = true;
+        this.assessmentFlowCoordinator.startAssessment();
+
+        let hasResumed = false;
+        const assessmentTypeForCurrentLevel = this.assessmentFlowCoordinator.getAssessmentTypeForCurrentLevel();
+        const resumeAfterClose = () => {
+            if (hasResumed) {
+                return;
+            }
+
+            hasResumed = true;
+            this.isAssessmentInProgress = false;
+            onCloseResume();
+        };
+
+        void assessmentSurveyManager
+            .open({
+                dataKey: assessmentTypeForCurrentLevel || undefined,
+                onCompleted: () => {
+                    this.assessmentFlowCoordinator.handleAssessmentCompleted();
+                },
+                onClosed: () => {
+                    this.assessmentFlowCoordinator.handleAssessmentClosed();
+                    resumeAfterClose();
+                },
+            })
+            .catch((error) => {
+                console.warn('[assessment-survey] failed to open in gameplay flow', error);
+                resumeAfterClose();
+            });
     }
 
     public handleStoneDropResult(isCorrect: boolean, pickedStone: StoneConfig | null): void {
@@ -219,6 +293,22 @@ export class GameplayFlowManager {
             // Next Puzzle
             this.scheduleNextPuzzle(setTimeoutDelay);
         }
+    }
+
+    private resolveCurrentLevelIndex(): number {
+        const candidateValues = [
+            this.levelData?.levelNumber,
+            this.levelData?.levelMeta?.levelNumber,
+        ];
+
+        for (const candidate of candidateValues) {
+            const numericValue = typeof candidate === 'number' ? candidate : Number(candidate);
+            if (Number.isFinite(numericValue)) {
+                return Math.max(0, Math.trunc(numericValue));
+            }
+        }
+
+        return 0;
     }
 
     private handleLevelCompletion(isTimerEnded: boolean, delay: number): void {

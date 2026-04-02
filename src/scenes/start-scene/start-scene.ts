@@ -19,6 +19,8 @@ import {
 } from "@constants";
 import gameStateService from '@gameStateService';
 import gameSettingsService from '@gameSettingsService';
+import assessmentSurveyManager from '@assessment/assessment-survey-manager';
+import { AssessmentLevelConfig } from '@assessment/config/assessment-level-config';
 import './start-scene.scss';
 export class StartScene {
   public data: DataModal;
@@ -36,6 +38,7 @@ export class StartScene {
   public static SceneName: string;
   audioPlayer: AudioPlayer;
   private toggleBtn: HTMLElement;
+  private devAssessmentBtn: HTMLElement;
   private pwa_install_status: Event;
   private titleTextElement: HTMLElement | null;
   public riveMonster: RiveMonsterComponent;
@@ -51,6 +54,7 @@ export class StartScene {
     this.data = gameStateService.getFTMData();
     this.riveMonsterElement = gameSettingsService.getRiveCanvasValue();
     this.toggleBtn = document.getElementById("toggle-btn") as HTMLElement;
+    this.devAssessmentBtn = document.getElementById("dev-assessment-btn") as HTMLElement;
     this.loadingElement = document.getElementById("loading-screen") as HTMLElement;
     this.riveMonster = new RiveMonsterComponent({
       canvas: this.riveMonsterElement,
@@ -94,7 +98,8 @@ export class StartScene {
     this.audioPlayer = new AudioPlayer();
     this.pwa_status = localStorage.getItem(PWAInstallStatus);
     this.handler = document.getElementById('start-scene-click-area') as HTMLBodyElement;
-    this.devToggle();
+    this.toggleBtn.addEventListener("click", this.onToggleClick);
+    this.devAssessmentBtn?.addEventListener("click", this.onDevAssessmentClick);
     this.createPlayButton();
     window.addEventListener("beforeinstallprompt", this.handlerInstallPrompt);
     this.setupBg();
@@ -137,10 +142,28 @@ export class StartScene {
     }
   }
 
-  devToggle = () => {
-    this.toggleBtn.addEventListener("click", () =>
-      toggleDebugMode(this.toggleBtn)
-    );
+  private onToggleClick = () => {
+    toggleDebugMode(this.toggleBtn);
+    if (this.devAssessmentBtn) {
+      this.devAssessmentBtn.style.display = this.toggleBtn.classList.contains("on") ? "block" : "none";
+    }
+  };
+
+  private onDevAssessmentClick = () => {
+    const config = new AssessmentLevelConfig();
+    const parsed = config.refreshConfig();
+    const firstAssessmentType = parsed.assessments[0]?.assessmentType;
+    const dataKey = firstAssessmentType
+      ? `${lang}-${firstAssessmentType}`
+      : undefined;
+
+    console.log(`[dev] Opening assessment with dataKey: ${dataKey ?? '(default)'}`);
+    assessmentSurveyManager.open({
+      dataKey,
+      onLoaded: () => console.log('[dev] assessment loaded'),
+      onCompleted: () => console.log('[dev] assessment completed'),
+      onClosed: () => console.log('[dev] assessment closed'),
+    });
   };
 
   generateGameTitle = () => {
@@ -196,6 +219,8 @@ export class StartScene {
   dispose() {
     this.audioPlayer.stopAllAudios();
     this.handler.removeEventListener("click", this.handleMouseClick, false);
+    this.toggleBtn.removeEventListener("click", this.onToggleClick);
+    this.devAssessmentBtn?.removeEventListener("click", this.onDevAssessmentClick);
     this.playButton.dispose();
     this.playButton.destroy();
     this.playButton = null;
