@@ -1,5 +1,6 @@
 import '@curiouslearning/assessment-survey/register';
 import { AssessmentSurveyPlayerElement, AnalyticsConfig } from '@curiouslearning/assessment-survey';
+import { ASSESSMENT_SKIP_BTN } from '@constants';
 
 export interface AssessmentPlayerElementOptions {
   playerTag: string;
@@ -13,6 +14,11 @@ export interface AssessmentPlayerElementOptions {
 export interface AssessmentCloseButtonOptions {
   closeButtonId: string;
   onClose: () => void;
+}
+
+export interface AssessmentSkipButtonOptions {
+  skipButtonId: string;
+  onSkip: () => void;
 }
 
 export function createAssessmentPlayerElement(options: AssessmentPlayerElementOptions): AssessmentSurveyPlayerElement {
@@ -49,27 +55,23 @@ export function createAssessmentPlayerElement(options: AssessmentPlayerElementOp
 }
 
 export function createAssessmentCloseButton(options: AssessmentCloseButtonOptions): HTMLButtonElement {
-  const closeButton = document.createElement('button');
-  closeButton.id = options.closeButtonId;
-  closeButton.type = 'button';
-  closeButton.textContent = '×';
-  closeButton.setAttribute('aria-label', 'Close assessment survey');
+  const skipButton = document.createElement('button');
+  skipButton.id = options.skipButtonId;
+  skipButton.type = 'button';
+  skipButton.setAttribute('aria-label', 'Skip assessment survey');
 
-  closeButton.style.position = 'absolute';
-  closeButton.style.top = '12px';
-  closeButton.style.right = '12px';
-  closeButton.style.width = '40px';
-  closeButton.style.height = '40px';
-  closeButton.style.border = 'none';
-  closeButton.style.borderRadius = '9999px';
-  closeButton.style.background = 'rgba(0, 0, 0, 0.7)';
-  closeButton.style.color = '#ffffff';
-  closeButton.style.fontSize = '28px';
-  closeButton.style.lineHeight = '1';
-  closeButton.style.cursor = 'pointer';
-  closeButton.style.zIndex = '10001';
+  skipButton.style.position = 'absolute';
+  skipButton.style.top = '0px';
+  skipButton.style.right = '0px';
+  skipButton.style.width = '60px';
+  skipButton.style.height = '48px';
+  skipButton.style.border = 'none';
+  skipButton.style.background = `center / contain no-repeat url("${ASSESSMENT_SKIP_BTN}")`;
+  skipButton.style.cursor = 'pointer';
+  skipButton.style.zIndex = '10001';
 
   closeButton.addEventListener('click', options.onClose);
 
   return closeButton;
 }
+
