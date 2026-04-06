@@ -55,23 +55,22 @@ export function createAssessmentPlayerElement(options: AssessmentPlayerElementOp
 }
 
 export function createAssessmentCloseButton(options: AssessmentCloseButtonOptions): HTMLButtonElement {
-  const skipButton = document.createElement('button');
-  skipButton.id = options.skipButtonId;
-  skipButton.type = 'button';
-  skipButton.setAttribute('aria-label', 'Skip assessment survey');
+  const closeButton = document.createElement('button');
+  closeButton.id = options.closeButtonId;
+  closeButton.type = 'button';
+  closeButton.setAttribute('aria-label', 'Skip assessment survey');
 
-  skipButton.style.position = 'absolute';
-  skipButton.style.top = '0px';
-  skipButton.style.right = '0px';
-  skipButton.style.width = '60px';
-  skipButton.style.height = '48px';
-  skipButton.style.border = 'none';
-  skipButton.style.background = `center / contain no-repeat url("${ASSESSMENT_SKIP_BTN}")`;
-  skipButton.style.cursor = 'pointer';
-  skipButton.style.zIndex = '10001';
+  closeButton.style.position = 'absolute';
+  closeButton.style.top = '0px';
+  closeButton.style.right = '0px';
+  closeButton.style.width = '60px';
+  closeButton.style.height = '48px';
+  closeButton.style.border = 'none';
+  closeButton.style.background = `center / contain no-repeat url("${ASSESSMENT_SKIP_BTN}")`;
+  closeButton.style.cursor = 'pointer';
+  closeButton.style.zIndex = '10001';
 
   closeButton.addEventListener('click', options.onClose);
 
   return closeButton;
 }
-
