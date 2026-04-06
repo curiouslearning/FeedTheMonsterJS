@@ -54,6 +54,9 @@ export function createAssessmentPlayerElement(options: AssessmentPlayerElementOp
   return playerElement;
 }
 
+/*
+* Close and Skip Assessment Button.
+*/
 export function createAssessmentCloseButton(options: AssessmentCloseButtonOptions): HTMLButtonElement {
   const closeButton = document.createElement('button');
   closeButton.id = options.closeButtonId;

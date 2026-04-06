@@ -78,6 +78,7 @@ export class AssessmentSurveyManager {
       messagingSenderId: process.env.FIREBASE_MESSAGING_SENDER_ID,
       appId: process.env.FIREBASE_APP_ID,
       measurementId: process.env.FIREBASE_MEASUREMENT_ID,
+      firebaseName: 'AssessmentSurveyEmbed',
     };
 
     const isValidConfig = Object.values(config).every(Boolean);
