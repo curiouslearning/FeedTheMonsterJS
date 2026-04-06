@@ -11,5 +11,6 @@
     "[typescript]": {
         "editor.tabSize": 2,
         "typescript.preferences.quoteStyle": "single"
-    }
+    },
+    "typescript.tsdk": "node_modules\\typescript\\lib"
 }
