@@ -127,7 +127,7 @@ export const STONE_BLUE = "./assets/images/stone_blue.svg";
 export const BLUE_STAR = "./assets/images/blue_star.svg";
 export const BURN_EFFECT_IMG = (ctr) => `./assets/images/stone_burn_export_${ctr}.png`;
 
-//Assessment iamges
+//Assessment images
 export const ASSESSMENT_SKIP_BTN = "./assets/images/Assessment_Skip_Button.svg";
 
 
