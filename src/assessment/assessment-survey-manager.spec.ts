@@ -302,6 +302,7 @@ describe('AssessmentSurveyManager', () => {
         messagingSenderId: 'test-messaging-sender-id',
         appId: 'test-app-id',
         measurementId: 'test-measurement-id',
+        firebaseName: 'AssessmentSurveyEmbed',
       });
     } finally {
       restoreFirebaseEnv(envSnapshot);
