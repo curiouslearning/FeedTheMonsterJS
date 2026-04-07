@@ -15,6 +15,7 @@ import {
 } from "@constants";
 import { GameScore, DataModal } from "@data";
 import { AnalyticsIntegration, AnalyticsEventType } from "../../analytics/analytics-integration";
+import { AssessmentCompletedPayload } from '@curiouslearning/assessment-survey';
 import gameStateService from '@gameStateService';
 import miniGameStateService from '@miniGameStateService';
 import assessmentSurveyManager from '@assessment/assessment-survey-manager';
@@ -185,10 +186,13 @@ export class GameplayFlowManager {
         void assessmentSurveyManager
             .open({
                 dataKey: assessmentTypeForCurrentLevel || undefined,
-                onCompleted: () => {
+                onComplete: () => {
                     this.assessmentFlowCoordinator.handleAssessmentCompleted();
                 },
-                onClosed: () => {
+                onRewardTrigger: (payload: AssessmentCompletedPayload) => {
+                    console.log('[assessment-survey] reward data received in FTM', payload);
+                },
+                onClose: () => {
                     this.assessmentFlowCoordinator.handleAssessmentClosed();
                     resumeAfterClose();
                 },

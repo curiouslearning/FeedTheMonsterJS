@@ -3,6 +3,7 @@ type MessageHandler = (event: MessageEvent) => void;
 declare global {
   interface HTMLElement {
     setAnalyticsConfig: (config: any) => void;
+    setHostIntegrationCallbacks: (callbacks: any) => void;
   }
 }
 
@@ -114,6 +115,7 @@ describe('AssessmentSurveyManager', () => {
 
     // mock setAnalyticsConfig on HTMLElement since custom element is not registered in jsdom
     HTMLElement.prototype.setAnalyticsConfig = jest.fn();
+    HTMLElement.prototype.setHostIntegrationCallbacks = jest.fn();
 
     MockBroadcastChannel.reset();
     manager = new AssessmentSurveyManager();
@@ -123,6 +125,7 @@ describe('AssessmentSurveyManager', () => {
     manager.close();
     jest.clearAllMocks();
     delete HTMLElement.prototype.setAnalyticsConfig;
+    delete HTMLElement.prototype.setHostIntegrationCallbacks;
   });
 
   it('should derive data key from URL alias and render inside .game-scene', async () => {
@@ -226,7 +229,7 @@ describe('AssessmentSurveyManager', () => {
     expect(overlay?.innerHTML).toBe('');
   });
 
-  it('should close when assessment player dispatches closed event', async () => {
+  it('should close when assessment player invokes the direct close callback', async () => {
     setHeadResponseMap({
       '/assessment-survey/data/zulu-lettersounds.json': true,
     });
@@ -234,41 +237,44 @@ describe('AssessmentSurveyManager', () => {
     await manager.open({ dataKey: 'zulu-lettersounds' });
 
     const overlay = document.getElementById('assessment-survey-overlay');
-    const playerElement = overlay?.querySelector('assessment-survey-player');
+    const callbacks = (HTMLElement.prototype.setHostIntegrationCallbacks as jest.Mock).mock.calls[0][0];
 
-    playerElement?.dispatchEvent(new CustomEvent('closed'));
+    callbacks.onClose?.();
 
     expect(overlay?.style.display).toBe('none');
     expect(overlay?.innerHTML).toBe('');
   });
 
-  it('should forward lifecycle callbacks and invoke onClosed once', async () => {
+  it('should forward direct lifecycle callbacks and invoke close once', async () => {
     setHeadResponseMap({
       '/assessment-survey/data/zulu-lettersounds.json': true,
     });
 
     const onLoaded = jest.fn();
-    const onCompleted = jest.fn();
-    const onClosed = jest.fn();
+    const onComplete = jest.fn();
+    const onRewardTrigger = jest.fn();
+    const onClose = jest.fn();
 
     await manager.open({
       dataKey: 'zulu-lettersounds',
       onLoaded,
-      onCompleted,
-      onClosed,
+      onComplete,
+      onRewardTrigger,
+      onClose,
     });
 
-    const overlay = document.getElementById('assessment-survey-overlay');
-    const playerElement = overlay?.querySelector('assessment-survey-player');
+    const callbacks = (HTMLElement.prototype.setHostIntegrationCallbacks as jest.Mock).mock.calls[0][0];
 
-    playerElement?.dispatchEvent(new CustomEvent('loaded'));
-    playerElement?.dispatchEvent(new CustomEvent('completed'));
-    playerElement?.dispatchEvent(new CustomEvent('closed'));
-    playerElement?.dispatchEvent(new CustomEvent('closed'));
+    callbacks.onLoaded?.();
+    callbacks.onComplete?.({ type: 'assessment_completed', score: 200 });
+    callbacks.onRewardTrigger?.({ type: 'assessment_completed', score: 200 });
+    callbacks.onClose?.();
+    callbacks.onClose?.();
 
     expect(onLoaded).toHaveBeenCalledTimes(1);
-    expect(onCompleted).toHaveBeenCalledTimes(1);
-    expect(onClosed).toHaveBeenCalledTimes(1);
+    expect(onComplete).toHaveBeenCalledTimes(1);
+    expect(onRewardTrigger).toHaveBeenCalledTimes(1);
+    expect(onClose).toHaveBeenCalledTimes(1);
   });
 
   it('should forward analytics config to player element when env vars are set', async () => {
@@ -294,6 +300,7 @@ describe('AssessmentSurveyManager', () => {
       const playerElement = overlay?.querySelector('assessment-survey-player') as HTMLElement;
 
       expect(playerElement?.setAnalyticsConfig).toHaveBeenCalledWith({
+        firebaseName: 'assessment-survey',
         apiKey: 'test-api-key',
         authDomain: 'test-auth-domain',
         databaseURL: 'test-database-url',

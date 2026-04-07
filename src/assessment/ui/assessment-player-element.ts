@@ -1,13 +1,14 @@
 import '@curiouslearning/assessment-survey/register';
-import { AssessmentSurveyPlayerElement, AnalyticsConfig } from '@curiouslearning/assessment-survey';
+import { AssessmentSurveyPlayerElement, AnalyticsConfig, AssessmentCompletedPayload } from '@curiouslearning/assessment-survey';
 
 export interface AssessmentPlayerElementOptions {
   playerTag: string;
   dataKey: string;
   analyticsConfig?: AnalyticsConfig;
   onLoaded?: () => void;
-  onCompleted?: () => void;
-  onClosed?: () => void;
+  onClose?: () => void;
+  onComplete?: (payload: AssessmentCompletedPayload) => void;
+  onRewardTrigger?: (payload: AssessmentCompletedPayload) => void;
 }
 
 export interface AssessmentCloseButtonOptions {
@@ -33,17 +34,14 @@ export function createAssessmentPlayerElement(options: AssessmentPlayerElementOp
     playerElement.setAnalyticsConfig(options.analyticsConfig);
   }
 
-  if (options.onLoaded) {
-    playerElement.addEventListener('loaded', options.onLoaded);
-  }
-
-  if (options.onCompleted) {
-    playerElement.addEventListener('completed', options.onCompleted);
-  }
-
-  if (options.onClosed) {
-    playerElement.addEventListener('closed', options.onClosed);
-  }
+  
+  playerElement.setHostIntegrationCallbacks({
+    onLoaded: options.onLoaded,
+    onClose: options.onClose,
+    onComplete: options.onComplete,
+    onRewardTrigger: options.onRewardTrigger,
+  });
+  
 
   return playerElement;
 }
