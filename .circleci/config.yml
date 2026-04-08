@@ -16,6 +16,11 @@ commands:
       - checkout
       - run: sudo npm install -g npm@latest
       - node/install-packages
+      - run:
+          name: Reinstall assessment survey package
+          command: |
+            npm uninstall @curiouslearning/assessment-survey || true
+            npm install "file:vendor/curiouslearning-assessment-survey-0.0.1.tgz"
       - run: npm run build
       # - aws-cli/setup:
       #     aws_access_key_id: AWS_ACCESS_KEY
