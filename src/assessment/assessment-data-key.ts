@@ -1,3 +1,5 @@
+import { buildAssessmentAssetPath } from './assessment-asset-path';
+
 const DEFAULT_ASSESSMENT_DATA_KEY = 'zulu-lettersounds';
 
 const languageAliasMap: Record<string, string> = {
@@ -53,7 +55,7 @@ export function deriveAssessmentDataKeyFromUrl(search: string): string {
 
 export async function hasAssessmentData(dataKey: string): Promise<boolean> {
   try {
-    const response = await fetch(`/assessment-survey/data/${dataKey}.json`, {
+    const response = await fetch(buildAssessmentAssetPath(`data/${dataKey}.json`), {
       method: 'HEAD',
       cache: 'no-store',
     });

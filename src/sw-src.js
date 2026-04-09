@@ -281,13 +281,23 @@ function normalizeAssessmentAudioName(data, itemName) {
   return itemName.trim();
 }
 
+function getAssessmentAssetPath(relativePath) {
+  const scopePath = self.registration?.scope
+    ? new URL(self.registration.scope).pathname
+    : self.location.pathname.replace(/[^/]*$/, '/');
+  const normalizedScopePath = scopePath.endsWith('/') ? scopePath : `${scopePath}/`;
+  const normalizedRelativePath = relativePath.replace(/^\/+/, '');
+
+  return `${normalizedScopePath}assessment-survey/${normalizedRelativePath}`;
+}
+
 async function cacheAssessmentLanguage(dataKey) {
   if (!dataKey) {
     return false;
   }
 
   const cacheName = `assessment-${dataKey}`;
-  const dataUrl = `/assessment-survey/data/${dataKey}.json`;
+  const dataUrl = getAssessmentAssetPath(`data/${dataKey}.json`);
 
   try {
     const response = await fetch(dataUrl, {
@@ -317,12 +327,12 @@ async function cacheAssessmentLanguage(dataKey) {
           if (!itemName) {
             continue;
           }
-          urlsToCache.add(`/assessment-survey/audio/${dataKey}/${itemName}.mp3`);
+          urlsToCache.add(getAssessmentAssetPath(`audio/${dataKey}/${itemName}.mp3`));
         }
       }
     }
 
-    urlsToCache.add(`/assessment-survey/audio/${dataKey}/answer_feedback.mp3`);
+    urlsToCache.add(getAssessmentAssetPath(`audio/${dataKey}/answer_feedback.mp3`));
 
     const cache = await caches.open(cacheName);
     const cacheResults = await Promise.all([...urlsToCache].map(async (url) => {
@@ -357,7 +367,7 @@ self.addEventListener("fetch", function (event) {
     requestUrl.pathname.endsWith('.json') &&
     (event.request.method === 'GET' || event.request.method === 'HEAD')
   ) {
-    const aliasedRequest = new Request(`/assessment-survey${requestUrl.pathname}${requestUrl.search}`, {
+    const aliasedRequest = new Request(getAssessmentAssetPath(`${requestUrl.pathname}${requestUrl.search}`), {
       method: event.request.method,
       headers: event.request.headers,
       mode: event.request.mode,
