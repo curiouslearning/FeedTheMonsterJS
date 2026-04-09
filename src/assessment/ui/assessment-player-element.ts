@@ -1,6 +1,7 @@
 import '@curiouslearning/assessment-survey/register';
 import { AssessmentSurveyPlayerElement, AnalyticsConfig } from '@curiouslearning/assessment-survey';
 import { ASSESSMENT_SKIP_BTN } from '@constants';
+import { getAssessmentBasePath } from '../assessment-asset-path';
 
 export interface AssessmentPlayerElementOptions {
   playerTag: string;
@@ -23,6 +24,8 @@ export interface AssessmentSkipButtonOptions {
 
 export function createAssessmentPlayerElement(options: AssessmentPlayerElementOptions): AssessmentSurveyPlayerElement {
   const playerElement = document.createElement(options.playerTag) as AssessmentSurveyPlayerElement;
+  const assessmentBasePath = getAssessmentBasePath();
+
   playerElement.style.display = 'block';
   playerElement.style.width = '100%';
   playerElement.style.height = '100%';
@@ -30,8 +33,8 @@ export function createAssessmentPlayerElement(options: AssessmentPlayerElementOp
   playerElement.setAttribute('data-key', options.dataKey);
   playerElement.setAttribute('user-id', 'ftm-web-user');
   playerElement.setAttribute('user-source', 'feed-the-monster-web');
-  playerElement.setAttribute('asset-base-url', '/assessment-survey');
-  playerElement.setAttribute('data-base-url', '/assessment-survey');
+  playerElement.setAttribute('asset-base-url', assessmentBasePath);
+  playerElement.setAttribute('data-base-url', assessmentBasePath);
   playerElement.setAttribute('embed-mode', 'true');
   playerElement.setAttribute('host-theme', 'ftm-dim');
 
