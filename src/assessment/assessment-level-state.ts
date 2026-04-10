@@ -41,7 +41,7 @@ export class AssessmentLevelState {
   private readonly completedLevelsProvider: CompletedLevelsProvider;
 
   constructor(options: AssessmentLevelStateOptions = {}) {
-    this.language = options.language || lang || 'en';
+    this.language = options.language?.trim() || lang?.trim() || 'english';
     this.storageKeyPrefix = options.storageKeyPrefix || DEFAULT_STORAGE_KEY_PREFIX;
     this.storage = options.storage || localStorage;
     this.completedLevelsProvider = options.completedLevelsProvider || (() => GameScore.getAllGameLevelInfo());
