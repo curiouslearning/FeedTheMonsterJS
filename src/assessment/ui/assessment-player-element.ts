@@ -1,6 +1,7 @@
 import '@curiouslearning/assessment-survey/register';
 import { AnalyticsConfig, AssessmentCompletedPayload, AssessmentSurveyPlayerElement } from '@curiouslearning/assessment-survey';
-
+import { ASSESSMENT_SKIP_BTN } from '@constants';
+import { getAssessmentBasePath } from '../assessment-asset-path';
 
 export interface AssessmentPlayerElementOptions {
   playerTag: string;
@@ -17,8 +18,15 @@ export interface AssessmentCloseButtonOptions {
   onClose: () => void;
 }
 
+export interface AssessmentSkipButtonOptions {
+  skipButtonId: string;
+  onSkip: () => void;
+}
+
 export function createAssessmentPlayerElement(options: AssessmentPlayerElementOptions): AssessmentSurveyPlayerElement {
   const playerElement = document.createElement(options.playerTag) as AssessmentSurveyPlayerElement;
+  const assessmentBasePath = getAssessmentBasePath();
+
   playerElement.style.display = 'block';
   playerElement.style.width = '100%';
   playerElement.style.height = '100%';
@@ -26,8 +34,8 @@ export function createAssessmentPlayerElement(options: AssessmentPlayerElementOp
   playerElement.setAttribute('data-key', options.dataKey);
   playerElement.setAttribute('user-id', 'ftm-web-user');
   playerElement.setAttribute('user-source', 'feed-the-monster-web');
-  playerElement.setAttribute('asset-base-url', '/assessment-survey');
-  playerElement.setAttribute('data-base-url', '/assessment-survey');
+  playerElement.setAttribute('asset-base-url', assessmentBasePath);
+  playerElement.setAttribute('data-base-url', assessmentBasePath);
   playerElement.setAttribute('embed-mode', 'true');
   playerElement.setAttribute('host-theme', 'ftm-dim');
 
@@ -62,24 +70,22 @@ export function createAssessmentPlayerElement(options: AssessmentPlayerElementOp
   return playerElement;
 }
 
+/*
+* Close and Skip Assessment Button.
+*/
 export function createAssessmentCloseButton(options: AssessmentCloseButtonOptions): HTMLButtonElement {
   const closeButton = document.createElement('button');
   closeButton.id = options.closeButtonId;
   closeButton.type = 'button';
-  closeButton.textContent = '×';
-  closeButton.setAttribute('aria-label', 'Close assessment survey');
+  closeButton.setAttribute('aria-label', 'Skip assessment survey');
 
   closeButton.style.position = 'absolute';
-  closeButton.style.top = '12px';
-  closeButton.style.right = '12px';
-  closeButton.style.width = '40px';
-  closeButton.style.height = '40px';
+  closeButton.style.top = '0px';
+  closeButton.style.right = '0px';
+  closeButton.style.width = '60px';
+  closeButton.style.height = '48px';
   closeButton.style.border = 'none';
-  closeButton.style.borderRadius = '9999px';
-  closeButton.style.background = 'rgba(0, 0, 0, 0.7)';
-  closeButton.style.color = '#ffffff';
-  closeButton.style.fontSize = '28px';
-  closeButton.style.lineHeight = '1';
+  closeButton.style.background = `center / contain no-repeat url("${ASSESSMENT_SKIP_BTN}")`;
   closeButton.style.cursor = 'pointer';
   closeButton.style.zIndex = '10001';
 

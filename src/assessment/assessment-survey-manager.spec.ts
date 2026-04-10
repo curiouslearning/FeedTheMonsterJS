@@ -161,6 +161,26 @@ describe('AssessmentSurveyManager', () => {
     expect(MockBroadcastChannel.postMessageCalls).toBe(1);
   });
 
+  it('should scope assessment asset urls to the deployed app base path', async () => {
+    window.history.pushState({}, '', '/feed-the-monster/index.html?cr_lang=englishwestafrican&assessment_type=words');
+
+    setHeadResponseMap({
+      '/feed-the-monster/assessment-survey/data/west-african-english-words.json': true,
+    });
+
+    await manager.open({});
+
+    const overlay = document.getElementById('assessment-survey-overlay');
+    const playerElement = overlay?.querySelector('assessment-survey-player');
+
+    expect(playerElement?.getAttribute('asset-base-url')).toBe('/feed-the-monster/assessment-survey');
+    expect(playerElement?.getAttribute('data-base-url')).toBe('/feed-the-monster/assessment-survey');
+    expect(fetchMock).toHaveBeenCalledWith(
+      '/feed-the-monster/assessment-survey/data/west-african-english-words.json',
+      expect.objectContaining({ method: 'HEAD' })
+    );
+  });
+
   it('should fallback to default assessment key when requested data key is unavailable', async () => {
     setHeadResponseMap({
       '/assessment-survey/data/missing-data-key.json': false,
@@ -319,6 +339,7 @@ describe('AssessmentSurveyManager', () => {
         messagingSenderId: 'test-messaging-sender-id',
         appId: 'test-app-id',
         measurementId: 'test-measurement-id',
+        firebaseName: 'AssessmentSurveyEmbed',
       });
     } finally {
       restoreFirebaseEnv(envSnapshot);
