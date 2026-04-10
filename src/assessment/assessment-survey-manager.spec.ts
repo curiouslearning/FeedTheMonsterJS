@@ -1,8 +1,12 @@
 import { AssessmentSurveyManager } from './assessment-survey-manager';
 type MessageHandler = (event: MessageEvent) => void;
+
+jest.mock('@curiouslearning/assessment-survey/register', () => ({}));
+
 declare global {
   interface HTMLElement {
     setAnalyticsConfig: (config: any) => void;
+    subscribe: (event: string, callback: (payload?: any) => void) => () => void;
   }
 }
 
@@ -81,6 +85,7 @@ class MockBroadcastChannel {
 describe('AssessmentSurveyManager', () => {
   let manager: AssessmentSurveyManager;
   let fetchMock: jest.Mock;
+  let subscribedHandlers: Record<string, Array<(payload?: any) => void>>;
 
   const setHeadResponseMap = (responseMap: Record<string, boolean>) => {
     fetchMock.mockImplementation(async (url: string, options?: RequestInit) => {
@@ -111,9 +116,19 @@ describe('AssessmentSurveyManager', () => {
 
     fetchMock = jest.fn();
     (global as any).fetch = fetchMock;
+    subscribedHandlers = {};
 
     // mock setAnalyticsConfig on HTMLElement since custom element is not registered in jsdom
     HTMLElement.prototype.setAnalyticsConfig = jest.fn();
+    HTMLElement.prototype.subscribe = jest.fn((event: string, callback: (payload?: any) => void) => {
+      if (!subscribedHandlers[event]) {
+        subscribedHandlers[event] = [];
+      }
+
+      subscribedHandlers[event].push(callback);
+
+      return jest.fn();
+    });
 
     MockBroadcastChannel.reset();
     manager = new AssessmentSurveyManager();
@@ -123,6 +138,7 @@ describe('AssessmentSurveyManager', () => {
     manager.close();
     jest.clearAllMocks();
     delete HTMLElement.prototype.setAnalyticsConfig;
+    delete HTMLElement.prototype.subscribe;
   });
 
   it('should derive data key from URL alias and render inside .game-scene', async () => {
@@ -246,7 +262,7 @@ describe('AssessmentSurveyManager', () => {
     expect(overlay?.innerHTML).toBe('');
   });
 
-  it('should close when assessment player dispatches closed event', async () => {
+  it('should close when assessment player invokes the direct close callback', async () => {
     setHeadResponseMap({
       '/assessment-survey/data/zulu-lettersounds.json': true,
     });
@@ -254,41 +270,41 @@ describe('AssessmentSurveyManager', () => {
     await manager.open({ dataKey: 'zulu-lettersounds' });
 
     const overlay = document.getElementById('assessment-survey-overlay');
-    const playerElement = overlay?.querySelector('assessment-survey-player');
 
-    playerElement?.dispatchEvent(new CustomEvent('closed'));
+    subscribedHandlers.closed?.forEach((handler) => handler());
 
     expect(overlay?.style.display).toBe('none');
     expect(overlay?.innerHTML).toBe('');
   });
 
-  it('should forward lifecycle callbacks and invoke onClosed once', async () => {
+  it('should forward direct lifecycle callbacks and invoke close once', async () => {
     setHeadResponseMap({
       '/assessment-survey/data/zulu-lettersounds.json': true,
     });
 
     const onLoaded = jest.fn();
-    const onCompleted = jest.fn();
-    const onClosed = jest.fn();
+    const onComplete = jest.fn();
+    const onRewardTrigger = jest.fn();
+    const onClose = jest.fn();
 
     await manager.open({
       dataKey: 'zulu-lettersounds',
       onLoaded,
-      onCompleted,
-      onClosed,
+      onComplete,
+      onRewardTrigger,
+      onClose,
     });
 
-    const overlay = document.getElementById('assessment-survey-overlay');
-    const playerElement = overlay?.querySelector('assessment-survey-player');
-
-    playerElement?.dispatchEvent(new CustomEvent('loaded'));
-    playerElement?.dispatchEvent(new CustomEvent('completed'));
-    playerElement?.dispatchEvent(new CustomEvent('closed'));
-    playerElement?.dispatchEvent(new CustomEvent('closed'));
+    subscribedHandlers.loaded?.forEach((handler) => handler());
+    subscribedHandlers.completed?.forEach((handler) => handler({ type: 'assessment_completed', score: 200 }));
+    subscribedHandlers['reward-trigger']?.forEach((handler) => handler({ type: 'assessment_completed', score: 200 }));
+    subscribedHandlers.closed?.forEach((handler) => handler());
+    subscribedHandlers.closed?.forEach((handler) => handler());
 
     expect(onLoaded).toHaveBeenCalledTimes(1);
-    expect(onCompleted).toHaveBeenCalledTimes(1);
-    expect(onClosed).toHaveBeenCalledTimes(1);
+    expect(onComplete).toHaveBeenCalledTimes(1);
+    expect(onRewardTrigger).toHaveBeenCalledTimes(1);
+    expect(onClose).toHaveBeenCalledTimes(1);
   });
 
   it('should forward analytics config to player element when env vars are set', async () => {
@@ -314,6 +330,7 @@ describe('AssessmentSurveyManager', () => {
       const playerElement = overlay?.querySelector('assessment-survey-player') as HTMLElement;
 
       expect(playerElement?.setAnalyticsConfig).toHaveBeenCalledWith({
+        firebaseName: 'assessment-survey',
         apiKey: 'test-api-key',
         authDomain: 'test-auth-domain',
         databaseURL: 'test-database-url',

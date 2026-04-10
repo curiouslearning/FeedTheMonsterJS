@@ -161,8 +161,9 @@ export class StartScene {
     assessmentSurveyManager.open({
       dataKey,
       onLoaded: () => console.log('[dev] assessment loaded'),
-      onCompleted: () => console.log('[dev] assessment completed'),
-      onClosed: () => console.log('[dev] assessment closed'),
+      onComplete: () => console.log('[dev] assessment completed'),
+      onRewardTrigger: () => console.log('[dev] assessment reward trigger'),
+      onClose: () => console.log('[dev] assessment closed'),
     });
   };
 
