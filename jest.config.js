@@ -32,6 +32,7 @@ module.exports = {
     "^@miniGameStateService(.*)$": ["<rootDir>/src/miniGame/miniGameStateService/$1"],
     "@curiouslearning/analytics": "<rootDir>/node_modules/@curiouslearning/analytics/dist/index.js",
     "@curiouslearning/features": "<rootDir>/node_modules/@curiouslearning/features/dist/index.js",
+    "@curiouslearning/core": "<rootDir>/node_modules/@curiouslearning/core/dist/index.js",
     "@curiouslearning/assessment-survey/register": "<rootDir>/__mocks__/default-mock.js",
     "@curiouslearning/assessment-survey": "<rootDir>/node_modules/@curiouslearning/assessment-survey/lib/index.js",
   },
@@ -43,11 +44,11 @@ module.exports = {
   ],
   testEnvironment: "jsdom",
   transform: {
-    "^.+.ts?$": ["ts-jest",{}],
+    "^.+\\.[jt]s$": ["ts-jest", { tsconfig: { allowJs: true } }],
     "\\.(jpg|jpeg|png|gif|eot|otf|webp|svg|ttf|woff|woff2|mp4|webm|wav|mp3|m4a|aac|oga)$": "<rootDir>/__mocks__/default-mock.js",
     "\\.(css|scss)$": "<rootDir>/__mocks__/default-mock.js"
   },
   transformIgnorePatterns: [
-    "/node_modules/(?!lodash-es)"
+    "/node_modules/(?!lodash-es|@curiouslearning|workbox-window|idb|@firebase|firebase)"
   ],
 };

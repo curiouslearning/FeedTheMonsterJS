@@ -1,5 +1,6 @@
 import '@curiouslearning/assessment-survey/register';
-import { AssessmentSurveyPlayerElement, AnalyticsConfig, AssessmentCompletedPayload } from '@curiouslearning/assessment-survey';
+import { AnalyticsConfig, AssessmentCompletedPayload, AssessmentSurveyPlayerElement } from '@curiouslearning/assessment-survey';
+
 
 export interface AssessmentPlayerElementOptions {
   playerTag: string;
@@ -34,14 +35,29 @@ export function createAssessmentPlayerElement(options: AssessmentPlayerElementOp
     playerElement.setAnalyticsConfig(options.analyticsConfig);
   }
 
-  
-  playerElement.setHostIntegrationCallbacks({
-    onLoaded: options.onLoaded,
-    onClose: options.onClose,
-    onComplete: options.onComplete,
-    onRewardTrigger: options.onRewardTrigger,
-  });
-  
+  if (options.onLoaded) {
+    playerElement.subscribe(AssessmentSurveyPlayerElement.ONLOADED, () => {
+      options.onLoaded?.();
+    });
+  }
+
+  if (options.onClose) {
+    playerElement.subscribe(AssessmentSurveyPlayerElement.ONCLOSE, () => {
+      options.onClose?.();
+    });
+  }
+
+  if (options.onComplete) {
+    playerElement.subscribe<AssessmentCompletedPayload>(AssessmentSurveyPlayerElement.ONCOMPLETE, (payload) => {
+      options.onComplete?.(payload);
+    });
+  }
+
+  if (options.onRewardTrigger) {
+    playerElement.subscribe<AssessmentCompletedPayload>(AssessmentSurveyPlayerElement.ONREWARDTRIGGER, (payload) => {
+      options.onRewardTrigger?.(payload);
+    });
+  }
 
   return playerElement;
 }

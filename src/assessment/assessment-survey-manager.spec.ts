@@ -1,9 +1,12 @@
 import { AssessmentSurveyManager } from './assessment-survey-manager';
 type MessageHandler = (event: MessageEvent) => void;
+
+jest.mock('@curiouslearning/assessment-survey/register', () => ({}));
+
 declare global {
   interface HTMLElement {
     setAnalyticsConfig: (config: any) => void;
-    setHostIntegrationCallbacks: (callbacks: any) => void;
+    subscribe: (event: string, callback: (payload?: any) => void) => () => void;
   }
 }
 
@@ -82,6 +85,7 @@ class MockBroadcastChannel {
 describe('AssessmentSurveyManager', () => {
   let manager: AssessmentSurveyManager;
   let fetchMock: jest.Mock;
+  let subscribedHandlers: Record<string, Array<(payload?: any) => void>>;
 
   const setHeadResponseMap = (responseMap: Record<string, boolean>) => {
     fetchMock.mockImplementation(async (url: string, options?: RequestInit) => {
@@ -112,10 +116,19 @@ describe('AssessmentSurveyManager', () => {
 
     fetchMock = jest.fn();
     (global as any).fetch = fetchMock;
+    subscribedHandlers = {};
 
     // mock setAnalyticsConfig on HTMLElement since custom element is not registered in jsdom
     HTMLElement.prototype.setAnalyticsConfig = jest.fn();
-    HTMLElement.prototype.setHostIntegrationCallbacks = jest.fn();
+    HTMLElement.prototype.subscribe = jest.fn((event: string, callback: (payload?: any) => void) => {
+      if (!subscribedHandlers[event]) {
+        subscribedHandlers[event] = [];
+      }
+
+      subscribedHandlers[event].push(callback);
+
+      return jest.fn();
+    });
 
     MockBroadcastChannel.reset();
     manager = new AssessmentSurveyManager();
@@ -125,7 +138,7 @@ describe('AssessmentSurveyManager', () => {
     manager.close();
     jest.clearAllMocks();
     delete HTMLElement.prototype.setAnalyticsConfig;
-    delete HTMLElement.prototype.setHostIntegrationCallbacks;
+    delete HTMLElement.prototype.subscribe;
   });
 
   it('should derive data key from URL alias and render inside .game-scene', async () => {
@@ -237,9 +250,8 @@ describe('AssessmentSurveyManager', () => {
     await manager.open({ dataKey: 'zulu-lettersounds' });
 
     const overlay = document.getElementById('assessment-survey-overlay');
-    const callbacks = (HTMLElement.prototype.setHostIntegrationCallbacks as jest.Mock).mock.calls[0][0];
 
-    callbacks.onClose?.();
+    subscribedHandlers.closed?.forEach((handler) => handler());
 
     expect(overlay?.style.display).toBe('none');
     expect(overlay?.innerHTML).toBe('');
@@ -263,13 +275,11 @@ describe('AssessmentSurveyManager', () => {
       onClose,
     });
 
-    const callbacks = (HTMLElement.prototype.setHostIntegrationCallbacks as jest.Mock).mock.calls[0][0];
-
-    callbacks.onLoaded?.();
-    callbacks.onComplete?.({ type: 'assessment_completed', score: 200 });
-    callbacks.onRewardTrigger?.({ type: 'assessment_completed', score: 200 });
-    callbacks.onClose?.();
-    callbacks.onClose?.();
+    subscribedHandlers.loaded?.forEach((handler) => handler());
+    subscribedHandlers.completed?.forEach((handler) => handler({ type: 'assessment_completed', score: 200 }));
+    subscribedHandlers['reward-trigger']?.forEach((handler) => handler({ type: 'assessment_completed', score: 200 }));
+    subscribedHandlers.closed?.forEach((handler) => handler());
+    subscribedHandlers.closed?.forEach((handler) => handler());
 
     expect(onLoaded).toHaveBeenCalledTimes(1);
     expect(onComplete).toHaveBeenCalledTimes(1);
