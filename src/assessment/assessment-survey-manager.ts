@@ -71,7 +71,6 @@ export class AssessmentSurveyManager {
 
   private resolveAnalyticsConfig(): AnalyticsConfig | undefined {
     const config = {
-      firebaseName: 'assessment-survey',
       apiKey: process.env.FIREBASE_API_KEY,
       authDomain: process.env.FIREBASE_AUTH_DOMAIN,
       databaseURL: process.env.FIREBASE_DATABASE_URL,

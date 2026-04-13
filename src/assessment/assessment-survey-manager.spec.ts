@@ -330,7 +330,6 @@ describe('AssessmentSurveyManager', () => {
       const playerElement = overlay?.querySelector('assessment-survey-player') as HTMLElement;
 
       expect(playerElement?.setAnalyticsConfig).toHaveBeenCalledWith({
-        firebaseName: 'assessment-survey',
         apiKey: 'test-api-key',
         authDomain: 'test-auth-domain',
         databaseURL: 'test-database-url',
