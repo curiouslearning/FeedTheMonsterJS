@@ -21,7 +21,7 @@ class MockAssessmentLevelState {
   public readonly blockedLevels = new Set<number>();
 
   public shouldShowForLevel(levelIndex: number): boolean {
-    return !this.blockedLevels.has(levelIndex) && !this.completedAssessments.has(levelIndex);
+    return !this.blockedLevels.has(levelIndex);
   }
 
   public markAssessmentCompletedForLevel(levelIndex: number): void {
@@ -91,7 +91,7 @@ describe('AssessmentFlowCoordinator', () => {
     expect(coordinator.shouldStartAssessmentAtPuzzle(2)).toBe(false);
   });
 
-  it('completion prevents reopening on replay', () => {
+  it('completion still allows reopening on replay', () => {
     const levelState = new MockAssessmentLevelState();
 
     const firstRun = new AssessmentFlowCoordinator(
@@ -125,12 +125,12 @@ describe('AssessmentFlowCoordinator', () => {
       }
     );
 
-    expect(replayRun.isAssessmentEligibleForCurrentLevel()).toBe(false);
-    expect(replayRun.getAssessmentPuzzleTrigger()).toBe(0);
-    expect(replayRun.shouldStartAssessmentAtPuzzle(1)).toBe(false);
+    expect(replayRun.isAssessmentEligibleForCurrentLevel()).toBe(true);
+    expect(replayRun.getAssessmentPuzzleTrigger()).toBe(1);
+    expect(replayRun.shouldStartAssessmentAtPuzzle(1)).toBe(true);
   });
 
-  it('level completion state prevents reopening', () => {
+  it('explicit blocked state prevents reopening', () => {
     const levelState = new MockAssessmentLevelState();
     levelState.blockedLevels.add(2);
 

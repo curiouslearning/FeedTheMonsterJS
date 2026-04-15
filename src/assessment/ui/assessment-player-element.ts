@@ -1,5 +1,5 @@
 import '@curiouslearning/assessment-survey/register';
-import { AssessmentSurveyPlayerElement, AnalyticsConfig } from '@curiouslearning/assessment-survey';
+import { AnalyticsConfig, AssessmentCompletedPayload, AssessmentSurveyPlayerElement } from '@curiouslearning/assessment-survey';
 import { ASSESSMENT_SKIP_BTN } from '@constants';
 import { getAssessmentBasePath } from '../assessment-asset-path';
 
@@ -8,8 +8,9 @@ export interface AssessmentPlayerElementOptions {
   dataKey: string;
   analyticsConfig?: AnalyticsConfig;
   onLoaded?: () => void;
-  onCompleted?: () => void;
-  onClosed?: () => void;
+  onClose?: () => void;
+  onComplete?: (payload: AssessmentCompletedPayload) => void;
+  onRewardTrigger?: (payload: AssessmentCompletedPayload) => void;
 }
 
 export interface AssessmentCloseButtonOptions {
@@ -43,15 +44,27 @@ export function createAssessmentPlayerElement(options: AssessmentPlayerElementOp
   }
 
   if (options.onLoaded) {
-    playerElement.addEventListener('loaded', options.onLoaded);
+    playerElement.subscribe(AssessmentSurveyPlayerElement.ONLOADED, () => {
+      options.onLoaded?.();
+    });
   }
 
-  if (options.onCompleted) {
-    playerElement.addEventListener('completed', options.onCompleted);
+  if (options.onClose) {
+    playerElement.subscribe(AssessmentSurveyPlayerElement.ONCLOSE, () => {
+      options.onClose?.();
+    });
   }
 
-  if (options.onClosed) {
-    playerElement.addEventListener('closed', options.onClosed);
+  if (options.onComplete) {
+    playerElement.subscribe<AssessmentCompletedPayload>(AssessmentSurveyPlayerElement.ONCOMPLETE, (payload) => {
+      options.onComplete?.(payload);
+    });
+  }
+
+  if (options.onRewardTrigger) {
+    playerElement.subscribe<AssessmentCompletedPayload>(AssessmentSurveyPlayerElement.ONREWARDTRIGGER, (payload) => {
+      options.onRewardTrigger?.(payload);
+    });
   }
 
   return playerElement;

@@ -175,9 +175,10 @@ describe('GameplayFlowManager assessment integration', () => {
     mockAssessmentCoordinator.getAssessmentTypeForCurrentLevel.mockReturnValue('lettersounds');
     (miniGameStateService.shouldShowMiniGame as jest.Mock).mockReturnValue(1);
 
-    (assessmentSurveyManager.open as jest.Mock).mockImplementation(async ({ onCompleted, onClosed }) => {
-      onCompleted?.();
-      onClosed?.();
+    (assessmentSurveyManager.open as jest.Mock).mockImplementation(async ({ onComplete, onRewardTrigger, onClose }) => {
+      onComplete?.();
+      onRewardTrigger?.({ type: 'assessment_completed', score: 200 });
+      onClose?.();
     });
 
     const { manager, miniGameHandler } = createFlowManager();
@@ -207,8 +208,8 @@ describe('GameplayFlowManager assessment integration', () => {
     mockAssessmentCoordinator.shouldStartAssessmentAtPuzzle.mockReturnValue(true);
 
     let closeHandler: (() => void) | undefined;
-    (assessmentSurveyManager.open as jest.Mock).mockImplementation(async ({ onClosed }) => {
-      closeHandler = onClosed;
+    (assessmentSurveyManager.open as jest.Mock).mockImplementation(async ({ onClose }) => {
+      closeHandler = onClose;
     });
 
     const { manager } = createFlowManager();

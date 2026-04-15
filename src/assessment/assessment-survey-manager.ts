@@ -1,5 +1,5 @@
 import '@curiouslearning/assessment-survey/register';
-import { AnalyticsConfig } from '@curiouslearning/assessment-survey';
+import { AnalyticsConfig, AssessmentCompletedPayload } from '@curiouslearning/assessment-survey';
 import { resolveAssessmentDataKey } from './assessment-data-key';
 import { AssessmentCacheClient } from './assessment-cache-client';
 import { AssessmentOverlay } from './ui/assessment-overlay';
@@ -11,8 +11,9 @@ import {
 export interface AssessmentSurveyOpenOptions {
   dataKey?: string;
   onLoaded?: () => void;
-  onCompleted?: () => void;
-  onClosed?: () => void;
+  onComplete?: (payload: AssessmentCompletedPayload) => void;
+  onClose?: () => void;
+  onRewardTrigger?: (payload: AssessmentCompletedPayload) => void;
 }
 
 export class AssessmentSurveyManager {
@@ -106,7 +107,7 @@ export class AssessmentSurveyManager {
 
       hasClosed = true;
       this.close();
-      options.onClosed?.();
+      options.onClose?.();
     };
 
     const playerElement = createAssessmentPlayerElement({
@@ -116,11 +117,15 @@ export class AssessmentSurveyManager {
         console.log('[assessment-survey] loaded');
         options.onLoaded?.();
       },
-      onCompleted: () => {
-        console.log('[assessment-survey] completed');
-        options.onCompleted?.();
+      onComplete: (payload) => {
+        console.log('[assessment-survey] complete');
+        options.onComplete?.(payload);
       },
-      onClosed: () => {
+      onRewardTrigger: (payload) => {
+        console.log('[assessment-survey] reward trigger ', payload);
+        options.onRewardTrigger?.(payload);
+      },
+      onClose: () => {
         handleClose();
       },
       analyticsConfig: this.resolveAnalyticsConfig(),
