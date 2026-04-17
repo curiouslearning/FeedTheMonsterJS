@@ -164,6 +164,14 @@ export class AssessmentFlowCoordinator {
       return 0;
     }
 
+    if (
+      Number.isInteger(this.miniGamePuzzleSegment)
+      && this.miniGamePuzzleSegment >= 1
+      && this.miniGamePuzzleSegment <= this.puzzleCount
+    ) {
+      return this.miniGamePuzzleSegment;
+    }
+
     const firstAssessmentPuzzleSegment = Math.min(
       MIN_ASSESSMENT_PUZZLE_SEGMENT,
       this.puzzleCount
@@ -172,14 +180,6 @@ export class AssessmentFlowCoordinator {
       MAX_ASSESSMENT_PUZZLE_SEGMENT,
       this.puzzleCount
     );
-
-    if (
-      Number.isInteger(this.miniGamePuzzleSegment)
-      && this.miniGamePuzzleSegment >= firstAssessmentPuzzleSegment
-      && this.miniGamePuzzleSegment <= lastAssessmentPuzzleSegment
-    ) {
-      return this.miniGamePuzzleSegment;
-    }
 
     const boundedRandom = Math.min(0.999999, Math.max(0, this.randomFn()));
     const assessmentPuzzleRange =

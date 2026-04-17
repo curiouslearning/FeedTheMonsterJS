@@ -30,7 +30,7 @@ class MockAssessmentLevelState {
 }
 
 describe('AssessmentFlowCoordinator', () => {
-  it('uses mini-game segment when mini-game exists inside the assessment window', () => {
+  it('uses mini-game segment when mini-game exists', () => {
     const coordinator = new AssessmentFlowCoordinator(
       {
         currentLevelIndex: 2,
@@ -70,7 +70,7 @@ describe('AssessmentFlowCoordinator', () => {
     expect(coordinator.getAssessmentPuzzleTrigger()).toBe(3);
   });
 
-  it('uses random segment from puzzles 2 through 4 when mini-game is outside the assessment window', () => {
+  it('uses mini-game segment when mini-game is outside the random assessment window', () => {
     const coordinator = new AssessmentFlowCoordinator(
       {
         currentLevelIndex: 2,
@@ -85,9 +85,29 @@ describe('AssessmentFlowCoordinator', () => {
       }
     );
 
-    expect(coordinator.getAssessmentPuzzleTrigger()).toBe(4);
-    expect(coordinator.shouldStartAssessmentAtPuzzle(4)).toBe(true);
-    expect(coordinator.shouldStartAssessmentAtPuzzle(5)).toBe(false);
+    expect(coordinator.getAssessmentPuzzleTrigger()).toBe(5);
+    expect(coordinator.shouldStartAssessmentAtPuzzle(5)).toBe(true);
+    expect(coordinator.shouldStartAssessmentAtPuzzle(4)).toBe(false);
+  });
+
+  it('uses mini-game segment when mini-game is on the first puzzle', () => {
+    const coordinator = new AssessmentFlowCoordinator(
+      {
+        currentLevelIndex: 2,
+        totalLevels: 20,
+        puzzleCount: 5,
+        miniGamePuzzleSegment: 1,
+        randomFn: () => 0.999,
+      },
+      {
+        levelConfig: new MockAssessmentLevelConfig(new Map([[2, 'sightwords']])),
+        levelState: new MockAssessmentLevelState(),
+      }
+    );
+
+    expect(coordinator.getAssessmentPuzzleTrigger()).toBe(1);
+    expect(coordinator.shouldStartAssessmentAtPuzzle(1)).toBe(true);
+    expect(coordinator.shouldStartAssessmentAtPuzzle(2)).toBe(false);
   });
 
   it('opens assessment once per level run', () => {
@@ -119,7 +139,7 @@ describe('AssessmentFlowCoordinator', () => {
         currentLevelIndex: 2,
         totalLevels: 20,
         puzzleCount: 5,
-        miniGamePuzzleSegment: 2,
+        miniGamePuzzleSegment: 1,
       },
       {
         levelConfig: new MockAssessmentLevelConfig(new Map([[2, 'lettersounds']])),
@@ -127,7 +147,7 @@ describe('AssessmentFlowCoordinator', () => {
       }
     );
 
-    expect(firstRun.shouldStartAssessmentAtPuzzle(2)).toBe(true);
+    expect(firstRun.shouldStartAssessmentAtPuzzle(1)).toBe(true);
 
     firstRun.startAssessment();
     firstRun.handleAssessmentCompleted();
@@ -137,7 +157,7 @@ describe('AssessmentFlowCoordinator', () => {
         currentLevelIndex: 2,
         totalLevels: 20,
         puzzleCount: 5,
-        miniGamePuzzleSegment: 2,
+        miniGamePuzzleSegment: 1,
       },
       {
         levelConfig: new MockAssessmentLevelConfig(new Map([[2, 'lettersounds']])),
@@ -146,8 +166,8 @@ describe('AssessmentFlowCoordinator', () => {
     );
 
     expect(replayRun.isAssessmentEligibleForCurrentLevel()).toBe(true);
-    expect(replayRun.getAssessmentPuzzleTrigger()).toBe(2);
-    expect(replayRun.shouldStartAssessmentAtPuzzle(2)).toBe(true);
+    expect(replayRun.getAssessmentPuzzleTrigger()).toBe(1);
+    expect(replayRun.shouldStartAssessmentAtPuzzle(1)).toBe(true);
   });
 
   it('explicit blocked state prevents reopening', () => {
