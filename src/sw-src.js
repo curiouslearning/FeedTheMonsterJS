@@ -274,11 +274,7 @@ async function cacheFeedBackAudio(feedBackAudios, language) {
 }
 
 function normalizeAssessmentAudioName(data, itemName) {
-  const quizName = (data?.quizName || '').toLowerCase();
-  if (quizName.includes('luganda') || quizName.includes('west african english')) {
-    return itemName.toLowerCase().trim();
-  }
-  return itemName.trim();
+  return itemName.toLowerCase().trim();
 }
 
 function getAssessmentAssetPath(relativePath) {
