@@ -3,6 +3,9 @@ import { AssessmentLevelState } from './assessment-level-state';
 
 type RandomFn = () => number;
 
+const MIN_ASSESSMENT_PUZZLE_SEGMENT = 2;
+const MAX_ASSESSMENT_PUZZLE_SEGMENT = 4;
+
 interface AssessmentLevelConfigLike {
   shouldShowAtLevel(levelIndex: number, totalLevels: number, refresh?: boolean): boolean;
   getTargetLevelIndexes?(totalLevels: number, refresh?: boolean): number[];
@@ -169,8 +172,20 @@ export class AssessmentFlowCoordinator {
       return this.miniGamePuzzleSegment;
     }
 
+    const firstAssessmentPuzzleSegment = Math.min(
+      MIN_ASSESSMENT_PUZZLE_SEGMENT,
+      this.puzzleCount
+    );
+    const lastAssessmentPuzzleSegment = Math.min(
+      MAX_ASSESSMENT_PUZZLE_SEGMENT,
+      this.puzzleCount
+    );
+
     const boundedRandom = Math.min(0.999999, Math.max(0, this.randomFn()));
-    return Math.floor(boundedRandom * this.puzzleCount) + 1;
+    const assessmentPuzzleRange =
+      lastAssessmentPuzzleSegment - firstAssessmentPuzzleSegment + 1;
+
+    return Math.floor(boundedRandom * assessmentPuzzleRange) + firstAssessmentPuzzleSegment;
   }
 
   private resolveConfiguredAssessmentLevelIndexes(): number[] {
