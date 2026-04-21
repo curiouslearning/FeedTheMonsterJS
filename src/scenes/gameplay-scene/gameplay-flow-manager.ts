@@ -102,7 +102,7 @@ export class GameplayFlowManager {
         console.log('[assessment-debug] gameplay level gate', {
             currentLevelIndex,
             configuredAssessmentLevels: this.assessmentFlowCoordinator.getConfiguredAssessmentLevelIndexes(),
-            assessmentTypeForCurrentLevel: this.assessmentFlowCoordinator.getAssessmentTypeForCurrentLevel(),
+            assessmentDataKeyForCurrentLevel: this.assessmentFlowCoordinator.getAssessmentTypeForCurrentLevel(),
             isAssessmentEligible: this.assessmentFlowCoordinator.isAssessmentEligibleForCurrentLevel(),
             assessmentPuzzleTrigger: this.assessmentFlowCoordinator.getAssessmentPuzzleTrigger(),
         });
@@ -172,7 +172,7 @@ export class GameplayFlowManager {
         this.assessmentFlowCoordinator.startAssessment();
 
         let hasResumed = false;
-        const assessmentTypeForCurrentLevel = this.assessmentFlowCoordinator.getAssessmentTypeForCurrentLevel();
+        const assessmentDataKeyForCurrentLevel = this.assessmentFlowCoordinator.getAssessmentTypeForCurrentLevel();
         const resumeAfterClose = () => {
             if (hasResumed) {
                 return;
@@ -185,7 +185,7 @@ export class GameplayFlowManager {
 
         void assessmentSurveyManager
             .open({
-                dataKey: assessmentTypeForCurrentLevel || undefined,
+                dataKey: assessmentDataKeyForCurrentLevel || undefined,
                 onComplete: () => {
                     this.assessmentFlowCoordinator.handleAssessmentCompleted();
                 },
