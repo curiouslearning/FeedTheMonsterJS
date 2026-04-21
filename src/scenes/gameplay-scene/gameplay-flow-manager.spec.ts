@@ -204,6 +204,25 @@ describe('GameplayFlowManager assessment integration', () => {
     manager.dispose();
   });
 
+  it('passes explicit assessment data keys through unchanged in gameplay', () => {
+    mockAssessmentCoordinator.shouldStartAssessmentAtPuzzle.mockReturnValue(true);
+    mockAssessmentCoordinator.getAssessmentTypeForCurrentLevel.mockReturnValue('french-lettersounds');
+
+    (assessmentSurveyManager.open as jest.Mock).mockImplementation(async ({ onClose }) => {
+      onClose?.();
+    });
+
+    const { manager } = createFlowManager();
+
+    manager.determineNextStep(false, false);
+
+    expect(assessmentSurveyManager.open).toHaveBeenCalledWith(
+      expect.objectContaining({ dataKey: 'french-lettersounds' })
+    );
+
+    manager.dispose();
+  });
+
   it('resumes puzzle flow only after assessment closes', () => {
     mockAssessmentCoordinator.shouldStartAssessmentAtPuzzle.mockReturnValue(true);
 

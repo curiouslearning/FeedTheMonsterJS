@@ -82,6 +82,33 @@ describe('AssessmentLevelConfig', () => {
     expect(config.getAssessmentTypeForLevel(2, 10)).toBe('sightwords');
   });
 
+  it('preserves explicit assessment data keys from Statsig config', () => {
+    const config = new AssessmentLevelConfig('assessmentlevels', () => ({
+      enabled: true,
+      mode: 'constant',
+      assessments: [
+        { assessmentType: 'French-LetterSounds', level: 2 },
+        { assessmentType: 'french-sightwords', level: 3 },
+      ],
+    }));
+
+    expect(config.refreshConfig()).toEqual({
+      enabled: true,
+      mode: 'constant',
+      assessments: [
+        { assessmentType: 'french-lettersounds', level: 2 },
+        { assessmentType: 'french-sightwords', level: 3 },
+      ],
+    });
+
+    expect(config.getTargetAssessments(10)).toEqual([
+      { levelIndex: 1, assessmentType: 'french-lettersounds' },
+      { levelIndex: 2, assessmentType: 'french-sightwords' },
+    ]);
+    expect(config.getAssessmentTypeForLevel(1, 10)).toBe('french-lettersounds');
+    expect(config.getAssessmentTypeForLevel(2, 10)).toBe('french-sightwords');
+  });
+
   it('returns disabled when enabled is false', () => {
     const config = new AssessmentLevelConfig('assessmentlevels', () => ({
       enabled: false,

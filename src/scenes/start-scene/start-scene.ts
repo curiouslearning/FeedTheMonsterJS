@@ -172,10 +172,7 @@ export class StartScene {
   private onDevAssessmentClick = () => {
     const config = new AssessmentLevelConfig();
     const parsed = config.refreshConfig();
-    const firstAssessmentType = parsed.assessments[0]?.assessmentType;
-    const dataKey = firstAssessmentType
-      ? `${lang}-${firstAssessmentType}`
-      : undefined;
+    const dataKey = parsed.assessments[0]?.assessmentType;
 
     console.log(`[dev] Opening assessment with dataKey: ${dataKey ?? '(default)'}`);
     assessmentSurveyManager.open({

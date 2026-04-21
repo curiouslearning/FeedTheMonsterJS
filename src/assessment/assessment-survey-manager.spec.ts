@@ -210,6 +210,25 @@ describe('AssessmentSurveyManager', () => {
     expect(playerElement?.getAttribute('data-key')).toBe('west-african-english-sightwords');
   });
 
+  it('should preserve explicit assessment data keys from Statsig config input', async () => {
+    window.history.pushState({}, '', '/?cr_lang=zulu');
+
+    setHeadResponseMap({
+      '/assessment-survey/data/french-lettersounds.json': true,
+    });
+
+    await manager.open({ dataKey: 'french-lettersounds' });
+
+    const overlay = document.getElementById('assessment-survey-overlay');
+    const playerElement = overlay?.querySelector('assessment-survey-player');
+
+    expect(playerElement?.getAttribute('data-key')).toBe('french-lettersounds');
+    expect(fetchMock).toHaveBeenCalledWith(
+      '/assessment-survey/data/french-lettersounds.json',
+      expect.objectContaining({ method: 'HEAD' })
+    );
+  });
+
   it('should use warmed key and avoid duplicate cache requests on open', async () => {
     setHeadResponseMap({
       '/assessment-survey/data/zulu-lettersounds.json': true,
@@ -242,6 +261,28 @@ describe('AssessmentSurveyManager', () => {
 
     await manager.open({ dataKey: 'lettersounds' });
     await manager.open({ dataKey: 'sightwords' });
+
+    expect(MockBroadcastChannel.postMessageCalls).toBe(2);
+  });
+
+  it('should warm explicit assessment data keys without adding the current language', async () => {
+    window.history.pushState({}, '', '/?cr_lang=zulu');
+
+    setHeadResponseMap({
+      '/assessment-survey/data/french-lettersounds.json': true,
+      '/assessment-survey/data/french-sightwords.json': true,
+    });
+
+    await manager.warmupAssessmentLanguageCaches([
+      'french-lettersounds',
+      'french-sightwords',
+      'french-lettersounds',
+    ]);
+
+    expect(MockBroadcastChannel.postMessageCalls).toBe(2);
+
+    await manager.open({ dataKey: 'french-lettersounds' });
+    await manager.open({ dataKey: 'french-sightwords' });
 
     expect(MockBroadcastChannel.postMessageCalls).toBe(2);
   });
