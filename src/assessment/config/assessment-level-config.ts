@@ -40,7 +40,7 @@ export class AssessmentLevelConfig {
   constructor(
     private readonly dynamicConfigKey: string = ASSESSMENT_LEVELS_CONFIG_KEY,
     private readonly configProvider: DynamicConfigProvider = (configKey: string) =>
-      featureFlagsService.getDynamicConfig(configKey)
+      featureFlagsService.getDynamicConfig(configKey, false)
   ) {}
 
   /**

@@ -232,8 +232,8 @@ class App {
         await navigator.serviceWorker.ready;
         await registration.update();
 
-        const configuredAssessmentTypes = this.getConfiguredAssessmentTypesForWarmup();
-        await assessmentSurveyManager.warmupAssessmentLanguageCaches(configuredAssessmentTypes);
+        const configuredAssessmentDataKeys = this.getConfiguredAssessmentDataKeysForWarmup();
+        await assessmentSurveyManager.warmupAssessmentLanguageCaches(configuredAssessmentDataKeys);
 
         if (!this.is_cached.has(this.lang)) {
           this.channel.postMessage({ command: "Cache", data: this.lang });
@@ -292,7 +292,7 @@ class App {
     }
   }
 
-  private getConfiguredAssessmentTypesForWarmup(): string[] {
+  private getConfiguredAssessmentDataKeysForWarmup(): string[] {
     const totalLevels = Array.isArray(this.dataModal?.levels)
       ? this.dataModal.levels.length
       : 0;
@@ -307,7 +307,7 @@ class App {
     return [...new Set(
       targetAssessments
         .map((targetAssessment) => targetAssessment.assessmentType)
-        .filter((assessmentType) => Boolean(assessmentType))
+        .filter((assessmentDataKey) => Boolean(assessmentDataKey))
     )];
   }
 
