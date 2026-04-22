@@ -30,6 +30,7 @@ export function createAssessmentPlayerElement(options: AssessmentPlayerElementOp
   playerElement.style.display = 'block';
   playerElement.style.width = '100%';
   playerElement.style.height = '100%';
+  playerElement.style.visibility = 'hidden';
 
   playerElement.setAttribute('data-key', options.dataKey);
   playerElement.setAttribute('user-id', 'ftm-web-user');
@@ -45,6 +46,7 @@ export function createAssessmentPlayerElement(options: AssessmentPlayerElementOp
 
   if (options.onLoaded) {
     playerElement.subscribe(AssessmentSurveyPlayerElement.ONLOADED, () => {
+      playerElement.style.visibility = 'visible';
       options.onLoaded?.();
     });
   }
