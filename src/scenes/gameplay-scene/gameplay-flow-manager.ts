@@ -112,6 +112,10 @@ export class GameplayFlowManager {
         this.addEventListeners();
     }
 
+    public isAssessmentOpen(): boolean {
+        return this.isAssessmentInProgress;
+    }
+
     // #region Public Flow Control
     /**
      * Determines the next game flow after a puzzle event (solved or timed out).
