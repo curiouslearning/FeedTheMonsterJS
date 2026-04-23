@@ -34,7 +34,7 @@ module.exports = {
     "@curiouslearning/features": "<rootDir>/node_modules/@curiouslearning/features/dist/index.js",
     "@curiouslearning/core": "<rootDir>/node_modules/@curiouslearning/core/dist/index.js",
     "@curiouslearning/assessment-survey/register": "<rootDir>/__mocks__/default-mock.js",
-    "@curiouslearning/assessment-survey": "<rootDir>/node_modules/@curiouslearning/assessment-survey/lib/index.js",
+    "@curiouslearning/assessment-survey": "<rootDir>/node_modules/@curiouslearning/assessment-survey/dist/index.js",
   },
   roots: [
     "<rootDir>/src/"
