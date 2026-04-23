@@ -441,6 +441,10 @@ export class GameplayScene {
   }
 
   public handleVisibilityChange(): void {
+    if (this.flowManager?.isAssessmentOpen()) {
+      return;
+    }
+
     gameStateService.publish(gameStateService.EVENTS.GAME_PAUSE_STATUS_EVENT, true);
     this.pauseGamePlay();
   }
