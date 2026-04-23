@@ -261,6 +261,11 @@ export class GameplayScene {
         this.flowManager = null;
     }
 
+    if (this.miniGameHandler) {
+      this.miniGameHandler.dispose();
+      this.miniGameHandler = null;
+    }
+
     if(this.puzzleHandler) {
       this.puzzleHandler.dispose();
       this.puzzleHandler = null;
