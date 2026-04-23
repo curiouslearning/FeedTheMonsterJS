@@ -348,6 +348,23 @@ describe('AssessmentSurveyManager', () => {
     expect(onClose).toHaveBeenCalledTimes(1);
   });
 
+  it('should keep the embedded assessment hidden until the player reports loaded', async () => {
+    setHeadResponseMap({
+      '/assessment-survey/data/zulu-lettersounds.json': true,
+    });
+
+    await manager.open({ dataKey: 'zulu-lettersounds' });
+
+    const overlay = document.getElementById('assessment-survey-overlay');
+    const playerElement = overlay?.querySelector('assessment-survey-player') as HTMLElement;
+
+    expect(playerElement.style.visibility).toBe('hidden');
+
+    subscribedHandlers.loaded?.forEach((handler) => handler());
+
+    expect(playerElement.style.visibility).toBe('visible');
+  });
+
   it('should forward analytics config to player element when env vars are set', async () => {
     const envSnapshot = snapshotFirebaseEnv();
 

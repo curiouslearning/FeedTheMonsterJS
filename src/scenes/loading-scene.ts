@@ -36,7 +36,7 @@ export class LoadingScene {
   toggleLoadingScreen(shouldShow) {
     shouldShow && this.initCloud();
     this.shouldShowLoading = shouldShow;
-    document.getElementById("loading").style.zIndex = shouldShow ? "10" : "-1";
+    document.getElementById("loading").style.zIndex = shouldShow ? "12" : "-1";
   }
 
   draw(deltaTime: number) {
