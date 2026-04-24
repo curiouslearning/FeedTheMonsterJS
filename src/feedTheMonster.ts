@@ -230,6 +230,11 @@ class App {
         const wb = new Workbox("./sw.js", {});
         const registration = await wb.register();
         await navigator.serviceWorker.ready;
+        navigator.serviceWorker.addEventListener(
+          "message",
+          this.handleServiceWorkerMessage
+        );
+
         await registration.update();
 
         const configuredAssessmentDataKeys = this.getConfiguredAssessmentDataKeysForWarmup();
@@ -282,10 +287,6 @@ class App {
               console.error("Error fetching the content file: " + error);
             });
         }
-        navigator.serviceWorker.addEventListener(
-          "message",
-          this.handleServiceWorkerMessage
-        );
       } catch (error) {
         console.error(`Failed to register service worker: ${error}`);
       }
