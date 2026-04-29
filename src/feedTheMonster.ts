@@ -23,7 +23,6 @@ import { featureFlagsService } from '@curiouslearning/features';
 import gameStateService from "./gameStateService";
 import assessmentSurveyManager from '@assessment/assessment-survey-manager';
 import { AssessmentLevelConfig } from '@assessment/config/assessment-level-config';
-import { EventHandler } from './modules/android/services/event-handler';
 import { AndroidAnalyticsStrategy } from './modules/android/services/analytics-strategy/android-analytics-strategy';
 
 declare const window: any;
