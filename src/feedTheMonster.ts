@@ -23,6 +23,8 @@ import { featureFlagsService } from '@curiouslearning/features';
 import gameStateService from "./gameStateService";
 import assessmentSurveyManager from '@assessment/assessment-survey-manager';
 import { AssessmentLevelConfig } from '@assessment/config/assessment-level-config';
+import { EventHandler } from './modules/android/services/event-handler';
+import { AndroidAnalyticsStrategy } from './modules/android/services/analytics-strategy/android-analytics-strategy';
 
 declare const window: any;
 
@@ -116,6 +118,8 @@ class App {
       this.handleCachedScenario(this.dataModal);
     }
     this.registerWorkbox();
+
+    this.initAndroidModule();
   }
 
   private async loadTitleFeedbackCustomFont() {
@@ -129,6 +133,19 @@ class App {
       }
     });
   }
+
+  /**
+   * Needs to happen after await AnalyticsIntegration.initializeAnalytics();
+   * because this registers a strategy
+   */
+  private initAndroidModule() {
+    const androidStrategy = new AndroidAnalyticsStrategy({ cr_user_id: pseudoId ?? '' });
+    AnalyticsIntegration.getInstance().analyticsService.register(
+      'android',
+      androidStrategy
+    );
+  }
+
   private logDownloadPercentageComplete(percentage: number, timeDifferenceFromSessonStart: number) {
     const eventData = {
       json_version_number: this.getJsonVersionNumber(),
