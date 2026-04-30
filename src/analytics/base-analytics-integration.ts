@@ -34,7 +34,7 @@ import { source, campaign_id, pseudoId } from "@common";
  * @since 1.0.0
  */
 export class BaseAnalyticsIntegration {
-    private analyticsService: AnalyticsService;
+    readonly analyticsService: AnalyticsService;
     private firebaseStrategy: FirebaseStrategy;
     private statsigStrategy: StatsigStrategy;
     private isInitialized: boolean = false;
