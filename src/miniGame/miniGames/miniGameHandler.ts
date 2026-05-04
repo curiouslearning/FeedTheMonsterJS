@@ -65,9 +65,13 @@ export class MiniGameHandler {
  *  - May include conditional drawing logic depending on 
  *    mini-game type or state.
  */
-  public draw() {
+  public start() {
     //Draw mini game.
-    this.activeMiniGame?.draw();
+    this.activeMiniGame?.start();
+  }
+
+  public update(deltaTime: number) {
+    this.activeMiniGame?.update(deltaTime);
   }
 
   private handleMiniGameComplete(earnedStarCount: number) {

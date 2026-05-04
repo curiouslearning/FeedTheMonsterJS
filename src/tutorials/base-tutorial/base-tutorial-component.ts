@@ -475,6 +475,11 @@ export default class TutorialComponent {
 
   /**
    * Default dispose method for all tutorials. Subclasses can override for custom cleanup.
+    * Note:
+    * - For most tutorials (like Letter or Match Letter), this is the only dispose needed,
+    *   as they only handle simple animation rendering.
+    * - WordPuzzleTutorial must call `super.dispose()` in its override because it subscribes
+    *   to additional events that need proper cleanup, beyond just removing the hand-pointer DOM element.
    */
   public dispose() {
     this.removeHandPointer();

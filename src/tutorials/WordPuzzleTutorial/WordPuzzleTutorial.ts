@@ -1,15 +1,16 @@
 import TutorialComponent from '../base-tutorial/base-tutorial-component';
 import gameStateService from '@gameStateService';
+import { StoneConfig } from '@common';
 
 export default class WordPuzzleTutorial extends TutorialComponent {
   // Animation timing properties
   private animationDuration = 1500; // 1.5 second animation same with match letter puzzle
-  private stonePositions: number[][] = [];
-  private currentStoneIndex = 0;
+  private stonePositions: Array<StoneConfig>;
+  private nextLetterIndex = 0;
   // stoneImg is declared in the base class
   private imageSize: number;
   private pauseWordTutorialRendering: boolean = false; // Track if current stone animation is complete
-
+  private targetText: string;
   private unsubscribeSubmittedLettersCountHandler: () => void;
 
   constructor({
@@ -18,14 +19,14 @@ export default class WordPuzzleTutorial extends TutorialComponent {
     height,
     stoneImg,
     stonePositions,
-    levelData = null
+    targetText
   }: {
     context: CanvasRenderingContext2D;
     width: number;
     height: number;
     stoneImg: CanvasImageSource;
-    stonePositions: number[][];
-    levelData?: any;
+    stonePositions: Array<StoneConfig>;
+    targetText: string;
   }) {
     super(context);
 
@@ -33,42 +34,59 @@ export default class WordPuzzleTutorial extends TutorialComponent {
     this.height = height;
     this.stoneImg = stoneImg;
     this.imageSize = height / 9.5;
-    this.getFoilAndStonesFromData(stonePositions, levelData);
-    this.initializeStoneAnimation(0);
-    this.currentStoneIndex = 0;
+    this.targetText = targetText;
+    this.stonePositions = stonePositions;
+    this.nextLetterIndex = this.getNextLetterIndex(targetText, stonePositions, {});
+    this.initializeStoneAnimation(this.stonePositions[this.nextLetterIndex]);
+    
     // Always inject hand pointer on creation
     this.injectHandPointer();
 
     this.unsubscribeSubmittedLettersCountHandler = gameStateService.subscribe(
       gameStateService.EVENTS.WORD_PUZZLE_SUBMITTED_LETTERS_COUNT,
-      (droppedLettersCount: number) => {
-        this.pauseWordTutorialRendering = true;
-        this.currentStoneIndex = droppedLettersCount % this.stonePositions.length;
-        this.initializeStoneAnimation(this.currentStoneIndex);
+      (eventData) => {
+        this.handleNextWordLetter(eventData);
       }
     )
   }
 
-  private getFoilAndStonesFromData(stonePositions, levelData) {
-    // Get target stones and foil stones from level data
-    if (levelData && stonePositions?.length > 0) {
-      const currentPuzzleData = levelData.puzzles[0]; // Tutorial is always for first puzzle
-      const targetStones = currentPuzzleData.targetStones || [];
-
-      // Get foil stones from the puzzle data
-      // Clone the foil stones array to avoid modifying the original
-      const foilStones = [...currentPuzzleData.foilStones];
-
-      // If we have both foil stones and target stones, calculate the correct positions
-      this.stonePositions = foilStones.length > 0 && targetStones.length > 0
-        // Find the correct positions for target stones, handling duplicates
-        ? this.findTargetStonePositions(targetStones, foilStones, stonePositions)
-        // Otherwise use the provided positions directly
-        : [ ...stonePositions ];
-    } else {
-      this.stonePositions = stonePositions?.length > 0 ? [...stonePositions] : [];
-    }
+  private handleNextWordLetter({ droppedHistory } : {
+    droppedHistory: { [key: number]: string }
+  }): void {
+    //Get the index of the next stone letter from stonePositions array.
+    this.nextLetterIndex = this.getNextLetterIndex(this.targetText, this.stonePositions, droppedHistory);
+    this.initializeStoneAnimation(this.stonePositions[this.nextLetterIndex]);
   }
+
+  private getNextLetterIndex(
+    word: string,
+    stonePositions: Array<StoneConfig>,
+    droppedHistory: {} | { [key:number]: string }
+  ): number {
+    // 1. Determine the next letter index based on droppedHistory
+    const nextIndex = Object.keys(droppedHistory).length;
+    const nextChar = word[nextIndex];
+
+    // 2. Find the first unused stone that matches the next letter
+    for (let stoneArrIndex = 0; stoneArrIndex < stonePositions.length; stoneArrIndex++) {
+      if (stonePositions[stoneArrIndex].text === nextChar && !(stoneArrIndex in droppedHistory)) {
+        // Returns the array index of the next letter
+        return stoneArrIndex;
+      }
+    }
+
+    /**
+     * NOTE: This should almost never happen. If reached, it indicates:
+     * - The wrong parameters were submitted, or
+     * - The word and stonePositions list are misaligned.
+     * 
+     * To keep the tutorial running safely, we return a default stone index (0).
+     * This prevents runtime crashes, but the underlying level configuration is likely invalid.
+     */
+    return 0; // safe default fallback
+  }
+
+
 
   /**
    * Updates the animation frame specific to WordPuzzleTutorial
@@ -104,27 +122,23 @@ export default class WordPuzzleTutorial extends TutorialComponent {
 
       // Check if stone has reached the monster (near the end position)
       if (finalPercentage < 15) {
-        this.pauseWordTutorialRendering = true;
         // Reset position to redo the dragging tutorial
-        this.initializeStoneAnimation(this.currentStoneIndex);
+        this.initializeStoneAnimation(this.stonePositions[this.nextLetterIndex]);
       }
     }
   }
 
+  public initializeStoneAnimation(foilStoneObj: StoneConfig): void {
+    //Pause the tutorial guide animation.
+    this.pauseWordTutorialRendering = true;
 
-  public initializeStoneAnimation(stoneIndex: number): void {
-    if (!this.stonePositions?.length || stoneIndex < 0 || stoneIndex >= this.stonePositions.length) {
-      return;
-    }
-
-    const position = this.stonePositions[stoneIndex];
     // Reset animation state completely
     this.frame = 0;
     this.animationStartTime = 0;
-    this.currentStoneIndex = stoneIndex;
 
     // Set up new animation positions
-    this.stonePosDetailsType = this.updateTargetStonePositions(position);
+    const {x, y} = foilStoneObj;
+    this.stonePosDetailsType = this.updateTargetStonePositions([x, y]);
 
     if (this.stonePosDetailsType) {
       this.animateImagePosVal = this.stonePosDetailsType.animateImagePosVal;
@@ -132,40 +146,19 @@ export default class WordPuzzleTutorial extends TutorialComponent {
       this.y = this.animateImagePosVal.y;
     }
 
+    //Resume the tutorial guide animation.
     this.pauseWordTutorialRendering = false;
-  }
-
-  /**
-   * Clean up resources when the tutorial is no longer needed
-   */
-  /**
-   * Find the correct positions for target stones, handling duplicate letters
-   * @param targetStones Array of target stone characters
-   * @param foilStones Array of all stone characters including targets
-   * @param positions Array of positions for all stones
-   * @returns Array of positions for target stones in order
-   */
-  private findTargetStonePositions(targetStones: string[], foilStones: string[], positions: number[][]): number[][] {
-    const usedIndices = new Set<number>();
-    return targetStones.map(targetChar => {
-      // Find the index of the first unused occurrence of this character
-      const targetIndex = foilStones.findIndex((stone, index) => 
-        stone === targetChar && !usedIndices.has(index)
-      );
-      if (targetIndex !== -1) {
-        usedIndices.add(targetIndex); // Mark this index as used
-        return positions[targetIndex];
-      }
-      return null; // Handle case where character isn't found (shouldn't happen)
-    }).filter(position => position !== null); // Filter out any nulls
   }
 
   public dispose(): void {
     // Reset states
     this.frame = 0;
     this.animationStartTime = 0;
-    this.currentStoneIndex = 0;
+    this.nextLetterIndex = 0;
     this.pauseWordTutorialRendering = false;
     this.unsubscribeSubmittedLettersCountHandler();
+
+    //Call the base class dispose to remove hand pointer.
+    super.dispose();
   }
 }

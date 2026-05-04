@@ -1,10 +1,18 @@
-import { Window } from "@common";
+import { TimeoutRegistry, Window } from "@common";
 import { AUDIO_PATH_BTN_CLICK } from "@constants";
+import { TimerId } from "@services/scheduler";
 
+
+/**
+ * Singleton class that manages audio playback for the game.
+ * Handles both pausible game audio and non-pausable UI audio,
+ * along with preloading, queuing, and audio context management.
+ */
 export class AudioPlayer {
   public static instance: AudioPlayer;
 
   private audioContext: AudioContext | null;
+  private nonPausableAudioContext: AudioContext | null;
   private sourceNode: AudioBufferSourceNode | null;
   private audioQueue: string[];
 
@@ -13,48 +21,74 @@ export class AudioPlayer {
   private static audioBuffers: Map<string, AudioBuffer> = new Map();
   public audioSourcs: Array<AudioBufferSourceNode> = [];
   private isClickSoundLoaded: boolean;
-  private playAudioTimeoutId: any;
+  private playAudioTimeoutId: TimerId | null;
   private isPromptAudioPlaying: boolean;
+  private timeoutRegistry: TimeoutRegistry = new TimeoutRegistry();
 
   constructor() {
     if( AudioPlayer.instance )
       return AudioPlayer.instance;
     AudioPlayer.instance = this;
     this.audioContext = AudioContextManager.getAudioContext();
+    this.nonPausableAudioContext = AudioContextManager.getNonPausableAudioContext();
     this.sourceNode = null;
     this.audioQueue = [];
     this.clickSoundBuffer = null; // Initialize the clickSoundBuffer
     this.isClickSoundLoaded = false; // Initialize as false
     this.isPromptAudioPlaying = false;
+    this.playAudioTimeoutId = null;
 
   }
 
+  /**
+   * Plays a UI audio effect (non-pausable).
+   * Used for interface sounds like button clicks that should persist even when the game is paused.
+   * @param audioSrc - The source path or identifier of the audio to play.
+   * @param volume - The volume level (default: 1).
+   * @param onEnded - Optional callback to execute when audio playback ends.
+   * @returns The created AudioBufferSourceNode if successful, or null.
+   */
+  playUIAudio(audioSrc: string, volume: number = 1, onEnded?: () => void) {
+    const audioBuffer: AudioBuffer = AudioPlayer.audioBuffers.get(audioSrc);
+    if (audioBuffer && this.nonPausableAudioContext) {
+      const sourceNode = this.nonPausableAudioContext.createBufferSource();
+      const gainNode = this.nonPausableAudioContext.createGain();
+      sourceNode.buffer = audioBuffer;
+      sourceNode.connect(gainNode);
+      gainNode.connect(this.nonPausableAudioContext.destination);
+      // handle end of playback
+      if (onEnded) {
+        sourceNode.onended = () => {
+          this.removeSourceNode(sourceNode);
+          onEnded();
+        };
+      } else {
+        sourceNode.onended = () => this.removeSourceNode(sourceNode);
+      }
+
+      gainNode.gain.value = volume; // Set volume (1 = full, 0.5 = half, etc.)
+
+      this.audioSourcs.push(sourceNode);
+      sourceNode.start();
+
+      return sourceNode;
+    }
+    return null;
+  }
+
+  /**
+   * Plays the standard button click sound.
+   */
   async playButtonClickSound() {
     const audioSrc: string = AUDIO_PATH_BTN_CLICK;
-
-    if (!this.isClickSoundLoaded) {
-      // Load and decode the audio on demand if it hasn't been loaded
-      try {
-        this.clickSoundBuffer = await this.loadAndDecodeAudio(audioSrc);
-        AudioPlayer.audioBuffers.set(audioSrc, this.clickSoundBuffer);
-        this.isClickSoundLoaded = true; // Set the flag to true after loading
-      } catch (error) {
-        console.error("Error loading or decoding click sound:", error);
-        return;
-      }
-    }
-
-    // Play the audio using the buffer if it exists
-    if (this.clickSoundBuffer) {
-      const sourceNode = this.audioContext!.createBufferSource();
-      sourceNode.buffer = this.clickSoundBuffer;
-      sourceNode.connect(this.audioContext!.destination);
-      sourceNode.start();
-    } else {
-      console.error("Click sound buffer is not available.");
-    }
+    this.playUIAudio(audioSrc);
   }
 
+  /**
+   * Internal helper to load audio data from a URL and decode it into an AudioBuffer.
+   * @param audioSrc - The URL of the audio file.
+   * @returns A promise resolving to the decoded AudioBuffer.
+   */
   private async loadAndDecodeAudio(audioSrc: string): Promise<AudioBuffer> {
     return new Promise<AudioBuffer>(async (resolve, reject) => {
       try {
@@ -71,6 +105,10 @@ export class AudioPlayer {
     });
   }
 
+  /**
+   * Preloads and decodes the prompt audio file.
+   * @param audioSrc - The source path of the audio to preload.
+   */
   async preloadPromptAudio(audioSrc: string) {
     const audioBuffer: AudioBuffer = await this.loadAndDecodeAudio(audioSrc);
     if (audioBuffer) {
@@ -78,6 +116,10 @@ export class AudioPlayer {
     }
   }
 
+  /**
+   * Preloads and decodes a generic game audio file if not already cached.
+   * @param audioSrc - The source path of the audio to preload.
+   */
   async preloadGameAudio(audioSrc: string) {
     if (AudioPlayer.audioBuffers.has(audioSrc)) {
       return;
@@ -89,6 +131,13 @@ export class AudioPlayer {
     }
   }
 
+  /**
+   * Plays a game audio effect (pausable).
+   * @param audioSrc - The source path or identifier of the audio to play.
+   * @param volume - The volume level (default: 1).
+   * @param onEnded - Optional callback to execute when audio playback ends.
+   * @returns The created AudioBufferSourceNode if successful, or null.
+   */
   playAudio(audioSrc: string, volume: number = 1, onEnded?: () => void) {
     const audioBuffer: AudioBuffer = AudioPlayer.audioBuffers.get(audioSrc);
     if (audioBuffer) {
@@ -100,7 +149,12 @@ export class AudioPlayer {
 
       // handle end of playback
       if (onEnded) {
-        sourceNode.onended = onEnded;
+        sourceNode.onended = () => {
+          this.removeSourceNode(sourceNode);
+          onEnded();
+        };
+      } else {
+        sourceNode.onended = () => this.removeSourceNode(sourceNode);
       }
 
       gainNode.gain.value = volume; // Set volume (1 = full, 0.5 = half, etc.)
@@ -114,9 +168,9 @@ export class AudioPlayer {
   }
 
   /**
- * Stops the currently playing audio immediately (if any).
- * Useful when you want to cut off playback before it completes.
- */
+   * Stops the currently playing audio immediately (if any).
+   * Useful when you want to cut off playback before it completes.
+   */
   public stopAudio = (): void => {
     // Stop single active sourceNode if it's playing
     if (this.sourceNode) {
@@ -153,7 +207,11 @@ export class AudioPlayer {
     }
   };
 
-
+  /**
+   * Queues multiple audio files to be played sequentially.
+   * @param loop - Whether to loop the sequence.
+   * @param fileUrl - Variable number of audio file URLs to play.
+   */
   playAudioQueue = (loop: boolean = false, ...fileUrl: string[]): void => {
     if (fileUrl.length > 0) {
       this.audioQueue = fileUrl;
@@ -161,8 +219,11 @@ export class AudioPlayer {
     }
   };
 
-
-  playPromptAudio = (onEndedCallback: () => void | null = null) => {
+  /**
+   * Plays the currently preloaded prompt audio.
+   * @param onEndedCallback - Optional callback to execute when playback finishes.
+   */
+  playPromptAudio = (onEndedCallback: (() => void) | null = null) => {
     if (this.promptAudioBuffer) {
       const sourceNode = this.audioContext.createBufferSource();
       sourceNode.buffer = this.promptAudioBuffer;
@@ -170,11 +231,30 @@ export class AudioPlayer {
       this.audioSourcs.push(sourceNode);
 
       // Set up a callback that fires when the audio playback ends.
-      sourceNode.onended = onEndedCallback;
+      if (onEndedCallback) {
+        sourceNode.onended = () => {
+          this.removeSourceNode(sourceNode);
+          onEndedCallback();
+        };
+      } else {
+        sourceNode.onended = () => this.removeSourceNode(sourceNode);
+      }
       //Start the audio play.
       sourceNode.start();
     }
   };
+
+  private removeSourceNode(node: AudioBufferSourceNode): void {
+    const index = this.audioSourcs.indexOf(node);
+    if (index > -1) {
+      try {
+        node.disconnect();
+      } catch (error) {
+        console.warn("Failed to disconnect audio source:", error);
+      }
+      this.audioSourcs.splice(index, 1);
+    }
+  }
 
 
   /**
@@ -207,11 +287,12 @@ export class AudioPlayer {
 
       if (this.playAudioTimeoutId) {
         this.isPromptAudioPlaying = true;
-        clearTimeout(this.playAudioTimeoutId);
+        this.timeoutRegistry.cancel(this.playAudioTimeoutId);
+        this.playAudioTimeoutId = null;
       }
 
       // Schedule the next audio play after current one ends
-      this.playAudioTimeoutId = setTimeout(() => {
+      this.playAudioTimeoutId = this.timeoutRegistry.setTimeout(() => {
         //Call playPromptAudio with a callback for onended method to call.
         this.playPromptAudio(() => {
           this.isPromptAudioPlaying = false;
@@ -225,6 +306,9 @@ export class AudioPlayer {
     }
   }
 
+  /**
+   * Stops and clears the currently playing feedback audio sequence.
+   */
   stopFeedbackAudio = (): void => {
     if (this.sourceNode) {
       this.sourceNode.stop();
@@ -233,6 +317,9 @@ export class AudioPlayer {
     this.audioQueue = [];
   };
 
+  /**
+   * Stops all currently playing audio sources, including feedback and queued sounds.
+   */
   stopAllAudios = () => {
     if (this.sourceNode) {
       this.sourceNode.stop();
@@ -246,6 +333,33 @@ export class AudioPlayer {
     this.audioSourcs = [];
   };
 
+  /**
+   * Suspends the audio context, effectively pausing all game audio.
+   */
+  pauseAllAudios = () => {
+    if( this.audioContext && this.audioContext.state === "running") {
+      this.audioContext.suspend().catch((error) => {
+        console.warn("Failed to suspend audio context:", error);
+      });
+    }
+  }
+
+  /**
+   * Resumes the audio context, unpausing all game audio.
+   */
+  resumeAllAudios = () => {
+    if( this.audioContext && this.audioContext.state === "suspended") {
+      this.audioContext.resume().catch((error) => {
+        console.warn("Failed to resume audio context:", error);
+      });
+    } 
+  }
+
+  /**
+   * Internal helper to fetch and play an audio file from the queue.
+   * @param index - The index in the queue to play.
+   * @param loop - Whether the sequence should loop.
+   */
   private playFetch = (index: number, loop: boolean) => {
     if (index >= this.audioQueue.length) {
       this.stopFeedbackAudio();
@@ -268,6 +382,11 @@ export class AudioPlayer {
     }
   };
 
+  /**
+   * Internal handler for when an audio source in a sequence finishes playing.
+   * @param index - The index of the audio that just finished.
+   * @param loop - Whether the sequence should loop.
+   */
   private handleAudioEnded = (index: number, loop: boolean): void => {
     if (this.sourceNode) {
       this.sourceNode.onended = null;
@@ -279,13 +398,35 @@ export class AudioPlayer {
   };
 }
 
+/**
+ * Manages the initialization and retrieval of Web Audio API AudioContexts.
+ * Provides separate contexts for pausable game audio and non-pausable UI audio.
+ */
 class AudioContextManager {
   private static instance: AudioContext | null = null;
+  private static nonPausableAudioContext: AudioContext | null = null;
+
+  /**
+   * Returns the shared AudioContext for game-related audio.
+   * @returns The active AudioContext.
+   */
   static getAudioContext(): AudioContext {
     if (!AudioContextManager.instance) {
       AudioContextManager.instance = new (window.AudioContext ||
         (window as Window).webkitAudioContext)();
     }
     return AudioContextManager.instance;
+  }
+
+  /**
+   * Returns the shared AudioContext for UI-related audio that should not be paused.
+   * @returns The active non-pausable AudioContext.
+   */
+  static getNonPausableAudioContext(): AudioContext {
+    if (!AudioContextManager.nonPausableAudioContext) {
+      AudioContextManager.nonPausableAudioContext = new (window.AudioContext ||
+        (window as Window).webkitAudioContext)();
+    }
+    return AudioContextManager.nonPausableAudioContext;
   }
 }

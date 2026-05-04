@@ -1,6 +1,7 @@
 const mockAudioPlayerInstance = {
   preloadGameAudio: jest.fn(),
   playAudio: jest.fn(),
+  stopAudio: jest.fn(),
   stopAllAudios: jest.fn(),
   playButtonClickSound: jest.fn(),
   playPromptAudio: jest.fn(),
@@ -8,6 +9,8 @@ const mockAudioPlayerInstance = {
   stopFeedbackAudio: jest.fn(),
   preloadPromptAudio: jest.fn(),
   handlePlayPromptAudioClickEvent: jest.fn(),
+  pauseAllAudios: jest.fn(),
+  resumeAllAudios: jest.fn(),
   audioContext: {
     createBufferSource: jest.fn(() => ({
       connect: jest.fn(),

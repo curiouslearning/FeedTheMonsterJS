@@ -114,6 +114,14 @@ export class RiveComponent extends PubSub {
     this.riveInstance?.play(animationName);
   }
 
+  public pause() {
+    this.riveInstance?.pause();
+  }
+
+  public resume() {
+    this.riveInstance?.play();
+  }
+
   public stop() {
     this.riveInstance?.stop();
   }

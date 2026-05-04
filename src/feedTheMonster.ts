@@ -19,12 +19,10 @@ import {
 } from "./analytics/analytics-event-interface";
 import { URL } from "@data";
 import './styles/main.scss';
-import { FeatureFlagsService } from '@curiouslearning/features';
+import { featureFlagsService } from '@curiouslearning/features';
 import gameStateService from "./gameStateService";
-
-const featureFlagService = new FeatureFlagsService({
-  metaData: { userId: pseudoId }
-});
+import assessmentSurveyManager from '@assessment/assessment-survey-manager';
+import { AssessmentLevelConfig } from '@assessment/config/assessment-level-config';
 
 declare const window: any;
 
@@ -89,7 +87,11 @@ class App {
     await this.loadAndCacheFont(font, `./assets/fonts/${font}.ttf`);
     await this.loadTitleFeedbackCustomFont();
     await this.preloadGameAudios();
-    await featureFlagService.initialize();
+    featureFlagsService.init({
+      user: { userID: pseudoId, locale: this.lang },
+    });
+    await featureFlagsService.initialize();
+
     this.handleLoadingScreen();
     this.setupCanvas();
     const data = await getData();
@@ -228,7 +230,15 @@ class App {
         const wb = new Workbox("./sw.js", {});
         const registration = await wb.register();
         await navigator.serviceWorker.ready;
+        navigator.serviceWorker.addEventListener(
+          "message",
+          this.handleServiceWorkerMessage
+        );
+
         await registration.update();
+
+        const configuredAssessmentDataKeys = this.getConfiguredAssessmentDataKeysForWarmup();
+        await assessmentSurveyManager.warmupAssessmentLanguageCaches(configuredAssessmentDataKeys);
 
         if (!this.is_cached.has(this.lang)) {
           this.channel.postMessage({ command: "Cache", data: this.lang });
@@ -277,14 +287,29 @@ class App {
               console.error("Error fetching the content file: " + error);
             });
         }
-        navigator.serviceWorker.addEventListener(
-          "message",
-          this.handleServiceWorkerMessage
-        );
       } catch (error) {
         console.error(`Failed to register service worker: ${error}`);
       }
     }
+  }
+
+  private getConfiguredAssessmentDataKeysForWarmup(): string[] {
+    const totalLevels = Array.isArray(this.dataModal?.levels)
+      ? this.dataModal.levels.length
+      : 0;
+
+    if (totalLevels < 1) {
+      return [];
+    }
+
+    const assessmentLevelConfig = new AssessmentLevelConfig();
+    const targetAssessments = assessmentLevelConfig.getTargetAssessments(totalLevels, true);
+
+    return [...new Set(
+      targetAssessments
+        .map((targetAssessment) => targetAssessment.assessmentType)
+        .filter((assessmentDataKey) => Boolean(assessmentDataKey))
+    )];
   }
 
   private setupCanvas() {
@@ -369,6 +394,10 @@ class App {
     const toggleBtn = document.getElementById("toggle-btn");
     if (toggleBtn) {
       toggleBtn.style.display = (isDevOrTestEnv) ? "block" : "none";
+    }
+    const devAssessmentBtn = document.getElementById("dev-assessment-btn");
+    if (devAssessmentBtn) {
+      devAssessmentBtn.style.display = (isDevOrTestEnv && Debugger.DebugMode) ? "block" : "none";
     }
   }
 

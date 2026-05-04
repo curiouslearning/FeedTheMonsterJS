@@ -153,6 +153,22 @@ Also using shortcut Shift+b .
 
 <p align="right">(<a href="#top">back to top</a>)</p>
 
+### Environment Variables
+
+Create a `.env` file in the root of the project and add the following Firebase configuration values. These are required for the embedded assessment feature:
+```
+FIREBASE_API_KEY=
+FIREBASE_AUTH_DOMAIN=
+FIREBASE_DATABASE_URL=
+FIREBASE_PROJECT_ID=
+FIREBASE_STORAGE_BUCKET=
+FIREBASE_MESSAGING_SENDER_ID=
+FIREBASE_APP_ID=
+FIREBASE_MEASUREMENT_ID=
+```
+
+Contact the team for the actual values.
+
 <!-- USAGE EXAMPLES -->
 
 ## Usage

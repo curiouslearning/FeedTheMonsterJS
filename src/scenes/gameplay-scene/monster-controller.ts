@@ -3,6 +3,7 @@ import { RiveMonsterComponent } from '@components/riveMonster/rive-monster-compo
 import gameSettingsService from '@gameSettingsService';
 import gameStateService from '@gameStateService';
 import { GameplayInputManager } from "./gameplay-input-manager";
+import { TimeoutRegistry } from "@common";
 
 export class MonsterController {
   // #region Properties
@@ -12,6 +13,7 @@ export class MonsterController {
   private hitboxRangeX: { from: number; to: number };
   private hitboxRangeY: { from: number; to: number };
   private unsubscribeAnimationRequest: () => void;
+  private timeoutRegistry: TimeoutRegistry = new TimeoutRegistry();
 
   private animationDelays = [
     { backToIdle: 350, isChewing: 0, isHappy: 1700, isSpit: 1500, isSad: 3000 },
@@ -62,6 +64,8 @@ export class MonsterController {
       this.monster = null;
     }
 
+    this.timeoutRegistry.cancelAll();
+
     if (this.unsubscribeAnimationRequest) {
       this.unsubscribeAnimationRequest();
       this.unsubscribeAnimationRequest = null;
@@ -84,10 +88,18 @@ export class MonsterController {
   public triggerMonsterAnimation(animationName: string): void {
     const delay = this.animationDelays[this.monsterPhaseNumber]?.[animationName] ?? 0;
     if (delay > 0) {
-      setTimeout(() => this.monster?.triggerInput(animationName), delay);
+      this.timeoutRegistry.setTimeout(() => this.monster?.triggerInput(animationName), delay);
     } else {
       this.monster?.triggerInput(animationName);
     }
+  }
+
+  public pause(): void {
+    this.monster?.pause();
+  }
+
+  public resume(): void {
+    this.monster?.resume();
   }
   // #endregion
 

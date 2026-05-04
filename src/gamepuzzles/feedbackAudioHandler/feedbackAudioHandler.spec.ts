@@ -21,6 +21,11 @@ jest.mock('@common', () => ({
   Utils: {
     getRandomNumber: jest.fn().mockReturnValue(2),
     getConvertedDevProdURL: jest.fn(url => url)
+  },
+  TimeoutRegistry: class {
+    setTimeout = jest.fn(() => 1);
+    cancel = jest.fn();
+    cancelAll = jest.fn();
   }
 }));
 

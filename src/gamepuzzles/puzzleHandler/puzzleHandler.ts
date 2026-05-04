@@ -1,8 +1,10 @@
 import LetterPuzzleLogic from '../letterPuzzleLogic/letterPuzzleLogic';
 import WordPuzzleLogic from '../wordPuzzleLogic/wordPuzzleLogic';
 import { FeedbackTextEffects } from '@components/feedback-text';
+import { TimeoutRegistry } from '@common';
 import { FeedbackAudioHandler, FeedbackType } from '@gamepuzzles';
 import gameStateService from '@gameStateService';
+
 
 /**
  * Context object for creating a puzzle/handling a letter drop.
@@ -32,6 +34,7 @@ export default class PuzzleHandler {
   private letterPuzzleLogic: LetterPuzzleLogic | null = null;
   private feedbackAudioHandler: FeedbackAudioHandler;
   private feedbackTextEffects: FeedbackTextEffects
+  private timeoutRegistry: TimeoutRegistry = new TimeoutRegistry();
 
   constructor(levelData: any, counter: number = 0, feedbackAudios?: any) {
     // Initialize feedback audio handler if audio resources are provided
@@ -144,7 +147,10 @@ export default class PuzzleHandler {
 
       gameStateService.publish(
         gameStateService.EVENTS.WORD_PUZZLE_SUBMITTED_LETTERS_COUNT,
-        droppedLettersCount
+        {
+          droppedLettersCount, //Used for prompt highlight display text logic.
+          droppedHistory //Used for word puzzle tutorial.
+        }
       );
 
       ctx.lettersCountRef.value++;
@@ -273,7 +279,7 @@ export default class PuzzleHandler {
 
     // Hide feedback text after audio finishes
     const totalAudioDuration = 4500; // Approximate duration of feedback audio
-    setTimeout(() => {
+    this.timeoutRegistry.setTimeout(() => {
       this.feedbackTextEffects.hideText();
     }, totalAudioDuration);
   }
@@ -294,5 +300,9 @@ export default class PuzzleHandler {
     if (this.feedbackAudioHandler) {
       this.feedbackAudioHandler.dispose();
     }
+    if(this.feedbackTextEffects) {
+      this.feedbackTextEffects.hideText();
+    }
+    this.timeoutRegistry.cancelAll();
   }
 }

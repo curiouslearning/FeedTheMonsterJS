@@ -26,9 +26,15 @@ module.exports = {
     "^@gamepuzzles(.*)$": "<rootDir>/src/gamepuzzles$1",
     "@gameSettingsService/*":  ["<rootDir>/src/gameSettingsService/$1"],
     "@tutorials/*": ["<rootDir>/src/tutorials/$1"],
+    "@assessment/(.*)": "<rootDir>/src/assessment/$1",
+    "@services/(.*)": "<rootDir>/src/services/$1",
     "^@miniGames(.*)$": ["<rootDir>/src/miniGame/miniGames/$1"],
     "^@miniGameStateService(.*)$": ["<rootDir>/src/miniGame/miniGameStateService/$1"],
-    "@curiouslearning/analytics": "<rootDir>/node_modules/@curiouslearning/analytics/dist/index.js"
+    "@curiouslearning/analytics": "<rootDir>/node_modules/@curiouslearning/analytics/dist/index.js",
+    "@curiouslearning/features": "<rootDir>/node_modules/@curiouslearning/features/dist/index.js",
+    "@curiouslearning/core": "<rootDir>/node_modules/@curiouslearning/core/dist/index.js",
+    "@curiouslearning/assessment-survey/register": "<rootDir>/__mocks__/default-mock.js",
+    "@curiouslearning/assessment-survey": "<rootDir>/node_modules/@curiouslearning/assessment-survey/dist/index.js",
   },
   roots: [
     "<rootDir>/src/"
@@ -38,11 +44,11 @@ module.exports = {
   ],
   testEnvironment: "jsdom",
   transform: {
-    "^.+.ts?$": ["ts-jest",{}],
+    "^.+\\.[jt]s$": ["ts-jest", { tsconfig: { allowJs: true } }],
     "\\.(jpg|jpeg|png|gif|eot|otf|webp|svg|ttf|woff|woff2|mp4|webm|wav|mp3|m4a|aac|oga)$": "<rootDir>/__mocks__/default-mock.js",
     "\\.(css|scss)$": "<rootDir>/__mocks__/default-mock.js"
   },
   transformIgnorePatterns: [
-    "/node_modules/(?!lodash-es)"
+    "/node_modules/(?!lodash-es|@curiouslearning|workbox-window|idb|@firebase|firebase)"
   ],
 };

@@ -9,5 +9,6 @@ module.exports = {
   swSrc: "src/sw-src.js",
   globIgnores: [
     "lang/**/*.{wav,mp3,WAV,png,jpg,webp,svg,riv,wasm,js}", // Exclude specific paths if needed
+    "assessment-survey/audio/**/*",
   ],
 };

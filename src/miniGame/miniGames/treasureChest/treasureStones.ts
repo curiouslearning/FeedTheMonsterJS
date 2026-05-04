@@ -31,7 +31,7 @@ export default class TreasureStones {
   private burnFrames: HTMLImageElement[] = []; // Preloaded burn animation frames
   private ctx: CanvasRenderingContext2D; // Canvas rendering context
   private frameDuration: number; //Frame duration.
-  private startTime: number = 0; // track when the minigame started
+  private elapsedTime: number = 0; // track when the minigame started
   private totalDuration: number = 12000; // default duration in ms (can be updated externally)
   private totalSpawned = 0;
   private exitedCount = 0;
@@ -109,15 +109,13 @@ export default class TreasureStones {
 
   /** Call this when minigame starts */
   public startTimer(totalDurationMs: number) {
-    this.startTime = performance.now();
+    this.elapsedTime = 0;
     this.totalDuration = totalDurationMs;
   }
 
   /** Returns elapsed time percent (0–100) */
   private getElapsedPercent(): number {
-    if (!this.startTime) return 0;
-    const elapsed = performance.now() - this.startTime;
-    return Math.min((elapsed / this.totalDuration) * 100, 100);
+    return Math.min((this.elapsedTime / this.totalDuration) * 100, 100);
   }
 
   private logSpawnPercentAndMaybeTrigger() {
@@ -154,6 +152,7 @@ export default class TreasureStones {
    * @param height - Canvas height
    */
   public stoneBurstAnimation(width: number, height: number, deltaTime: number): void {
+    this.elapsedTime += deltaTime;
     this.updateStones(width, deltaTime);
     this.cleanupStones();
     this.maintainStones(width, height);
@@ -271,7 +270,7 @@ export default class TreasureStones {
         if (stone.burning) return false;
         // Trigger burn sequence
         stone.burning = true;
-        stone.burnStartTime = performance.now();
+        stone.burnStartTime = this.elapsedTime;
         stone.burnFrameIndex = 0;
 
         // Play burn SFX
@@ -296,7 +295,7 @@ export default class TreasureStones {
    * Marks the stone inactive once the animation finishes.
    */
   private updateBurningStone(stone: Stone): void {
-    const elapsed = performance.now() - (stone.burnStartTime || 0);
+    const elapsed = this.elapsedTime - (stone.burnStartTime || 0);
     stone.burnFrameIndex = Math.floor(elapsed / this.frameDuration);
     if (stone.burnFrameIndex >= this.burnFrames.length) stone.active = false;
   }

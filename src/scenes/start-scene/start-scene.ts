@@ -7,6 +7,7 @@ import { RiveMonsterComponent } from "@components/riveMonster/rive-monster-compo
 import { DataModal } from "@data";
 import {
   toggleDebugMode,
+  Debugger,
   pseudoId,
   lang
 } from "@common";
@@ -19,6 +20,8 @@ import {
 } from "@constants";
 import gameStateService from '@gameStateService';
 import gameSettingsService from '@gameSettingsService';
+import assessmentSurveyManager from '@assessment/assessment-survey-manager';
+import { AssessmentLevelConfig } from '@assessment/config/assessment-level-config';
 import './start-scene.scss';
 export class StartScene {
   public data: DataModal;
@@ -36,6 +39,7 @@ export class StartScene {
   public static SceneName: string;
   audioPlayer: AudioPlayer;
   private toggleBtn: HTMLElement;
+  private devAssessmentBtn: HTMLElement;
   private pwa_install_status: Event;
   private titleTextElement: HTMLElement | null;
   public riveMonster: RiveMonsterComponent;
@@ -51,6 +55,7 @@ export class StartScene {
     this.data = gameStateService.getFTMData();
     this.riveMonsterElement = gameSettingsService.getRiveCanvasValue();
     this.toggleBtn = document.getElementById("toggle-btn") as HTMLElement;
+    this.devAssessmentBtn = document.getElementById("dev-assessment-btn") as HTMLElement;
     this.loadingElement = document.getElementById("loading-screen") as HTMLElement;
     this.riveMonster = new RiveMonsterComponent({
       canvas: this.riveMonsterElement,
@@ -94,7 +99,9 @@ export class StartScene {
     this.audioPlayer = new AudioPlayer();
     this.pwa_status = localStorage.getItem(PWAInstallStatus);
     this.handler = document.getElementById('start-scene-click-area') as HTMLBodyElement;
-    this.devToggle();
+    this.toggleBtn.addEventListener("click", this.onToggleClick);
+    this.devAssessmentBtn?.addEventListener("click", this.onDevAssessmentClick);
+    this.syncDevAssessmentButtonVisibility();
     this.createPlayButton();
     window.addEventListener("beforeinstallprompt", this.handlerInstallPrompt);
     this.setupBg();
@@ -137,10 +144,44 @@ export class StartScene {
     }
   }
 
-  devToggle = () => {
-    this.toggleBtn.addEventListener("click", () =>
-      toggleDebugMode(this.toggleBtn)
-    );
+  private onToggleClick = () => {
+    toggleDebugMode(this.toggleBtn);
+    this.syncDevAssessmentButtonVisibility();
+  };
+
+  private syncDevAssessmentButtonVisibility = () => {
+    if (!this.devAssessmentBtn) {
+      return;
+    }
+
+    this.devAssessmentBtn.style.display = Debugger.DebugMode && this.toggleBtn.classList.contains("on")
+      ? "block"
+      : "none";
+  };
+
+  private hideStartSceneDevButtons = () => {
+    if (this.toggleBtn) {
+      this.toggleBtn.style.display = "none";
+    }
+
+    if (this.devAssessmentBtn) {
+      this.devAssessmentBtn.style.display = "none";
+    }
+  };
+
+  private onDevAssessmentClick = () => {
+    const config = new AssessmentLevelConfig();
+    const parsed = config.refreshConfig();
+    const dataKey = parsed.assessments[0]?.assessmentType;
+
+    console.log(`[dev] Opening assessment with dataKey: ${dataKey ?? '(default)'}`);
+    assessmentSurveyManager.open({
+      dataKey,
+      onLoaded: () => console.log('[dev] assessment loaded'),
+      onComplete: () => console.log('[dev] assessment completed'),
+      onRewardTrigger: () => console.log('[dev] assessment reward trigger'),
+      onClose: () => console.log('[dev] assessment closed'),
+    });
   };
 
   generateGameTitle = () => {
@@ -159,7 +200,7 @@ export class StartScene {
   createPlayButton() {
     this.playButton = new PlayButtonHtml({ targetId: 'title-and-play-button' });
     this.playButton.onClick(() => {
-      this.toggleBtn.style.display = "none";
+      this.hideStartSceneDevButtons();
       this.logTappedStartFirebaseEvent();
       this.audioPlayer.playButtonClickSound();
       gameStateService.publish(gameStateService.EVENTS.START_GAME, true);
@@ -188,14 +229,17 @@ export class StartScene {
     fbq("trackCustom", FirebaseUserClicked, {
       event: "click",
     });
-    this.toggleBtn.style.display = "none";
+    this.hideStartSceneDevButtons();
     this.audioPlayer.playButtonClickSound();
     gameStateService.publish(gameStateService.EVENTS.SWITCH_SCENE_EVENT, SCENE_NAME_LEVEL_SELECT);
   };
 
   dispose() {
+    this.hideStartSceneDevButtons();
     this.audioPlayer.stopAllAudios();
     this.handler.removeEventListener("click", this.handleMouseClick, false);
+    this.toggleBtn.removeEventListener("click", this.onToggleClick);
+    this.devAssessmentBtn?.removeEventListener("click", this.onDevAssessmentClick);
     this.playButton.dispose();
     this.playButton.destroy();
     this.playButton = null;

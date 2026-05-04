@@ -11,6 +11,7 @@ import {
   isGameTypeAudio,
   unsubscribeAll
 } from "./utils";
+import { TimeoutRegistry } from "./timeout-registry";
 import { Debugger, lang, font, pseudoId, Window, source, campaign_id } from "./global-variables";
 import {
   CLICK,
@@ -53,5 +54,6 @@ export {
   hideElement,
   getGameTypeName,
   isGameTypeAudio,
-  unsubscribeAll
+  unsubscribeAll,
+  TimeoutRegistry
 };

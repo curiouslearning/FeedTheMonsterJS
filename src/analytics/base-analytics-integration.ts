@@ -66,6 +66,7 @@ export class BaseAnalyticsIntegration {
         try {
             // Initialize Analytics Strategy
             this.firebaseStrategy = new FirebaseStrategy({
+                firebaseName: 'feedthemonster',
                 firebaseOptions: {
                     apiKey: firebaseConfig.apiKey,
                     authDomain: firebaseConfig.authDomain,
