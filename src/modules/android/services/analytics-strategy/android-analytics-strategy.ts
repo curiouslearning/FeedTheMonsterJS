@@ -1,5 +1,6 @@
 import { AbstractAnalyticsStrategy } from '@curiouslearning/analytics';
 import { AndroidInterface } from '@curiouslearning/core';
+import { AnalyticsEventType } from 'src/analytics/analytics-integration';
 
 export interface AndroidAnalyticsStrategyOptions {
   cr_user_id: string;
@@ -8,14 +9,6 @@ export interface AndroidAnalyticsStrategyOptions {
 export class AndroidAnalyticsStrategy extends AbstractAnalyticsStrategy {
   private readonly cr_user_id: string;
   private readonly androidInterface : AndroidInterface;
-
-  /**
-   * TODO: consolidate these events in one place, current duplication of analytics events.
-   * Events can be shared between in-game functionality and not just analytics.
-   */
-  static readonly EVENTS = {
-    LEVEL_COMPLETED: 'level_completed'
-  };
 
   constructor(options: AndroidAnalyticsStrategyOptions) {
     super();
@@ -33,8 +26,11 @@ export class AndroidAnalyticsStrategy extends AbstractAnalyticsStrategy {
   
   track(eventName: string, data: any): void {
      switch (eventName) {
-      case AndroidAnalyticsStrategy.EVENTS.LEVEL_COMPLETED:
+      case AnalyticsEventType.LEVEL_COMPLETED:
         this.handleLevelCompleted(data);
+        break;
+      case AnalyticsEventType.PUZZLE_COMPLETED:
+        this.handlePuzzleCompleted(data);
         break;
       default:
         console.warn(`Unhandled event: ${event} width data:`, data);
@@ -53,6 +49,19 @@ export class AndroidAnalyticsStrategy extends AbstractAnalyticsStrategy {
     }, {
       levels_completed: 'add',
       time_spent_total_second: 'add'
+    });
+  }
+
+  private handlePuzzleCompleted(data: any) {
+    const { success_or_failure } = data;
+    this.androidInterface .logSummaryData({
+      puzzles_completed: 1,
+      puzzle_success: success_or_failure ? 1 : 0,
+      puzzle_failure: success_or_failure ? 0 : 1,
+    }, {
+      puzzles_completed: 'add',
+      puzzle_success: 'add',
+      puzzle_failure: 'add'
     });
   }
 }
