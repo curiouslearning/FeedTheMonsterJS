@@ -1,5 +1,48 @@
 
 
+## [1.5.0](https://github.com/curiouslearning/FeedTheMonsterJS/compare/1.4.0...1.5.0) (2026-05-04)
+
+
+### Features
+
+* [FM-833] Implementation of dynamic configuration for assessment integration ([#1915](https://github.com/curiouslearning/FeedTheMonsterJS/issues/1915)) ([cef2bd6](https://github.com/curiouslearning/FeedTheMonsterJS/commit/cef2bd6f1fd760a7ce7b612387e39cfaf8fe560a))
+* FM-840 Retrigger for the assessment survey ([c0ff0e0](https://github.com/curiouslearning/FeedTheMonsterJS/commit/c0ff0e08dbd1e53475d74c2baffa1f989d6f1a6a))
+* implemented a timeout-registry for the scheduler handling of the timers disposal ([#1908](https://github.com/curiouslearning/FeedTheMonsterJS/issues/1908)) ([ab144c1](https://github.com/curiouslearning/FeedTheMonsterJS/commit/ab144c13a73e180ad8669f714f9e17b344d63437))
+* initial draft for assessment integration using an NPM Package ([1e9ea77](https://github.com/curiouslearning/FeedTheMonsterJS/commit/1e9ea7773be129e7054d9a849f294c6913855317))
+* updated feature flag package to 1.3.1 ([3c986ba](https://github.com/curiouslearning/FeedTheMonsterJS/commit/3c986ba99daae2f74ef2ac38bfa002c5a1c3e190))
+* used embed-mode attribute for easier opt in ([b604cc3](https://github.com/curiouslearning/FeedTheMonsterJS/commit/b604cc3ae12416f1c36c06b472f4e393033a1653))
+
+
+### Bug Fixes
+
+* [FM-821] trimmed audio for spanish language ([#1912](https://github.com/curiouslearning/FeedTheMonsterJS/issues/1912)) ([b397a33](https://github.com/curiouslearning/FeedTheMonsterJS/commit/b397a33a5b4ce843ec5f012e1db1108006553c22))
+* [FM-821] trimmed spanish audios ([#1909](https://github.com/curiouslearning/FeedTheMonsterJS/issues/1909)) ([b0521c6](https://github.com/curiouslearning/FeedTheMonsterJS/commit/b0521c6aadea27759d03225f9205d7f33f1e26d7))
+* [FM-857] integrated new callback to be used via setHostIntegrationCallbacks from the assessment ([2b8ae36](https://github.com/curiouslearning/FeedTheMonsterJS/commit/2b8ae363844715ae7df0d18c6542e4d3d870bf0a))
+* [FM-875] resolve assessment asset paths for FTM subpath deployments ([f526e09](https://github.com/curiouslearning/FeedTheMonsterJS/commit/f526e09f504f9d6363039cf04ce0e046f7b1ff02))
+* [FM-882] hidden the assessment element while it is still loading ([6340728](https://github.com/curiouslearning/FeedTheMonsterJS/commit/6340728d4d66abb5a4808fc5260cd99668b5ad36))
+* [FM-890] support explicit assessment data keys for FTM assessments ([b641621](https://github.com/curiouslearning/FeedTheMonsterJS/commit/b641621a74cb67bc57d67f4c157ecde50d471891))
+* [FM-895] fix for race condition on the update prompt not appearing when there is an update ([605831b](https://github.com/curiouslearning/FeedTheMonsterJS/commit/605831bf1cfdaa9c4a43d0ef4e6a9aa9f1b06a9e))
+* added dispose for feedback text ([#1906](https://github.com/curiouslearning/FeedTheMonsterJS/issues/1906)) ([ad2dd03](https://github.com/curiouslearning/FeedTheMonsterJS/commit/ad2dd03ae9209f68de42135ce28d020a60b5d191))
+* catch fix for foldering structure ([9068ae2](https://github.com/curiouslearning/FeedTheMonsterJS/commit/9068ae2b7ccaa1600a3a1f6d85058128b4b29484))
+* catch fix for foldering structure ([bec559b](https://github.com/curiouslearning/FeedTheMonsterJS/commit/bec559b8119d7741682c9d6932343ed97b9e272b))
+* disposed minigame when disposing gameplay ([79b840f](https://github.com/curiouslearning/FeedTheMonsterJS/commit/79b840f472bda4395c8b34e3db851d3a03e28749))
+* fixed npm run dev to always compile the build folder when ran ([3df3063](https://github.com/curiouslearning/FeedTheMonsterJS/commit/3df3063f2e520b807579b60d125d1015500aa4ad))
+* Fixed the assessment load issue on minigame level and puzzle 1 and 5 ([eb99e16](https://github.com/curiouslearning/FeedTheMonsterJS/commit/eb99e16bb1de9b3f5b5cf9e530949f94346ba9d0))
+* FM-880 Assessment Triggering Outside Allowed Puzzles (After Puzzle 5) ([0b2ddf2](https://github.com/curiouslearning/FeedTheMonsterJS/commit/0b2ddf230b0dcde667cbe33295c50fe544e98435))
+* hide dev buttons including assessment button when going out from start scene ([d1526e5](https://github.com/curiouslearning/FeedTheMonsterJS/commit/d1526e5419ac412f74b7f6b99904c00c3ff92cea))
+* normalized the filename of the audio assets from assessment to always be lowercase the same with how assessment handle the filenames there ([e2063fd](https://github.com/curiouslearning/FeedTheMonsterJS/commit/e2063fd9c2da921bae7002839ae4ebd9fbb72cb1))
+* removed duplicated firebase name ([2385d26](https://github.com/curiouslearning/FeedTheMonsterJS/commit/2385d262e297d6fa886d516f0e2ebf9a404e4fdc))
+* removed extra package ([2782288](https://github.com/curiouslearning/FeedTheMonsterJS/commit/27822882dec78b33f58152dd19aa995057da0fbf))
+* removed inline css for assessment dev button ([7b00629](https://github.com/curiouslearning/FeedTheMonsterJS/commit/7b00629b437ebf5aefa992579ea9229a2e49665d))
+* temporarily added tarball of assessment package in FTM so that the project can be used ([37d3948](https://github.com/curiouslearning/FeedTheMonsterJS/commit/37d3948ef756ddad7843d710e31bfbc346b2579d))
+* unit testing for dev button ([56b40b2](https://github.com/curiouslearning/FeedTheMonsterJS/commit/56b40b29bad78b20d359dd0597dfb45e2714ed14))
+* unit testing missing mock ([7381fd5](https://github.com/curiouslearning/FeedTheMonsterJS/commit/7381fd5d36d7926668bbef6d539ddc53cbb604d7))
+* updated analytics package to 1.3.1 ([257471f](https://github.com/curiouslearning/FeedTheMonsterJS/commit/257471f2a67249baa9b427c6322b4130387558c6))
+* updated assessment package to 1.0.0-rc.1 ([4ca4d0d](https://github.com/curiouslearning/FeedTheMonsterJS/commit/4ca4d0d8745b928ab6fd2db5aa23429532713034))
+* updated curiouslearning/assessment-survey from 1.0.0-rc.3 to 1.0.0-rc.4 ([a2366da](https://github.com/curiouslearning/FeedTheMonsterJS/commit/a2366daa36c3ade211537ed9b6b0b8d9f4a1ac3e))
+* use trimming and 'english' fallback for lang in AssessmentLevelState constructor ([83a3d77](https://github.com/curiouslearning/FeedTheMonsterJS/commit/83a3d77836657b828972015ea76faf881af8c450))
+* used pubsub instead of passing the callback as options ([5f9953a](https://github.com/curiouslearning/FeedTheMonsterJS/commit/5f9953a8e5d8d3e92766fcf1b796a4f8b960e49b))
+
 ## [1.4.0](https://github.com/curiouslearning/FeedTheMonsterJS/compare/1.3.1...1.4.0) (2026-02-02)
 
 
