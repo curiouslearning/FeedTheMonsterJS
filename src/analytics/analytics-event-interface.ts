@@ -114,6 +114,7 @@ export interface CommonEventProperties {
     level_number: number;
     number_of_successful_puzzles: number;
     duration: number;
+    highest_level_completed: number;
   }
   
   /**

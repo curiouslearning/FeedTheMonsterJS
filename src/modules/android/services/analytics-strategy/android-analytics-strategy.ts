@@ -1,5 +1,6 @@
 import { AbstractAnalyticsStrategy } from '@curiouslearning/analytics';
 import { AndroidInterface } from '@curiouslearning/core';
+import { LevelCompletedEvent } from 'src/analytics/analytics-event-interface';
 import { AnalyticsEventType } from 'src/analytics/analytics-integration';
 
 export interface AndroidAnalyticsStrategyOptions {
@@ -27,7 +28,7 @@ export class AndroidAnalyticsStrategy extends AbstractAnalyticsStrategy {
   track(eventName: string, data: any): void {
      switch (eventName) {
       case AnalyticsEventType.LEVEL_COMPLETED:
-        this.handleLevelCompleted(data);
+        this.handleLevelCompleted(data as LevelCompletedEvent);
         break;
       case AnalyticsEventType.PUZZLE_COMPLETED:
         this.handlePuzzleCompleted(data);
@@ -41,11 +42,12 @@ export class AndroidAnalyticsStrategy extends AbstractAnalyticsStrategy {
     // nothing to dispose for Android interface
   }
 
-  private handleLevelCompleted(data: any) {
-    const { duration } = data;
+  private handleLevelCompleted(data: LevelCompletedEvent) {
+    const { duration, highest_level_completed } = data;
     this.androidInterface .logSummaryData({
       levels_completed: 1,
-      time_spent_total_second: duration ?? 0
+      time_spent_total_second: duration ?? 0,
+      highest_level_completed: highest_level_completed ?? 0
     }, {
       levels_completed: 'add',
       time_spent_total_second: 'add'
