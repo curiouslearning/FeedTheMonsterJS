@@ -106,8 +106,9 @@ export class AssessmentSurveyManager {
       }
 
       hasClosed = true;
-      this.close();
-      options.onClose?.();
+      this.assessmentOverlay.closeWithTransition(() => {
+        options.onClose?.();
+      });
     };
 
     const playerElement = createAssessmentPlayerElement({
@@ -143,6 +144,10 @@ export class AssessmentSurveyManager {
 
   public close(): void {
     this.assessmentOverlay.close();
+  }
+
+  public closeWithTransition(onComplete: () => void): void {
+    this.assessmentOverlay.closeWithTransition(onComplete);
   }
 }
 

@@ -1,3 +1,6 @@
+const VISIBLE_CLASS = 'assessment-overlay--visible';
+const FADE_MS = 400;
+
 export class AssessmentOverlay {
   constructor(
     private readonly overlayId: string,
@@ -38,6 +41,7 @@ export class AssessmentOverlay {
 
   public openWithChildren(children: HTMLElement[]): void {
     const overlay = this.ensure();
+    overlay.classList.remove(VISIBLE_CLASS);
     overlay.innerHTML = '';
 
     children.forEach((child) => {
@@ -45,6 +49,38 @@ export class AssessmentOverlay {
     });
 
     overlay.style.display = 'block';
+    requestAnimationFrame(() => {
+      overlay.classList.add(VISIBLE_CLASS);
+    });
+  }
+
+  public closeWithTransition(onComplete: () => void): void {
+    const overlay = document.getElementById(this.overlayId);
+    if (!overlay) {
+      onComplete();
+      return;
+    }
+
+    overlay.classList.remove(VISIBLE_CLASS);
+
+    let done = false;
+    const finish = () => {
+      if (done) return;
+      done = true;
+      overlay.style.display = 'none';
+      overlay.innerHTML = '';
+      onComplete();
+    };
+
+    // In environments where CSS transitions are inactive (e.g. jsdom), finish immediately.
+    const duration = parseFloat(getComputedStyle(overlay).transitionDuration || '0');
+    if (!duration) {
+      finish();
+      return;
+    }
+
+    overlay.addEventListener('transitionend', finish, { once: true });
+    setTimeout(finish, FADE_MS + 50);
   }
 
   public close(): void {
@@ -53,6 +89,7 @@ export class AssessmentOverlay {
       return;
     }
 
+    overlay.classList.remove(VISIBLE_CLASS);
     overlay.style.display = 'none';
     overlay.innerHTML = '';
   }

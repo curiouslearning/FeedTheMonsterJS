@@ -84,6 +84,17 @@ img {
   height: 100%;
 }
 
+#assessment-survey-overlay {
+  opacity: 0;
+  pointer-events: auto;
+  transition: opacity 400ms ease-in-out;
+}
+
+#assessment-survey-overlay.assessment-overlay--visible {
+  opacity: 1;
+  pointer-events: auto;
+}
+
 #canvas {
   position: absolute;
   left: 50%;
