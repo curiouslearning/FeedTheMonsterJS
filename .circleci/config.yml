@@ -106,6 +106,8 @@ workflows:
       - build-and-deploy-test:
           context:
             - aws-context
+          requires:
+            - node/test
           filters:
             branches:
               only:
