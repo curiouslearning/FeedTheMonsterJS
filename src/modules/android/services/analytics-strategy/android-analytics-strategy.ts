@@ -58,8 +58,8 @@ export class AndroidAnalyticsStrategy extends AbstractAnalyticsStrategy {
     const { success_or_failure } = data;
     this.androidInterface .logSummaryData({
       puzzles_completed: 1,
-      puzzle_success: success_or_failure ? 1 : 0,
-      puzzle_failure: success_or_failure ? 0 : 1,
+      puzzle_success: success_or_failure === 'success' ? 1 : 0,
+      puzzle_failure: success_or_failure === 'failure' ? 1 : 0,
     }, {
       puzzles_completed: 'add',
       puzzle_success: 'add',

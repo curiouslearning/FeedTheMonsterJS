@@ -80,10 +80,10 @@ describe('Feature: Android analytics strategy', () => {
   });
 
   describe('Scenario: Tracking a puzzle_completed event', () => {
-    it('Given a puzzle_completed event with success_or_failure true, when track is called, then logSummaryData is called with puzzle_success 1 and puzzle_failure 0', () => {
+    it('Given a puzzle_completed event with success_or_failure "success", when track is called, then logSummaryData is called with puzzle_success 1 and puzzle_failure 0', () => {
       // Given
       const eventName = AnalyticsEventType.PUZZLE_COMPLETED;
-      const data = { success_or_failure: true };
+      const data = { success_or_failure: 'success' };
 
       // When
       strategy.track(eventName, data);
@@ -96,10 +96,10 @@ describe('Feature: Android analytics strategy', () => {
       );
     });
 
-    it('Given a puzzle_completed event with success_or_failure false, when track is called, then logSummaryData is called with puzzle_success 0 and puzzle_failure 1', () => {
+    it('Given a puzzle_completed event with success_or_failure "failure", when track is called, then logSummaryData is called with puzzle_success 0 and puzzle_failure 1', () => {
       // Given
       const eventName = AnalyticsEventType.PUZZLE_COMPLETED;
-      const data = { success_or_failure: false };
+      const data = { success_or_failure: 'failure' };
 
       // When
       strategy.track(eventName, data);
