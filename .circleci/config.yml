@@ -64,6 +64,13 @@ jobs:
       - build-and-deploy:
           to: 's3://globallit-aws-s3-static-webapp-test-us-east-2/feed-the-monster'
   
+  build-and-deploy-release:
+    docker:
+      - image: cimg/python:3.13.2-node
+    steps:
+      - build-and-deploy:
+          to: 's3://globallit-aws-s3-static-webapp-test-us-east-2/feed-the-monster-release'
+
   build-and-deploy-prod:
     docker:
       - image: cimg/python:3.13.2-node
@@ -99,10 +106,19 @@ workflows:
       - build-and-deploy-test:
           context:
             - aws-context
+          requires:
+            - node/test
           filters:
             branches:
               only:
                 - test
+      - build-and-deploy-release:
+          context:
+            - aws-context
+          filters:
+            branches:
+              only:
+                - /.*epic.*/
       - build-and-deploy-prod:
           context:
             - aws-context

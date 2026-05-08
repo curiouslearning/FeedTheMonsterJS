@@ -88,6 +88,7 @@ export class GameScore {
 
     // Update total star count dynamically
     this.updateTotalStarCount();
+    this.updateHighestLevelReached();
   }
 
   /**
@@ -161,6 +162,24 @@ export class GameScore {
       case score >= 100: return 1;
       default: return 0;
     }
+  }
+
+  public static updateHighestLevelReached(): void {
+    const allLevels = this.getAllGameLevelInfo();
+    if (!allLevels.length) return;
+    const highest = allLevels.reduce(
+      (max, level) => level.levelNumber > max ? level.levelNumber : max,
+      -1
+    );
+    localStorage.setItem(this.currentlanguage + 'highestLevelReached', highest.toString());
+  }
+
+  public static getHighestLevelReached(): number {
+    const stored = localStorage.getItem(this.currentlanguage + 'highestLevelReached');
+    if (stored !== null) return parseInt(stored);
+    this.updateHighestLevelReached();
+    const reconciled = localStorage.getItem(this.currentlanguage + 'highestLevelReached');
+    return reconciled !== null ? parseInt(reconciled) : -1;
   }
 
   public static getDatafromStorage() {

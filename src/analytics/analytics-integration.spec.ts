@@ -123,6 +123,7 @@ describe('AnalyticsIntegration Core', () => {
         number_of_successful_puzzles: 3,
         level_number: 5,
         duration: 120,
+        highest_level_completed: 5,
       });
 
       expect(mockAnalyticsService.track).toHaveBeenCalledWith(
@@ -496,7 +497,7 @@ describe('Firebase Event Logging - level_completed', () => {
     logLevelEndFirebaseEvent = () => {
       const endTime = Date.now();
       const levelCompletedData = {
-        cr_user_id: null,
+        cr_user_id: undefined,
         ftm_language: "english",
         profile_number: 0,
         version_number: document.getElementById('version-info-id')?.innerHTML,
@@ -506,6 +507,7 @@ describe('Firebase Event Logging - level_completed', () => {
         number_of_successful_puzzles: score / 100,
         level_number: levelNumber,
         duration: (endTime - startTime) / 1000,
+        highest_level_completed: levelNumber,
       };
       analyticsIntegration.track(AnalyticsEventType.LEVEL_COMPLETED, levelCompletedData);
     };
@@ -517,7 +519,7 @@ describe('Firebase Event Logging - level_completed', () => {
     expect(mockAnalyticsService.track).toHaveBeenCalledWith(
       'level_completed',
       expect.objectContaining({
-        cr_user_id: null,
+        cr_user_id: undefined,
         ftm_language: "english",
         profile_number: 0,
         version_number: '3.4.5',
@@ -542,7 +544,7 @@ describe('Firebase Event Logging - level_completed', () => {
     const startTime = endTime - 8000;
 
     const levelCompletedData = {
-      cr_user_id: null,
+      cr_user_id: undefined,
       ftm_language: "english",
       profile_number: 0,
       version_number: '3.4.5',
@@ -552,6 +554,7 @@ describe('Firebase Event Logging - level_completed', () => {
       number_of_successful_puzzles: score / 100,
       level_number: 9,
       duration: (endTime - startTime) / 1000,
+      highest_level_completed: 9,
     };
 
     analyticsIntegration.track(AnalyticsEventType.LEVEL_COMPLETED, levelCompletedData);
