@@ -12,6 +12,7 @@ export interface AssessmentSurveyOpenOptions {
   dataKey?: string;
   onLoaded?: () => void;
   onComplete?: (payload: AssessmentCompletedPayload) => void;
+  onCloseStart?: () => void;
   onClose?: () => void;
   onRewardTrigger?: (payload: AssessmentCompletedPayload) => void;
 }
@@ -106,6 +107,7 @@ export class AssessmentSurveyManager {
       }
 
       hasClosed = true;
+      options.onCloseStart?.();
       this.assessmentOverlay.closeWithTransition(() => {
         options.onClose?.();
       });

@@ -49,8 +49,11 @@ export class AssessmentOverlay {
     });
 
     overlay.style.display = 'block';
+    // Double-rAF: first frame commits opacity:0 as the "from" value, second triggers the transition.
     requestAnimationFrame(() => {
-      overlay.classList.add(VISIBLE_CLASS);
+      requestAnimationFrame(() => {
+        overlay.classList.add(VISIBLE_CLASS);
+      });
     });
   }
 
