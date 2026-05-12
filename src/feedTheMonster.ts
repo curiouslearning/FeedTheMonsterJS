@@ -92,6 +92,9 @@ class App {
     featureFlagsService.init({
       user: { userID: pseudoId, locale: this.lang },
     });
+    featureFlagsService.loadFeatures([
+      FEATURE_ANDROID_EVENT_BUBBLE
+    ]);
     await featureFlagsService.initialize();
 
     this.handleLoadingScreen();
