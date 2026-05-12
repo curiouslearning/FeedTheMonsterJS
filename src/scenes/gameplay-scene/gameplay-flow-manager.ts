@@ -212,6 +212,9 @@ export class GameplayFlowManager {
                 onComplete: () => {
                     this.assessmentFlowCoordinator.handleAssessmentCompleted();
                 },
+                onConfirmExit: () => {
+                    resumeAfterClose();
+                },
                 onRewardTrigger: (payload: AssessmentCompletedPayload) => {
                     console.log('[assessment-survey] reward data received in FTM', payload);
                 },

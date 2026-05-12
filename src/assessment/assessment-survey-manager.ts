@@ -1,10 +1,13 @@
 import '@curiouslearning/assessment-survey/register';
 import { AnalyticsConfig, AssessmentCompletedPayload } from '@curiouslearning/assessment-survey';
+import { AUDIO_ARE_YOU_SURE } from '@constants';
+import { AudioPlayer } from '@components';
 import { resolveAssessmentDataKey } from './assessment-data-key';
 import { AssessmentCacheClient } from './assessment-cache-client';
 import { AssessmentOverlay } from './ui/assessment-overlay';
 import {
   createAssessmentCloseButton,
+  createAssessmentExitOverlay,
   createAssessmentPlayerElement,
 } from './ui/assessment-player-element';
 
@@ -13,16 +16,19 @@ export interface AssessmentSurveyOpenOptions {
   onLoaded?: () => void;
   onComplete?: (payload: AssessmentCompletedPayload) => void;
   onClose?: () => void;
+  onConfirmExit?: () => void;
   onRewardTrigger?: (payload: AssessmentCompletedPayload) => void;
 }
 
 export class AssessmentSurveyManager {
   private readonly overlayId = 'assessment-survey-overlay';
   private readonly closeButtonId = 'assessment-survey-close-button';
+  private readonly exitOverlayId = 'assessment-survey-exit-overlay';
   private readonly playerTag = 'assessment-survey-player';
   private readonly warmedDataKeys = new Set<string>();
   private readonly assessmentOverlay = new AssessmentOverlay(this.overlayId);
   private readonly assessmentCacheClient = new AssessmentCacheClient();
+  private readonly audioPlayer = new AudioPlayer();
 
   private resolveAssessmentDataKey(inputDataKey?: string): Promise<string> {
     return resolveAssessmentDataKey(inputDataKey, window.location.search);
@@ -100,12 +106,15 @@ export class AssessmentSurveyManager {
     }
 
     let hasClosed = false;
+    let removeExitOverlayEventListeners: (() => void) | undefined;
     const handleClose = () => {
       if (hasClosed) {
         return;
       }
 
       hasClosed = true;
+      removeExitOverlayEventListeners?.();
+      removeExitOverlayEventListeners = undefined;
       this.close();
       options.onClose?.();
     };
@@ -134,11 +143,25 @@ export class AssessmentSurveyManager {
     const closeButton = createAssessmentCloseButton({
       closeButtonId: this.closeButtonId,
       onClose: () => {
+        exitOverlay.element.style.display = 'flex';
+        this.audioPlayer.playUIAudio(AUDIO_ARE_YOU_SURE);
+      },
+    });
+
+    const exitOverlay = createAssessmentExitOverlay({
+      overlayId: this.exitOverlayId,
+      onCancel: () => {
+        exitOverlay.element.style.display = 'none';
+      },
+      onConfirm: () => {
+        options.onConfirmExit?.();
         handleClose();
       },
     });
 
-    this.assessmentOverlay.openWithChildren([playerElement, closeButton]);
+    removeExitOverlayEventListeners = exitOverlay.removeEventListeners;
+
+    this.assessmentOverlay.openWithChildren([playerElement, closeButton, exitOverlay.element]);
   }
 
   public close(): void {

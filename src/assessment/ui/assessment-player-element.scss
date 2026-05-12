@@ -1,0 +1,23 @@
+@media (min-width: 320px) and (max-width: 500px) {
+  .assessment-exit-popup {
+    width: 240px;
+  }
+
+  .assessment-exit-label {
+    font-size: 16px;
+  }
+}
+
+@media (min-width: 501px) and (max-width: 1080px) {
+  .assessment-exit-popup {
+    width: 400px;
+  }
+
+  .assessment-exit-label {
+    font-size: 28px;
+  }
+
+  .assessment-exit-buttons {
+    gap: 24px important;
+  }
+}
