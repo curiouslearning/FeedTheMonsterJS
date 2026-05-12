@@ -436,7 +436,7 @@ export class GameplayFlowManager {
                 number_of_successful_puzzles: this.score / 100,
                 level_number: this.levelData.levelMeta.levelNumber,
                 duration: (endTime - this.startTime) / 1000,
-                highest_level_completed: GameScore.getHighestLevelReached()
+                highest_level_completed: GameScore.getHighestLevelReached() + 1 // from 0-based index
             }
         );
     }
