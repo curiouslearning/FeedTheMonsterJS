@@ -435,8 +435,10 @@ export class GameplayFlowManager {
                 success_or_failure: GameScore.calculateStarCount(this.score) >= 3 ? "success" : "failure",
                 number_of_successful_puzzles: this.score / 100,
                 level_number: this.levelData.levelMeta.levelNumber,
+                levelType: this.levelData.levelMeta.levelType,
                 duration: (endTime - this.startTime) / 1000,
-                highest_level_completed: GameScore.getHighestLevelReached()
+                highest_level_completed: GameScore.getHighestLevelReached(),
+                ftm_language:lang,
             }
         );
     }
