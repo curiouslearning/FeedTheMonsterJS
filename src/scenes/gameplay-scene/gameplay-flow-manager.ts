@@ -437,7 +437,7 @@ export class GameplayFlowManager {
                 level_number: this.levelData.levelMeta.levelNumber,
                 level_type: this.levelData.levelMeta.levelType,
                 duration: (endTime - this.startTime) / 1000,
-                highest_level_completed: GameScore.getHighestLevelReached(),
+                highest_level_completed: GameScore.getHighestLevelReached() + 1, // from 0-based index
                 ftm_language:lang,
             }
         );
