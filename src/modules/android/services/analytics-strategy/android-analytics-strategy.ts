@@ -43,7 +43,7 @@ export class AndroidAnalyticsStrategy extends AbstractAnalyticsStrategy {
   }
 
   private handleLevelCompleted(data: LevelCompletedEvent) {
-    const { duration, highest_level_completed } = data;
+    const { duration, highest_level_completed , level_type, ftm_language ,level_number} = data;
     this.androidInterface .logSummaryData({
       levels_completed: 1,
       time_spent_total_second: duration ?? 0,
@@ -51,6 +51,17 @@ export class AndroidAnalyticsStrategy extends AbstractAnalyticsStrategy {
     }, {
       levels_completed: 'add',
       time_spent_total_second: 'add'
+    });
+
+    this.androidInterface.logUserSessionsData({
+      app_id: 'feedthemonster',
+      cr_user_id: this.cr_user_id,
+      data: {
+        type: level_type ?? 'unknown',
+        event_type: 'level_completed',
+        lang: ftm_language ?? 'unknown',
+        level: level_number ?? 0,
+      }
     });
   }
 

@@ -2,10 +2,12 @@ import { AnalyticsEventType } from 'src/analytics/analytics-integration';
 import { AndroidAnalyticsStrategy } from './android-analytics-strategy';
 
 const mockLogSummaryData = jest.fn();
+const mockLogUserSessionsData = jest.fn();
 
 jest.mock('@curiouslearning/core', () => ({
   AndroidInterface: jest.fn().mockImplementation(() => ({
     logSummaryData: mockLogSummaryData,
+    logUserSessionsData: mockLogUserSessionsData,
   })),
 }));
 
@@ -76,6 +78,32 @@ describe('Feature: Android analytics strategy', () => {
         { levels_completed: 1, time_spent_total_second: 30, highest_level_completed: 0 },
         { levels_completed: 'add', time_spent_total_second: 'add' }
       );
+    });
+
+    it('Given a level_completed event with level type and language, when track is called, then logUserSessionsData is also called with the user session payload', () => {
+      // Given
+      const eventName = AnalyticsEventType.LEVEL_COMPLETED;
+      const data = {
+        level_number: 1,
+        level_type: 'LetterOnly',
+        ftm_language: 'english'
+      };
+
+      // When
+      strategy.track(eventName, data);
+
+      // Then
+      expect(mockLogUserSessionsData).toHaveBeenCalledTimes(1);
+      expect(mockLogUserSessionsData).toHaveBeenCalledWith({
+        app_id: 'feedthemonster',
+        cr_user_id: 'user-123',
+        data: {
+          type: 'LetterOnly',
+          event_type: 'level_completed',
+          lang: 'english',
+          level: 1,
+        }
+      });
     });
   });
 
