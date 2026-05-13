@@ -85,7 +85,7 @@ describe('Feature: Android analytics strategy', () => {
       const eventName = AnalyticsEventType.LEVEL_COMPLETED;
       const data = {
         level_number: 1,
-        levelType: 'LetterOnly',
+        level_type: 'LetterOnly',
         ftm_language: 'english'
       };
 
