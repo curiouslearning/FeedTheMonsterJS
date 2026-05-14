@@ -134,7 +134,7 @@ export class GameplayFlowManager {
 
         if (this.assessmentFlowCoordinator.shouldStartAssessmentAtPuzzle(currentPuzzleSegment)) {
             this.timeoutRegistry.setTimeout(() => {
-                this.startAssessmentFlow(() => {
+                this.startAssessmentFlow(currentPuzzleSegment, () => {
                     this.continueAfterPuzzleStep(
                         currentPuzzleSegment,
                         isTimeOver,
@@ -186,13 +186,15 @@ export class GameplayFlowManager {
         }, delay);
     }
 
-    private startAssessmentFlow(onCloseResume: () => void): void {
+    private startAssessmentFlow(currentPuzzleSegment: number, onCloseResume: () => void): void {
         if (this.isAssessmentInProgress) {
             return;
         }
 
         this.isAssessmentInProgress = true;
         this.assessmentFlowCoordinator.startAssessment();
+
+        const isCombinedMode = currentPuzzleSegment === this.levelForMinigame && !this.hasShownChest;
 
         let hasResumed = false;
         const assessmentDataKeyForCurrentLevel = this.assessmentFlowCoordinator.getAssessmentTypeForCurrentLevel();
@@ -209,6 +211,13 @@ export class GameplayFlowManager {
         void assessmentSurveyManager
             .open({
                 dataKey: assessmentDataKeyForCurrentLevel || undefined,
+                onCloseStart: () => {
+                    if (isCombinedMode) {
+                        // Fires as the overlay begins to fade — covers both skip and completion.
+                        // #chestImage is still in the DOM here, enabling the flying clone.
+                        this.handleCombinedModeTransition(currentPuzzleSegment);
+                    }
+                },
                 onComplete: () => {
                     this.assessmentFlowCoordinator.handleAssessmentCompleted();
                 },
@@ -217,13 +226,61 @@ export class GameplayFlowManager {
                 },
                 onClose: () => {
                     this.assessmentFlowCoordinator.handleAssessmentClosed();
-                    resumeAfterClose();
+                    if (isCombinedMode && this.hasShownChest) {
+                        // Mini-game is already running; IS_MINI_GAME_DONE handles loadPuzzle.
+                        this.isAssessmentInProgress = false;
+                    } else {
+                        resumeAfterClose();
+                    }
                 },
             })
             .catch((error) => {
                 console.warn('[assessment-survey] failed to open in gameplay flow', error);
                 resumeAfterClose();
             });
+    }
+
+    private handleCombinedModeTransition(currentPuzzleSegment: number): void {
+        if (this.hasShownChest) return;
+        this.hasShownChest = true;
+
+        miniGameStateService.publish(
+            miniGameStateService.EVENTS.MINI_GAME_WILL_START,
+            { level: currentPuzzleSegment }
+        );
+
+        const chestImg = document.getElementById('chestImage') as HTMLImageElement | null;
+        const canvas = document.getElementById('treasurecanvas') as HTMLCanvasElement | null;
+
+        if (chestImg && canvas) {
+            // Capture assessment chest position before closing the overlay.
+            const sourceRect = chestImg.getBoundingClientRect();
+
+            // Make canvas measurable (it is display:none at this point).
+            canvas.style.display = 'block';
+            const canvasRect = canvas.getBoundingClientRect();
+
+            // Convert screen coordinates to canvas logical coordinates.
+            const logicalW = parseFloat(canvas.style.width) || canvasRect.width;
+            const logicalH = parseFloat(canvas.style.height) || canvasRect.height;
+            const scaleX = logicalW / (canvasRect.width  || 1);
+            const scaleY = logicalH / (canvasRect.height || 1);
+
+            const canvasStartRect = {
+                x: (sourceRect.left - canvasRect.left) * scaleX,
+                y: (sourceRect.top  - canvasRect.top)  * scaleY,
+                w: sourceRect.width  * scaleX,
+                h: sourceRect.height * scaleY,
+            };
+
+            // Close the assessment overlay instantly so the canvas replaces it with no overlap.
+            assessmentSurveyManager.close();
+
+            // Start mini-game with chest flying from the assessment chest position.
+            this.miniGameHandler.startWithFlyIn(canvasStartRect);
+        } else {
+            this.miniGameHandler.start();
+        }
     }
 
     public handleStoneDropResult(isCorrect: boolean, pickedStone: StoneConfig | null): void {
