@@ -68,6 +68,10 @@ async function preloadAdditionalAssets() {
     "/assets/rive/youngmonster.riv",
     "/assets/rive/adultmonster.riv",
     "/assets/rive/rive.wasm",
+    getAssessmentAssetPath("audio/Correct.wav"),
+    getAssessmentAssetPath("audio/sound-effects/drag_start_pop.wav"),
+    getAssessmentAssetPath("audio/sound-effects/return_boing.wav"),
+    getAssessmentAssetPath("audio/sound-effects/happy_trumpet_plus_sparkle.wav"),
   ];
   const cache = await caches.open("dynamic-cache");
 
@@ -295,7 +299,21 @@ async function cacheAssessmentLanguage(dataKey) {
   const cacheName = `assessment-${dataKey}`;
   const dataUrl = getAssessmentAssetPath(`data/${dataKey}.json`);
 
+  const sharedAudioAssets = [
+    'audio/Correct.wav',
+    'audio/sound-effects/drag_start_pop.wav',
+    'audio/sound-effects/return_boing.wav',
+    'audio/sound-effects/happy_trumpet_plus_sparkle.wav',
+  ];
+
   try {
+    const urlsToCache = new Set();
+    urlsToCache.add(dataUrl);
+
+    for (const asset of sharedAudioAssets) {
+      urlsToCache.add(getAssessmentAssetPath(asset));
+    }
+
     const response = await fetch(dataUrl, {
       method: 'GET',
       headers: {
@@ -303,32 +321,29 @@ async function cacheAssessmentLanguage(dataKey) {
       },
     });
 
-    if (!response.ok) {
-      console.warn('Could not fetch assessment data key:', dataKey);
-      return;
-    }
+    if (response.ok) {
+      const data = await response.json();
 
-    const data = await response.json();
-    const urlsToCache = new Set();
-    urlsToCache.add(dataUrl);
-
-    if (Array.isArray(data?.buckets)) {
-      for (const bucket of data.buckets) {
-        if (!Array.isArray(bucket?.items)) {
-          continue;
-        }
-
-        for (const item of bucket.items) {
-          const itemName = normalizeAssessmentAudioName(data, item?.itemName || '');
-          if (!itemName) {
+      if (Array.isArray(data?.buckets)) {
+        for (const bucket of data.buckets) {
+          if (!Array.isArray(bucket?.items)) {
             continue;
           }
-          urlsToCache.add(getAssessmentAssetPath(`audio/${dataKey}/${itemName}.mp3`));
+
+          for (const item of bucket.items) {
+            const itemName = normalizeAssessmentAudioName(data, item?.itemName || '');
+            if (!itemName) {
+              continue;
+            }
+            urlsToCache.add(getAssessmentAssetPath(`audio/${dataKey}/${itemName}.mp3`));
+          }
         }
       }
-    }
 
-    urlsToCache.add(getAssessmentAssetPath(`audio/${dataKey}/answer_feedback.mp3`));
+      urlsToCache.add(getAssessmentAssetPath(`audio/${dataKey}/answer_feedback.mp3`));
+    } else {
+      console.warn('Could not fetch assessment data key:', dataKey);
+    }
 
     const cache = await caches.open(cacheName);
     const cacheResults = await Promise.all([...urlsToCache].map(async (url) => {
