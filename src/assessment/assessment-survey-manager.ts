@@ -12,6 +12,7 @@ export interface AssessmentSurveyOpenOptions {
   dataKey?: string;
   onLoaded?: () => void;
   onComplete?: (payload: AssessmentCompletedPayload) => void;
+  onCloseStart?: () => void;
   onClose?: () => void;
   onRewardTrigger?: (payload: AssessmentCompletedPayload) => void;
 }
@@ -106,8 +107,10 @@ export class AssessmentSurveyManager {
       }
 
       hasClosed = true;
-      this.close();
-      options.onClose?.();
+      options.onCloseStart?.();
+      this.assessmentOverlay.closeWithTransition(() => {
+        options.onClose?.();
+      });
     };
 
     const playerElement = createAssessmentPlayerElement({
@@ -143,6 +146,10 @@ export class AssessmentSurveyManager {
 
   public close(): void {
     this.assessmentOverlay.close();
+  }
+
+  public closeWithTransition(onComplete: () => void): void {
+    this.assessmentOverlay.closeWithTransition(onComplete);
   }
 }
 

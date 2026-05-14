@@ -36,10 +36,10 @@ export default class TreasureChest {
     width: number,
     height: number,
   ): void {
-    const chestW = 250, chestH = 230;
+    const chestW = 200, chestH = 184;
     const chestX = width / 2 - chestW / 2;
     const chestY = height - chestH - 20;
-    
+
     let scale = 1;
     let rotation = 0;
     
@@ -55,12 +55,19 @@ export default class TreasureChest {
   }
 
   /**
+   * Draws the closed chest at an arbitrary position and size (used for fly-in animation).
+   */
+  public drawClosedChestAt(x: number, y: number, w: number, h: number): void {
+    this.ctx.drawImage(this.closedChestImg, x, y, w, h);
+  }
+
+  /**
    * Draws the open chest without animation.
    * @param width - Canvas width
    * @param height - Canvas height
    */
   public drawOpenChest(width: number, height: number): void {
-    const chestW = 250, chestH = 230;
+    const chestW = 200, chestH = 184;
     const chestX = width / 2 - chestW / 2;
     const chestY = height - chestH - 20;
     this.ctx.drawImage(this.openChestImg, chestX, chestY, chestW, chestH);
