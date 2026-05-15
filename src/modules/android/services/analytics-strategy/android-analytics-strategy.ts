@@ -54,14 +54,10 @@ export class AndroidAnalyticsStrategy extends AbstractAnalyticsStrategy {
     });
 
     this.androidInterface.logUserSessionsData({
-      app_id: 'feedthemonster',
-      cr_user_id: this.cr_user_id,
-      data: {
-        type: level_type ?? 'unknown',
-        event_type: 'level_completed',
-        lang: ftm_language ?? 'unknown',
-        level: level_number ?? 0,
-      }
+      type: level_type ?? 'unknown',
+      event_type: 'level_completed',
+      lang: ftm_language ?? 'unknown',
+      level: level_number ?? 0,
     });
   }
 
