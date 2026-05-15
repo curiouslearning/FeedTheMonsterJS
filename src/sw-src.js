@@ -7,10 +7,9 @@ workbox.precaching.precacheAndRoute(self.__WB_MANIFEST, {
 });
 var number = 0;
 var version = 1.26;
-// self.addEventListener('activate', function(e) {
-//     console.log("activated");
-//
-// });
+
+// True when a previous SW is already active, meaning this is an update rather than a first install.
+const isUpdate = !!self.registration.active;
 
 self.addEventListener("install", async function (e) {
   self.skipWaiting();
@@ -18,7 +17,19 @@ self.addEventListener("install", async function (e) {
 });
 const channel = new BroadcastChannel("my-channel");
 self.addEventListener("activate", function (event) {
-  event.waitUntil(self.clients.claim());
+  event.waitUntil(
+    self.clients.claim().then(() => {
+      // Notify only after the new SW has fully activated and claimed all clients,
+      // so a reload triggered by the prompt is guaranteed to be served by the new SW.
+      if (isUpdate) {
+        return self.clients.matchAll({ type: "window" }).then((clients) => {
+          clients.forEach((client) =>
+            client.postMessage({ msg: "Update Found" })
+          );
+        });
+      }
+    })
+  );
 });
 channel.addEventListener("message", async function (event) {
   if (event.data.command === "Cache") {
@@ -40,21 +51,6 @@ channel.addEventListener("message", async function (event) {
       },
     });
   }
-});
-
-self.registration.addEventListener("updatefound", function (e) {
-  caches.keys().then((cacheNames) => {
-    cacheNames.forEach((cacheName) => {
-      if (cacheName == workbox.core.cacheNames.precache) {
-        // caches.delete(cacheName);
-        self.clients.matchAll().then((clients) => {
-          clients.forEach((client) =>
-            client.postMessage({ msg: "Update Found" })
-          );
-        });
-      }
-    });
-  });
 });
 
 // Preload additional assets
