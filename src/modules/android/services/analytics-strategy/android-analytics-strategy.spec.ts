@@ -95,14 +95,10 @@ describe('Feature: Android analytics strategy', () => {
       // Then
       expect(mockLogUserSessionsData).toHaveBeenCalledTimes(1);
       expect(mockLogUserSessionsData).toHaveBeenCalledWith({
-        app_id: 'feedthemonster',
-        cr_user_id: 'user-123',
-        data: {
-          type: 'LetterOnly',
-          event_type: 'level_completed',
-          lang: 'english',
-          level: 1,
-        }
+        type: 'LetterOnly',
+        event_type: 'level_completed',
+        lang: 'english',
+        level: 1,
       });
     });
   });
