@@ -6,6 +6,7 @@ import { getAssessmentBasePath } from '../assessment-asset-path';
 export interface AssessmentPlayerElementOptions {
   playerTag: string;
   dataKey: string;
+  userId?: string | null;
   analyticsConfig?: AnalyticsConfig;
   onLoaded?: () => void;
   onClose?: () => void;
@@ -33,7 +34,7 @@ export function createAssessmentPlayerElement(options: AssessmentPlayerElementOp
   playerElement.style.visibility = 'hidden';
 
   playerElement.setAttribute('data-key', options.dataKey);
-  playerElement.setAttribute('user-id', 'ftm-web-user');
+  playerElement.setAttribute('user-id', options.userId || 'ftm-web-user');
   playerElement.setAttribute('user-source', 'feed-the-monster-web');
   playerElement.setAttribute('asset-base-url', assessmentBasePath);
   playerElement.setAttribute('data-base-url', assessmentBasePath);

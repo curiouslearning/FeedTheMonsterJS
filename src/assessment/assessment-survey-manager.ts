@@ -1,5 +1,6 @@
 import '@curiouslearning/assessment-survey/register';
 import { AnalyticsConfig, AssessmentCompletedPayload } from '@curiouslearning/assessment-survey';
+import { pseudoId } from '../common/global-variables';
 import { resolveAssessmentDataKey } from './assessment-data-key';
 import { AssessmentCacheClient } from './assessment-cache-client';
 import { AssessmentOverlay } from './ui/assessment-overlay';
@@ -116,6 +117,7 @@ export class AssessmentSurveyManager {
     const playerElement = createAssessmentPlayerElement({
       playerTag: this.playerTag,
       dataKey: resolvedDataKey,
+      userId: pseudoId,
       onLoaded: () => {
         console.log('[assessment-survey] loaded');
         options.onLoaded?.();
