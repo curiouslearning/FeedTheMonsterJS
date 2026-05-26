@@ -117,6 +117,13 @@ export class TreasureChestAnimation {
     // mini-game SVG's 200:184 aspect ratio.
     this.chestW = Math.min(Math.round(0.51 * this.width), 380);
     this.chestH = Math.round(this.chestW * 184 / 200);
+    // Guard against landscape / short-screen devices where the chest would
+    // dominate the canvas height and leave no room for stones.
+    const maxChestH = Math.round(this.height * 0.40);
+    if (this.chestH > maxChestH) {
+      this.chestH = maxChestH;
+      this.chestW = Math.round(this.chestH * 200 / 184);
+    }
 
     // Initialize chest and stone managers
     this.treasureChest = new TreasureChest(this.ctx);
