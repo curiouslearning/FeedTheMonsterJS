@@ -43,6 +43,7 @@ export default class TreasureStones {
   // tracking helpers
   public totalToSpawn: number = 0; // set this when you initialize spawn count
   public collectedCount: number = 0; // increment when player collects a stone
+  public chestH: number = 184; // updated by TreasureChestAnimation to match responsive chest size
   private blueBonusEmitted: boolean = false;
   private blueBonusDeferred: boolean = false;
   private isBurnAudioPlaying = false;
@@ -175,8 +176,10 @@ export default class TreasureStones {
    * @param height - Canvas height
    */
   private spawnStone(width: number, height: number): Stone {
-    const chestX = width / 2 - 40;
-    const chestY = height - 200;
+    // Derive spawn point from the responsive chest position so stones always
+    // burst from the chest opening regardless of chest size.
+    const spawnX = width / 2 + 10;
+    const spawnY = (height - this.chestH - 20) + this.chestH * 0.3;
 
     const radius = 8 + Math.random() * 6;
     const baseAngle = Math.PI / 2;
@@ -193,8 +196,8 @@ export default class TreasureStones {
     const speed = 2 + Math.random() * 2;  // Randomized speed
 
     const stone: Stone = {
-      x: chestX + 50,
-      y: chestY + 50,
+      x: spawnX,
+      y: spawnY,
       radius,
       dx: Math.cos(angle) * speed,
       dy: -Math.sin(angle) * speed,

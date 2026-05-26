@@ -35,20 +35,17 @@ export default class TreasureChest {
     stateStartTime: number,
     width: number,
     height: number,
+    chestW: number = 200,
+    chestH: number = 184,
   ): void {
-    const chestW = 200, chestH = 184;
     const chestX = width / 2 - chestW / 2;
     const chestY = height - chestH - 20;
 
-    let scale = 1;
-    let rotation = 0;
-    
     this.ctx.save();
     this.ctx.translate(chestX + chestW / 2, chestY + chestH / 2);
-    this.ctx.rotate(rotation);
-    this.ctx.scale(scale, scale);
+    this.ctx.rotate(0);
+    this.ctx.scale(1, 1);
 
-    // Apply shake offset for chest-hit animation
     const offset = this.getShakeOffset(time, stateStartTime);
     this.ctx.drawImage(this.closedChestImg, -chestW / 2 + offset, -chestH / 2, chestW, chestH);
     this.ctx.restore();
@@ -66,8 +63,7 @@ export default class TreasureChest {
    * @param width - Canvas width
    * @param height - Canvas height
    */
-  public drawOpenChest(width: number, height: number): void {
-    const chestW = 200, chestH = 184;
+  public drawOpenChest(width: number, height: number, chestW: number = 200, chestH: number = 184): void {
     const chestX = width / 2 - chestW / 2;
     const chestY = height - chestH - 20;
     this.ctx.drawImage(this.openChestImg, chestX, chestY, chestW, chestH);

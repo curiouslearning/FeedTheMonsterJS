@@ -60,6 +60,11 @@ export class TreasureChestAnimation {
   private blueStarImg: HTMLImageElement = new Image();
   private blueStarVisible: boolean = false;
 
+  // Responsive chest dimensions — match the assessment survey's chest size formula:
+  // min(60% of 85% of canvas width, 380px). Aspect ratio kept at 200:184.
+  private chestW: number;
+  private chestH: number;
+
   /**
    * @param width - Canvas width
    * @param height - Canvas height
@@ -107,9 +112,16 @@ export class TreasureChestAnimation {
     this.ctx = context;
     this.ctx.scale(this.dpr, this.dpr); // scale at init
 
+    // Responsive chest size: mirrors the assessment survey's chest formula
+    // (60% × 85% ≈ 51% of canvas width, capped at 380px), maintaining the
+    // mini-game SVG's 200:184 aspect ratio.
+    this.chestW = Math.min(Math.round(0.51 * this.width), 380);
+    this.chestH = Math.round(this.chestW * 184 / 200);
+
     // Initialize chest and stone managers
     this.treasureChest = new TreasureChest(this.ctx);
     this.treasureStone = new TreasureStones(this.ctx);
+    this.treasureStone.chestH = this.chestH;
 
     // after initializing this.treasureStone
     this.treasureStone.onBlueBonusReady = () => {
@@ -127,6 +139,7 @@ export class TreasureChestAnimation {
   public setTreasureStones(stones: TreasureStones) {
     if (!stones) return;
     this.treasureStone = stones;
+    this.treasureStone.chestH = this.chestH;
     // re-hook the callback on the injected instance
     this.treasureStone.onBlueBonusReady = () => {
       this.showBonusStar = true;
@@ -235,7 +248,16 @@ export class TreasureChestAnimation {
     this.canvas.style.display = "block";
     this.isVisible = true;
     this.onFadeComplete = onComplete;
-    this.flyInStart = startRect;
+    // Normalise to the mini-game chest size centred on the assessment chest's
+    // centre so the fly-in only changes position, not size.
+    const centerX = startRect.x + startRect.w / 2;
+    const centerY = startRect.y + startRect.h / 2;
+    this.flyInStart = {
+      x: centerX - this.chestW / 2,
+      y: centerY - this.chestH / 2,
+      w: this.chestW,
+      h: this.chestH,
+    };
     this.state = TreasureChestState.FlyIn;
     this.stateTimer = 0;
   }
@@ -279,16 +301,15 @@ export class TreasureChestAnimation {
         const progress = Math.min(1, this.stateTimer / this.flyInDuration);
         // ease-in-out via cosine
         const eased = 0.5 - 0.5 * Math.cos(Math.PI * progress);
-        const finalW = 200, finalH = 184;
+        // finalW/H match the responsive chest size so size stays constant during fly-in
+        const finalW = this.chestW, finalH = this.chestH;
         const finalX = this.width / 2 - finalW / 2;
         const finalY = this.height - finalH - 20;
         const src = this.flyInStart;
         const curX = src.x + (finalX - src.x) * eased;
         const curY = src.y + (finalY - src.y) * eased;
-        const curW = src.w + (finalW - src.w) * eased;
-        const curH = src.h + (finalH - src.h) * eased;
         this.ctx.globalAlpha = 1;
-        this.treasureChest.drawClosedChestAt(curX, curY, curW, curH);
+        this.treasureChest.drawClosedChestAt(curX, curY, finalW, finalH);
         if (progress >= 1) {
           this.flyInStart = null;
           this.state = TreasureChestState.ClosedChest;
@@ -304,7 +325,9 @@ export class TreasureChestAnimation {
           this.stateTimer,
           0,
           this.width,
-          this.height
+          this.height,
+          this.chestW,
+          this.chestH,
         );
         if (alpha >= 1) {
           this.state = TreasureChestState.ClosedChest;
@@ -318,7 +341,9 @@ export class TreasureChestAnimation {
           this.stateTimer,
           0,
           this.width,
-          this.height
+          this.height,
+          this.chestW,
+          this.chestH,
         );
         const elapsed = this.stateTimer;
         if (elapsed >= this.treasureChest.shakeDuration) {
@@ -329,7 +354,7 @@ export class TreasureChestAnimation {
       }
       case TreasureChestState.OpenedChest: {
         this.ctx.globalAlpha = 1;
-        this.treasureChest.drawOpenChest(this.width, this.height);
+        this.treasureChest.drawOpenChest(this.width, this.height, this.chestW, this.chestH);
         this.treasureStone.stoneBurstAnimation(this.width, this.height, deltaTime);
 
         if (!this.chestAudioPlayed) {
@@ -353,7 +378,7 @@ export class TreasureChestAnimation {
         const elapsed = this.stateTimer;
         const alpha = Math.max(0, 1 - elapsed / this.fadeOutDuration);
         this.ctx.globalAlpha = alpha;
-        this.treasureChest.drawOpenChest(this.width, this.height);
+        this.treasureChest.drawOpenChest(this.width, this.height, this.chestW, this.chestH);
         this.treasureStone.stoneBurstAnimation(this.width, this.height, deltaTime);
 
         //Keep showing Blue Star if still active
