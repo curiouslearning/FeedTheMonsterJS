@@ -256,6 +256,11 @@ export class TreasureChestAnimation {
     this.isVisible = false;
   }
 
+  public dispose() {
+    this.hide();
+    this.treasureChest.dispose();
+  }
+
   /**
    * Main animation loop.
    * Runs via requestAnimationFrame while visible.

@@ -114,7 +114,7 @@ export class TreasureChestMiniGame {
     this.earnedStarCount = 0;
     this.collectedStones = 0;
     this.miniGameStatus = false;
-    this.treasureAnimation.hide();
+    this.treasureAnimation.dispose();
     //Reset State
     this.treasureStones = new TreasureStones(this.treasureAnimation.getContext());
   }
