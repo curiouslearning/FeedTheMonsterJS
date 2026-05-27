@@ -415,6 +415,7 @@ export class GameplayFlowManager {
                 json_version_number: this.jsonVersionNumber,
                 success_or_failure: isCorrect ? "success" : "failure",
                 level_number: this.levelData.levelMeta.levelNumber,
+                level_type: this.levelData.levelMeta.levelType,
                 puzzle_number: this.currentPuzzleIndex,
                 item_selected: itemSelected,
                 target: this.stoneHandler.getCorrectTargetStone(),

@@ -1,6 +1,6 @@
 import { AbstractAnalyticsStrategy } from '@curiouslearning/analytics';
 import { AndroidInterface } from '@curiouslearning/core';
-import { LevelCompletedEvent } from 'src/analytics/analytics-event-interface';
+import { LevelCompletedEvent, PuzzleCompletedEvent } from 'src/analytics/analytics-event-interface';
 import { AnalyticsEventType } from 'src/analytics/analytics-integration';
 
 export interface AndroidAnalyticsStrategyOptions {
@@ -61,8 +61,8 @@ export class AndroidAnalyticsStrategy extends AbstractAnalyticsStrategy {
     });
   }
 
-  private handlePuzzleCompleted(data: any) {
-    const { success_or_failure } = data;
+  private handlePuzzleCompleted(data: PuzzleCompletedEvent) {
+    const { success_or_failure, level_type, ftm_language, level_number, puzzle_number, version_number } = data;
     this.androidInterface .logSummaryData({
       puzzles_completed: 1,
       puzzle_success: success_or_failure === 'success' ? 1 : 0,
@@ -71,6 +71,16 @@ export class AndroidAnalyticsStrategy extends AbstractAnalyticsStrategy {
       puzzles_completed: 'add',
       puzzle_success: 'add',
       puzzle_failure: 'add'
+    });
+
+    this.androidInterface.logUserSessionsData({
+      type: level_type ?? 'unknown',
+      event_type: 'puzzle_completed',
+      lang: ftm_language ?? 'unknown',
+      is_success: success_or_failure === 'success',
+      level: level_number ?? 0,
+      puzzle: puzzle_number ?? 0,
+      app_version: version_number ?? 'unknown',
     });
   }
 }
