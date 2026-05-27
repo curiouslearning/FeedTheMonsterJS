@@ -127,6 +127,11 @@ export default class TreasureChest {
     );
   }
 
+  public dispose(): void {
+    this.unsubscribe?.();
+    this.unsubscribe = null;
+  }
+
   /**
    * Calculates horizontal shake offset based on elapsed animation time.
    * Produces a left-right jitter effect for a limited duration.
