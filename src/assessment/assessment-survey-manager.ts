@@ -156,7 +156,7 @@ export class AssessmentSurveyManager {
   }
 
   private getAssessmentTreasureChestLayout() {
-    const img: any = document.querySelector('.as-ui-mode-new #chestImage');
+    const img: any = document.querySelector('#chestImage');
     if (!img) return null;
 
     const rect = img.getBoundingClientRect();

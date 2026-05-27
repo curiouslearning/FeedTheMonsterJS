@@ -40,6 +40,11 @@ export default class TreasureChest {
         this.assessmentChestX = data?.assessmentTreasureChestLayout?.x ?? this.assessmentChestX;
         this.assessmentChestY = data?.assessmentTreasureChestLayout?.y ?? this.assessmentChestY;
         this.shouldUseAssessmentChestLayout = Boolean(data?.assessmentTreasureChestLayout);
+
+        if (data?.assessmentTreasureChestLayout?.height) {
+          //Hard minus 50px to properly adjust the height to look as same as assessment treasure chest.
+          this.chestHeight = this.chestHeight - 50; 
+        }
       }
     );
   }
@@ -60,31 +65,22 @@ export default class TreasureChest {
     const chestX = width / 2 - this.chestWidth / 2;
     const chestY = height - this.chestHeight - 20;
 
-    let scale = 1;
-    let rotation = 0;
     this.ctx.save();
-    
-    if (!this.shouldUseAssessmentChestLayout) {
-      this.ctx.translate(
-        chestX + this.chestWidth / 2,
-        chestY + this.chestHeight / 2
-      );
-      this.ctx.rotate(rotation);
-      this.ctx.scale(scale, scale);
-    }
+
+    this.ctx.translate(
+      chestX + this.chestWidth / 2,
+      chestY + this.chestHeight / 2
+    );
+    this.ctx.rotate(0);
+    this.ctx.scale(1, 1);
 
     // Apply shake offset for chest-hit animation
     const offset = this.getShakeOffset(time, stateStartTime);
 
-    const { x, y } = this.getResolvedChestPosition(
-      -this.chestWidth / 2 + offset,
-      -this.chestHeight / 2
-    );
-
     this.ctx.drawImage(
       this.closedChestImg,
-      x, 
-      y,
+      -this.chestWidth / 2 + offset, 
+      -this.chestHeight / 2,
       this.chestWidth, 
       this.chestHeight
     );
@@ -122,23 +118,15 @@ export default class TreasureChest {
     const chestX = width / 2 - this.chestWidth / 2;
     const chestY = height - this.chestHeight - 20;
 
-    const { x, y } = this.getResolvedChestPosition(chestX, chestY);
-
     this.ctx.drawImage(
       this.openChestImg,
-      x,
-      y,
+      chestX,
+      chestY,
       this.chestWidth,
       this.chestHeight
     );
   }
 
-  private getResolvedChestPosition(chestX: number, chestY: number) {
-    return {
-      x: this.shouldUseAssessmentChestLayout ? this.assessmentChestX : chestX,
-      y: this.shouldUseAssessmentChestLayout ? this.assessmentChestY : chestY
-    };
-  }
   /**
    * Calculates horizontal shake offset based on elapsed animation time.
    * Produces a left-right jitter effect for a limited duration.
