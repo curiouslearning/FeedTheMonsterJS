@@ -134,6 +134,57 @@ describe('Feature: Android analytics strategy', () => {
         { puzzles_completed: 'add', puzzle_success: 'add', puzzle_failure: 'add' }
       );
     });
+
+    it('Given a puzzle_completed event with level type, language, level, puzzle and version, when track is called, then logUserSessionsData is also called with the user session payload', () => {
+      // Given
+      const eventName = AnalyticsEventType.PUZZLE_COMPLETED;
+      const data = {
+        success_or_failure: 'success',
+        level_type: 'LetterOnly',
+        ftm_language: 'english',
+        level_number: 1,
+        puzzle_number: 1,
+      };
+
+      // When
+      strategy.track(eventName, data);
+
+      // Then
+      expect(mockLogUserSessionsData).toHaveBeenCalledTimes(1);
+      expect(mockLogUserSessionsData).toHaveBeenCalledWith({
+        type: 'LetterOnly',
+        event_type: 'puzzle_completed',
+        lang: 'english',
+        is_success: true,
+        level: 1,
+        puzzle: 1,
+      });
+    });
+
+    it('Given a puzzle_completed event with success_or_failure "failure", when track is called, then logUserSessionsData is called with is_success false', () => {
+      // Given
+      const eventName = AnalyticsEventType.PUZZLE_COMPLETED;
+      const data = {
+        success_or_failure: 'failure',
+        level_type: 'Word',
+        ftm_language: 'english',
+        level_number: 2,
+        puzzle_number: 3,
+      };
+
+      // When
+      strategy.track(eventName, data);
+
+      // Then
+      expect(mockLogUserSessionsData).toHaveBeenCalledWith({
+        type: 'Word',
+        event_type: 'puzzle_completed',
+        lang: 'english',
+        is_success: false,
+        level: 2,
+        puzzle: 3,
+      });
+    });
   });
 
   describe('Scenario: Disposing the strategy', () => {

@@ -98,6 +98,7 @@ export interface CommonEventProperties {
     target: string;
     foils: string[] | string;
     response_time: number;
+    level_type?: string;
   }
   
   /**
