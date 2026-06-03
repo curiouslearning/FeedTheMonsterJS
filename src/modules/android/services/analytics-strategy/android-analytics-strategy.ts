@@ -79,8 +79,7 @@ export class AndroidAnalyticsStrategy extends AbstractAnalyticsStrategy {
       lang: ftm_language ?? 'unknown',
       is_success: success_or_failure === 'success',
       level: level_number ?? 0,
-      puzzle: puzzle_number ?? 0,
-      app_version: version_number ?? 'unknown',
+      puzzle: puzzle_number ?? 0
     });
   }
 }

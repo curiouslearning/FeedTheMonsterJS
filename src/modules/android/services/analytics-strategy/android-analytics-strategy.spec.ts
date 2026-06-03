@@ -144,7 +144,6 @@ describe('Feature: Android analytics strategy', () => {
         ftm_language: 'english',
         level_number: 1,
         puzzle_number: 1,
-        version_number: 'v2.34',
       };
 
       // When
@@ -159,7 +158,6 @@ describe('Feature: Android analytics strategy', () => {
         is_success: true,
         level: 1,
         puzzle: 1,
-        app_version: 'v2.34',
       });
     });
 
@@ -172,7 +170,6 @@ describe('Feature: Android analytics strategy', () => {
         ftm_language: 'english',
         level_number: 2,
         puzzle_number: 3,
-        version_number: 'v2.34',
       };
 
       // When
@@ -186,7 +183,6 @@ describe('Feature: Android analytics strategy', () => {
         is_success: false,
         level: 2,
         puzzle: 3,
-        app_version: 'v2.34',
       });
     });
   });
