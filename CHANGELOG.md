@@ -1,5 +1,22 @@
 
 
+## [1.5.1](https://github.com/curiouslearning/FeedTheMonsterJS/compare/1.5.0...1.5.1) (2026-06-04)
+
+
+### Bug Fixes
+
+* [FM-919] forward pseudoId to embedded assessment as user-id ([#1969](https://github.com/curiouslearning/FeedTheMonsterJS/issues/1969)) ([31f0023](https://github.com/curiouslearning/FeedTheMonsterJS/commit/31f0023ba3c90451d0975a020fbc32bc42d45980))
+* added fade in fade out animation on Assessment Overlay ([39fd9cd](https://github.com/curiouslearning/FeedTheMonsterJS/commit/39fd9cd28cc4ec2928b27846d8debc9ac42a2de6))
+* Added layout alignment of assessment treasure chest to canvas minigame treasure chest (FM-914). ([01dcc7f](https://github.com/curiouslearning/FeedTheMonsterJS/commit/01dcc7fe525950df87c4ab6273fc8bb8c68cd842))
+* Added subscription clean up and updated test case (FM-914) ([fa4795b](https://github.com/curiouslearning/FeedTheMonsterJS/commit/fa4795bb3cd1c0845a2a9c672a1bb453a760a0fd))
+* added transition on the from assessment to minigame ([d14c1c8](https://github.com/curiouslearning/FeedTheMonsterJS/commit/d14c1c857080fa501580c196ac7eee40554d4bb3))
+* Clean up implementation for handling the alignment of treasure chests (FM-914) ([ab5790f](https://github.com/curiouslearning/FeedTheMonsterJS/commit/ab5790f2c26392c4046b4d60eda99539e9ed264c))
+* fix for the update prompt to only appear after the update has been completed in the background ([9e1493d](https://github.com/curiouslearning/FeedTheMonsterJS/commit/9e1493daf31b47370e642488d23f958ecdbc69fa))
+* FM-901 Option click sfx does not play in offline mode in Assessment embedded mode. ([74cc1df](https://github.com/curiouslearning/FeedTheMonsterJS/commit/74cc1df98519054e7f422f942506eb63f1a89650))
+* FM-901 Option click sfx does not play in offline mode in Assessment embedded mode. ([#1962](https://github.com/curiouslearning/FeedTheMonsterJS/issues/1962)) ([fac3b09](https://github.com/curiouslearning/FeedTheMonsterJS/commit/fac3b09a9069e3dbdc8911f878ecc79e4e94b207))
+* FM-910 chest  images replaced ([#1967](https://github.com/curiouslearning/FeedTheMonsterJS/issues/1967)) ([086286c](https://github.com/curiouslearning/FeedTheMonsterJS/commit/086286c50c8f70448cb8e9ef1ca507aa3b59be61))
+* using dev tarball package for the assessment temporarily ([eb0f0d3](https://github.com/curiouslearning/FeedTheMonsterJS/commit/eb0f0d34c032bef0c15325ae47acfb56da047773))
+
 ## [1.5.0](https://github.com/curiouslearning/FeedTheMonsterJS/compare/1.4.0...1.5.0) (2026-05-04)
 
 
