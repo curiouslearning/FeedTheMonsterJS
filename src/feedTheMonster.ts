@@ -88,7 +88,7 @@ class App {
     await this.loadTitleFeedbackCustomFont();
     await this.preloadGameAudios();
     featureFlagsService.init({
-      user: { userID: pseudoId, locale: this.lang },
+      user: { userID: pseudoId, locale: this.lang, custom: { platform: 'ftm' } },
     });
     await featureFlagsService.initialize();
 

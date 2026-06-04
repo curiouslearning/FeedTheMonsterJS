@@ -1,5 +1,6 @@
 import '@curiouslearning/assessment-survey/register';
 import { AnalyticsConfig, AssessmentCompletedPayload } from '@curiouslearning/assessment-survey';
+import { pseudoId } from '../common/global-variables';
 import { resolveAssessmentDataKey } from './assessment-data-key';
 import { AssessmentCacheClient } from './assessment-cache-client';
 import { AssessmentOverlay } from './ui/assessment-overlay';
@@ -7,11 +8,13 @@ import {
   createAssessmentCloseButton,
   createAssessmentPlayerElement,
 } from './ui/assessment-player-element';
+import miniGameStateService from '@miniGameStateService';
 
 export interface AssessmentSurveyOpenOptions {
   dataKey?: string;
   onLoaded?: () => void;
   onComplete?: (payload: AssessmentCompletedPayload) => void;
+  onCloseStart?: () => void;
   onClose?: () => void;
   onRewardTrigger?: (payload: AssessmentCompletedPayload) => void;
 }
@@ -106,15 +109,26 @@ export class AssessmentSurveyManager {
       }
 
       hasClosed = true;
-      this.close();
-      options.onClose?.();
+      options.onCloseStart?.();
+      this.assessmentOverlay.closeWithTransition(() => {
+        options.onClose?.();
+      });
     };
 
     const playerElement = createAssessmentPlayerElement({
       playerTag: this.playerTag,
       dataKey: resolvedDataKey,
+      userId: pseudoId,
       onLoaded: () => {
         console.log('[assessment-survey] loaded');
+        const assessmentTreasureChestLayout = this.getAssessmentTreasureChestLayout();
+
+        miniGameStateService.publish(
+          miniGameStateService.EVENTS.USE_ASSESSMENT_TREASURE_CHEST_LAYOUT,
+          {
+            assessmentTreasureChestLayout
+          }
+        );
         options.onLoaded?.();
       },
       onComplete: (payload) => {
@@ -141,8 +155,26 @@ export class AssessmentSurveyManager {
     this.assessmentOverlay.openWithChildren([playerElement, closeButton]);
   }
 
+  private getAssessmentTreasureChestLayout() {
+    const img: any = document.querySelector('#chestImage');
+    if (!img) return null;
+
+    const rect = img.getBoundingClientRect();
+
+    return {
+      x: rect.left,
+      y: rect.top,
+      width: img.offsetWidth,
+      height: img.offsetHeight,
+    };
+  }
+
   public close(): void {
     this.assessmentOverlay.close();
+  }
+
+  public closeWithTransition(onComplete: () => void): void {
+    this.assessmentOverlay.closeWithTransition(onComplete);
   }
 }
 
