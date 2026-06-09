@@ -397,6 +397,7 @@ describe('AssessmentSurveyManager', () => {
         appId: 'test-app-id',
         measurementId: 'test-measurement-id',
         firebaseName: 'AssessmentSurveyEmbed',
+        container_app_version: '',
       });
     } finally {
       restoreFirebaseEnv(envSnapshot);

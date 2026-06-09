@@ -1,6 +1,6 @@
 import '@curiouslearning/assessment-survey/register';
 import { AnalyticsConfig, AssessmentCompletedPayload } from '@curiouslearning/assessment-survey';
-import { pseudoId } from '../common/global-variables';
+import { pseudoId, container_app_version } from '../common/global-variables';
 import { resolveAssessmentDataKey } from './assessment-data-key';
 import { AssessmentCacheClient } from './assessment-cache-client';
 import { AssessmentOverlay } from './ui/assessment-overlay';
@@ -73,6 +73,8 @@ export class AssessmentSurveyManager {
   }
 
   private resolveAnalyticsConfig(): AnalyticsConfig | undefined {
+    
+    // TODO(MR-83): Add Container App Version to analytics config once the assessment package is updated with the new config
     const config = {
       apiKey: process.env.FIREBASE_API_KEY,
       authDomain: process.env.FIREBASE_AUTH_DOMAIN,
@@ -87,7 +89,7 @@ export class AssessmentSurveyManager {
 
     const isValidConfig = Object.values(config).every(Boolean);
 
-    return isValidConfig ? config : undefined;
+    return isValidConfig ? ({ ...config, container_app_version: container_app_version || '' } as AnalyticsConfig) : undefined;
   }
 
   public async open(options: AssessmentSurveyOpenOptions): Promise<void> {
