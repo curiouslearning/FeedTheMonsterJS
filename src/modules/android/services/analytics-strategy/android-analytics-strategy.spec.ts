@@ -1,4 +1,5 @@
 import { AnalyticsEventType } from 'src/analytics/analytics-integration';
+import { AndroidInterface } from '@curiouslearning/core';
 import { AndroidAnalyticsStrategy } from './android-analytics-strategy';
 
 const mockLogSummaryData = jest.fn();
@@ -30,6 +31,30 @@ describe('Feature: Android analytics strategy', () => {
   describe('Scenario: Initializing the strategy', () => {
     it('Given a valid cr_user_id, when initialize is called, then it resolves without error', async () => {
       await expect(strategy.initialize()).resolves.toBeUndefined();
+    });
+  });
+
+  describe('Scenario: Forwarding the sub-app version as metadata', () => {
+    it('Given an appVersion, when the strategy is constructed, then AndroidInterface receives it as metadata.appVersion', () => {
+      // Given / When
+      new AndroidAnalyticsStrategy({ cr_user_id: 'user-123', appVersion: 'v1.6.0' });
+
+      // Then
+      expect(AndroidInterface).toHaveBeenCalledWith(
+        expect.objectContaining({
+          app_id: 'feed-the-monster',
+          cr_user_id: 'user-123',
+          metadata: { appVersion: 'v1.6.0' },
+        })
+      );
+    });
+
+    it('Given no appVersion, when the strategy is constructed, then metadata.appVersion defaults to an empty string', () => {
+      // Given / When (beforeEach already constructed without appVersion)
+      // Then
+      expect(AndroidInterface).toHaveBeenCalledWith(
+        expect.objectContaining({ metadata: { appVersion: '' } })
+      );
     });
   });
 

@@ -5,6 +5,8 @@ import { AnalyticsEventType } from 'src/analytics/analytics-integration';
 
 export interface AndroidAnalyticsStrategyOptions {
   cr_user_id: string;
+  /** FTM sub-app version, forwarded to every payload as metadata.appVersion. */
+  appVersion?: string;
 }
 
 export class AndroidAnalyticsStrategy extends AbstractAnalyticsStrategy {
@@ -16,7 +18,8 @@ export class AndroidAnalyticsStrategy extends AbstractAnalyticsStrategy {
     this.cr_user_id = options.cr_user_id;
     this.androidInterface = new AndroidInterface({
       app_id: 'feed-the-monster',
-      cr_user_id: this.cr_user_id ?? ''
+      cr_user_id: this.cr_user_id ?? '',
+      metadata: { appVersion: options.appVersion ?? '' }
     });
   }
 
