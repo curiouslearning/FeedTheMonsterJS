@@ -5,8 +5,8 @@ import { AnalyticsEventType } from 'src/analytics/analytics-integration';
 
 export interface AndroidAnalyticsStrategyOptions {
   cr_user_id: string;
-  /** FTM sub-app version, forwarded to every payload as metadata.appVersion. */
-  appVersion?: string;
+  /** FTM sub-app version, forwarded to every payload as metadata.app_version. */
+  app_version?: string;
 }
 
 export class AndroidAnalyticsStrategy extends AbstractAnalyticsStrategy {
@@ -19,7 +19,8 @@ export class AndroidAnalyticsStrategy extends AbstractAnalyticsStrategy {
     this.androidInterface = new AndroidInterface({
       app_id: 'feed-the-monster',
       cr_user_id: this.cr_user_id ?? '',
-      metadata: { appVersion: options.appVersion ?? '' }
+      // Stored in Firestore as snake_case app_version (consistent with the rest of the payload).
+      metadata: { app_version: options.app_version ?? '' }
     });
   }
 

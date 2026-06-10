@@ -145,7 +145,7 @@ class App {
     if (featureFlagsService.isFeatureEnabled(FEATURE_ANDROID_EVENT_BUBBLE)) {
       const androidStrategy = new AndroidAnalyticsStrategy({
         cr_user_id: pseudoId ?? '',
-        appVersion: document.getElementById("version-info-id")?.innerHTML || ''
+        app_version: document.getElementById("version-info-id")?.innerHTML || ''
       });
       AnalyticsIntegration.getInstance().analyticsService.register(
         'android',
