@@ -2,6 +2,7 @@ import { AbstractAnalyticsStrategy } from '@curiouslearning/analytics';
 import { AndroidInterface } from '@curiouslearning/core';
 import { LevelCompletedEvent, PuzzleCompletedEvent } from 'src/analytics/analytics-event-interface';
 import { AnalyticsEventType } from 'src/analytics/analytics-integration';
+import { appConfig } from '@appConfig';
 
 export interface AndroidAnalyticsStrategyOptions {
   cr_user_id: string;
@@ -16,7 +17,11 @@ export class AndroidAnalyticsStrategy extends AbstractAnalyticsStrategy {
     this.cr_user_id = options.cr_user_id;
     this.androidInterface = new AndroidInterface({
       app_id: 'feed-the-monster',
-      cr_user_id: this.cr_user_id ?? ''
+      cr_user_id: this.cr_user_id ?? '',
+      metadata: {
+        environment: appConfig.ENV
+      },
+      log: appConfig.DEBUG_MODE
     });
   }
 
