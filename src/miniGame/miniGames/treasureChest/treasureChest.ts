@@ -1,5 +1,4 @@
 import { CLOSED_CHEST, OPEN_CHEST } from '@constants';
-import miniGameStateService from '@miniGameStateService';
 
 /**
  * TreasureChest class handles rendering of the closed and open chest
@@ -10,12 +9,6 @@ export default class TreasureChest {
   private openChestImg: HTMLImageElement; // Image for open chest state
   private ctx: CanvasRenderingContext2D; // Canvas context used for drawing
   public shakeDuration: number = 1000; // 1s; Default seconds of shaking animation.
-  private chestWidth: number;
-  private chestHeight: number;
-  private unsubscribe: any;
-  private assessmentChestX: number = 0;
-  private assessmentChestY: number = 0;
-  private shouldUseAssessmentChestLayout: boolean = false;
 
   /**
    * @param ctx - Canvas rendering context to draw the chest
@@ -28,25 +21,6 @@ export default class TreasureChest {
 
     this.openChestImg = new Image();
     this.openChestImg.src = OPEN_CHEST; // Path to open chest asset
-
-    this.chestWidth = 200; //Default size
-    this.chestHeight = 184; //Default size
-
-    this.unsubscribe = miniGameStateService.subscribe(
-      miniGameStateService.EVENTS.USE_ASSESSMENT_TREASURE_CHEST_LAYOUT,
-      (data: any) => {
-        this.chestWidth = data?.assessmentTreasureChestLayout?.width ?? this.chestWidth;
-        this.chestHeight = data?.assessmentTreasureChestLayout?.height ?? this.chestHeight;
-        this.assessmentChestX = data?.assessmentTreasureChestLayout?.x ?? this.assessmentChestX;
-        this.assessmentChestY = data?.assessmentTreasureChestLayout?.y ?? this.assessmentChestY;
-        this.shouldUseAssessmentChestLayout = Boolean(data?.assessmentTreasureChestLayout);
-
-        if (data?.assessmentTreasureChestLayout?.height) {
-          //Hard minus 50px to properly adjust the height to look as same as assessment treasure chest.
-          this.chestHeight = this.chestHeight - 50; 
-        }
-      }
-    );
   }
 
   /**
@@ -62,47 +36,22 @@ export default class TreasureChest {
     width: number,
     height: number,
   ): void {
-    const chestX = width / 2 - this.chestWidth / 2;
-    const chestY = height - this.chestHeight - 20;
-
+    const chestW = 250, chestH = 230;
+    const chestX = width / 2 - chestW / 2;
+    const chestY = height - chestH - 20;
+    
+    let scale = 1;
+    let rotation = 0;
+    
     this.ctx.save();
-
-    this.ctx.translate(
-      chestX + this.chestWidth / 2,
-      chestY + this.chestHeight / 2
-    );
-    this.ctx.rotate(0);
-    this.ctx.scale(1, 1);
+    this.ctx.translate(chestX + chestW / 2, chestY + chestH / 2);
+    this.ctx.rotate(rotation);
+    this.ctx.scale(scale, scale);
 
     // Apply shake offset for chest-hit animation
     const offset = this.getShakeOffset(time, stateStartTime);
-
-    this.ctx.drawImage(
-      this.closedChestImg,
-      -this.chestWidth / 2 + offset, 
-      -this.chestHeight / 2,
-      this.chestWidth, 
-      this.chestHeight
-    );
+    this.ctx.drawImage(this.closedChestImg, -chestW / 2 + offset, -chestH / 2, chestW, chestH);
     this.ctx.restore();
-  }
-
-  /**
-   * Draws the closed chest at an arbitrary position and size (used for fly-in animation).
-   */
-  public drawClosedChestAt(x: number, y: number, w: number, h: number): void {
-
-    if (this.shouldUseAssessmentChestLayout) {
-      this.ctx.drawImage(
-        this.closedChestImg,
-        this.assessmentChestX,
-        this.assessmentChestY,
-        this.chestWidth,
-        this.chestHeight
-      );
-    } else {
-      this.ctx.drawImage(this.closedChestImg, x, y, w, h);
-    }
   }
 
   /**
@@ -110,26 +59,11 @@ export default class TreasureChest {
    * @param width - Canvas width
    * @param height - Canvas height
    */
-  public drawOpenChest(
-    width: number,
-    height: number,
-
-  ): void {
-    const chestX = width / 2 - this.chestWidth / 2;
-    const chestY = height - this.chestHeight - 20;
-
-    this.ctx.drawImage(
-      this.openChestImg,
-      chestX,
-      chestY,
-      this.chestWidth,
-      this.chestHeight
-    );
-  }
-
-  public dispose(): void {
-    this.unsubscribe?.();
-    this.unsubscribe = null;
+  public drawOpenChest(width: number, height: number): void {
+    const chestW = 250, chestH = 230;
+    const chestX = width / 2 - chestW / 2;
+    const chestY = height - chestH - 20;
+    this.ctx.drawImage(this.openChestImg, chestX, chestY, chestW, chestH);
   }
 
   /**

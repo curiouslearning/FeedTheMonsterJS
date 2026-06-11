@@ -30,9 +30,9 @@ function uniqueSorted(levelIndexes: number[]): number[] {
 }
 
 /**
- * Tracks per-language assessment completion state. Assessment replay is
- * allowed on every new level run, so persisted completion no longer gates
- * eligibility; it is retained only for analytics/debug/reset workflows.
+ * Tracks per-language assessment completion state and combines it with
+ * game-level completion from GameScore to decide whether an assessment
+ * should still be shown for a level.
  */
 export class AssessmentLevelState {
   private readonly language: string;
@@ -41,7 +41,7 @@ export class AssessmentLevelState {
   private readonly completedLevelsProvider: CompletedLevelsProvider;
 
   constructor(options: AssessmentLevelStateOptions = {}) {
-    this.language = options.language?.trim() || lang?.trim() || 'english';
+    this.language = options.language || lang;
     this.storageKeyPrefix = options.storageKeyPrefix || DEFAULT_STORAGE_KEY_PREFIX;
     this.storage = options.storage || localStorage;
     this.completedLevelsProvider = options.completedLevelsProvider || (() => GameScore.getAllGameLevelInfo());
@@ -60,7 +60,6 @@ export class AssessmentLevelState {
 
   /**
    * Persists assessment completion for a level in language-scoped local storage.
-   * This is replay-safe metadata and does not prevent future assessment runs.
    */
   public markAssessmentCompletedForLevel(levelIndex: number): void {
     if (!isValidLevelIndex(levelIndex)) {
@@ -78,7 +77,6 @@ export class AssessmentLevelState {
 
   /**
    * Returns whether gameplay progression has completed this level already.
-   * This is currently informational only and does not gate assessment replay.
    */
   public isLevelCompleted(levelIndex: number): boolean {
     if (!isValidLevelIndex(levelIndex)) {
@@ -91,16 +89,20 @@ export class AssessmentLevelState {
   }
 
   /**
-   * Assessments should be replayable whenever the user re-enters a configured
-   * level. The only gating here is input validation; per-run dedupe is handled
-   * by AssessmentFlowCoordinator.
+   * Core Phase 2 gate:
+   * show assessment only if the level is not completed and assessment
+   * is not yet completed for that level.
    */
   public shouldShowForLevel(levelIndex: number): boolean {
     if (!isValidLevelIndex(levelIndex)) {
       return false;
     }
 
-    return true;
+    if (this.isLevelCompleted(levelIndex)) {
+      return false;
+    }
+
+    return !this.isAssessmentCompletedForLevel(levelIndex);
   }
 
   /**

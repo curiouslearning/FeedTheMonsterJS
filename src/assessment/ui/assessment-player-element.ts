@@ -1,17 +1,15 @@
 import '@curiouslearning/assessment-survey/register';
-import { AnalyticsConfig, AssessmentCompletedPayload, AssessmentSurveyPlayerElement } from '@curiouslearning/assessment-survey';
+import { AssessmentSurveyPlayerElement, AnalyticsConfig } from '@curiouslearning/assessment-survey';
 import { ASSESSMENT_SKIP_BTN } from '@constants';
 import { getAssessmentBasePath } from '../assessment-asset-path';
 
 export interface AssessmentPlayerElementOptions {
   playerTag: string;
   dataKey: string;
-  userId?: string | null;
   analyticsConfig?: AnalyticsConfig;
   onLoaded?: () => void;
-  onClose?: () => void;
-  onComplete?: (payload: AssessmentCompletedPayload) => void;
-  onRewardTrigger?: (payload: AssessmentCompletedPayload) => void;
+  onCompleted?: () => void;
+  onClosed?: () => void;
 }
 
 export interface AssessmentCloseButtonOptions {
@@ -31,10 +29,9 @@ export function createAssessmentPlayerElement(options: AssessmentPlayerElementOp
   playerElement.style.display = 'block';
   playerElement.style.width = '100%';
   playerElement.style.height = '100%';
-  playerElement.style.visibility = 'hidden';
 
   playerElement.setAttribute('data-key', options.dataKey);
-  playerElement.setAttribute('user-id', options.userId || 'ftm-web-user');
+  playerElement.setAttribute('user-id', 'ftm-web-user');
   playerElement.setAttribute('user-source', 'feed-the-monster-web');
   playerElement.setAttribute('asset-base-url', assessmentBasePath);
   playerElement.setAttribute('data-base-url', assessmentBasePath);
@@ -46,28 +43,15 @@ export function createAssessmentPlayerElement(options: AssessmentPlayerElementOp
   }
 
   if (options.onLoaded) {
-    playerElement.subscribe(AssessmentSurveyPlayerElement.ONLOADED, () => {
-      playerElement.style.visibility = 'visible';
-      options.onLoaded?.();
-    });
+    playerElement.addEventListener('loaded', options.onLoaded);
   }
 
-  if (options.onClose) {
-    playerElement.subscribe(AssessmentSurveyPlayerElement.ONCLOSE, () => {
-      options.onClose?.();
-    });
+  if (options.onCompleted) {
+    playerElement.addEventListener('completed', options.onCompleted);
   }
 
-  if (options.onComplete) {
-    playerElement.subscribe<AssessmentCompletedPayload>(AssessmentSurveyPlayerElement.ONCOMPLETE, (payload) => {
-      options.onComplete?.(payload);
-    });
-  }
-
-  if (options.onRewardTrigger) {
-    playerElement.subscribe<AssessmentCompletedPayload>(AssessmentSurveyPlayerElement.ONREWARDTRIGGER, (payload) => {
-      options.onRewardTrigger?.(payload);
-    });
+  if (options.onClosed) {
+    playerElement.addEventListener('closed', options.onClosed);
   }
 
   return playerElement;

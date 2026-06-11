@@ -12,7 +12,7 @@ import {
   unsubscribeAll
 } from "./utils";
 import { TimeoutRegistry } from "./timeout-registry";
-import { Debugger, lang, font, pseudoId, Window, source, campaign_id, container_app_version } from "./global-variables";
+import { Debugger, lang, font, pseudoId, Window, source, campaign_id } from "./global-variables";
 import {
   CLICK,
   LOADPUZZLE,
@@ -37,7 +37,6 @@ export {
   pseudoId,
   source,
   campaign_id,
-  container_app_version,
   Window,
   CLICK,
   LOADPUZZLE,

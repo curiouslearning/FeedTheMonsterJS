@@ -1,5 +1,5 @@
 {
-  "title": "به هیولای خود غذا بدهید!",
+  "title": "Feed the Monster",
   "RightToLeft": false,
   "FeedbackTexts": [
     "فوق العاده",
@@ -11,8 +11,8 @@
   "langname": "DARI",
   "FeedbackAudios": [
     "https://feedthemonster.curiouscontent.org/lang/dari/audios/fantastic.mp3",
-    "https://feedthemonster.curiouscontent.org/lang/dari/audios/good.mp3",
-    "https://feedthemonster.curiouscontent.org/lang/dari/audios/great.mp3"
+    " https://feedthemonster.curiouscontent.org/lang/dari/audios/great.mp3",
+    " https://feedthemonster.curiouscontent.org/lang/dari/audios/amazing.mp3"
   ],
   "OtherAudios": {
     "Select your player": "https://feedthemonster.curiouscontent.org/lang/dari/audios/Select-your-player.mp3",

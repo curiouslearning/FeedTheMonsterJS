@@ -70,10 +70,6 @@ export class MiniGameHandler {
     this.activeMiniGame?.start();
   }
 
-  public startWithFlyIn(startRect: { x: number; y: number; w: number; h: number }): void {
-    this.activeMiniGame?.startWithFlyIn(startRect);
-  }
-
   public update(deltaTime: number) {
     this.activeMiniGame?.update(deltaTime);
   }

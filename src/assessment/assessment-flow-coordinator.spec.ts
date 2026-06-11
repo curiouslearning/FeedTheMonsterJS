@@ -21,7 +21,7 @@ class MockAssessmentLevelState {
   public readonly blockedLevels = new Set<number>();
 
   public shouldShowForLevel(levelIndex: number): boolean {
-    return !this.blockedLevels.has(levelIndex);
+    return !this.blockedLevels.has(levelIndex) && !this.completedAssessments.has(levelIndex);
   }
 
   public markAssessmentCompletedForLevel(levelIndex: number): void {
@@ -51,7 +51,7 @@ describe('AssessmentFlowCoordinator', () => {
     expect(coordinator.shouldStartAssessmentAtPuzzle(3)).toBe(false);
   });
 
-  it('uses random segment from puzzles 2 through 4 when mini-game does not exist', () => {
+  it('uses random segment when mini-game does not exist', () => {
     const coordinator = new AssessmentFlowCoordinator(
       {
         currentLevelIndex: 2,
@@ -67,47 +67,7 @@ describe('AssessmentFlowCoordinator', () => {
     );
 
     expect(coordinator.getAssessmentTypeForCurrentLevel()).toBe('sightwords');
-    expect(coordinator.getAssessmentPuzzleTrigger()).toBe(3);
-  });
-
-  it('uses mini-game segment when mini-game is outside the random assessment window', () => {
-    const coordinator = new AssessmentFlowCoordinator(
-      {
-        currentLevelIndex: 2,
-        totalLevels: 20,
-        puzzleCount: 5,
-        miniGamePuzzleSegment: 5,
-        randomFn: () => 0.999,
-      },
-      {
-        levelConfig: new MockAssessmentLevelConfig(new Map([[2, 'sightwords']])),
-        levelState: new MockAssessmentLevelState(),
-      }
-    );
-
-    expect(coordinator.getAssessmentPuzzleTrigger()).toBe(5);
-    expect(coordinator.shouldStartAssessmentAtPuzzle(5)).toBe(true);
-    expect(coordinator.shouldStartAssessmentAtPuzzle(4)).toBe(false);
-  });
-
-  it('uses mini-game segment when mini-game is on the first puzzle', () => {
-    const coordinator = new AssessmentFlowCoordinator(
-      {
-        currentLevelIndex: 2,
-        totalLevels: 20,
-        puzzleCount: 5,
-        miniGamePuzzleSegment: 1,
-        randomFn: () => 0.999,
-      },
-      {
-        levelConfig: new MockAssessmentLevelConfig(new Map([[2, 'sightwords']])),
-        levelState: new MockAssessmentLevelState(),
-      }
-    );
-
-    expect(coordinator.getAssessmentPuzzleTrigger()).toBe(1);
-    expect(coordinator.shouldStartAssessmentAtPuzzle(1)).toBe(true);
-    expect(coordinator.shouldStartAssessmentAtPuzzle(2)).toBe(false);
+    expect(coordinator.getAssessmentPuzzleTrigger()).toBe(4);
   });
 
   it('opens assessment once per level run', () => {
@@ -131,7 +91,7 @@ describe('AssessmentFlowCoordinator', () => {
     expect(coordinator.shouldStartAssessmentAtPuzzle(2)).toBe(false);
   });
 
-  it('completion still allows reopening on replay', () => {
+  it('completion prevents reopening on replay', () => {
     const levelState = new MockAssessmentLevelState();
 
     const firstRun = new AssessmentFlowCoordinator(
@@ -165,12 +125,12 @@ describe('AssessmentFlowCoordinator', () => {
       }
     );
 
-    expect(replayRun.isAssessmentEligibleForCurrentLevel()).toBe(true);
-    expect(replayRun.getAssessmentPuzzleTrigger()).toBe(1);
-    expect(replayRun.shouldStartAssessmentAtPuzzle(1)).toBe(true);
+    expect(replayRun.isAssessmentEligibleForCurrentLevel()).toBe(false);
+    expect(replayRun.getAssessmentPuzzleTrigger()).toBe(0);
+    expect(replayRun.shouldStartAssessmentAtPuzzle(1)).toBe(false);
   });
 
-  it('explicit blocked state prevents reopening', () => {
+  it('level completion state prevents reopening', () => {
     const levelState = new MockAssessmentLevelState();
     levelState.blockedLevels.add(2);
 

@@ -7,7 +7,6 @@ import { RiveMonsterComponent } from "@components/riveMonster/rive-monster-compo
 import { DataModal } from "@data";
 import {
   toggleDebugMode,
-  Debugger,
   pseudoId,
   lang
 } from "@common";
@@ -101,7 +100,6 @@ export class StartScene {
     this.handler = document.getElementById('start-scene-click-area') as HTMLBodyElement;
     this.toggleBtn.addEventListener("click", this.onToggleClick);
     this.devAssessmentBtn?.addEventListener("click", this.onDevAssessmentClick);
-    this.syncDevAssessmentButtonVisibility();
     this.createPlayButton();
     window.addEventListener("beforeinstallprompt", this.handlerInstallPrompt);
     this.setupBg();
@@ -146,41 +144,25 @@ export class StartScene {
 
   private onToggleClick = () => {
     toggleDebugMode(this.toggleBtn);
-    this.syncDevAssessmentButtonVisibility();
-  };
-
-  private syncDevAssessmentButtonVisibility = () => {
-    if (!this.devAssessmentBtn) {
-      return;
-    }
-
-    this.devAssessmentBtn.style.display = Debugger.DebugMode && this.toggleBtn.classList.contains("on")
-      ? "block"
-      : "none";
-  };
-
-  private hideStartSceneDevButtons = () => {
-    if (this.toggleBtn) {
-      this.toggleBtn.style.display = "none";
-    }
-
     if (this.devAssessmentBtn) {
-      this.devAssessmentBtn.style.display = "none";
+      this.devAssessmentBtn.style.display = this.toggleBtn.classList.contains("on") ? "block" : "none";
     }
   };
 
   private onDevAssessmentClick = () => {
     const config = new AssessmentLevelConfig();
     const parsed = config.refreshConfig();
-    const dataKey = parsed.assessments[0]?.assessmentType;
+    const firstAssessmentType = parsed.assessments[0]?.assessmentType;
+    const dataKey = firstAssessmentType
+      ? `${lang}-${firstAssessmentType}`
+      : undefined;
 
     console.log(`[dev] Opening assessment with dataKey: ${dataKey ?? '(default)'}`);
     assessmentSurveyManager.open({
       dataKey,
       onLoaded: () => console.log('[dev] assessment loaded'),
-      onComplete: () => console.log('[dev] assessment completed'),
-      onRewardTrigger: () => console.log('[dev] assessment reward trigger'),
-      onClose: () => console.log('[dev] assessment closed'),
+      onCompleted: () => console.log('[dev] assessment completed'),
+      onClosed: () => console.log('[dev] assessment closed'),
     });
   };
 
@@ -200,7 +182,7 @@ export class StartScene {
   createPlayButton() {
     this.playButton = new PlayButtonHtml({ targetId: 'title-and-play-button' });
     this.playButton.onClick(() => {
-      this.hideStartSceneDevButtons();
+      this.toggleBtn.style.display = "none";
       this.logTappedStartFirebaseEvent();
       this.audioPlayer.playButtonClickSound();
       gameStateService.publish(gameStateService.EVENTS.START_GAME, true);
@@ -229,13 +211,12 @@ export class StartScene {
     fbq("trackCustom", FirebaseUserClicked, {
       event: "click",
     });
-    this.hideStartSceneDevButtons();
+    this.toggleBtn.style.display = "none";
     this.audioPlayer.playButtonClickSound();
     gameStateService.publish(gameStateService.EVENTS.SWITCH_SCENE_EVENT, SCENE_NAME_LEVEL_SELECT);
   };
 
   dispose() {
-    this.hideStartSceneDevButtons();
     this.audioPlayer.stopAllAudios();
     this.handler.removeEventListener("click", this.handleMouseClick, false);
     this.toggleBtn.removeEventListener("click", this.onToggleClick);

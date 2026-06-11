@@ -90,7 +90,7 @@ class App {
     await this.loadTitleFeedbackCustomFont();
     await this.preloadGameAudios();
     featureFlagsService.init({
-      user: { userID: pseudoId, locale: this.lang, custom: { platform: 'ftm' } },
+      user: { userID: pseudoId, locale: this.lang },
     });
     featureFlagsService.loadFeatures([
       FEATURE_ANDROID_EVENT_BUBBLE
@@ -255,15 +255,10 @@ class App {
         const wb = new Workbox("./sw.js", {});
         const registration = await wb.register();
         await navigator.serviceWorker.ready;
-        navigator.serviceWorker.addEventListener(
-          "message",
-          this.handleServiceWorkerMessage
-        );
-
         await registration.update();
 
-        const configuredAssessmentDataKeys = this.getConfiguredAssessmentDataKeysForWarmup();
-        await assessmentSurveyManager.warmupAssessmentLanguageCaches(configuredAssessmentDataKeys);
+        const configuredAssessmentTypes = this.getConfiguredAssessmentTypesForWarmup();
+        await assessmentSurveyManager.warmupAssessmentLanguageCaches(configuredAssessmentTypes);
 
         if (!this.is_cached.has(this.lang)) {
           this.channel.postMessage({ command: "Cache", data: this.lang });
@@ -312,13 +307,17 @@ class App {
               console.error("Error fetching the content file: " + error);
             });
         }
+        navigator.serviceWorker.addEventListener(
+          "message",
+          this.handleServiceWorkerMessage
+        );
       } catch (error) {
         console.error(`Failed to register service worker: ${error}`);
       }
     }
   }
 
-  private getConfiguredAssessmentDataKeysForWarmup(): string[] {
+  private getConfiguredAssessmentTypesForWarmup(): string[] {
     const totalLevels = Array.isArray(this.dataModal?.levels)
       ? this.dataModal.levels.length
       : 0;
@@ -333,7 +332,7 @@ class App {
     return [...new Set(
       targetAssessments
         .map((targetAssessment) => targetAssessment.assessmentType)
-        .filter((assessmentDataKey) => Boolean(assessmentDataKey))
+        .filter((assessmentType) => Boolean(assessmentType))
     )];
   }
 

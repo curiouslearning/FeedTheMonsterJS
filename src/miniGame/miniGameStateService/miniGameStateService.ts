@@ -10,7 +10,6 @@ export class MiniGameStateService extends PubSub {
   public EVENTS: {
     IS_MINI_GAME_DONE: string;
     MINI_GAME_WILL_START: string;
-    USE_ASSESSMENT_TREASURE_CHEST_LAYOUT: string;
   }
   public audioPlayer: AudioPlayer = new AudioPlayer();
 
@@ -20,8 +19,7 @@ export class MiniGameStateService extends PubSub {
     super();
     this.EVENTS = {
       IS_MINI_GAME_DONE: 'IS_MINI_GAME_DONE',
-      MINI_GAME_WILL_START: 'MINI_GAME_WILL_START',
-      USE_ASSESSMENT_TREASURE_CHEST_LAYOUT: 'USE_ASSESSMENT_TREASURE_CHEST_LAYOUT'
+      MINI_GAME_WILL_START: 'MINI_GAME_WILL_START'
     };
     //Add states here needed for mini games
     this.treasureChestCompletedLevel = {};

@@ -522,9 +522,6 @@ describe('GameplayScene with BasePopupComponent', () => {
       const mockPausePopup = {
         destroy: jest.fn()
       };
-      const mockMiniGameHandler = {
-        dispose: jest.fn()
-      };
       const tutorial = {
         dispose: jest.fn()
       }
@@ -543,7 +540,6 @@ describe('GameplayScene with BasePopupComponent', () => {
       gameplayScene.uiManager.promptText = mockPromptText as any;
       gameplayScene.uiManager.pauseButton = mockPauseButton as any;
       gameplayScene.uiManager.pausePopupComponent = mockPausePopup as any;
-      (gameplayScene as any).miniGameHandler = mockMiniGameHandler;
       
       // Inject the function mocks
       (gameplayScene as any).unsubscribeEvent = mockUnsubscribeEvent; // Access private property if needed
@@ -566,7 +562,6 @@ describe('GameplayScene with BasePopupComponent', () => {
       expect(mockPromptText.dispose).toHaveBeenCalled();
       expect(mockPauseButton.dispose).toHaveBeenCalled();
       expect(mockPausePopup.destroy).toHaveBeenCalled();
-      expect(mockMiniGameHandler.dispose).toHaveBeenCalled();
       
       // Verify subscription cleanup
       expect(mockUnsubscribeEvent).toHaveBeenCalled();

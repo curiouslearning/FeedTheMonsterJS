@@ -17,24 +17,23 @@ describe('AssessmentLevelState', () => {
     jest.clearAllMocks();
   });
 
-  it('should still show when level is already completed in game progression', () => {
+  it('should not show when level is already completed in game progression', () => {
     (GameScore.getAllGameLevelInfo as jest.Mock).mockReturnValue([
       { levelNumber: 2, starCount: 1 },
     ]);
 
     const state = new AssessmentLevelState({ language: 'english' });
 
-    expect(state.isLevelCompleted(2)).toBe(true);
-    expect(state.shouldShowForLevel(2)).toBe(true);
+    expect(state.shouldShowForLevel(2)).toBe(false);
   });
 
-  it('should still show when assessment is already completed for level', () => {
+  it('should not show when assessment is already completed for level', () => {
     const state = new AssessmentLevelState({ language: 'english' });
 
     state.markAssessmentCompletedForLevel(3);
 
     expect(state.isAssessmentCompletedForLevel(3)).toBe(true);
-    expect(state.shouldShowForLevel(3)).toBe(true);
+    expect(state.shouldShowForLevel(3)).toBe(false);
   });
 
   it('should show when assessment is not completed and level is not completed', () => {

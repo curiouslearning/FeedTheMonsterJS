@@ -15,7 +15,6 @@ import {
 } from "@constants";
 import { GameScore, DataModal } from "@data";
 import { AnalyticsIntegration, AnalyticsEventType } from "../../analytics/analytics-integration";
-import { AssessmentCompletedPayload } from '@curiouslearning/assessment-survey';
 import gameStateService from '@gameStateService';
 import miniGameStateService from '@miniGameStateService';
 import assessmentSurveyManager from '@assessment/assessment-survey-manager';
@@ -102,7 +101,7 @@ export class GameplayFlowManager {
         console.log('[assessment-debug] gameplay level gate', {
             currentLevelIndex,
             configuredAssessmentLevels: this.assessmentFlowCoordinator.getConfiguredAssessmentLevelIndexes(),
-            assessmentDataKeyForCurrentLevel: this.assessmentFlowCoordinator.getAssessmentTypeForCurrentLevel(),
+            assessmentTypeForCurrentLevel: this.assessmentFlowCoordinator.getAssessmentTypeForCurrentLevel(),
             isAssessmentEligible: this.assessmentFlowCoordinator.isAssessmentEligibleForCurrentLevel(),
             assessmentPuzzleTrigger: this.assessmentFlowCoordinator.getAssessmentPuzzleTrigger(),
         });
@@ -110,10 +109,6 @@ export class GameplayFlowManager {
         this.startGameTime();
         this.startPuzzleTime();
         this.addEventListeners();
-    }
-
-    public isAssessmentOpen(): boolean {
-        return this.isAssessmentInProgress;
     }
 
     // #region Public Flow Control
@@ -129,39 +124,23 @@ export class GameplayFlowManager {
             this.isCorrect = isCorrect;
         }
 
-        //Delay before either next puzzle, assessment or mini-game starts to avoid overlapping with feedback SFX.
-        const nextStepDelay = this.isCorrect ? 1500 : 3000;
+        const loadPuzzleDelay = this.isCorrect ? 1500 : 3000;
 
         if (this.assessmentFlowCoordinator.shouldStartAssessmentAtPuzzle(currentPuzzleSegment)) {
-            this.timeoutRegistry.setTimeout(() => {
-                this.startAssessmentFlow(currentPuzzleSegment, () => {
-                    this.continueAfterPuzzleStep(
-                        currentPuzzleSegment,
-                        isTimeOver,
-                        nextStepDelay, //Delay for loading next puzzle.
-                        0, //Pass 0 to instantly load mini game after assessment survey.
-                    );
-                });
-            }, nextStepDelay);
-
+            this.startAssessmentFlow(() => {
+                this.continueAfterPuzzleStep(currentPuzzleSegment, isTimeOver, loadPuzzleDelay);
+            });
             return;
         }
 
-        this.continueAfterPuzzleStep(
-            currentPuzzleSegment,
-            isTimeOver,
-            nextStepDelay, //Delay for loading next puzzle.
-            nextStepDelay //Delay for loading mini game.
-        );
+        this.continueAfterPuzzleStep(currentPuzzleSegment, isTimeOver, loadPuzzleDelay);
     }
 
     private continueAfterPuzzleStep(
         currentPuzzleSegment: number,
         isTimeOver: boolean,
-        loadPuzzleDelay: number,
-        miniGameDelay: number
+        loadPuzzleDelay: number
     ): void {
-        
         if (currentPuzzleSegment === this.levelForMinigame && !this.hasShownChest) {
             this.hasShownChest = true;
 
@@ -171,11 +150,8 @@ export class GameplayFlowManager {
                 { level: currentPuzzleSegment }
             );
 
-            this.timeoutRegistry.setTimeout(() => {
-                // Run chest animation (mini game)
-                this.miniGameHandler.start();
-            }, miniGameDelay);
-            
+            // Run chest animation (mini game)
+            this.miniGameHandler.start();
             return;
         }
 
@@ -186,7 +162,7 @@ export class GameplayFlowManager {
         }, delay);
     }
 
-    private startAssessmentFlow(currentPuzzleSegment: number, onCloseResume: () => void): void {
+    private startAssessmentFlow(onCloseResume: () => void): void {
         if (this.isAssessmentInProgress) {
             return;
         }
@@ -194,10 +170,8 @@ export class GameplayFlowManager {
         this.isAssessmentInProgress = true;
         this.assessmentFlowCoordinator.startAssessment();
 
-        const isCombinedMode = currentPuzzleSegment === this.levelForMinigame && !this.hasShownChest;
-
         let hasResumed = false;
-        const assessmentDataKeyForCurrentLevel = this.assessmentFlowCoordinator.getAssessmentTypeForCurrentLevel();
+        const assessmentTypeForCurrentLevel = this.assessmentFlowCoordinator.getAssessmentTypeForCurrentLevel();
         const resumeAfterClose = () => {
             if (hasResumed) {
                 return;
@@ -210,77 +184,19 @@ export class GameplayFlowManager {
 
         void assessmentSurveyManager
             .open({
-                dataKey: assessmentDataKeyForCurrentLevel || undefined,
-                onCloseStart: () => {
-                    if (isCombinedMode) {
-                        // Fires as the overlay begins to fade — covers both skip and completion.
-                        // #chestImage is still in the DOM here, enabling the flying clone.
-                        this.handleCombinedModeTransition(currentPuzzleSegment);
-                    }
-                },
-                onComplete: () => {
+                dataKey: assessmentTypeForCurrentLevel || undefined,
+                onCompleted: () => {
                     this.assessmentFlowCoordinator.handleAssessmentCompleted();
                 },
-                onRewardTrigger: (payload: AssessmentCompletedPayload) => {
-                    console.log('[assessment-survey] reward data received in FTM', payload);
-                },
-                onClose: () => {
+                onClosed: () => {
                     this.assessmentFlowCoordinator.handleAssessmentClosed();
-                    if (isCombinedMode && this.hasShownChest) {
-                        // Mini-game is already running; IS_MINI_GAME_DONE handles loadPuzzle.
-                        this.isAssessmentInProgress = false;
-                    } else {
-                        resumeAfterClose();
-                    }
+                    resumeAfterClose();
                 },
             })
             .catch((error) => {
                 console.warn('[assessment-survey] failed to open in gameplay flow', error);
                 resumeAfterClose();
             });
-    }
-
-    private handleCombinedModeTransition(currentPuzzleSegment: number): void {
-        if (this.hasShownChest) return;
-        this.hasShownChest = true;
-
-        miniGameStateService.publish(
-            miniGameStateService.EVENTS.MINI_GAME_WILL_START,
-            { level: currentPuzzleSegment }
-        );
-
-        const chestImg = document.getElementById('chestImage') as HTMLImageElement | null;
-        const canvas = document.getElementById('treasurecanvas') as HTMLCanvasElement | null;
-
-        if (chestImg && canvas) {
-            // Capture assessment chest position before closing the overlay.
-            const sourceRect = chestImg.getBoundingClientRect();
-
-            // Make canvas measurable (it is display:none at this point).
-            canvas.style.display = 'block';
-            const canvasRect = canvas.getBoundingClientRect();
-
-            // Convert screen coordinates to canvas logical coordinates.
-            const logicalW = parseFloat(canvas.style.width) || canvasRect.width;
-            const logicalH = parseFloat(canvas.style.height) || canvasRect.height;
-            const scaleX = logicalW / (canvasRect.width  || 1);
-            const scaleY = logicalH / (canvasRect.height || 1);
-
-            const canvasStartRect = {
-                x: (sourceRect.left - canvasRect.left) * scaleX,
-                y: (sourceRect.top  - canvasRect.top)  * scaleY,
-                w: sourceRect.width  * scaleX,
-                h: sourceRect.height * scaleY,
-            };
-
-            // Close the assessment overlay instantly so the canvas replaces it with no overlap.
-            assessmentSurveyManager.close();
-
-            // Start mini-game with chest flying from the assessment chest position.
-            this.miniGameHandler.startWithFlyIn(canvasStartRect);
-        } else {
-            this.miniGameHandler.start();
-        }
     }
 
     public handleStoneDropResult(isCorrect: boolean, pickedStone: StoneConfig | null): void {

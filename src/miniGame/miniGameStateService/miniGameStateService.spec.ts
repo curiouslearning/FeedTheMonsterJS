@@ -37,7 +37,6 @@ describe('Testing MiniGameStateService.', () => {
       expect(service.EVENTS).toEqual({
         IS_MINI_GAME_DONE: 'IS_MINI_GAME_DONE',
         MINI_GAME_WILL_START: 'MINI_GAME_WILL_START',
-        USE_ASSESSMENT_TREASURE_CHEST_LAYOUT: 'USE_ASSESSMENT_TREASURE_CHEST_LAYOUT'
       });
 
       // Ensure treasureChestCompletedLevel includes expected keys (2, 5, 15, 25, etc.)

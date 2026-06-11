@@ -84,22 +84,6 @@ img {
   height: 100%;
 }
 
-#assessment-survey-overlay {
-  background-color: rgba(0, 0, 0, 0.7);
-  opacity: 0;
-  pointer-events: auto;
-  transition: opacity 400ms ease-in-out;
-}
-
-#assessment-survey-overlay.assessment-overlay--visible {
-  opacity: 1;
-  pointer-events: auto;
-}
-
-#assessment-survey-overlay .bodyWrapper {
-  background: transparent;
-}
-
 #canvas {
   position: absolute;
   left: 50%;
