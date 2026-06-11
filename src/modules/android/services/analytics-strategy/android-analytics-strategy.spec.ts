@@ -1,6 +1,7 @@
 import { AnalyticsEventType } from 'src/analytics/analytics-integration';
 import { AndroidInterface } from '@curiouslearning/core';
 import { AndroidAnalyticsStrategy } from './android-analytics-strategy';
+import { appConfig } from '@appConfig';
 
 const mockLogSummaryData = jest.fn();
 const mockLogUserSessionsData = jest.fn();
@@ -35,7 +36,7 @@ describe('Feature: Android analytics strategy', () => {
   });
 
   describe('Scenario: Forwarding the sub-app version as metadata', () => {
-    it('Given an appVersion, when the strategy is constructed, then AndroidInterface receives it as metadata.appVersion', () => {
+    it('Given an appVersion, when the strategy is constructed, then AndroidInterface receives it as metadata.app_version', () => {
       // Given / When
       new AndroidAnalyticsStrategy({ cr_user_id: 'user-123', app_version: 'v1.6.0' });
 
@@ -44,16 +45,36 @@ describe('Feature: Android analytics strategy', () => {
         expect.objectContaining({
           app_id: 'feed-the-monster',
           cr_user_id: 'user-123',
-          metadata: { app_version: 'v1.6.0' },
+          metadata: { environment: appConfig.ENV, app_version: 'v1.6.0' },
         })
       );
     });
 
-    it('Given no appVersion, when the strategy is constructed, then metadata.appVersion defaults to an empty string', () => {
+    it('Given no appVersion, when the strategy is constructed, then metadata.app_version defaults to an empty string', () => {
       // Given / When (beforeEach already constructed without appVersion)
       // Then
       expect(AndroidInterface).toHaveBeenCalledWith(
-        expect.objectContaining({ metadata: { app_version: '' } })
+        expect.objectContaining({ metadata: { environment: appConfig.ENV, app_version: '' } })
+      );
+    });
+  });
+
+  describe('Scenario: Forwarding environment configuration from app config', () => {
+    it('Given appConfig.ENV, when the strategy is constructed, then AndroidInterface receives it as metadata.environment', () => {
+      // Given / When (beforeEach already constructed)
+      // Then
+      expect(AndroidInterface).toHaveBeenCalledWith(
+        expect.objectContaining({
+          metadata: expect.objectContaining({ environment: appConfig.ENV }),
+        })
+      );
+    });
+
+    it('Given appConfig.DEBUG_MODE, when the strategy is constructed, then AndroidInterface receives it as log', () => {
+      // Given / When (beforeEach already constructed)
+      // Then
+      expect(AndroidInterface).toHaveBeenCalledWith(
+        expect.objectContaining({ log: appConfig.DEBUG_MODE })
       );
     });
   });
