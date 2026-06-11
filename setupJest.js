@@ -1,4 +1,14 @@
 /**
+ * Mock BroadcastChannel as this is not supported by js-dom
+ */
+global.BroadcastChannel = jest.fn().mockImplementation(() => ({
+  postMessage: jest.fn(),
+  close: jest.fn(),
+  addEventListener: jest.fn(),
+  removeEventListener: jest.fn(),
+}));
+
+/**
  * Mock AudioContext as this is not supported by js-dom
  */
 global.AudioContext = jest.fn().mockImplementation(() => ({

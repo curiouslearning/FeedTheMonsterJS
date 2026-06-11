@@ -1,8 +1,12 @@
 import { AssessmentSurveyManager } from './assessment-survey-manager';
 type MessageHandler = (event: MessageEvent) => void;
+
+jest.mock('@curiouslearning/assessment-survey/register', () => ({}));
+
 declare global {
   interface HTMLElement {
     setAnalyticsConfig: (config: any) => void;
+    subscribe: (event: string, callback: (payload?: any) => void) => () => void;
   }
 }
 
@@ -81,6 +85,7 @@ class MockBroadcastChannel {
 describe('AssessmentSurveyManager', () => {
   let manager: AssessmentSurveyManager;
   let fetchMock: jest.Mock;
+  let subscribedHandlers: Record<string, Array<(payload?: any) => void>>;
 
   const setHeadResponseMap = (responseMap: Record<string, boolean>) => {
     fetchMock.mockImplementation(async (url: string, options?: RequestInit) => {
@@ -111,9 +116,19 @@ describe('AssessmentSurveyManager', () => {
 
     fetchMock = jest.fn();
     (global as any).fetch = fetchMock;
+    subscribedHandlers = {};
 
     // mock setAnalyticsConfig on HTMLElement since custom element is not registered in jsdom
     HTMLElement.prototype.setAnalyticsConfig = jest.fn();
+    HTMLElement.prototype.subscribe = jest.fn((event: string, callback: (payload?: any) => void) => {
+      if (!subscribedHandlers[event]) {
+        subscribedHandlers[event] = [];
+      }
+
+      subscribedHandlers[event].push(callback);
+
+      return jest.fn();
+    });
 
     MockBroadcastChannel.reset();
     manager = new AssessmentSurveyManager();
@@ -123,6 +138,7 @@ describe('AssessmentSurveyManager', () => {
     manager.close();
     jest.clearAllMocks();
     delete HTMLElement.prototype.setAnalyticsConfig;
+    delete HTMLElement.prototype.subscribe;
   });
 
   it('should derive data key from URL alias and render inside .game-scene', async () => {
@@ -194,6 +210,25 @@ describe('AssessmentSurveyManager', () => {
     expect(playerElement?.getAttribute('data-key')).toBe('west-african-english-sightwords');
   });
 
+  it('should preserve explicit assessment data keys from Statsig config input', async () => {
+    window.history.pushState({}, '', '/?cr_lang=zulu');
+
+    setHeadResponseMap({
+      '/assessment-survey/data/french-lettersounds.json': true,
+    });
+
+    await manager.open({ dataKey: 'french-lettersounds' });
+
+    const overlay = document.getElementById('assessment-survey-overlay');
+    const playerElement = overlay?.querySelector('assessment-survey-player');
+
+    expect(playerElement?.getAttribute('data-key')).toBe('french-lettersounds');
+    expect(fetchMock).toHaveBeenCalledWith(
+      '/assessment-survey/data/french-lettersounds.json',
+      expect.objectContaining({ method: 'HEAD' })
+    );
+  });
+
   it('should use warmed key and avoid duplicate cache requests on open', async () => {
     setHeadResponseMap({
       '/assessment-survey/data/zulu-lettersounds.json': true,
@@ -230,6 +265,28 @@ describe('AssessmentSurveyManager', () => {
     expect(MockBroadcastChannel.postMessageCalls).toBe(2);
   });
 
+  it('should warm explicit assessment data keys without adding the current language', async () => {
+    window.history.pushState({}, '', '/?cr_lang=zulu');
+
+    setHeadResponseMap({
+      '/assessment-survey/data/french-lettersounds.json': true,
+      '/assessment-survey/data/french-sightwords.json': true,
+    });
+
+    await manager.warmupAssessmentLanguageCaches([
+      'french-lettersounds',
+      'french-sightwords',
+      'french-lettersounds',
+    ]);
+
+    expect(MockBroadcastChannel.postMessageCalls).toBe(2);
+
+    await manager.open({ dataKey: 'french-lettersounds' });
+    await manager.open({ dataKey: 'french-sightwords' });
+
+    expect(MockBroadcastChannel.postMessageCalls).toBe(2);
+  });
+
   it('should close and clear overlay when close button is clicked', async () => {
     setHeadResponseMap({
       '/assessment-survey/data/zulu-lettersounds.json': true,
@@ -246,7 +303,7 @@ describe('AssessmentSurveyManager', () => {
     expect(overlay?.innerHTML).toBe('');
   });
 
-  it('should close when assessment player dispatches closed event', async () => {
+  it('should close when assessment player invokes the direct close callback', async () => {
     setHeadResponseMap({
       '/assessment-survey/data/zulu-lettersounds.json': true,
     });
@@ -254,41 +311,58 @@ describe('AssessmentSurveyManager', () => {
     await manager.open({ dataKey: 'zulu-lettersounds' });
 
     const overlay = document.getElementById('assessment-survey-overlay');
-    const playerElement = overlay?.querySelector('assessment-survey-player');
 
-    playerElement?.dispatchEvent(new CustomEvent('closed'));
+    subscribedHandlers.closed?.forEach((handler) => handler());
 
     expect(overlay?.style.display).toBe('none');
     expect(overlay?.innerHTML).toBe('');
   });
 
-  it('should forward lifecycle callbacks and invoke onClosed once', async () => {
+  it('should forward direct lifecycle callbacks and invoke close once', async () => {
     setHeadResponseMap({
       '/assessment-survey/data/zulu-lettersounds.json': true,
     });
 
     const onLoaded = jest.fn();
-    const onCompleted = jest.fn();
-    const onClosed = jest.fn();
+    const onComplete = jest.fn();
+    const onRewardTrigger = jest.fn();
+    const onClose = jest.fn();
 
     await manager.open({
       dataKey: 'zulu-lettersounds',
       onLoaded,
-      onCompleted,
-      onClosed,
+      onComplete,
+      onRewardTrigger,
+      onClose,
     });
 
-    const overlay = document.getElementById('assessment-survey-overlay');
-    const playerElement = overlay?.querySelector('assessment-survey-player');
-
-    playerElement?.dispatchEvent(new CustomEvent('loaded'));
-    playerElement?.dispatchEvent(new CustomEvent('completed'));
-    playerElement?.dispatchEvent(new CustomEvent('closed'));
-    playerElement?.dispatchEvent(new CustomEvent('closed'));
+    subscribedHandlers.loaded?.forEach((handler) => handler());
+    subscribedHandlers.completed?.forEach((handler) => handler({ type: 'assessment_completed', score: 200 }));
+    subscribedHandlers['reward-trigger']?.forEach((handler) => handler({ type: 'assessment_completed', score: 200 }));
+    subscribedHandlers.closed?.forEach((handler) => handler());
+    subscribedHandlers.closed?.forEach((handler) => handler());
 
     expect(onLoaded).toHaveBeenCalledTimes(1);
-    expect(onCompleted).toHaveBeenCalledTimes(1);
-    expect(onClosed).toHaveBeenCalledTimes(1);
+    expect(onComplete).toHaveBeenCalledTimes(1);
+    expect(onRewardTrigger).toHaveBeenCalledTimes(1);
+    expect(onClose).toHaveBeenCalledTimes(1);
+  });
+
+  it('should keep the embedded assessment hidden until the player reports loaded', async () => {
+    setHeadResponseMap({
+      '/assessment-survey/data/zulu-lettersounds.json': true,
+    });
+
+    await manager.open({ dataKey: 'zulu-lettersounds' });
+
+    const overlay = document.getElementById('assessment-survey-overlay');
+    const playerElement = overlay?.querySelector('assessment-survey-player') as HTMLElement;
+
+    expect(playerElement.style.visibility).toBe('hidden');
+
+    subscribedHandlers.loaded?.forEach((handler) => handler());
+
+    expect(playerElement.style.visibility).toBe('visible');
   });
 
   it('should forward analytics config to player element when env vars are set', async () => {
@@ -323,6 +397,7 @@ describe('AssessmentSurveyManager', () => {
         appId: 'test-app-id',
         measurementId: 'test-measurement-id',
         firebaseName: 'AssessmentSurveyEmbed',
+        container_app_version: '',
       });
     } finally {
       restoreFirebaseEnv(envSnapshot);
