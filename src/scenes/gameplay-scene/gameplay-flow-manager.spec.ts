@@ -70,7 +70,12 @@ import gameStateService from '@gameStateService';
 import miniGameStateService from '@miniGameStateService';
 import assessmentSurveyManager from '@assessment/assessment-survey-manager';
 import { AssessmentFlowCoordinator } from '@assessment/assessment-flow-coordinator';
+import scheduler from '@services/scheduler';
 import { GameplayFlowManager } from './gameplay-flow-manager';
+
+async function flushPromises() {
+  await Promise.resolve();
+}
 
 function createFlowManager(levelDataOverrides: Partial<any> = {}) {
   const baseLevelData = {
@@ -170,19 +175,29 @@ describe('GameplayFlowManager assessment integration', () => {
     (miniGameStateService.shouldShowMiniGame as jest.Mock).mockReturnValue(0);
   });
 
-  it('runs assessment before mini-game on the same puzzle segment', () => {
+  afterEach(() => {
+    scheduler.destroy();
+  });
+
+  it('runs assessment before mini-game on the same puzzle segment', async () => {
     mockAssessmentCoordinator.shouldStartAssessmentAtPuzzle.mockReturnValue(true);
     mockAssessmentCoordinator.getAssessmentTypeForCurrentLevel.mockReturnValue('lettersounds');
     (miniGameStateService.shouldShowMiniGame as jest.Mock).mockReturnValue(1);
 
-    (assessmentSurveyManager.open as jest.Mock).mockImplementation(async ({ onCompleted, onClosed }) => {
-      onCompleted?.();
-      onClosed?.();
+    (assessmentSurveyManager.open as jest.Mock).mockImplementation(async ({ onComplete, onRewardTrigger, onClose }) => {
+      onComplete?.();
+      onRewardTrigger?.({ type: 'assessment_completed', score: 200 });
+      onClose?.();
     });
 
     const { manager, miniGameHandler } = createFlowManager();
 
     manager.determineNextStep(true, false);
+
+    scheduler.update(1500);
+    await flushPromises();
+    scheduler.update(0);
+    await flushPromises();
 
     expect(mockAssessmentCoordinator.startAssessment).toHaveBeenCalledTimes(1);
     expect(mockAssessmentCoordinator.handleAssessmentCompleted).toHaveBeenCalledTimes(1);
@@ -203,12 +218,34 @@ describe('GameplayFlowManager assessment integration', () => {
     manager.dispose();
   });
 
-  it('resumes puzzle flow only after assessment closes', () => {
+  it('passes explicit assessment data keys through unchanged in gameplay', async () => {
+    mockAssessmentCoordinator.shouldStartAssessmentAtPuzzle.mockReturnValue(true);
+    mockAssessmentCoordinator.getAssessmentTypeForCurrentLevel.mockReturnValue('french-lettersounds');
+
+    (assessmentSurveyManager.open as jest.Mock).mockImplementation(async ({ onClose }) => {
+      onClose?.();
+    });
+
+    const { manager } = createFlowManager();
+
+    manager.determineNextStep(false, false);
+
+    scheduler.update(3000);
+    await flushPromises();
+
+    expect(assessmentSurveyManager.open).toHaveBeenCalledWith(
+      expect.objectContaining({ dataKey: 'french-lettersounds' })
+    );
+
+    manager.dispose();
+  });
+
+  it('resumes puzzle flow only after assessment closes', async () => {
     mockAssessmentCoordinator.shouldStartAssessmentAtPuzzle.mockReturnValue(true);
 
     let closeHandler: (() => void) | undefined;
-    (assessmentSurveyManager.open as jest.Mock).mockImplementation(async ({ onClosed }) => {
-      closeHandler = onClosed;
+    (assessmentSurveyManager.open as jest.Mock).mockImplementation(async ({ onClose }) => {
+      closeHandler = onClose;
     });
 
     const { manager } = createFlowManager();
@@ -218,16 +255,23 @@ describe('GameplayFlowManager assessment integration', () => {
 
     expect(continueAfterPuzzleStepSpy).not.toHaveBeenCalled();
 
+    scheduler.update(3000);
+    await flushPromises();
+
+    expect(continueAfterPuzzleStepSpy).not.toHaveBeenCalled();
+
     closeHandler?.();
 
-    expect(continueAfterPuzzleStepSpy).toHaveBeenCalledWith(1, false, 3000);
+    await flushPromises();
+
+    expect(continueAfterPuzzleStepSpy).toHaveBeenCalledWith(1, false, 3000, 0);
     expect(mockAssessmentCoordinator.handleAssessmentClosed).toHaveBeenCalledTimes(1);
     expect(mockAssessmentCoordinator.handleAssessmentCompleted).not.toHaveBeenCalled();
 
     manager.dispose();
   });
 
-  it('prevents duplicate assessment open while one is already in progress', () => {
+  it('prevents duplicate assessment open while one is already in progress', async () => {
     mockAssessmentCoordinator.shouldStartAssessmentAtPuzzle.mockReturnValue(true);
     (assessmentSurveyManager.open as jest.Mock).mockImplementation(() => new Promise(() => {}));
 
@@ -235,6 +279,9 @@ describe('GameplayFlowManager assessment integration', () => {
 
     manager.determineNextStep(false, false);
     manager.determineNextStep(false, false);
+
+    scheduler.update(3000);
+    await flushPromises();
 
     expect(mockAssessmentCoordinator.startAssessment).toHaveBeenCalledTimes(1);
     expect(assessmentSurveyManager.open).toHaveBeenCalledTimes(1);

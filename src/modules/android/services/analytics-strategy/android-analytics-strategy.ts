@@ -6,6 +6,8 @@ import { appConfig } from '@appConfig';
 
 export interface AndroidAnalyticsStrategyOptions {
   cr_user_id: string;
+  /** FTM sub-app version, forwarded to every payload as metadata.app_version. */
+  app_version?: string;
 }
 
 export class AndroidAnalyticsStrategy extends AbstractAnalyticsStrategy {
@@ -19,7 +21,8 @@ export class AndroidAnalyticsStrategy extends AbstractAnalyticsStrategy {
       app_id: 'feed-the-monster',
       cr_user_id: this.cr_user_id ?? '',
       metadata: {
-        environment: appConfig.ENV
+        environment: appConfig.ENV,
+        app_version: options.app_version ?? ''
       },
       log: appConfig.DEBUG_MODE
     });

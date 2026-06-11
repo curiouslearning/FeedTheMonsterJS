@@ -90,7 +90,7 @@ class App {
     await this.loadTitleFeedbackCustomFont();
     await this.preloadGameAudios();
     featureFlagsService.init({
-      user: { userID: pseudoId, locale: this.lang },
+      user: { userID: pseudoId, locale: this.lang, custom: { platform: 'ftm' } },
     });
     featureFlagsService.loadFeatures([
       FEATURE_ANDROID_EVENT_BUBBLE
@@ -143,7 +143,10 @@ class App {
    */
   private initAndroidModule() {
     if (featureFlagsService.isFeatureEnabled(FEATURE_ANDROID_EVENT_BUBBLE)) {
-      const androidStrategy = new AndroidAnalyticsStrategy({ cr_user_id: pseudoId ?? '' });
+      const androidStrategy = new AndroidAnalyticsStrategy({
+        cr_user_id: pseudoId ?? '',
+        app_version: document.getElementById("version-info-id")?.innerHTML || ''
+      });
       AnalyticsIntegration.getInstance().analyticsService.register(
         'android',
         androidStrategy
@@ -252,10 +255,15 @@ class App {
         const wb = new Workbox("./sw.js", {});
         const registration = await wb.register();
         await navigator.serviceWorker.ready;
+        navigator.serviceWorker.addEventListener(
+          "message",
+          this.handleServiceWorkerMessage
+        );
+
         await registration.update();
 
-        const configuredAssessmentTypes = this.getConfiguredAssessmentTypesForWarmup();
-        await assessmentSurveyManager.warmupAssessmentLanguageCaches(configuredAssessmentTypes);
+        const configuredAssessmentDataKeys = this.getConfiguredAssessmentDataKeysForWarmup();
+        await assessmentSurveyManager.warmupAssessmentLanguageCaches(configuredAssessmentDataKeys);
 
         if (!this.is_cached.has(this.lang)) {
           this.channel.postMessage({ command: "Cache", data: this.lang });
@@ -304,17 +312,13 @@ class App {
               console.error("Error fetching the content file: " + error);
             });
         }
-        navigator.serviceWorker.addEventListener(
-          "message",
-          this.handleServiceWorkerMessage
-        );
       } catch (error) {
         console.error(`Failed to register service worker: ${error}`);
       }
     }
   }
 
-  private getConfiguredAssessmentTypesForWarmup(): string[] {
+  private getConfiguredAssessmentDataKeysForWarmup(): string[] {
     const totalLevels = Array.isArray(this.dataModal?.levels)
       ? this.dataModal.levels.length
       : 0;
@@ -329,7 +333,7 @@ class App {
     return [...new Set(
       targetAssessments
         .map((targetAssessment) => targetAssessment.assessmentType)
-        .filter((assessmentType) => Boolean(assessmentType))
+        .filter((assessmentDataKey) => Boolean(assessmentDataKey))
     )];
   }
 
