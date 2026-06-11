@@ -4,6 +4,7 @@ import { AnalyticsIntegration } from "../../analytics/analytics-integration";
 import { AudioPlayer } from "../../components/audio-player";
 import gameStateService from '@gameStateService';
 import gameSettingsService from '@gameSettingsService';
+import { Debugger } from '@common';
 import { SCENE_NAME_LEVEL_SELECT } from "@constants";
 import { RiveMonsterComponent } from '@components/riveMonster/rive-monster-component';
 
@@ -54,7 +55,8 @@ jest.mock('@rive-app/canvas', () => ({
 
 jest.mock('@components/riveMonster/rive-monster-component', () => ({
   RiveMonsterComponent: jest.fn().mockImplementation(() => ({
-    Rive: jest.fn().mockImplementation(() => ({}))
+    Rive: jest.fn().mockImplementation(() => ({})),
+    dispose: jest.fn()
   })),
 }));
 
@@ -63,7 +65,8 @@ let mockAnalyticsInstance: any;
 
 jest.mock("../../components/audio-player", () => ({
   AudioPlayer: jest.fn().mockImplementation(() => ({
-    playButtonClickSound: jest.fn()
+    playButtonClickSound: jest.fn(),
+    stopAllAudios: jest.fn()
   })),
 }));
 jest.mock('@gameStateService', () => ({
@@ -101,6 +104,7 @@ describe('Start Scene Test', () => {
       <div>
         <div id="title-and-play-button"></div>
         <button id="toggle-btn" class="off">Dev</button>
+        <button id="dev-assessment-btn" style="display: none;">Assessment</button>
         <div id="loading-screen" style="display: none; z-index: -1;"></div>
         <div class="game-scene"></div>
         <div id="canvas"></div>
@@ -146,6 +150,8 @@ describe('Start Scene Test', () => {
 
     (gameSettingsService.getRiveCanvasValue as jest.Mock).mockReturnValue(mockRiveCanvas);
 
+    Debugger.DebugMode = false;
+
     // Create the startScene instance
     startScene = new StartScene();
 
@@ -153,6 +159,7 @@ describe('Start Scene Test', () => {
     startScene.titleTextElement = document.getElementById('title');
     startScene.handler = document.getElementById('start-scene-click-area');
     startScene.toggleBtn = document.getElementById('toggle-btn');
+    startScene.devAssessmentBtn = document.getElementById('dev-assessment-btn');
 
     // Ensure startScene uses the mock data
     startScene.analyticsIntegration = mockAnalytics;
@@ -163,6 +170,8 @@ describe('Start Scene Test', () => {
       onClick: jest.fn((callback) => {
         mockOnClickCallback = callback;
       }),
+      dispose: jest.fn(),
+      destroy: jest.fn(),
     } as unknown as jest.Mocked<PlayButtonHtml>;
 
     // Mock PlayButtonHtml to return the mocked button
@@ -200,6 +209,26 @@ describe('Start Scene Test', () => {
       startScene.generateGameTitle();
 
       expect(titleElement.classList.contains('title-long')).toBeFalsy();
+    });
+
+    it('Should keep the assessment button hidden when debug mode is off', () => {
+      const assessmentButton = document.getElementById('dev-assessment-btn');
+
+      expect(assessmentButton.style.display).toEqual('none');
+    });
+
+    it('Should show the assessment button only when the dev toggle is enabled', () => {
+      const assessmentButton = document.getElementById('dev-assessment-btn');
+      const toggleButton = document.getElementById('toggle-btn');
+
+      Debugger.DebugMode = true;
+      toggleButton.classList.add('on');
+      startScene.syncDevAssessmentButtonVisibility();
+      expect(assessmentButton.style.display).toEqual('block');
+
+      toggleButton.classList.remove('on');
+      startScene.syncDevAssessmentButtonVisibility();
+      expect(assessmentButton.style.display).toEqual('none');
     });
   });
 
@@ -274,7 +303,33 @@ describe('Start Scene Test', () => {
       const devBtn = document.getElementById('toggle-btn');
 
       expect(devBtn.style.display).toEqual('none');
-    })
+    });
+
+    it('Should remove the assessment button.', () => {
+      const assessmentButton = document.getElementById('dev-assessment-btn');
+      Debugger.DebugMode = true;
+      startScene.toggleBtn.classList.add('on');
+      startScene.syncDevAssessmentButtonVisibility();
+
+      if (mockOnClickCallback) {
+        mockOnClickCallback();
+      }
+
+      expect(assessmentButton.style.display).toEqual('none');
+    });
+  });
+
+  describe('When start scene is disposed', () => {
+    it('Should hide the assessment button', () => {
+      const assessmentButton = document.getElementById('dev-assessment-btn');
+      Debugger.DebugMode = true;
+      startScene.toggleBtn.classList.add('on');
+      startScene.syncDevAssessmentButtonVisibility();
+
+      startScene.dispose();
+
+      expect(assessmentButton.style.display).toEqual('none');
+    });
   });
 
 });

@@ -94,6 +94,17 @@ export class TreasureChestMiniGame {
     }
   }
 
+  /** Starts the mini-game with the chest flying in from the given canvas-space rect. */
+  public startWithFlyIn(startRect: { x: number; y: number; w: number; h: number }): void {
+    if (!this.miniGameStatus) {
+      const totalGameDuration = 12000;
+      this.treasureStones.startTimer(totalGameDuration);
+      this.treasureAnimation.showWithFlyIn(startRect, () => {
+        this.processStoneCollection();
+      });
+    }
+  }
+
   public update(deltaTime: number) {
     this.treasureAnimation.draw(deltaTime);
   }
@@ -103,7 +114,7 @@ export class TreasureChestMiniGame {
     this.earnedStarCount = 0;
     this.collectedStones = 0;
     this.miniGameStatus = false;
-    this.treasureAnimation.hide();
+    this.treasureAnimation.dispose();
     //Reset State
     this.treasureStones = new TreasureStones(this.treasureAnimation.getContext());
   }

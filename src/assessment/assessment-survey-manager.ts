@@ -1,5 +1,6 @@
 import '@curiouslearning/assessment-survey/register';
-import { AnalyticsConfig } from '@curiouslearning/assessment-survey';
+import { AnalyticsConfig, AssessmentCompletedPayload } from '@curiouslearning/assessment-survey';
+import { pseudoId, container_app_version } from '../common/global-variables';
 import { resolveAssessmentDataKey } from './assessment-data-key';
 import { AssessmentCacheClient } from './assessment-cache-client';
 import { AssessmentOverlay } from './ui/assessment-overlay';
@@ -7,12 +8,15 @@ import {
   createAssessmentCloseButton,
   createAssessmentPlayerElement,
 } from './ui/assessment-player-element';
+import miniGameStateService from '@miniGameStateService';
 
 export interface AssessmentSurveyOpenOptions {
   dataKey?: string;
   onLoaded?: () => void;
-  onCompleted?: () => void;
-  onClosed?: () => void;
+  onComplete?: (payload: AssessmentCompletedPayload) => void;
+  onCloseStart?: () => void;
+  onClose?: () => void;
+  onRewardTrigger?: (payload: AssessmentCompletedPayload) => void;
 }
 
 export class AssessmentSurveyManager {
@@ -69,6 +73,8 @@ export class AssessmentSurveyManager {
   }
 
   private resolveAnalyticsConfig(): AnalyticsConfig | undefined {
+    
+    // TODO(MR-83): Add Container App Version to analytics config once the assessment package is updated with the new config
     const config = {
       apiKey: process.env.FIREBASE_API_KEY,
       authDomain: process.env.FIREBASE_AUTH_DOMAIN,
@@ -83,7 +89,7 @@ export class AssessmentSurveyManager {
 
     const isValidConfig = Object.values(config).every(Boolean);
 
-    return isValidConfig ? config : undefined;
+    return isValidConfig ? ({ ...config, container_app_version: container_app_version || '' } as AnalyticsConfig) : undefined;
   }
 
   public async open(options: AssessmentSurveyOpenOptions): Promise<void> {
@@ -105,22 +111,37 @@ export class AssessmentSurveyManager {
       }
 
       hasClosed = true;
-      this.close();
-      options.onClosed?.();
+      options.onCloseStart?.();
+      this.assessmentOverlay.closeWithTransition(() => {
+        options.onClose?.();
+      });
     };
 
     const playerElement = createAssessmentPlayerElement({
       playerTag: this.playerTag,
       dataKey: resolvedDataKey,
+      userId: pseudoId,
       onLoaded: () => {
         console.log('[assessment-survey] loaded');
+        const assessmentTreasureChestLayout = this.getAssessmentTreasureChestLayout();
+
+        miniGameStateService.publish(
+          miniGameStateService.EVENTS.USE_ASSESSMENT_TREASURE_CHEST_LAYOUT,
+          {
+            assessmentTreasureChestLayout
+          }
+        );
         options.onLoaded?.();
       },
-      onCompleted: () => {
-        console.log('[assessment-survey] completed');
-        options.onCompleted?.();
+      onComplete: (payload) => {
+        console.log('[assessment-survey] complete');
+        options.onComplete?.(payload);
       },
-      onClosed: () => {
+      onRewardTrigger: (payload) => {
+        console.log('[assessment-survey] reward trigger ', payload);
+        options.onRewardTrigger?.(payload);
+      },
+      onClose: () => {
         handleClose();
       },
       analyticsConfig: this.resolveAnalyticsConfig(),
@@ -136,8 +157,26 @@ export class AssessmentSurveyManager {
     this.assessmentOverlay.openWithChildren([playerElement, closeButton]);
   }
 
+  private getAssessmentTreasureChestLayout() {
+    const img: any = document.querySelector('#chestImage');
+    if (!img) return null;
+
+    const rect = img.getBoundingClientRect();
+
+    return {
+      x: rect.left,
+      y: rect.top,
+      width: img.offsetWidth,
+      height: img.offsetHeight,
+    };
+  }
+
   public close(): void {
     this.assessmentOverlay.close();
+  }
+
+  public closeWithTransition(onComplete: () => void): void {
+    this.assessmentOverlay.closeWithTransition(onComplete);
   }
 }
 

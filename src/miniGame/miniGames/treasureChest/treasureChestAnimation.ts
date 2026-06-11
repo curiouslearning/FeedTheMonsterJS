@@ -9,10 +9,18 @@ import { Utils } from '@common';
  * Represents the different phases of the chest animation sequence.
  */
 enum TreasureChestState {
-  FadeIn, // Chest fading into view
+  FlyIn,      // Chest flies from external position to its final canvas position
+  FadeIn,     // Chest fading into view
   ClosedChest, // Chest visible, shaking before opening
   OpenedChest, // Chest open, stones burst out
-  FadeOut // Chest fading out of view
+  FadeOut     // Chest fading out of view
+}
+
+interface ChestRect {
+  x: number;
+  y: number;
+  w: number;
+  h: number;
 }
 
 /**
@@ -30,6 +38,8 @@ export class TreasureChestAnimation {
   private lastTapTime = 0; // Used to prevent duplicate clicks on mobile
   private fadeInDuration = 300; // Fade-in time (ms)
   private fadeOutDuration = 400; // Fade-out time (ms)
+  private flyInDuration = 400; // Fly-in time (ms)
+  private flyInStart: ChestRect | null = null; // Starting rect for fly-in (canvas logical coords)
   private onFadeComplete?: () => void; // Callback after fade-out completes
   private state: TreasureChestState = TreasureChestState.FadeIn; // Current chest animation state
   private stateTimer: number = 0; // Accumulated time in current state
@@ -216,6 +226,20 @@ export class TreasureChestAnimation {
     this.stateTimer = 0;
   }
 
+  /**
+   * Starts the animation with the chest flying in from a given starting rect
+   * (in canvas logical coordinates) to its final resting position.
+   * The canvas overlay appears instantly — no fade.
+   */
+  public showWithFlyIn(startRect: ChestRect, onComplete?: () => void) {
+    this.canvas.style.display = "block";
+    this.isVisible = true;
+    this.onFadeComplete = onComplete;
+    this.flyInStart = startRect;
+    this.state = TreasureChestState.FlyIn;
+    this.stateTimer = 0;
+  }
+
   /** Blue Bonus Star Animation */
   public showBlueBonusStar() {
      this.showBonusStar = true;
@@ -232,6 +256,11 @@ export class TreasureChestAnimation {
     this.isVisible = false;
   }
 
+  public dispose() {
+    this.hide();
+    this.treasureChest.dispose();
+  }
+
   /**
    * Main animation loop.
    * Runs via requestAnimationFrame while visible.
@@ -246,6 +275,32 @@ export class TreasureChestAnimation {
     this.drawOverlay();
 
     switch (this.state) {
+      case TreasureChestState.FlyIn: {
+        if (!this.flyInStart) {
+          this.state = TreasureChestState.ClosedChest;
+          this.stateTimer = 0;
+          break;
+        }
+        const progress = Math.min(1, this.stateTimer / this.flyInDuration);
+        // ease-in-out via cosine
+        const eased = 0.5 - 0.5 * Math.cos(Math.PI * progress);
+        const finalW = 200, finalH = 184;
+        const finalX = this.width / 2 - finalW / 2;
+        const finalY = this.height - finalH - 20;
+        const src = this.flyInStart;
+        const curX = src.x + (finalX - src.x) * eased;
+        const curY = src.y + (finalY - src.y) * eased;
+        const curW = src.w + (finalW - src.w) * eased;
+        const curH = src.h + (finalH - src.h) * eased;
+        this.ctx.globalAlpha = 1;
+        this.treasureChest.drawClosedChestAt(curX, curY, curW, curH);
+        if (progress >= 1) {
+          this.flyInStart = null;
+          this.state = TreasureChestState.ClosedChest;
+          this.stateTimer = 0;
+        }
+        break;
+      }
       case TreasureChestState.FadeIn: {
         const elapsed = this.stateTimer;
         const alpha = Math.min(1, elapsed / this.fadeInDuration);
