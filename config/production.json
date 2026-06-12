@@ -1,0 +1,4 @@
+{
+  "ENV": "production",
+  "DEBUG_MODE": false
+}

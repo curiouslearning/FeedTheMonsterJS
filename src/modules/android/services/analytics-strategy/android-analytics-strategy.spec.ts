@@ -1,0 +1,241 @@
+import { AnalyticsEventType } from 'src/analytics/analytics-integration';
+import { AndroidInterface } from '@curiouslearning/core';
+import { AndroidAnalyticsStrategy } from './android-analytics-strategy';
+import { appConfig } from '@appConfig';
+
+const mockLogSummaryData = jest.fn();
+const mockLogUserSessionsData = jest.fn();
+
+jest.mock('@curiouslearning/core', () => ({
+  AndroidInterface: jest.fn().mockImplementation(() => ({
+    logSummaryData: mockLogSummaryData,
+    logUserSessionsData: mockLogUserSessionsData,
+  })),
+}));
+
+jest.mock('@curiouslearning/analytics', () => ({
+  AbstractAnalyticsStrategy: class {
+    initialize(): Promise<void> { return Promise.resolve(); }
+    track(_eventName: string, _data: any): void {}
+    dispose(): void {}
+  },
+}));
+
+describe('Feature: Android analytics strategy', () => {
+  let strategy: AndroidAnalyticsStrategy;
+
+  beforeEach(() => {
+    jest.clearAllMocks();
+    strategy = new AndroidAnalyticsStrategy({ cr_user_id: 'user-123' });
+  });
+
+  describe('Scenario: Initializing the strategy', () => {
+    it('Given a valid cr_user_id, when initialize is called, then it resolves without error', async () => {
+      await expect(strategy.initialize()).resolves.toBeUndefined();
+    });
+  });
+
+  describe('Scenario: Forwarding the sub-app version as metadata', () => {
+    it('Given an appVersion, when the strategy is constructed, then AndroidInterface receives it as metadata.app_version', () => {
+      // Given / When
+      new AndroidAnalyticsStrategy({ cr_user_id: 'user-123', app_version: 'v1.6.0' });
+
+      // Then
+      expect(AndroidInterface).toHaveBeenCalledWith(
+        expect.objectContaining({
+          app_id: 'feed-the-monster',
+          cr_user_id: 'user-123',
+          metadata: { environment: appConfig.ENV, app_version: 'v1.6.0' },
+        })
+      );
+    });
+
+    it('Given no appVersion, when the strategy is constructed, then metadata.app_version defaults to an empty string', () => {
+      // Given / When (beforeEach already constructed without appVersion)
+      // Then
+      expect(AndroidInterface).toHaveBeenCalledWith(
+        expect.objectContaining({ metadata: { environment: appConfig.ENV, app_version: '' } })
+      );
+    });
+  });
+
+  describe('Scenario: Forwarding environment configuration from app config', () => {
+    it('Given appConfig.ENV, when the strategy is constructed, then AndroidInterface receives it as metadata.environment', () => {
+      // Given / When (beforeEach already constructed)
+      // Then
+      expect(AndroidInterface).toHaveBeenCalledWith(
+        expect.objectContaining({
+          metadata: expect.objectContaining({ environment: appConfig.ENV }),
+        })
+      );
+    });
+
+    it('Given appConfig.DEBUG_MODE, when the strategy is constructed, then AndroidInterface receives it as log', () => {
+      // Given / When (beforeEach already constructed)
+      // Then
+      expect(AndroidInterface).toHaveBeenCalledWith(
+        expect.objectContaining({ log: appConfig.DEBUG_MODE })
+      );
+    });
+  });
+
+  describe('Scenario: Tracking a level_completed event', () => {
+    it('Given a level_completed event with duration and highest_level_completed, when track is called, then logSummaryData is called with all fields in the correct payload', () => {
+      // Given
+      const eventName = AnalyticsEventType.LEVEL_COMPLETED;
+      const data = { duration: 45, highest_level_completed: 7 };
+
+      // When
+      strategy.track(eventName, data);
+
+      // Then
+      expect(mockLogSummaryData).toHaveBeenCalledTimes(1);
+      expect(mockLogSummaryData).toHaveBeenCalledWith(
+        { levels_completed: 1, time_spent_total_second: 45, highest_level_completed: 7 },
+        { levels_completed: 'add', time_spent_total_second: 'add' }
+      );
+    });
+
+    it('Given a level_completed event with no duration, when track is called, then time_spent_total_second defaults to 0', () => {
+      // Given
+      const eventName = AnalyticsEventType.LEVEL_COMPLETED;
+      const data = { highest_level_completed: 3 };
+
+      // When
+      strategy.track(eventName, data);
+
+      // Then
+      expect(mockLogSummaryData).toHaveBeenCalledWith(
+        { levels_completed: 1, time_spent_total_second: 0, highest_level_completed: 3 },
+        { levels_completed: 'add', time_spent_total_second: 'add' }
+      );
+    });
+
+    it('Given a level_completed event with no highest_level_completed, when track is called, then highest_level_completed defaults to 0', () => {
+      // Given
+      const eventName = AnalyticsEventType.LEVEL_COMPLETED;
+      const data = { duration: 30 };
+
+      // When
+      strategy.track(eventName, data);
+
+      // Then
+      expect(mockLogSummaryData).toHaveBeenCalledWith(
+        { levels_completed: 1, time_spent_total_second: 30, highest_level_completed: 0 },
+        { levels_completed: 'add', time_spent_total_second: 'add' }
+      );
+    });
+
+    it('Given a level_completed event with level type and language, when track is called, then logUserSessionsData is also called with the user session payload', () => {
+      // Given
+      const eventName = AnalyticsEventType.LEVEL_COMPLETED;
+      const data = {
+        level_number: 1,
+        level_type: 'LetterOnly',
+        ftm_language: 'english'
+      };
+
+      // When
+      strategy.track(eventName, data);
+
+      // Then
+      expect(mockLogUserSessionsData).toHaveBeenCalledTimes(1);
+      expect(mockLogUserSessionsData).toHaveBeenCalledWith({
+        type: 'LetterOnly',
+        event_type: 'level_completed',
+        lang: 'english',
+        level: 1,
+      });
+    });
+  });
+
+  describe('Scenario: Tracking a puzzle_completed event', () => {
+    it('Given a puzzle_completed event with success_or_failure "success", when track is called, then logSummaryData is called with puzzle_success 1 and puzzle_failure 0', () => {
+      // Given
+      const eventName = AnalyticsEventType.PUZZLE_COMPLETED;
+      const data = { success_or_failure: 'success' };
+
+      // When
+      strategy.track(eventName, data);
+
+      // Then
+      expect(mockLogSummaryData).toHaveBeenCalledTimes(1);
+      expect(mockLogSummaryData).toHaveBeenCalledWith(
+        { puzzles_completed: 1, puzzle_success: 1, puzzle_failure: 0 },
+        { puzzles_completed: 'add', puzzle_success: 'add', puzzle_failure: 'add' }
+      );
+    });
+
+    it('Given a puzzle_completed event with success_or_failure "failure", when track is called, then logSummaryData is called with puzzle_success 0 and puzzle_failure 1', () => {
+      // Given
+      const eventName = AnalyticsEventType.PUZZLE_COMPLETED;
+      const data = { success_or_failure: 'failure' };
+
+      // When
+      strategy.track(eventName, data);
+
+      // Then
+      expect(mockLogSummaryData).toHaveBeenCalledWith(
+        { puzzles_completed: 1, puzzle_success: 0, puzzle_failure: 1 },
+        { puzzles_completed: 'add', puzzle_success: 'add', puzzle_failure: 'add' }
+      );
+    });
+
+    it('Given a puzzle_completed event with level type, language, level, puzzle and version, when track is called, then logUserSessionsData is also called with the user session payload', () => {
+      // Given
+      const eventName = AnalyticsEventType.PUZZLE_COMPLETED;
+      const data = {
+        success_or_failure: 'success',
+        level_type: 'LetterOnly',
+        ftm_language: 'english',
+        level_number: 1,
+        puzzle_number: 1,
+      };
+
+      // When
+      strategy.track(eventName, data);
+
+      // Then
+      expect(mockLogUserSessionsData).toHaveBeenCalledTimes(1);
+      expect(mockLogUserSessionsData).toHaveBeenCalledWith({
+        type: 'LetterOnly',
+        event_type: 'puzzle_completed',
+        lang: 'english',
+        is_success: true,
+        level: 1,
+        puzzle: 1,
+      });
+    });
+
+    it('Given a puzzle_completed event with success_or_failure "failure", when track is called, then logUserSessionsData is called with is_success false', () => {
+      // Given
+      const eventName = AnalyticsEventType.PUZZLE_COMPLETED;
+      const data = {
+        success_or_failure: 'failure',
+        level_type: 'Word',
+        ftm_language: 'english',
+        level_number: 2,
+        puzzle_number: 3,
+      };
+
+      // When
+      strategy.track(eventName, data);
+
+      // Then
+      expect(mockLogUserSessionsData).toHaveBeenCalledWith({
+        type: 'Word',
+        event_type: 'puzzle_completed',
+        lang: 'english',
+        is_success: false,
+        level: 2,
+        puzzle: 3,
+      });
+    });
+  });
+
+  describe('Scenario: Disposing the strategy', () => {
+    it('Given an initialized strategy, when dispose is called, then it completes without error', () => {
+      expect(() => strategy.dispose()).not.toThrow();
+    });
+  });
+});

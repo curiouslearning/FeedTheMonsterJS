@@ -12,11 +12,14 @@ commands:
       to:
         type: string
         default: 's3://feedthemonster-development'
+      build-script:
+        type: string
+        default: 'build:prod'
     steps:
       - checkout
       - run: sudo npm install -g npm@latest
       - node/install-packages
-      - run: npm run build
+      - run: npm run << parameters.build-script >>
       # - aws-cli/setup:
       #     aws_access_key_id: AWS_ACCESS_KEY
       #     region: AWS_DEFAULT_REGION
@@ -56,6 +59,7 @@ jobs:
     steps:
       - build-and-deploy:
           to: 's3://feedthemonster-development'
+          build-script: 'build:dev'
 
   build-and-deploy-test:
     docker:
@@ -63,13 +67,23 @@ jobs:
     steps:
       - build-and-deploy:
           to: 's3://globallit-aws-s3-static-webapp-test-us-east-2/feed-the-monster'
-  
+          build-script: 'build:test'
+
+  build-and-deploy-release:
+    docker:
+      - image: cimg/python:3.13.2-node
+    steps:
+      - build-and-deploy:
+          to: 's3://globallit-aws-s3-static-webapp-test-us-east-2/feed-the-monster-release'
+          build-script: 'build:test'
+
   build-and-deploy-prod:
     docker:
       - image: cimg/python:3.13.2-node
     steps:
       - build-and-deploy:
           to: 's3://feedthemonster-production'
+          build-script: 'build:prod'
 
   invalidate-cloudfront-cache-prod:
     docker:
@@ -99,10 +113,21 @@ workflows:
       - build-and-deploy-test:
           context:
             - aws-context
+          requires:
+            - node/test
           filters:
             branches:
               only:
                 - test
+      - build-and-deploy-release:
+          context:
+            - aws-context
+          requires:
+            - node/test
+          filters:
+            branches:
+              only:
+                - /.*epic.*/
       - build-and-deploy-prod:
           context:
             - aws-context

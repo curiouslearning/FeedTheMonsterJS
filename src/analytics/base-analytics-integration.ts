@@ -1,6 +1,6 @@
 import { AnalyticsService, FirebaseStrategy, StatsigStrategy } from '@curiouslearning/analytics';
 import { firebaseConfig, statsigConfig } from "./analytics-config";
-import { source, campaign_id, pseudoId } from "@common";
+import { source, campaign_id, container_app_version, pseudoId } from "@common";
 
 /**
  * `BaseAnalyticsIntegration` is the foundational analytics integration class
@@ -34,7 +34,7 @@ import { source, campaign_id, pseudoId } from "@common";
  * @since 1.0.0
  */
 export class BaseAnalyticsIntegration {
-    private analyticsService: AnalyticsService;
+    readonly analyticsService: AnalyticsService;
     private firebaseStrategy: FirebaseStrategy;
     private statsigStrategy: StatsigStrategy;
     private isInitialized: boolean = false;
@@ -79,7 +79,8 @@ export class BaseAnalyticsIntegration {
                 },
                 userProperties: {
                     campaign_id: campaign_id || '',
-                    source: source || ''
+                    source: source || '',
+                    container_app_version: container_app_version || ''
                 }
             });
 

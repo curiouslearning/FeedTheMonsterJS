@@ -1,3 +1,8 @@
+global.__APP_CONFIG__ = {
+  ENV: 'test',
+  DEBUG_MODE: true,
+};
+
 /**
  * Mock BroadcastChannel as this is not supported by js-dom
  */
