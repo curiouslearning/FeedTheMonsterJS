@@ -42,7 +42,7 @@ export class AndroidAnalyticsStrategy extends AbstractAnalyticsStrategy {
         this.handlePuzzleCompleted(data);
         break;
       default:
-        console.warn(`Unhandled event: ${event} width data:`, data);
+        console.warn(`Unhandled event: ${eventName} with data:`, data);
     }
   }
   
