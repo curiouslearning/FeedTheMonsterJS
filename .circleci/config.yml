@@ -122,6 +122,8 @@ workflows:
       - build-and-deploy-release:
           context:
             - aws-context
+          requires:
+            - node/test
           filters:
             branches:
               only:
