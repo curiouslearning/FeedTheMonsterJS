@@ -88,7 +88,13 @@ export class GameScore {
 
     // Update total star count dynamically
     this.updateTotalStarCount();
-    this.updateHighestLevelReached();
+
+    // Only a newly cleared level can raise the highest level reached.
+    // Replaying an existing level leaves the set of level numbers unchanged,
+    // so skip the recompute entirely in that case.
+    if (index === -1) {
+      this.updateHighestLevelReached();
+    }
   }
 
   /**
