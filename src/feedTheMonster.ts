@@ -92,6 +92,11 @@ class App {
     });
     await featureFlagsService.initialize();
 
+    // Expose core singletons on window for E2E tests (non-production only).
+    if (process.env.NODE_ENV !== 'production') {
+      window.__ftm = { gameStateService, assessmentSurveyManager };
+    }
+
     this.handleLoadingScreen();
     this.setupCanvas();
     const data = await getData();
