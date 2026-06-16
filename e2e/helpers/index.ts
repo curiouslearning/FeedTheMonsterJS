@@ -28,4 +28,7 @@ export {
   getAssessmentElementBbox,
   triggerLevelEndScene,
   waitForPositiveFeedback,
+  subscribeToCorrectStonePosition,
+  getCapturedCorrectStonePos,
+  getHitboxCenter,
 } from './game-state-helpers';

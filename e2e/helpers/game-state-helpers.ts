@@ -176,3 +176,62 @@ export async function waitForPositiveFeedback(page: Page, timeout = Timeouts.dom
     { timeout },
   );
 }
+
+/**
+ * Subscribes to the CORRECT_STONE_POSITION event (fired for tutorial/segment-0
+ * puzzles) and stores the correct stone's CSS-pixel coordinates in
+ * window.__ftmTest.correctStonePos.
+ *
+ * Must be called BEFORE clicking the monster so the subscription is in place
+ * when createStones() fires the event.
+ */
+export async function subscribeToCorrectStonePosition(page: Page): Promise<void> {
+  await page.evaluate(() => {
+    (window as any).__ftmTest = (window as any).__ftmTest ?? {};
+    (window as any).__ftmTest.correctStonePos = null;
+
+    const gss = (window as any).__ftm?.gameStateService;
+    if (!gss) return;
+
+    const unsub = gss.subscribe(gss.EVENTS.CORRECT_STONE_POSITION, (detail: any) => {
+      const stones: any[] = detail?.activeTutorialFoilStones ?? [];
+      // For letter puzzles the correct stone is the sole element in the array
+      if (!detail.isWordPuzzle && stones.length > 0) {
+        const s = stones[0];
+        (window as any).__ftmTest.correctStonePos = { x: s.x, y: s.y, text: s.text };
+      }
+      unsub(); // one-shot: unsubscribe after first capture
+    });
+  });
+}
+
+/**
+ * Returns the correct stone's CSS-pixel position (relative to #canvas) that was
+ * captured by subscribeToCorrectStonePosition(), or null if the event has not
+ * fired yet (e.g. non-tutorial segment).
+ */
+export async function getCapturedCorrectStonePos(
+  page: Page,
+): Promise<{ x: number; y: number; text: string } | null> {
+  return page.evaluate(() => (window as any).__ftmTest?.correctStonePos ?? null);
+}
+
+/**
+ * Returns the centre of the monster drop-zone hitbox in CSS pixel coordinates
+ * relative to #canvas (add canvasBoundingBox.x/.y to get page coordinates).
+ * Returns null when the game is not in the gameplay scene.
+ */
+export async function getHitboxCenter(
+  page: Page,
+): Promise<{ x: number; y: number } | null> {
+  return page.evaluate(() => {
+    const gss = (window as any).__ftm?.gameStateService;
+    if (!gss) return null;
+    const ranges = gss.getHitBoxRanges?.();
+    if (!ranges?.hitboxRangeX || !ranges?.hitboxRangeY) return null;
+    return {
+      x: (ranges.hitboxRangeX.from + ranges.hitboxRangeX.to) / 2,
+      y: (ranges.hitboxRangeY.from + ranges.hitboxRangeY.to) / 2,
+    };
+  });
+}

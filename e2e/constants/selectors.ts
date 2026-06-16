@@ -45,8 +45,8 @@ export const Selectors = {
   promptPlayButton: '#prompt-play-button',
   promptSlots: '#prompt-slots',
 
-  // Timer elements (created by TimerHtml component)
-  timerComponent: '#timer-html-component',
+  // Timer elements — the game instantiates TimerHTMLComponent with id 'timer-ticking'
+  timerComponent: '#timer-ticking',
   timerEmpty: '#timer-empty',
   rotatingClock: '#rotating-clock',
 
