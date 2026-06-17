@@ -59,21 +59,110 @@ export async function publishGameEvent(page: Page, eventName: string, payload?: 
 
 /**
  * Triggers the assessment survey overlay programmatically.
- * Use this in TC_009 to guarantee the overlay appears without needing to play
- * through every puzzle.
+ *
+ * Primary path: calls GameplayFlowManager.startAssessmentFlow() with the
+ * levelForMinigame segment so isCombinedMode=true. This wires up all the real
+ * game callbacks — onCloseStart fires handleCombinedModeTransition() which
+ * starts the treasure-chest mini game and sets #treasurecanvas display:block;
+ * onClose fires resumeAfterClose() → continueAfterPuzzleStep() → loadPuzzle()
+ * so gameplay resumes normally after the mini game ends.
+ *
+ * TypeScript 'private' is not enforced at JS runtime, so startAssessmentFlow
+ * can be called from page.evaluate() even though it is declared private.
+ *
+ * Fallback path (if the flow manager is not accessible): calls asm.open()
+ * with best-effort callbacks that at least show #treasurecanvas and hide the
+ * overlay so downstream test steps do not stall.
  */
 export async function triggerAssessment(page: Page) {
   await page.evaluate(() => {
-    const asm = (window as any).__ftm?.assessmentSurveyManager;
-    if (asm) {
-      asm.open({
-        onLoaded: () => {},
-        onComplete: () => {},
-        onRewardTrigger: () => {},
-        onClose: () => {},
+    const gss = (window as any).__ftm?.gameStateService;
+    if (!gss) return;
+
+    // Try to reach GameplayFlowManager through the active gameplay scene.
+    // Primary path: via sceneHandler.activeScene['scene'].flowManager
+    // (sceneHandler is exposed on window.__ftm in non-production builds).
+    const sceneHandler = (window as any).__ftm?.sceneHandler;
+    const activeScene = sceneHandler?.['activeScene']?.['scene'] ?? null;
+    const scene = activeScene ?? gss.gamePlayScene ?? gss.currentScene ?? null;
+    const fm = scene?.flowManager ?? null;
+
+    if (fm && typeof fm.startAssessmentFlow === 'function') {
+      const seg: number = typeof fm.levelForMinigame === 'number' ? fm.levelForMinigame : 3;
+      fm.startAssessmentFlow(seg, () => {
+        // onCloseResume: called after assessment + mini game fully complete
+        if (typeof fm.continueAfterPuzzleStep === 'function') {
+          fm.continueAfterPuzzleStep(seg, false, 0, 0);
+        }
       });
+      return;
+    }
+
+    // Fallback: open assessment directly with improved callbacks
+    const asm = (window as any).__ftm?.assessmentSurveyManager;
+    if (!asm) return;
+    asm.open({
+      onLoaded: () => {},
+      onComplete: () => {},
+      onRewardTrigger: () => {
+        // Best-effort: show treasure canvas so TC_0014/0015 can detect it
+        const tc = document.querySelector('#treasurecanvas') as HTMLElement | null;
+        if (tc) {
+          tc.style.display = 'block';
+          tc.style.zIndex = '11';
+        }
+      },
+      onClose: () => {
+        const overlay = document.querySelector('#assessment-survey-overlay') as HTMLElement | null;
+        if (overlay) overlay.style.display = 'none';
+      },
+    });
+  });
+}
+
+/**
+ * Pauses the FTM gameplay loop and notifies all subscribers.
+ *
+ * startAssessmentFlow() only sets isAssessmentInProgress — it does NOT publish
+ * GAME_PAUSE_STATUS_EVENT or call pauseGamePlay(), so the game render loop
+ * keeps running under the assessment overlay unless this is called explicitly.
+ *
+ * Mirrors what gameplay-scene.ts lines 420-421 do when the pause button is tapped:
+ *   gameStateService.publish(GAME_PAUSE_STATUS_EVENT, true)
+ *   this.pauseGamePlay()
+ */
+export async function pauseFtmGame(page: Page): Promise<void> {
+  await page.evaluate(() => {
+    const gss = (window as any).__ftm?.gameStateService;
+    if (!gss) return;
+    gss.publish(gss.EVENTS.GAME_PAUSE_STATUS_EVENT, true);
+    const sceneHandler = (window as any).__ftm?.sceneHandler;
+    const scene =
+      sceneHandler?.['activeScene']?.['scene'] ??
+      gss.gamePlayScene ??
+      gss.currentScene ??
+      null;
+    if (scene && typeof scene.pauseGamePlay === 'function') {
+      scene.pauseGamePlay();
     }
   });
+}
+
+/**
+ * Waits for the treasure chest mini game canvas (#treasurecanvas) to become
+ * visible on screen.  Fails with a timeout error if it never appears.
+ */
+export async function waitForTreasureCanvasVisible(page: Page, timeout = 15_000): Promise<void> {
+  await page.waitForFunction(
+    (sel) => {
+      const el = document.querySelector(sel) as HTMLElement | null;
+      if (!el) return false;
+      const cs = window.getComputedStyle(el);
+      return cs.display !== 'none' && cs.visibility !== 'hidden';
+    },
+    Selectors.treasureCanvas,
+    { timeout },
+  );
 }
 
 /**

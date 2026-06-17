@@ -24,6 +24,7 @@ export {
   getCurrentPuzzleTargets,
   publishGameEvent,
   triggerAssessment,
+  pauseFtmGame,
   waitForAssessmentElement,
   getAssessmentElementBbox,
   triggerLevelEndScene,
@@ -31,4 +32,5 @@ export {
   subscribeToCorrectStonePosition,
   getCapturedCorrectStonePos,
   getHitboxCenter,
+  waitForTreasureCanvasVisible,
 } from './game-state-helpers';
