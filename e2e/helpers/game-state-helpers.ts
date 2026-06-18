@@ -58,39 +58,53 @@ export async function publishGameEvent(page: Page, eventName: string, payload?: 
 }
 
 /**
- * Triggers the assessment survey overlay programmatically.
+ * Triggers the assessment survey overlay programmatically, guaranteeing that
+ * the overlay is opened with isCombinedMode = true so that closing it (TC_0013)
+ * will trigger handleCombinedModeTransition → show #treasurecanvas.
  *
- * Primary path: calls GameplayFlowManager.startAssessmentFlow() with the
- * levelForMinigame segment so isCombinedMode=true. This wires up all the real
- * game callbacks — onCloseStart fires handleCombinedModeTransition() which
- * starts the treasure-chest mini game and sets #treasurecanvas display:block;
- * onClose fires resumeAfterClose() → continueAfterPuzzleStep() → loadPuzzle()
- * so gameplay resumes normally after the mini game ends.
+ * Root-cause fix: determineNextStep() may have already called startAssessmentFlow()
+ * with currentPuzzleSegment = 1, which gives isCombinedMode = false when
+ * levelForMinigame ≠ 1.  We close that overlay silently, reset the flow-manager
+ * flags, and reopen with seg = levelForMinigame so isCombinedMode is guaranteed
+ * to be true.
  *
- * TypeScript 'private' is not enforced at JS runtime, so startAssessmentFlow
- * can be called from page.evaluate() even though it is declared private.
- *
- * Fallback path (if the flow manager is not accessible): calls asm.open()
- * with best-effort callbacks that at least show #treasurecanvas and hide the
- * overlay so downstream test steps do not stall.
+ * TypeScript 'private' is not enforced at JS runtime, so private members such
+ * as startAssessmentFlow, levelForMinigame and hasShownChest are fully
+ * accessible from page.evaluate().
  */
 export async function triggerAssessment(page: Page) {
   await page.evaluate(() => {
     const gss = (window as any).__ftm?.gameStateService;
     if (!gss) return;
 
-    // Try to reach GameplayFlowManager through the active gameplay scene.
-    // Primary path: via sceneHandler.activeScene['scene'].flowManager
-    // (sceneHandler is exposed on window.__ftm in non-production builds).
+    // Reach GameplayFlowManager via sceneHandler (exposed on window.__ftm in dev builds).
     const sceneHandler = (window as any).__ftm?.sceneHandler;
     const activeScene = sceneHandler?.['activeScene']?.['scene'] ?? null;
     const scene = activeScene ?? gss.gamePlayScene ?? gss.currentScene ?? null;
     const fm = scene?.flowManager ?? null;
 
     if (fm && typeof fm.startAssessmentFlow === 'function') {
-      const seg: number = typeof fm.levelForMinigame === 'number' ? fm.levelForMinigame : 3;
+      // Read the segment that was randomly assigned for the mini-game trigger.
+      const rawLevel = fm.levelForMinigame;
+      const seg: number = (typeof rawLevel === 'number' && rawLevel >= 1) ? rawLevel : 1;
+
+      // Close any assessment that determineNextStep() may have already opened.
+      // assessmentSurveyManager.close() hides the overlay instantly without
+      // invoking the handleClose closure (no onCloseStart / onClose callbacks).
+      const asm = (window as any).__ftm?.assessmentSurveyManager;
+      if (asm && typeof asm.close === 'function') {
+        asm.close();
+      }
+
+      // Reset flow-manager flags so startAssessmentFlow() proceeds and
+      // so isCombinedMode evaluates to (seg === levelForMinigame && !hasShownChest) = true.
+      fm.isAssessmentInProgress = false;
+      fm.hasShownChest = false;
+      fm.levelForMinigame = seg; // idempotent; ensures the segment lines up
+
       fm.startAssessmentFlow(seg, () => {
-        // onCloseResume: called after assessment + mini game fully complete
+        // onCloseResume: only invoked in non-combined mode (combined mode is
+        // handled internally via the IS_MINI_GAME_DONE event).
         if (typeof fm.continueAfterPuzzleStep === 'function') {
           fm.continueAfterPuzzleStep(seg, false, 0, 0);
         }
@@ -98,19 +112,15 @@ export async function triggerAssessment(page: Page) {
       return;
     }
 
-    // Fallback: open assessment directly with improved callbacks
+    // Fallback: direct assessmentSurveyManager.open() when flowManager is not accessible.
     const asm = (window as any).__ftm?.assessmentSurveyManager;
     if (!asm) return;
     asm.open({
       onLoaded: () => {},
       onComplete: () => {},
       onRewardTrigger: () => {
-        // Best-effort: show treasure canvas so TC_0014/0015 can detect it
         const tc = document.querySelector('#treasurecanvas') as HTMLElement | null;
-        if (tc) {
-          tc.style.display = 'block';
-          tc.style.zIndex = '11';
-        }
+        if (tc) { tc.style.display = 'block'; tc.style.zIndex = '11'; }
       },
       onClose: () => {
         const overlay = document.querySelector('#assessment-survey-overlay') as HTMLElement | null;
@@ -159,6 +169,70 @@ export async function waitForTreasureCanvasVisible(page: Page, timeout = 15_000)
       if (!el) return false;
       const cs = window.getComputedStyle(el);
       return cs.display !== 'none' && cs.visibility !== 'hidden';
+    },
+    Selectors.treasureCanvas,
+    { timeout },
+  );
+}
+
+/**
+ * Hides the pause popup and raises #treasurecanvas above it so the mini-game
+ * is fully visible and interactive.
+ *
+ * The .popup CSS class sets z-index: 1000.  #treasurecanvas defaults to
+ * z-index: 11, so it is hidden behind the pause popup.  This helper:
+ *   1. Raises #treasurecanvas to z-index: 1001 (above the pause popup).
+ *   2. Removes the .show class from #pause-popup and sets display: none so
+ *      the popup is invisible while the mini-game plays.
+ */
+export async function hidePausePopupForMiniGame(page: Page): Promise<void> {
+  await page.evaluate(() => {
+    const tc = document.querySelector('#treasurecanvas') as HTMLElement | null;
+    if (tc) tc.style.zIndex = '1001';
+
+    const pp = document.querySelector('#pause-popup') as HTMLElement | null;
+    if (pp) {
+      pp.classList.remove('show');
+      pp.style.display = 'none';
+    }
+  });
+}
+
+/**
+ * Resumes the FTM gameplay render loop after it was paused via pauseFtmGame().
+ *
+ * When isPaused = true in GameplayScene.draw(), deltaTime is forced to 0 so
+ * TreasureChestAnimation never advances its stateTimer.  Calling resumeGame()
+ * restores real deltaTime so the mini-game can actually progress.
+ */
+export async function resumeFtmGame(page: Page): Promise<void> {
+  await page.evaluate(() => {
+    const gss = (window as any).__ftm?.gameStateService;
+    if (!gss) return;
+    gss.publish(gss.EVENTS.GAME_PAUSE_STATUS_EVENT, false);
+    const sceneHandler = (window as any).__ftm?.sceneHandler;
+    const scene =
+      sceneHandler?.['activeScene']?.['scene'] ??
+      gss.gamePlayScene ??
+      gss.currentScene ??
+      null;
+    if (scene && typeof scene.resumeGame === 'function') {
+      scene.resumeGame();
+    }
+  });
+}
+
+/**
+ * Waits for the treasure chest mini game to finish — i.e. for #treasurecanvas
+ * to become hidden (display:none) after the FadeOut phase completes.
+ */
+export async function waitForMiniGameComplete(page: Page, timeout = 20_000): Promise<void> {
+  await page.waitForFunction(
+    (sel) => {
+      const el = document.querySelector(sel) as HTMLElement | null;
+      if (!el) return true; // Canvas removed from DOM = done
+      const cs = window.getComputedStyle(el);
+      return cs.display === 'none' || cs.visibility === 'hidden';
     },
     Selectors.treasureCanvas,
     { timeout },

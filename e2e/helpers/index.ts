@@ -25,6 +25,8 @@ export {
   publishGameEvent,
   triggerAssessment,
   pauseFtmGame,
+  resumeFtmGame,
+  hidePausePopupForMiniGame,
   waitForAssessmentElement,
   getAssessmentElementBbox,
   triggerLevelEndScene,
@@ -33,4 +35,5 @@ export {
   getCapturedCorrectStonePos,
   getHitboxCenter,
   waitForTreasureCanvasVisible,
+  waitForMiniGameComplete,
 } from './game-state-helpers';

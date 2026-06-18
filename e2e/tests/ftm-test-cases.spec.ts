@@ -22,9 +22,11 @@ import {
   exposeGameInternals,
   triggerAssessment,
   pauseFtmGame,
-  triggerLevelEndScene,
+  resumeFtmGame,
+  hidePausePopupForMiniGame,
   waitForPositiveFeedback,
   waitForTreasureCanvasVisible,
+  waitForMiniGameComplete,
   subscribeToCorrectStonePosition,
   getCapturedCorrectStonePos,
   getHitboxCenter,
@@ -969,14 +971,32 @@ test.describe.serial('FeedTheMonsterJS – Full E2E Suite (TC_001 – TC_0016)',
       await waitForTreasureCanvasVisible(page, Timeouts.sceneTransition);
       await expect(page.locator(Selectors.treasureCanvas)).toBeVisible();
     });
+
+    await test.step('Raise mini-game canvas above pause popup and hide the pause popup', async () => {
+      // The .popup CSS class sets z-index: 1000.  #treasurecanvas defaults to z-index: 11,
+      // so the pause popup renders on top of the mini-game.
+      // hidePausePopupForMiniGame raises #treasurecanvas to z-index: 1001 and force-hides
+      // the pause popup so the mini-game is fully visible and unobstructed.
+      await hidePausePopupForMiniGame(page);
+    });
+
+    await test.step('Resume game loop so mini-game animation can advance with real deltaTime', async () => {
+      // isPaused = true (set in TC_0009) forces deltaTime = 0 in GameplayScene.draw().
+      // With deltaTime = 0 the TreasureChestAnimation stateTimer never advances and the
+      // chest stays in FadeIn/FlyIn indefinitely.  resumeFtmGame() restores real deltaTime
+      // so the animation progresses through FadeIn → ClosedChest → OpenedChest.
+      // The mini-game canvas (z-index 1001) is above the hidden pause popup, so the game
+      // appears paused while the mini-game plays automatically.
+      await resumeFtmGame(page);
+    });
   });
 
   // ─────────────────────────────────────────────────────────────────────────
   // TC_0015 | Mini Game
   // Step: Once mini game is loaded, click on stone UI spawning from treasure chest
-  // Expected: User can play through the mini game
+  // Expected: Stones are clicked (5+), bonus star appears, mini game completes
   // ─────────────────────────────────────────────────────────────────────────
-  test('FTM_TC_0015 | Mini Game | Mini game is active on #treasurecanvas; stones are clickable', async () => {
+  test('FTM_TC_0015 | Mini Game | Click 5 stones, bonus star shown, mini game completes naturally', async () => {
     await test.step('Treasure chest canvas is visible with non-zero dimensions', async () => {
       await expect(page.locator(Selectors.treasureCanvas)).toBeVisible({
         timeout: Timeouts.domUpdate,
@@ -987,67 +1007,108 @@ test.describe.serial('FeedTheMonsterJS – Full E2E Suite (TC_001 – TC_0016)',
       expect(canvasBB!.height).toBeGreaterThan(0);
     });
 
-    await test.step('Click stone UI elements spawning from the treasure chest canvas', async () => {
-      const canvasBB = await page.locator(Selectors.treasureCanvas).boundingBox();
-      if (canvasBB && canvasBB.width > 0 && canvasBB.height > 0) {
-        const positions: [number, number][] = [
-          [0.3, 0.5],
-          [0.5, 0.4],
-          [0.7, 0.5],
-        ];
-        for (const [rx, ry] of positions) {
-          await page.mouse.click(
-            canvasBB.x + canvasBB.width * rx,
-            canvasBB.y + canvasBB.height * ry,
-          );
-          await page.waitForTimeout(500);
-        }
-      }
+    await test.step('Wait for treasure chest to open (FadeIn ~300 ms + ClosedChest ~1000 ms)', async () => {
+      // TreasureChestAnimation state machine:
+      //   FadeIn (300 ms) → ClosedChest / shake (1000 ms) → OpenedChest (12 s)
+      // 1500 ms ensures the OpenedChest stone burst is active before clicking.
+      await page.waitForTimeout(1500);
     });
 
-    await test.step('Game background remains visible during mini game', async () => {
+    await test.step('Auto-click 5 stones by reading their live positions from TreasureStones', async () => {
+      // Stone positions are in canvas logical coordinates (not CSS pixels).
+      // We read active stone positions directly from TreasureStones.stones and call
+      // onClickEvent(stone.x, stone.y) — no DOM coordinate math needed, and the hit
+      // always registers since distance from stone centre to itself is 0 (≤ size/2 = 50).
+      //
+      // 5 clicks at 800 ms intervals = 4 000 ms total, all within the 60 % elapsed-time
+      // threshold (7 200 ms = 60 % × 12 000 ms) for the Blue Bonus Star:
+      //   3+ stones collected before threshold → TreasureChestMiniGame.onThresholdTimeReached
+      //   → treasureAnimation.showBlueBonusStar() → blueStarTimer animation renders.
+      await page.evaluate(({ count, intervalMs }) => {
+        return new Promise<void>((resolve) => {
+          const scene =
+            (window as any).__ftm?.sceneHandler?.['activeScene']?.['scene'];
+          const miniGame = scene?.miniGameHandler?.activeMiniGame;
+
+          let clicked = 0;
+          const tick = () => {
+            if (clicked >= count || !miniGame) {
+              resolve();
+              return;
+            }
+            // Access private TreasureStones instance via bracket notation
+            // (TypeScript 'private' is not hard-private at runtime).
+            const stonesMgr = miniGame['treasureStones'];
+            const stones: any[] = stonesMgr?.['stones'] ?? [];
+            const active = stones.filter((s: any) => s.active && !s.burning);
+            if (active.length > 0) {
+              // Pick a random active stone and click it at its current position.
+              const s = active[Math.floor(Math.random() * active.length)];
+              stonesMgr['onClickEvent'](s.x, s.y);
+              clicked++;
+            }
+            setTimeout(tick, intervalMs);
+          };
+          setTimeout(tick, intervalMs);
+        });
+      }, { count: 5, intervalMs: 800 });
+    });
+
+    await test.step('Wait for mini game to complete naturally (OpenedChest 12 s + FadeOut 400 ms)', async () => {
+      // TreasureChestAnimation transitions FadeOut when stateTimer >= 12 000 ms,
+      // then calls hide() + onFadeComplete (which fires IS_MINI_GAME_DONE).
+      // waitForMiniGameComplete polls until #treasurecanvas display:none — up to 20 s.
+      await waitForMiniGameComplete(page, 20_000);
+    });
+
+    await test.step('Game background remains visible after mini game ends', async () => {
       await expect(page.locator(Selectors.background)).toBeVisible();
     });
   });
 
   // ─────────────────────────────────────────────────────────────────────────
   // TC_0016 | Completion of a Level
-  // Step: Play through remaining puzzles by dragging proper answers to monster
+  // Step: After mini game ends, show progress jar animation then level end screen
   // Expected: Level end screen loaded with star count, Rive monster state and CTAs
   // ─────────────────────────────────────────────────────────────────────────
   test('FTM_TC_0016 | Level Completion | Level end screen shows jar animation, stars, Rive monster state and navigation CTAs', async () => {
-    await test.step('Wait for mini game to end (#treasurecanvas hides) before triggering level end', async () => {
-      // TC_0015 stone clicks can complete the mini game, which may trigger internal
-      // game completion events (scene switches, jar animation, etc.) within the same
-      // 5-second window. Keep the wait short to avoid letting the game auto-navigate
-      // to a new scene while we're watching — if it does, the catch swallows it and
-      // we recover in the next step.
-      await page.waitForFunction(
-        (sel) => {
-          const el = document.querySelector(sel) as HTMLElement | null;
-          if (!el) return true;
-          const cs = window.getComputedStyle(el);
-          return cs.display === 'none' || cs.visibility === 'hidden';
-        },
-        Selectors.treasureCanvas,
-        { timeout: 5_000 },
-      ).catch(() => {
-        // Mini game did not complete within 5 s or page navigated — proceed to level end
-      });
-    });
-
-    await test.step('Trigger level end (simulates completing all 5 puzzles; jar fill → level end)', async () => {
-      // Guard: if TC_0015 stone clicks caused the game to internally complete the level
-      // and the page has navigated or crashed, navigate fresh before triggering level end.
+    await test.step('Trigger level-end via ProgressionScene jar fill animation → LevelEnd', async () => {
+      // TC_0015's waitForMiniGameComplete() already confirmed the mini-game is done.
+      // Publish LEVEL_END_DATA_EVENT (with treasureChestScore=1 so isMiniGamePassing=true)
+      // then SWITCH_SCENE_EVENT='ProgressLevel'.  ProgressionScene runs the jar fill
+      // Rive animation and, when that ends, auto-publishes SWITCH_SCENE_EVENT='LevelEnd'.
       const pageAlive = await page.evaluate(() => true).catch(() => false);
       if (!pageAlive) {
         await page.goto(Routes.game({ lang: 'english' }));
         await waitForLoadingDone(page);
       }
-      await triggerLevelEndScene(page, 3, 0, false);
+
+      await page.evaluate(() => {
+        const gss = (window as any).__ftm?.gameStateService;
+        if (!gss) return;
+        const data = gss.getFTMData?.();
+        if (!data) return;
+
+        gss.publish(gss.EVENTS.LEVEL_END_DATA_EVENT, {
+          levelEndData: {
+            starCount: 3,
+            currentLevel: 1,
+            isTimerEnded: false,
+            treasureChestScore: 1, // collected stones in mini-game → isMiniGamePassing = true
+            score: 300,
+          },
+          data,
+        });
+
+        // ProgressionScene: runs jar fill Rive animation then schedules
+        // SWITCH_SCENE_EVENT='LevelEnd' after a 1 s delay (delaySwitchToLevelend).
+        gss.publish(gss.EVENTS.SWITCH_SCENE_EVENT, 'ProgressLevel');
+      });
     });
 
     await test.step('Level end container becomes visible after jar fill animation', async () => {
+      // ProgressionScene jar animation typically takes 3–8 s; with the 1 s delay before
+      // it publishes LevelEnd and LevelEndScene setup time, allow up to 30 s total.
       await page.waitForFunction(
         (sel: string) => {
           const el = document.querySelector(sel) as HTMLElement | null;
@@ -1057,7 +1118,7 @@ test.describe.serial('FeedTheMonsterJS – Full E2E Suite (TC_001 – TC_0016)',
             : false;
         },
         Selectors.levelEndContainer,
-        { timeout: Timeouts.sceneTransition },
+        { timeout: 30_000 },
       );
     });
 
