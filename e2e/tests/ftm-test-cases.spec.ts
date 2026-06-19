@@ -22,7 +22,6 @@ import {
   exposeGameInternals,
   triggerAssessment,
   pauseFtmGame,
-  resumeFtmGame,
   hidePausePopupForMiniGame,
   waitForPositiveFeedback,
   waitForTreasureCanvasVisible,
@@ -157,6 +156,8 @@ test.describe.serial('FeedTheMonsterJS – Full E2E Suite (TC_001 – TC_0016)',
 
     await test.step('Click start screen area to navigate', async () => {
       await page.locator(Selectors.startSceneClickArea).click({ force: true });
+      // Allow 1.5 s for the transition animation to complete visually.
+      await page.waitForTimeout(1500);
     });
 
     await test.step('Level selection screen container is visible', async () => {
@@ -205,6 +206,8 @@ test.describe.serial('FeedTheMonsterJS – Full E2E Suite (TC_001 – TC_0016)',
 
     await test.step('Click level 2 button to navigate to gameplay screen', async () => {
       await page.locator(Selectors.levelButton(1)).click();
+      // Allow 1.5 s for the level-to-gameplay transition to be visible.
+      await page.waitForTimeout(1500);
     });
   });
 
@@ -955,8 +958,8 @@ test.describe.serial('FeedTheMonsterJS – Full E2E Suite (TC_001 – TC_0016)',
           await innerClose.first().click({ force: true });
         }
       }
-      // Give the close animation a moment to start before the next test asserts
-      await page.waitForTimeout(500);
+      // Give the close animation time to complete and the mini-game canvas to appear.
+      await page.waitForTimeout(1500);
     });
   });
 
@@ -974,20 +977,18 @@ test.describe.serial('FeedTheMonsterJS – Full E2E Suite (TC_001 – TC_0016)',
 
     await test.step('Raise mini-game canvas above pause popup and hide the pause popup', async () => {
       // The .popup CSS class sets z-index: 1000.  #treasurecanvas defaults to z-index: 11,
-      // so the pause popup renders on top of the mini-game.
+      // so the pause popup (opened by pauseFtmGame in TC_0009) renders on top of the mini-game.
       // hidePausePopupForMiniGame raises #treasurecanvas to z-index: 1001 and force-hides
       // the pause popup so the mini-game is fully visible and unobstructed.
       await hidePausePopupForMiniGame(page);
     });
 
-    await test.step('Resume game loop so mini-game animation can advance with real deltaTime', async () => {
-      // isPaused = true (set in TC_0009) forces deltaTime = 0 in GameplayScene.draw().
-      // With deltaTime = 0 the TreasureChestAnimation stateTimer never advances and the
-      // chest stays in FadeIn/FlyIn indefinitely.  resumeFtmGame() restores real deltaTime
-      // so the animation progresses through FadeIn → ClosedChest → OpenedChest.
-      // The mini-game canvas (z-index 1001) is above the hidden pause popup, so the game
-      // appears paused while the mini-game plays automatically.
-      await resumeFtmGame(page);
+    await test.step('Mini-game animation advances with real deltaTime (game loop stays paused)', async () => {
+      // GameplayScene.draw() now always passes realDeltaTime to miniGameHandler when
+      // isActiveMiniGame is true, so the TreasureChestAnimation stateTimer advances
+      // even while isPaused = true.  The main gameplay (timer, stones) remains frozen
+      // until IS_MINI_GAME_DONE fires, which auto-resumes the game — no manual resume needed.
+      await page.waitForTimeout(1500);
     });
   });
 
