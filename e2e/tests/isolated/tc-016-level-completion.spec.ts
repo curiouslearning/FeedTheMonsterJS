@@ -4,23 +4,19 @@
  * Step: After mini game ends, show progress jar animation then level end screen
  * Expected: Level end screen loaded with star count, Rive monster state and CTAs
  *
- * The beforeAll navigates to gameplay, then triggers the level-end flow
- * via published game events (ProgressionScene jar fill → LevelEnd).
+ * Triggers the level-end flow via published game events (no full navigation needed)
+ * so it works regardless of which scene is active when this test starts.
+ *
+ * Run via the orchestrator: e2e/tests/ftm-assessment-survey-flow.spec.ts
  */
 
-import { test, expect, Page } from '@playwright/test';
+import { test, expect } from '../../fixtures/game-fixtures';
+import type { Page } from '@playwright/test';
 import { Routes } from '../../constants/urls';
 import { Selectors } from '../../constants/selectors';
 import { Timeouts } from '../../constants/timeouts';
-import { StartPage } from '../../pages/start-page';
 import { LevelSelectionPage } from '../../pages/level-selection-page';
-import { GameplayPage } from '../../pages/gameplay-page';
 import { LevelEndPage } from '../../pages/level-end-page';
-import {
-  mockAnalytics,
-  clearGameProgress,
-  exposeGameInternals,
-} from '../../helpers';
 
 async function waitForLoadingDone(page: Page) {
   await page.waitForFunction(
@@ -34,45 +30,10 @@ async function waitForLoadingDone(page: Page) {
   );
 }
 
-test.describe.serial('FTM_TC_0016 | Level Completion', () => {
-  test.describe.configure({ retries: 0 });
-
-  let page: Page;
-
-  test.beforeAll(async ({ browser }) => {
-    const ctx = await browser.newContext();
-    page = await ctx.newPage();
-    await mockAnalytics(page);
-    await clearGameProgress(page);
-    await exposeGameInternals(page);
-    await page.goto(Routes.game({ lang: 'english' }));
-    await waitForLoadingDone(page);
-
-    // Enable debug mode and navigate to gameplay (level 1 is sufficient here)
-    await expect(page.locator(StartPage.SELECTORS.toggleDevBtn)).toBeVisible({
-      timeout: Timeouts.sceneTransition,
-    });
-    await page.locator(StartPage.SELECTORS.toggleDevBtn).click();
-
-    await page.locator(StartPage.SELECTORS.clickArea).click({ force: true });
-    await page.waitForTimeout(1500);
-    await expect(page.locator(LevelSelectionPage.SELECTOR)).toBeVisible({
-      timeout: Timeouts.sceneTransition,
-    });
-
-    // Level 1 (index 0) is always available
-    await page.locator(LevelSelectionPage.SELECTORS.levelButton(0)).click();
-    await page.waitForTimeout(1500);
-    await expect(page.locator(GameplayPage.SELECTORS.mainCanvas)).toBeVisible({
-      timeout: Timeouts.sceneTransition,
-    });
-  });
-
-  test.afterAll(async () => {
-    await page.close();
-  });
-
+export function registerTests(getPage: () => Page): void {
   test('FTM_TC_0016 | Level Completion | Level end screen shows jar animation, stars, Rive monster state and navigation CTAs', async () => {
+    const page = getPage();
+
     await test.step('Trigger level-end via ProgressionScene jar fill animation → LevelEnd', async () => {
       const pageAlive = await page.evaluate(() => true).catch(() => false);
       if (!pageAlive) {
@@ -151,4 +112,4 @@ test.describe.serial('FTM_TC_0016 | Level Completion', () => {
       });
     });
   });
-});
+}

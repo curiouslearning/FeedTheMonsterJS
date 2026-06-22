@@ -4,71 +4,25 @@
  *
  * TC_004: All levels unlocked in debug mode; level 2 is clickable
  * TC_005: Gameplay screen loads successfully after level button click
+ *
+ * Run via the orchestrator: e2e/tests/ftm-assessment-survey-flow.spec.ts
  */
 
-import { test, expect, Page } from '@playwright/test';
-import { Routes } from '../../constants/urls';
+import { test, expect } from '../../fixtures/game-fixtures';
+import type { Page } from '@playwright/test';
 import { Selectors } from '../../constants/selectors';
 import { Timeouts } from '../../constants/timeouts';
-import { StartPage } from '../../pages/start-page';
-import { LoadingPage } from '../../pages/loading-page';
 import { LevelSelectionPage } from '../../pages/level-selection-page';
 import { GameplayPage } from '../../pages/gameplay-page';
-import {
-  mockAnalytics,
-  clearGameProgress,
-  exposeGameInternals,
-  subscribeToCorrectStonePosition,
-} from '../../helpers';
+import { subscribeToCorrectStonePosition } from '../../helpers';
 
-async function waitForLoadingDone(page: Page) {
-  await page.waitForFunction(
-    (sel: string) => {
-      const el = document.querySelector(sel) as HTMLElement | null;
-      if (!el) return true;
-      return el.style.display === 'none' || el.style.zIndex === '-1';
-    },
-    Selectors.loadingScreen,
-    { timeout: Timeouts.appReady },
-  );
-}
-
-test.describe.serial('FTM_TC_004–005 | Level Selection and Navigation to Gameplay', () => {
-  test.describe.configure({ retries: 0 });
-
-  let page: Page;
-
-  test.beforeAll(async ({ browser }) => {
-    const ctx = await browser.newContext();
-    page = await ctx.newPage();
-    await mockAnalytics(page);
-    await clearGameProgress(page);
-    await exposeGameInternals(page);
-    await page.goto(Routes.game({ lang: 'english' }));
-    await waitForLoadingDone(page);
-
-    // Enable debug mode to unlock all levels
-    await expect(page.locator(StartPage.SELECTORS.toggleDevBtn)).toBeVisible({
-      timeout: Timeouts.sceneTransition,
-    });
-    await page.locator(StartPage.SELECTORS.toggleDevBtn).click();
-
-    // Navigate to level selection
-    await page.locator(StartPage.SELECTORS.clickArea).click({ force: true });
-    await page.waitForTimeout(1500);
-    await expect(page.locator(LevelSelectionPage.SELECTOR)).toBeVisible({
-      timeout: Timeouts.sceneTransition,
-    });
-  });
-
-  test.afterAll(async () => {
-    await page.close();
-  });
-
+export function registerTests(getPage: () => Page): void {
   // ─────────────────────────────────────────────────────────────────────────
   // TC_004 | Level Selection Screen
   // ─────────────────────────────────────────────────────────────────────────
   test('FTM_TC_004 | Level Selection | All levels unlocked in debug mode; level 2 is clickable', async () => {
+    const page = getPage();
+
     await test.step('Level selection grid is visible', async () => {
       await expect(page.locator(LevelSelectionPage.SELECTORS.grid)).toBeVisible();
     });
@@ -99,6 +53,8 @@ test.describe.serial('FTM_TC_004–005 | Level Selection and Navigation to Gamep
   // TC_005 | Navigation from Level Screen to Gameplay Screen
   // ─────────────────────────────────────────────────────────────────────────
   test('FTM_TC_005 | Navigation | Gameplay screen loads successfully after level button click', async () => {
+    const page = getPage();
+
     await test.step('Main game canvas is visible', async () => {
       await expect(page.locator(GameplayPage.SELECTORS.mainCanvas)).toBeVisible({
         timeout: Timeouts.sceneTransition,
@@ -119,4 +75,4 @@ test.describe.serial('FTM_TC_004–005 | Level Selection and Navigation to Gamep
       await expect(page.locator(Selectors.riveCanvas)).toBeAttached();
     });
   });
-});
+}

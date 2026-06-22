@@ -7,88 +7,33 @@
  * TC_007: Stones appear on gameplay canvas when Rive monster is clicked
  * TC_008: Dragging correct stone to monster triggers feedback text and audio
  *
- * These three tests share captured stone position and monster hitbox state,
- * so they run serially in a single browser session.
+ * TC_007 writes capturedStonePos + monsterHitboxCenter into SharedFlowState;
+ * TC_008 reads them. TC_008 ends with a 2 s stability pause so TC_009
+ * (assessment trigger) can safely begin without its own bridging wait.
+ *
+ * Run via the orchestrator: e2e/tests/ftm-assessment-survey-flow.spec.ts
  */
 
-import { test, expect, Page } from '@playwright/test';
-import { Routes } from '../../constants/urls';
+import { test, expect } from '../../fixtures/game-fixtures';
+import type { SharedFlowState } from '../../fixtures/game-fixtures';
+import type { Page } from '@playwright/test';
 import { Selectors } from '../../constants/selectors';
 import { Timeouts } from '../../constants/timeouts';
-import { StartPage } from '../../pages/start-page';
-import { LevelSelectionPage } from '../../pages/level-selection-page';
 import { GameplayPage } from '../../pages/gameplay-page';
 import {
-  mockAnalytics,
-  clearGameProgress,
-  exposeGameInternals,
-  subscribeToCorrectStonePosition,
   getCapturedCorrectStonePos,
   getHitboxCenter,
   getCanvasPixelColor,
   waitForPositiveFeedback,
 } from '../../helpers';
 
-async function waitForLoadingDone(page: Page) {
-  await page.waitForFunction(
-    (sel: string) => {
-      const el = document.querySelector(sel) as HTMLElement | null;
-      if (!el) return true;
-      return el.style.display === 'none' || el.style.zIndex === '-1';
-    },
-    Selectors.loadingScreen,
-    { timeout: Timeouts.appReady },
-  );
-}
-
-test.describe.serial('FTM_TC_006–008 | Gameplay UI, Stone Trigger, and Drag-and-Drop', () => {
-  test.describe.configure({ retries: 0 });
-
-  let page: Page;
-  let capturedStonePos: { x: number; y: number; text: string } | null = null;
-  let monsterHitboxCenter: { x: number; y: number } | null = null;
-
-  test.beforeAll(async ({ browser }) => {
-    const ctx = await browser.newContext();
-    page = await ctx.newPage();
-    await mockAnalytics(page);
-    await clearGameProgress(page);
-    await exposeGameInternals(page);
-    await page.goto(Routes.game({ lang: 'english' }));
-    await waitForLoadingDone(page);
-
-    // Enable debug mode
-    await expect(page.locator(StartPage.SELECTORS.toggleDevBtn)).toBeVisible({
-      timeout: Timeouts.sceneTransition,
-    });
-    await page.locator(StartPage.SELECTORS.toggleDevBtn).click();
-
-    // Navigate to level selection
-    await page.locator(StartPage.SELECTORS.clickArea).click({ force: true });
-    await page.waitForTimeout(1500);
-    await expect(page.locator(LevelSelectionPage.SELECTOR)).toBeVisible({
-      timeout: Timeouts.sceneTransition,
-    });
-
-    // Subscribe BEFORE clicking level so the event is captured during scene init
-    await subscribeToCorrectStonePosition(page);
-
-    // Navigate to level 2 gameplay
-    await page.locator(LevelSelectionPage.SELECTORS.levelButton(1)).click();
-    await page.waitForTimeout(1500);
-    await expect(page.locator(GameplayPage.SELECTORS.mainCanvas)).toBeVisible({
-      timeout: Timeouts.sceneTransition,
-    });
-  });
-
-  test.afterAll(async () => {
-    await page.close();
-  });
-
+export function registerTests(getPage: () => Page, state: SharedFlowState): void {
   // ─────────────────────────────────────────────────────────────────────────
   // TC_006 | Gameplay Screen
   // ─────────────────────────────────────────────────────────────────────────
   test('FTM_TC_006 | Gameplay Screen | All UI elements are loaded and interactable', async () => {
+    const page = getPage();
+
     await test.step('Target letter is displayed on the prompt bubble', async () => {
       await expect(page.locator(GameplayPage.SELECTORS.promptContainer)).toBeAttached({
         timeout: Timeouts.sceneTransition,
@@ -123,32 +68,34 @@ test.describe.serial('FTM_TC_006–008 | Gameplay UI, Stone Trigger, and Drag-an
   // TC_007 | Triggering Stones on Gameplay Screen
   // ─────────────────────────────────────────────────────────────────────────
   test('FTM_TC_007 | Stone Trigger | Stones appear on gameplay canvas when Rive monster is clicked', async () => {
+    const page = getPage();
+
     await page.waitForFunction(
       () => (window as any).__ftm?.gameStateService?.getHitBoxRanges?.() != null,
       { timeout: 10_000 },
     );
 
     await test.step('Read the correct stone position captured during initial puzzle load', async () => {
-      capturedStonePos = await getCapturedCorrectStonePos(page);
+      state.capturedStonePos = await getCapturedCorrectStonePos(page);
       test.info().annotations.push({
         type: 'stone-pos',
-        description: capturedStonePos
-          ? `Captured: "${capturedStonePos.text}" at CSS px (${Math.round(capturedStonePos.x)}, ${Math.round(capturedStonePos.y)})`
+        description: state.capturedStonePos
+          ? `Captured: "${state.capturedStonePos.text}" at CSS px (${Math.round(state.capturedStonePos.x)}, ${Math.round(state.capturedStonePos.y)})`
           : 'CORRECT_STONE_POSITION did not fire — TC_008 will use systematic fallback',
       });
     });
 
     await test.step('Resolve monster hitbox centre from game state', async () => {
-      monsterHitboxCenter = await getHitboxCenter(page);
-      expect(monsterHitboxCenter).not.toBeNull();
+      state.monsterHitboxCenter = await getHitboxCenter(page);
+      expect(state.monsterHitboxCenter).not.toBeNull();
     });
 
     await test.step('Click the monster hotspot on the game canvas', async () => {
       const canvasBB = await page.locator(GameplayPage.SELECTORS.mainCanvas).boundingBox();
       expect(canvasBB).not.toBeNull();
       await page.mouse.click(
-        canvasBB!.x + monsterHitboxCenter!.x,
-        canvasBB!.y + monsterHitboxCenter!.y,
+        canvasBB!.x + state.monsterHitboxCenter!.x,
+        canvasBB!.y + state.monsterHitboxCenter!.y,
       );
     });
 
@@ -165,6 +112,8 @@ test.describe.serial('FTM_TC_006–008 | Gameplay UI, Stone Trigger, and Drag-an
   // TC_008 | Drag and Drop
   // ─────────────────────────────────────────────────────────────────────────
   test('FTM_TC_008 | Drag and Drop | Dragging correct stone to monster triggers feedback text and audio', async () => {
+    const page = getPage();
+
     await test.step('Wait for stones to be rendered on #canvas (poll pixel data)', async () => {
       await page.waitForFunction(
         (sel) => {
@@ -186,12 +135,12 @@ test.describe.serial('FTM_TC_006–008 | Gameplay UI, Stone Trigger, and Drag-an
     await test.step('Assert correct stone position is captured and within canvas bounds', async () => {
       const canvasBB = await page.locator(GameplayPage.SELECTORS.mainCanvas).boundingBox();
       expect(canvasBB, 'Canvas bounding box must be available').not.toBeNull();
-      expect(capturedStonePos, 'CORRECT_STONE_POSITION event must have fired').not.toBeNull();
+      expect(state.capturedStonePos, 'CORRECT_STONE_POSITION event must have fired').not.toBeNull();
 
-      expect(capturedStonePos!.x).toBeGreaterThan(0);
-      expect(capturedStonePos!.x).toBeLessThan(canvasBB!.width);
-      expect(capturedStonePos!.y).toBeGreaterThan(0);
-      expect(capturedStonePos!.y).toBeLessThan(canvasBB!.height);
+      expect(state.capturedStonePos!.x).toBeGreaterThan(0);
+      expect(state.capturedStonePos!.x).toBeLessThan(canvasBB!.width);
+      expect(state.capturedStonePos!.y).toBeGreaterThan(0);
+      expect(state.capturedStonePos!.y).toBeLessThan(canvasBB!.height);
     });
 
     await test.step('Verify stone is rendered near captured coordinates via canvas pixel inspection', async () => {
@@ -218,19 +167,23 @@ test.describe.serial('FTM_TC_006–008 | Gameplay UI, Stone Trigger, and Drag-an
             }
             return false;
           },
-          { sel: GameplayPage.SELECTORS.mainCanvas, cx: Math.round(capturedStonePos!.x), cy: Math.round(capturedStonePos!.y) },
+          {
+            sel: GameplayPage.SELECTORS.mainCanvas,
+            cx: Math.round(state.capturedStonePos!.x),
+            cy: Math.round(state.capturedStonePos!.y),
+          },
           { timeout: 5_000 },
         )
         .then(() => { stonePixelFound = true; })
         .catch(() => { stonePixelFound = false; });
 
-      const rx = capturedStonePos!.x / canvasBB!.width;
-      const ry = capturedStonePos!.y / canvasBB!.height;
+      const rx = state.capturedStonePos!.x / canvasBB!.width;
+      const ry = state.capturedStonePos!.y / canvasBB!.height;
       const [r, g, b, a] = await getCanvasPixelColor(page, GameplayPage.SELECTORS.mainCanvas, rx, ry);
       test.info().annotations.push({
         type: 'stone-pixel',
         description:
-          `Stone "${capturedStonePos!.text}" corner pixel rgba(${r},${g},${b},${a}) ` +
+          `Stone "${state.capturedStonePos!.text}" corner pixel rgba(${r},${g},${b},${a}) ` +
           `| 50px neighbourhood: ${stonePixelFound ? 'opaque pixels found ✓' : 'transparent ✗'}`,
       });
 
@@ -238,10 +191,10 @@ test.describe.serial('FTM_TC_006–008 | Gameplay UI, Stone Trigger, and Drag-an
     });
 
     await test.step('Resolve and validate monster hitbox bounds and dimensions', async () => {
-      if (!monsterHitboxCenter) {
-        monsterHitboxCenter = await getHitboxCenter(page);
+      if (!state.monsterHitboxCenter) {
+        state.monsterHitboxCenter = await getHitboxCenter(page);
       }
-      expect(monsterHitboxCenter).not.toBeNull();
+      expect(state.monsterHitboxCenter).not.toBeNull();
 
       const canvasBB = await page.locator(GameplayPage.SELECTORS.mainCanvas).boundingBox();
       const hitboxRanges = await page.evaluate(() => {
@@ -253,24 +206,24 @@ test.describe.serial('FTM_TC_006–008 | Gameplay UI, Stone Trigger, and Drag-an
       const hitboxW = hitboxRanges.hitboxRangeX.to - hitboxRanges.hitboxRangeX.from;
       const hitboxH = hitboxRanges.hitboxRangeY.to - hitboxRanges.hitboxRangeY.from;
 
-      expect(monsterHitboxCenter!.x).toBeGreaterThan(0);
-      expect(monsterHitboxCenter!.x).toBeLessThan(canvasBB!.width);
-      expect(monsterHitboxCenter!.y).toBeGreaterThan(0);
-      expect(monsterHitboxCenter!.y).toBeLessThan(canvasBB!.height);
+      expect(state.monsterHitboxCenter!.x).toBeGreaterThan(0);
+      expect(state.monsterHitboxCenter!.x).toBeLessThan(canvasBB!.width);
+      expect(state.monsterHitboxCenter!.y).toBeGreaterThan(0);
+      expect(state.monsterHitboxCenter!.y).toBeLessThan(canvasBB!.height);
       expect(hitboxW).toBeGreaterThan(0);
       expect(hitboxH).toBeGreaterThan(0);
     });
 
     await test.step(
-      `Drag correct stone "${capturedStonePos?.text ?? '?'}" to monster hitbox centre and release`,
+      `Drag correct stone "${state.capturedStonePos?.text ?? '?'}" to monster hitbox centre and release`,
       async () => {
         const canvasBB = await page.locator(GameplayPage.SELECTORS.mainCanvas).boundingBox();
         expect(canvasBB).not.toBeNull();
 
-        const pickX = canvasBB!.x + capturedStonePos!.x;
-        const pickY = canvasBB!.y + capturedStonePos!.y;
-        const dropX = canvasBB!.x + monsterHitboxCenter!.x;
-        const dropY = canvasBB!.y + monsterHitboxCenter!.y;
+        const pickX = canvasBB!.x + state.capturedStonePos!.x;
+        const pickY = canvasBB!.y + state.capturedStonePos!.y;
+        const dropX = canvasBB!.x + state.monsterHitboxCenter!.x;
+        const dropY = canvasBB!.y + state.monsterHitboxCenter!.y;
 
         await page.mouse.move(pickX, pickY);
         await page.mouse.down();
@@ -307,6 +260,10 @@ test.describe.serial('FTM_TC_006–008 | Gameplay UI, Stone Trigger, and Drag-an
         matchesPositive,
         `Feedback text "${feedbackContent}" must match one of: ${knownPositivePhrases.join(', ')}`,
       ).toBe(true);
+
+      // Stability pause — TC_009 (assessment trigger) needs the game to settle
+      // after the correct-drop feedback before the assessment overlay is shown.
+      await page.waitForTimeout(2000);
     });
   });
-});
+}

@@ -88,3 +88,19 @@ export const test = base.extend<GameFixtures>({
 });
 
 export { expect } from '@playwright/test';
+
+export interface SharedFlowState {
+  capturedStonePos: { x: number; y: number; text: string } | null;
+  monsterHitboxCenter: { x: number; y: number } | null;
+  correctAssessmentBtnId: string | null;
+  wrongAssessmentBtnId: string | null;
+}
+
+export function createSharedState(): SharedFlowState {
+  return {
+    capturedStonePos: null,
+    monsterHitboxCenter: null,
+    correctAssessmentBtnId: null,
+    wrongAssessmentBtnId: null,
+  };
+}

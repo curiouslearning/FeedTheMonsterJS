@@ -5,145 +5,30 @@
  * FTM_TC_0012 | Feedback in Assessment
  * FTM_TC_0013 | Wrong Drop
  *
- * These tests cover the full assessment survey flow.  They share assessment
- * button state across tests, so they run serially in one browser session.
- * The beforeAll navigates to gameplay and drags the correct stone before
- * triggering the assessment overlay.
+ * TC_0011 writes correctAssessmentBtnId + wrongAssessmentBtnId into SharedFlowState;
+ * TC_0012 and TC_0013 read them.
+ *
+ * Run via the orchestrator: e2e/tests/ftm-assessment-survey-flow.spec.ts
  */
 
-import { test, expect, Page } from '@playwright/test';
-import { Routes } from '../../constants/urls';
+import { test, expect } from '../../fixtures/game-fixtures';
+import type { SharedFlowState } from '../../fixtures/game-fixtures';
+import type { Page } from '@playwright/test';
 import { Selectors } from '../../constants/selectors';
 import { Timeouts } from '../../constants/timeouts';
-import { StartPage } from '../../pages/start-page';
-import { LevelSelectionPage } from '../../pages/level-selection-page';
 import { GameplayPage } from '../../pages/gameplay-page';
 import {
-  mockAnalytics,
-  clearGameProgress,
-  exposeGameInternals,
-  subscribeToCorrectStonePosition,
-  getCapturedCorrectStonePos,
-  getHitboxCenter,
   triggerAssessment,
   pauseFtmGame,
-  waitForPositiveFeedback,
 } from '../../helpers';
 
-async function waitForLoadingDone(page: Page) {
-  await page.waitForFunction(
-    (sel: string) => {
-      const el = document.querySelector(sel) as HTMLElement | null;
-      if (!el) return true;
-      return el.style.display === 'none' || el.style.zIndex === '-1';
-    },
-    Selectors.loadingScreen,
-    { timeout: Timeouts.appReady },
-  );
-}
-
-test.describe.serial('FTM_TC_009–013 | Assessment Flow', () => {
-  test.describe.configure({ retries: 0 });
-
-  let page: Page;
-  let correctAssessmentBtnId: string | null = null;
-  let wrongAssessmentBtnId: string | null = null;
-
-  test.beforeAll(async ({ browser }) => {
-    const ctx = await browser.newContext();
-    page = await ctx.newPage();
-    await mockAnalytics(page);
-    await clearGameProgress(page);
-    await exposeGameInternals(page);
-    await page.goto(Routes.game({ lang: 'english' }));
-    await waitForLoadingDone(page);
-
-    // Enable debug mode
-    await expect(page.locator(StartPage.SELECTORS.toggleDevBtn)).toBeVisible({
-      timeout: Timeouts.sceneTransition,
-    });
-    await page.locator(StartPage.SELECTORS.toggleDevBtn).click();
-
-    // Navigate to level selection → subscribe → click level 2
-    await page.locator(StartPage.SELECTORS.clickArea).click({ force: true });
-    await page.waitForTimeout(1500);
-    await expect(page.locator(LevelSelectionPage.SELECTOR)).toBeVisible({
-      timeout: Timeouts.sceneTransition,
-    });
-    await subscribeToCorrectStonePosition(page);
-    await page.locator(LevelSelectionPage.SELECTORS.levelButton(1)).click();
-    await page.waitForTimeout(1500);
-
-    // Wait for gameplay
-    await expect(page.locator(GameplayPage.SELECTORS.mainCanvas)).toBeVisible({
-      timeout: Timeouts.sceneTransition,
-    });
-    await page.waitForFunction(
-      () => (window as any).__ftm?.gameStateService?.getHitBoxRanges?.() != null,
-      { timeout: 10_000 },
-    );
-
-    // Wait for stones to render
-    await page.waitForFunction(
-      (sel) => {
-        const canvas = document.querySelector(sel) as HTMLCanvasElement | null;
-        if (!canvas || canvas.width === 0) return false;
-        const ctx = canvas.getContext('2d');
-        if (!ctx) return false;
-        const { data } = ctx.getImageData(0, 0, canvas.width, canvas.height);
-        for (let i = 3; i < data.length; i += 4) {
-          if (data[i] > 0) return true;
-        }
-        return false;
-      },
-      GameplayPage.SELECTORS.mainCanvas,
-      { timeout: 10_000 },
-    );
-
-    // Drag correct stone to monster
-    const stonePos = await getCapturedCorrectStonePos(page);
-    const hitboxCenter = await getHitboxCenter(page);
-    if (stonePos && hitboxCenter) {
-      const canvasBB = await page.locator(GameplayPage.SELECTORS.mainCanvas).boundingBox();
-      if (canvasBB) {
-        const pickX = canvasBB.x + stonePos.x;
-        const pickY = canvasBB.y + stonePos.y;
-        const dropX = canvasBB.x + hitboxCenter.x;
-        const dropY = canvasBB.y + hitboxCenter.y;
-
-        await page.mouse.move(pickX, pickY);
-        await page.mouse.down();
-        for (let i = 1; i <= 20; i++) {
-          await page.mouse.move(
-            pickX + (dropX - pickX) * (i / 20),
-            pickY + (dropY - pickY) * (i / 20),
-          );
-          await page.waitForTimeout(20);
-        }
-        await page.mouse.up();
-      }
-    }
-
-    // Wait for positive feedback before triggering assessment
-    await page.waitForFunction(
-      (sel) => {
-        const el = document.querySelector(sel);
-        return !!el && (el.textContent ?? '').trim().length > 0;
-      },
-      Selectors.feedbackText,
-      { timeout: Timeouts.domUpdate },
-    );
-    await page.waitForTimeout(2000);
-  });
-
-  test.afterAll(async () => {
-    await page.close();
-  });
-
+export function registerTests(getPage: () => Page, state: SharedFlowState): void {
   // ─────────────────────────────────────────────────────────────────────────
   // TC_009 | Assessment Trigger
   // ─────────────────────────────────────────────────────────────────────────
   test('FTM_TC_009 | Assessment Trigger | Assessment overlay appears as overlay on existing UI during gameplay', async () => {
+    const page = getPage();
+
     await test.step('Trigger the assessment survey overlay via GameplayFlowManager', async () => {
       await triggerAssessment(page);
     });
@@ -187,6 +72,8 @@ test.describe.serial('FTM_TC_009–013 | Assessment Flow', () => {
   // TC_0010 | Assessment Gameplay
   // ─────────────────────────────────────────────────────────────────────────
   test('FTM_TC_0010 | Assessment Gameplay | Treasure chest UI and audio button are displayed and interactable', async () => {
+    const page = getPage();
+
     await test.step('Assessment overlay is still visible', async () => {
       await expect(page.locator(Selectors.assessmentOverlay)).toBeVisible({
         timeout: Timeouts.domUpdate,
@@ -220,6 +107,8 @@ test.describe.serial('FTM_TC_009–013 | Assessment Flow', () => {
   // TC_0011 | Assessment Drag and Drop
   // ─────────────────────────────────────────────────────────────────────────
   test('FTM_TC_0011 | Assessment Drag and Drop | Correct answer dragged to chest; question advances to next', async () => {
+    const page = getPage();
+
     await test.step('Identify correct answer and drag it to the chest', async () => {
       await page.waitForFunction(
         (playerSel) => {
@@ -263,21 +152,21 @@ test.describe.serial('FTM_TC_009–013 | Assessment Flow', () => {
       }, Selectors.assessmentPlayer);
 
       if (answerInfo?.correctBtnId) {
-        correctAssessmentBtnId = answerInfo.correctBtnId;
-        wrongAssessmentBtnId = answerInfo.wrongBtnId ?? null;
+        state.correctAssessmentBtnId = answerInfo.correctBtnId;
+        state.wrongAssessmentBtnId = answerInfo.wrongBtnId ?? null;
         test.info().annotations.push({
           type: 'correct-answer-identified',
           description: `Q1 correct answer (${answerInfo.correctAnswerName}) → ${answerInfo.correctBtnId}`,
         });
       }
 
-      expect(correctAssessmentBtnId).not.toBeNull();
+      expect(state.correctAssessmentBtnId).not.toBeNull();
 
       const chest = page.locator(`${Selectors.assessmentPlayer} #chestImage`);
       const chestBB = await chest.boundingBox();
       expect(chestBB).not.toBeNull();
 
-      const btn = page.locator(`${Selectors.assessmentPlayer} ${correctAssessmentBtnId}`);
+      const btn = page.locator(`${Selectors.assessmentPlayer} ${state.correctAssessmentBtnId}`);
       const btnBB = await btn.boundingBox();
       expect(btnBB).not.toBeNull();
 
@@ -311,8 +200,8 @@ test.describe.serial('FTM_TC_009–013 | Assessment Flow', () => {
       test.info().annotations.push({
         type: 'correct-drop-result',
         description: isGreenFeedback
-          ? `Green feedback confirmed for ${correctAssessmentBtnId} on Q1`
-          : `Feedback appeared but color check inconclusive for ${correctAssessmentBtnId}`,
+          ? `Green feedback confirmed for ${state.correctAssessmentBtnId} on Q1`
+          : `Feedback appeared but color check inconclusive for ${state.correctAssessmentBtnId}`,
       });
     });
 
@@ -323,8 +212,10 @@ test.describe.serial('FTM_TC_009–013 | Assessment Flow', () => {
   // TC_0012 | Feedback in Assessment
   // ─────────────────────────────────────────────────────────────────────────
   test('FTM_TC_0012 | Assessment Feedback | Correct answer shows green/positive feedback', async () => {
+    const page = getPage();
+
     await test.step('Correct answer button was identified during TC_0011', async () => {
-      expect(correctAssessmentBtnId).not.toBeNull();
+      expect(state.correctAssessmentBtnId).not.toBeNull();
     });
 
     await test.step('Green feedback (#feedbackWrap visible with green color) confirms correct answer', async () => {
@@ -342,8 +233,8 @@ test.describe.serial('FTM_TC_009–013 | Assessment Flow', () => {
       test.info().annotations.push({
         type: 'green-feedback-detection',
         description: greenFeedback
-          ? `#feedbackWrap visible with green color — correct btn: ${correctAssessmentBtnId}`
-          : `Green feedback faded before check — correct btn ${correctAssessmentBtnId} accepted`,
+          ? `#feedbackWrap visible with green color — correct btn: ${state.correctAssessmentBtnId}`
+          : `Green feedback faded before check — correct btn ${state.correctAssessmentBtnId} accepted`,
       });
 
       await expect(page.locator(Selectors.assessmentOverlay)).toBeAttached();
@@ -354,6 +245,8 @@ test.describe.serial('FTM_TC_009–013 | Assessment Flow', () => {
   // TC_0013 | Wrong Drop
   // ─────────────────────────────────────────────────────────────────────────
   test('FTM_TC_0013 | Wrong Drop | Dropping wrong answer shows red/negative feedback; question does not advance', async () => {
+    const page = getPage();
+
     await test.step('Wait for Q1 green feedback to fade before interacting with Q2', async () => {
       await page.waitForFunction(
         (playerSel) => {
@@ -413,8 +306,8 @@ test.describe.serial('FTM_TC_009–013 | Assessment Flow', () => {
       const buttonIds = ['#answerButton1', '#answerButton2', '#answerButton3', '#answerButton4'];
       const wrongId =
         q2WrongBtnId ??
-        wrongAssessmentBtnId ??
-        buttonIds.find((b) => b !== correctAssessmentBtnId) ??
+        state.wrongAssessmentBtnId ??
+        buttonIds.find((b) => b !== state.correctAssessmentBtnId) ??
         '#answerButton4';
 
       test.info().annotations.push({
@@ -462,4 +355,4 @@ test.describe.serial('FTM_TC_009–013 | Assessment Flow', () => {
       await page.waitForTimeout(1500);
     });
   });
-});
+}

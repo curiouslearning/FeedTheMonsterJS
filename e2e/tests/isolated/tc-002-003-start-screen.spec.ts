@@ -4,52 +4,24 @@
  *
  * TC_002: Title, play button, dev toggle, Rive monster and background are loaded
  * TC_003: Clicking start screen area navigates to level selection screen
+ *
+ * Run via the orchestrator: e2e/tests/ftm-assessment-survey-flow.spec.ts
  */
 
-import { test, expect, Page } from '@playwright/test';
-import { Routes } from '../../constants/urls';
+import { test, expect } from '../../fixtures/game-fixtures';
+import type { Page } from '@playwright/test';
 import { Selectors } from '../../constants/selectors';
 import { Timeouts } from '../../constants/timeouts';
 import { StartPage } from '../../pages/start-page';
-import { LoadingPage } from '../../pages/loading-page';
 import { LevelSelectionPage } from '../../pages/level-selection-page';
-import { mockAnalytics, clearGameProgress, exposeGameInternals } from '../../helpers';
 
-async function waitForLoadingDone(page: Page) {
-  await page.waitForFunction(
-    (sel: string) => {
-      const el = document.querySelector(sel) as HTMLElement | null;
-      if (!el) return true;
-      return el.style.display === 'none' || el.style.zIndex === '-1';
-    },
-    Selectors.loadingScreen,
-    { timeout: Timeouts.appReady },
-  );
-}
-
-test.describe.serial('FTM_TC_002–003 | Start Screen and Navigation', () => {
-  test.describe.configure({ retries: 0 });
-
-  let page: Page;
-
-  test.beforeAll(async ({ browser }) => {
-    const ctx = await browser.newContext();
-    page = await ctx.newPage();
-    await mockAnalytics(page);
-    await clearGameProgress(page);
-    await exposeGameInternals(page);
-    await page.goto(Routes.game({ lang: 'english' }));
-    await waitForLoadingDone(page);
-  });
-
-  test.afterAll(async () => {
-    await page.close();
-  });
-
+export function registerTests(getPage: () => Page): void {
   // ─────────────────────────────────────────────────────────────────────────
   // TC_002 | Start Screen
   // ─────────────────────────────────────────────────────────────────────────
   test('FTM_TC_002 | Start Screen | Title, play button, dev toggle, Rive monster and background are loaded', async () => {
+    const page = getPage();
+
     await test.step('App title is displayed and non-empty', async () => {
       await expect(page.locator(StartPage.SELECTORS.gameTitle)).toBeVisible();
       const title = await page.locator(StartPage.SELECTORS.gameTitle).textContent();
@@ -88,6 +60,8 @@ test.describe.serial('FTM_TC_002–003 | Start Screen and Navigation', () => {
   // TC_003 | Navigation
   // ─────────────────────────────────────────────────────────────────────────
   test('FTM_TC_003 | Navigation | Clicking start screen area navigates to level selection screen', async () => {
+    const page = getPage();
+
     await test.step('Start screen click area is present in DOM', async () => {
       await expect(page.locator(StartPage.SELECTORS.clickArea)).toBeAttached();
     });
@@ -109,4 +83,4 @@ test.describe.serial('FTM_TC_002–003 | Start Screen and Navigation', () => {
       });
     });
   });
-});
+}
