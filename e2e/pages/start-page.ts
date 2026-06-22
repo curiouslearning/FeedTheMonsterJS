@@ -4,35 +4,41 @@ import { Selectors } from '../constants/selectors';
 import { Timeouts } from '../constants/timeouts';
 
 export class StartPage extends BasePage {
+  static override SELECTOR = '#title-and-play-button';
+
+  static SELECTORS = {
+    playButton: '#play-button',
+    gameTitle: '#title',
+    clickArea: '#start-scene-click-area',
+    toggleDevBtn: '#toggle-btn',
+    devAssessmentBtn: '#dev-assessment-btn',
+    versionInfo: '#version-info-id',
+  } as const;
+
   constructor(page: Page) {
     super(page);
   }
 
   get playButton() {
-    return this.page.locator(Selectors.playButton);
+    return this.getElement(StartPage.SELECTORS.playButton);
   }
 
   get gameTitle() {
-    return this.page.locator(Selectors.gameTitle);
+    return this.getElement(StartPage.SELECTORS.gameTitle);
   }
 
   get clickArea() {
-    return this.page.locator(Selectors.startSceneClickArea);
+    return this.getElement(StartPage.SELECTORS.clickArea);
   }
 
   get riveCanvas() {
-    return this.page.locator(Selectors.riveCanvas);
+    return this.getElement(Selectors.riveCanvas);
   }
 
   get versionInfo() {
-    return this.page.locator(Selectors.versionInfo);
+    return this.getElement(StartPage.SELECTORS.versionInfo);
   }
 
-  /**
-   * Waits for the start scene to be fully rendered.
-   * The play button and game title must exist in the DOM;
-   * the loading screen must have been dismissed.
-   */
   async waitForStartScene() {
     await this.page.waitForFunction(
       (sel) => {
@@ -62,12 +68,10 @@ export class StartPage extends BasePage {
     await this.playButton.click();
   }
 
-  /** Clicks anywhere on the start scene background to proceed. */
   async clickStartSceneArea() {
     await this.clickArea.click({ force: true });
   }
 
-  /** Clicks the start area to navigate to level selection (always works, even with FEATURE_QUICK_START). */
   async clickStartArea() {
     await this.clickArea.click({ force: true });
   }
@@ -76,7 +80,6 @@ export class StartPage extends BasePage {
     await expect(this.versionInfo).toBeVisible();
   }
 
-  /** Checks that the play button has the expected CSS class structure. */
   async assertPlayButtonClass(expectedClass: string) {
     await expect(this.playButton).toHaveClass(new RegExp(expectedClass));
   }

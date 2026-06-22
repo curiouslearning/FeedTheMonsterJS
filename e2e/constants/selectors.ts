@@ -1,79 +1,29 @@
-/** All stable DOM selectors used across E2E tests. Single source of truth. */
+/**
+ * Shared DOM selectors used across multiple pages, helpers, or spec files.
+ * Page-specific selectors live on their respective page class as static SELECTORS.
+ */
 
 export const Selectors = {
-  // ── Loading screen ───────────────────────────────────────────────────────────
+  // ── Loading screen ────────────────────────────────────────────────────────────
+  // Used in BasePage.waitForLoadingComplete and multiple spec files.
   loadingScreen: '#loading-screen',
-  loadingGif: '#loading-gif',
-  progressBar: '#progress-bar',
-  progressBarContainer: '#progress-bar-container',
 
-  // ── Shared layout ────────────────────────────────────────────────────────────
+  // ── Shared layout ─────────────────────────────────────────────────────────────
   background: '#background',
-  gameControl: '#game-control',
-  feedbackText: '#feedback-text',
-  riveContainer: '#rive-container',
   riveCanvas: '#rivecanvas',
   mainCanvas: '#canvas',
   treasureCanvas: '#treasurecanvas',
+  riveContainer: '#rive-container',
   backgroundElements: '#background-elements',
-  titleAndPlayButton: '#title-and-play-button',
-  versionInfo: '#version-info-id',
   gameScene: '.game-scene',
 
-  // ── Start scene ──────────────────────────────────────────────────────────────
-  startSceneClickArea: '#start-scene-click-area',
-  playButton: '#play-button',
-  gameTitle: '#title',
-  toggleDevBtn: '#toggle-btn',
-  devAssessmentBtn: '#dev-assessment-btn',
+  // ── Gameplay feedback (also used in game-state-helpers.ts) ───────────────────
+  feedbackText: '#feedback-text',
 
-  // ── Level selection ──────────────────────────────────────────────────────────
-  levelSelectionContainer: '#level-selection-container',
-  levelSelectionGrid: '#level-selection-grid',
-  /** Returns selector for button at grid index (0-based). Index 9 = Prev, 11 = Next. */
-  levelButton: (index: number) => `[id="${index}-level-button"]`,
-  prevNavButton: '[id="9-level-button"]',
-  nextNavButton: '[id="11-level-button"]',
-
-  // ── Gameplay scene ────────────────────────────────────────────────────────────
-  pauseButton: '#pause-button',
-
-  // Prompt elements (created by PromptText component)
-  promptContainer: '#prompt-container',
-  promptBubble: '#prompt-bubble',
-  promptText: '#prompt-text',
-  promptPlayButton: '#prompt-play-button',
-  promptSlots: '#prompt-slots',
-
-  // Timer elements — the game instantiates TimerHTMLComponent with id 'timer-ticking'
-  timerComponent: '#timer-ticking',
-  timerEmpty: '#timer-empty',
-  rotatingClock: '#rotating-clock',
-
-  // ── Pause popup ──────────────────────────────────────────────────────────────
-  pausePopup: '#pause-popup',
-  pausePopupClose: '[data-click="close"]',
-  pausePopupMapBtn: '#pause-popup #map-button',
-  pausePopupRetryBtn: '#pause-popup #retry-button',
-
-  // ── Confirm popup ────────────────────────────────────────────────────────────
-  confirmPopup: '#confirm-popup',
-  yesButton: '#yes-button',
-  cancelButton: '#cancel-button',
-
-  // ── Assessment survey overlay ─────────────────────────────────────────────────
+  // ── Assessment survey (no dedicated page class) ───────────────────────────────
   assessmentOverlay: '#assessment-survey-overlay',
   assessmentPlayer: 'assessment-survey-player',
   assessmentCloseBtn: '#assessment-survey-close-button',
-
-  // ── Level-end scene ───────────────────────────────────────────────────────────
-  levelEndContainer: '#levelEnd',
-  starsContainer: '.stars-container',
-  starItem: '.stars',
-  levelEndButtons: '#levelEndButtons',
-  levelEndMapBtn: '#levelend-map-btn',
-  levelEndNextBtn: '#levelend-next-btn',
-  levelEndRetryBtn: '#levelend-retry-btn',
 
   // ── Generic popup ─────────────────────────────────────────────────────────────
   popupOverlay: '.popup__overlay',

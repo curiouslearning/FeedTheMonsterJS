@@ -1,31 +1,36 @@
 import { Page, expect } from '@playwright/test';
 import { BasePage } from './base-page';
-import { Selectors } from '../constants/selectors';
 import { Timeouts } from '../constants/timeouts';
 
 export class LoadingPage extends BasePage {
+  static override SELECTOR = '#loading-screen';
+
+  static SELECTORS = {
+    gif: '#loading-gif',
+    progressBar: '#progress-bar',
+    progressBarContainer: '#progress-bar-container',
+  } as const;
+
   constructor(page: Page) {
     super(page);
   }
 
   get loadingScreen() {
-    return this.page.locator(Selectors.loadingScreen);
+    return this.getElement(LoadingPage.SELECTOR);
   }
 
   get progressBar() {
-    return this.page.locator(Selectors.progressBar);
+    return this.getElement(LoadingPage.SELECTORS.progressBar);
   }
 
   get loadingGif() {
-    return this.page.locator(Selectors.loadingGif);
+    return this.getElement(LoadingPage.SELECTORS.gif);
   }
 
-  /** Asserts the loading screen is initially present. */
   async assertLoadingVisible() {
     await expect(this.loadingScreen).toBeVisible({ timeout: Timeouts.appReady });
   }
 
-  /** Waits for the loading screen to hide (app sets display:none or zIndex:-1). */
   async waitForLoadingToComplete() {
     await this.page.waitForFunction(
       (sel) => {
@@ -33,7 +38,7 @@ export class LoadingPage extends BasePage {
         if (!el) return true;
         return el.style.display === 'none' || el.style.zIndex === '-1';
       },
-      Selectors.loadingScreen,
+      LoadingPage.SELECTOR,
       { timeout: Timeouts.appReady },
     );
   }

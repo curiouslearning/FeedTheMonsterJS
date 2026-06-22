@@ -1,42 +1,44 @@
 import { Page, expect, Locator } from '@playwright/test';
 import { BasePage } from './base-page';
-import { Selectors } from '../constants/selectors';
 import { Timeouts } from '../constants/timeouts';
 
 export class LevelSelectionPage extends BasePage {
+  static override SELECTOR = '#level-selection-container';
+
+  static SELECTORS = {
+    grid: '#level-selection-grid',
+    levelButton: (index: number) => `[id="${index}-level-button"]`,
+    prevNavButton: '[id="9-level-button"]',
+    nextNavButton: '[id="11-level-button"]',
+  } as const;
+
   constructor(page: Page) {
     super(page);
   }
 
-  get container() {
-    return this.page.locator(Selectors.levelSelectionContainer);
-  }
+  // container() inherited from BasePage → getElement(LevelSelectionPage.SELECTOR)
 
   get grid() {
-    return this.page.locator(Selectors.levelSelectionGrid);
+    return this.getElement(LevelSelectionPage.SELECTORS.grid);
   }
 
   get prevNavButton() {
-    return this.page.locator(Selectors.prevNavButton);
+    return this.getElement(LevelSelectionPage.SELECTORS.prevNavButton);
   }
 
   get nextNavButton() {
-    return this.page.locator(Selectors.nextNavButton);
+    return this.getElement(LevelSelectionPage.SELECTORS.nextNavButton);
   }
 
-  /** Returns the button at the given grid index (0-based, 0–8 are game levels). */
   levelButtonAt(index: number): Locator {
-    return this.page.locator(Selectors.levelButton(index));
+    return this.getElement(LevelSelectionPage.SELECTORS.levelButton(index));
   }
 
   /**
-   * Level buttons use 0-based grid index.
-   * Grid index 0 = game level 1, index 1 = game level 2, …, index 8 = game level 9.
-   * Index 4 is the special treasure-chest level.
+   * Grid index = gameLevel - 1 for levels 1–9; level 10 → index 10.
+   * Index 9 = Prev nav, index 11 = Next nav.
    */
   levelButtonForLevel(gameLevel: number): Locator {
-    // grid index = gameLevel - 1 (but level 10 maps to index 9 which is prev-nav,
-    // so levels 1–9 → indices 0–8, level 10 → index 10)
     const index = gameLevel <= 9 ? gameLevel - 1 : gameLevel;
     return this.levelButtonAt(index);
   }
@@ -56,14 +58,12 @@ export class LevelSelectionPage extends BasePage {
     await btn.click();
   }
 
-  /** Returns whether the lock overlay is present on a level button. */
   async isLevelLocked(gameLevel: number): Promise<boolean> {
     const btn = this.levelButtonForLevel(gameLevel);
     const lockOverlay = btn.locator('.lock-overlay, [class*="lock"]');
     return lockOverlay.count().then((n) => n > 0);
   }
 
-  /** Navigates to the next page of levels by clicking the next nav button. */
   async goToNextPage() {
     await expect(this.nextNavButton).toBeVisible({ timeout: Timeouts.domUpdate });
     await this.nextNavButton.click();
@@ -75,12 +75,10 @@ export class LevelSelectionPage extends BasePage {
   }
 
   async getLevelCount(): Promise<number> {
-    // 12 total buttons, minus 2 nav buttons = 10 max game-level buttons
-    return this.page.locator('.level-buttons:not(.nav-btn)').count();
+    return this.getElement('.level-buttons:not(.nav-btn)').count();
   }
 
   async assertNavPrevHidden() {
-    // On page 1 the prev button has display:none
     const display = await this.prevNavButton.evaluate(
       (el) => (el as HTMLElement).style.display,
     );

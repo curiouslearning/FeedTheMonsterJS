@@ -1,10 +1,20 @@
-import { Page } from '@playwright/test';
+import { Page, Locator } from '@playwright/test';
 import { Routes } from '../constants/urls';
 import { Selectors } from '../constants/selectors';
 import { Timeouts } from '../constants/timeouts';
 
 export class BasePage {
+  static SELECTOR = '';
+
   constructor(readonly page: Page) {}
+
+  getElement(selector: string): Locator {
+    return this.page.locator(selector);
+  }
+
+  get container(): Locator {
+    return this.getElement((this.constructor as typeof BasePage).SELECTOR);
+  }
 
   async goto(lang = 'english') {
     await this.page.goto(Routes.game({ lang }));
@@ -29,31 +39,31 @@ export class BasePage {
 
   /** Returns true when an element with the given selector is visible in the DOM. */
   async isVisible(selector: string): Promise<boolean> {
-    return this.page.locator(selector).isVisible();
+    return this.getElement(selector).isVisible();
   }
 
   /** Waits until the element becomes visible. */
   async waitForVisible(selector: string, timeout = Timeouts.domUpdate) {
-    await this.page.locator(selector).waitFor({ state: 'visible', timeout });
+    await this.getElement(selector).waitFor({ state: 'visible', timeout });
   }
 
   /** Waits until the element is hidden / detached. */
   async waitForHidden(selector: string, timeout = Timeouts.domUpdate) {
-    await this.page.locator(selector).waitFor({ state: 'hidden', timeout });
+    await this.getElement(selector).waitFor({ state: 'hidden', timeout });
   }
 
   /** Scrolls the element into view then clicks it. */
   async safeClick(selector: string) {
-    const locator = this.page.locator(selector);
+    const locator = this.getElement(selector);
     await locator.scrollIntoViewIfNeeded();
     await locator.click();
   }
 
   async getTextContent(selector: string): Promise<string | null> {
-    return this.page.locator(selector).textContent();
+    return this.getElement(selector).textContent();
   }
 
   async getAttribute(selector: string, attr: string): Promise<string | null> {
-    return this.page.locator(selector).getAttribute(attr);
+    return this.getElement(selector).getAttribute(attr);
   }
 }

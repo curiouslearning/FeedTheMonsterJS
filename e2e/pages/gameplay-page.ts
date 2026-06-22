@@ -1,42 +1,58 @@
 import { Page, expect } from '@playwright/test';
 import { BasePage } from './base-page';
-import { Selectors } from '../constants/selectors';
 import { Timeouts } from '../constants/timeouts';
 
 export class GameplayPage extends BasePage {
+  static override SELECTOR = '#canvas';
+
+  static SELECTORS = {
+    mainCanvas: '#canvas',
+    riveCanvas: '#rivecanvas',
+    gameControl: '#game-control',
+    feedbackText: '#feedback-text',
+    pauseButton: '#pause-button',
+    promptContainer: '#prompt-container',
+    promptBubble: '#prompt-bubble',
+    promptText: '#prompt-text',
+    promptPlayButton: '#prompt-play-button',
+    promptSlots: '#prompt-slots',
+    timerComponent: '#timer-ticking',
+    timerEmpty: '#timer-empty',
+    rotatingClock: '#rotating-clock',
+  } as const;
+
   constructor(page: Page) {
     super(page);
   }
 
   get mainCanvas() {
-    return this.page.locator(Selectors.mainCanvas);
+    return this.getElement(GameplayPage.SELECTORS.mainCanvas);
   }
 
   get riveCanvas() {
-    return this.page.locator(Selectors.riveCanvas);
+    return this.getElement(GameplayPage.SELECTORS.riveCanvas);
   }
 
   get gameControl() {
-    return this.page.locator(Selectors.gameControl);
+    return this.getElement(GameplayPage.SELECTORS.gameControl);
   }
 
   get feedbackText() {
-    return this.page.locator(Selectors.feedbackText);
+    return this.getElement(GameplayPage.SELECTORS.feedbackText);
   }
 
   get pauseButton() {
-    return this.page.locator(Selectors.pauseButton);
+    return this.getElement(GameplayPage.SELECTORS.pauseButton);
   }
 
   get promptText() {
-    return this.page.locator(Selectors.promptContainer);
+    return this.getElement(GameplayPage.SELECTORS.promptContainer);
   }
 
   get timer() {
-    return this.page.locator(Selectors.timerComponent);
+    return this.getElement(GameplayPage.SELECTORS.timerComponent);
   }
 
-  /** Waits for the gameplay scene to be active (canvas must be rendered). */
   async waitForGameplayScene() {
     await expect(this.mainCanvas).toBeVisible({ timeout: Timeouts.sceneTransition });
     await expect(this.pauseButton).toBeVisible({ timeout: Timeouts.sceneTransition });
@@ -63,10 +79,6 @@ export class GameplayPage extends BasePage {
     return (await this.promptText.textContent()) ?? '';
   }
 
-  /**
-   * Drags a stone on the main canvas from one relative position to another.
-   * Coordinates are 0–1 ratios of canvas width/height.
-   */
   async dragStone(
     fromRatioX: number,
     fromRatioY: number,
@@ -88,7 +100,6 @@ export class GameplayPage extends BasePage {
     await this.page.waitForTimeout(Timeouts.stoneDrop);
   }
 
-  /** Clicks a position on the main canvas (used for audio-puzzle stone taps). */
   async tapCanvas(ratioX: number, ratioY: number) {
     const bbox = await this.mainCanvas.boundingBox();
     if (!bbox) throw new Error('Canvas bounding box not found');
@@ -108,19 +119,17 @@ export class GameplayPage extends BasePage {
     await expect(this.timer).toBeVisible();
   }
 
-  /** Returns the canvas dimensions used to validate correct sizing. */
   async getCanvasDimensions() {
     return this.mainCanvas.boundingBox();
   }
 
-  /** Waits for the feedback text element to contain any non-empty text. */
   async waitForFeedback() {
     await this.page.waitForFunction(
       (sel) => {
         const el = document.querySelector(sel);
         return el && (el.textContent ?? '').trim().length > 0;
       },
-      Selectors.feedbackText,
+      GameplayPage.SELECTORS.feedbackText,
       { timeout: Timeouts.domUpdate },
     );
   }

@@ -1,42 +1,49 @@
 import { Page, expect } from '@playwright/test';
 import { BasePage } from './base-page';
-import { Selectors } from '../constants/selectors';
 import { Timeouts } from '../constants/timeouts';
 
 export class LevelEndPage extends BasePage {
+  static override SELECTOR = '#levelEnd';
+
+  static SELECTORS = {
+    starsContainer: '.stars-container',
+    starItem: '.stars',
+    buttonsContainer: '#levelEndButtons',
+    nextButton: '#levelend-next-btn',
+    retryButton: '#levelend-retry-btn',
+    mapButton: '#levelend-map-btn',
+  } as const;
+
   constructor(page: Page) {
     super(page);
   }
 
-  get container() {
-    return this.page.locator(Selectors.levelEndContainer);
-  }
+  // container() inherited → getElement('#levelEnd')
 
   get starsContainer() {
-    return this.page.locator(Selectors.starsContainer);
+    return this.getElement(LevelEndPage.SELECTORS.starsContainer);
   }
 
   get starItems() {
-    return this.page.locator(Selectors.starItem);
+    return this.getElement(LevelEndPage.SELECTORS.starItem);
   }
 
   get buttonsContainer() {
-    return this.page.locator(Selectors.levelEndButtons);
+    return this.getElement(LevelEndPage.SELECTORS.buttonsContainer);
   }
 
   get nextButton() {
-    return this.page.locator(Selectors.levelEndNextBtn);
+    return this.getElement(LevelEndPage.SELECTORS.nextButton);
   }
 
   get retryButton() {
-    return this.page.locator(Selectors.levelEndRetryBtn);
+    return this.getElement(LevelEndPage.SELECTORS.retryButton);
   }
 
   get mapButton() {
-    return this.page.locator(Selectors.levelEndMapBtn);
+    return this.getElement(LevelEndPage.SELECTORS.mapButton);
   }
 
-  /** Waits for the level-end scene to appear (display: block, zIndex: 11). */
   async waitForLevelEndScene() {
     await this.page.waitForFunction(
       (sel) => {
@@ -45,7 +52,7 @@ export class LevelEndPage extends BasePage {
           ? el.style.display === 'block' || el.style.zIndex === '11'
           : false;
       },
-      Selectors.levelEndContainer,
+      LevelEndPage.SELECTOR,
       { timeout: Timeouts.sceneTransition },
     );
   }
@@ -54,14 +61,13 @@ export class LevelEndPage extends BasePage {
     await expect(this.container).toBeVisible({ timeout: Timeouts.sceneTransition });
   }
 
-  /** Waits for all star elements to have the 'show' class (animation complete). */
   async waitForStarsAnimated(expectedCount: number) {
     await this.page.waitForFunction(
       ({ sel, count }) => {
         const stars = document.querySelectorAll(`${sel}.show`);
         return stars.length >= count;
       },
-      { sel: Selectors.starItem, count: expectedCount },
+      { sel: LevelEndPage.SELECTORS.starItem, count: expectedCount },
       { timeout: Timeouts.starAnimation },
     );
   }
@@ -102,7 +108,6 @@ export class LevelEndPage extends BasePage {
     await this.mapButton.click();
   }
 
-  /** Waits for buttons to appear after the optional evolution animation. */
   async waitForButtonsVisible() {
     await expect(this.buttonsContainer).toBeVisible({ timeout: Timeouts.evolutionDelay });
     await expect(this.mapButton).toBeVisible({ timeout: Timeouts.evolutionDelay });
