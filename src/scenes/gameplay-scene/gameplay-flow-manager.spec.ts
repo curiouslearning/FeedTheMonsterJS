@@ -194,7 +194,7 @@ describe('GameplayFlowManager assessment integration', () => {
 
     manager.determineNextStep(true, false);
 
-    scheduler.update(1500);
+    scheduler.update(5500);
     await flushPromises();
     scheduler.update(0);
     await flushPromises();
