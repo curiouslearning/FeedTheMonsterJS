@@ -3,6 +3,9 @@ import { defineConfig, devices } from '@playwright/test';
 
 export default defineConfig({
   testDir: './e2e/tests',
+  // Isolated spec files are for targeted debugging only — excluded from the default run.
+  // Run them directly: npx playwright test --config playwright.config.ts e2e/tests/isolated/tc-006-008-gameplay.spec.ts
+  testIgnore: ['**/isolated/**'],
   fullyParallel: false,
   forbidOnly: !!process.env.CI,
   retries: process.env.CI ? 2 : 1,
@@ -30,10 +33,10 @@ export default defineConfig({
     navigationTimeout: 90_000,
     launchOptions: {
       args: [
-        '--mute-audio',
         '--no-sandbox',
         '--disable-setuid-sandbox',
         '--disable-web-security', // allow cross-origin canvas reads in tests
+        '--autoplay-policy=no-user-gesture-required', // allow audio to play without user gesture
       ],
     },
   },

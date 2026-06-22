@@ -12,14 +12,14 @@
  */
 
 import { test, expect, Page } from '@playwright/test';
-import { Routes } from '../constants/urls';
-import { Selectors } from '../constants/selectors';
-import { Timeouts } from '../constants/timeouts';
-import { StartPage } from '../pages/start-page';
-import { LevelSelectionPage } from '../pages/level-selection-page';
-import { GameplayPage } from '../pages/gameplay-page';
+import { Routes } from '../../constants/urls';
+import { Selectors } from '../../constants/selectors';
+import { Timeouts } from '../../constants/timeouts';
+import { StartPage } from '../../pages/start-page';
+import { LevelSelectionPage } from '../../pages/level-selection-page';
+import { GameplayPage } from '../../pages/gameplay-page';
 import {
-  applyStandardMocks,
+  mockAnalytics,
   clearGameProgress,
   exposeGameInternals,
   subscribeToCorrectStonePosition,
@@ -28,7 +28,7 @@ import {
   triggerAssessment,
   pauseFtmGame,
   waitForPositiveFeedback,
-} from '../helpers';
+} from '../../helpers';
 
 async function waitForLoadingDone(page: Page) {
   await page.waitForFunction(
@@ -52,7 +52,7 @@ test.describe.serial('FTM_TC_009–013 | Assessment Flow', () => {
   test.beforeAll(async ({ browser }) => {
     const ctx = await browser.newContext();
     page = await ctx.newPage();
-    await applyStandardMocks(page);
+    await mockAnalytics(page);
     await clearGameProgress(page);
     await exposeGameInternals(page);
     await page.goto(Routes.game({ lang: 'english' }));

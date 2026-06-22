@@ -9,45 +9,59 @@ Refer to that document for:
 - Environment prerequisites
 - Test data requirements
 
-Each test in this directory uses the `FTM_TC_XXX` prefix in its title to match the document's TC number directly.
+Each test uses the `FTM_TC_XXX` prefix in its title to match the document's TC number directly.
 
 ---
 
-## File structure
+## Primary test file
+
+**[ftm-assessment-survey-flow.spec.ts](ftm-assessment-survey-flow.spec.ts)** — the default run target.
+
+All 16 TCs live in one `test.describe.serial` block. The browser opens **once**, runs every test case in order (TC_001 → TC_0016), and closes once at the end. No navigation restarts between test cases — each test picks up exactly where the previous left off.
+
+```bash
+npm run test:e2e          # runs ftm-assessment-survey-flow.spec.ts (headed off)
+npm run test:e2e:headed   # same, with a visible browser
+npm run test:e2e:ui       # Playwright UI — inspect each step
+```
+
+---
+
+## Isolated spec files (`isolated/`)
+
+The `isolated/` subfolder contains the same 16 TCs split by feature area. Each file is **self-contained** — it navigates from scratch to its required starting state — so you can run one file on its own when debugging a failure without re-running the full suite.
+
+Files use 3-digit zero-padded prefixes so they sort into TC flow order alphabetically.
+Audio is **not** mocked in isolated files — real audio plays (same as the primary flow file).
 
 | File | TCs | What it covers |
 |------|-----|----------------|
-| [tc-001-app-launch.spec.ts](tc-001-app-launch.spec.ts) | TC_001 | App loads in Chrome; loading screen hides; start screen appears |
-| [tc-002-003-start-screen.spec.ts](tc-002-003-start-screen.spec.ts) | TC_002–TC_003 | Start screen elements (title, play button, dev toggle, Rive monster); navigate to level selection |
-| [tc-004-005-level-selection.spec.ts](tc-004-005-level-selection.spec.ts) | TC_004–TC_005 | Level grid unlocked in debug mode; level 2 click navigates to gameplay |
-| [tc-006-008-gameplay.spec.ts](tc-006-008-gameplay.spec.ts) | TC_006–TC_008 | Gameplay UI elements; stones appear on canvas; drag-and-drop correct stone triggers feedback |
-| [tc-009-013-assessment.spec.ts](tc-009-013-assessment.spec.ts) | TC_009–TC_013 | Assessment overlay triggered; audio button; correct drag to chest; green feedback; wrong drag shows red feedback |
-| [tc-0014-0015-mini-game.spec.ts](tc-0014-0015-mini-game.spec.ts) | TC_0014–TC_0015 | Treasure chest canvas visible after assessment closes; click 5 stones; mini game completes |
-| [tc-0016-level-completion.spec.ts](tc-0016-level-completion.spec.ts) | TC_0016 | Jar fill animation (ProgressionScene); level end screen with stars, Rive monster, map/next buttons |
+| [isolated/tc-001-app-launch.spec.ts](isolated/tc-001-app-launch.spec.ts) | TC_001 | App loads; loading screen hides; start screen appears |
+| [isolated/tc-002-003-start-screen.spec.ts](isolated/tc-002-003-start-screen.spec.ts) | TC_002–TC_003 | Start screen elements; navigate to level selection |
+| [isolated/tc-004-005-level-selection.spec.ts](isolated/tc-004-005-level-selection.spec.ts) | TC_004–TC_005 | Level grid unlocked in debug mode; navigate to gameplay |
+| [isolated/tc-006-008-gameplay.spec.ts](isolated/tc-006-008-gameplay.spec.ts) | TC_006–TC_008 | Gameplay UI; stones appear on canvas; drag-and-drop |
+| [isolated/tc-009-013-assessment.spec.ts](isolated/tc-009-013-assessment.spec.ts) | TC_009–TC_013 | Assessment overlay; correct drag; green feedback; wrong drag |
+| [isolated/tc-014-015-mini-game.spec.ts](isolated/tc-014-015-mini-game.spec.ts) | TC_0014–TC_0015 | Treasure chest canvas visible; click 5 stones; mini game completes |
+| [isolated/tc-016-level-completion.spec.ts](isolated/tc-016-level-completion.spec.ts) | TC_0016 | Jar fill animation; level end screen; map/next buttons |
+
+These files are excluded from `npm run test:e2e` via `testIgnore: ['**/isolated/**']` in `playwright.config.ts`.
+
+```bash
+# Run the full isolated suite (all 7 files, sequential)
+npm run test:e2e:isolated
+
+# Run one specific file
+npx playwright test e2e/tests/isolated/tc-006-008-gameplay.spec.ts
+```
 
 ---
 
-## Running tests
-
-```bash
-# All E2E tests
-npm run test:e2e
-
-# A single file by name pattern
-npx playwright test tc-006
-
-# Headed (visible browser)
-npm run test:e2e:headed
-
-# Playwright UI mode (recommended for debugging)
-npm run test:e2e:ui
-```
-
 ## Test design notes
 
-- Each file is **self-contained**: it navigates from scratch to the state it needs in `beforeAll`.
-- Tests within a file run **serially** and share one browser session.
-  A failure in one test stops the remaining tests in that file.
-- TC_006–008 share captured stone position and hitbox state across tests, so they are grouped.
-- TC_009–013 share the assessment answer button IDs identified in TC_0011, so they are grouped.
-- TC_0014–0015 reuse the full gameplay + assessment + close flow in `beforeAll`, so they are grouped.
+- `ftm-assessment-survey-flow.spec.ts` uses `test.describe.serial` — tests run in declaration order,
+  a failure stops the remaining tests in the suite.
+- State shared between consecutive TCs (`capturedStonePos`, `monsterHitboxCenter`,
+  `correctAssessmentBtnId`) is declared at the describe-block level and written by
+  earlier tests, read by later ones.
+- `playwright.config.ts` enforces `workers: 1` and `fullyParallel: false` globally,
+  so even the isolated files never run in parallel.
