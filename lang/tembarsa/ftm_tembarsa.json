@@ -3,16 +3,16 @@
   "RightToLeft": false,
   "FeedbackTexts": [
     "ማላሊስሳ",
-    " አብሽ ባሬዳ",
-    " ማላሊስሳ"
+    "አብሽ ባሬዳ",
+    "ማላሊስሳ"
   ],
   "majversion": 1,
   "minversion": 8,
   "langname": "TEMBARSA",
   "FeedbackAudios": [
-    "https://drive.google.com/file/d/1iaGS9hkIh1RKUAsDr87KCXoTMjCRmOIy/view?usp=drive_link",
-    " https://drive.google.com/file/d/1AVbSneeFt0zI_vzqH2lGOsXQy0c98tfE/view?usp=drive_link",
-    " https://drive.google.com/file/d/1iaGS9hkIh1RKUAsDr87KCXoTMjCRmOIy/view?usp=drive_link"
+    "https://feedthemonster.curiouscontent.org/lang/tembarsa/audios/fantastic.mp3",
+    "https://feedthemonster.curiouscontent.org/lang/tembarsa/audios/great.mp3",
+    "https://feedthemonster.curiouscontent.org/lang/tembarsa/audios/amazing.mp3"
   ],
   "OtherAudios": {
     "Select your player": "https://feedthemonster.curiouscontent.org/lang/tembarsa/audios/Select-your-player.mp3",
