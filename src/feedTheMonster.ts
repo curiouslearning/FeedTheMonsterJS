@@ -92,6 +92,11 @@ class App {
     });
     await featureFlagsService.initialize();
 
+    // Expose core singletons on window for E2E tests (non-production only).
+    if (process.env.NODE_ENV !== 'production') {
+      window.__ftm = { gameStateService, assessmentSurveyManager, sceneHandler: null };
+    }
+
     this.handleLoadingScreen();
     this.setupCanvas();
     const data = await getData();
@@ -407,12 +412,18 @@ class App {
     }
     delete this.sceneHandler;
     this.sceneHandler = new SceneHandler(dataModal);
+    if (process.env.NODE_ENV !== 'production' && window.__ftm) {
+      (window as any).__ftm.sceneHandler = this.sceneHandler;
+    }
     this.passingDataToContainer();
   }
 
   private handleCachedScenario(dataModal: DataModal): void {
     this.updateVersionInfoElement(dataModal);
     this.sceneHandler = new SceneHandler(dataModal);
+    if (process.env.NODE_ENV !== 'production' && window.__ftm) {
+      (window as any).__ftm.sceneHandler = this.sceneHandler;
+    }
     this.passingDataToContainer();
   }
 
