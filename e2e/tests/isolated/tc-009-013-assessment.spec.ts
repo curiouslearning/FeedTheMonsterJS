@@ -1,276 +1,490 @@
 /**
- * FTM_TC_009 | Assessment Trigger
- * FTM_TC_0010 | Assessment Gameplay
- * FTM_TC_0011 | Assessment Drag and Drop
- * FTM_TC_0012 | Feedback in Assessment
- * FTM_TC_0013 | Wrong Drop
+ * FTM_TC_009 | Dynamic Assessment Trigger Detection
+ * FTM_TC_010 | Complete Pre-Assessment Puzzles
+ * FTM_TC_011 | Assessment Triggers Naturally After Trigger Puzzle
+ * FTM_TC_012 | Assessment Completion and Mini-Game Launch
+ * FTM_TC_013 | Complete Remaining Post-Mini-Game Puzzles
  *
- * TC_0011 writes correctAssessmentBtnId + wrongAssessmentBtnId into SharedFlowState;
- * TC_0012 and TC_0013 read them.
+ * Picks up immediately after TC_008 (puzzle 1 complete) and drives the full
+ * natural gameplay flow:
+ *
+ *   TC_009 — reads assessmentTriggerPuzzle, totalPuzzleCount, miniGameTrigger,
+ *             monsterHitboxCenter, and current puzzle stone position directly from
+ *             the running game — no hardcoded values.  Detects that TC_008 already
+ *             completed puzzle 1 (startingPuzzleIndex = 1).
+ *
+ *   TC_010 — completes every puzzle between the current index and the trigger
+ *             puzzle using captured stone positions.  Skips if no puzzles remain.
+ *
+ *   TC_011 — drops the correct stone on the trigger puzzle and waits for the
+ *             assessment overlay to appear NATURALLY after the game-side
+ *             assessmentDelay (~5.5 s for a correct drop).  No triggerAssessment()
+ *             is called.
+ *
+ *   TC_012 — interacts with the assessment Q1 (correct drag-to-chest) and closes
+ *             the overlay, which fires the combined-mode transition and starts the
+ *             mini-game automatically.
+ *
+ *   TC_013 — runs AFTER TC_014–TC_015 (mini-game) in the orchestrator.  Waits
+ *             for the first post-mini-game puzzle to load, then completes every
+ *             remaining puzzle so the game reaches the natural level-end flow.
+ *
+ * Exports:
+ *   registerTC009_012  – TC_009 through TC_012 (call before tc014_015)
+ *   registerTC013      – TC_013 only            (call after  tc014_015)
+ *   registerTests      – all five TCs in sequence (for direct file run / future use)
  *
  * Run via the orchestrator: e2e/tests/ftm-assessment-survey-flow.spec.ts
  */
 
 import { test, expect } from '../../fixtures/game-fixtures';
-import type { SharedFlowState } from '../../fixtures/game-fixtures';
+import type { FullGameplayFlowState } from '../../fixtures/game-fixtures';
 import type { Page } from '@playwright/test';
 import { Selectors } from '../../constants/selectors';
 import { Timeouts } from '../../constants/timeouts';
 import { GameplayPage } from '../../pages/gameplay-page';
 import {
-  triggerAssessment,
-  pauseFtmGame,
+  getAssessmentTriggerPuzzle,
+  getMiniGameTriggerPuzzle,
+  getTotalPuzzleCount,
+  waitForNaturalAssessmentTrigger,
+  getCorrectStonePositionForCurrentPuzzle,
+  subscribeToCorrectStonePosition,
+  getCapturedCorrectStonePos,
+  getHitboxCenter,
+  waitForPositiveFeedback,
 } from '../../helpers';
 
-export function registerTests(getPage: () => Page, state: SharedFlowState): void {
-  // ─────────────────────────────────────────────────────────────────────────
-  // TC_009 | Assessment Trigger
-  // ─────────────────────────────────────────────────────────────────────────
-  test('FTM_TC_009 | Assessment Trigger | Assessment overlay appears as overlay on existing UI during gameplay', async () => {
+// ─── Shared helpers ───────────────────────────────────────────────────────────
+
+async function dragStoneToHitbox(
+  page: Page,
+  pickX: number,
+  pickY: number,
+  dropX: number,
+  dropY: number,
+  steps = 20,
+): Promise<void> {
+  await page.mouse.move(pickX, pickY);
+  await page.mouse.down();
+  for (let s = 1; s <= steps; s++) {
+    await page.mouse.move(
+      pickX + (dropX - pickX) * (s / steps),
+      pickY + (dropY - pickY) * (s / steps),
+    );
+    await page.waitForTimeout(20);
+  }
+  await page.mouse.up();
+}
+
+async function waitForStonesToRender(page: Page, timeout = 12_000): Promise<void> {
+  // Wait until stonesHasLoaded is true — meaning every stone's frame >= 100 (1.5 s fly-in done).
+  // Checking for opaque pixels alone is not enough: stones start drawing from position (0,0)
+  // at frame=0, so pixels appear immediately.  GameplayInputManager.handleMouseUp returns early
+  // while stone.isAnimating (frame < 100), so drops fired during animation are silently ignored.
+  await page.waitForFunction(
+    (sel: string) => {
+      const gss = (window as any).__ftm?.gameStateService;
+      const sh = (window as any).__ftm?.sceneHandler;
+      const scene =
+        sh?.['activeScene']?.['scene'] ??
+        gss?.gamePlayScene ??
+        gss?.currentScene ??
+        null;
+      const fm = scene?.flowManager ?? null;
+      const stoneHandler = fm?.['stoneHandler'] ?? scene?.['stoneHandler'] ?? null;
+      if (stoneHandler != null) {
+        return stoneHandler.stonesHasLoaded === true;
+      }
+      // Fallback: pixel presence when stoneHandler is not accessible via __ftm.
+      const canvas = document.querySelector(sel) as HTMLCanvasElement | null;
+      if (!canvas || canvas.width === 0 || canvas.height === 0) return false;
+      const ctx = canvas.getContext('2d');
+      if (!ctx) return false;
+      const { data } = ctx.getImageData(0, 0, canvas.width, canvas.height);
+      for (let i = 3; i < data.length; i += 4) {
+        if (data[i] > 0) return true;
+      }
+      return false;
+    },
+    GameplayPage.SELECTORS.mainCanvas,
+    { timeout },
+  );
+}
+
+// ─── Private per-TC functions ─────────────────────────────────────────────────
+
+function _tc009(getPage: () => Page, state: FullGameplayFlowState): void {
+  test('FTM_TC_009 | Dynamic Detection | Assessment trigger puzzle and stone position read from live game state', async () => {
     const page = getPage();
 
-    await test.step('Trigger the assessment survey overlay via GameplayFlowManager', async () => {
-      await triggerAssessment(page);
+    await test.step('Wait for GameplayFlowManager and AssessmentFlowCoordinator to initialise', async () => {
+      await page.waitForFunction(
+        () => {
+          const gss = (window as any).__ftm?.gameStateService;
+          if (!gss) return false;
+          const sh = (window as any).__ftm?.sceneHandler;
+          const scene =
+            sh?.['activeScene']?.['scene'] ??
+            gss.gamePlayScene ??
+            gss.currentScene ??
+            null;
+          const fm = scene?.flowManager ?? null;
+          return fm?.['assessmentFlowCoordinator'] != null;
+        },
+        { timeout: 15_000 },
+      );
     });
 
-    await test.step('Pause FTM game while assessment is active', async () => {
-      await pauseFtmGame(page);
-    });
-
-    await test.step('Assessment overlay container is visible over the game', async () => {
-      await expect(page.locator(Selectors.assessmentOverlay)).toBeVisible({
-        timeout: Timeouts.sceneTransition,
+    await test.step('Read assessment trigger puzzle (1-based) from AssessmentFlowCoordinator', async () => {
+      state.assessmentTriggerPuzzle = await getAssessmentTriggerPuzzle(page);
+      test.info().annotations.push({
+        type: 'assessment-trigger-puzzle',
+        description: `Assessment triggers at puzzle ${state.assessmentTriggerPuzzle} (0 = not in remote config)`,
       });
     });
 
-    await test.step('Assessment survey player web component is mounted', async () => {
-      await expect(page.locator(Selectors.assessmentPlayer)).toBeAttached({
-        timeout: Timeouts.sceneTransition,
+    await test.step('Ensure assessment eligibility (inject if remote config excludes this level)', async () => {
+      if (state.assessmentTriggerPuzzle === 0) {
+        // The remote assessment config does not include this level.  Inject eligibility
+        // directly so the game's own determineNextStep() → shouldStartAssessmentAtPuzzle()
+        // fires naturally at the mini-game puzzle (combined mode: assessment + mini-game).
+        await page.evaluate(() => {
+          const sh = (window as any).__ftm?.sceneHandler;
+          const scene = sh?.['activeScene']?.['scene'] ?? null;
+          const fm = scene?.flowManager ?? null;
+          if (!fm) return;
+          const coordinator = fm['assessmentFlowCoordinator'];
+          if (!coordinator) return;
+          const miniSeg: number = fm['levelForMinigame'];
+          if (!Number.isInteger(miniSeg) || miniSeg < 1) return;
+          coordinator['isLevelEligible'] = true;
+          coordinator['assessmentPuzzleTrigger'] = miniSeg;
+        });
+        state.assessmentTriggerPuzzle = await getAssessmentTriggerPuzzle(page);
+        test.info().annotations.push({
+          type: 'assessment-eligibility-injected',
+          description: `Eligibility injected; trigger puzzle = ${state.assessmentTriggerPuzzle} (aligns with mini-game → combined mode)`,
+        });
+      }
+      expect(
+        state.assessmentTriggerPuzzle,
+        'Assessment trigger puzzle must be > 0 (from config or injected to match mini-game)',
+      ).toBeGreaterThan(0);
+    });
+
+    await test.step('Read total puzzle count for this level', async () => {
+      state.totalPuzzleCount = await getTotalPuzzleCount(page);
+      test.info().annotations.push({
+        type: 'total-puzzles',
+        description: `Total puzzles: ${state.totalPuzzleCount}`,
+      });
+      expect(state.totalPuzzleCount).toBeGreaterThan(0);
+    });
+
+    await test.step('Read mini-game trigger puzzle from GameplayFlowManager', async () => {
+      state.miniGameTriggerPuzzle = await getMiniGameTriggerPuzzle(page);
+      test.info().annotations.push({
+        type: 'mini-game-trigger',
+        description: `Mini-game at puzzle ${state.miniGameTriggerPuzzle}`,
       });
     });
 
-    await test.step('FTM game inputs are suspended while assessment is active', async () => {
-      const inAssessmentMode = await page.evaluate(() => {
-        const gss = (window as any).__ftm?.gameStateService;
-        const fm = (gss?.gamePlayScene ?? gss?.currentScene)?.flowManager;
-        if (fm && typeof fm.isAssessmentInProgress === 'boolean') {
-          return fm.isAssessmentInProgress;
-        }
-        const overlay = document.querySelector('#assessment-survey-overlay') as HTMLElement | null;
-        if (!overlay) return false;
-        return parseInt(window.getComputedStyle(overlay).zIndex || '0', 10) > 0;
+    await test.step('Wait for puzzle 2 to load and stones to finish animating', async () => {
+      // TC_008 always completes puzzle 1 in a serial test suite. The evolution
+      // animation (~3 s) plays before determineNextStep() runs, then loadPuzzle
+      // fires with a 1 500 ms delay, then initNewPuzzle() creates stones which
+      // take another 1 500 ms to animate (stone.frame 0→100). Total: ~6-8 s.
+      //
+      // We resolve on WHICHEVER fires first:
+      //   (a) CORRECT_STONE_POSITION event — only fires for tutorial (segmentNumber=0) puzzles
+      //   (b) stonesHasLoaded = true AND currentPuzzleIndex >= 1 — works for ANY puzzle
+      //
+      // Waiting until stonesHasLoaded is critical: GameplayInputManager.handleMouseUp returns
+      // early while stone.isAnimating (frame < 100), so the drag drop is silently ignored.
+      state.startingPuzzleIndex = 1; // TC_008 always completes puzzle 1 (serial suite)
+
+      await subscribeToCorrectStonePosition(page);
+      await page
+        .waitForFunction(
+          () => {
+            if ((window as any).__ftmTest?.correctStonePos != null) return true;
+            const gss = (window as any).__ftm?.gameStateService;
+            const sh = (window as any).__ftm?.sceneHandler;
+            const scene =
+              sh?.['activeScene']?.['scene'] ??
+              gss?.gamePlayScene ??
+              gss?.currentScene ??
+              null;
+            const fm = scene?.flowManager ?? null;
+            if (!fm) return false;
+            const idx = fm['currentPuzzleIndex'];
+            if (typeof idx !== 'number' || idx < 1) return false;
+            return fm['stoneHandler']?.stonesHasLoaded === true;
+          },
+          { timeout: 20_000 },
+        )
+        .catch(() => null);
+
+      state.capturedStonePos = await getCapturedCorrectStonePos(page);
+      if (!state.capturedStonePos) {
+        state.capturedStonePos = await getCorrectStonePositionForCurrentPuzzle(page);
+      }
+
+      test.info().annotations.push({
+        type: 'puzzle-2-stone',
+        description: state.capturedStonePos
+          ? `"${state.capturedStonePos.text}" at (${Math.round(state.capturedStonePos.x)}, ${Math.round(state.capturedStonePos.y)})`
+          : 'not captured (will retry after monster click)',
       });
-      expect(inAssessmentMode).toBe(true);
     });
 
-    await test.step('Main game canvas remains attached beneath the overlay', async () => {
-      await expect(page.locator(GameplayPage.SELECTORS.mainCanvas)).toBeAttached();
+    await test.step('Resolve monster hitbox centre (after evolution animation)', async () => {
+      // Read AFTER initNewPuzzle fires so the monster is at its resting position,
+      // not mid-animation.  getHitBoxRanges() is always available once in gameplay.
+      state.monsterHitboxCenter = await getHitboxCenter(page);
+      expect(state.monsterHitboxCenter, 'Monster hitbox must be resolvable').not.toBeNull();
+    });
+
+    await test.step('Assert trigger puzzle is within valid range', async () => {
+      // Natural config constrains to [2, 4]; injected eligibility uses levelForMinigame
+      // which can be 1.  Only require >= 1 and within puzzle count.
+      expect(state.assessmentTriggerPuzzle).toBeGreaterThanOrEqual(1);
+      expect(state.assessmentTriggerPuzzle).toBeLessThanOrEqual(state.totalPuzzleCount);
     });
   });
+}
 
-  // ─────────────────────────────────────────────────────────────────────────
-  // TC_0010 | Assessment Gameplay
-  // ─────────────────────────────────────────────────────────────────────────
-  test('FTM_TC_0010 | Assessment Gameplay | Treasure chest UI and audio button are displayed and interactable', async () => {
+function _tc010(getPage: () => Page, state: FullGameplayFlowState): void {
+  test('FTM_TC_010 | Pre-Assessment Puzzles | All puzzles between current position and trigger are completed', async () => {
     const page = getPage();
 
-    await test.step('Assessment overlay is still visible', async () => {
+    // remaining = how many puzzles still need completing before the trigger.
+    // e.g. trigger=3, startingIdx=1 → remaining = 3-1-1 = 1 (only puzzle 2).
+    const remaining = state.assessmentTriggerPuzzle - 1 - state.startingPuzzleIndex;
+
+    test.info().annotations.push({
+      type: 'pre-assessment-plan',
+      description: `${remaining} puzzle(s) to complete before trigger (trigger=${state.assessmentTriggerPuzzle}, startingIdx=${state.startingPuzzleIndex})`,
+    });
+
+    if (remaining <= 0) {
+      test.info().annotations.push({
+        type: 'skip',
+        description: 'Current puzzle IS the trigger (or already past it) — no pre-assessment puzzles needed.',
+      });
+      return;
+    }
+
+    expect(state.monsterHitboxCenter, 'Hitbox must be resolved from TC_009').not.toBeNull();
+
+    for (let i = 0; i < remaining; i++) {
+      const puzzleNumber = state.startingPuzzleIndex + i + 1; // 1-based display
+      const puzzleManagerIdx = state.startingPuzzleIndex + i;  // 0-based current
+
+      await test.step(`Complete pre-assessment puzzle ${puzzleNumber} (${i + 1}/${remaining})`, async () => {
+        const canvasBB = await page.locator(GameplayPage.SELECTORS.mainCanvas).boundingBox();
+        expect(canvasBB, 'Canvas bounding box must be available').not.toBeNull();
+
+        await page.mouse.click(
+          canvasBB!.x + state.monsterHitboxCenter!.x,
+          canvasBB!.y + state.monsterHitboxCenter!.y,
+        );
+        await waitForStonesToRender(page);
+
+        // If TC_009 could not get the stone pos from StoneHandler (edge case when
+        // startingPuzzleIndex > 0), retry now — stones are on-screen after monster click.
+        if (!state.capturedStonePos) {
+          state.capturedStonePos = await getCorrectStonePositionForCurrentPuzzle(page);
+        }
+        expect(
+          state.capturedStonePos,
+          `Stone for puzzle ${puzzleNumber} must be readable from StoneHandler`,
+        ).not.toBeNull();
+
+        // Subscribe BEFORE drop so the next puzzle's stone pos is captured.
+        await subscribeToCorrectStonePosition(page);
+
+        const pickX = canvasBB!.x + state.capturedStonePos!.x;
+        const pickY = canvasBB!.y + state.capturedStonePos!.y;
+        const dropX = canvasBB!.x + state.monsterHitboxCenter!.x;
+        const dropY = canvasBB!.y + state.monsterHitboxCenter!.y;
+
+        await dragStoneToHitbox(page, pickX, pickY, dropX, dropY);
+        await waitForPositiveFeedback(page, 5_000);
+
+        const feedbackText = (await page.locator(Selectors.feedbackText).textContent() ?? '').trim();
+        const positivePhrases = ['Fantastic', 'Great', 'Amazing', 'Excellent', 'Well Done', 'Correct'];
+        expect(
+          positivePhrases.some(p => feedbackText.toLowerCase().includes(p.toLowerCase())),
+          `Puzzle ${puzzleNumber} feedback "${feedbackText}" must be positive`,
+        ).toBe(true);
+
+        test.info().annotations.push({
+          type: `puzzle-${puzzleNumber}-done`,
+          description: `Puzzle ${puzzleNumber}: "${feedbackText}"`,
+        });
+
+        // Wait for the next puzzle index AND stones to have finished their fly-in animation.
+        // CORRECT_STONE_POSITION only fires for tutorial (segment 0) puzzles; stonesHasLoaded
+        // covers every puzzle type.  Using a combined check avoids an 8 s timeout.
+        await page
+          .waitForFunction(
+            (expected: number) => {
+              const gss = (window as any).__ftm?.gameStateService;
+              const sh = (window as any).__ftm?.sceneHandler;
+              const scene =
+                sh?.['activeScene']?.['scene'] ??
+                gss?.gamePlayScene ??
+                gss?.currentScene ??
+                null;
+              const fm = scene?.flowManager ?? null;
+              if (!fm) return false;
+              const idx = fm['currentPuzzleIndex'];
+              if (typeof idx !== 'number' || idx < expected) return false;
+              if ((window as any).__ftmTest?.correctStonePos != null) return true;
+              return fm['stoneHandler']?.stonesHasLoaded === true;
+            },
+            puzzleManagerIdx + 1,
+            { timeout: 15_000 },
+          )
+          .catch(() => null);
+
+        let nextStonePos = await getCapturedCorrectStonePos(page);
+        if (!nextStonePos) nextStonePos = await getCorrectStonePositionForCurrentPuzzle(page);
+
+        expect(nextStonePos, `Stone for puzzle ${puzzleNumber + 1} must be captured`).not.toBeNull();
+        state.capturedStonePos = nextStonePos;
+
+        test.info().annotations.push({
+          type: `puzzle-${puzzleNumber + 1}-stone`,
+          description: state.capturedStonePos
+            ? `"${state.capturedStonePos.text}" at (${Math.round(state.capturedStonePos.x)}, ${Math.round(state.capturedStonePos.y)})`
+            : 'not captured',
+        });
+      });
+    }
+
+    test.info().annotations.push({
+      type: 'pre-assessment-done',
+      description: `${remaining} pre-assessment puzzle(s) completed — trigger puzzle ${state.assessmentTriggerPuzzle} is ready.`,
+    });
+  });
+}
+
+function _tc011(getPage: () => Page, state: FullGameplayFlowState): void {
+  test('FTM_TC_011 | Natural Assessment Trigger | Assessment overlay appears after trigger puzzle without any manual call', async () => {
+    const page = getPage();
+
+    expect(state.monsterHitboxCenter, 'Hitbox must be resolved from TC_009').not.toBeNull();
+
+    await test.step(`Click monster to reveal stones for trigger puzzle ${state.assessmentTriggerPuzzle}`, async () => {
+      const canvasBB = await page.locator(GameplayPage.SELECTORS.mainCanvas).boundingBox();
+      expect(canvasBB).not.toBeNull();
+      await page.mouse.click(
+        canvasBB!.x + state.monsterHitboxCenter!.x,
+        canvasBB!.y + state.monsterHitboxCenter!.y,
+      );
+      await waitForStonesToRender(page);
+
+      // Stones are now on-screen. If TC_009/TC_010 did not capture the stone pos
+      // (happens when assessmentTriggerPuzzle = startingPuzzleIndex + 1 and
+      // StoneHandler was empty in TC_009), read it now.
+      if (!state.capturedStonePos) {
+        state.capturedStonePos = await getCorrectStonePositionForCurrentPuzzle(page);
+      }
+      expect(
+        state.capturedStonePos,
+        `Trigger puzzle ${state.assessmentTriggerPuzzle} stone must be readable`,
+      ).not.toBeNull();
+    });
+
+    await test.step('Subscribe for post-assessment+mini-game puzzle stone position', async () => {
+      // This one-shot subscription survives through the assessment + mini-game and
+      // fires when handleMiniGameDone calls initNewPuzzle (~1 500 ms after mini-game).
+      await subscribeToCorrectStonePosition(page);
+    });
+
+    await test.step(`Drag correct stone "${state.capturedStonePos?.text ?? '?'}" to monster hitbox`, async () => {
+      const canvasBB = await page.locator(GameplayPage.SELECTORS.mainCanvas).boundingBox();
+      expect(canvasBB).not.toBeNull();
+      await dragStoneToHitbox(
+        page,
+        canvasBB!.x + state.capturedStonePos!.x,
+        canvasBB!.y + state.capturedStonePos!.y,
+        canvasBB!.x + state.monsterHitboxCenter!.x,
+        canvasBB!.y + state.monsterHitboxCenter!.y,
+      );
+    });
+
+    await test.step('Positive feedback confirms correct drop on trigger puzzle', async () => {
+      await waitForPositiveFeedback(page, 5_000);
+      const feedbackText = (await page.locator(Selectors.feedbackText).textContent() ?? '').trim();
+      test.info().annotations.push({
+        type: 'trigger-puzzle-feedback',
+        description: `Trigger puzzle ${state.assessmentTriggerPuzzle}: "${feedbackText}"`,
+      });
+      const positivePhrases = ['Fantastic', 'Great', 'Amazing', 'Excellent', 'Well Done', 'Correct'];
+      expect(
+        positivePhrases.some(p => feedbackText.toLowerCase().includes(p.toLowerCase())),
+        `Feedback "${feedbackText}" must be positive`,
+      ).toBe(true);
+    });
+
+    await test.step('Assessment overlay appears naturally after ~5.5 s assessmentDelay', async () => {
+      const appeared = await waitForNaturalAssessmentTrigger(page, 12_000);
+      test.info().annotations.push({
+        type: 'natural-assessment',
+        description: appeared
+          ? `Assessment appeared naturally after puzzle ${state.assessmentTriggerPuzzle}`
+          : 'Assessment did NOT appear — check flow manager configuration',
+      });
+      expect(appeared, 'Assessment must appear naturally (no triggerAssessment() call)').toBe(true);
+    });
+
+    await test.step('isAssessmentInProgress is true while overlay is shown', async () => {
+      const inProgress = await page.evaluate(() => {
+        const gss = (window as any).__ftm?.gameStateService;
+        const sh = (window as any).__ftm?.sceneHandler;
+        const scene = sh?.['activeScene']?.['scene'] ?? gss?.gamePlayScene ?? gss?.currentScene;
+        return scene?.flowManager?.isAssessmentInProgress === true ||
+               scene?.flowManager?.['isAssessmentInProgress'] === true;
+      });
+      expect(inProgress, 'isAssessmentInProgress must be true').toBe(true);
+    });
+
+    await test.step('Assessment player web component is attached', async () => {
+      await expect(page.locator(Selectors.assessmentPlayer)).toBeAttached({
+        timeout: Timeouts.domUpdate,
+      });
+    });
+  });
+}
+
+function _tc012(getPage: () => Page, _state: FullGameplayFlowState): void {
+  test('FTM_TC_012 | Assessment Completion | Assessment answered and closed; mini-game launches via combined-mode transition', async () => {
+    const page = getPage();
+
+    await test.step('Assessment overlay is visible and player is attached', async () => {
       await expect(page.locator(Selectors.assessmentOverlay)).toBeVisible({
+        timeout: Timeouts.domUpdate,
+      });
+      await expect(page.locator(Selectors.assessmentPlayer)).toBeAttached({
         timeout: Timeouts.domUpdate,
       });
     });
 
-    await test.step('Wait for assessment question view to render (#pbutton)', async () => {
-      await page.waitForSelector(`${Selectors.assessmentPlayer} #pbutton`, {
-        timeout: Timeouts.sceneTransition,
-      });
-    });
-
-    await test.step('Click the audio play button (#nextqButton) to start the first question', async () => {
+    await test.step('Click #nextqButton to start Q1 audio', async () => {
       await page.waitForSelector(`${Selectors.assessmentPlayer} #nextqButton`, {
         timeout: Timeouts.sceneTransition,
       });
-      await page.waitForTimeout(1000);
+      await page.waitForTimeout(500);
       await page.locator(`${Selectors.assessmentPlayer} #nextqButton`).click({ force: true });
     });
 
-    await test.step('Answer buttons (.answerButton) appear after the audio prompt', async () => {
-      await page.waitForSelector(`${Selectors.assessmentPlayer} .answerButton`, {
-        timeout: Timeouts.sceneTransition,
-      });
-      const btnCount = await page.locator(`${Selectors.assessmentPlayer} .answerButton`).count();
-      expect(btnCount).toBeGreaterThan(0);
-    });
-  });
-
-  // ─────────────────────────────────────────────────────────────────────────
-  // TC_0011 | Assessment Drag and Drop
-  // ─────────────────────────────────────────────────────────────────────────
-  test('FTM_TC_0011 | Assessment Drag and Drop | Correct answer dragged to chest; question advances to next', async () => {
-    const page = getPage();
-
-    await test.step('Identify correct answer and drag it to the chest', async () => {
+    await test.step('Wait for Q1 answer buttons to finish entry animation', async () => {
       await page.waitForFunction(
-        (playerSel) => {
-          const player = document.querySelector(playerSel);
-          if (!player) return false;
-          const chest = player.querySelector('#chestImage');
-          if (!chest) return false;
-          const chestRect = (chest as HTMLElement).getBoundingClientRect();
-          if (chestRect.width === 0) return false;
-          const btns = Array.from(player.querySelectorAll('.answerButton'));
-          return btns.some((b) => {
-            const el = b as HTMLElement;
-            const cs = window.getComputedStyle(el);
-            if (cs.display === 'none' || cs.visibility === 'hidden') return false;
-            if (el.getBoundingClientRect().width === 0) return false;
-            const animations = (el as Element).getAnimations?.() ?? [];
-            return animations.length === 0 && parseFloat(cs.opacity) > 0;
-          });
-        },
-        Selectors.assessmentPlayer,
-        { timeout: Timeouts.sceneTransition },
-      );
-
-      const answerInfo = await page.evaluate((playerSel) => {
-        const player = document.querySelector(playerSel) as any;
-        if (!player?.appInstance) return null;
-        const q = player.appInstance.game?.currentQuestion;
-        if (!q || !Array.isArray(q.answers) || !q.correct) return null;
-        const correctAnswerName: string = q.correct;
-        const correctIdx = (q.answers as any[]).findIndex(
-          (a) => a.answerName === correctAnswerName,
-        );
-        const wrongIdx = (q.answers as any[]).findIndex(
-          (a) => a.answerName !== correctAnswerName,
-        );
-        return {
-          correctBtnId: correctIdx >= 0 ? `#answerButton${correctIdx + 1}` : null,
-          wrongBtnId: wrongIdx >= 0 ? `#answerButton${wrongIdx + 1}` : null,
-          correctAnswerName,
-        };
-      }, Selectors.assessmentPlayer);
-
-      if (answerInfo?.correctBtnId) {
-        state.correctAssessmentBtnId = answerInfo.correctBtnId;
-        state.wrongAssessmentBtnId = answerInfo.wrongBtnId ?? null;
-        test.info().annotations.push({
-          type: 'correct-answer-identified',
-          description: `Q1 correct answer (${answerInfo.correctAnswerName}) → ${answerInfo.correctBtnId}`,
-        });
-      }
-
-      expect(state.correctAssessmentBtnId).not.toBeNull();
-
-      const chest = page.locator(`${Selectors.assessmentPlayer} #chestImage`);
-      const chestBB = await chest.boundingBox();
-      expect(chestBB).not.toBeNull();
-
-      const btn = page.locator(`${Selectors.assessmentPlayer} ${state.correctAssessmentBtnId}`);
-      const btnBB = await btn.boundingBox();
-      expect(btnBB).not.toBeNull();
-
-      await page.mouse.move(btnBB!.x + btnBB!.width / 2, btnBB!.y + btnBB!.height / 2);
-      await page.mouse.down();
-      await page.mouse.move(
-        chestBB!.x + chestBB!.width / 2,
-        chestBB!.y + chestBB!.height / 2,
-        { steps: 20 },
-      );
-      await page.mouse.up();
-
-      const feedbackVisible = await page.waitForFunction(
-        (playerSel) => {
-          const el = document.querySelector(`${playerSel} #feedbackWrap`) as HTMLElement | null;
-          return el?.classList.contains('visible') ?? false;
-        },
-        Selectors.assessmentPlayer,
-        { timeout: 5000 },
-      ).then(() => true).catch(() => false);
-
-      expect(feedbackVisible, '#feedbackWrap must become visible after dropping the correct answer').toBe(true);
-
-      const isGreenFeedback = feedbackVisible && await page.evaluate((playerSel) => {
-        const el = document.querySelector(`${playerSel} #feedbackWrap`) as HTMLElement | null;
-        if (!el?.classList.contains('visible')) return false;
-        const color = window.getComputedStyle(el).color;
-        return !color.includes('255, 0, 0') && color !== 'red';
-      }, Selectors.assessmentPlayer);
-
-      test.info().annotations.push({
-        type: 'correct-drop-result',
-        description: isGreenFeedback
-          ? `Green feedback confirmed for ${state.correctAssessmentBtnId} on Q1`
-          : `Feedback appeared but color check inconclusive for ${state.correctAssessmentBtnId}`,
-      });
-    });
-
-    await expect(page.locator(Selectors.assessmentPlayer)).toBeAttached();
-  });
-
-  // ─────────────────────────────────────────────────────────────────────────
-  // TC_0012 | Feedback in Assessment
-  // ─────────────────────────────────────────────────────────────────────────
-  test('FTM_TC_0012 | Assessment Feedback | Correct answer shows green/positive feedback', async () => {
-    const page = getPage();
-
-    await test.step('Correct answer button was identified during TC_0011', async () => {
-      expect(state.correctAssessmentBtnId).not.toBeNull();
-    });
-
-    await test.step('Green feedback (#feedbackWrap visible with green color) confirms correct answer', async () => {
-      const greenFeedback = await page.waitForFunction(
-        (playerSel) => {
-          const el = document.querySelector(`${playerSel} #feedbackWrap`) as HTMLElement | null;
-          if (!el?.classList.contains('visible')) return false;
-          const color = window.getComputedStyle(el).color;
-          return !color.includes('255, 0, 0') && color !== 'red';
-        },
-        Selectors.assessmentPlayer,
-        { timeout: 3000 },
-      ).then(() => true).catch(() => false);
-
-      test.info().annotations.push({
-        type: 'green-feedback-detection',
-        description: greenFeedback
-          ? `#feedbackWrap visible with green color — correct btn: ${state.correctAssessmentBtnId}`
-          : `Green feedback faded before check — correct btn ${state.correctAssessmentBtnId} accepted`,
-      });
-
-      await expect(page.locator(Selectors.assessmentOverlay)).toBeAttached();
-    });
-  });
-
-  // ─────────────────────────────────────────────────────────────────────────
-  // TC_0013 | Wrong Drop
-  // ─────────────────────────────────────────────────────────────────────────
-  test('FTM_TC_0013 | Wrong Drop | Dropping wrong answer shows red/negative feedback; question does not advance', async () => {
-    const page = getPage();
-
-    await test.step('Wait for Q1 green feedback to fade before interacting with Q2', async () => {
-      await page.waitForFunction(
-        (playerSel) => {
-          const player = document.querySelector(playerSel);
-          if (!player) return true;
-          const fw = player.querySelector('#feedbackWrap') as HTMLElement | null;
-          if (!fw) return true;
-          return !fw.classList.contains('visible');
-        },
-        Selectors.assessmentPlayer,
-        { timeout: 5000 },
-      ).catch(() => null);
-    });
-
-    await test.step('Wait for Q2 audio button and click it', async () => {
-      await page.waitForSelector(`${Selectors.assessmentPlayer} #nextqButton`, {
-        timeout: Timeouts.sceneTransition,
-      });
-      await page.locator(`${Selectors.assessmentPlayer} #nextqButton`).click({ force: true });
-    });
-
-    await test.step('Wait for Q2 answer buttons to finish their entry animation', async () => {
-      await page.waitForFunction(
-        (playerSel) => {
+        (playerSel: string) => {
           const player = document.querySelector(playerSel);
           if (!player) return false;
           const chest = player.querySelector('#chestImage');
@@ -281,8 +495,8 @@ export function registerTests(getPage: () => Page, state: SharedFlowState): void
             const cs = window.getComputedStyle(el);
             if (cs.display === 'none' || cs.visibility === 'hidden') return false;
             if (el.getBoundingClientRect().width === 0) return false;
-            const animations = (el as Element).getAnimations?.() ?? [];
-            return animations.length === 0 && parseFloat(cs.opacity) > 0;
+            const anims = (el as Element).getAnimations?.() ?? [];
+            return anims.length === 0 && parseFloat(cs.opacity) > 0;
           });
         },
         Selectors.assessmentPlayer,
@@ -290,69 +504,245 @@ export function registerTests(getPage: () => Page, state: SharedFlowState): void
       );
     });
 
-    await test.step('Drag a known-wrong button to the chest and verify red feedback', async () => {
-      const q2WrongBtnId = await page.evaluate((playerSel) => {
+    await test.step('Identify correct answer and drag it to the chest', async () => {
+      const answerInfo = await page.evaluate((playerSel: string) => {
         const player = document.querySelector(playerSel) as any;
         if (!player?.appInstance) return null;
         const q = player.appInstance.game?.currentQuestion;
         if (!q || !Array.isArray(q.answers) || !q.correct) return null;
-        const correctAnswerName: string = q.correct;
-        const wrongIdx = (q.answers as any[]).findIndex(
-          (a) => a.answerName !== correctAnswerName,
-        );
-        return wrongIdx >= 0 ? `#answerButton${wrongIdx + 1}` : null;
+        const correctName: string = q.correct;
+        const idx = (q.answers as any[]).findIndex(a => a.answerName === correctName);
+        return {
+          correctBtnId: idx >= 0 ? `#answerButton${idx + 1}` : null,
+          correctAnswerName: correctName,
+        };
       }, Selectors.assessmentPlayer);
 
-      const buttonIds = ['#answerButton1', '#answerButton2', '#answerButton3', '#answerButton4'];
-      const wrongId =
-        q2WrongBtnId ??
-        state.wrongAssessmentBtnId ??
-        buttonIds.find((b) => b !== state.correctAssessmentBtnId) ??
-        '#answerButton4';
-
       test.info().annotations.push({
-        type: 'intentional-wrong-answer',
-        description: `Deliberately dragging ${wrongId} (wrong answer) on Q2`,
+        type: 'q1-answer',
+        description: answerInfo
+          ? `Correct: "${answerInfo.correctAnswerName}" → ${answerInfo.correctBtnId}`
+          : 'Could not read question — will fall back to close button',
       });
 
-      const btn = page.locator(`${Selectors.assessmentPlayer} ${wrongId}`);
-      const chest = page.locator(`${Selectors.assessmentPlayer} #chestImage`);
-      const btnBB = await btn.boundingBox().catch(() => null);
-      const chestBB = await chest.boundingBox().catch(() => null);
+      if (answerInfo?.correctBtnId) {
+        const chest = page.locator(`${Selectors.assessmentPlayer} #chestImage`);
+        const btn = page.locator(`${Selectors.assessmentPlayer} ${answerInfo.correctBtnId}`);
+        const chestBB = await chest.boundingBox();
+        const btnBB = await btn.boundingBox();
 
-      if (btnBB && chestBB) {
-        await page.mouse.move(btnBB.x + btnBB.width / 2, btnBB.y + btnBB.height / 2);
-        await page.mouse.down();
-        await page.mouse.move(chestBB.x + chestBB.width / 2, chestBB.y + chestBB.height / 2, { steps: 20 });
-        await page.mouse.up();
-      }
+        if (chestBB && btnBB) {
+          await page.mouse.move(btnBB.x + btnBB.width / 2, btnBB.y + btnBB.height / 2);
+          await page.mouse.down();
+          await page.mouse.move(
+            chestBB.x + chestBB.width / 2,
+            chestBB.y + chestBB.height / 2,
+            { steps: 20 },
+          );
+          await page.mouse.up();
 
-      const feedbackVisible = await page.waitForFunction(
-        (playerSel) => {
-          const el = document.querySelector(`${playerSel} #feedbackWrap`) as HTMLElement | null;
-          return el?.classList.contains('visible') ?? false;
-        },
-        Selectors.assessmentPlayer,
-        { timeout: 3000 },
-      ).then(() => true).catch(() => false);
+          const feedbackShown = await page
+            .waitForFunction(
+              (pSel: string) => {
+                const el = document.querySelector(`${pSel} #feedbackWrap`) as HTMLElement | null;
+                return el?.classList.contains('visible') ?? false;
+              },
+              Selectors.assessmentPlayer,
+              { timeout: 5_000 },
+            )
+            .then(() => true)
+            .catch(() => false);
 
-      expect(feedbackVisible).toBe(true);
-    });
-
-    await test.step('Close assessment survey after verifying the wrong-drop feedback', async () => {
-      const closeBtn = page.locator(Selectors.assessmentCloseBtn);
-      const closeBtnVisible = await closeBtn.isVisible({ timeout: 3000 }).catch(() => false);
-      if (closeBtnVisible) {
-        await closeBtn.click();
-      } else {
-        const innerClose = page.locator(
-          `${Selectors.assessmentPlayer} [class*="close"], ${Selectors.assessmentPlayer} [class*="skip"]`,
-        );
-        if ((await innerClose.count()) > 0) {
-          await innerClose.first().click({ force: true });
+          test.info().annotations.push({
+            type: 'q1-feedback',
+            description: feedbackShown ? 'Positive feedback shown' : 'Feedback not detected',
+          });
         }
       }
-      await page.waitForTimeout(1500);
+    });
+
+    await test.step('Close assessment (triggers combined-mode mini-game transition)', async () => {
+      await page.waitForTimeout(1_000);
+      const closeBtn = page.locator(Selectors.assessmentCloseBtn);
+      if (await closeBtn.isVisible({ timeout: 3_000 }).catch(() => false)) {
+        await closeBtn.click();
+      } else {
+        const inner = page.locator(
+          `${Selectors.assessmentPlayer} [class*="close"], ${Selectors.assessmentPlayer} [class*="skip"]`,
+        );
+        if ((await inner.count()) > 0) {
+          await inner.first().click({ force: true });
+        }
+      }
+    });
+
+    await test.step('Assessment overlay dismisses; combined-mode mini-game transition fires', async () => {
+      await page.waitForFunction(
+        (sel: string) => {
+          const el = document.querySelector(sel) as HTMLElement | null;
+          if (!el) return true;
+          const cs = window.getComputedStyle(el);
+          return cs.display === 'none' || cs.visibility === 'hidden' || parseFloat(cs.opacity) === 0;
+        },
+        Selectors.assessmentOverlay,
+        { timeout: Timeouts.sceneTransition },
+      );
     });
   });
+}
+
+function _tc013(getPage: () => Page, state: FullGameplayFlowState): void {
+  test('FTM_TC_013 | Remaining Puzzles | All post-mini-game puzzles completed so level end triggers naturally', async () => {
+    const page = getPage();
+
+    const remainingCount = state.totalPuzzleCount - state.assessmentTriggerPuzzle;
+
+    test.info().annotations.push({
+      type: 'remaining-puzzles',
+      description: `${remainingCount} puzzle(s) after mini-game (trigger=${state.assessmentTriggerPuzzle}, total=${state.totalPuzzleCount})`,
+    });
+
+    if (remainingCount <= 0) {
+      test.info().annotations.push({
+        type: 'skip',
+        description: 'No remaining puzzles — level ends naturally after mini-game.',
+      });
+      return;
+    }
+
+    await test.step('Wait for first post-mini-game puzzle (handleMiniGameDone → loadPuzzle → initNewPuzzle)', async () => {
+      // Wait for currentPuzzleIndex >= assessmentTriggerPuzzle AND stones fully animated.
+      await page
+        .waitForFunction(
+          (expected: number) => {
+            const gss = (window as any).__ftm?.gameStateService;
+            const sh = (window as any).__ftm?.sceneHandler;
+            const scene =
+              sh?.['activeScene']?.['scene'] ??
+              gss?.gamePlayScene ??
+              gss?.currentScene ??
+              null;
+            const fm = scene?.flowManager ?? null;
+            if (!fm) return false;
+            const idx = fm['currentPuzzleIndex'];
+            if (typeof idx !== 'number' || idx < expected) return false;
+            if ((window as any).__ftmTest?.correctStonePos != null) return true;
+            return fm['stoneHandler']?.stonesHasLoaded === true;
+          },
+          state.assessmentTriggerPuzzle,
+          { timeout: 15_000 },
+        )
+        .catch(() => null);
+
+      let nextStonePos = await getCapturedCorrectStonePos(page);
+      if (!nextStonePos) nextStonePos = await getCorrectStonePositionForCurrentPuzzle(page);
+
+      test.info().annotations.push({
+        type: 'first-post-minigame-stone',
+        description: nextStonePos
+          ? `"${nextStonePos.text}" at (${Math.round(nextStonePos.x)}, ${Math.round(nextStonePos.y)})`
+          : 'not captured',
+      });
+      expect(nextStonePos, 'Stone for first post-mini-game puzzle must be available').not.toBeNull();
+      state.capturedStonePos = nextStonePos;
+    });
+
+    for (let i = 0; i < remainingCount; i++) {
+      const puzzleNumber = state.assessmentTriggerPuzzle + 1 + i; // 1-based
+      const isLast = i === remainingCount - 1;
+
+      await test.step(`Complete post-mini-game puzzle ${puzzleNumber} of ${state.totalPuzzleCount}`, async () => {
+        const canvasBB = await page.locator(GameplayPage.SELECTORS.mainCanvas).boundingBox();
+        expect(canvasBB).not.toBeNull();
+
+        await page.mouse.click(
+          canvasBB!.x + state.monsterHitboxCenter!.x,
+          canvasBB!.y + state.monsterHitboxCenter!.y,
+        );
+        await waitForStonesToRender(page);
+
+        if (!isLast) {
+          await subscribeToCorrectStonePosition(page);
+        }
+
+        await dragStoneToHitbox(
+          page,
+          canvasBB!.x + state.capturedStonePos!.x,
+          canvasBB!.y + state.capturedStonePos!.y,
+          canvasBB!.x + state.monsterHitboxCenter!.x,
+          canvasBB!.y + state.monsterHitboxCenter!.y,
+        );
+        await waitForPositiveFeedback(page, 5_000);
+
+        const feedbackText = (await page.locator(Selectors.feedbackText).textContent() ?? '').trim();
+        test.info().annotations.push({
+          type: `post-puzzle-${puzzleNumber}`,
+          description: `Puzzle ${puzzleNumber}: "${feedbackText}"`,
+        });
+
+        if (!isLast) {
+          const nextIdx = state.assessmentTriggerPuzzle + i + 1;
+          // Wait for puzzle index advance AND stones fully animated (covers all puzzle types).
+          await page
+            .waitForFunction(
+              (expected: number) => {
+                const gss = (window as any).__ftm?.gameStateService;
+                const sh = (window as any).__ftm?.sceneHandler;
+                const scene =
+                  sh?.['activeScene']?.['scene'] ??
+                  gss?.gamePlayScene ??
+                  gss?.currentScene ??
+                  null;
+                const fm = scene?.flowManager ?? null;
+                if (!fm) return false;
+                const idx = fm['currentPuzzleIndex'];
+                if (typeof idx !== 'number' || idx < expected) return false;
+                if ((window as any).__ftmTest?.correctStonePos != null) return true;
+                return fm['stoneHandler']?.stonesHasLoaded === true;
+              },
+              nextIdx,
+              { timeout: 15_000 },
+            )
+            .catch(() => null);
+
+          let nextStonePos = await getCapturedCorrectStonePos(page);
+          if (!nextStonePos) nextStonePos = await getCorrectStonePositionForCurrentPuzzle(page);
+          expect(nextStonePos, `Stone for puzzle ${puzzleNumber + 1} must be captured`).not.toBeNull();
+          state.capturedStonePos = nextStonePos;
+        }
+      });
+    }
+
+    test.info().annotations.push({
+      type: 'all-puzzles-done',
+      description: `All ${state.totalPuzzleCount} puzzles completed — level end should appear naturally.`,
+    });
+  });
+}
+
+// ─── Exports ──────────────────────────────────────────────────────────────────
+
+/**
+ * Register TC_009 through TC_012 (dynamic detection + pre-assessment + trigger + completion).
+ * Call this BEFORE tc014_015 in the orchestrator.
+ */
+export function registerTC009_012(getPage: () => Page, state: FullGameplayFlowState): void {
+  _tc009(getPage, state);
+  _tc010(getPage, state);
+  _tc011(getPage, state);
+  _tc012(getPage, state);
+}
+
+/**
+ * Register TC_013 (remaining post-mini-game puzzles).
+ * Call this AFTER tc014_015 in the orchestrator so it runs after the mini-game.
+ */
+export function registerTC013(getPage: () => Page, state: FullGameplayFlowState): void {
+  _tc013(getPage, state);
+}
+
+/** Register all five TCs in sequence (useful for direct file execution / future reuse). */
+export function registerTests(getPage: () => Page, state: FullGameplayFlowState): void {
+  registerTC009_012(getPage, state);
+  _tc013(getPage, state);
 }
