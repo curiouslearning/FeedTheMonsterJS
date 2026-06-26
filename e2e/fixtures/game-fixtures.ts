@@ -104,3 +104,38 @@ export function createSharedState(): SharedFlowState {
     wrongAssessmentBtnId: null,
   };
 }
+
+/**
+ * Shared state for TC_009–TC_013 (dynamic assessment + full-level flow).
+ * Carries stone positions, hitbox centre, and dynamically-discovered level
+ * configuration across all dynamic gameplay test cases.
+ */
+export interface FullGameplayFlowState {
+  /** Correct stone position for the current puzzle (updated each puzzle). */
+  capturedStonePos: { x: number; y: number; text: string } | null;
+  /** Monster drop-zone hitbox centre in canvas-relative CSS pixels. */
+  monsterHitboxCenter: { x: number; y: number } | null;
+  /** 1-based puzzle segment at which the assessment triggers (0 = not eligible). */
+  assessmentTriggerPuzzle: number;
+  /** 1-based puzzle segment where the mini-game is scheduled (0 = none). */
+  miniGameTriggerPuzzle: number;
+  /** Total puzzles in the selected level. */
+  totalPuzzleCount: number;
+  /**
+   * 0-based puzzle index when TC_009 started.
+   * > 0 when TC_008 already completed puzzle 1; TC_010 uses this to skip
+   * puzzles that are already done.
+   */
+  startingPuzzleIndex: number;
+}
+
+export function createFullGameplayFlowState(): FullGameplayFlowState {
+  return {
+    capturedStonePos: null,
+    monsterHitboxCenter: null,
+    assessmentTriggerPuzzle: 0,
+    miniGameTriggerPuzzle: 0,
+    totalPuzzleCount: 0,
+    startingPuzzleIndex: 0,
+  };
+}

@@ -398,3 +398,202 @@ export async function getHitboxCenter(
     };
   });
 }
+
+// ─── Dynamic assessment + full-level helpers ──────────────────────────────────
+
+/**
+ * Returns the 1-based puzzle segment at which the assessment will trigger,
+ * read from AssessmentFlowCoordinator.getAssessmentPuzzleTrigger().
+ * Returns 0 if the coordinator is inaccessible or the level is not eligible.
+ */
+export async function getAssessmentTriggerPuzzle(page: Page): Promise<number> {
+  return page.evaluate(() => {
+    const gss = (window as any).__ftm?.gameStateService;
+    if (!gss) return 0;
+    const sh = (window as any).__ftm?.sceneHandler;
+    const scene =
+      sh?.['activeScene']?.['scene'] ?? gss.gamePlayScene ?? gss.currentScene ?? null;
+    const fm = scene?.flowManager ?? null;
+    const coordinator = fm?.['assessmentFlowCoordinator'];
+    if (!coordinator) return 0;
+    const trigger = coordinator.getAssessmentPuzzleTrigger?.();
+    return typeof trigger === 'number' ? trigger : 0;
+  });
+}
+
+/**
+ * Returns the 1-based puzzle segment index where the mini-game is scheduled
+ * (GameplayFlowManager.levelForMinigame). Returns 0 if not set.
+ */
+export async function getMiniGameTriggerPuzzle(page: Page): Promise<number> {
+  return page.evaluate(() => {
+    const gss = (window as any).__ftm?.gameStateService;
+    if (!gss) return 0;
+    const sh = (window as any).__ftm?.sceneHandler;
+    const scene =
+      sh?.['activeScene']?.['scene'] ?? gss.gamePlayScene ?? gss.currentScene ?? null;
+    const fm = scene?.flowManager ?? null;
+    if (!fm) return 0;
+    const level = fm['levelForMinigame'];
+    return typeof level === 'number' && level >= 1 ? level : 0;
+  });
+}
+
+/**
+ * Returns the total number of puzzles in the current level by reading
+ * gameStateService.gamePlayData.currentLevelData.puzzles.length.
+ */
+export async function getTotalPuzzleCount(page: Page): Promise<number> {
+  return page.evaluate(() => {
+    const gss = (window as any).__ftm?.gameStateService;
+    return gss?.gamePlayData?.currentLevelData?.puzzles?.length ?? 0;
+  });
+}
+
+/**
+ * Returns the current 0-based puzzle index from GameplayFlowManager.currentPuzzleIndex.
+ * Returns -1 if the flow manager is not accessible.
+ */
+export async function getCurrentPuzzleIndexFromManager(page: Page): Promise<number> {
+  return page.evaluate(() => {
+    const gss = (window as any).__ftm?.gameStateService;
+    if (!gss) return -1;
+    const sh = (window as any).__ftm?.sceneHandler;
+    const scene =
+      sh?.['activeScene']?.['scene'] ?? gss.gamePlayScene ?? gss.currentScene ?? null;
+    const fm = scene?.flowManager ?? null;
+    if (!fm) return -1;
+    const idx = fm['currentPuzzleIndex'];
+    return typeof idx === 'number' ? idx : -1;
+  });
+}
+
+/**
+ * Polls until GameplayFlowManager.currentPuzzleIndex >= expectedIndex (0-based).
+ * Throws if the index does not advance within the timeout.
+ */
+export async function waitForPuzzleAdvance(
+  page: Page,
+  expectedIndex: number,
+  timeout = 10_000,
+): Promise<void> {
+  await page.waitForFunction(
+    (expected: number) => {
+      const gss = (window as any).__ftm?.gameStateService;
+      if (!gss) return false;
+      const sh = (window as any).__ftm?.sceneHandler;
+      const scene =
+        sh?.['activeScene']?.['scene'] ?? gss.gamePlayScene ?? gss.currentScene ?? null;
+      const fm = scene?.flowManager ?? null;
+      if (!fm) return false;
+      const idx = fm['currentPuzzleIndex'];
+      return typeof idx === 'number' && idx >= expected;
+    },
+    expectedIndex,
+    { timeout },
+  );
+}
+
+/**
+ * Polls for #assessment-survey-overlay to become visible (natural trigger path).
+ * Returns true if the overlay appeared within the timeout, false otherwise.
+ */
+export async function waitForNaturalAssessmentTrigger(
+  page: Page,
+  timeout = 12_000,
+): Promise<boolean> {
+  return page
+    .waitForFunction(
+      (sel: string) => {
+        const el = document.querySelector(sel) as HTMLElement | null;
+        if (!el) return false;
+        const cs = window.getComputedStyle(el);
+        return (
+          cs.display !== 'none' &&
+          cs.visibility !== 'hidden' &&
+          parseFloat(cs.opacity) > 0
+        );
+      },
+      '#assessment-survey-overlay',
+      { timeout },
+    )
+    .then(() => true)
+    .catch(() => false);
+}
+
+/**
+ * Returns the correct stone position for the CURRENT puzzle by reading from
+ * the StoneHandler directly (bypasses the CORRECT_STONE_POSITION event).
+ * Returns null if StoneHandler is not accessible or has no correct stone.
+ *
+ * Handles both letter puzzles (correctTargetStone = single letter, e.g. 'a')
+ * and word puzzles (correctTargetStone = joined word, e.g. 'cat' while individual
+ * stone texts are 'c', 'a', 't'). Falls back to targetStones[] array matching for
+ * word puzzle levels.
+ */
+export async function getCorrectStonePositionForCurrentPuzzle(
+  page: Page,
+): Promise<{ x: number; y: number; text: string } | null> {
+  return page.evaluate(() => {
+    const gss = (window as any).__ftm?.gameStateService;
+    if (!gss) return null;
+    const sh = (window as any).__ftm?.sceneHandler;
+    const scene =
+      sh?.['activeScene']?.['scene'] ?? gss.gamePlayScene ?? gss.currentScene ?? null;
+    if (!scene) return null;
+    const fm = scene?.flowManager ?? null;
+    if (!fm) return null;
+    const stoneHandler = fm?.['stoneHandler'] ?? scene?.['stoneHandler'] ?? null;
+    if (!stoneHandler) return null;
+
+    // getCorrectTargetStone() returns a STRING (the target text), not a StoneConfig object.
+    // For letter puzzles: correctTargetStone = single letter e.g. 'a'
+    // For word puzzles:   correctTargetStone = joined word e.g. 'cat' (targetStones.join(""))
+    const correctText: string =
+      typeof stoneHandler.getCorrectTargetStone === 'function'
+        ? stoneHandler.getCorrectTargetStone()
+        : stoneHandler['correctTargetStone'];
+
+    // targetStones is the raw array of individual letter strings ['c', 'a', 't'].
+    // For letter puzzles it has a single element; for word puzzles it has all letters.
+    const targetStones: string[] = stoneHandler['targetStones'] ?? [];
+    const foilStones: any[] = stoneHandler['foilStones'] ?? [];
+
+    if (!correctText && targetStones.length === 0) return null;
+
+    // Primary match: letter puzzle — stone.text === correctTargetStone (e.g. 'a' === 'a')
+    // foilStones is the live array; activeStones is a filtered snapshot — prefer foilStones.
+    for (const s of foilStones) {
+      if (s && !s.isDisposed && s.text === correctText) {
+        return { x: s.x, y: s.y, text: s.text };
+      }
+    }
+
+    // Word puzzle fallback: correctTargetStone is the joined word (e.g. 'cat') but each
+    // stone's text is a single letter ('c', 'a', 't'). Use targetStones array to match.
+    if (targetStones.length > 0) {
+      for (const s of foilStones) {
+        if (s && !s.isDisposed && targetStones.includes(s.text)) {
+          return { x: s.x, y: s.y, text: s.text };
+        }
+      }
+    }
+
+    const activeStones: any[] = stoneHandler['activeStones'] ?? [];
+    for (const s of activeStones) {
+      if (s && !s.isDisposed && s.text === correctText) {
+        return { x: s.x, y: s.y, text: s.text };
+      }
+    }
+
+    if (targetStones.length > 0) {
+      for (const s of activeStones) {
+        if (s && !s.isDisposed && targetStones.includes(s.text)) {
+          return { x: s.x, y: s.y, text: s.text };
+        }
+      }
+    }
+
+    return null;
+  });
+}

@@ -36,4 +36,12 @@ export {
   getHitboxCenter,
   waitForTreasureCanvasVisible,
   waitForMiniGameComplete,
+  // Dynamic assessment + full-level progression
+  getAssessmentTriggerPuzzle,
+  getMiniGameTriggerPuzzle,
+  getTotalPuzzleCount,
+  getCurrentPuzzleIndexFromManager,
+  waitForPuzzleAdvance,
+  waitForNaturalAssessmentTrigger,
+  getCorrectStonePositionForCurrentPuzzle,
 } from './game-state-helpers';
