@@ -49,10 +49,21 @@ export async function mockAnalytics(page: Page) {
       contentType: 'application/json',
       body: JSON.stringify({
         feature_gates: {},
-        dynamic_configs: {},
+        dynamic_configs: {
+          assessmentlevels: {
+            name: 'assessmentlevels',
+            value: {
+              enabled: true,
+              mode: 'constant',
+              assessments: [{ assessmentType: 'ftm', level: 1 }],
+            },
+            rule_id: 'default',
+            secondary_exposures: [],
+          },
+        },
         layer_configs: {},
-        has_updates: false,
-        time: 0,
+        has_updates: true,
+        time: 1,
       }),
     }),
   );
