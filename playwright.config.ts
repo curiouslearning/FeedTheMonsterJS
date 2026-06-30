@@ -8,7 +8,7 @@ export default defineConfig({
   testIgnore: ['**/isolated/**'],
   fullyParallel: false,
   forbidOnly: !!process.env.CI,
-  retries: process.env.CI ? 2 : 1,
+  retries: 0,
   workers: 1,
   timeout: 180_000,
   reporter: [

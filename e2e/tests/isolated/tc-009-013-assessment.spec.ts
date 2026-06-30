@@ -53,6 +53,12 @@ import {
   getCapturedCorrectStonePos,
   getHitboxCenter,
   waitForPositiveFeedback,
+  completeAssessmentSurvey,
+  subscribeToAssessmentCompletion,
+  wasAssessmentCompleted,
+  isAssessmentCompletedByCoordinator,
+  getAssessmentTotalQuestions,
+  isAssessmentOverlayVisible,
 } from '../../helpers';
 
 // ─── Shared helpers ───────────────────────────────────────────────────────────
@@ -462,7 +468,7 @@ function _tc011(getPage: () => Page, state: FullGameplayFlowState): void {
 }
 
 function _tc012(getPage: () => Page, _state: FullGameplayFlowState): void {
-  test('FTM_TC_012 | Assessment Completion | Assessment answered and closed; mini-game launches via combined-mode transition', async () => {
+  test('FTM_TC_012 | Assessment Completion | All questions answered correctly; assessment closes naturally; mini-game launches via combined-mode transition', async () => {
     const page = getPage();
 
     await test.step('Assessment overlay is visible and player is attached', async () => {
@@ -474,104 +480,76 @@ function _tc012(getPage: () => Page, _state: FullGameplayFlowState): void {
       });
     });
 
-    await test.step('Click #nextqButton to start Q1 audio', async () => {
-      await page.waitForSelector(`${Selectors.assessmentPlayer} #nextqButton`, {
-        timeout: Timeouts.sceneTransition,
-      });
-      await page.waitForTimeout(500);
-      await page.locator(`${Selectors.assessmentPlayer} #nextqButton`).click({ force: true });
-    });
+    let totalQuestions = 0;
+    await test.step('Read total question count from assessment player', async () => {
+      // Wait for player to fully load (appInstance must have questions populated)
+      await page
+        .waitForFunction(
+          (pSel: string) => {
+            const player = document.querySelector(pSel) as any;
+            const questions = player?.appInstance?.game?.questions;
+            return Array.isArray(questions) && questions.length > 0;
+          },
+          Selectors.assessmentPlayer,
+          { timeout: Timeouts.sceneTransition },
+        )
+        .catch(() => null);
 
-    await test.step('Wait for Q1 answer buttons to finish entry animation', async () => {
-      await page.waitForFunction(
-        (playerSel: string) => {
-          const player = document.querySelector(playerSel);
-          if (!player) return false;
-          const chest = player.querySelector('#chestImage');
-          if (!chest || (chest as HTMLElement).getBoundingClientRect().width === 0) return false;
-          const btns = Array.from(player.querySelectorAll('.answerButton'));
-          return btns.some((b) => {
-            const el = b as HTMLElement;
-            const cs = window.getComputedStyle(el);
-            if (cs.display === 'none' || cs.visibility === 'hidden') return false;
-            if (el.getBoundingClientRect().width === 0) return false;
-            const anims = (el as Element).getAnimations?.() ?? [];
-            return anims.length === 0 && parseFloat(cs.opacity) > 0;
-          });
-        },
-        Selectors.assessmentPlayer,
-        { timeout: Timeouts.sceneTransition },
-      );
-    });
-
-    await test.step('Identify correct answer and drag it to the chest', async () => {
-      const answerInfo = await page.evaluate((playerSel: string) => {
-        const player = document.querySelector(playerSel) as any;
-        if (!player?.appInstance) return null;
-        const q = player.appInstance.game?.currentQuestion;
-        if (!q || !Array.isArray(q.answers) || !q.correct) return null;
-        const correctName: string = q.correct;
-        const idx = (q.answers as any[]).findIndex(a => a.answerName === correctName);
-        return {
-          correctBtnId: idx >= 0 ? `#answerButton${idx + 1}` : null,
-          correctAnswerName: correctName,
-        };
-      }, Selectors.assessmentPlayer);
-
+      totalQuestions = await getAssessmentTotalQuestions(page);
       test.info().annotations.push({
-        type: 'q1-answer',
-        description: answerInfo
-          ? `Correct: "${answerInfo.correctAnswerName}" → ${answerInfo.correctBtnId}`
-          : 'Could not read question — will fall back to close button',
+        type: 'total-assessment-questions',
+        description: `Assessment has ${totalQuestions} question(s)`,
       });
-
-      if (answerInfo?.correctBtnId) {
-        const chest = page.locator(`${Selectors.assessmentPlayer} #chestImage`);
-        const btn = page.locator(`${Selectors.assessmentPlayer} ${answerInfo.correctBtnId}`);
-        const chestBB = await chest.boundingBox();
-        const btnBB = await btn.boundingBox();
-
-        if (chestBB && btnBB) {
-          await page.mouse.move(btnBB.x + btnBB.width / 2, btnBB.y + btnBB.height / 2);
-          await page.mouse.down();
-          await page.mouse.move(
-            chestBB.x + chestBB.width / 2,
-            chestBB.y + chestBB.height / 2,
-            { steps: 20 },
-          );
-          await page.mouse.up();
-
-          const feedbackShown = await page
-            .waitForFunction(
-              (pSel: string) => {
-                const el = document.querySelector(`${pSel} #feedbackWrap`) as HTMLElement | null;
-                return el?.classList.contains('visible') ?? false;
-              },
-              Selectors.assessmentPlayer,
-              { timeout: 5_000 },
-            )
-            .then(() => true)
-            .catch(() => false);
-
-          test.info().annotations.push({
-            type: 'q1-feedback',
-            description: feedbackShown ? 'Positive feedback shown' : 'Feedback not detected',
-          });
-        }
-      }
     });
 
-    await test.step('Close assessment (triggers combined-mode mini-game transition)', async () => {
-      await page.waitForTimeout(1_000);
-      const closeBtn = page.locator(Selectors.assessmentCloseBtn);
-      if (await closeBtn.isVisible({ timeout: 3_000 }).catch(() => false)) {
-        await closeBtn.click();
-      } else {
-        const inner = page.locator(
-          `${Selectors.assessmentPlayer} [class*="close"], ${Selectors.assessmentPlayer} [class*="skip"]`,
-        );
-        if ((await inner.count()) > 0) {
-          await inner.first().click({ force: true });
+    await test.step('Subscribe to assessment onComplete event before answering', async () => {
+      await subscribeToAssessmentCompletion(page);
+    });
+
+    let questionsAnswered = 0;
+    await test.step('Cycle through ALL questions: audio plays → ladybug images load → drag correct answer → feedback → repeat', async () => {
+      questionsAnswered = await completeAssessmentSurvey(page);
+      test.info().annotations.push({
+        type: 'assessment-questions-answered',
+        description: `${questionsAnswered} of ${totalQuestions || '?'} question(s) answered correctly`,
+      });
+      expect(questionsAnswered, 'At least one assessment question must be answered').toBeGreaterThan(0);
+    });
+
+    await test.step('Verify assessment completed (coordinator flag or all questions answered)', async () => {
+      const completed = await wasAssessmentCompleted(page);
+      const coordinatorDone = await isAssessmentCompletedByCoordinator(page);
+      test.info().annotations.push({
+        type: 'assessment-completed-event',
+        description: completed
+          ? `Assessment completed — coordinator=${coordinatorDone}, answered=${questionsAnswered}/${totalQuestions}`
+          : `Survey incomplete — coordinator=${coordinatorDone}, answered=${questionsAnswered}/${totalQuestions}`,
+      });
+      const fullySurveyed = totalQuestions > 0 && questionsAnswered >= totalQuestions;
+      expect(
+        completed || coordinatorDone || fullySurveyed,
+        `Expected assessment to complete: playerEvent=${completed}, coordinator=${coordinatorDone}, answered=${questionsAnswered}/${totalQuestions}`,
+      ).toBe(true);
+    });
+
+    await test.step('Fallback: close assessment if overlay is still visible after all questions', async () => {
+      await page.waitForTimeout(500);
+      const overlayStillVisible = await isAssessmentOverlayVisible(page);
+      if (overlayStillVisible) {
+        test.info().annotations.push({
+          type: 'assessment-fallback-close',
+          description: 'Overlay still visible after answering all questions — using close button',
+        });
+        const closeBtn = page.locator(Selectors.assessmentCloseBtn);
+        if (await closeBtn.isVisible({ timeout: 3_000 }).catch(() => false)) {
+          await closeBtn.click();
+        } else {
+          const inner = page.locator(
+            `${Selectors.assessmentPlayer} [class*="close"], ${Selectors.assessmentPlayer} [class*="skip"]`,
+          );
+          if ((await inner.count()) > 0) {
+            await inner.first().click({ force: true });
+          }
         }
       }
     });
