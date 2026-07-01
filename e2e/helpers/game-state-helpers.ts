@@ -159,6 +159,31 @@ export async function pauseFtmGame(page: Page): Promise<void> {
 }
 
 /**
+ * After clicking stones in the treasure-chest mini-game, the OpenedChest state
+ * still runs its full 12-second timer before transitioning to FadeOut.
+ * This helper jumps stateTimer to 12 000 ms so the very next game frame
+ * transitions to FadeOut (~400 ms), ending the mini-game in ~1 s instead of
+ * waiting up to 12 s.
+ *
+ * TreasureChestState enum values (from treasureChestAnimation.ts):
+ *   FlyIn=0, FadeIn=1, ClosedChest=2, OpenedChest=3, FadeOut=4
+ */
+export async function speedUpMiniGame(page: Page): Promise<void> {
+  await page.evaluate(() => {
+    const scene =
+      (window as any).__ftm?.sceneHandler?.['activeScene']?.['scene'];
+    const miniGame = scene?.miniGameHandler?.activeMiniGame;
+    if (!miniGame) return;
+    const animation = miniGame['treasureAnimation'];
+    if (!animation) return;
+    // Jump only when actually in OpenedChest — avoids stomping FadeOut if already there.
+    if (animation['state'] === 3 /* OpenedChest */) {
+      animation['stateTimer'] = 12_000;
+    }
+  });
+}
+
+/**
  * Waits for the treasure chest mini game canvas (#treasurecanvas) to become
  * visible on screen.  Fails with a timeout error if it never appears.
  */
@@ -492,6 +517,32 @@ export async function waitForPuzzleAdvance(
     expectedIndex,
     { timeout },
   );
+}
+
+/**
+ * Reduces the pending assessment-delay timer from ~5500 ms to targetMs so the
+ * assessment overlay appears within 1–2 s instead of the full game-side delay.
+ *
+ * Works by reaching the custom Scheduler singleton (exposed on window.__ftm.scheduler
+ * in non-production builds) and setting the remaining time of any large one-shot
+ * timer to targetMs.  The natural callback path is preserved — the exact same
+ * startAssessmentFlow closure that was scheduled fires; we only shorten the wait.
+ *
+ * Call this immediately after waitForPositiveFeedback() in TC_011.
+ */
+export async function speedUpAssessmentTimer(page: Page, targetMs = 100): Promise<void> {
+  await page.evaluate((targetMs: number) => {
+    const scheduler = (window as any).__ftm?.scheduler;
+    if (!scheduler) return;
+    const timers: Map<any, any> = scheduler['timers'];
+    if (!timers) return;
+    for (const timer of timers.values()) {
+      // Target only one-shot timers with a long remaining delay (the assessment timer).
+      if (!timer.loop && timer.remaining > 1000) {
+        timer.remaining = targetMs;
+      }
+    }
+  }, targetMs);
 }
 
 /**

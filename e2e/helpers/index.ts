@@ -34,9 +34,11 @@ export {
   subscribeToCorrectStonePosition,
   getCapturedCorrectStonePos,
   getHitboxCenter,
+  speedUpMiniGame,
   waitForTreasureCanvasVisible,
   waitForMiniGameComplete,
   // Dynamic assessment + full-level progression
+  speedUpAssessmentTimer,
   getAssessmentTriggerPuzzle,
   getMiniGameTriggerPuzzle,
   getTotalPuzzleCount,

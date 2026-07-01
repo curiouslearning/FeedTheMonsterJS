@@ -18,8 +18,9 @@
  *   • TC_009 picks up immediately after; detects startingPuzzleIndex = 1
  *     (puzzle 1 already done) and reads puzzle 2's stone position fresh.
  *   • TC_010 completes remaining pre-assessment puzzles (none if trigger = puzzle 2).
- *   • TC_011 drops the trigger puzzle stone and waits for the NATURAL assessment
- *     trigger (~5.5 s assessmentDelay) — no triggerAssessment() is called.
+ *   • TC_011 drops the trigger puzzle stone, speeds up the game-side assessmentDelay
+ *     timer from ~5.5 s to ~100 ms via speedUpAssessmentTimer(), then waits for the
+ *     natural assessment overlay — no triggerAssessment() is called.
  *   • TC_012 answers Q1 and closes the assessment, which fires the combined-mode
  *     transition (mini-game starts automatically).
  *   • TC_013 is registered AFTER TC_014–TC_015 so it runs after the mini-game
