@@ -1,0 +1,1 @@
+export const FEATURE_ANDROID_EVENT_BUBBLE = 'mr-75';

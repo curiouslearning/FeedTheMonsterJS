@@ -8,6 +8,7 @@ import {
   BACK_BTN_IMG,
   AUDIO_INTRO
  } from '@constants';
+import { GameScore } from '@data';
 import { LevelSelectionGameBtn, LevelSelectionNavBtn } from '@buttons';
 import { AudioPlayer } from "@components";
 
@@ -248,29 +249,14 @@ export class levelSelectionController extends BaseHTML {
   }
 
   private updateNextPlayableLevel() {
-    if (this.playedGameLevels?.length) {
-      // Find highest played level
-      let highestPrevLevel = 0;
-      let isLevelFailed = false;
-
-      for (const levelData of this.playedGameLevels) {
-
-        if (highestPrevLevel < levelData?.levelNumber || this.playedGameLevels.length === 1) {
-          highestPrevLevel = levelData?.levelNumber;
-          isLevelFailed = levelData?.starCount < 3;
-        }
-      }
-
-      // Convert to 1-based game level
-      highestPrevLevel = highestPrevLevel + 1;
-
-      // Determine next playable level.
-      this.nextPlayableLevel = highestPrevLevel + (isLevelFailed ? 0 : 1);
-
-    } else {
-      // First level if no data exists
+    const highestLevelNumber = GameScore.getHighestLevelReached();
+    if (highestLevelNumber === -1) {
       this.nextPlayableLevel = 1;
+      return;
     }
+    const levelData = GameScore.getGameLevelData(highestLevelNumber);
+    const isLevelFailed = (levelData?.starCount ?? 0) < 3;
+    this.nextPlayableLevel = (highestLevelNumber + 1) + (isLevelFailed ? 0 : 1);
   }
 
   private nextLevelIsPlayable(currentGameLevel: number): boolean {
