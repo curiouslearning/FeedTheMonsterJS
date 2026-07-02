@@ -402,7 +402,6 @@ export class GameplayFlowManager {
         this.uiManager.updateStars(this.currentPuzzleIndex, this.isCorrect);
 
         this.timeoutRegistry.setTimeout(() => {
-            this.logLevelEndFirebaseEvent();
             const starsCount = GameScore.calculateStarCount(this.score);
             const levelEndData = {
                 starCount: starsCount,
@@ -412,11 +411,6 @@ export class GameplayFlowManager {
                 score: this.score,
             };
 
-            gameStateService.publish(
-                gameStateService.EVENTS.LEVEL_END_DATA_EVENT,
-                { levelEndData, data: this.data }
-            );
-
             // Save to local storage.
             GameScore.setGameLevelScore(
                 this.levelData,
@@ -424,6 +418,11 @@ export class GameplayFlowManager {
                 this.treasureChestScore
             );
 
+            this.logLevelEndFirebaseEvent();
+            gameStateService.publish(
+                gameStateService.EVENTS.LEVEL_END_DATA_EVENT,
+                { levelEndData, data: this.data }
+            );
             this.switchSceneAtGameEnd(starsCount, this.treasureChestScore);
             this.monsterController.dispose();
         }, delay);
@@ -502,6 +501,7 @@ export class GameplayFlowManager {
                 json_version_number: this.jsonVersionNumber,
                 success_or_failure: isCorrect ? "success" : "failure",
                 level_number: this.levelData.levelMeta.levelNumber,
+                level_type: this.levelData.levelMeta.levelType,
                 puzzle_number: this.currentPuzzleIndex,
                 item_selected: itemSelected,
                 target: this.stoneHandler.getCorrectTargetStone(),
@@ -522,7 +522,10 @@ export class GameplayFlowManager {
                 success_or_failure: GameScore.calculateStarCount(this.score) >= 3 ? "success" : "failure",
                 number_of_successful_puzzles: this.score / 100,
                 level_number: this.levelData.levelMeta.levelNumber,
+                level_type: this.levelData.levelMeta.levelType,
                 duration: (endTime - this.startTime) / 1000,
+                highest_level_completed: GameScore.getHighestLevelReached() + 1, // from 0-based index
+                ftm_language:lang,
             }
         );
     }

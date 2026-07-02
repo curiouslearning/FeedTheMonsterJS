@@ -1,11 +1,11 @@
 const path = require('path');
 const { exec } = require('child_process');
+const webpack = require('webpack');
 const nodeEnv = process.env.NODE_ENV || 'development';
 const isDev = (nodeEnv !== 'production');
 const CopyPlugin = require("copy-webpack-plugin");
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const TerserPlugin = require('terser-webpack-plugin');
-const webpack = require('webpack');
 require('dotenv').config();
 // const ESLintPlugin = require('eslint-webpack-plugin');
 
@@ -62,6 +62,10 @@ class WorkboxInjectOnDevBuildPlugin {
 }
 
 const mode = isDev ? 'development' : 'production';
+
+const productionConfig = require('./config/production.json');
+const envConfig = nodeEnv !== 'production' ? require(`./config/${nodeEnv}.json`) : {};
+const appConfig = Object.assign({}, productionConfig, envConfig);
 
 var config = {
   mode,
@@ -129,6 +133,7 @@ var config = {
       '@services': path.resolve(__dirname, 'src/services/'),
       '@miniGameStateService': path.resolve(__dirname, 'src/miniGame/miniGameStateService'),
       '@miniGames': path.resolve(__dirname, 'src/miniGame/miniGames'),
+      '@appConfig': path.resolve(__dirname, 'src/app-config'),
     },
     extensions: ['.tsx', '.ts', '.js', '.json', '.css', '.sh', '.babelrc', '.eslintignore', '.gitignore', '.d'],
   },
@@ -138,6 +143,9 @@ var config = {
     //   threshold: 8192, // Minimum size (in bytes) for a file to be compressed
     //   minRatio: 0.8, // Minimum compression ratio
     // }),
+    new webpack.DefinePlugin({
+      __APP_CONFIG__: JSON.stringify(appConfig),
+    }),
     new CopyPlugin({
       patterns: [
         { from: "./public/index.html", to: "./" },

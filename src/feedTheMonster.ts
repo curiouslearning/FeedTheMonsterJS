@@ -23,6 +23,8 @@ import { featureFlagsService } from '@curiouslearning/features';
 import gameStateService from "./gameStateService";
 import assessmentSurveyManager from '@assessment/assessment-survey-manager';
 import { AssessmentLevelConfig } from '@assessment/config/assessment-level-config';
+import { AndroidAnalyticsStrategy } from './modules/android/services/analytics-strategy/android-analytics-strategy';
+import { FEATURE_ANDROID_EVENT_BUBBLE } from './modules/android/constants/features';
 
 declare const window: any;
 
@@ -90,6 +92,9 @@ class App {
     featureFlagsService.init({
       user: { userID: pseudoId, locale: this.lang, custom: { platform: 'ftm' } },
     });
+    featureFlagsService.loadFeatures([
+      FEATURE_ANDROID_EVENT_BUBBLE
+    ]);
     await featureFlagsService.initialize();
 
     // Expose core singletons on window for E2E tests (non-production only).
@@ -121,6 +126,8 @@ class App {
       this.handleCachedScenario(this.dataModal);
     }
     this.registerWorkbox();
+
+    this.initAndroidModule();
   }
 
   private async loadTitleFeedbackCustomFont() {
@@ -134,6 +141,24 @@ class App {
       }
     });
   }
+
+  /**
+   * Needs to happen after await AnalyticsIntegration.initializeAnalytics();
+   * because this registers a strategy
+   */
+  private initAndroidModule() {
+    if (featureFlagsService.isFeatureEnabled(FEATURE_ANDROID_EVENT_BUBBLE)) {
+      const androidStrategy = new AndroidAnalyticsStrategy({
+        cr_user_id: pseudoId ?? '',
+        app_version: document.getElementById("version-info-id")?.innerHTML || ''
+      });
+      AnalyticsIntegration.getInstance().analyticsService.register(
+        'android',
+        androidStrategy
+      );
+    }
+  }
+
   private logDownloadPercentageComplete(percentage: number, timeDifferenceFromSessonStart: number) {
     const eventData = {
       json_version_number: this.getJsonVersionNumber(),

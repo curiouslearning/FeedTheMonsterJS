@@ -8,8 +8,11 @@ export var source = urlParams.get("source") == null ? null : urlParams.get("sour
 export var campaign_id = urlParams.get("campaign_id") == null ? null : urlParams.get("campaign_id");
 export var container_app_version = urlParams.get("container_app_version");
 
-export var lang =
-  urlParams.get("cr_lang") == null ? "english" : urlParams.get("cr_lang");
+// export var lang =
+  // urlParams.get("cr_lang") == null ? "english" : urlParams.get("cr_lang");
+
+export const lang: string =
+  urlParams.get("cr_lang") ?? "english";
 
 export const font = Utils.getLanguageSpecificFont(lang);
 export const Debugger = {

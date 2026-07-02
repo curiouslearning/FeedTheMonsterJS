@@ -98,6 +98,7 @@ export interface CommonEventProperties {
     target: string;
     foils: string[] | string;
     response_time: number;
+    level_type?: string;
   }
   
   /**
@@ -114,6 +115,8 @@ export interface CommonEventProperties {
     level_number: number;
     number_of_successful_puzzles: number;
     duration: number;
+    highest_level_completed: number;
+    level_type?: string;
   }
   
   /**
