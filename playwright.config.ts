@@ -22,7 +22,8 @@ export default defineConfig({
     ['json', { outputFile: 'test-results/results.json' }],
   ],
   use: {
-    baseURL: 'http://localhost:8080',
+    headless: process.env.CI ? true : false,
+    baseURL: process.env.BASE_URL || 'http://localhost:8080',
     // Capture screenshot on every failure for debugging
     screenshot: 'only-on-failure',
     // Retain video for failed tests so failures are reproducible

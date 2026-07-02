@@ -93,6 +93,24 @@ jobs:
           distribution-id: 'E2QD6IZIYBGTJK'
           paths: '"/*"'
 
+  e2e-tests:
+    docker:
+      - image: mcr.microsoft.com/playwright:v1.60.0-jammy
+    steps:
+      - checkout
+      - node/install-packages
+      - run:
+          name: Run Playwright E2E tests
+          command: npm run test:e2e
+          environment:
+            CI: 'true'
+      - store_test_results:
+          path: test-results
+      - store_artifacts:
+          path: playwright-report
+      - store_artifacts:
+          path: test-results
+
 # TODO: move invalidate-cloudfront-cache parameters to project env variables
 # Eventually these will be the new cloudfront name for apps and app name respectively.
 
@@ -103,9 +121,15 @@ workflows:
   s3-deploy-workflow:
     jobs:
       - node/test
+      - e2e-tests:
+          requires:
+            - node/test
       - build-and-deploy-dev:
           context:
             - aws-context
+          requires:
+            - node/test
+            - e2e-tests
           filters:
             branches:
               only:
@@ -115,6 +139,7 @@ workflows:
             - aws-context
           requires:
             - node/test
+            - e2e-tests
           filters:
             branches:
               only:
@@ -124,6 +149,7 @@ workflows:
             - aws-context
           requires:
             - node/test
+            - e2e-tests
           filters:
             branches:
               only:
@@ -133,6 +159,7 @@ workflows:
             - aws-context
           requires:
             - node/test
+            - e2e-tests
           filters:
             branches:
               only:
