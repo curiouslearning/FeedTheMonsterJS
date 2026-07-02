@@ -1,5 +1,28 @@
 
 
+## [1.6.0](https://github.com/curiouslearning/FeedTheMonsterJS/compare/1.5.1...1.6.0) (2026-07-02)
+
+
+### Features
+
+* [MR-83] register container_app_version as a Firebase user property ([3d28bcc](https://github.com/curiouslearning/FeedTheMonsterJS/commit/3d28bcc5ac76561a1edce698ae98e6beb0d9fd55))
+* [MR-97] send sub-app appVersion to container as payload metadata ([e27dffd](https://github.com/curiouslearning/FeedTheMonsterJS/commit/e27dffd9fce11a069e74bc2bd6eb7734f3477176))
+* add android interface level complete event bubbling (MR-61) ([#1950](https://github.com/curiouslearning/FeedTheMonsterJS/issues/1950)) ([642cab9](https://github.com/curiouslearning/FeedTheMonsterJS/commit/642cab9e1f883bf3ea0dd52092a043a8ed7f6cdb))
+* added highest level reached in event bubble handling (MR-60) ([#1957](https://github.com/curiouslearning/FeedTheMonsterJS/issues/1957)) ([2fb9be6](https://github.com/curiouslearning/FeedTheMonsterJS/commit/2fb9be6a6a3dca11154d9fd3cf29fd0faf16b3de))
+* added level completed handler for anroid analytics strategy ([#1956](https://github.com/curiouslearning/FeedTheMonsterJS/issues/1956)) ([bb70275](https://github.com/curiouslearning/FeedTheMonsterJS/commit/bb7027517a577dc81e5d37fcd0e4dc0317f9a271))
+* tembarsa language + node-based wav to mp3 converter script ([#1986](https://github.com/curiouslearning/FeedTheMonsterJS/issues/1986)) ([0bfb8a9](https://github.com/curiouslearning/FeedTheMonsterJS/commit/0bfb8a9bd80829c849520680eaa958be686b1d67))
+* wrap event bubbling in feature check (MR-91) ([#1960](https://github.com/curiouslearning/FeedTheMonsterJS/issues/1960)) ([0f88940](https://github.com/curiouslearning/FeedTheMonsterJS/commit/0f88940d4f80408e237866a406aed10cd603b644))
+
+
+### Bug Fixes
+
+* [MR-50] add Kembata language content ([fbac14a](https://github.com/curiouslearning/FeedTheMonsterJS/commit/fbac14a046cdbe44bb8cd718b22a3c0f2baec8d3))
+* [MR-77] added "puzzle_completed" event to Firestore ([226fa95](https://github.com/curiouslearning/FeedTheMonsterJS/commit/226fa95f4cfdc9dffba42fa729a0b686020d4413))
+* added guard for calling updateHighestLevelReached for replaying a level ([2f1d204](https://github.com/curiouslearning/FeedTheMonsterJS/commit/2f1d204d6ca04ce139869ae5bff572377f121779))
+* added require unit testing deploying epic branch ([4cd2c3c](https://github.com/curiouslearning/FeedTheMonsterJS/commit/4cd2c3c506d549de7969d68c0b3434e63d1e9e64))
+* highest_level_completed is now 1-based indexing ([#1959](https://github.com/curiouslearning/FeedTheMonsterJS/issues/1959)) ([92728e1](https://github.com/curiouslearning/FeedTheMonsterJS/commit/92728e1f34985386d466786c4fa43c71fa016f3e))
+* switch to snake case for app_version ([bd7a678](https://github.com/curiouslearning/FeedTheMonsterJS/commit/bd7a6780641c1c28be70d52038df4c0586690046))
+
 ## [1.5.1](https://github.com/curiouslearning/FeedTheMonsterJS/compare/1.5.0...1.5.1) (2026-06-04)
 
 
