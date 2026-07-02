@@ -159,6 +159,31 @@ export async function pauseFtmGame(page: Page): Promise<void> {
 }
 
 /**
+ * After clicking stones in the treasure-chest mini-game, the OpenedChest state
+ * still runs its full 12-second timer before transitioning to FadeOut.
+ * This helper jumps stateTimer to 12 000 ms so the very next game frame
+ * transitions to FadeOut (~400 ms), ending the mini-game in ~1 s instead of
+ * waiting up to 12 s.
+ *
+ * TreasureChestState enum values (from treasureChestAnimation.ts):
+ *   FlyIn=0, FadeIn=1, ClosedChest=2, OpenedChest=3, FadeOut=4
+ */
+export async function speedUpMiniGame(page: Page): Promise<void> {
+  await page.evaluate(() => {
+    const scene =
+      (window as any).__ftm?.sceneHandler?.['activeScene']?.['scene'];
+    const miniGame = scene?.miniGameHandler?.activeMiniGame;
+    if (!miniGame) return;
+    const animation = miniGame['treasureAnimation'];
+    if (!animation) return;
+    // Jump only when actually in OpenedChest — avoids stomping FadeOut if already there.
+    if (animation['state'] === 3 /* OpenedChest */) {
+      animation['stateTimer'] = 12_000;
+    }
+  });
+}
+
+/**
  * Waits for the treasure chest mini game canvas (#treasurecanvas) to become
  * visible on screen.  Fails with a timeout error if it never appears.
  */
@@ -495,6 +520,32 @@ export async function waitForPuzzleAdvance(
 }
 
 /**
+ * Reduces the pending assessment-delay timer from ~5500 ms to targetMs so the
+ * assessment overlay appears within 1–2 s instead of the full game-side delay.
+ *
+ * Works by reaching the custom Scheduler singleton (exposed on window.__ftm.scheduler
+ * in non-production builds) and setting the remaining time of any large one-shot
+ * timer to targetMs.  The natural callback path is preserved — the exact same
+ * startAssessmentFlow closure that was scheduled fires; we only shorten the wait.
+ *
+ * Call this immediately after waitForPositiveFeedback() in TC_011.
+ */
+export async function speedUpAssessmentTimer(page: Page, targetMs = 100): Promise<void> {
+  await page.evaluate((targetMs: number) => {
+    const scheduler = (window as any).__ftm?.scheduler;
+    if (!scheduler) return;
+    const timers: Map<any, any> = scheduler['timers'];
+    if (!timers) return;
+    for (const timer of timers.values()) {
+      // Target only one-shot timers with a long remaining delay (the assessment timer).
+      if (!timer.loop && timer.remaining > 1000) {
+        timer.remaining = targetMs;
+      }
+    }
+  }, targetMs);
+}
+
+/**
  * Polls for #assessment-survey-overlay to become visible (natural trigger path).
  * Returns true if the overlay appeared within the timeout, false otherwise.
  */
@@ -596,4 +647,346 @@ export async function getCorrectStonePositionForCurrentPuzzle(
 
     return null;
   });
+}
+
+// ─── Assessment survey interaction helpers ────────────────────────────────────
+
+/**
+ * Returns info about the CORRECT answer for the current assessment question.
+ * Returns null if the question or player is not accessible.
+ */
+export async function getCorrectAssessmentAnswer(
+  page: Page,
+): Promise<{ correctBtnId: string; correctAnswerName: string; correctBtnIndex: number } | null> {
+  return page.evaluate((playerSel: string) => {
+    const player = document.querySelector(playerSel) as any;
+    if (!player?.appInstance) return null;
+    const q = player.appInstance.game?.currentQuestion;
+    if (!q || !Array.isArray(q.answers) || !q.correct) return null;
+    const correctName: string = q.correct;
+    const idx = (q.answers as any[]).findIndex(a => a.answerName === correctName);
+    if (idx < 0) return null;
+    return { correctBtnId: `#answerButton${idx + 1}`, correctAnswerName: correctName, correctBtnIndex: idx + 1 };
+  }, Selectors.assessmentPlayer);
+}
+
+/**
+ * Returns info about a WRONG answer for the current assessment question.
+ * Returns null if there are no wrong answer options.
+ */
+export async function getWrongAssessmentAnswer(
+  page: Page,
+): Promise<{ wrongBtnId: string; wrongAnswerName: string } | null> {
+  return page.evaluate((playerSel: string) => {
+    const player = document.querySelector(playerSel) as any;
+    if (!player?.appInstance) return null;
+    const q = player.appInstance.game?.currentQuestion;
+    if (!q || !Array.isArray(q.answers) || !q.correct) return null;
+    const correctName: string = q.correct;
+    const wrongIdx = (q.answers as any[]).findIndex(a => a.answerName !== correctName);
+    if (wrongIdx < 0) return null;
+    const answers = q.answers as any[];
+    return { wrongBtnId: `#answerButton${wrongIdx + 1}`, wrongAnswerName: answers[wrongIdx].answerName };
+  }, Selectors.assessmentPlayer);
+}
+
+/**
+ * Waits for assessment answer buttons (ladybug images) to finish their entry
+ * animation and become interactive.
+ */
+export async function waitForAssessmentAnswerButtons(
+  page: Page,
+  timeout: number = Timeouts.sceneTransition,
+): Promise<void> {
+  await page.waitForFunction(
+    (playerSel: string) => {
+      const player = document.querySelector(playerSel);
+      if (!player) return false;
+      const chest = player.querySelector('#chestImage');
+      if (!chest || (chest as HTMLElement).getBoundingClientRect().width === 0) return false;
+      const btns = Array.from(player.querySelectorAll('.answerButton'));
+      return btns.some((b) => {
+        const el = b as HTMLElement;
+        const cs = window.getComputedStyle(el);
+        if (cs.display === 'none' || cs.visibility === 'hidden') return false;
+        if (el.getBoundingClientRect().width === 0) return false;
+        const anims = (el as Element).getAnimations?.() ?? [];
+        return anims.length === 0 && parseFloat(cs.opacity) > 0;
+      });
+    },
+    Selectors.assessmentPlayer,
+    { timeout },
+  );
+}
+
+/**
+ * Drags an assessment answer button to the chest image.
+ * Returns true if the drag succeeded; false if elements were not found.
+ */
+export async function dragAssessmentAnswerToChest(
+  page: Page,
+  btnSelector: string,
+): Promise<boolean> {
+  const chest = page.locator(`${Selectors.assessmentPlayer} #chestImage`);
+  const btn = page.locator(`${Selectors.assessmentPlayer} ${btnSelector}`);
+  const chestBB = await chest.boundingBox();
+  const btnBB = await btn.boundingBox();
+  if (!chestBB || !btnBB) return false;
+  await page.mouse.move(btnBB.x + btnBB.width / 2, btnBB.y + btnBB.height / 2);
+  await page.mouse.down();
+  await page.mouse.move(
+    chestBB.x + chestBB.width / 2,
+    chestBB.y + chestBB.height / 2,
+    { steps: 20 },
+  );
+  await page.mouse.up();
+  return true;
+}
+
+/**
+ * Waits for the assessment feedback overlay (#feedbackWrap.visible) to appear.
+ * Returns true on success, false on timeout.
+ */
+export async function waitForAssessmentFeedback(
+  page: Page,
+  timeout: number = 5_000,
+): Promise<boolean> {
+  return page
+    .waitForFunction(
+      (pSel: string) => {
+        const el = document.querySelector(`${pSel} #feedbackWrap`) as HTMLElement | null;
+        return el?.classList.contains('visible') ?? false;
+      },
+      Selectors.assessmentPlayer,
+      { timeout },
+    )
+    .then(() => true)
+    .catch(() => false);
+}
+
+/**
+ * Waits for the assessment feedback overlay to hide (feedback animation complete).
+ * Returns true when hidden, false on timeout.
+ */
+export async function waitForAssessmentFeedbackToHide(
+  page: Page,
+  timeout: number = 5_000,
+): Promise<boolean> {
+  return page
+    .waitForFunction(
+      (pSel: string) => {
+        const el = document.querySelector(`${pSel} #feedbackWrap`) as HTMLElement | null;
+        return !el?.classList.contains('visible');
+      },
+      Selectors.assessmentPlayer,
+      { timeout },
+    )
+    .then(() => true)
+    .catch(() => false);
+}
+
+/**
+ * Returns true if the assessment player currently has a question to display.
+ */
+export async function hasAssessmentCurrentQuestion(page: Page): Promise<boolean> {
+  return page.evaluate((playerSel: string) => {
+    const player = document.querySelector(playerSel) as any;
+    if (!player?.appInstance) return false;
+    return player.appInstance.game?.currentQuestion != null;
+  }, Selectors.assessmentPlayer);
+}
+
+/**
+ * Returns the total number of questions in the current assessment survey.
+ * Returns 0 if the player or game is not accessible.
+ */
+export async function getAssessmentTotalQuestions(page: Page): Promise<number> {
+  return page.evaluate((playerSel: string) => {
+    const player = document.querySelector(playerSel) as any;
+    if (!player?.appInstance) return 0;
+    const questions = player.appInstance.game?.questions;
+    return Array.isArray(questions) ? questions.length : 0;
+  }, Selectors.assessmentPlayer);
+}
+
+/**
+ * Subscribes to the assessment player's onComplete event and stores the result
+ * in window.__ftmTest.assessmentCompleted. Must be called BEFORE questions are answered.
+ * AssessmentSurveyPlayerElement.ONCOMPLETE = 'completed' (not 'oncomplete').
+ */
+export async function subscribeToAssessmentCompletion(page: Page): Promise<void> {
+  await page.evaluate((playerSel: string) => {
+    (window as any).__ftmTest = (window as any).__ftmTest ?? {};
+    (window as any).__ftmTest.assessmentCompleted = false;
+    const player = document.querySelector(playerSel) as any;
+    if (!player?.subscribe) return;
+    player.subscribe('completed', () => {
+      (window as any).__ftmTest.assessmentCompleted = true;
+    });
+  }, Selectors.assessmentPlayer);
+}
+
+/**
+ * Returns true if the assessment has completed — either the player 'completed'
+ * event fired OR the AssessmentFlowCoordinator reports completion.
+ */
+export async function wasAssessmentCompleted(page: Page): Promise<boolean> {
+  return page.evaluate(() => {
+    if ((window as any).__ftmTest?.assessmentCompleted === true) return true;
+    const sh = (window as any).__ftm?.sceneHandler;
+    const scene = sh?.['activeScene']?.['scene'] ?? null;
+    const fm = scene?.flowManager ?? null;
+    const coordinator = fm?.['assessmentFlowCoordinator'];
+    return coordinator?.isAssessmentCompletedThisRun?.() === true;
+  });
+}
+
+/**
+ * Returns true if the AssessmentFlowCoordinator has marked the assessment as
+ * completed in the current run (set by handleAssessmentCompleted() when the
+ * player fires its 'completed' event through the game's onComplete callback).
+ */
+export async function isAssessmentCompletedByCoordinator(page: Page): Promise<boolean> {
+  return page.evaluate(() => {
+    const sh = (window as any).__ftm?.sceneHandler;
+    const scene = sh?.['activeScene']?.['scene'] ?? null;
+    const fm = scene?.flowManager ?? null;
+    const coordinator = fm?.['assessmentFlowCoordinator'];
+    return coordinator?.isAssessmentCompletedThisRun?.() === true;
+  });
+}
+
+/**
+ * Checks if the assessment overlay is currently visible on screen.
+ */
+export async function isAssessmentOverlayVisible(page: Page): Promise<boolean> {
+  return page.evaluate((sel: string) => {
+    const el = document.querySelector(sel) as HTMLElement | null;
+    if (!el) return false;
+    const cs = window.getComputedStyle(el);
+    return cs.display !== 'none' && cs.visibility !== 'hidden' && parseFloat(cs.opacity) > 0;
+  }, Selectors.assessmentOverlay);
+}
+
+/**
+ * Completes the entire assessment survey by cycling through ALL questions and
+ * answering each one CORRECTLY.
+ *
+ * Stops when: coordinator marks complete, no more questions, overlay dismissed,
+ * or maxQuestions safety guard hit. Returns the count of questions answered.
+ */
+export async function completeAssessmentSurvey(
+  page: Page,
+  maxQuestions: number = 20,
+): Promise<number> {
+  let answered = 0;
+
+  for (let i = 0; i < maxQuestions; i++) {
+    // Stop if coordinator already flagged completion (most reliable signal)
+    const alreadyDone = await isAssessmentCompletedByCoordinator(page);
+    if (alreadyDone) break;
+
+    // Stop if the overlay has already dismissed (e.g. after last question auto-closed)
+    const overlayGone = !(await isAssessmentOverlayVisible(page));
+    if (overlayGone) break;
+
+    // Stop if the player reports no current question
+    const hasQ = await hasAssessmentCurrentQuestion(page);
+    if (!hasQ) break;
+
+    // Wait for #nextqButton to become visible (audio prompt ready for this question)
+    const nextqSelector = `${Selectors.assessmentPlayer} #nextqButton`;
+    const nextqAppeared = await page
+      .waitForSelector(nextqSelector, { state: 'visible', timeout: 8_000 })
+      .then(() => true)
+      .catch(() => false);
+    if (!nextqAppeared) break;
+
+    // Small pause before click to allow audio cue to initialize
+    await page.waitForTimeout(300);
+    await page.locator(nextqSelector).click({ force: true });
+
+    // Wait for ladybug answer images to finish their entry animation
+    await waitForAssessmentAnswerButtons(page, Timeouts.sceneTransition);
+
+    // Read correct answer from live game state
+    const answerInfo = await getCorrectAssessmentAnswer(page);
+    if (!answerInfo) break;
+
+    // Drag the correct ladybug to the chest
+    const dragged = await dragAssessmentAnswerToChest(page, answerInfo.correctBtnId);
+    if (!dragged) break;
+
+    // Wait for positive feedback overlay to appear
+    await waitForAssessmentFeedback(page, 5_000);
+
+    answered++;
+
+    // Wait for feedback animation to hide
+    await waitForAssessmentFeedbackToHide(page, 5_000);
+
+    // Short pause for UI transition between questions, then re-check coordinator
+    await page.waitForTimeout(300);
+
+    // Exit immediately if coordinator signals completion after this answer
+    const completedNow = await isAssessmentCompletedByCoordinator(page);
+    if (completedNow) break;
+  }
+
+  return answered;
+}
+
+/**
+ * Answers one assessment question INCORRECTLY (for negative-flow testing), then
+ * answers it CORRECTLY on the retry.
+ */
+export async function answerAssessmentQuestionWithWrongThenCorrect(
+  page: Page,
+): Promise<{ wrongAnswerName: string; correctAnswerName: string } | null> {
+  const nextqSelector = `${Selectors.assessmentPlayer} #nextqButton`;
+  const nextqAppeared = await page
+    .waitForSelector(nextqSelector, { state: 'visible', timeout: 8_000 })
+    .then(() => true)
+    .catch(() => false);
+  if (!nextqAppeared) return null;
+
+  await page.waitForTimeout(300);
+  await page.locator(nextqSelector).click({ force: true });
+
+  await waitForAssessmentAnswerButtons(page, Timeouts.sceneTransition);
+
+  const wrongInfo = await getWrongAssessmentAnswer(page);
+  const correctInfo = await getCorrectAssessmentAnswer(page);
+  if (!wrongInfo || !correctInfo) return null;
+
+  await dragAssessmentAnswerToChest(page, wrongInfo.wrongBtnId);
+  await waitForAssessmentFeedback(page, 5_000);
+  await waitForAssessmentFeedbackToHide(page, 5_000);
+
+  await page.waitForTimeout(500);
+  const retryBtnsVisible = await page
+    .waitForFunction(
+      (playerSel: string) => {
+        const player = document.querySelector(playerSel);
+        if (!player) return false;
+        const btns = Array.from(player.querySelectorAll('.answerButton'));
+        return btns.some((b) => {
+          const el = b as HTMLElement;
+          const cs = window.getComputedStyle(el);
+          return cs.display !== 'none' && cs.visibility !== 'hidden' && el.getBoundingClientRect().width > 0;
+        });
+      },
+      Selectors.assessmentPlayer,
+      { timeout: 5_000 },
+    )
+    .then(() => true)
+    .catch(() => false);
+
+  if (retryBtnsVisible) {
+    await dragAssessmentAnswerToChest(page, correctInfo.correctBtnId);
+    await waitForAssessmentFeedback(page, 5_000);
+    await waitForAssessmentFeedbackToHide(page, 5_000);
+  }
+
+  return { wrongAnswerName: wrongInfo.wrongAnswerName, correctAnswerName: correctInfo.correctAnswerName };
 }

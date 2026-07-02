@@ -55,8 +55,19 @@ export function registerTests(getPage: () => Page): void {
       expect(canvasBB!.height).toBeGreaterThan(0);
     });
 
-    await test.step('Wait for treasure chest to open (FadeIn ~300 ms + ClosedChest ~1000 ms)', async () => {
-      await page.waitForTimeout(1500);
+    await test.step('Wait for first active stone to spawn (replaces static chest-open wait)', async () => {
+      await page.waitForFunction(
+        () => {
+          const scene =
+            (window as any).__ftm?.sceneHandler?.['activeScene']?.['scene'];
+          const miniGame = scene?.miniGameHandler?.activeMiniGame;
+          if (!miniGame) return false;
+          const stonesMgr = miniGame['treasureStones'];
+          const stones: any[] = stonesMgr?.['stones'] ?? [];
+          return stones.some((s: any) => s.active && !s.burning);
+        },
+        { timeout: 8_000 },
+      );
     });
 
     await test.step('Auto-click 5 stones by reading their live positions from TreasureStones', async () => {
@@ -82,9 +93,9 @@ export function registerTests(getPage: () => Page): void {
             }
             setTimeout(tick, intervalMs);
           };
-          setTimeout(tick, intervalMs);
+          tick(); // Start immediately — stones are already confirmed active
         });
-      }, { count: 5, intervalMs: 800 });
+      }, { count: 5, intervalMs: 200 });
     });
 
     await test.step('Wait for mini game to complete naturally (OpenedChest 12 s + FadeOut 400 ms)', async () => {
