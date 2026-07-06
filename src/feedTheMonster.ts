@@ -89,8 +89,13 @@ class App {
     await this.loadAndCacheFont(font, `./assets/fonts/${font}.ttf`);
     await this.loadTitleFeedbackCustomFont();
     await this.preloadGameAudios();
+    // Strip the leading "v" (e.g. "v1.5.1" -> "1.5.1") so Statsig's App Version
+    // condition compares it as a semver rather than a raw string.
+    const appVersion = (document.getElementById("version-info-id")?.innerHTML || '')
+      .trim()
+      .replace(/^v/i, '');
     featureFlagsService.init({
-      user: { userID: pseudoId, locale: this.lang, custom: { platform: 'ftm' } },
+      user: { userID: pseudoId, locale: this.lang, appVersion, custom: { platform: 'ftm' } },
     });
     featureFlagsService.loadFeatures([
       FEATURE_ANDROID_EVENT_BUBBLE
