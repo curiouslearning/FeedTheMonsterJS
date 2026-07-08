@@ -1,5 +1,12 @@
 
 
+## [1.6.1](https://github.com/curiouslearning/FeedTheMonsterJS/compare/1.6.0...1.6.1) (2026-07-08)
+
+
+### Bug Fixes
+
+* updated assessment-survey package to 1.2.0 to include english assessment ([be61438](https://github.com/curiouslearning/FeedTheMonsterJS/commit/be61438313b283016b028ffbcace1d5a587472cd))
+
 ## [1.6.0](https://github.com/curiouslearning/FeedTheMonsterJS/compare/1.5.1...1.6.0) (2026-07-02)
 
 
