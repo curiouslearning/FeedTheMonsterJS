@@ -99,6 +99,10 @@ jobs:
     steps:
       - checkout
       - node/install-packages
+      - run:
+          name: Install unzip (required by aws-cli/setup)
+          command: |
+            apt-get update && apt-get install -y unzip
       - aws-cli/setup:
           aws_access_key_id: $AWS_ACCESS_KEY
           region: $AWS_DEFAULT_REGION
