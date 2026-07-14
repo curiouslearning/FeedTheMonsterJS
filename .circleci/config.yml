@@ -99,6 +99,10 @@ jobs:
     steps:
       - checkout
       - node/install-packages
+      - aws-cli/setup:
+          aws_access_key_id: $AWS_ACCESS_KEY
+          region: $AWS_DEFAULT_REGION
+          aws_secret_access_key: $AWS_SECRET_ACCESS_KEY
       - run:
           name: Run Playwright E2E tests
           command: npm run test:e2e
@@ -106,16 +110,12 @@ jobs:
             CI: 'true'
       - store_test_results:
           path: test-results
-      - aws-cli/setup:
-          aws_access_key_id: $AWS_ACCESS_KEY
-          region: $AWS_DEFAULT_REGION
-          aws_secret_access_key: $AWS_SECRET_ACCESS_KEY
       - run:
           name: Upload Playwright report to S3
           when: always
           command: |
             aws s3 sync playwright-report \
-              "s3://globallit-aws-s3-static-webapp-test-us-east-2/e2e-reports/${CIRCLE_BRANCH}/${CIRCLE_BUILD_NUM}/"
+              "s3://globallit-aws-s3-static-webapp-test-us-east-2/feed-the-monster-e2e-reports/${CIRCLE_BRANCH}/${CIRCLE_BUILD_NUM}/"
 
 # TODO: move invalidate-cloudfront-cache parameters to project env variables
 # Eventually these will be the new cloudfront name for apps and app name respectively.
