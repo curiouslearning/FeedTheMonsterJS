@@ -83,6 +83,7 @@ export class GameplayScene {
   private backgroundGenerator: PhasesBackground;
   private timerStartSFXPlayed: boolean;
   private isActiveMiniGame: boolean = false;
+  private isMiniGamePaused: boolean = false;
   public isDisposing: boolean = false;
   
   // Event Management
@@ -293,6 +294,7 @@ export class GameplayScene {
 
   // #region Game Loop
   draw(deltaTime: number) {
+    const realDeltaTime = deltaTime;
     if (!this.isPaused) {
       scheduler.update(deltaTime);
     }
@@ -332,7 +334,9 @@ export class GameplayScene {
       }
     }
 
-    this.miniGameHandler.update(deltaTime);
+    // Mini-game always receives real deltaTime so its animation progresses
+    // even while the main game is paused (e.g. during assessment flow).
+    this.miniGameHandler.update(this.isActiveMiniGame ? realDeltaTime : deltaTime);
     this.tutorial.draw(deltaTime, this.isGameStarted);
   }
 
@@ -533,15 +537,29 @@ export class GameplayScene {
         miniGameStateService.EVENTS.MINI_GAME_WILL_START,
         () => {
           this.isActiveMiniGame = true;
+          this.isMiniGamePaused = true;
           // Hides stones from completed puzzle to prevent unwanted interactions during mini-game
           this.stoneHandler.clearAllStones();
+          // Pause main gameplay (timer, stones, monster) while mini-game is on screen.
+          // Does not open the pause popup — only the internal isPaused flag is set.
+          if (!this.isPaused) {
+            this.pauseGamePlay();
+          }
         }
       )
     );
     this.eventListenersAdded.push(
       miniGameStateService.subscribe(
         miniGameStateService.EVENTS.IS_MINI_GAME_DONE,
-        () => { this.isActiveMiniGame = false; }
+        () => {
+          this.isActiveMiniGame = false;
+          // Resume gameplay only after the mini-game has fully closed.
+          if (this.isMiniGamePaused) {
+            this.isMiniGamePaused = false;
+            this.isPauseButtonClicked = false;
+            this.resumeGame();
+          }
+        }
       )
     );
 
