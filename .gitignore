@@ -16,4 +16,3 @@ __mocks__
 .vscode
 playwright-report/
 test-results/
-CLAUDE.MD
