@@ -34,6 +34,7 @@ export {
   subscribeToCorrectStonePosition,
   getCapturedCorrectStonePos,
   getHitboxCenter,
+  waitForStonesReady,
   speedUpMiniGame,
   waitForTreasureCanvasVisible,
   waitForMiniGameComplete,

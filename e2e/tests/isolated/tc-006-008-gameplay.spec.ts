@@ -25,6 +25,7 @@ import {
   getHitboxCenter,
   getCanvasPixelColor,
   waitForPositiveFeedback,
+  waitForStonesReady,
 } from '../../helpers';
 
 export function registerTests(getPage: () => Page, state: SharedFlowState): void {
@@ -212,6 +213,13 @@ export function registerTests(getPage: () => Page, state: SharedFlowState): void
       expect(state.monsterHitboxCenter!.y).toBeLessThan(canvasBB!.height);
       expect(hitboxW).toBeGreaterThan(0);
       expect(hitboxH).toBeGreaterThan(0);
+    });
+
+    await test.step('Wait for stones entrance animation to finish before dragging', async () => {
+      // Dropping while a stone's fly-in animation is still running (frame < 100) is
+      // silently ignored by GameplayInputManager.handleMouseUp — the pixel checks
+      // above can pass well before that animation completes.
+      await waitForStonesReady(page);
     });
 
     await test.step(

@@ -424,6 +424,49 @@ export async function getHitboxCenter(
   });
 }
 
+/**
+ * Waits until every stone's entrance fly-in animation has finished
+ * (StoneHandler.stonesHasLoaded === true, i.e. every stone's frame >= 100,
+ * ~1.5s after creation).
+ *
+ * Checking for opaque canvas pixels alone is not enough: stones start drawing
+ * from position (0,0) at frame=0, so pixels appear immediately even though the
+ * stones haven't reached their final position yet. GameplayInputManager's
+ * handleMouseUp returns early while the picked stone isAnimating (frame < 100),
+ * silently dropping any drag-and-drop performed before the animation completes.
+ * Callers must await this before simulating a drag.
+ */
+export async function waitForStonesReady(page: Page, timeout = 12_000): Promise<void> {
+  await page.waitForFunction(
+    (sel: string) => {
+      const gss = (window as any).__ftm?.gameStateService;
+      const sh = (window as any).__ftm?.sceneHandler;
+      const scene =
+        sh?.['activeScene']?.['scene'] ??
+        gss?.gamePlayScene ??
+        gss?.currentScene ??
+        null;
+      const fm = scene?.flowManager ?? null;
+      const stoneHandler = fm?.['stoneHandler'] ?? scene?.['stoneHandler'] ?? null;
+      if (stoneHandler != null) {
+        return stoneHandler.stonesHasLoaded === true;
+      }
+      // Fallback: pixel presence when stoneHandler is not accessible via __ftm.
+      const canvas = document.querySelector(sel) as HTMLCanvasElement | null;
+      if (!canvas || canvas.width === 0 || canvas.height === 0) return false;
+      const ctx = canvas.getContext('2d');
+      if (!ctx) return false;
+      const { data } = ctx.getImageData(0, 0, canvas.width, canvas.height);
+      for (let i = 3; i < data.length; i += 4) {
+        if (data[i] > 0) return true;
+      }
+      return false;
+    },
+    Selectors.mainCanvas,
+    { timeout },
+  );
+}
+
 // ─── Dynamic assessment + full-level helpers ──────────────────────────────────
 
 /**
