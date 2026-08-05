@@ -113,7 +113,13 @@ jobs:
           aws_secret_access_key: $AWS_SECRET_ACCESS_KEY
       - run:
           name: Run Playwright E2E tests
-          command: npm run test:e2e
+          # Wrapped with `circleci tests run` (instead of a plain `npm run test:e2e`) so
+          # CircleCI can offer "Rerun failed tests" in the UI, re-running only the specs
+          # that failed last time instead of the whole suite.
+          # https://circleci.com/docs/guides/test/rerun-failed-tests/
+          command: |
+            TESTFILES=$(circleci tests glob "e2e/tests/*.spec.ts")
+            echo "$TESTFILES" | circleci tests run --command="xargs npx playwright test" --verbose
           environment:
             CI: 'true'
       - store_test_results:

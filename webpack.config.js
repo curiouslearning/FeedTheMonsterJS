@@ -78,7 +78,10 @@ var config = {
       writeToDisk: true,
     },
     client: {
-      overlay: true,
+      // Disabled in CI: the overlay iframe (even with no error to show) sits on top of
+      // the page and intercepts Playwright's pointer events, failing every click-based
+      // e2e test deterministically.
+      overlay: process.env.CI !== 'true',
     },
     compress: false,
     port: 8080
