@@ -1,4 +1,4 @@
-# FeedTheMonsterJS — Claude Code Guide
+# FeedTheMonsterJS — Claude Code Guide 
 
 ## Project Overview
 Browser-based literacy game. Children drag stones with letters onto a monster to build words/sounds. Built in TypeScript + Webpack, rendered on `<canvas>` + Rive animations + HTML overlays.
