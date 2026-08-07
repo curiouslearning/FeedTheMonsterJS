@@ -7,6 +7,8 @@
  * → progress jar animation → LevelEnd scene.
  *
  * This test does NOT publish any events — it simply waits for the natural transition.
+ * It deliberately does NOT click Map, so the Level End screen remains loaded for
+ * FTM_TC_017 (Replay), which runs immediately after this test in the orchestrator.
  *
  * Run via the orchestrator: e2e/tests/ftm-assessment-survey-flow.spec.ts
  */
@@ -15,7 +17,6 @@ import { test, expect } from '../../fixtures/game-fixtures';
 import type { Page } from '@playwright/test';
 import { Selectors } from '../../constants/selectors';
 import { Timeouts } from '../../constants/timeouts';
-import { LevelSelectionPage } from '../../pages/level-selection-page';
 import { LevelEndPage } from '../../pages/level-end-page';
 
 export function registerTests(getPage: () => Page): void {
@@ -69,13 +70,6 @@ export function registerTests(getPage: () => Page): void {
     await test.step('Next level button is visible', async () => {
       await expect(page.locator(LevelEndPage.SELECTORS.nextButton)).toBeVisible({
         timeout: Timeouts.domUpdate,
-      });
-    });
-
-    await test.step('Clicking map button returns user to level selection', async () => {
-      await page.locator(LevelEndPage.SELECTORS.mapButton).click();
-      await expect(page.locator(LevelSelectionPage.SELECTOR)).toBeVisible({
-        timeout: Timeouts.sceneTransition,
       });
     });
   });
