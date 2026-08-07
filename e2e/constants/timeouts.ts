@@ -27,4 +27,7 @@ export const Timeouts = {
 
   /** Network request to fetch language JSON data */
   dataFetch: 10_000,
+
+  /** Deliberate pause after Level End loads, before clicking Replay */
+  replaySettleDelay: 2_000,
 } as const;
