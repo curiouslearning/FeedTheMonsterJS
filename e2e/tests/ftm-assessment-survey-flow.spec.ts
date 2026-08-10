@@ -1,5 +1,5 @@
 /**
- * FeedTheMonsterJS – Full E2E Flow (TC_001 – TC_016)
+ * FeedTheMonsterJS – Full E2E Flow (TC_001 – TC_017)
  *
  * Orchestrator: runs all test cases as one serial worker in a single shared
  * browser session. Test logic lives exclusively in the files under isolated/.
@@ -11,7 +11,8 @@
  *   Natural assessment trigger (TC_011) → Assessment completion (TC_012) →
  *   Mini-game (TC_014–TC_015) →
  *   Remaining post-mini-game puzzles (TC_013) →
- *   Natural level completion (TC_016)
+ *   Natural level completion (TC_016) →
+ *   Level replay (TC_017)
  *
  * Key design decisions:
  *   • TC_008 completes puzzle 1 and holds a 2 s stability pause.
@@ -25,7 +26,10 @@
  *     transition (mini-game starts automatically).
  *   • TC_013 is registered AFTER TC_014–TC_015 so it runs after the mini-game
  *     completes; it finishes the remaining puzzles so TC_016 appears naturally.
- *   • TC_016 waits for the natural level end — no manual event publishing.
+ *   • TC_016 waits for the natural level end — no manual event publishing — and
+ *     deliberately does NOT click Map, so the Level End screen stays loaded for TC_017.
+ *   • TC_017 clicks Replay on that same Level End screen and verifies the same
+ *     level reloads into a fresh, interactive gameplay state.
  *
  * To debug a specific area in isolation, run the corresponding file directly
  * from e2e/tests/isolated/.
@@ -43,8 +47,9 @@ import { registerTests as tc006_008 } from './isolated/tc-006-008-gameplay.spec'
 import { registerTC009_012, registerTC013 } from './isolated/tc-009-013-assessment.spec';
 import { registerTests as tc014_015 } from './isolated/tc-014-015-mini-game.spec';
 import { registerTests as tc016 } from './isolated/tc-016-level-completion.spec';
+import { registerTests as tc017 } from './isolated/tc-017-level-replay.spec';
 
-test.describe.serial('FeedTheMonsterJS – Full E2E Flow (TC_001 – TC_016)', () => {
+test.describe.serial('FeedTheMonsterJS – Full E2E Flow (TC_001 – TC_017)', () => {
   test.describe.configure({ retries: 0 });
 
   let page: Page;
@@ -96,8 +101,13 @@ test.describe.serial('FeedTheMonsterJS – Full E2E Flow (TC_001 – TC_016)', (
   // game reaches the natural level-end flow.
   registerTC013(() => page, fullState);
 
-  // ── Natural level completion (TC_016, last step) ───────────────────────────
+  // ── Natural level completion (TC_016) ───────────────────────────────────────
   // Waits for the level-end screen to appear naturally (progress jar → LevelEnd).
-  // Checks stars, buttons, and navigates back to level selection.
+  // Checks stars and buttons; stays on the Level End screen for TC_017.
   tc016(() => page);
+
+  // ── Level replay (TC_017, last step) ────────────────────────────────────────
+  // Clicks Replay on the Level End screen TC_016 reached, and verifies the same
+  // level reloads into a fresh, interactive gameplay state.
+  tc017(() => page);
 });
