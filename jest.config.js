@@ -51,6 +51,6 @@ module.exports = {
     "\\.(css|scss)$": "<rootDir>/__mocks__/default-mock.js"
   },
   transformIgnorePatterns: [
-    "/node_modules/(?!lodash-es|@curiouslearning|workbox-window|idb|@firebase|firebase)"
+    "/node_modules/(?!lodash-es|@curiouslearning|workbox-|idb|@firebase|firebase)"
   ],
 };
