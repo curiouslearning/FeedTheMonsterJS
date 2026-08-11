@@ -1,5 +1,5 @@
 /**
- * FeedTheMonsterJS – Full E2E Flow (TC_001 – TC_017)
+ * FeedTheMonsterJS – Full E2E Flow (TC_001 – TC_023)
  *
  * Orchestrator: runs all test cases as one serial worker in a single shared
  * browser session. Test logic lives exclusively in the files under isolated/.
@@ -12,7 +12,11 @@
  *   Mini-game (TC_014–TC_015) →
  *   Remaining post-mini-game puzzles (TC_013) →
  *   Natural level completion (TC_016) →
- *   Level replay (TC_017)
+ *   Level replay (TC_017) →
+ *   Failed level replay: dynamic detection (TC_018) → wrong pre-assessment
+ *   puzzles (TC_019) → assessment answered all wrong (TC_020) → mini-game
+ *   untouched (TC_021) → wrong remaining puzzles (TC_022) → failed Level End
+ *   screen, flow ends (TC_023)
  *
  * Key design decisions:
  *   • TC_008 completes puzzle 1 and holds a 2 s stability pause.
@@ -30,12 +34,21 @@
  *     deliberately does NOT click Map, so the Level End screen stays loaded for TC_017.
  *   • TC_017 clicks Replay on that same Level End screen and verifies the same
  *     level reloads into a fresh, interactive gameplay state.
+ *   • TC_018–TC_023 (FM-966) re-drive the SAME natural flow TC_006–TC_016 exercise
+ *     on the level TC_017 just replayed, but deliberately drag a WRONG stone for
+ *     every puzzle and answer every assessment question incorrectly, so
+ *     this.score stays 0 and the level genuinely fails (starCount 0 < 3) —
+ *     landing on the real #levelEnd, not the synthetic triggerLevelEndScene()
+ *     helper. TC_021 clicks no treasure-chest stones so treasureChestScore stays
+ *     0 (otherwise shouldDisplayProgressJar() would route to the Progress Jar
+ *     scene instead of Level End). TC_023 asserts the failed screen and stops —
+ *     no Map/Retry/Next click follows.
  *
  * To debug a specific area in isolation, run the corresponding file directly
  * from e2e/tests/isolated/.
  */
 
-import { test, createSharedState, createFullGameplayFlowState } from '../fixtures/game-fixtures';
+import { test, createSharedState, createFullGameplayFlowState, createFailedGameplayFlowState } from '../fixtures/game-fixtures';
 import type { Page } from '@playwright/test';
 import { Routes } from '../constants/urls';
 import { mockAnalytics, clearGameProgress, exposeGameInternals } from '../helpers';
@@ -48,13 +61,15 @@ import { registerTC009_012, registerTC013 } from './isolated/tc-009-013-assessme
 import { registerTests as tc014_015 } from './isolated/tc-014-015-mini-game.spec';
 import { registerTests as tc016 } from './isolated/tc-016-level-completion.spec';
 import { registerTests as tc017 } from './isolated/tc-017-level-replay.spec';
+import { registerTests as tc018_023 } from './isolated/tc-018-023-failed-level-replay.spec';
 
-test.describe.serial('FeedTheMonsterJS – Full E2E Flow (TC_001 – TC_017)', () => {
+test.describe.serial('FeedTheMonsterJS – Full E2E Flow (TC_001 – TC_023)', () => {
   test.describe.configure({ retries: 0 });
 
   let page: Page;
   const state = createSharedState();        // used by TC_006–TC_008
   const fullState = createFullGameplayFlowState(); // used by TC_009–TC_013
+  const failedState = createFailedGameplayFlowState(); // used by TC_018–TC_023
 
   test.beforeAll(async ({ browser }) => {
     const ctx = await browser.newContext();
@@ -106,8 +121,14 @@ test.describe.serial('FeedTheMonsterJS – Full E2E Flow (TC_001 – TC_017)', (
   // Checks stars and buttons; stays on the Level End screen for TC_017.
   tc016(() => page);
 
-  // ── Level replay (TC_017, last step) ────────────────────────────────────────
+  // ── Level replay (TC_017) ───────────────────────────────────────────────────
   // Clicks Replay on the Level End screen TC_016 reached, and verifies the same
   // level reloads into a fresh, interactive gameplay state.
   tc017(() => page);
+
+  // ── Failed level replay (TC_018–TC_023, last step) ──────────────────────────
+  // Re-drives the level TC_017 just replayed with wrong answers throughout
+  // (main puzzles + assessment), so it ends on a genuinely failed Level End
+  // screen. The flow stops at TC_023 — no further navigation.
+  tc018_023(() => page, failedState);
 });

@@ -89,6 +89,10 @@ export class LevelEndPage extends BasePage {
     await expect(this.retryButton).toBeVisible({ timeout: Timeouts.domUpdate });
   }
 
+  async assertNextButtonHidden() {
+    await expect(this.nextButton).toBeHidden({ timeout: Timeouts.domUpdate });
+  }
+
   async assertMapButtonVisible() {
     await expect(this.mapButton).toBeVisible({ timeout: Timeouts.domUpdate });
   }
