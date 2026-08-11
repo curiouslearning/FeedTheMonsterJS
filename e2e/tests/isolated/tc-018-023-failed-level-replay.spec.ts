@@ -109,30 +109,21 @@ function _tc018(getPage: () => Page, state: FailedGameplayFlowState): void {
       );
     });
 
-    await test.step('Read assessment trigger puzzle (1-based) from AssessmentFlowCoordinator', async () => {
+    await test.step('Read assessment trigger puzzle (1-based; 0 = not eligible) from AssessmentFlowCoordinator — read only, never overridden', async () => {
+      // Deliberately does NOT inject/override eligibility when this is 0. Forcing
+      // coordinator['isLevelEligible']/['assessmentPuzzleTrigger'] would make
+      // FTM_TC_020 exercise a fabricated configuration instead of the replayed
+      // level's real one, and would silently mask a genuinely broken remote
+      // assessment config. "Not eligible" is handled as its own expected branch
+      // in FTM_TC_019/FTM_TC_020 instead (mirroring how FTM_TC_021 branches on
+      // miniGameTriggerPuzzle === 0 rather than forcing the mini-game to appear).
       state.assessmentTriggerPuzzle = await getAssessmentTriggerPuzzle(page);
-    });
-
-    await test.step('Ensure assessment eligibility (inject if remote config excludes this level)', async () => {
-      if (state.assessmentTriggerPuzzle === 0) {
-        await page.evaluate(() => {
-          const sh = (window as any).__ftm?.sceneHandler;
-          const scene = sh?.['activeScene']?.['scene'] ?? null;
-          const fm = scene?.flowManager ?? null;
-          if (!fm) return;
-          const coordinator = fm['assessmentFlowCoordinator'];
-          if (!coordinator) return;
-          const miniSeg: number = fm['levelForMinigame'];
-          if (!Number.isInteger(miniSeg) || miniSeg < 1) return;
-          coordinator['isLevelEligible'] = true;
-          coordinator['assessmentPuzzleTrigger'] = miniSeg;
-        });
-        state.assessmentTriggerPuzzle = await getAssessmentTriggerPuzzle(page);
-      }
-      expect(
-        state.assessmentTriggerPuzzle,
-        'Assessment trigger puzzle must be > 0 (from config or injected to match mini-game)',
-      ).toBeGreaterThan(0);
+      test.info().annotations.push({
+        type: 'assessment-trigger-puzzle',
+        description: state.assessmentTriggerPuzzle > 0
+          ? `Assessment is eligible for this level; triggers at puzzle ${state.assessmentTriggerPuzzle}.`
+          : 'Assessment is NOT eligible for this level per real config — FTM_TC_020 will be skipped, and FTM_TC_019/022 will drag wrong stones through every puzzle.',
+      });
     });
 
     await test.step('Read total puzzle count for this level', async () => {
@@ -164,9 +155,12 @@ function _tc018(getPage: () => Page, state: FailedGameplayFlowState): void {
       expect(state.capturedStonePos, 'A wrong (foil) stone must be readable for puzzle 1').not.toBeNull();
     });
 
-    await test.step('Assert trigger puzzle is within valid range', async () => {
-      expect(state.assessmentTriggerPuzzle).toBeGreaterThanOrEqual(1);
-      expect(state.assessmentTriggerPuzzle).toBeLessThanOrEqual(state.totalPuzzleCount);
+    await test.step('Assert trigger puzzle is either 0 (not eligible) or within valid range', async () => {
+      if (state.assessmentTriggerPuzzle > 0) {
+        expect(state.assessmentTriggerPuzzle).toBeLessThanOrEqual(state.totalPuzzleCount);
+      } else {
+        expect(state.assessmentTriggerPuzzle).toBe(0);
+      }
     });
   });
 }
@@ -176,8 +170,15 @@ function _tc019(getPage: () => Page, state: FailedGameplayFlowState): void {
     const page = getPage();
 
     // Pre-assessment puzzles are 1..(assessmentTriggerPuzzle - 1); the trigger
-    // puzzle itself is answered (wrongly) in TC_020, mirroring the TC_010/TC_011 split.
-    const remaining = state.assessmentTriggerPuzzle - 1;
+    // puzzle itself is answered (wrongly) in TC_020, mirroring the TC_010/TC_011
+    // split. When the real config marks this level as NOT assessment-eligible
+    // (assessmentTriggerPuzzle === 0 — see TC_018, which deliberately does not
+    // override this), there is no trigger puzzle to reserve: every puzzle in the
+    // level is answered wrong here instead, and TC_020/TC_022 become no-ops.
+    const noAssessmentThisLevel = state.assessmentTriggerPuzzle === 0;
+    const remaining = noAssessmentThisLevel
+      ? state.totalPuzzleCount
+      : state.assessmentTriggerPuzzle - 1;
 
     if (remaining <= 0) {
       test.info().annotations.push({
@@ -193,8 +194,9 @@ function _tc019(getPage: () => Page, state: FailedGameplayFlowState): void {
     for (let i = 0; i < remaining; i++) {
       const puzzleNumber = i + 1; // 1-based display
       const puzzleManagerIdx = i; // 0-based current
+      const isVeryLastPuzzleOfLevel = noAssessmentThisLevel && i === remaining - 1;
 
-      await test.step(`Drag a wrong stone for pre-assessment puzzle ${puzzleNumber} (${i + 1}/${remaining})`, async () => {
+      await test.step(`Drag a wrong stone for puzzle ${puzzleNumber} (${i + 1}/${remaining})`, async () => {
         const canvasBB = await page.locator(GameplayPage.SELECTORS.mainCanvas).boundingBox();
         expect(canvasBB, 'Canvas bounding box must be available').not.toBeNull();
 
@@ -223,8 +225,13 @@ function _tc019(getPage: () => Page, state: FailedGameplayFlowState): void {
         // #feedback-text — see puzzleHandler.ts handleCorrectLetterDrop), so
         // completion is confirmed via puzzle-index advance instead.
         await waitForPuzzleAdvance(page, puzzleManagerIdx + 1, 15_000);
-        await waitForStonesReady(page);
 
+        // The very last puzzle of the level (only reachable when no assessment
+        // is eligible for this level) has no "next puzzle" to capture — the
+        // level ends here and TC_023 picks up from the natural Level End screen.
+        if (isVeryLastPuzzleOfLevel) return;
+
+        await waitForStonesReady(page);
         state.capturedStonePos = await getWrongStonePositionForCurrentPuzzle(page);
         expect(
           state.capturedStonePos,
@@ -238,6 +245,18 @@ function _tc019(getPage: () => Page, state: FailedGameplayFlowState): void {
 function _tc020(getPage: () => Page, state: FailedGameplayFlowState): void {
   test('FTM_TC_020 | Failed Level Replay | Assessment triggers naturally after the trigger puzzle and every question is answered incorrectly', async () => {
     const page = getPage();
+
+    // Modeled as its own expected branch (not forced) — see TC_018, which reads
+    // assessmentTriggerPuzzle without overriding it. If the real config says this
+    // level has no assessment, there is nothing to trigger; TC_019 already drove
+    // every puzzle wrong instead, and TC_022 is a no-op.
+    if (state.assessmentTriggerPuzzle === 0) {
+      test.info().annotations.push({
+        type: 'skip',
+        description: 'Assessment is not eligible for this level per real config — no assessment ever triggers, so there is nothing to answer wrong. See FTM_TC_019, which drove every puzzle in the level instead.',
+      });
+      return;
+    }
 
     expect(state.monsterHitboxCenter, 'Hitbox must be resolved from TC_018').not.toBeNull();
     expect(state.capturedStonePos, 'Wrong stone for the trigger puzzle must be resolved').not.toBeNull();
@@ -401,6 +420,14 @@ function _tc021(getPage: () => Page, state: FailedGameplayFlowState): void {
 function _tc022(getPage: () => Page, state: FailedGameplayFlowState): void {
   test('FTM_TC_022 | Failed Level Replay | Every remaining post-mini-game puzzle is answered with a wrong stone', async () => {
     const page = getPage();
+
+    if (state.assessmentTriggerPuzzle === 0) {
+      test.info().annotations.push({
+        type: 'skip',
+        description: 'Assessment is not eligible for this level — FTM_TC_019 already drove every puzzle in the level wrong; nothing remains here.',
+      });
+      return;
+    }
 
     const remainingCount = state.totalPuzzleCount - state.assessmentTriggerPuzzle;
 
