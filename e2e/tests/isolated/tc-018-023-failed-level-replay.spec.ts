@@ -224,12 +224,16 @@ function _tc019(getPage: () => Page, state: FailedGameplayFlowState): void {
         // Wrong drops show no feedback TEXT (only the correct path sets
         // #feedback-text — see puzzleHandler.ts handleCorrectLetterDrop), so
         // completion is confirmed via puzzle-index advance instead.
-        await waitForPuzzleAdvance(page, puzzleManagerIdx + 1, 15_000);
-
         // The very last puzzle of the level (only reachable when no assessment
-        // is eligible for this level) has no "next puzzle" to capture — the
-        // level ends here and TC_023 picks up from the natural Level End screen.
+        // is eligible for this level) has no "next puzzle" — the level ends
+        // here and TC_023 picks up from the natural Level End screen, so the
+        // puzzle index never advances.
         if (isVeryLastPuzzleOfLevel) return;
+
+        // Wrong drops show no feedback TEXT (only the correct path sets
+        // #feedback-text — see puzzleHandler.ts handleCorrectLetterDrop), so
+        // completion is confirmed via puzzle-index advance instead.
+        await waitForPuzzleAdvance(page, puzzleManagerIdx + 1, 15_000);
 
         await waitForStonesReady(page);
         state.capturedStonePos = await getWrongStonePositionForCurrentPuzzle(page);
