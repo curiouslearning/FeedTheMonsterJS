@@ -1,5 +1,10 @@
 version: 2.1
 
+parameters:
+  run_e2e_only:
+    type: boolean
+    default: false
+
 orbs:
   aws-cli: circleci/aws-cli@5.2.0
   # aws-s3: circleci/aws-s3@4.1.1
@@ -108,7 +113,13 @@ jobs:
           aws_secret_access_key: $AWS_SECRET_ACCESS_KEY
       - run:
           name: Run Playwright E2E tests
-          command: npm run test:e2e
+          # Wrapped with `circleci tests run` (instead of a plain `npm run test:e2e`) so
+          # CircleCI can offer "Rerun failed tests" in the UI, re-running only the specs
+          # that failed last time instead of the whole suite.
+          # https://circleci.com/docs/guides/test/rerun-failed-tests/
+          command: |
+            TESTFILES=$(circleci tests glob "e2e/tests/*.spec.ts")
+            echo "$TESTFILES" | circleci tests run --command="xargs npx playwright test" --verbose
           environment:
             CI: 'true'
       - store_test_results:
@@ -127,7 +138,22 @@ jobs:
 # http://curious-reader-books-production.s3-website.ap-south-1.amazonaws.com/
 
 workflows:
+  # Manually-triggered subset run: runs only the e2e-tests job, skipping unit
+  # tests and all build-and-deploy jobs. Trigger via the CircleCI API/UI with
+  # pipeline parameter run_e2e_only=true, e.g.:
+  #   curl -X POST https://circleci.com/api/v2/project/gh/curiouslearning/FeedTheMonsterJS/pipeline \
+  #     -H "Circle-Token: $CIRCLE_TOKEN" -H "Content-Type: application/json" \
+  #     -d '{"branch":"<branch>","parameters":{"run_e2e_only":true}}'
+  e2e-only-workflow:
+    when: << pipeline.parameters.run_e2e_only >>
+    jobs:
+      - e2e-tests:
+          context:
+            - aws-context
+
   s3-deploy-workflow:
+    when:
+      not: << pipeline.parameters.run_e2e_only >>
     jobs:
       - node/test
       - e2e-tests:

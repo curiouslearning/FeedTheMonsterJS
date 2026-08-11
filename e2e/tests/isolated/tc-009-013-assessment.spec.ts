@@ -62,6 +62,7 @@ import {
   isAssessmentCompletedByCoordinator,
   getAssessmentTotalQuestions,
   isAssessmentOverlayVisible,
+  waitForStonesReady,
 } from '../../helpers';
 
 // ─── Shared helpers ───────────────────────────────────────────────────────────
@@ -84,41 +85,6 @@ async function dragStoneToHitbox(
     await page.waitForTimeout(20);
   }
   await page.mouse.up();
-}
-
-async function waitForStonesToRender(page: Page, timeout = 12_000): Promise<void> {
-  // Wait until stonesHasLoaded is true — meaning every stone's frame >= 100 (1.5 s fly-in done).
-  // Checking for opaque pixels alone is not enough: stones start drawing from position (0,0)
-  // at frame=0, so pixels appear immediately.  GameplayInputManager.handleMouseUp returns early
-  // while stone.isAnimating (frame < 100), so drops fired during animation are silently ignored.
-  await page.waitForFunction(
-    (sel: string) => {
-      const gss = (window as any).__ftm?.gameStateService;
-      const sh = (window as any).__ftm?.sceneHandler;
-      const scene =
-        sh?.['activeScene']?.['scene'] ??
-        gss?.gamePlayScene ??
-        gss?.currentScene ??
-        null;
-      const fm = scene?.flowManager ?? null;
-      const stoneHandler = fm?.['stoneHandler'] ?? scene?.['stoneHandler'] ?? null;
-      if (stoneHandler != null) {
-        return stoneHandler.stonesHasLoaded === true;
-      }
-      // Fallback: pixel presence when stoneHandler is not accessible via __ftm.
-      const canvas = document.querySelector(sel) as HTMLCanvasElement | null;
-      if (!canvas || canvas.width === 0 || canvas.height === 0) return false;
-      const ctx = canvas.getContext('2d');
-      if (!ctx) return false;
-      const { data } = ctx.getImageData(0, 0, canvas.width, canvas.height);
-      for (let i = 3; i < data.length; i += 4) {
-        if (data[i] > 0) return true;
-      }
-      return false;
-    },
-    GameplayPage.SELECTORS.mainCanvas,
-    { timeout },
-  );
 }
 
 // ─── Private per-TC functions ─────────────────────────────────────────────────
@@ -310,7 +276,7 @@ function _tc010(getPage: () => Page, state: FullGameplayFlowState): void {
           canvasBB!.x + state.monsterHitboxCenter!.x,
           canvasBB!.y + state.monsterHitboxCenter!.y,
         );
-        await waitForStonesToRender(page);
+        await waitForStonesReady(page);
 
         // If TC_009 could not get the stone pos from StoneHandler (edge case when
         // startingPuzzleIndex > 0), retry now — stones are on-screen after monster click.
@@ -412,7 +378,7 @@ function _tc011(getPage: () => Page, state: FullGameplayFlowState): void {
           canvasBB!.x + state.monsterHitboxCenter!.x,
           canvasBB!.y + state.monsterHitboxCenter!.y,
         );
-        await waitForStonesToRender(page);
+        await waitForStonesReady(page);
 
         // Stones are now on-screen. If TC_009/TC_010 did not capture the stone pos
         // (happens when assessmentTriggerPuzzle = startingPuzzleIndex + 1 and
@@ -713,7 +679,7 @@ function _tc013(getPage: () => Page, state: FullGameplayFlowState): void {
           canvasBB!.x + state.monsterHitboxCenter!.x,
           canvasBB!.y + state.monsterHitboxCenter!.y,
         );
-        await waitForStonesToRender(page);
+        await waitForStonesReady(page);
 
         if (!isLast) {
           await subscribeToCorrectStonePosition(page);

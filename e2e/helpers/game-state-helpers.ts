@@ -424,6 +424,49 @@ export async function getHitboxCenter(
   });
 }
 
+/**
+ * Waits until every stone's entrance fly-in animation has finished
+ * (StoneHandler.stonesHasLoaded === true, i.e. every stone's frame >= 100,
+ * ~1.5s after creation).
+ *
+ * Checking for opaque canvas pixels alone is not enough: stones start drawing
+ * from position (0,0) at frame=0, so pixels appear immediately even though the
+ * stones haven't reached their final position yet. GameplayInputManager's
+ * handleMouseUp returns early while the picked stone isAnimating (frame < 100),
+ * silently dropping any drag-and-drop performed before the animation completes.
+ * Callers must await this before simulating a drag.
+ */
+export async function waitForStonesReady(page: Page, timeout = 12_000): Promise<void> {
+  await page.waitForFunction(
+    (sel: string) => {
+      const gss = (window as any).__ftm?.gameStateService;
+      const sh = (window as any).__ftm?.sceneHandler;
+      const scene =
+        sh?.['activeScene']?.['scene'] ??
+        gss?.gamePlayScene ??
+        gss?.currentScene ??
+        null;
+      const fm = scene?.flowManager ?? null;
+      const stoneHandler = fm?.['stoneHandler'] ?? scene?.['stoneHandler'] ?? null;
+      if (stoneHandler != null) {
+        return stoneHandler.stonesHasLoaded === true;
+      }
+      // Fallback: pixel presence when stoneHandler is not accessible via __ftm.
+      const canvas = document.querySelector(sel) as HTMLCanvasElement | null;
+      if (!canvas || canvas.width === 0 || canvas.height === 0) return false;
+      const ctx = canvas.getContext('2d');
+      if (!ctx) return false;
+      const { data } = ctx.getImageData(0, 0, canvas.width, canvas.height);
+      for (let i = 3; i < data.length; i += 4) {
+        if (data[i] > 0) return true;
+      }
+      return false;
+    },
+    Selectors.mainCanvas,
+    { timeout },
+  );
+}
+
 // ─── Dynamic assessment + full-level helpers ──────────────────────────────────
 
 /**
@@ -643,6 +686,53 @@ export async function getCorrectStonePositionForCurrentPuzzle(
           return { x: s.x, y: s.y, text: s.text };
         }
       }
+    }
+
+    return null;
+  });
+}
+
+/**
+ * Returns a WRONG (foil) stone position for the CURRENT puzzle — the inverse of
+ * getCorrectStonePositionForCurrentPuzzle(). Used to deliberately fail a level by
+ * always dropping an incorrect stone. Dropping any stone whose text is neither the
+ * correctTargetStone (letter puzzles) nor a member of targetStones (word puzzles)
+ * evaluates to isCorrect=false in letterPuzzleLogic/wordPuzzleLogic, which still
+ * advances the puzzle (see gameplay-flow-manager.ts handleStoneDropResult) without
+ * adding to the score.
+ */
+export async function getWrongStonePositionForCurrentPuzzle(
+  page: Page,
+): Promise<{ x: number; y: number; text: string } | null> {
+  return page.evaluate(() => {
+    const gss = (window as any).__ftm?.gameStateService;
+    if (!gss) return null;
+    const sh = (window as any).__ftm?.sceneHandler;
+    const scene =
+      sh?.['activeScene']?.['scene'] ?? gss.gamePlayScene ?? gss.currentScene ?? null;
+    if (!scene) return null;
+    const fm = scene?.flowManager ?? null;
+    if (!fm) return null;
+    const stoneHandler = fm?.['stoneHandler'] ?? scene?.['stoneHandler'] ?? null;
+    if (!stoneHandler) return null;
+
+    const correctText: string =
+      typeof stoneHandler.getCorrectTargetStone === 'function'
+        ? stoneHandler.getCorrectTargetStone()
+        : stoneHandler['correctTargetStone'];
+
+    const targetStones: string[] = stoneHandler['targetStones'] ?? [];
+    const foilStones: any[] = stoneHandler['foilStones'] ?? [];
+    const isWrong = (s: any) =>
+      s && !s.isDisposed && s.text !== correctText && !targetStones.includes(s.text);
+
+    for (const s of foilStones) {
+      if (isWrong(s)) return { x: s.x, y: s.y, text: s.text };
+    }
+
+    const activeStones: any[] = stoneHandler['activeStones'] ?? [];
+    for (const s of activeStones) {
+      if (isWrong(s)) return { x: s.x, y: s.y, text: s.text };
     }
 
     return null;
@@ -929,6 +1019,69 @@ export async function completeAssessmentSurvey(
     await page.waitForTimeout(300);
 
     // Exit immediately if coordinator signals completion after this answer
+    const completedNow = await isAssessmentCompletedByCoordinator(page);
+    if (completedNow) break;
+  }
+
+  return answered;
+}
+
+/**
+ * Completes the entire assessment survey by cycling through ALL questions and
+ * answering each one INCORRECTLY — used to drive a genuine level-failure flow.
+ *
+ * The assessment engine (@curiouslearning/assessment-survey, RandomBST mode)
+ * fails and moves down a bucket after 2 consecutive wrong answers per bucket
+ * (or 5 tries), cascading to onEnd() within a bounded number of questions — it
+ * does not require ever answering correctly to terminate, so this loop uses the
+ * exact same stop conditions as completeAssessmentSurvey().
+ *
+ * Stops when: coordinator marks complete, no more questions, overlay dismissed,
+ * or maxQuestions safety guard hit. Returns the count of questions answered.
+ */
+export async function completeAssessmentSurveyWithWrongAnswers(
+  page: Page,
+  maxQuestions: number = 20,
+): Promise<number> {
+  let answered = 0;
+
+  for (let i = 0; i < maxQuestions; i++) {
+    const alreadyDone = await isAssessmentCompletedByCoordinator(page);
+    if (alreadyDone) break;
+
+    const overlayGone = !(await isAssessmentOverlayVisible(page));
+    if (overlayGone) break;
+
+    const hasQ = await hasAssessmentCurrentQuestion(page);
+    if (!hasQ) break;
+
+    const nextqSelector = `${Selectors.assessmentPlayer} #nextqButton`;
+    const nextqAppeared = await page
+      .waitForSelector(nextqSelector, { state: 'visible', timeout: 8_000 })
+      .then(() => true)
+      .catch(() => false);
+    if (!nextqAppeared) break;
+
+    await page.waitForTimeout(300);
+    await page.locator(nextqSelector).click({ force: true });
+
+    await waitForAssessmentAnswerButtons(page, Timeouts.sceneTransition);
+
+    // Read a WRONG answer from live game state instead of the correct one.
+    const answerInfo = await getWrongAssessmentAnswer(page);
+    if (!answerInfo) break;
+
+    const dragged = await dragAssessmentAnswerToChest(page, answerInfo.wrongBtnId);
+    if (!dragged) break;
+
+    await waitForAssessmentFeedback(page, 5_000);
+
+    answered++;
+
+    await waitForAssessmentFeedbackToHide(page, 5_000);
+
+    await page.waitForTimeout(300);
+
     const completedNow = await isAssessmentCompletedByCoordinator(page);
     if (completedNow) break;
   }

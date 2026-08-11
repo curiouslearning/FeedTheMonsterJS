@@ -139,3 +139,32 @@ export function createFullGameplayFlowState(): FullGameplayFlowState {
     startingPuzzleIndex: 0,
   };
 }
+
+/**
+ * Shared state for TC_018–TC_023 (failed-level replay flow). Same shape as
+ * FullGameplayFlowState, but capturedStonePos holds a WRONG (foil) stone
+ * position instead of the correct one, since every puzzle in this flow is
+ * answered incorrectly on purpose to drive the level to a failing star count.
+ */
+export interface FailedGameplayFlowState {
+  /** Wrong stone position for the current puzzle (updated each puzzle). */
+  capturedStonePos: { x: number; y: number; text: string } | null;
+  /** Monster drop-zone hitbox centre in canvas-relative CSS pixels. */
+  monsterHitboxCenter: { x: number; y: number } | null;
+  /** 1-based puzzle segment at which the assessment triggers (0 = not eligible). */
+  assessmentTriggerPuzzle: number;
+  /** 1-based puzzle segment where the mini-game is scheduled (0 = none). */
+  miniGameTriggerPuzzle: number;
+  /** Total puzzles in the selected level. */
+  totalPuzzleCount: number;
+}
+
+export function createFailedGameplayFlowState(): FailedGameplayFlowState {
+  return {
+    capturedStonePos: null,
+    monsterHitboxCenter: null,
+    assessmentTriggerPuzzle: 0,
+    miniGameTriggerPuzzle: 0,
+    totalPuzzleCount: 0,
+  };
+}

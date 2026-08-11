@@ -34,6 +34,7 @@ export {
   subscribeToCorrectStonePosition,
   getCapturedCorrectStonePos,
   getHitboxCenter,
+  waitForStonesReady,
   speedUpMiniGame,
   waitForTreasureCanvasVisible,
   waitForMiniGameComplete,
@@ -46,6 +47,7 @@ export {
   waitForPuzzleAdvance,
   waitForNaturalAssessmentTrigger,
   getCorrectStonePositionForCurrentPuzzle,
+  getWrongStonePositionForCurrentPuzzle,
   // Assessment survey interaction helpers
   getCorrectAssessmentAnswer,
   getWrongAssessmentAnswer,
@@ -60,5 +62,6 @@ export {
   isAssessmentCompletedByCoordinator,
   isAssessmentOverlayVisible,
   completeAssessmentSurvey,
+  completeAssessmentSurveyWithWrongAnswers,
   answerAssessmentQuestionWithWrongThenCorrect,
 } from './game-state-helpers';
