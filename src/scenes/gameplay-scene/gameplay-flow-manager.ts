@@ -492,6 +492,7 @@ export class GameplayFlowManager {
         const itemSelected = puzzleType === "Word"
           ? (droppedLetters ?? "TIMEOUT")
           : (pickedStone?.text ?? "TIMEOUT");
+        const foilStones = this.stoneHandler.getFoilStones();
 
         this.analyticsIntegration.track(
             AnalyticsEventType.PUZZLE_COMPLETED,
@@ -503,9 +504,7 @@ export class GameplayFlowManager {
                 puzzle_number: this.currentPuzzleIndex,
                 item_selected: itemSelected,
                 target: this.stoneHandler.getCorrectTargetStone(),
-                foils: Array.isArray(this.stoneHandler.getFoilStones())
-                    ? this.stoneHandler.getFoilStones().join(',')
-                    : this.stoneHandler.getFoilStones(),
+                foils: Array.isArray(foilStones) ? foilStones.join(',') : foilStones,
                 response_time: (endTime - this.puzzleTime) / 1000,
             }
         );

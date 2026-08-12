@@ -252,27 +252,30 @@ export default class StoneHandler {
   }
 
   public getFoilStones() {
-    this.currentPuzzleData.targetStones.forEach((e) => {
-      const index = this.currentPuzzleData.foilStones.indexOf(e);
+    const targetStones = this.currentPuzzleData.targetStones;
+    // Work on a copy so the shared level data (currentPuzzleData.foilStones) is never mutated.
+    const foilStones = [...this.currentPuzzleData.foilStones];
+
+    targetStones.forEach((e) => {
+      const index = foilStones.indexOf(e);
       if (index !== -1) {
-        this.currentPuzzleData.foilStones.splice(index, 1);
+        foilStones.splice(index, 1);
       }
     });
 
-    const totalStonesCount =
-      this.currentPuzzleData.targetStones.length +
-      this.currentPuzzleData.foilStones.length;
+    const totalStonesCount = targetStones.length + foilStones.length;
 
     if (totalStonesCount > 8) {
       const extraStonesCount = totalStonesCount - 8;
 
-      this.currentPuzzleData.foilStones.splice(0, extraStonesCount);
+      foilStones.splice(0, extraStonesCount);
     }
 
-    this.currentPuzzleData.targetStones.forEach((e) => {
-      this.currentPuzzleData.foilStones.push(e);
+    targetStones.forEach((e) => {
+      foilStones.push(e);
     });
-    return this.currentPuzzleData.foilStones.sort(() => Math.random() - 0.5);
+
+    return foilStones.sort(() => Math.random() - 0.5);
   }
 
   /**
