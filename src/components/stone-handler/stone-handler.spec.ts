@@ -139,6 +139,34 @@ describe('StoneHandler - Latest Optimizations', () => {
     });
   });
 
+  describe('getFoilStones - shared level data integrity', () => {
+    it('does not mutate the foilStones array on the shared level data', () => {
+      const levelData = {
+        puzzles: [{ targetStones: ['A', 'B'], foilStones: ['C', 'D', 'E'] }],
+      };
+      const originalFoilStones = [...levelData.puzzles[0].foilStones];
+
+      const handler = new StoneHandler(mockContext, mockCanvas, 0, levelData);
+      // The puzzle_completed analytics event reads the foil stones more than once.
+      handler.getFoilStones();
+      handler.getFoilStones();
+
+      expect(levelData.puzzles[0].foilStones).toEqual(originalFoilStones);
+    });
+
+    it('does not drop foil stones from level data when a puzzle has more than eight stones', () => {
+      const levelData = {
+        puzzles: [{ targetStones: ['A'], foilStones: ['B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J'] }],
+      };
+      const originalFoilStones = [...levelData.puzzles[0].foilStones];
+
+      const handler = new StoneHandler(mockContext, mockCanvas, 0, levelData);
+      handler.getFoilStones();
+
+      expect(levelData.puzzles[0].foilStones).toEqual(originalFoilStones);
+    });
+  });
+
   describe('Performance Improvements', () => {
     it('should skip disposed stones in draw loop', () => {
       const mockStones = [
