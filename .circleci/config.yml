@@ -17,7 +17,6 @@ commands:
         default: 'build:prod'
     steps:
       - checkout
-      - run: sudo npm install -g npm@latest
       - node/install-packages
       - run: npm run << parameters.build-script >>
       # - aws-cli/setup:
