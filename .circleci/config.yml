@@ -17,7 +17,14 @@ commands:
         default: 'build:prod'
     steps:
       - checkout
-      - run: sudo npm install -g npm@latest
+      - run:
+          name: Upgrade Node and npm to latest
+          command: |
+            export NVM_DIR="$HOME/.nvm"
+            [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
+            nvm install node
+            nvm alias default node
+            sudo npm install -g npm@latest
       - node/install-packages
       - run: npm run << parameters.build-script >>
       # - aws-cli/setup:
