@@ -1,5 +1,17 @@
 
 
+## [1.6.2](https://github.com/curiouslearning/FeedTheMonsterJS/compare/1.6.1...1.6.2) (2026-08-12)
+
+
+### Bug Fixes
+
+* Fixed the failing npm dependency issues ([ee61ea6](https://github.com/curiouslearning/FeedTheMonsterJS/commit/ee61ea6dd7cf1dab7f3b0d550bac3bad8ee1002f))
+* Fixed the failing npm dependency issues using nvm ([8b5db28](https://github.com/curiouslearning/FeedTheMonsterJS/commit/8b5db2860117c3125ab33279996f60184cae15ac))
+* Nvm issue fixed ([a2facf4](https://github.com/curiouslearning/FeedTheMonsterJS/commit/a2facf469a88a66078faeedac3b26205cb0d95db))
+* Package lock regenerated ([7bfced7](https://github.com/curiouslearning/FeedTheMonsterJS/commit/7bfced7102adc0607674a9bce254eaa7b34e4f31))
+* removed nvm import ([abe9d66](https://github.com/curiouslearning/FeedTheMonsterJS/commit/abe9d663194d1fa188312f28b121fe0b6a40aa35))
+* removed the npm run installation and rely on bundled cimg/python-node ([be27120](https://github.com/curiouslearning/FeedTheMonsterJS/commit/be27120b5553206c30b10345d7ebcafbfd430487))
+
 ## [1.6.1](https://github.com/curiouslearning/FeedTheMonsterJS/compare/1.6.0...1.6.1) (2026-07-08)
 
 
