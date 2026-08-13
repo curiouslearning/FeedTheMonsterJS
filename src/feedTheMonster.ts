@@ -2,7 +2,7 @@ import * as Sentry from "@sentry/browser";
 import { getData, DataModal, customFonts, GameScore } from "@data";
 import { SceneHandler } from "@sceneHandler/scene-handler";
 import { AUDIO_URL_PRELOAD, IsCached, PreviousPlayedLevel } from "@constants";
-import { Workbox } from "workbox-window";
+import { registerFeedTheMonsterServiceWorker } from "@services/sw-registration";
 import { AnalyticsIntegration, AnalyticsEventType } from "./analytics/analytics-integration";
 import {
   Utils,
@@ -257,8 +257,12 @@ class App {
   private async registerWorkbox(): Promise<void> {
     if ("serviceWorker" in navigator) {
       try {
-        const wb = new Workbox("./sw.js", {});
-        const registration = await wb.register();
+        // Client-side half of the shared update-notification lifecycle. Registers
+        // ./sw.js, subscribes to the library's update channel, and shows the
+        // blocking confirm()+reload prompt (mode: 'confirm') when the new worker
+        // has taken control. Replaces the previous hand-rolled service-worker
+        // registration and the "Update Found" BroadcastChannel branch.
+        const registration = await registerFeedTheMonsterServiceWorker();
         await navigator.serviceWorker.ready;
         navigator.serviceWorker.addEventListener(
           "message",
@@ -535,10 +539,11 @@ class App {
   }
 
   private handleServiceWorkerMessage = (event: MessageEvent): void => {
+    // Service-worker update prompts are now owned by registerServiceWorkerUpdates
+    // (mode: 'confirm') over the library's own channel. This handler retains only
+    // the FTM-specific "Loading" progress messages on the 'my-channel' channel.
     if (event.data.msg === "Loading") {
       this.handleLoadingMessage(event.data);
-    } else if (event.data.msg === "Update Found") {
-      this.handleUpdateFoundMessage();
     }
   };
 
