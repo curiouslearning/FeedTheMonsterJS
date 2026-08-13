@@ -212,9 +212,7 @@ export default class StoneHandler {
   }
 
   private areStonesReadyForPlay() {
-    /* if stone frames are above 100, it means it has properly loaded in its default position
-        and ready to be move by the user.
-    */
+    if (this.foilStones.length === 0) return;
     if (this.foilStones[this.foilStones.length - 1].frame >= 100) {
       this.stonesHasLoaded = true;
     }
@@ -287,6 +285,8 @@ export default class StoneHandler {
       }
     }
     this.foilStones = [];
+    // Reset loading flag so waiters know there are no stones; createStones() sets it false again anyway.
+    this.stonesHasLoaded = false;
   }
 
 
