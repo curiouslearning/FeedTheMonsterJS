@@ -150,12 +150,19 @@ class App {
     if (featureFlagsService.isFeatureEnabled(FEATURE_ANDROID_EVENT_BUBBLE)) {
       const androidStrategy = new AndroidAnalyticsStrategy({
         cr_user_id: pseudoId ?? '',
-        app_version: document.getElementById("version-info-id")?.innerHTML || ''
+        app_version: document.getElementById("version-info-id")?.innerHTML || '',
+        lang: this.lang
       });
       AnalyticsIntegration.getInstance().analyticsService.register(
         'android',
         androidStrategy
       );
+
+      // Seed the summary document so its numeric fields read 0 instead of being absent for a
+      // player who never completes a puzzle. Called directly rather than through
+      // AnalyticsIntegration.track(), which fans out to every registered strategy and would send
+      // this to Firebase and Statsig too.
+      androidStrategy.logInitialSummaryData();
     }
   }
 
