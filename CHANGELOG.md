@@ -1,5 +1,12 @@
 
 
+## [1.6.4](https://github.com/curiouslearning/FeedTheMonsterJS/compare/1.6.3...1.6.4) (2026-08-17)
+
+
+### Bug Fixes
+
+* [MR-177] Added logInitialSummaryData and schema of summary data ([7c86d29](https://github.com/curiouslearning/FeedTheMonsterJS/commit/7c86d291d786cc7e9fdcf0bb85a71dee0bf16e15))
+
 ## [1.6.3](https://github.com/curiouslearning/FeedTheMonsterJS/compare/1.6.2...1.6.3) (2026-08-13)
 
 ## [1.6.2](https://github.com/curiouslearning/FeedTheMonsterJS/compare/1.6.1...1.6.2) (2026-08-12)
