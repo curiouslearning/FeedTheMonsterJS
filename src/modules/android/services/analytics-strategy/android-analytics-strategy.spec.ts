@@ -2,14 +2,17 @@ import { AnalyticsEventType } from 'src/analytics/analytics-integration';
 import { AndroidInterface } from '@curiouslearning/core';
 import { AndroidAnalyticsStrategy } from './android-analytics-strategy';
 import { appConfig } from '@appConfig';
+import { FTM_SUMMARY_DATA_DEFAULTS } from '../../constants/summary-data-schema';
 
 const mockLogSummaryData = jest.fn();
 const mockLogUserSessionsData = jest.fn();
+const mockLogInitialSummaryData = jest.fn();
 
 jest.mock('@curiouslearning/core', () => ({
   AndroidInterface: jest.fn().mockImplementation(() => ({
     logSummaryData: mockLogSummaryData,
     logUserSessionsData: mockLogUserSessionsData,
+    logInitialSummaryData: mockLogInitialSummaryData,
   })),
 }));
 
@@ -26,7 +29,7 @@ describe('Feature: Android analytics strategy', () => {
 
   beforeEach(() => {
     jest.clearAllMocks();
-    strategy = new AndroidAnalyticsStrategy({ cr_user_id: 'user-123' });
+    strategy = new AndroidAnalyticsStrategy({ cr_user_id: 'user-123', lang: 'english' });
   });
 
   describe('Scenario: Initializing the strategy', () => {
@@ -38,7 +41,7 @@ describe('Feature: Android analytics strategy', () => {
   describe('Scenario: Forwarding the sub-app version as metadata', () => {
     it('Given an appVersion, when the strategy is constructed, then AndroidInterface receives it as metadata.app_version', () => {
       // Given / When
-      new AndroidAnalyticsStrategy({ cr_user_id: 'user-123', app_version: 'v1.6.0' });
+      new AndroidAnalyticsStrategy({ cr_user_id: 'user-123', app_version: 'v1.6.0', lang: 'english' });
 
       // Then
       expect(AndroidInterface).toHaveBeenCalledWith(
@@ -230,6 +233,44 @@ describe('Feature: Android analytics strategy', () => {
         level: 2,
         puzzle: 3,
       });
+    });
+  });
+
+  describe('Scenario: Seeding the initial summary data', () => {
+    // Core owns the "add" instructions and the once-per-document guard, so those are covered there.
+    // FTM's part is supplying the complete set of defaults, and the language that scopes the guard.
+    it('Given the schema, when seeding, then every field is sent at 0', () => {
+      // When
+      strategy.logInitialSummaryData();
+
+      // Then
+      expect(mockLogInitialSummaryData).toHaveBeenCalledTimes(1);
+      expect(mockLogInitialSummaryData).toHaveBeenCalledWith({
+        highest_level_completed: 0,
+        levels_completed: 0,
+        puzzles_completed: 0,
+        puzzle_success: 0,
+        puzzle_failure: 0,
+        time_spent_total_second: 0,
+      });
+    });
+
+    it('Given the schema constant, when seeding, then the payload matches it exactly so the two cannot drift', () => {
+      // When
+      strategy.logInitialSummaryData();
+
+      // Then every declared field is seeded, and nothing beyond them is
+      expect(mockLogInitialSummaryData).toHaveBeenCalledWith(FTM_SUMMARY_DATA_DEFAULTS);
+    });
+
+    it('Given a language, when the strategy is constructed, then it is forwarded so core can scope the seed', () => {
+      // Given / When
+      new AndroidAnalyticsStrategy({ cr_user_id: 'user-123', lang: 'kembata' });
+
+      // Then core receives the language, since the container keys summaries per language
+      expect(AndroidInterface).toHaveBeenCalledWith(
+        expect.objectContaining({ lang: 'kembata' })
+      );
     });
   });
 
