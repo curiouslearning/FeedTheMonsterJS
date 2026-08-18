@@ -131,6 +131,8 @@ export class GameplayFlowManager {
 
         //Delay before either next puzzle, assessment or mini-game starts to avoid overlapping with feedback SFX.
         const nextStepDelay = this.isCorrect ? 1500 : 3000;
+        // Wait for feedback audio to finish (~4500 ms) plus 1 s before opening the assessment survey.
+        const assessmentDelay = this.isCorrect ? 5500 : 3000;
 
         if (this.assessmentFlowCoordinator.shouldStartAssessmentAtPuzzle(currentPuzzleSegment)) {
             this.timeoutRegistry.setTimeout(() => {
@@ -142,7 +144,7 @@ export class GameplayFlowManager {
                         0, //Pass 0 to instantly load mini game after assessment survey.
                     );
                 });
-            }, nextStepDelay);
+            }, assessmentDelay);
 
             return;
         }

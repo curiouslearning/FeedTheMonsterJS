@@ -11,7 +11,7 @@ export class ProgressionScene {
 
   private riveMonsterElement: HTMLCanvasElement;
   private jarAnimation: JarRiveAnimation;
-  private delaySwitchToLevelend: number = 1000;
+  private delaySwitchToLevelend: number = 3000;
   private previousTotalStarCount: number = 0;
   private currentLevelStarEarned: number = 0;
   private treasureChestScore: number = 0;

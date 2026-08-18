@@ -1,65 +1,22 @@
 const path = require('path');
-const { exec } = require('child_process');
 const webpack = require('webpack');
 const nodeEnv = process.env.NODE_ENV || 'development';
 const isDev = (nodeEnv !== 'production');
 const CopyPlugin = require("copy-webpack-plugin");
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const TerserPlugin = require('terser-webpack-plugin');
+const { InjectManifest } = require('workbox-webpack-plugin');
+// @curiouslearning/sw's CJS entry eagerly loads workbox-core, which touches the
+// worker global `self`; define it before requiring the package so the config
+// loads under Node.
+globalThis.self = globalThis.self || globalThis;
+const { createInjectManifestOptions } = require('@curiouslearning/sw');
 require('dotenv').config();
 // const ESLintPlugin = require('eslint-webpack-plugin');
 
 // const eslintConfig = require('./.eslintrc.json');
 
 // const CompressionPlugin = require('compression-webpack-plugin');
-
-class WorkboxInjectOnDevBuildPlugin {
-  constructor() {
-    this.running = false;
-    this.pending = false;
-  }
-
-  apply(compiler) {
-    compiler.hooks.done.tap('WorkboxInjectOnDevBuildPlugin', (stats) => {
-      if (stats.hasErrors()) {
-        return;
-      }
-      this.runInject();
-    });
-  }
-
-  runInject() {
-    if (this.running) {
-      this.pending = true;
-      return;
-    }
-
-    this.running = true;
-    const injectCommand = process.platform === 'win32'
-      ? 'npx.cmd workbox injectManifest'
-      : 'npx workbox injectManifest';
-
-    exec(injectCommand, (error, stdout, stderr) => {
-      this.running = false;
-
-      if (stdout) {
-        process.stdout.write(stdout);
-      }
-      if (stderr) {
-        process.stderr.write(stderr);
-      }
-
-      if (error) {
-        console.error(`[workbox] injectManifest failed: ${error.message}`);
-      }
-
-      if (this.pending) {
-        this.pending = false;
-        this.runInject();
-      }
-    });
-  }
-}
 
 const mode = isDev ? 'development' : 'production';
 
@@ -78,7 +35,10 @@ var config = {
       writeToDisk: true,
     },
     client: {
-      overlay: true,
+      // Disabled in CI: the overlay iframe (even with no error to show) sits on top of
+      // the page and intercepts Playwright's pointer events, failing every click-based
+      // e2e test deterministically.
+      overlay: process.env.CI !== 'true',
     },
     compress: false,
     port: 8080
@@ -178,7 +138,32 @@ var config = {
     //   // TODO: set this to isDev once we fix all the lint errors.
     //   failOnError: false
     // })
-    ...(isDev ? [new WorkboxInjectOnDevBuildPlugin()] : []),
+    // Compiles src/sw-src.ts (TypeScript, via the inherited ts-loader rule) and
+    // injects the precache manifest at self.__WB_MANIFEST, emitting build/sw.js
+    // in the same build pass — no separate `workbox injectManifest` CLI step.
+    // Language media and per-language assessment audio are excluded from the
+    // precache so they remain on-demand caches; both are still emitted as build
+    // assets by CopyPlugin. The webpack InjectManifest plugin builds its manifest
+    // from compilation assets, so the compilation-asset `exclude` below is what
+    // keeps those out.
+    //
+    // NOTE: createInjectManifestOptions() injects `globDirectory: 'build/'` — a
+    // workbox-build/CLI option that the webpack InjectManifest plugin rejects
+    // ("'globDirectory' property is not expected to be here"). Strip glob-only
+    // keys before handing the options to the plugin.
+    new InjectManifest((() => {
+      const { globDirectory, globPatterns, globIgnores, ...injectOptions } =
+        createInjectManifestOptions({
+          swSrc: path.resolve(__dirname, 'src/sw-src.ts'),
+          swDest: 'sw.js',
+          exclude: [
+            /\.map$/,
+            /^lang\//,
+            /^assessment-survey\/audio\/.*\.mp3$/,
+          ],
+        });
+      return injectOptions;
+    })()),
   ],
   optimization: {
     minimize: true,
