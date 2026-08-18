@@ -159,8 +159,7 @@ export class GameplayScene {
 
     this.addEventListeners();
     this.analyticsIntegration = AnalyticsIntegration.getInstance();
-    
-    
+
     
     //this.setupBg(); //Temporary disabled to try evolution background.
     this.setupMonsterPhaseBg();
@@ -312,10 +311,6 @@ export class GameplayScene {
     });
     this.time = timeRef.value;
 
-    
-    
-    
-
     // Main game logic only starts after isGameStarted = true
     if (this.isGameStarted) {
       
@@ -354,8 +349,19 @@ export class GameplayScene {
 
   public pauseGamePlay(): void {
     this.isPaused = true;
+    this.suspendGameplayActivity();
+  }
+
+  /**
+   * Quiets active gameplay — audio, timer rotation, and the monster — without
+   * flipping `isPaused`. Kept separate because setting `isPaused` freezes the
+   * custom scheduler (see draw()), which the mini-game's own deferred start
+   * relies on. The mini-game path calls this directly; pauseGamePlay() adds
+   * the `isPaused` flag on top.
+   */
+  private suspendGameplayActivity(): void {
     this.audioPlayer?.pauseAllAudios();
-    // Stop the clock rotation when game is paused
+    // Stop the clock rotation when gameplay is suspended
     this.uiManager.applyTimerRotation(false);
     this.monsterController?.pause();
   }
@@ -540,10 +546,11 @@ export class GameplayScene {
           this.isMiniGamePaused = true;
           // Hides stones from completed puzzle to prevent unwanted interactions during mini-game
           this.stoneHandler.clearAllStones();
-          // Pause main gameplay (timer, stones, monster) while mini-game is on screen.
-          // Does not open the pause popup — only the internal isPaused flag is set.
+          // Quiet the main gameplay (audio, timer, monster) while the mini-game
+          // is on screen — but do NOT set isPaused, which would freeze the
+          // scheduler that fires the mini-game's own deferred start.
           if (!this.isPaused) {
-            this.pauseGamePlay();
+            this.suspendGameplayActivity();
           }
         }
       )
