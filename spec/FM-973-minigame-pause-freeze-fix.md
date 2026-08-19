@@ -8,17 +8,34 @@
 | Field | Value |
 |---|---|
 | Key | FM-973 |
-| Summary | <!-- fill from Jira: exact ticket summary --> |
-| Type | Bug fix |
+| Summary | Gameplay gets stuck when minigame is about to trigger — mobile + browser, test env |
+| Type | Bug |
 | Project | FM — Feed The Monster |
-| Priority | <!-- fill from Jira --> |
-| Status | In Progress |
-| Reporter | <!-- fill from Jira --> |
+| Priority | Medium |
+| Status | Review/QA |
+| Reporter | Ashish M |
 | Assignee | Bernhard Cena |
-| Created | <!-- fill from Jira --> |
+| Created | 2026-08-07 |
 
 **Jira Description (verbatim):**
-> <!-- paste the verbatim Jira description here -->
+> **Describe the bug**
+> In the gameplay screen, whenever a minigame is about to trigger, the gameplay flow gets stuck and does not move forward. This happens on both mobile and browser, in the test environment.
+>
+> **To Reproduce**
+>
+> * From the start screen, navigate to the gameplay screen.
+> * Reach Level 2.
+> * Start Level 2.
+> * Gameplay gets stuck in the middle, right when the minigame is about to trigger.
+>
+> **Expected behavior**
+> The gameplay flow should not get stuck, and the minigame should load properly.
+>
+> **Environment**
+> Test
+>
+> **Additional context**
+> None.
 
 ### Business Goal
 Ensure the treasure-chest mini-game reliably appears and animates after its designated puzzle segment. A regression currently prevents the chest from ever rendering, silently removing the mini-game reward moment for children on affected levels.
