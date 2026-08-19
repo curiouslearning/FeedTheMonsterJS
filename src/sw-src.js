@@ -1,53 +1,43 @@
-import { precacheAndRoute } from "workbox-precaching";
-import { cacheNames } from "workbox-core";
-import { registerUpdateNotifier, isCacheBustRequest } from "@curiouslearning/sw";
-
-// Minimal service-worker global scope covering only the members this worker
-// touches. Declaring it locally (rather than pulling in `lib: ["webworker"]`)
-// avoids the lib.dom/lib.webworker global-conflict that a `/// <reference lib>`
-// directive would cause when this file is type-checked alongside the DOM-based
-// app program (ts-loader, ts-jest, tsc). Standard globals used below —
-// caches, fetch, Request, Response, URL, BroadcastChannel, setTimeout — come
-// from lib.dom, which is available in workers at runtime.
-interface ServiceWorkerScope {
-  __WB_MANIFEST: Array<string | { url: string; revision: string | null }>;
-  registration?: { active: unknown; scope: string };
-  location: { href: string; origin: string; pathname: string };
-  skipWaiting(): void;
-  addEventListener(type: string, listener: (event: any) => any): void;
-}
-
-declare const self: ServiceWorkerScope;
-
-// Language media is excluded from the precache manifest at build time via the
-// InjectManifest `globIgnores` (see webpack.config.js), so no runtime `exclude`
-// is needed here — `exclude` is not a valid runtime precacheAndRoute option.
-precacheAndRoute(self.__WB_MANIFEST, {
+importScripts(
+  "https://storage.googleapis.com/workbox-cdn/releases/4.3.1/workbox-sw.js"
+);
+workbox.precaching.precacheAndRoute(self.__WB_MANIFEST, {
   ignoreURLParametersMatching: [/^cr_/],
+  exclude: [/^lang\//],
 });
-
-// Worker-side half of the shared update-notification lifecycle. Computes
-// isUpdate = !!self.registration.active at evaluation time and only broadcasts
-// (over the library's default channel) after self.clients.claim() resolves — so
-// the notification never fires before the new worker has taken control, and
-// never on a first install. Replaces the previous hand-rolled activate handler.
-registerUpdateNotifier();
-
 var number = 0;
 var version = 1.26;
+
+// True when a previous SW is already active, meaning this is an update rather than a first install.
+const isUpdate = !!self.registration.active;
 
 self.addEventListener("install", async function (e) {
   self.skipWaiting();
   e.waitUntil(preloadAdditionalAssets()); // Preload specific assets during the install event
 });
 const channel = new BroadcastChannel("my-channel");
+self.addEventListener("activate", function (event) {
+  event.waitUntil(
+    self.clients.claim().then(() => {
+      // Notify only after the new SW has fully activated and claimed all clients,
+      // so a reload triggered by the prompt is guaranteed to be served by the new SW.
+      if (isUpdate) {
+        return self.clients.matchAll({ type: "window" }).then((clients) => {
+          clients.forEach((client) =>
+            client.postMessage({ msg: "Update Found" })
+          );
+        });
+      }
+    })
+  );
+});
 channel.addEventListener("message", async function (event) {
   if (event.data.command === "Cache") {
     number = 0;
     await getCacheName(event.data.data);
   }
   if (event.data.command === "CacheUpdate") {
-    caches.delete(cacheNames.precache + event.data.data);
+    caches.delete(workbox.core.cacheNames.precache + event.data.data);
     await getCacheName(event.data.data);
   }
   if (event.data.command === "CacheAssessmentLanguage") {
@@ -99,7 +89,7 @@ async function preloadAdditionalAssets() {
   }
 }
 
-async function cacheLangAssets(file: string, cacheName: string) {
+async function cacheLangAssets(file, cacheName) {
   const cache = await caches.open(cacheName);
   const cachedResponse = await cache.match(file);
 
@@ -110,7 +100,7 @@ async function cacheLangAssets(file: string, cacheName: string) {
     console.log('File already cached, skipping:', file);
   }
 }
-async function getCacheName(language: string) {
+async function getCacheName(language) {
   await caches.keys().then((cacheNames) => {
     cacheNames.forEach(async (cacheName) => {
       await getALLAudioUrls(cacheName, language);
@@ -118,8 +108,8 @@ async function getCacheName(language: string) {
   });
 }
 
-async function getALLAudioUrls(cacheName: string, language: string) {
-  let audioList = new Set<string>(); // Use Set to filter duplicates
+async function getALLAudioUrls(cacheName, language) {
+  let audioList = new Set(); // Use Set to filter duplicates
   let testURL = "https://globallit-aws-s3-static-webapp-test-us-east-2.s3.us-west-2.amazonaws.com/feed-the-monster";
   // let testURL = "http://127.0.0.1:5500";
   audioList.add(`/lang/${language}/ftm_${language}.json`);
@@ -154,7 +144,7 @@ async function getALLAudioUrls(cacheName: string, language: string) {
   );
 }
 
-async function cacheAudiosFiles(audioList: string[], language: string) {
+async function cacheAudiosFiles(audioList, language) {
   const uniqueAudioURLs = [...new Set(audioList)]; // Ensuring the audioList has only unique values
   const percentageInterval = 10;
   const partSize = Math.ceil(uniqueAudioURLs.length / percentageInterval);
@@ -202,7 +192,7 @@ async function cacheAudiosFiles(audioList: string[], language: string) {
 }
 
 
-async function cacheCommonAssets(language: string) {
+async function cacheCommonAssets(language) {
   const assetUrls = [
     `./lang/${language}/audios/fantastic.WAV`,
     `./lang/${language}/audios/great.wav`,
@@ -219,7 +209,7 @@ async function cacheCommonAssets(language: string) {
     const cache = await caches.open(cacheName);
 
     const timeoutPromises = assetUrls.map((url) => {
-      return new Promise<void>((resolve, reject) => {
+      return new Promise((resolve, reject) => {
         const timeoutId = setTimeout(() => {
           reject(new Error("Timeout while caching audio: " + url));
         }, timeoutValue * timeoutMultiplier);
@@ -242,15 +232,15 @@ async function cacheCommonAssets(language: string) {
   }
 }
 
-async function cacheFeedBackAudio(feedBackAudios: string[], language: string) {
+async function cacheFeedBackAudio(feedBackAudios, language) {
   let testURL = "globallit-aws-s3-static-webapp-test-us-east-2.s3.us-west-2.amazonaws.com";
   // let testURL = "127.0.0.1:5500"
-  const audioUrls = [...new Set(feedBackAudios.map((audio: string) => {
+  const audioUrls = [...new Set(feedBackAudios.map(audio => {
     if (self.location.href.includes("feedthemonsterdev")) {
       return audio.replace("/feedthemonster", "/feedthemonsterdev");
     } else if (self.location.href.includes(testURL)) {
       return audio.replace("https://feedthemonster.curiouscontent.org", "https://globallit-aws-s3-static-webapp-test-us-east-2.s3.us-west-2.amazonaws.com/feed-the-monster");
-      // return audio.replace("https://feedthemonster.curiouscontent.org", "http://127.0.0.1:5500");
+      // return audio.replace("https://feedthemonster.curiouscontent.org", "http://127.0.0.1:5500"); 
     } else {
       return audio;
     }
@@ -283,11 +273,11 @@ async function cacheFeedBackAudio(feedBackAudios: string[], language: string) {
   }
 }
 
-function normalizeAssessmentAudioName(data: unknown, itemName: string) {
+function normalizeAssessmentAudioName(data, itemName) {
   return itemName.toLowerCase().trim();
 }
 
-function getAssessmentAssetPath(relativePath: string) {
+function getAssessmentAssetPath(relativePath) {
   const scopePath = self.registration?.scope
     ? new URL(self.registration.scope).pathname
     : self.location.pathname.replace(/[^/]*$/, '/');
@@ -297,7 +287,7 @@ function getAssessmentAssetPath(relativePath: string) {
   return `${normalizedScopePath}assessment-survey/${normalizedRelativePath}`;
 }
 
-async function cacheAssessmentLanguage(dataKey: string) {
+async function cacheAssessmentLanguage(dataKey) {
   if (!dataKey) {
     return false;
   }
@@ -313,7 +303,7 @@ async function cacheAssessmentLanguage(dataKey: string) {
   ];
 
   try {
-    const urlsToCache = new Set<string>();
+    const urlsToCache = new Set();
     urlsToCache.add(dataUrl);
 
     for (const asset of sharedAudioAssets) {
@@ -372,10 +362,7 @@ async function cacheAssessmentLanguage(dataKey: string) {
 
 self.addEventListener("fetch", function (event) {
   const requestUrl = new URL(event.request.url);
-  // Cache-bust requests bypass the service worker entirely and hit the network.
-  // Uses the shared library predicate (CACHE_BUST_PARAM = 'cache-bust') so the
-  // client and worker agree on the parameter name.
-  if (isCacheBustRequest(event.request.url)) {
+  if (requestUrl.searchParams.has('cache-bust')) {
     return event.respondWith(fetch(event.request));
   }
 
@@ -425,3 +412,4 @@ self.addEventListener("fetch", function (event) {
     })
   );
 });
+
