@@ -2,14 +2,7 @@
   // TODO: enable once lint is fixed
   // "extends": "./node_modules/gts/tsconfig-google.json",
   "compilerOptions": {
-
-    /* Skip type-checking of declaration files (.d.ts) in dependencies. Required
-       because workbox-* ship worker-lib types (ExtendableEvent, Client) that
-       conflict with the app's DOM lib, and some @curiouslearning deps ship
-       .d.ts with unresolved internal paths. Affects type-checking only, not
-       emitted output. */
-    "skipLibCheck": true,
-
+    
     /* Basic Options */
     // "incremental": true,                   /* Enable incremental compilation */
     "target": "es2022",                          /* Specify ECMAScript target version: 'ES3' (default), 'ES5', 'ES2015', 'ES2016', 'ES2017', 'ES2018', 'ES2019', 'ES2020', or 'ESNEXT'. */
