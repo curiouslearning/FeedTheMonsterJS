@@ -1,5 +1,29 @@
 
 
+## [1.8.0](https://github.com/curiouslearning/FeedTheMonsterJS/compare/1.6.4...1.8.0) (2026-08-19)
+
+
+### Features
+
+* Added playwright and config for e2e testing, converted testcase to scripts and dry running scripts generated with claude code ([#1989](https://github.com/curiouslearning/FeedTheMonsterJS/issues/1989)) ([2e7116d](https://github.com/curiouslearning/FeedTheMonsterJS/commit/2e7116dbfff3dec916935f51a64492fb0bc2f195))
+* FM-909 QA automation for FTM to Assessment survey ([#1985](https://github.com/curiouslearning/FeedTheMonsterJS/issues/1985)) ([143b536](https://github.com/curiouslearning/FeedTheMonsterJS/commit/143b536b38126fc1bfcb83cdd4157e1fc4e37412))
+* FM-945 Refine Gameplay E2E Automation to Support Dynamic Assessment Trigger and Complete Level Progression ([#1988](https://github.com/curiouslearning/FeedTheMonsterJS/issues/1988)) ([1ec7b9a](https://github.com/curiouslearning/FeedTheMonsterJS/commit/1ec7b9a2ad3e5be42068765e635eb31a7d77c200))
+* FM-949 Added e2e playwright automation to circle ci/cd pipeline ([#1992](https://github.com/curiouslearning/FeedTheMonsterJS/issues/1992)) ([a5a859a](https://github.com/curiouslearning/FeedTheMonsterJS/commit/a5a859aaec0bb85dc2629db0c9599de32d755f5d))
+* FM-966 QA Automation coverage for failed level flow. (Playwrigh… ([#2002](https://github.com/curiouslearning/FeedTheMonsterJS/issues/2002)) ([96eedd9](https://github.com/curiouslearning/FeedTheMonsterJS/commit/96eedd909e6764f53c4e6103e962775242f8af3f))
+* FM-967 QA Automation coverage for Replay level flow. (Playwright+Claude) ([#2001](https://github.com/curiouslearning/FeedTheMonsterJS/issues/2001)) ([0f9a7bd](https://github.com/curiouslearning/FeedTheMonsterJS/commit/0f9a7bd159ffe5b22c15da713285c717ee60d71c))
+
+
+### Bug Fixes
+
+* [MR-177] Added logInitialSummaryData and schema of summary data ([bbde04e](https://github.com/curiouslearning/FeedTheMonsterJS/commit/bbde04e07515e74ae491b4043b42a4203f4505d7))
+* E2E test fails in CI/CD pipeline after deployment ([c8ed76e](https://github.com/curiouslearning/FeedTheMonsterJS/commit/c8ed76e959b3adce2257752ed72800e9186536a6))
+* E2E test fails in CI/CD pipeline after deployment ([42352e0](https://github.com/curiouslearning/FeedTheMonsterJS/commit/42352e04809f9a9d2202888fa1381adff31b1749))
+* Fix: Added a fix to a bug that  causes the game to get stuck before mini-game shows up (FM-973) ([54567e6](https://github.com/curiouslearning/FeedTheMonsterJS/commit/54567e67f80e145bfbd692174d0b810df41037f5))
+* Fixed the failed jest test cases due to bundle issue ([ed40cc8](https://github.com/curiouslearning/FeedTheMonsterJS/commit/ed40cc868656d4d2d8825628d25f1398e613be9c))
+* npm issue fixed ([016f873](https://github.com/curiouslearning/FeedTheMonsterJS/commit/016f873e8a12f656ee0d7e7f8f975fe8bc2018ff))
+* Updated spec file by adding jira ticket details (FM-973) ([973c4aa](https://github.com/curiouslearning/FeedTheMonsterJS/commit/973c4aa3307f856a32bcd66bad247d48c07ea96c))
+* waitforStonesreday method added before drag and drop ([00e13f3](https://github.com/curiouslearning/FeedTheMonsterJS/commit/00e13f3b67efc585a795c0f9b5a79d01e05fd9ba))
+
 ## [1.6.4](https://github.com/curiouslearning/FeedTheMonsterJS/compare/1.6.3...1.6.4) (2026-08-17)
 
 
