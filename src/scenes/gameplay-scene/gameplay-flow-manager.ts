@@ -163,7 +163,6 @@ export class GameplayFlowManager {
         loadPuzzleDelay: number,
         miniGameDelay: number
     ): void {
-        
         if (currentPuzzleSegment === this.levelForMinigame && !this.hasShownChest) {
             this.hasShownChest = true;
 
@@ -177,7 +176,7 @@ export class GameplayFlowManager {
                 // Run chest animation (mini game)
                 this.miniGameHandler.start();
             }, miniGameDelay);
-            
+
             return;
         }
 
