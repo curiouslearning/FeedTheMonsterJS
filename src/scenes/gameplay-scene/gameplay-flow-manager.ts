@@ -166,11 +166,19 @@ export class GameplayFlowManager {
         if (currentPuzzleSegment === this.levelForMinigame && !this.hasShownChest) {
             this.hasShownChest = true;
 
-            // Publish event BEFORE starting the mini game
-            miniGameStateService.publish(
-                miniGameStateService.EVENTS.MINI_GAME_WILL_START,
-                { level: currentPuzzleSegment }
-            );
+            // Publish MINI_GAME_WILL_START shortly BEFORE the mini game starts so the
+            // scene clears stones / suspends gameplay first. Deriving the delay from
+            // miniGameDelay keeps the publish ahead of the start on both the correct
+            // (1500) and incorrect (3000) paths, and lets the monster's reaction
+            // animation finish before the mini-game pauses it.
+            const publishDelay = miniGameDelay - 500;
+
+            this.timeoutRegistry.setTimeout(() => {
+                miniGameStateService.publish(
+                    miniGameStateService.EVENTS.MINI_GAME_WILL_START,
+                    { level: currentPuzzleSegment }
+                );
+            }, publishDelay);
 
             this.timeoutRegistry.setTimeout(() => {
                 // Run chest animation (mini game)
