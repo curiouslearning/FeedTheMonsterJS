@@ -329,9 +329,12 @@ export class GameplayScene {
       }
     }
 
-    // Mini-game always receives real deltaTime so its animation progresses
-    // even while the main game is paused (e.g. during assessment flow).
-    this.miniGameHandler.update(this.isActiveMiniGame ? realDeltaTime : deltaTime);
+    // Mini-game normally animates on real frame time so it keeps progressing
+    // during the assessment flow, where the game is never marked paused. But a
+    // user/visibility pause (isPaused === true) freezes it with the rest of
+    // gameplay — deltaTime is already 0 while paused — so the mini-game resumes
+    // only through the pause overlay instead of finishing on its own.
+    this.miniGameHandler.update(this.isActiveMiniGame && !this.isPaused ? realDeltaTime : deltaTime);
     this.tutorial.draw(deltaTime, this.isGameStarted);
   }
 
@@ -349,6 +352,7 @@ export class GameplayScene {
 
   public pauseGamePlay(): void {
     this.isPaused = true;
+    this.isPauseButtonClicked = true;
     this.suspendGameplayActivity();
   }
 
@@ -459,7 +463,6 @@ export class GameplayScene {
     if (this.flowManager?.isAssessmentOpen()) {
       return;
     }
-
     gameStateService.publish(gameStateService.EVENTS.GAME_PAUSE_STATUS_EVENT, true);
     this.pauseGamePlay();
   }
