@@ -39,7 +39,7 @@ describe('Feature: Android analytics strategy', () => {
   });
 
   describe('Scenario: Forwarding the sub-app version as metadata', () => {
-    it('Given an appVersion, when the strategy is constructed, then AndroidInterface receives it as metadata.appVersion', () => {
+    it('Given an appVersion, when the strategy is constructed, then AndroidInterface receives it as metadata.app_version', () => {
       // Given / When
       new AndroidAnalyticsStrategy({ cr_user_id: 'user-123', app_version: 'v1.6.0', lang: 'english' });
 
@@ -48,16 +48,16 @@ describe('Feature: Android analytics strategy', () => {
         expect.objectContaining({
           app_id: 'feed-the-monster',
           cr_user_id: 'user-123',
-          metadata: { environment: appConfig.ENV, appVersion: 'v1.6.0' },
+          metadata: { environment: appConfig.ENV, app_version: 'v1.6.0' },
         })
       );
     });
 
-    it('Given no appVersion, when the strategy is constructed, then metadata.appVersion defaults to an empty string', () => {
+    it('Given no appVersion, when the strategy is constructed, then metadata.app_version defaults to an empty string', () => {
       // Given / When (beforeEach already constructed without appVersion)
       // Then
       expect(AndroidInterface).toHaveBeenCalledWith(
-        expect.objectContaining({ metadata: { environment: appConfig.ENV, appVersion: '' } })
+        expect.objectContaining({ metadata: { environment: appConfig.ENV, app_version: '' } })
       );
     });
   });
