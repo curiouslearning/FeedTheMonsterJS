@@ -218,6 +218,59 @@ describe('GameplayFlowManager assessment integration', () => {
     manager.dispose();
   });
 
+  it('publishes MINI_GAME_WILL_START ahead of the mini-game start on an incorrect answer', () => {
+    (miniGameStateService.shouldShowMiniGame as jest.Mock).mockReturnValue(1);
+    mockAssessmentCoordinator.shouldStartAssessmentAtPuzzle.mockReturnValue(false);
+
+    const { manager, miniGameHandler } = createFlowManager();
+
+    // Segment 1 (currentPuzzleIndex 0 + 1) is the mini-game trigger.
+    manager.determineNextStep(false, false);
+
+    // Incorrect answer schedules the start at 3000ms; publish lands 500ms earlier.
+    scheduler.update(2500);
+    expect(miniGameStateService.publish).toHaveBeenCalledWith(
+      miniGameStateService.EVENTS.MINI_GAME_WILL_START,
+      { level: 1 }
+    );
+    expect(miniGameHandler.start).not.toHaveBeenCalled();
+
+    scheduler.update(500);
+    expect(miniGameHandler.start).toHaveBeenCalledTimes(1);
+
+    const publishOrder = (miniGameStateService.publish as jest.Mock).mock.invocationCallOrder[0];
+    const startOrder = (miniGameHandler.start as jest.Mock).mock.invocationCallOrder[0];
+    expect(publishOrder).toBeLessThan(startOrder);
+
+    manager.dispose();
+  });
+
+  it('keeps the publish ahead of the mini-game start on a correct answer', () => {
+    (miniGameStateService.shouldShowMiniGame as jest.Mock).mockReturnValue(1);
+    mockAssessmentCoordinator.shouldStartAssessmentAtPuzzle.mockReturnValue(false);
+
+    const { manager, miniGameHandler } = createFlowManager();
+
+    manager.determineNextStep(true, false);
+
+    // Correct answer schedules the start at 1500ms; publish lands 500ms earlier at 1000ms.
+    scheduler.update(1000);
+    expect(miniGameStateService.publish).toHaveBeenCalledWith(
+      miniGameStateService.EVENTS.MINI_GAME_WILL_START,
+      { level: 1 }
+    );
+    expect(miniGameHandler.start).not.toHaveBeenCalled();
+
+    scheduler.update(500);
+    expect(miniGameHandler.start).toHaveBeenCalledTimes(1);
+
+    const publishOrder = (miniGameStateService.publish as jest.Mock).mock.invocationCallOrder[0];
+    const startOrder = (miniGameHandler.start as jest.Mock).mock.invocationCallOrder[0];
+    expect(publishOrder).toBeLessThan(startOrder);
+
+    manager.dispose();
+  });
+
   it('passes explicit assessment data keys through unchanged in gameplay', async () => {
     mockAssessmentCoordinator.shouldStartAssessmentAtPuzzle.mockReturnValue(true);
     mockAssessmentCoordinator.getAssessmentTypeForCurrentLevel.mockReturnValue('french-lettersounds');
