@@ -10,7 +10,7 @@ import {
 
 export interface AndroidAnalyticsStrategyOptions {
   cr_user_id: string;
-  /** FTM sub-app version, forwarded to every payload as metadata.app_version. */
+  /** FTM sub-app version, forwarded to every payload as metadata.appVersion. */
   app_version?: string;
   /** Selected language. Scopes the seed guard, since the container keys summaries per language. */
   lang: string;
@@ -33,7 +33,7 @@ export class AndroidAnalyticsStrategy extends AbstractAnalyticsStrategy {
       lang: options.lang,
       metadata: {
         environment: appConfig.ENV,
-        app_version: options.app_version ?? ''
+        appVersion: options.app_version ?? ''
       },
       log: appConfig.DEBUG_MODE
     });
